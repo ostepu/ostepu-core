@@ -133,4 +133,3 @@ function umlaute($text){
 // wir haben es geschafft
 echo "fertig....<br>";
 echo date("d.m.Y H:i:s",time())."<br>";
-?>

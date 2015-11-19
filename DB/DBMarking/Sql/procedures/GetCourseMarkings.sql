@@ -54,7 +54,7 @@ from
         left join 
     File F2 ON (F2.F_id = S.F_id_file)
 where
-    ES.C_id = '",courseid,"';");
+    ES.C_id = '",courseid,"' order by M_id;");
 PREPARE stmt1 FROM @s;
 EXECUTE stmt1;
 DEALLOCATE PREPARE stmt1;

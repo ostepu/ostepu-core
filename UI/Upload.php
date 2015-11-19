@@ -63,11 +63,8 @@ if (Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUse
     }
 }
 
-if (isset($_POST['action']) && $_POST['action'] == 'submit') {
+if (isset($_POST['action']) && $_POST['action'] === 'submit') {
     // handle uploading files
-    /**
-     * @todo don't automatically accept the submission
-     */
     $timestamp = time();
 
     $URL = $databaseURI . '/group/user/' . $selectedUser . '/exercisesheet/' . $sid;
@@ -81,9 +78,13 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
         Logger::Log('error', "No group set for user {$selectedUser} in course {$cid}!");
     } else {
         
-        $URL = $databaseURI . '/exercisesheet/exercisesheet/' . $sid;
+        $URL = $databaseURI . '/exercisesheet/exercisesheet/' . $sid . '/exercise';
         $sheet = http_get($URL, true);
         $sheet = json_decode($sheet, true);
+        
+        if (!isset($sheet['courseId']) || ($sheet['courseId']!=$cid)) {
+            set_error(Language::Get('main','errorInvalidSheetId', $langTemplate),500);
+        }
         
         $isExpired=null;
         $hasStarted=null;
@@ -99,43 +100,55 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                 set_error(Language::Get('main','noExercisePeriod', $langTemplate, array('startDate'=>date('d.m.Y  -  H:i', $sheet['startDate']))));
             }
             
-        } else
+        } else {
             set_error(Language::Get('main','noExercisePeriod', $langTemplate));
+        }
 
         $leaderId = $group['leader']['id'];
+        
+        $allowedExerciseIDs=array();
+        if (isset($sheet['exercises'])){
+            foreach($sheet['exercises'] as $ex){
+                if (isset($ex['id'])){
+                    $allowedExerciseIDs[] = $ex['id'];
+                }
+            }
+            
+        }
 
         foreach ($_POST['exercises'] as $key => $exercise) {
             $exerciseId = cleanInput($exercise['exerciseID']);
             $fileName = "file{$exerciseId}";
             
-            #region generate form-data
-            $formdata = array();
-            if(isset($exercise['choices'])){
-                $formtext = $exercise['choices'];
-                foreach ($formtext as $formId => $choiceData2) {
-                    $form = new Form();
-                    $form->setFormId($formId);
-                    $form->setExerciseId($exerciseId);
-                    
-                    $choiceText = $choiceData2;
-                    $choices = array();
-                    foreach ($choiceText as $tempKey => $choiceData) {
-                        if (trim($choiceData) === '') continue;
-                        $choice = new Choice();
-                        $choice->SetText(htmlentities(htmlentities(htmlspecialchars_decode($choiceData))));
-                        $choice->SetFormId($formId);
-                        $choices[] = $choice;
-                    }
-                    
-                    if ($choices !== null && $choices !== array()){
-                        $form->setChoices($choices);
-                        $formdata[] = $form;
+            if (in_array($exerciseId,$allowedExerciseIDs)) {
+                #region generate form-data
+                $formdata = array();
+                if(isset($exercise['choices'])){
+                    $formtext = $exercise['choices'];
+                    foreach ($formtext as $formId => $choiceData2) {
+                        $form = new Form();
+                        $form->setFormId($formId);
+                        $form->setExerciseId($exerciseId);
+                        
+                        $choiceText = $choiceData2;
+                        $choices = array();
+                        foreach ($choiceText as $tempKey => $choiceData) {
+                            if (trim($choiceData) === '') continue;
+                            $choice = new Choice();
+                            $choice->SetText(htmlentities(htmlentities(htmlspecialchars_decode($choiceData))));
+                            $choice->SetFormId($formId);
+                            $choices[] = $choice;
+                        }
+                        
+                        if ($choices !== null && $choices !== array()){
+                            $form->setChoices($choices);
+                            $formdata[] = $form;
+                        }
                     }
                 }
-            }
-            #endregion
+                #endregion
 
-            if (isset($_FILES[$fileName]) || $formdata !== array()) {
+                if (isset($_FILES[$fileName]) || $formdata !== array()) {
                 $error=0;
                 
                 if (isset($_FILES[$fileName])){
@@ -193,8 +206,8 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
     ///echo Submission::encodeSubmission($uploadSubmission);return;
 
                         $result = http_post_data($URL, Submission::encodeSubmission($uploadSubmission), true, $message);
-    //echo $result;
-                        if ($message != "201") {
+
+                        if ($message !== 201) {
                             $result = Submission::decodeSubmission($result);
                             $exercise = $key + 1;
                             $errormsg = Language::Get('main','errorUploadSubmission', $langTemplate, array('status'=>$message,'exerciseName'=>$exercise['name']));
@@ -226,8 +239,8 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                                     
                                     $URL = $serverURI.'/DB/DBChoice/formResult/choice';
                                     $result2 = http_post_data($URL, Choice::encodeChoice($choices), true, $message);
-                                    
-                                        if ($message != "201") {
+
+                                        if ($message !== 201) {
                                             $result2 = Choice::decodeChoice($result2);
                                             $exercise = $key + 1;
                                             $errormsg = Language::Get('main','errorUploadSubmission', $langTemplate, array('status'=>$message,'exerciseName'=>$exercise['name']));
@@ -281,6 +294,10 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                         $notifications[] = MakeNotification('error',$msg);
                     }
                 }
+            }
+            } else {
+                $msg = Language::Get('main','errorInvalidExerciseId', $langTemplate, array('status'=>412));
+                $notifications[] = MakeNotification('error',$msg); 
             }
         }
     }
