@@ -11,6 +11,7 @@
 include_once dirname(__FILE__).'/include/Boilerplate.php';
 include_once dirname(__FILE__).'/../Assistants/Structures.php';
 include_once dirname(__FILE__).'/../Assistants/LArraySorter.php';
+include_once dirname(__FILE__) . '/../Assistants/Validation/Validation.php';
 
 global $globalUserData;
 Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $globalUserData);
@@ -19,17 +20,52 @@ $langTemplate='Admin_Controller';Language::loadLanguageFile('de', $langTemplate,
 
 $sheetNotifications = array();
 
-if (isset($_POST['action'])) {     
-    if ($_POST['action'] == "ExerciseSheetLecturer" && isset($_POST['deleteSheetWarning'])) {
-        $sheetNotifications[$_POST['deleteSheetWarning']][] = MakeNotification("warning", Language::Get('main','askDeleteSubmission', $langTemplate));
-    } elseif ($_POST['action'] == "ExerciseSheetLecturer" && isset($_POST['deleteSheet'])) {
-        $URL = $logicURI . "/exercisesheet/exercisesheet/{$_POST['deleteSheet']}";
-        $result = http_delete($URL, true, $message);
+$f = new Validation($_POST, array('preRules'=>array('clean_input')));
+
+$f->addSet('action',
+           array('default'=>'noAction',
+                 'in_list'=>array('ExerciseSheetLecturer'),
+                 'on_error'=>array('type'=>'error',
+                                   'text'=>'???')));
+$valResults = $f->validate();
+
+if ($f->isValid() && $valResults['action'] !== 'noAction') {  
+    $f->addSet('deleteSheetWarning',
+               array('default'=>null,
+                     'valid_identifier',
+                     'not_equals_field'=>'deleteSheet',
+                     'on_error'=>array('type'=>'error',
+                                       'text'=>'???')));
+                                       
+    $f->addSet('deleteSheet',
+               array('default'=>null,
+                     'valid_identifier',
+                     'not_equals_field'=>'deleteSheetWarning',
+                     'on_error'=>array('type'=>'error',
+                                       'text'=>'???')));
+    $valResults = $f->validate();
+   
+    if ($f->isValid() && $valResults['action'] === 'ExerciseSheetLecturer' && isset($valResults['deleteSheetWarning'])) {
+        $sheetNotifications[$valResults['deleteSheetWarning']][] = MakeNotification('warning', Language::Get('main','askDeleteSubmission', $langTemplate));
+    } elseif ($f->isValid() && $valResults['action'] == 'ExerciseSheetLecturer' && isset($valResults['deleteSheet'])) { /// !!! darf er das ??? ///
+        $f->addSet('deleteSheet',
+                   array('valid_identifier',
+                         'required',
+                         'on_error'=>array('type'=>'error',
+                                           'text'=>'???')));
+        
+        if ($f->isValid()){
+            $res = $f->getResult();
+            $URL = $logicURI . "/exercisesheet/exercisesheet/{$res['deleteSheet']}"; /// !!! darf er das ??? ///
+            $result = http_delete($URL, true, $message);
+        } else {
+            $sheetNotifications[$valResults['deleteSheet']] = $f->getPrintableNotifications();
+        }
         
         if ($message == 201){
-            $sheetNotifications[$_POST['deleteSheet']][] = MakeNotification('success', Language::Get('main','successDeleteSubmission', $langTemplate));
+            $sheetNotifications[$valResults['deleteSheet']][] = MakeNotification('success', Language::Get('main','successDeleteSubmission', $langTemplate));
         } else 
-            $sheetNotifications[$_POST['deleteSheet']][] = MakeNotification('error', Language::Get('main','errorDeleteSubmission', $langTemplate));
+            $sheetNotifications[$valResults['deleteSheet']][] = MakeNotification('error', Language::Get('main','errorDeleteSubmission', $langTemplate));
     }
 }
 
