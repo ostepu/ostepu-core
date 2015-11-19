@@ -7,6 +7,9 @@
  */
 
 include_once dirname(__FILE__) . '/../../UI/include/Helpers.php';
+include_once dirname(__FILE__) . '/include/Validator.php';
+include_once dirname(__FILE__) . '/include/Converter.php';
+include_once dirname(__FILE__) . '/../Structures.php';
 
 class Validation {
     private $input = array();
@@ -21,6 +24,7 @@ class Validation {
     private $foundValues = array();
     private $notifications = array();
     private $errors = array();
+    private $validated = null;
     
     private $validation_rules = array();
     private static $custom_Validations = array();
@@ -35,6 +39,11 @@ class Validation {
     public function resetResult()
     {
         $this->foundValues = array();
+    }
+    
+    public function resetValidationRules()
+    {
+        $this->validation_rules = array();
     }
     
     public function getResult()
@@ -63,7 +72,7 @@ class Validation {
         } else {
             $this->validation_rules[$fieldName] = array_merge($this->validation_rules[$fieldName],$this->convertRules($rules));
         }
-        
+        $this->validated = null;
         return $this;
     }
     
@@ -82,11 +91,10 @@ class Validation {
         return $temp;
     }
     
-    public function addValidation($name, $callback)
+    public function addValidator($name, $callback)
     {
-        $method = 'validate_'.$name;
         
-        if (method_exists(__CLASS__, $method) || isset($this->custom_Validations[$name])) {
+        if (is_callable('Validator::validate_'.$name) || is_callable('Converter::convert_'.$name) || isset($this->custom_Validations[$name])) {
             throw new Exception("Validation rule '$rule' already exists.");
         }
         
@@ -110,7 +118,9 @@ class Validation {
     
     public function isValid($input = null)
     {
-        $this->resetResult();
+        if ($this->validated !== null){
+            return $this->validated;
+        }
         
         if (isset($input)){
             $this->input = array_merge($this->input,$input);
@@ -129,14 +139,20 @@ class Validation {
                 $ruleName = $rule[0];
                 $ruleParam = $rule[1];
                 
+                if (trim($ruleName) === ''){
+                    continue;
+                }
+                
                 if (isset($this->custom_Validations[$ruleName])){
                     if (is_callable($this->custom_Validations[$ruleName])){
                         $res = call_user_func($this->custom_Validations[$ruleName], $fieldName, $this->input, $this->settings, $ruleParam);
                     } else {
                         throw new Exception("Validation '$ruleName' is not callable.");
                     }
-                } elseif(is_callable(array($this,'validate_'.$ruleName))) {
-                    $res = call_user_func(array($this,'validate_'.$ruleName), $fieldName, $this->input, $this->settings, $ruleParam);
+                } elseif(is_callable('Validator::validate_'.$ruleName)) {
+                    $res = call_user_func('Validator::validate_'.$ruleName, $fieldName, $this->input, $this->settings, $ruleParam);
+                } elseif(is_callable('Converter::convert_'.$ruleName)) {
+                    $res = call_user_func('Converter::convert_'.$ruleName, $fieldName, $this->input, $this->settings, $ruleParam);
                 } else {
                     throw new Exception("Validation '$ruleName' does not exists.");
                 }
@@ -144,6 +160,10 @@ class Validation {
                 if (is_array($res) || $res === false){
                     if (isset($res['notification'])){
                         $this->notifications = array_merge($this->notifications,$res['notification']);
+                    }
+                    
+                    if (isset($res['errors'])){
+                        $this->errors = array_merge($this->errors,$res['notification']);
                     }
                     
                     if (!isset($res['valid']) || $res['valid'] === false){
@@ -162,6 +182,8 @@ class Validation {
                         break;
                     } elseif ($this->settings['abortValidationOnError'] || (isset($res['abortValidation']) && $res['abortValidation'] === true)){
                         $this->resetResult();
+                        $this->resetValidationRules();
+                        $this->validated=false;
                         return false;
                     }
                 }
@@ -169,14 +191,20 @@ class Validation {
             
             if ($validRuleSet === true){
                 $this->insertValue($fieldName, (isset($this->input[$fieldName]) ? $this->input[$fieldName] : null));
+            } else {
+                $this->removeValue($fieldName);
             }
         }
         
         if ($this->settings['validationError'] === false){
+            $this->resetValidationRules();
+            $this->validated=true;
             return true;
         }
         
         $this->resetResult();
+        $this->resetValidationRules();
+        $this->validated=false;
         return false;
     }
     
@@ -188,6 +216,17 @@ class Validation {
         return false;
     }
     
+    public static function validateValue($value, $rules)
+    {
+        $f = new static(array('elem'=>$value));
+        $f->addSet('elem',$rules);
+        
+        if ($f->isValid()){
+            $value = $f->getResult();
+            return new ValidationResult(true,$value['elem']);
+        }
+        return new ValidationResult(false,null);
+    }
     
     private function insertValue($key, $value)
     {
@@ -208,487 +247,27 @@ class Validation {
         }
         return false;
     }
-    
-    
-    
-    
-    
-    
-    function validate_valid_email($key, $input, $setting = null, $param = null)
-    {
-        if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
-            return;
-        }
+}
 
-        if (!filter_var($input[$key], FILTER_VALIDATE_EMAIL)) {
-            return false;
-        }
-        
-        return;
+class ValidationResult
+{
+    private $isValid = true;
+    private $value = null;
+    
+    public function __construct($isValid=true, $value = null)
+    {
+        $this->isValid = $isValid;
+        $this->value = $value;
     }
     
-    function validate_valid_url($key, $input, $setting = null, $param = null)
+    public function isValid()
     {
-        if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
-            return;
-        }
-        
-        if (!filter_var($input[$key], FILTER_VALIDATE_URL)) {
-            return false;
-        }
-        
-        return;
+        return $this->isValid;
     }
     
-    function validate_valid_hash($key, $input, $setting = null, $param = null)
+    public function getResult()
     {
-        return $this->validate_regex($key, $input, $setting, '%^([a-fA-F0-0]+)$%');
+        return $this->value;
     }
     
-    function validate_valid_md5($key, $input, $setting = null, $param = null)
-    {
-        return $this->validate_regex($key, $input, $setting, '%^[0-9A-Fa-f]{32}$%');
-    }
-    
-    function validate_valid_sha1($key, $input, $setting = null, $param = null)
-    {
-        return $this->validate_regex($key, $input, $setting, '%^[0-9A-Fa-f]{40}$%');
-    }
-    
-    function validate_valid_identifier($key, $input, $setting = null, $param = null)
-    {
-        return $this->validate_regex($key, $input, $setting, '%^([0-9_]+)$%');
-    }
-
-    function validate_valid_userName($key, $input, $setting = null, $param = null)
-    {
-        return $this->validate_regex($key, $input, $setting, '%^([a-zA-Z0-9äöüÄÖÜß]+)$%');
-    }
-    
-    function validate_valid_timestamp($key, $input, $setting = null, $param = null)
-    {
-        return $this->validate_is_integer($key, $input, $setting, null);
-    }
-
-    function validate_required($key, $input, $setting = null, $param = null)
-    {
-        if ($setting['setError']){
-            return;
-        }
-        
-        if (!isset($input[$key]) || empty($input[$key])){
-            return false;
-        }
-    }
-    
-    function validate_copy($key, $input, $setting = null, $param = null)
-    {        
-        if ($setting['setError'] || !isset($input[$key])) {
-            return;
-        }
-        
-        return array('valid'=>true, 'field'=>$param, 'value'=>$input[$key]);
-    }
-        
-    function validate_clean_input($key, $input, $setting = null, $param = null)
-    {
-        if ($setting['setError'] || !isset($param) || $param === false){
-            return;
-        }
-        
-        $input = cleanInput($input);
-        return;
-    }
-    
-    function validate_default($key, $input, $setting = null, $param = null)
-    {
-        if ($setting['setError']){
-            return;
-        }
-        
-        if (!isset($input[$key])){
-            return array('valid'=>true, 'field'=>$key, 'value'=>$param);
-        }
-
-        return;
-    }
-    
-    function validate_equalsfield($key, $input, $setting = null, $param = null)
-    {
-        if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
-            return;
-        }
-        
-        if ($input[$key] === $input[$param]) {
-            return;
-        }
-        
-        return false;
-    }
-    
-    function validate_regex($key, $input, $setting = null, $param = null)
-    {
-        if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
-            return;
-        }
-        
-        if (!preg_match($param, $input[$key])) {
-            return false;
-        }
-        
-        return;
-    }
-    
-    function validate_equalTo($key, $input, $setting = null, $param = null)
-    {
-        if ($setting['setError']|| !isset($input[$key]) || empty($input[$key])) {
-            return;
-        }
-        
-        if ($input[$key] !== $param){
-            return false;
-        }
-        
-        return;
-    }
-  
-    function validate_min_numeric($key, $input, $setting = null, $param = null)
-    {
-        if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
-            return;
-        }
-
-        if (is_string($input[$key]) && !ctype_digit($input[$key])) {
-            return false; // contains non digit characters
-        }
-        
-        if (!is_int((int) $input[$key])) {
-            return false; // other non-integer value or exceeds PHP_MAX_INT
-        }
-        
-        if ($input[$key]>=$param){
-            return;
-        }
-        
-        return false;
-    }
-
-    function validate_max_numeric($key, $input, $setting = null, $param = null)
-    {
-        if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
-            return;
-        }
-        
-        if (is_string($input[$key]) && !ctype_digit($input[$key])) {
-            return false; // contains non digit characters
-        }
-        
-        if (!is_int((int) $input[$key])) {
-            return false; // other non-integer value or exceeds PHP_MAX_INT
-        }
-        
-        if ($input[$key]<=$param){
-            return;
-        }
-        
-        return false;
-    }
-    
-    function validate_exact_numeric($key, $input, $setting = null, $param = null)
-    {
-        if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
-            return;
-        }
-        
-        if (is_string($input[$key]) && !ctype_digit($input[$key])) {
-            return false; // contains non digit characters
-        }
-        
-        if (!is_int((int) $input[$key])) {
-            return false; // other non-integer value or exceeds PHP_MAX_INT
-        }
-        
-        if ($input[$key] == $param){
-            return;
-        }
-        
-        return false;
-    }
-    
-    function validate_min_len($key, $input, $setting = null, $param = null)
-    {
-        if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
-            return;
-        }
-        
-        if (function_exists('mb_strlen')) {
-            if (mb_strlen($input[$key]) >= (int) $param) {
-                return;
-            }
-        } else {
-            if (strlen($input[$key]) >= (int) $param) {
-                return;
-            }
-        }
-        return false;
-    }
-
-    function validate_max_len($key, $input, $setting = null, $param = null)
-    {
-        if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
-            return;
-        }
-        
-        if (function_exists('mb_strlen')) {
-            if (mb_strlen($input[$key]) <= (int) $param) {
-                return;
-            }
-        } else {
-            if (strlen($input[$key]) <= (int) $param) {
-                return;
-            }
-        }
-        return false;
-    }
-    
-    function validate_exact_len($key, $input, $setting = null, $param = null)
-    {
-        if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
-            return;
-        }
-        
-        if (function_exists('mb_strlen')) {
-            if (mb_strlen($input[$key]) == (int) $param) {
-                return;
-            }
-        } else {
-            if (strlen($input[$key]) == (int) $param) {
-                return;
-            }
-        }
-        return false;
-    }
-    
-    function validate_float($key, $input, $setting = null, $param = null)
-    {
-        if ($setting['setError']){
-            return;
-        }
-        
-        if (!isset($input[$key]) || empty($input[$key])) {
-            return array('valid'=>true,'field'=>$key,'value'=>null);
-        }
-        
-        if (is_float($input[$key])){
-            return;
-        }
-        
-        if (is_int($input[$key])){
-            return array('valid'=>true,'field'=>$key,'value'=>floatval($input[$key]));
-        }
-        
-        if (preg_match('%^\\d+\\.\\d+$%', $input[$key]) && is_float((float) $input[$key])){
-            return array('valid'=>true,'field'=>$key,'value'=>floatval($input[$key]));            
-        }
-        
-        return false;
-    }
-    
-    function validate_is_float($key, $input, $setting = null, $param = null)
-    {
-        if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
-            return;
-        }
-        
-        if (is_float($input[$key])){
-            return;
-        }
-        
-        if (!is_float((float) $input[$key])){
-            return false;
-        }
-        
-        return $this->validate_regex($key, $input, $setting, '%^\d+\.\d+$%');
-    }
-    
-    function validate_boolean($key, $input, $setting = null, $param = null)
-    {
-        if ($setting['setError']){
-            return;
-        }
-        
-        if (!isset($input[$key]) || empty($input[$key])) {
-            return array('valid'=>true,'field'=>$key,'value'=>null);
-        }
-
-        $booleanList = array(0, 1, '0', '1', true, false);
-        if (in_array($input[$key], $booleanList, true)){
-            $boolResult = array(false,true,false,true,true,false);
-            return array('valid'=>true,'field'=>$key,'value'=>$boolResult[$input[$key]]);
-        }
-        
-        return false;
-    }
-    
-    function validate_is_boolean($key, $input, $setting = null, $param = null)
-    {
-        if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
-            return;
-        }
-
-        $booleanList = array(0, 1, '0', '1', true, false);
-        if (in_array($input[$key], $booleanList, true)){
-            return;
-        }
-        
-        return false;
-    }
-    
-    function validate_integer($key, $input, $setting = null, $param = null)
-    {
-        if ($setting['setError']){
-            return;
-        }
-        
-        if (!isset($input[$key]) || empty($input[$key])) {
-            return array('valid'=>true,'field'=>$key,'value'=>null);
-        }
-        
-        if (is_string($input[$key]) && !ctype_digit($input[$key])) {
-            return false; // contains non digit characters
-        }
-        if (!is_int((int) $input[$key])) {
-            return false; // other non-integer value or exceeds PHP_MAX_INT
-        }
-        
-        return array('valid'=>true,'field'=>$key,'value'=>intval($input[$key]));
-    }
-    
-    function validate_is_integer($key, $input, $setting = null, $param = null)
-    {
-        if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
-            return;
-        }
-        
-        if (is_string($input[$key]) && !ctype_digit($input[$key])) {
-            return false; // contains non digit characters
-        }
-        if (!is_int((int) $input[$key])) {
-            return false; // other non-integer value or exceeds PHP_MAX_INT
-        }
-        
-        return;
-    }
-    
-    function validate_string($key, $input, $setting = null, $param = null)
-    {
-        if ($setting['setError']){
-            return;
-        }
-        
-        if (!isset($input[$key]) || empty($input[$key])) {
-            return array('valid'=>true,'field'=>$key,'value'=>null);
-        }
-        
-        if (is_string($input[$key])) {
-            return;
-        }
-        
-        return array('valid'=>true,'field'=>$key,'value'=>strval($input[$key]));
-    }
-    
-    function validate_is_string($key, $input, $setting = null, $param = null)
-    {
-        if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
-            return;
-        }
-        
-        if (is_string($input[$key])) {
-            return;
-        }
-        
-        return false;
-    }
- 
-    function validate_is_array($key, $input, $setting = null, $param = null)
-    {
-        if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
-            return;
-        }
-        
-        if (is_array($input[$key])) {
-            return;
-        }
-        
-        return false;
-    }
-  
-    function validate_foreach($key, $input, $setting = null, $param = null)
-    {
-        if ($setting['setError'] || !isset($input[$key])){
-            return;
-        }
-        
-        if (!is_array($input[$key])){
-            return false;
-        }
-        
-        $allValid = true;
-        $result = array();
-        foreach($input[$key] as $elemName => $elem){
-            $f = new static(array('key'=>$elemName, 'elem'=>$elem), $setting);
-            foreach($param as $set){
-                $f->addSet($set[0],$set[1]);
-            }
-
-            if ($f->isValid()){
-                $result[$elemName] = $f->getResult()['elem'];
-            } else {
-                $this->notifications = array_merge($this->notifications,$f->getNotifications());
-                $this->errors = array_merge($this->errors,$f->getErrors());
-                return false;
-            }
-        }
-
-        return array('valid'=>true, 'field'=>$key, 'value'=>$result);
-    }
-    
-    function validate_useArray($key, $input, $setting = null, $param = null)
-    {
-        if ($setting['setError'] || !isset($param) || $param === false){
-            return;
-        }
-        
-        if (!is_array($input[$key])){
-            return false;
-        }
-        
-        $allValid = true;
-        $result = array();
-        $f = new static($input[$key], $setting);
-        foreach($param as $set){
-            $f->addSet($set[0],$set[1]);
-        }
-        
-        if ($f->isValid()){
-            return array('valid'=>true, 'field'=>$key, 'value'=>$f->getResult());
-        }
-        return false;
-    }
-    
-    function validate_on_error($key, $input, $setting = null, $param = null)
-    {
-        if (!isset($setting['setError'])){
-            return;            
-        }
-        
-        if (!isset($param['type']) || !isset($param['text'])){
-            throw new Exception(__FUNCTION__.": invalid param.");
-        }
-        
-        if ($setting['setError'] === true){
-            return array('valid'=>true,'abortSet'=>true, 'notification'=>array(array('type'=>$param['type'],'text'=>$param['text'])));
-        }
-        return;
-    }
 }
