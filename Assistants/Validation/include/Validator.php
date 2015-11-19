@@ -100,13 +100,26 @@ class Validator {
         return;
     }
     
-    public static function validate_equalsfield($key, $input, $setting = null, $param = null)
+    public static function validate_equals_field($key, $input, $setting = null, $param = null)
     {
         if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
             return;
         }
         
         if ($input[$key] === $input[$param]) {
+            return;
+        }
+        
+        return false;
+    }
+        
+    public static function validate_not_equals_field($key, $input, $setting = null, $param = null)
+    {
+        if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
+            return;
+        }
+        
+        if ($input[$key] !== $input[$param]) {
             return;
         }
         
@@ -355,6 +368,32 @@ class Validator {
         return false;
     }
   
+    public static function validate_in_list($key, $input, $setting = null, $param = null)
+    {
+        if ($setting['setError'] || !isset($input[$key])) {
+            return;
+        }
+        
+        if (in_array($input[$key], $param)) {
+            return;
+        }
+        
+        return false;
+    }
+    
+    public static function validate_not_in_list($key, $input, $setting = null, $param = null)
+    {
+        if ($setting['setError'] || !isset($input[$key])) {
+            return;
+        }
+        
+        if (!in_array($input[$key], $param)) {
+            return;
+        }
+        
+        return false;
+    }
+    
     public static function validate_foreach($key, $input, $setting = null, $param = null)
     {
         if ($setting['setError'] || !isset($input[$key])){

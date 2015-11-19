@@ -37,7 +37,7 @@ if (isset($_POST['action'])) {
                                            'text'=>Language::Get('main','invalidRepeat', $langTemplate))));
                                                     
         $f->addSet('newPasswordRepeat',
-                   array('equalsfield'=>'newPassword',
+                   array('equals_field'=>'newPassword',
                          'on_error'=>array('type'=>'error',
                                            'text'=>Language::Get('main','differentPasswords', $langTemplate))));
 
