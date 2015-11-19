@@ -112,6 +112,7 @@
                                             $pro->bind(array('testcases'=> array_slice($data, 1)));
                                             $pro->show();*/
                                             $pro = Template::WithTemplateFile(dirname(__FILE__) . '/LOOPtable.template.php');
+                                            $pro->bind(array('files'=>$data[0]->getFile()));
                                             $pro->bind(array('testcases'=> array_slice($data, 1)));
                                             $pro->bind(array('paramcount'=> $paramcount));
                                             $pro->show();

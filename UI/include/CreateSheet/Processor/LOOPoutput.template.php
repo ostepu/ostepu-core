@@ -8,4 +8,4 @@
  */
  header('Content-Type: text/html; charset=utf-8');
  ?>
-<input type="text" class="parameter-choice-test" style="min-width:150px; width: 100%; margin-left:-2px;" name="exercises[0][subexercises][0][outputParameter][0][0][]" value=""/>
+<input type="text" class="parameter-choice-test" style="min-width:160px; width: 100%; margin-left:-2px;" name="exercises[0][subexercises][0][outputParameter][0][0]" value="<?php echo(isset($output[1]) ? $output[1] : '' ); ?>"/>

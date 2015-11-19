@@ -10,6 +10,8 @@ function loop_ready() {
     $('td.output-parameter-choice').find('select').unbind('change').on('change',switchInputTypes);
     $('a.deleteRow').unbind('click').on('click',deleteRow);
     $('a.deleteCol').unbind('click').on('click',deleteCol);
+    $('td.input-parameter').find('select').unbind('change').on('change',changeFile);
+    $('td.output-parameter').find('select').unbind('change').on('change',changeFile);
 
     renameTestcases();
     //console.log($('.add-test'));
@@ -168,9 +170,20 @@ function switchInputTypes(event) {
         $.get(filepath, function (fileinputdata) {
             for (var j = 0; j < testcases.length; j++) {
                 var elem = $(testcases[j]);
+
+                // remain old exercise numbers
+                /*var oldhtml = elem.find('td').eq(i).html();
+                var regex = /exercises\[(.+?)\]\[.+?\]\[(.+?)\]/gm;
+                var matched = oldhtml.match(regex);
+
+                var newhtml = increaseRowname(fileinputdata, j, 0);
+                newhtml = newhtml.replace(regex,matched[0]);*/
+
+                
+                //remain old
                 
                 //var inputdata = $(fileinputdata);
-                elem.find('td').eq(i).html(increaseRowname(fileinputdata, j, 0));
+                elem.find('td').eq(i).html(remainOldParameter(elem.find('td').eq(i).html(), increaseRowname(fileinputdata, j, 0)));
     
                 elem.find('td').eq(i).find('.fileButton').unbind('change').on('change',selectFile);
                 elem.find('td').eq(i).find('select').unbind('change').on('change',changeFile);
@@ -183,6 +196,7 @@ function switchInputTypes(event) {
 
             // all rows
             var rowRange = range(0 , rowCount);
+
             updateDropdowns(trig, false, rowRange, [i], false, rowRange, []);
             checkIfUnused(trig);  
         });
@@ -204,11 +218,27 @@ function switchInputTypes(event) {
         $.get(filepath, function (inputdata) {
             for (var j = 0; j < testcases.length; j++) {
                 var elem = $(testcases[j]);
-                elem.find('td').eq(i).html(increaseRowname(inputdata, j, 0));
+
+                elem.find('td').eq(i).html(remainOldParameter(elem.find('td').eq(i).html(), increaseRowname(inputdata, j, 0)));
             }
             checkIfUnused(trig); 
         });
     }
+}
+
+function remainOldParameter(oldhtml, newhtml)
+{
+    var regex = /exercises\[(.+?)\]\[.+?\]\[(.+?)\]/gm;
+    var matched = oldhtml.match(regex);
+
+    var output = newhtml.replace(regex,matched[0]);
+
+    regex = /Parameter\]\[([0-9]+)\]/gm;
+    matched = oldhtml.match(regex);
+
+    output = output.replace(regex,matched[0]);
+
+    return output;
 }
 
 function changeFile(event) {
@@ -256,6 +286,8 @@ function getFileLastId(trigger) {
     var newname = name.match(regex);
     var replaceString = "$2";
 
+
+
     if (newname === null)
     {
         return -1;
@@ -286,6 +318,7 @@ function selectFile(event) {
 
     var fileLastId = getFileLastId(trig) + 1;
 
+
     lastoption.before('<option value="' + fileLastId.toString() + '">' + filename + '</option>');
 
     //lastoption.prop('disabled', true);
@@ -301,8 +334,8 @@ function selectFile(event) {
     
     // add new name
     var oldName = trig.prop('name');
-    var regex = /Parameter\]\[([0-9]+)\]\[[0-9]+\]\[\]/gm;
-    var nameString = "Parameter][$1]["+ (fileLastId.toString()) +"]";
+    var regex = /Parameter\]\[([0-9]+)\]\[[0-9]+\](\[\])?/gm;
+    var nameString = "Parameter][$1]["+ fileLastId.toString() +"]";
 
     var newName = oldName.replace(regex, nameString);
 
@@ -310,6 +343,7 @@ function selectFile(event) {
 
 
     trig.closest("div.content-body-wrapper").find("div.hiddenFiles").append(trig);
+
 
     // update the dropdowns
     var rowCount = trig.closest("div.content-body-wrapper").find("input.testcount").val();
@@ -356,14 +390,14 @@ function checkIfUnused(trigger)
 
         // get Id
         var name = $(this).prop("name");
-        var regex = /Parameter\]\[([0-9]+)\]\[([0-9]+)\]/gm;
+        var regex = /Parameter\]\[([0-9]+)\]\[([0-9a-f]+)\]/gm;
         var newname = name.match(regex);
         var replaceString = "$2";
         var Id = newname[0].replace(regex, replaceString);
 
+
         var SelectorForOption = "select option:selected[value=" + Id + "]";
         var selectedOptions = testcases.find(SelectorForOption);
-
 
         if (selectedOptions.length == 0) {
             var SelectorForOption = "select option[value=" + Id + "]";
@@ -591,7 +625,8 @@ function updateCols(event) {
                 else
                 {
                     // reset input Forms
-                    newinputtd.find('input.parameter-choice-test').val("");
+                    newinputtd.find('input.parameter-choice-test').attr("value", "");
+                    newinputtd.find('select.parameter-choice-test option:selected').prop("selected", false);
                 }
                 
 
@@ -665,7 +700,10 @@ function updateRows(event) {
             // resetting value
             lastTestcase.find('input.parameter-choice-test').attr("value", "");
 
+            //console.log(lastTestcase.find('select.parameter-choice-test option:selected'));
+
             var lastTestcaseHTML = lastTestcase.outerHTML();
+            lastTestcaseHTML = lastTestcaseHTML.replace(/(selected="selected")/g,"");
 
             for (var i = 0; i < addedTestcasesCount; i++) {
 
@@ -756,6 +794,21 @@ function renameTestcases() {
                 $(this).prop('name', newName);
             });
         }
+
+        var elem3 = $(all[i]).closest('.content-body-wrapper').find(".hiddenFile");
+
+        if(elem3.length > 0)
+        {
+            elem3.each(function() {
+                var oldName = $(this).prop('name');
+                var nameString = "exercises[$1][subexercises][$2][$3]["+ (i) +"]";
+                var newName = oldName.replace(regex2, nameString);
+
+                $(this).prop('name', newName);
+            });
+        }
+
+        
 
         //get testcaserows
         var testcases = $(all[i]).closest('.content-body-wrapper').find(".testcase-table").find("tr").slice(2);

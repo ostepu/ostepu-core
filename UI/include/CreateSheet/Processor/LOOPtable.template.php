@@ -8,7 +8,12 @@
  */
  header('Content-Type: text/html; charset=utf-8');
  ?>
-<div class="hiddenFiles" style="height: 0px;"></div>
+<div class="hiddenFiles" style="height: 0px;"><?php
+foreach($files as $key => $file){ 
+    $file = File::decodeFile(File::encodeFile($file));
+    echo '<input class="hiddenFile" type="hidden" name="exercises[0][subexercises][0][fileParameter][0]['.$file->getHash().']" value=""/>';
+ } ?>
+</div>
 <table border="0" style="width:100%;" class="testcase-table">
     <tr>
         <td style="min-width:20px; max-width:20px;"></td>
@@ -43,10 +48,11 @@
         </td>
         <?php } else if (isset($testcases[0]) && is_object($testcases[0])) {
         $inputs = $testcases[0]->getInput();
-        if (isset($inputs) && is_array($inputs)) {
-            foreach($inputs as $key => $input){
-        ?>
+        if (isset($inputs) && is_array($inputs)) {?>
         <td></td>
+        <?php foreach($inputs as $key => $input){
+        ?>
+        
         <td style="padding-right: 10px; min-width:160px; padding:4px;" class="input-parameter-choice">
             <a href="javascript:void(0);" name="deleteCol" class="plain deleteCol" style="width:17px; height:17px; float:right;">                                      
                 <img src="Images/Delete.png" style="width:17px; height:17px;">
@@ -99,12 +105,45 @@
             if (is_array($inputs)){
                 foreach ($inputs as $key2 => $input) {?>
                 <td style="padding-right: 10px; min-width:160px; padding:4px;  border-width: 1px 0px 1px 0px; border-style: solid none solid none;" class="input-parameter">
-                    <input type="text" class="parameter-choice-test" style="min-width:160px; width: 100%; margin-left:-2px;" name="exercises[0][subexercises][0][inputParameter][0][0][]" value="<?php echo(isset($input[1]) ? $input[1] : '' ); ?>"/>
+                    <?php
+                        $path = dirname(__FILE__) . '/LOOPinput.template.php';
+
+                        if (isset($input[0]) && $input[0] == "Data")
+                        {
+                            $path = dirname(__FILE__) . '/LOOPfileinput.template.php';
+                        }
+
+                        $pro = Template::WithTemplateFile($path);
+                        if(isset($files) && !empty($files))
+                        {
+                            $pro->bind(array('files'=>$files));
+                        }
+                        
+                        $pro->bind(array('input'=> $input));
+                        $pro->show();
+                    ?>
                 </td>
                 <?php }
             } ?>
             <td style="width: 30%;border-left-style: solid; border-left-width: 1px; border-left-color: #999; padding:4px;  border-width: 1px 0px 1px 1px; border-style: solid none solid solid;" class="output-parameter">
-                <input type="text" class="parameter-choice-test" style="min-width:160px; width: 100%; margin-left:-2px;" name="exercises[0][subexercises][0][outputParameter][0][0]" value="<?php echo(isset($output[1]) ? $output[1] : '' ); ?>"/>                              
+                <?php
+                    $path = dirname(__FILE__) . '/LOOPoutput.template.php';
+
+                    if (isset($output[0]) && $output[0] == "Data")
+                    {
+                        $path = dirname(__FILE__) . '/LOOPfileoutput.template.php';
+                    }
+
+                    $pro2 = Template::WithTemplateFile($path);
+                    if(isset($files) && !empty($files))
+                    {
+                        $pro2->bind(array('files'=>$files));
+                    }
+                    
+                    $pro2->bind(array('output'=> $output));
+                    $pro2->show();
+                ?>
+                                           
             </td>
         </tr>
         <?php }

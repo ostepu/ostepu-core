@@ -33,6 +33,8 @@ function LOOP_createParameters(&$subexercise, $key, $oldparameter = null, $filep
             }
         }
 
+        $hashes = [];
+
         foreach ($subexercise['inputParameter'][$key] as $key2 => $testcase)
         {
             $input = array();
@@ -45,7 +47,12 @@ function LOOP_createParameters(&$subexercise, $key, $oldparameter = null, $filep
 
                         if($message == 200)
                         {
-                            $input[] = array($subexercise['inputDatatype'][$key][$key3],File::decodeFile($response));
+                            $decodedFile = File::decodeFile($response);
+                            $input[] = array($subexercise['inputDatatype'][$key][$key3],$decodedFile);
+                            if (!in_array($decodedFile->getHash(), $hashes)) {
+                                $hashes[] = $decodedFile->getHash();
+                                $Files[] = $decodedFile;
+                            }
                         }
                         else
                         {
@@ -76,7 +83,13 @@ function LOOP_createParameters(&$subexercise, $key, $oldparameter = null, $filep
 
                     if($message == 200)
                     {
-                        $output = array($subexercise['outputDatatype'][$key],File::decodeFile($response));
+                        $decodedFile = File::decodeFile($response);
+                        $output = array($subexercise['outputDatatype'][$key],$decodedFile);
+                        if (!in_array($decodedFile->getHash(), $hashes)) {
+                            $hashes[] = $decodedFile->getHash();
+                            $Files[] = $decodedFile;
+                        }
+
                     }
                     else
                     {
@@ -100,6 +113,10 @@ function LOOP_createParameters(&$subexercise, $key, $oldparameter = null, $filep
             //$output = array($subexercise['outputDatatype'][$key],$subexercise['outputParameter'][$key][$key2]);
 
             $parameters[] = Testcase::createTestcase(null,$testcaseType,$input,$output);
+        }
+        if(!empty($Files))
+        {
+            $parameters[0]->setFile($Files);
         }
     }
 
