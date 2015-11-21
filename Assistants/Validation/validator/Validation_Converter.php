@@ -1,12 +1,7 @@
 <?php
-class Converter {
+class Validation_Converter {
     
-    public static function convert_to_float($key, $input, $setting = null, $param = null)
-    {
-        return self::convert_float($key, $input, $setting, $param);
-    }
-    
-    public static function convert_float($key, $input, $setting = null, $param = null)
+    public static function validate_to_float($key, $input, $setting = null, $param = null)
     {
         if ($setting['setError']){
             return;
@@ -30,13 +25,8 @@ class Converter {
         
         return false;
     }
-    
-    public static function convert_to_string($key, $input, $setting = null, $param = null)
-    {
-        return self::convert_string($key, $input, $setting, $param);
-    }
-         
-    public static function convert_string($key, $input, $setting = null, $param = null)
+
+    public static function validate_to_string($key, $input, $setting = null, $param = null)
     {
         if ($setting['setError']){
             return;
@@ -52,13 +42,46 @@ class Converter {
         
         return array('valid'=>true,'field'=>$key,'value'=>strval($input[$key]));
     }
-    
-    public static function convert_to_int($key, $input, $setting = null, $param = null)
+      
+    public static function validate_to_lower($key, $input, $setting = null, $param = null)
     {
-        return convert_integer($key, $input, $setting, $param);
+        if ($setting['setError']){
+            return;
+        }
+        
+        if (!isset($input[$key]) || empty($input[$key])) {
+            return;
+        }
+        
+        $var = $input[$key];
+        
+        if (!is_string($var)) {
+            $var = strval($var);
+        }
+        
+        return array('valid'=>true,'field'=>$key,'value'=>strtolower($var));
+    }
+      
+    public static function validate_to_upper($key, $input, $setting = null, $param = null)
+    {
+        if ($setting['setError']){
+            return;
+        }
+        
+        if (!isset($input[$key]) || empty($input[$key])) {
+            return;
+        }
+        
+        $var = $input[$key];
+        
+        if (!is_string($var)) {
+            $var = strval($var);
+        }
+        
+        return array('valid'=>true,'field'=>$key,'value'=>strtoupper($var));
     }
     
-    public static function convert_integer($key, $input, $setting = null, $param = null)
+    public static function validate_to_integer($key, $input, $setting = null, $param = null)
     {
         if ($setting['setError']){
             return;
@@ -78,12 +101,7 @@ class Converter {
         return array('valid'=>true,'field'=>$key,'value'=>intval($input[$key]));
     }
     
-    public static function convert_to_bool($key, $input, $setting = null, $param = null)
-    {
-        return self::convert_boolean($key, $input, $setting, $param);
-    }
-    
-    public static function convert_boolean($key, $input, $setting = null, $param = null)
+    public static function validate_to_boolean($key, $input, $setting = null, $param = null)
     {
         if ($setting['setError']){
             return;
@@ -93,16 +111,15 @@ class Converter {
             return array('valid'=>true,'field'=>$key,'value'=>null);
         }
 
-        $booleanList = array(0, 1, '0', '1', true, false);
-        if (in_array($input[$key], $booleanList, true)){
-            $boolResult = array(false,true,false,true,true,false);
-            return array('valid'=>true,'field'=>$key,'value'=>$boolResult[$input[$key]]);
+        $boolean = filter_var($input[$key], FILTER_VALIDATE_BOOLEAN);
+        if ($boolean !== null){
+            return array('valid'=>true,'field'=>$key,'value'=>$boolean);
         }
         
         return false;
     }
     
-    public static function convert_md5($key, $input, $setting = null, $param = null)
+    public static function validate_to_md5($key, $input, $setting = null, $param = null)
     {
         if ($setting['setError']){
             return;
@@ -115,7 +132,7 @@ class Converter {
         return array('valid'=>true,'field'=>$key,'value'=>md5($input[$key]));
     }
     
-    public static function convert_sha1($key, $input, $setting = null, $param = null)
+    public static function validate_to_sha1($key, $input, $setting = null, $param = null)
     {
         if ($setting['setError']){
             return;
@@ -128,7 +145,7 @@ class Converter {
         return array('valid'=>true,'field'=>$key,'value'=>sha1($input[$key]));
     }
     
-    public static function convert_to_base64($key, $input, $setting = null, $param = null)
+    public static function validate_to_base64($key, $input, $setting = null, $param = null)
     {
         if ($setting['setError']){
             return;
@@ -147,7 +164,7 @@ class Converter {
         return array('valid'=>true,'field'=>$key,'value'=>$obj);
     }
     
-    public static function convert_from_base64($key, $input, $setting = null, $param = null)
+    public static function validate_to_string_from_base64($key, $input, $setting = null, $param = null)
     {
         if ($setting['setError']){
             return;
@@ -166,7 +183,7 @@ class Converter {
         return array('valid'=>true,'field'=>$key,'value'=>$obj);
     }
     
-    public static function convert_to_structure($key, $input, $setting = null, $param = null)
+    public static function validate_to_structure($key, $input, $setting = null, $param = null)
     {
         if ($setting['setError']){
             return;
