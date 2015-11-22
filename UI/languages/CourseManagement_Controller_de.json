@@ -8,6 +8,7 @@
         "errorCreateAlias": "Beim Anlegen ist ein Fehler aufgetreten!",
         "successEditExtensions": "Die Erweiterungen wurden bearbeitet!",
         "errorEditExtensions": "Beim Bearbeiten ist ein Fehler aufgetreten!",
+        "invalidExtensionId": "Ungültige Erweiterung!",
         "faultyTransmission": "Fehlerhafte übermittlung!",
         "invalidType": "Unbekannter Typ wurde übermittelt!",
         "containsUnsupportedChars": "Eine der Eingaben enthält unerlaubte Zeichen!",
@@ -17,7 +18,9 @@
         "errorSaveSettings": "Beim Speichern der Einstellungen ist ein Fehler aufgetreten!",
         "missingFields": "Es wurden nicht alle Felder ausgefüllt!",
         "successSetCourseStatus": "Die Rechte wurden erfolgreich vergeben!",
+        "errorSetCourseStatus": "Beim Ändern der Rechte ist ein Fehler aufgetreten!",
         "successRemoveUser": "Der Nutzer wurde aus der Veranstaltung entfernt!",
+        "errorRemoveUser": "Der Nutzer konnte nicht aus der Veranstaltung entfernt werden!",
         "noSelectedUser": "Es wurde kein Nutzer gewählt!",
         "invalidUserName": "Ungültiger Nutzername.",
         "invalidCourseStatus": "Ungültige Rechte-ID.",
@@ -26,6 +29,7 @@
         "invalidUserId": "Unbekannter Nutzer.",
         "invalidAction": "Unbekannte Aktion.",
         "successEditCourse": "Die Veranstaltung wurde bearbeitet!",
-        "errorEditCourse": "Beim Speichern ist ein Fehler aufgetreten!"
+        "errorEditCourse": "Beim Speichern ist ein Fehler aufgetreten!",
+        "invalidInput": "???"
     }
 }

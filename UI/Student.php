@@ -9,6 +9,7 @@
  */
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
+include_once dirname(__FILE__) . '/../Assistants/Validation/Validation.php';
 
 global $globalUserData;
 Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $globalUserData);
@@ -17,35 +18,58 @@ $langTemplate='Student_Controller';Language::loadLanguageFile('de', $langTemplat
 
 $sheetNotifications = array();
 
-if (isset($_POST['deleteSubmissionWarning'])) {
-    $notifications[] = MakeNotification("warning", Language::Get('main','askDeleteSubmission', $langTemplate));
-} elseif (isset($_POST['deleteSubmission'])) {
-    $suid = cleanInput($_POST['deleteSubmission']);
+$f = new Validation($_POST, array('preRules'=>array('sanitize')));
+$f->addSet('deleteSubmissionWarning',
+           array('set_default'=>null,
+                 'valid_identifier',
+                 'satisfy_not_equals_field'=>'deleteSubmission',
+                 'on_error'=>array('type'=>'error',
+                                   'text'=>'???1')))
+  ->addSet('deleteSubmission',
+           array('set_default'=>null,
+                 'valid_identifier',
+                 'satisfy_not_equals_field'=>'deleteSubmissionWarning',
+                 'on_error'=>array('type'=>'error',
+                                   'text'=>'???2')))
+  ->addSet('downloadMarkings',
+           array('set_default'=>null,
+                 'valid_identifier',
+                 'on_error'=>array('type'=>'error',
+                                   'text'=>'???3')));
+                                   
+$valResults = $f->validate();
+$notifications = array_merge($notifications,$f->getPrintableNotifications());
+$f->resetNotifications()->resetErrors();
+
+if (isset($valResults['deleteSubmissionWarning'])) {
+    $notifications[] = MakeNotification('warning', Language::Get('main','askDeleteSubmission', $langTemplate));
+} elseif (isset($valResults['deleteSubmission'])) {
+    $suid = cleanInput($valResults['deleteSubmission']);
     
     // extractes the studentId of the submission
-    $URI = $databaseURI . "/submission/" . $suid;
+    $URI = $databaseURI . '/submission/' . $suid;
     $submission = http_get($URI, true);                  
     $submission = json_decode($submission, true);
                     
     // only deletes the submission if it belongs to the user
-    if ($submission['studentId'] == $uid) {
-        $URI = $databaseURI . "/selectedsubmission/submission/" . $suid;
+    if ($submission['studentId'] === $uid) {
+        $URI = $databaseURI . '/selectedsubmission/submission/' . $suid;
         http_delete($URI, true, $message);
         
         // todo: treat the case if the previous operation failed
         $submissionUpdate = Submission::createSubmission($suid,null,null,null,null,null,null,0);
-        $URI = $databaseURI . "/submission/submission/" . $suid;
+        $URI = $databaseURI . '/submission/submission/' . $suid;
         http_put_data($URI, Submission::encodeSubmission($submissionUpdate), true, $message2);
         
-        if ($message == "201" && $message2 == 201) {
-            $notifications[] = MakeNotification("success", Language::Get('main','successDeleteSubmission', $langTemplate));
+        if ($message === 201 && $message2 === 201) {
+            $notifications[] = MakeNotification('success', Language::Get('main','successDeleteSubmission', $langTemplate));
         } else {
-            $notifications[] = MakeNotification("error", Language::Get('main','errorDeleteSubmission', $langTemplate));
+            $notifications[] = MakeNotification('error', Language::Get('main','errorDeleteSubmission', $langTemplate));
         }
     }
 
-} elseif (isset($_POST['downloadMarkings'])) {
-    downloadMarkingsForSheet($uid, $_POST['downloadMarkings']);
+} elseif (isset($valResults['downloadMarkings'])) {
+    downloadMarkingsForSheet($uid, $valResults['downloadMarkings']);
 }
 
 // load tutor data from GetSite
@@ -63,11 +87,11 @@ $menu = MakeNavigationElement($user_course_data,
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
-$h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
-               "backTitle" => Language::Get('main','changeCourse', $langTemplate),
-               "backURL" => "index.php",
-               "notificationElements" => $notifications,
-               "navigationElement" => $menu));
+$h->bind(array('name' => $user_course_data['courses'][0]['course']['name'],
+               'backTitle' => Language::Get('main','changeCourse', $langTemplate),
+               'backURL' => 'index.php',
+               'notificationElements' => $notifications,
+               'navigationElement' => $menu));
 $h->bind($student_data);
                
 $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetStudent.template.html');
@@ -75,7 +99,7 @@ $t->bind($student_data);
 $t->bind(array('uid'=>$uid));
 
 $w = new HTMLWrapper($h, $t);
-$w->defineForm(basename(__FILE__)."?cid=".$cid, false, $t);
+$w->defineForm(basename(__FILE__).'?cid='.$cid, false, $t);
 $w->set_config_file('include/configs/config_student_tutor.json');
 $w->show();
 

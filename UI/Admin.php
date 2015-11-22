@@ -20,52 +20,46 @@ $langTemplate='Admin_Controller';Language::loadLanguageFile('de', $langTemplate,
 
 $sheetNotifications = array();
 
-$f = new Validation($_POST, array('preRules'=>array('clean_input')));
+$f = new Validation($_POST, array('preRules'=>array('sanitize')));
 
 $f->addSet('action',
-           array('default'=>'noAction',
-                 'in_list'=>array('ExerciseSheetLecturer'),
+           array('set_default'=>'noAction',
+                 'satisfy_in_list'=>array('noAction', 'ExerciseSheetLecturer'),
                  'on_error'=>array('type'=>'error',
-                                   'text'=>'???')));
+                                   'text'=>'???1')));
 $valResults = $f->validate();
+$notifications = array_merge($notifications,$f->getPrintableNotifications());
+$f->resetNotifications()->resetErrors();
 
 if ($f->isValid() && $valResults['action'] !== 'noAction') {  
     $f->addSet('deleteSheetWarning',
-               array('default'=>null,
+               array('set_default'=>null,
                      'valid_identifier',
-                     'not_equals_field'=>'deleteSheet',
+                     'satisfy_not_equals_field'=>'deleteSheet',
                      'on_error'=>array('type'=>'error',
-                                       'text'=>'???')));
-                                       
-    $f->addSet('deleteSheet',
-               array('default'=>null,
+                                       'text'=>'???2')))
+      ->addSet('deleteSheet',
+               array('set_default'=>null,
                      'valid_identifier',
-                     'not_equals_field'=>'deleteSheetWarning',
+                     'satisfy_not_equals_field'=>'deleteSheetWarning',
                      'on_error'=>array('type'=>'error',
-                                       'text'=>'???')));
+                                       'text'=>'???3')));
     $valResults = $f->validate();
+    $notifications = array_merge($notifications,$f->getPrintableNotifications());
+    $f->resetNotifications()->resetErrors();
    
     if ($f->isValid() && $valResults['action'] === 'ExerciseSheetLecturer' && isset($valResults['deleteSheetWarning'])) {
         $sheetNotifications[$valResults['deleteSheetWarning']][] = MakeNotification('warning', Language::Get('main','askDeleteSubmission', $langTemplate));
     } elseif ($f->isValid() && $valResults['action'] == 'ExerciseSheetLecturer' && isset($valResults['deleteSheet'])) { /// !!! darf er das ??? ///
-        $f->addSet('deleteSheet',
-                   array('valid_identifier',
-                         'required',
-                         'on_error'=>array('type'=>'error',
-                                           'text'=>'???')));
+       
+        $URL = $logicURI . "/exercisesheet/exercisesheet/{$valResults['deleteSheet']}"; /// !!! darf er das ??? ///
+        $result = http_delete($URL, true, $message);
         
-        if ($f->isValid()){
-            $res = $f->getResult();
-            $URL = $logicURI . "/exercisesheet/exercisesheet/{$res['deleteSheet']}"; /// !!! darf er das ??? ///
-            $result = http_delete($URL, true, $message);
-        } else {
-            $sheetNotifications[$valResults['deleteSheet']] = $f->getPrintableNotifications();
-        }
-        
-        if ($message == 201){
+        if ($message === 201){
             $sheetNotifications[$valResults['deleteSheet']][] = MakeNotification('success', Language::Get('main','successDeleteSubmission', $langTemplate));
-        } else 
+        } else {
             $sheetNotifications[$valResults['deleteSheet']][] = MakeNotification('error', Language::Get('main','errorDeleteSubmission', $langTemplate));
+        }
     }
 }
 
@@ -84,19 +78,19 @@ $menu = MakeNavigationElement($user_course_data,
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
-$h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
-               "backTitle" => Language::Get('main','changeCourse', $langTemplate),
-               "backURL" => "index.php",
-               "notificationElements" => $notifications,
-               "navigationElement" => $menu));
+$h->bind(array('name' => $user_course_data['courses'][0]['course']['name'],
+               'backTitle' => Language::Get('main','changeCourse', $langTemplate),
+               'backURL' => 'index.php',
+               'notificationElements' => $notifications,
+               'navigationElement' => $menu));
 
 
 $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetLecturer.template.html');
 $t->bind($admin_data);
 if (isset($sheetNotifications))
-    $t->bind(array("SheetNotificationElements" => $sheetNotifications));
+    $t->bind(array('SheetNotificationElements' => $sheetNotifications));
     
 $w = new HTMLWrapper($h, $t);
-$w->defineForm(basename(__FILE__)."?cid=".$cid, false, $t);
+$w->defineForm(basename(__FILE__).'?cid='.$cid, false, $t);
 $w->set_config_file('include/configs/config_admin_lecturer.json');
 $w->show();

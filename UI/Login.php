@@ -7,10 +7,13 @@
  * @author Ralf Busch
  */
 
+$notifications = array();
+ 
 include_once dirname(__FILE__) . '/include/Authentication.php';
 include_once dirname(__FILE__) . '/include/HTMLWrapper.php';
 include_once dirname(__FILE__) . '/include/Template.php';
 include_once dirname(__FILE__) . '/../Assistants/Logger.php';
+include_once dirname(__FILE__) . '/../Assistants/Validation/Validation.php';
 include_once dirname(__FILE__) . '/include/Helpers.php';
 
 $langTemplate='Login_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
@@ -18,34 +21,69 @@ $langTemplate='Login_Controller';Language::loadLanguageFile('de', $langTemplate,
 $auth = new Authentication();
 Authentication::preventSessionFix();
 
-if (isset($_POST['action'])) {
-    // trim and stripslashes the input
-    $input['username'] = strtolower($_POST['username']);
-    $input['password'] = $_POST['password'];
+$f = new Validation($_POST, array('preRules'=>array('sanitize')));
 
-    $input = cleanInput($input);
+$f->addSet('action',
+           array('set_default'=>'noAction',
+                 'satisfy_in_list'=>array('noAction', 'login'),
+                 'on_error'=>array('type'=>'error',
+                                   'text'=>'???1')));
+                                   
 
-    // if a hidden Post named back and the php file exists set backurl
-    if (isset($_POST['back']) && file_exists(parse_url($_POST['back'], PHP_URL_PATH))) {
-        $input['back'] = $_POST['back'];
-    } else {
-        $input['back'] = "index.php";
+$f2 = new Validation($_GET, array('preRules'=>array('sanitize')));
+$f2->addSet('back',
+            array('valid_url_query',
+                  'set_default'=>null,
+                  'on_error'=>array('type'=>'error',
+                                    'text'=>'???4')));
+
+                                   
+$valResults = $f->validate();    
+$valResults2 = $f2->validate();
+$notifications = array_merge($notifications, $f->getPrintableNotifications());
+$notifications = array_merge($notifications, $f2->getPrintableNotifications());
+$f->resetNotifications()->resetErrors();
+$f2->resetNotifications()->resetErrors();
+
+if ($f->isValid() && $f2->isValid() && $valResults['action'] !== 'noAction') {
+    if ($valResults['action'] === 'login') {
+        $f->addSet('username',
+                   array('satisfy_exists',
+                         'valid_userName',
+                         'to_lower',
+                         'on_error'=>array('type'=>'error',
+                                           'text'=>'???2')))
+          ->addSet('password',
+                   array('satisfy_exists',
+                         'on_error'=>array('type'=>'error',
+                                           'text'=>'???3')));
+
+        $valResults = $f->validate();
+        $notifications = array_merge($notifications, $f->getPrintableNotifications());
+        $f->resetNotifications()->resetErrors();
+
+        if ($f->isValid()){
+            // if a hidden Post named back and the php file exists set backurl
+            if (isset($valResults2['back']) && file_exists(parse_url($valResults2['back'], PHP_URL_PATH))) {
+                /// --- ///
+            } else {
+                $valResults2['back'] = 'index.php';
+            }
+
+            // log in user and return result
+            $signed = $auth->loginUser($valResults['username'], $valResults['password']);
+
+            if ($signed===true) {
+                header('Location: ' . $valResults2['back']);
+                exit();
+            } else {
+                if ($signed!==false){
+                    $notifications[] = $signed;
+                } else 
+                    $notifications[] = MakeNotification('error', Language::Get('main','errorLogin', $langTemplate));
+            }
+        }
     }
-
-    // log in user and return result
-    $signed = $auth->loginUser($input['username'], $input['password']);
-
-    if ($signed===true) {
-        header('Location: ' . $input['back']);
-        exit();
-    } else {
-        if ($signed!==false){
-            $notifications[] = $signed;
-        } else 
-            $notifications[] = MakeNotification("error", Language::Get('main','errorLogin', $langTemplate));
-    }
-} else {
-    $notifications = array();
 }
 
 // check if already logged in
@@ -56,18 +94,17 @@ if(Authentication::checkLogin()) {
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
-$h->bind(array("backTitle" => Language::Get('main','changeCourse', $langTemplate),
-               "name" => Language::Get('main','title', $langTemplate),
-               "hideBackLink" => "true",
-               "hideLogoutLink" => "true",
-               "notificationElements" => $notifications));
+$h->bind(array('backTitle' => Language::Get('main','changeCourse', $langTemplate),
+               'name' => Language::Get('main','title', $langTemplate),
+               'hideBackLink' => 'true',
+               'hideLogoutLink' => 'true',
+               'notificationElements' => $notifications));
 
 // construct a login element
 $userLogin = Template::WithTemplateFile('include/Login/Login.template.html');
 // if back Parameter is given bind it to the userLogin to create hidden input
-if (isset($_GET['back'])) {
-    $backparameter = cleanInput($_GET['back']);
-    $backdata = array("backURL" => $backparameter);
+if ($f2->isValid() && isset($valResults2['back']) && file_exists(parse_url($valResults2['back'], PHP_URL_PATH))) {
+    $backdata = array('backURL' => $valResults2['back']);
 } else {
     $backdata = array();
 }

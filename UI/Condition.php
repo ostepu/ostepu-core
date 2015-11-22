@@ -8,69 +8,74 @@
  * @author Ralf Busch
  */
 
-include dirname(__FILE__) . '/include/Boilerplate.php';
+include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
 include_once dirname(__FILE__) . '/../Assistants/Validation/Validation.php';
 
-$f = new Validation($_GET, array('preRules'=>array('clean_input')));
+$langTemplate='Condition_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
+
+$f = new Validation($_GET, array('preRules'=>array('sanitize')));
 
 $f->addSet('downloadConditionCsv',
            array('valid_identifier',
                  'on_error'=>array('type'=>'error',
-                                   'text'=>'???')));
-                                   
-$f->addSet('downloadConditionPdf',
+                                   'text'=>'???1')))
+  ->addSet('downloadConditionPdf',
            array('valid_identifier',
                  'on_error'=>array('type'=>'error',
-                                   'text'=>'???')));
-                                   
-$f->addSet('sortby',
-           array('is_alpha',
+                                   'text'=>'???2')))
+  ->addSet('sortby',
+           array('set_default'=>'userName',
+                 'satisfy_in_list'=>array('firstName','userName','studentNumber','isApproved','type'),
                  'on_error'=>array('type'=>'error',
-                                   'text'=>'???')));
-                                   
-$f->addSet('sortId',
+                                   'text'=>'???3')))                                
+  ->addSet('sortId',
            array('valid_identifier',
                  'on_error'=>array('type'=>'error',
-                                   'text'=>'???')));
-
+                                   'text'=>'???4')));
+                                   
+$f2 = new Validation($_POST, array('preRules'=>array('sanitize')));
+$f2->addSet('action',
+            array('set_default'=>'noAction',
+                  'satisfy_in_list'=>array('noAction', 'SetCondition'),
+                  'on_error'=>array('type'=>'error',
+                                    'text'=>'???5')));
+                                   
 $valResults = $f->validate();
-
+$valResults2 = $f2->validate();
+$notifications = array_merge($notifications,$f->getPrintableNotifications());
+$notifications = array_merge($notifications,$f2->getPrintableNotifications());
+$f->resetNotifications()->resetErrors();
+$f2->resetNotifications()->resetErrors();
                                    
-if ($f->isValid() && isset($_GET['downloadConditionCsv'])) {
+if ($f->isValid() && isset($valResults['downloadConditionCsv'])) {
     $cid = $valResults['downloadConditionCsv'];
-} elseif(isset($_GET['downloadConditionCsv'])) {
+} elseif(isset($valResults['downloadConditionCsv'])) {
     exit(1);
 }
 
-if ($f->isValid() && isset($_GET['downloadConditionPdf'])) {
+if ($f->isValid() && isset($valResults['downloadConditionPdf'])) {
     $cid = $valResults['downloadConditionPdf'];
-} elseif(isset($_GET['downloadConditionPdf'])) {
+} elseif(isset($valResults['downloadConditionPdf'])) {
     exit(1);
 }
 
 global $globalUserData;
 Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $globalUserData);
 
-$langTemplate='Condition_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
-
-$notifications = array();
-$notifications = $f->getPrintableNotifications();
-
-if (isset($_POST['action'])) {
+if ($f2->isValid() && $valResults2['action'] !== 'noAction') {
     // creates a new course
-    if ($_POST['action'] == "SetCondition") {
+    if ($valResults2['action'] === 'SetCondition') {
         // bool which is true if any error occured
         $RequestError = false;
         
-        $f = new Validation($_POST, array('preRules'=>array('clean_input')));
+        $f = new Validation($_POST, array('preRules'=>array('sanitize')));
         $f->addSet('approvalCondition',
-                   array('default'=>array(),
-                         'foreach'=>array(
-                                          array('key',
-                                                array('valid_identifier')), 
-                                          array('elem',
-                                                array('integer','min_numeric'=>0,'max_numeric'=>100))),
+                   array('set_default'=>array(),
+                         'perform_foreach'=>array(array('key',
+                                                        array('valid_identifier')), 
+                                                  array('elem',
+                                                        array('to_integer','satisfy_min_numeric'=>0,'satisfy_max_numeric'=>100))),
                          'on_error'=>array('type'=>'warning',
                                            'text'=>Language::Get('main','invalidInput', $langTemplate))));
 
@@ -85,26 +90,27 @@ if (isset($_POST['action'])) {
 
                     $newApprovalCondition = ApprovalCondition::createApprovalCondition($approvalConditionId, $cid, null, $percentage);
                     $newApprovalConditionSettings = ApprovalCondition::encodeApprovalCondition($newApprovalCondition);
-                    $URI = $databaseURI . "/approvalcondition/approvalcondition/" . $approvalConditionId;
+                    $URI = $databaseURI . '/approvalcondition/approvalcondition/' . $approvalConditionId;
                     http_put_data($URI, $newApprovalConditionSettings, true, $message);
 
                     if ($message !== 201) {
-                        $notifications[] = MakeNotification("error", Language::Get('main','errorSetCondition', $langTemplate));
+                        $notifications[] = MakeNotification('error', Language::Get('main','errorSetCondition', $langTemplate));
                         $RequestError = true;
                     }
                 }
             }
         } else {
             $notifications = $notifications + $f->getPrintableNotifications();
+            $f->resetNotifications()->resetErrors();
             $RequestError = true;
         }
 
         // creates a notification depending on RequestError
         if ($RequestError) {
-            $notifications[] = MakeNotification("error", Language::Get('main','errorSetConditions', $langTemplate));
+            $notifications[] = MakeNotification('error', Language::Get('main','errorSetConditions', $langTemplate));
         }
         else {
-            $notifications[] = MakeNotification("success", Language::Get('main','successSetConditions', $langTemplate));
+            $notifications[] = MakeNotification('success', Language::Get('main','successSetConditions', $langTemplate));
         }
 
     }
@@ -127,11 +133,11 @@ if (isset($condition_data['users'])){
     usort($condition_data['users'], 'compare_lastName');
 
     // manages table sort
-    if ($f->isValid() && isset($_GET['sortby'])) {
+    if ($f->isValid() && isset($valResults['sortby'])) {
         $sortBy = $valResults['sortby'];
 
         switch ($sortBy) {
-            case "firstName":
+            case 'firstName':
                 $condition_data['users']=array_reverse($condition_data['users']);
                 function compare_firstName($a, $b) {
                     return strnatcmp(strtolower($a['firstName']), strtolower($b['firstName']));
@@ -139,7 +145,7 @@ if (isset($condition_data['users'])){
                 usort($condition_data['users'], 'compare_firstName');
                 break;
                 
-            case "userName":
+            case 'userName':
                 $condition_data['users']=array_reverse($condition_data['users']);
                 function compare_userName($a, $b) {
                         if (!isset($a['userName'])) return 0;
@@ -149,7 +155,7 @@ if (isset($condition_data['users'])){
                 usort($condition_data['users'], 'compare_userName');
                 break;
                 
-            case "studentNumber":
+            case 'studentNumber':
                 $condition_data['users']=array_reverse($condition_data['users']);
                 function compare_studentNumber($a, $b) {
                         if (!isset($a['studentNumber'])) return 0;
@@ -159,7 +165,7 @@ if (isset($condition_data['users'])){
                 usort($condition_data['users'], 'compare_studentNumber');
                 break;
 
-            case "isApproved":
+            case 'isApproved':
                 $condition_data['users']=array_reverse($condition_data['users']);
                 function compare_isApproved($a, $b) {
                     return strnatcmp($a['isApproved'], $b['isApproved']);
@@ -167,7 +173,7 @@ if (isset($condition_data['users'])){
                 usort($condition_data['users'], 'compare_isApproved');
                 break;
                 
-            case "type":
+            case 'type':
                 $condition_data['users']=array_reverse($condition_data['users']);
                 function compare_type($a, $b) {
                     global $valResults;
@@ -197,7 +203,7 @@ if (isset($condition_data['users'])){
 }
 
 // download csv-archive
-if (isset($_GET['downloadConditionCsv']) || isset($_GET['downloadConditionPdf'])) {
+if (isset($valResults['downloadConditionCsv']) || isset($valResults['downloadConditionPdf'])) {
     $rows = array();
     $firstRow = array('FirstName','LastName','UserName','IsApproved');//,'STUDENTNUMBER'
 
@@ -236,19 +242,19 @@ if (isset($_GET['downloadConditionCsv']) || isset($_GET['downloadConditionPdf'])
             $row[] = '';*/
 
         // isApproved for all courses
-        $row[] = $user['isApproved']?"Ja":"Nein";
+        $row[] = $user['isApproved']?'Ja':'Nein';
 
         // percentage for each exerciseType
         foreach ($user['percentages'] as $percentage) {
                 // achieved percentage and points
                 $row[] = $percentage['points'];
-                $row[] = $percentage['percentage'] . "%";
+                $row[] = $percentage['percentage'] . '%';
         }
         $rows[] = $row;
     }
     
     $file = new File();
-    if (isset($_GET['downloadConditionPdf'])){
+    if (isset($valResults['downloadConditionPdf'])){
         $text = '<table>';
         foreach ($rows as $key => $row){
             if ($key==0){$text .= '<tr style="font-weight: bold;">';} 
@@ -268,7 +274,7 @@ if (isset($_GET['downloadConditionCsv']) || isset($_GET['downloadConditionPdf'])
         $file = File::decodeFile($file);
         $file->setDisplayName('conditions.pdf');
         $file = File::encodeFile($file);
-    } elseif (isset($_GET['downloadConditionCsv'])){        
+    } elseif (isset($valResults['downloadConditionCsv'])){        
         $csv = Csv::createCsv($rows);
         $file = http_post_data($filesystemURI . '/csv',  Csv::encodeCsv($csv), true);
         $file = File::decodeFile($file);
@@ -280,19 +286,19 @@ if (isset($_GET['downloadConditionCsv']) || isset($_GET['downloadConditionPdf'])
     exit(0);
 }
 
-if ($f->isValid() && isset($_GET['sortby'])) {
+if ($f->isValid() && isset($valResults['sortby'])) {
     $condition_data['sortby'] = $valResults['sortby'];
 }
-if ($f->isValid() && isset($_GET['sortId'])) {
+if ($f->isValid() && isset($valResults['sortId'])) {
     $condition_data['sortId'] = $valResults['sortId'];
 }
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
-$h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
-               "notificationElements" => $notifications,
-               "navigationElement" => $menu));
+$h->bind(array('name' => $user_course_data['courses'][0]['course']['name'],
+               'notificationElements' => $notifications,
+               'navigationElement' => $menu));
 
 // construct a content element for setting exam paper conditions
 $setCondition = Template::WithTemplateFile('include/Condition/SetCondition.template.html');
@@ -303,7 +309,7 @@ $userList->bind($condition_data);
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $setCondition, $userList);
-$w->defineForm(basename(__FILE__)."?cid=".$cid, false, $setCondition);
+$w->defineForm(basename(__FILE__).'?cid='.$cid, false, $setCondition);
 $w->set_config_file('include/configs/config_condition.json');
 $w->show();
 

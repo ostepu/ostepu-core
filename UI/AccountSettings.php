@@ -14,30 +14,36 @@ include_once dirname(__FILE__) . '/../Assistants/Validation/Validation.php';
 
 $langTemplate='AccountSettings_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
-if (isset($_POST['action'])) {
+$f = new Validation($_POST, array('preRules'=>array('sanitize')));
+$f->addSet('action',
+           array('set_default'=>'noAction',
+                 'satisfy_in_list'=>array('noAction', 'SetPassword', 'SetAccountInfo'),
+                 'on_error'=>array('type'=>'error',
+                                   'text'=>'???1')));
+
+$valResults = $f->validate();
+$notifications = array_merge($notifications, $f->getPrintableNotifications());
+$f->resetNotifications()->resetErrors();
+
+if ($f->isValid() && $valResults['action'] !== 'noAction') {
     // changes the user's password
-    if ($_POST['action'] == "SetPassword") {
-        $f = new Validation($_POST, array('preRules'=>array('clean_input')));
-
+    if ($valResults['action'] === 'SetPassword') {
         $f->addSet('oldPassword',
-                   array('min_len'=>1,
+                   array('satisfy_min_len'=>1,
                          'on_error'=>array('type'=>'warning',
-                                           'text'=>Language::Get('main','invalidOldPassword', $langTemplate))));
-
-        $f->addSet('newPassword',
-                   array('required',
-                         'min_len'=>6,
+                                           'text'=>Language::Get('main','invalidOldPassword', $langTemplate))))
+          ->addSet('newPassword',
+                   array('satisfy_exists',
+                         'satisfy_min_len'=>6,
                          'on_error'=>array('type'=>'warning',
-                                           'text'=>Language::Get('main','invalidNewPassword', $langTemplate))));
-                                           
-        $f->addSet('newPasswordRepeat',
-                   array('required',
-                         'min_len'=>6,
+                                           'text'=>Language::Get('main','invalidNewPassword', $langTemplate))))               
+          ->addSet('newPasswordRepeat',
+                   array('satisfy_exists',
+                         'satisfy_min_len'=>6,
                          'on_error'=>array('type'=>'warning',
-                                           'text'=>Language::Get('main','invalidRepeat', $langTemplate))));
-                                                    
-        $f->addSet('newPasswordRepeat',
-                   array('equals_field'=>'newPassword',
+                                           'text'=>Language::Get('main','invalidRepeat', $langTemplate))))                 
+          ->addSet('newPasswordRepeat',
+                   array('satisfy_equals_field'=>'newPassword',
                          'on_error'=>array('type'=>'error',
                                            'text'=>Language::Get('main','differentPasswords', $langTemplate))));
 
@@ -62,7 +68,7 @@ if (isset($_POST['action'])) {
             $newPasswordHash = $auth->hashPassword($newPassword, $newSalt);
 
             // check if the old password is necessary
-            if ($user_data['password'] === "noPassword" || $oldPasswordHash === $user_data['password']) {
+            if ($user_data['password'] === 'noPassword' || $oldPasswordHash === $user_data['password']) {
                 // both passwords are equal
                 $newUserSettings = User::encodeUser(User::createUser($uid, null, null, null, null, null, null, 
                                                     $newPasswordHash, $newSalt));
@@ -74,17 +80,16 @@ if (isset($_POST['action'])) {
                 }
             }
             else {
-                $notifications[] = MakeNotification("error", Language::Get('main','incorrectOldPassword', $langTemplate));
+                $notifications[] = MakeNotification('error', Language::Get('main','incorrectOldPassword', $langTemplate));
             }
         } else {
-            $notifications = $notifications + $f->getPrintableNotifications();
+            $notifications = array_merge($notifications, $f->getPrintableNotifications());
+            $f->resetNotifications()->resetErrors();
         }
-    } else if ($_POST['action'] == "SetAccountInfo") {
-        $f = new Validation($_POST,array('preRules'=>array('clean_input')));
-                              
+    } else if ($valResults['action'] === 'SetAccountInfo') {    
         $f->addSet('language',
-                   array('exact_len'=>2,
-                         'required',
+                   array('satisfy_exact_len'=>2,
+                         'satisfy_exists',
                          'on_error'=>array('type'=>'error',
                                            'text'=>'???')));
                                           
@@ -95,15 +100,16 @@ if (isset($_POST['action'])) {
 
             $newUserSettings = User::encodeUser(User::createUser($uid, null, null, null, null, null, null, 
                                                 null, null, null, null, null, null, null, $language));
-            $URI = $databaseURI . "/user/" . $uid;
+            $URI = $databaseURI . '/user/' . $uid;
             
             http_put_data($URI, $newUserSettings, true, $message);
 
-            if ($message == "201") {
-                $notifications[] = MakeNotification("success", Language::Get('main','languageChanged', $langTemplate));
+            if ($message == '201') {
+                $notifications[] = MakeNotification('success', Language::Get('main','languageChanged', $langTemplate));
             }
         } else {
-            $notifications = $notifications + $f->getPrintableNotifications();
+            $notifications = array_merge($notifications, $f->getPrintableNotifications());
+            $f->resetNotifications()->resetErrors();
         }
     }
 }
@@ -116,10 +122,10 @@ $accountSettings_data = json_decode($accountSettings_data, true);
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($accountSettings_data);
-$h->bind(array("name" => Language::Get('main','accountSettings', $langTemplate),
-               "backTitle" => Language::Get('main','course', $langTemplate),
-               "backURL" => "index.php",
-               "notificationElements" => $notifications));
+$h->bind(array('name' => Language::Get('main','accountSettings', $langTemplate),
+               'backTitle' => Language::Get('main','course', $langTemplate),
+               'backURL' => 'index.php',
+               'notificationElements' => $notifications));
 
 // construct a content element for account information
 $accountInfo = Template::WithTemplateFile('include/AccountSettings/AccountInfo.template.html');
