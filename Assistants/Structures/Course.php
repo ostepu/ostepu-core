@@ -168,7 +168,7 @@ class Course extends Object implements JsonSerializable
     }
     
     
-    public function containsSetting( $obj, $settingName )
+    public static function containsSetting( $obj, $settingName )
     {
         if ($obj === null) return null;
         $settings = $obj->getSettings();
