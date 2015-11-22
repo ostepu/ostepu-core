@@ -29,10 +29,10 @@ $menu = MakeNavigationElement($user,
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user);
-$h->bind(array("name" => Language::Get('main','title', $langTemplate),
-               "hideBackLink" => "true",
-               "notificationElements" => $notifications,
-               "navigationElement" => $menu));
+$h->bind(array('name' => Language::Get('main','title', $langTemplate),
+               'hideBackLink' => 'true',
+               'notificationElements' => $notifications,
+               'navigationElement' => $menu));
 
 // sort courses by semester
 if (isset($user['courses']) && is_array($user['courses'])){

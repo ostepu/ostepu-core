@@ -8,12 +8,24 @@
  * @author Ralf Busch
  */
 
-include_once 'include/Boilerplate.php';
+include_once dirname(__FILE__) . '/include/Boilerplate.php';
+include_once dirname(__FILE__) . '/../Assistants/Validation/Validation.php';
 
 global $globalUserData;
 Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $globalUserData);
 
 $langTemplate='Group_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
+
+$f = new Validation($_POST, array('preRules'=>array('sanitize')));
+
+$f->addSet('action',
+           array('set_default'=>'noAction',
+                 'satisfy_in_list'=>array('noAction', 'RemoveGroupMember', 'ManageGroup', 'InviteGroup', 'ManageInvitations'),
+                 'on_error'=>array('type'=>'error',
+                                   'text'=>'???1')));
+$valResults = $f->validate();
+$notifications = array_merge($notifications,$f->getPrintableNotifications());
+$f->resetNotifications()->resetErrors();
 
 /**
  * Removes a user from a group.
@@ -29,7 +41,7 @@ function removeUserFromGroup($uid, $sid)
     $URI = $databaseURI . "/group/user/{$uid}/exercisesheet/{$sid}";
     http_put_data($URI, $newGroupSettings, true, $message);
 
-    if ($message == "201") {
+    if ($message === 201) {
         return true;
     } else {
         return false;
@@ -50,324 +62,405 @@ function removeSelectedSubmission($uid, $sid)
     $URI = $databaseURI . "/selectedsubmission/user/{$uid}/exercisesheet/{$sid}";
     http_delete($URI, true, $message);
 
-    if ($message == "201") {
+    if ($message === 201) {
         return true;
     } else {
         return false;
     }
 }
 
-if (isset($_POST['action'])) {
+if ($f->isValid() && $valResults['action'] !== 'noAction') {
     // removes a group member
-    if ($_POST['action'] == "RemoveGroupMember" && isset($_POST['removeMember'])) {
-        // extracts the member that is being removed
-        $userID = cleanInput($_POST['removeMember']);
+    if ($valResults['action'] === 'RemoveGroupMember') {
+        $f->addSet('removeMember',
+                   array('valid_identifier',
+                         'set_default'=>null,
+                         'on_error'=>array('type'=>'error',
+                                           'text'=>'???1')))
+          ->addSet('removeInvitation',
+                   array('valid_identifier',
+                         'set_default'=>null,
+                         'on_error'=>array('type'=>'error',
+                                           'text'=>'???1')))
+          ->addSet('leaveGroup',
+                   array('valid_identifier',
+                         'set_default'=>null,
+                         'on_error'=>array('type'=>'error',
+                                           'text'=>'???1')));
+                                           
+        $valResults = $f->validate();
+        $notifications = array_merge($notifications,$f->getPrintableNotifications());
+        $f->resetNotifications()->resetErrors();
 
-        // bool which is true if any error occured
-        $RequestError = false;
+        if ($f->isValid()){
+            if (isset($valResults['removeMember'])){
+                // bool which is true if any error occured
+                $RequestError = false;
 
-        // removes the user from the group
-        if (removeUserFromGroup($userID, $sid)) {
-            if (!removeSelectedSubmission($userID, $sid)) {
-                $RequestError = true;
-            }
-        } else {
-            $RequestError = true;
-        }
-
-        if ($RequestError) {
-            $notifications[] = MakeNotification("error", Language::Get('main','errorRemoveMember', $langTemplate));
-        } else {
-            $notifications[] = MakeNotification("success", Language::Get('main','successRemoveMember', $langTemplate));
-        }
-    }
-
-    // removes an invitation from the group
-    if ($_POST['action'] == "RemoveGroupMember" && isset($_POST['removeInvitation'])) {
-        // extracts the member whose invitation is being removed
-        $userID = cleanInput($_POST['removeInvitation']);
-        
-        // deletes the invitation
-        $URI = $databaseURI . "/invitation/user/{$uid}/exercisesheet/{$sid}/user/{$userID}";
-        http_delete($URI, true, $message);
-
-        if ($message == "201") {
-            $notifications[] = MakeNotification("success", Language::Get('main','successRemoveInvitation', $langTemplate));
-        } else {
-            $notifications[] = MakeNotification("error", Language::Get('main','errorRemoveInvitation', $langTemplate));
-        }
-    }
-
-    // removes all group members and deletes the group
-    if ($_POST['action'] == "RemoveGroupMember" && isset($_POST['leaveGroup'])) {
-        // extracts the leader of the group
-        $leaderID = cleanInput($_POST['leaveGroup']);
-
-        // checks if the user that wants to leave is the leader of the group
-        if ($leaderID == $uid) {
-            // bool which is true if any error occured
-            $RequestError = false;
-
-            // returns all invitations from the groups
-            $URI = $databaseURI . "/invitation/leader/exercisesheet/{$sid}/user/{$leaderID}";
-            $invitations = http_get($URI, true);
-            $invitations = json_decode($invitations, true);
-
-            // returns the leader and all members of the group
-            $URI = $databaseURI . "/group/user/{$uid}/exercisesheet/{$sid}";
-            $group = http_get($URI, true);
-            $group = json_decode($group, true);
-
-            // removes all invitations of the group
-            if (!empty($invitations)) {
-                foreach ($invitations as $invitation) {
-                    $URI = $databaseURI . "/invitation/user/{$leaderID}/";
-                    $URI .= "exercisesheet/{$sid}/user/{$invitation['member']['id']}";
-
-                    http_delete($URI, true, $message);
-
-                    if ($message != "201") {
+                // removes the user from the group
+                if (removeUserFromGroup($valResults['removeMember'], $sid)) {
+                    if (!removeSelectedSubmission($valResults_POST['removeMember'], $sid)) {
                         $RequestError = true;
                     }
+                } else {
+                    $RequestError = true;
                 }
-            }
 
-            // removes all members from the group
-            if (!empty($group)) {
-                if (isset($group['members']) && !empty($group['members'])) {
-                    foreach ($group['members'] as $member) {
-                        if (!removeUserFromGroup($member['id'], $sid)) {
-                            $RequestError = true;
-                        }
-                        if (!removeSelectedSubmission($member['id'], $sid)) {
-                            $RequestError = true;
+                if ($RequestError) {
+                    $notifications[] = MakeNotification('error', Language::Get('main','errorRemoveMember', $langTemplate));
+                } else {
+                    $notifications[] = MakeNotification('success', Language::Get('main','successRemoveMember', $langTemplate));
+                }
+            } elseif (isset($valResults['removeInvitation'])){
+                // removes an invitation from the group
+                
+                // deletes the invitation
+                $URI = $databaseURI . "/invitation/user/{$uid}/exercisesheet/{$sid}/user/{$valResults['removeInvitation']}";
+                http_delete($URI, true, $message);
+
+                if ($message === 201) {
+                    $notifications[] = MakeNotification('success', Language::Get('main','successRemoveInvitation', $langTemplate));
+                } else {
+                    $notifications[] = MakeNotification('error', Language::Get('main','errorRemoveInvitation', $langTemplate));
+                }
+            } elseif (isset($valResults['leaveGroup'])){
+                // removes all group members and deletes the group
+                
+                // checks if the user that wants to leave is the leader of the group
+                if ($valResults['leaveGroup'] == $uid) {
+                    // bool which is true if any error occured
+                    $RequestError = false;
+
+                    // returns all invitations from the groups
+                    $URI = $databaseURI . "/invitation/leader/exercisesheet/{$sid}/user/{$valResults['leaveGroup']}";
+                    $invitations = http_get($URI, true);
+                    $invitations = json_decode($invitations, true);
+
+                    // returns the leader and all members of the group
+                    $URI = $databaseURI . "/group/user/{$uid}/exercisesheet/{$sid}";
+                    $group = http_get($URI, true);
+                    $group = json_decode($group, true);
+
+                    // removes all invitations of the group
+                    if (!empty($invitations)) {
+                        foreach ($invitations as $invitation) {
+                            $URI = $databaseURI . "/invitation/user/{$valResults['leaveGroup']}/";
+                            $URI .= "exercisesheet/{$sid}/user/{$invitation['member']['id']}";
+
+                            http_delete($URI, true, $message);
+
+                            if ($message !== 201) {
+                                $RequestError = true;
+                            }
                         }
                     }
+
+                    // removes all members from the group
+                    if (!empty($group)) {
+                        if (isset($group['members']) && !empty($group['members'])) {
+                            foreach ($group['members'] as $member) {
+                                if (!removeUserFromGroup($member['id'], $sid)) {
+                                    $RequestError = true;
+                                }
+                                if (!removeSelectedSubmission($member['id'], $sid)) {
+                                    $RequestError = true;
+                                }
+                            }
+                        }
+
+                        // removes the selectedSubmissions of the leader
+                        if (!removeSelectedSubmission($group['leader']['id'], $sid)) {
+                            $RequestError = true;
+                        }
+
+                        // shows notification
+                        if ($RequestError) {
+                            $notifications[] = MakeNotification('error', Language::Get('main','errorLeaveGroup', $langTemplate));
+                        }
+                        else {
+                            $notifications[] = MakeNotification('success', Language::Get('main','successLeaveGroup', $langTemplate));
+                        }
+
+                    } else {
+                        $notifications[] = MakeNotification('error', Language::Get('main','errorLeaveGroup', $langTemplate));
+                    }
+
+                } else {
+                    // bool which is true if any error occured
+                    $RequestError = false;
+
+                    // removes the user from the group
+                    if (removeUserFromGroup($uid, $sid)) {
+                        if (!removeSelectedSubmission($uid, $sid)) {
+                            $RequestError = true;
+                        }
+                    } else {
+                        $RequestError = true;
+                        ///$notifications[] = MakeNotification('error', "Fehler else.");
+                    }
+
+                    // shows notification
+                    if ($RequestError) {
+                        $notifications[] = MakeNotification('error', Language::Get('main','errorLeaveGroup', $langTemplate));
+                    } else {
+                        $notifications[] = MakeNotification('success', Language::Get('main','successLeaveGroup', $langTemplate));
+                    }
                 }
-
-                // removes the selectedSubmissions of the leader
-                if (!removeSelectedSubmission($group['leader']['id'], $sid)) {
-                    $RequestError = true;
-                }
-
-                // shows notification
-                if ($RequestError) {
-                    $notifications[] = MakeNotification("error", Language::Get('main','errorLeaveGroup', $langTemplate));
-                }
-                else {
-                    $notifications[] = MakeNotification("success", Language::Get('main','successLeaveGroup', $langTemplate));
-                }
-
-            } else {
-                $notifications[] = MakeNotification("error", Language::Get('main','errorLeaveGroup', $langTemplate));
-            }
-
-        } else {
-            // bool which is true if any error occured
-            $RequestError = false;
-
-            // removes the user from the group
-            if (removeUserFromGroup($uid, $sid)) {
-                if (!removeSelectedSubmission($uid, $sid)) {
-                    $RequestError = true;
-                }
-            } else {
-                $RequestError = true;
-                ///$notifications[] = MakeNotification("error", "Fehler else.");
-            }
-
-            // shows notification
-            if ($RequestError) {
-                $notifications[] = MakeNotification("error", Language::Get('main','errorLeaveGroup', $langTemplate));
-            } else {
-                $notifications[] = MakeNotification("success", Language::Get('main','successLeaveGroup', $langTemplate));
             }
         }
     }
 
     // updates the selectedSubmissions for the group
-    if ($_POST['action'] == "ManageGroup" && isset($_POST['exercises'])) {
-        $exercises = cleanInput($_POST['exercises']);
+    if ($valResults['action'] === 'ManageGroup') {
+        $f->addSet('exercises',
+                   ['default'=>array(),
+                    'perform_foreach'=>[['key',
+                                         ['valid_identifier']],
+                                        ['elem',
+                                         ['valid_identifier']]],
+                    'on_error'=>['type'=>'error',
+                                 'text'=>'???1']]);
+                                           
+        $valResults = $f->validate();
+        $notifications = array_merge($notifications,$f->getPrintableNotifications());
+        $f->resetNotifications()->resetErrors();
 
-        // bool which is true if any error occured
-        $RequestError = false;
-        
-        // extracts the exerciseIDs and the submissionIDs and updates
-        // the selectedSubmissions
-        foreach ($exercises as $key => $value) {
-            $exerciseID = $key;
-            $submissionID = $value;
+        if ($f->isValid()){
+            // bool which is true if any error occured
+            $RequestError = false;
+            
+            // extracts the exerciseIDs and the submissionIDs and updates
+            // the selectedSubmissions
+            foreach ($valResults['exercises'] as $key => $value) {
+                $exerciseID = $key; // !!! darf er diese IDs nutzen ??? ///
+                $submissionID = $value; // !!! darf er diese IDs nutzen ??? ///
 
-            updateSelectedSubmission($databaseURI,
-                                     $uid,
-                                     $submissionID,
-                                     $exerciseID,
-                                     $message);
+                updateSelectedSubmission($databaseURI,
+                                         $uid,
+                                         $submissionID,
+                                         $exerciseID,
+                                         $message);
 
-            if ($message != "201") {
-                $RequestError = true;
+                if ($message !== 201) {
+                    $RequestError = true;
+                    break;
+                }
             }
-        }
 
-        // shows notification
-        if ($RequestError == false) {
-            $notifications[] = MakeNotification("success", Language::Get('main','successSelectSubmission', $langTemplate));
-        }
-        else {
-            $notifications[] = MakeNotification("error", Language::Get('main','errorSelectSubmission', $langTemplate));
+            // shows notification
+            if ($RequestError == false) {
+                $notifications[] = MakeNotification('success', Language::Get('main','successSelectSubmission', $langTemplate));
+            }
+            else {
+                $notifications[] = MakeNotification('error', Language::Get('main','errorSelectSubmission', $langTemplate));
+            }
         }
     }
 
-    // apply last group
-    if ($_POST['action'] == "InviteGroup" && isset($_POST['applyGroup'])) {
-        $RequestError = false;
+    if ($valResults['action'] === 'InviteGroup') {
+        $f->addSet('applyGroup',
+                   ['default'=>false,
+                    'to_boolean',
+                    'on_error'=>['type'=>'error',
+                                 'text'=>'???1']]);
+                                           
+        $valResults = $f->validate();
+        $notifications = array_merge($notifications,$f->getPrintableNotifications());
+        $f->resetNotifications()->resetErrors();
         
-        if (isset($_POST['members'])) {
-            // invite old members
-            foreach ($_POST['members'] as $member){
-                $newInvitation = Invitation::encodeInvitation(Invitation::createInvitation($uid, $member, $sid));
-                $URI = $databaseURI . "/invitation";
-                http_post_data($URI, $newInvitation, true, $message);
+        if ($f->isValid()){
+            $RequestError = false;
+            
+            if ($valResults['applyGroup'] === true){
+                // apply last group
+                
+                $f->addSet('members',
+                   ['satisfy_exists',
+                    'satisfy_not_empty',
+                    'is_array',
+                    'perform_array'=>[['key_all',
+                                       ['valid_identifier']]],
+                    'on_error'=>['type'=>'error',
+                                 'text'=>'???1']]);
+                                 
+                $valResults = $f->validate();
+                $notifications = array_merge($notifications,$f->getPrintableNotifications());
+                $f->resetNotifications()->resetErrors();
+                                 
+                if ($f->isValid()) {
+                    // invite old members
+                    foreach ($valResults['members'] as $member){ /// !!! dürfen diese Mitglieder eingeladen werden ??? ///
+                        $newInvitation = Invitation::encodeInvitation(Invitation::createInvitation($uid, $member, $sid));
+                        $URI = $databaseURI . '/invitation';
+                        http_post_data($URI, $newInvitation, true, $message);
 
-                if ($message != "201") {
-                    $RequestError=true;
+                        if ($message !== 201) {
+                            $RequestError=true;
+                        }
+                    }
+                    if (!$RequestError){
+                        $notifications[] = MakeNotification('success', Language::Get('main','successInviteMembers', $langTemplate));
+                        // accept invitations
+                        foreach ($valResults['members'] as $member){
+                            
+                            // adds the user to the group
+                            $newGroupSettings = Group::encodeGroup(Group::createGroup($uid, $member, $sid));
+                            $URI = $databaseURI . "/group/user/{$member}/exercisesheet/{$sid}";
+                            $answ = http_put_data($URI, $newGroupSettings, true, $message);
+                            if ($message !== 201) {
+                                $RequestError = true;
+                                continue;
+                            }
+                            
+                            // deletes the invitation
+                            $URI = $databaseURI . "/invitation/user/{$uid}/exercisesheet/{$sid}/user/{$member}";
+                            http_delete($URI, true, $message);
+
+                            if ($message !== 201) {
+                                $RequestError = true;
+                                continue;
+                            }
+
+                            // deletes all selectedSubmissions
+                            if (!removeSelectedSubmission($member, $sid)) {
+                                $RequestError = true;
+                                continue;
+                            }
+                        }
+                        
+                        if (!$RequestError){
+                            $notifications[] = MakeNotification('success', Language::Get('main','successJoinMembers', $langTemplate));
+                        } else {
+                            $notifications[] = MakeNotification('error', Language::Get('main','errorJoinMember', $langTemplate));
+                        }
+                
+                    } else {
+                       $notifications[] = MakeNotification('error', Language::Get('main','errorInviteMember', $langTemplate));
+                    }
+                } else {
+                    $notifications[] = MakeNotification('error', Language::Get('main','errorApplyGroup', $langTemplate));
+                    $RequestError = true;
+                }
+            } else {
+                // invites users to the group
+                
+                $f->addSet('userName',
+                   ['satisfy_exists',
+                    'satisfy_not_empty',
+                    'is_array',
+                    'perform_array'=>[['key_all',
+                                       ['satisfy_not_empty',
+                                        'valid_userName']]],
+                    'on_error'=>['type'=>'error',
+                                 'text'=>'???1']]);
+                                 
+                $valResults = $f->validate();
+                $notifications = array_merge($notifications,$f->getPrintableNotifications());
+                $f->resetNotifications()->resetErrors();
+                
+                if ($f->isValid()) {
+                    foreach ($valResults['userName'] as $key => $memberName) {
+                        // extracts the userID
+                        $URI = $databaseURI . "/user/user/{$memberName}";
+                        $user_data = http_get($URI, true);
+                        $user_data = json_decode($user_data, true);
+
+                        // invites the user to the current group
+                        if (!isset($user_data['id']) || empty($user_data) || $user_data['id'] == $uid) {
+                            $notifications[] = MakeNotification('error', Language::Get('main','invalidUserId', $langTemplate));
+                        } else {
+                            $memberID = $user_data['id'];
+
+                            $newInvitation = Invitation::encodeInvitation(Invitation::createInvitation($uid, $memberID, $sid));
+                            $URI = $databaseURI . '/invitation';
+                            http_post_data($URI, $newInvitation, true, $message);
+
+                            if ($message === 201) {
+                                $notifications[] = MakeNotification('success', Language::Get('main','successInviteMember', $langTemplate, array('memberName'=>$memberName)));
+                            } else {
+                                $notifications[] = MakeNotification('error', Language::Get('main','errorInviteMember', $langTemplate, array('memberName'=>$memberName)));
+                            }
+                        }
+                    }
                 }
             }
-            if (!$RequestError){
-                $notifications[] = MakeNotification("success", Language::Get('main','successInviteMembers', $langTemplate));
-                // accept invitations
-                foreach ($_POST['members'] as $member){
-                    
-                    // adds the user to the group
-                    $newGroupSettings = Group::encodeGroup(Group::createGroup($uid, $member, $sid));
-                    $URI = $databaseURI . "/group/user/{$member}/exercisesheet/{$sid}";
-                    $answ = http_put_data($URI, $newGroupSettings, true, $message);
-                    if ($message != "201") {
+        }
+    }
+
+    if ($valResults['action'] === 'ManageInvitations') {
+        $f->addSet('denyInvitation',
+                   ['valid_identifier',
+                    'set_default'=>null,
+                    'on_error'=>['type'=>'error',
+                                 'text'=>'???1']])
+          ->addSet('acceptInvitation',
+                   ['valid_identifier',
+                    'set_default'=>null,
+                    'on_error'=>['type'=>'error',
+                                 'text'=>'???1']]);
+                                 
+        $valResults = $f->validate();
+        $notifications = array_merge($notifications,$f->getPrintableNotifications());
+        $f->resetNotifications()->resetErrors();
+
+        if ($f->isValid()){
+            
+            if (isset($valResults['denyInvitation'])){
+                // removes an invitation to a group
+    
+                // deletes the invitation
+                $URI = $databaseURI . "/invitation/user/{$valResults['denyInvitation']}/exercisesheet/{$sid}/user/{$uid}";
+                http_delete($URI, true, $message);
+
+                if ($message === 201) {
+                    $notifications[] = MakeNotification('success', Language::Get('main','successRejectInvitation', $langTemplate));
+                } else {
+                    $notifications[] = MakeNotification('error', Language::Get('main','errorRejectInvitation', $langTemplate));
+                }
+            } elseif (isset($valResults['acceptInvitation'])){
+                // accepts an invitation to a group
+                
+                // bool which is true if any error occured
+                $RequestError = false;
+
+                // adds the user to the group
+                if ($RequestError === false){
+                    $newGroupSettings = Group::encodeGroup(Group::createGroup($valResults['acceptInvitation'], $uid, $sid));
+                    $URI = $databaseURI . "/group/user/{$uid}/exercisesheet/{$sid}";
+                    http_put_data($URI, $newGroupSettings, true, $message);
+
+                    if ($message !== 201) {
                         $RequestError = true;
-                        continue;
                     }
-                    
-                    // deletes the invitation
-                    $URI = $databaseURI . "/invitation/user/{$uid}/exercisesheet/{$sid}/user/{$member}";
+                }
+
+                // deletes the invitation
+                if ($RequestError === false){
+                    $URI = $databaseURI . "/invitation/user/{$valResults['acceptInvitation']}/exercisesheet/{$sid}/user/{$uid}";
                     http_delete($URI, true, $message);
 
-                    if ($message != "201") {
+                    if ($message !== 201) {
                         $RequestError = true;
-                        continue;
                     }
+                }
 
-                    // deletes all selectedSubmissions
-                    if (!removeSelectedSubmission($member, $sid)) {
+                // deletes all selectedSubmissions
+                if ($RequestError === false){
+                    if (!removeSelectedSubmission($uid, $sid)) {
                         $RequestError = true;
-                        continue;
                     }
                 }
-                
-                if (!$RequestError){
-                    $notifications[] = MakeNotification("success", Language::Get('main','successJoinMembers', $langTemplate));
-                } else {
-                    $notifications[] = MakeNotification("error", Language::Get('main','errorJoinMember', $langTemplate));
+
+                // shows notification
+                if ($RequestError === false) {
+                    $notifications[] = MakeNotification('success', Language::Get('main','successJoinGroup', $langTemplate));
                 }
-        
+                else {
+                    $notifications[] = MakeNotification('error', Language::Get('main','errorJoinGroup', $langTemplate));
+                }
             } else {
-               $notifications[] = MakeNotification("error", Language::Get('main','errorInviteMember', $langTemplate));
+                $notifications[] = MakeNotification('error', '');
             }
-        } else {
-            $notifications[] = MakeNotification("error", Language::Get('main','errorApplyGroup', $langTemplate));
-            $RequestError = true;
-        }
-    }
-    
-    // invites users to the group
-    if ($_POST['action'] == "InviteGroup" && !isset($_POST['applyGroup'])) {
-        if (isset($_POST['userName'])) {
-            foreach ($_POST['userName'] as $key => $memberName) {
-                
-                // skips empty input fields
-                if (empty($memberName)) {
-                    continue;
-                }
-
-                // extracts the memberName
-                $memberName = cleanInput($memberName);
-
-                // extracts the userID
-                $URI = $databaseURI . "/user/user/{$memberName}";
-                $user_data = http_get($URI, true);
-                $user_data = json_decode($user_data, true);
-
-                // invites the user to the current group
-                if (!isset($user_data['id']) || empty($user_data) || $user_data['id'] == $uid) {
-                    $notifications[] = MakeNotification("error", Language::Get('main','invalidUserId', $langTemplate));
-                } else {
-                    $memberID = $user_data['id'];
-
-                    $newInvitation = Invitation::encodeInvitation(Invitation::createInvitation($uid, $memberID, $sid));
-                    $URI = $databaseURI . "/invitation";
-                    http_post_data($URI, $newInvitation, true, $message);
-
-                    if ($message == "201") {
-                        $notifications[] = MakeNotification("success", Language::Get('main','successInviteMember', $langTemplate, array('memberName'=>$memberName)));
-                    } else {
-                        $notifications[] = MakeNotification("error", Language::Get('main','errorInviteMember', $langTemplate, array('memberName'=>$memberName)));
-                    }
-                }
-            }
-        }
-    }
-
-    // removes an invitation to a group
-    if ($_POST['action'] == "ManageInvitations" && isset($_POST['denyInvitation'])) {
-        // extracts the leader of the invitation that is being removed
-        $leaderID = cleanInput($_POST['denyInvitation']);
-
-        // deletes the invitation
-        $URI = $databaseURI . "/invitation/user/{$leaderID}/exercisesheet/{$sid}/user/{$uid}";
-        http_delete($URI, true, $message);
-
-        if ($message == "201") {
-            $notifications[] = MakeNotification("success", Language::Get('main','successRejectInvitation', $langTemplate));
-        } else {
-            $notifications[] = MakeNotification("error", Language::Get('main','errorRejectInvitation', $langTemplate));
-        }
-    }
-
-    // accepts an invitation to a group
-    if ($_POST['action'] == "ManageInvitations" && isset($_POST['acceptInvitation'])) {
-        // bool which is true if any error occured
-        $RequestError = false;
-
-        // extracts the leader of the invitation that is being removed
-        $leaderID = cleanInput($_POST['acceptInvitation']);
-
-        // adds the user to the group
-        $newGroupSettings = Group::encodeGroup(Group::createGroup($leaderID, $uid, $sid));
-        $URI = $databaseURI . "/group/user/{$uid}/exercisesheet/{$sid}";
-        http_put_data($URI, $newGroupSettings, true, $message);
-
-        if ($message != "201") {
-            $RequestError = true;
-        }
-
-        // deletes the invitation
-        $URI = $databaseURI . "/invitation/user/{$leaderID}/exercisesheet/{$sid}/user/{$uid}";
-        http_delete($URI, true, $message);
-
-        if ($message != "201") {
-            $RequestError = true;
-        }
-
-        // deletes all selectedSubmissions
-        if (!removeSelectedSubmission($uid, $sid)) {
-            $RequestError = true;
-        }
-
-        // shows notification
-        if ($RequestError == false) {
-            $notifications[] = MakeNotification("success", Language::Get('main','successJoinGroup', $langTemplate));
-        }
-        else {
-            $notifications[] = MakeNotification("error", Language::Get('main','errorJoinGroup', $langTemplate));
         }
     }
 }
@@ -406,11 +499,11 @@ $menu = MakeNavigationElement($user_course_data,
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
-$h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
-               "backTitle" => "zur Veranstaltung",
-               "backURL" => "Student.php?cid={$cid}",
-               "notificationElements" => $notifications,
-               "navigationElement" => $menu));
+$h->bind(array('name' => $user_course_data['courses'][0]['course']['name'],
+               'backTitle' => 'zur Veranstaltung',
+               'backURL' => "Student.php?cid={$cid}",
+               'notificationElements' => $notifications,
+               'navigationElement' => $menu));
 
 $isInGroup = (!empty($group_data['group']['members']) || !empty($group_data['invitationsFromGroup']));
 $isLeader = isset($group_data['group']['leader']['id']) && $group_data['group']['leader']['id'] == $uid;
@@ -443,13 +536,13 @@ if ($hasInvitations) {
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $groupMembers, (isset($invitationsToGroup) ? $invitationsToGroup : null), (isset($groupManagement) ? $groupManagement : null), (isset($invitationsFromGroup) ? $invitationsFromGroup : null));
-$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $groupMembers);
+$w->defineForm(basename(__FILE__).'?cid='.$cid.'&sid='.$sid, false, $groupMembers);
 
 if (isset($groupManagement))
-    $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $groupManagement);
+    $w->defineForm(basename(__FILE__).'?cid='.$cid.'&sid='.$sid, false, $groupManagement);
 if (isset($invitationsFromGroup))
-    $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $invitationsFromGroup);
+    $w->defineForm(basename(__FILE__).'?cid='.$cid.'&sid='.$sid, false, $invitationsFromGroup);
 if (isset($invitationsToGroup))
-    $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $invitationsToGroup);
+    $w->defineForm(basename(__FILE__).'?cid='.$cid.'&sid='.$sid, false, $invitationsToGroup);
 $w->set_config_file('include/configs/config_group.json');
 $w->show();
