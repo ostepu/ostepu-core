@@ -48,20 +48,20 @@ foreach ($plugins_data['plugins'] as &$plugin){
 
 $f = new Validation($_POST, array('preRules'=>array('sanitize')));
 $f->addSet('action',
-           array('set_default'=>'noAction',
-                 'satisfy_in_list'=>array('noAction', 'EditExternalId', 'AddExternalId', 'Plugins', 'CourseSettings', 'AddExerciseType', 'EditExerciseType', 'GrantRights', 'RevokeRights', 'AddUser'),
-                 'on_error'=>array('type'=>'error',
-                                   'text'=>'???1')))
+           ['set_default'=>'noAction',
+            'satisfy_in_list'=>['noAction', 'EditExternalId', 'AddExternalId', 'Plugins', 'CourseSettings', 'AddExerciseType', 'EditExerciseType', 'GrantRights', 'RevokeRights', 'AddUser'],
+            'on_error'=>['type'=>'error',
+                         'text'=>'???1']])
   ->addSet('sortUsers',
-           array('satisfy_in_list'=>array('lastName','firstName','userName'),
-                 'set_default'=>'lastName',
-                 'on_error'=>array('type'=>'error',
-                                   'text'=>'???1')))
+           ['satisfy_in_list'=>['lastName','firstName','userName'],
+            'set_default'=>'lastName',
+            'on_error'=>['type'=>'error',
+                         'text'=>'???1']])
   ->addSet('actionSortUsers',
-           array('set_default'=>'noAction',
-                 'satisfy_in_list'=>array('noAction', 'sort'),
-                 'on_error'=>array('type'=>'error',
-                                   'text'=>'???1')));
+           ['set_default'=>'noAction',
+            'satisfy_in_list'=>['noAction', 'sort'],
+            'on_error'=>['type'=>'error',
+                         'text'=>'???1']]);
                                    
 $valResults = $f->validate();
 $notifications = array_merge($notifications,$f->getPrintableNotifications());
@@ -72,16 +72,16 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
         $editExternalIdNotifications = array();
 
         $f->addSet('externalId',
-                   array('satisfy_exists',
-                         'is_array',
-                         'satisfy_not_empty',
-                         'on_error'=>array('type'=>'warning',
-                                           'text'=>Language::Get('main','noSelectedAlias', $langTemplate))))
+                   ['satisfy_exists',
+                    'is_array',
+                    'satisfy_not_empty',
+                    'on_error'=>['type'=>'warning',
+                                 'text'=>Language::Get('main','noSelectedAlias', $langTemplate)]])
           ->addSet('externalId',
-                   array('perform_array'=>array(array(array('key_all'),
-                                                      array('satisfy_regex'=>'%^([a-zA-Z0-9_]+)$%'))),
-                         'on_error'=>array('type'=>'error',
-                                           'text'=>Language::Get('main','invalidInput', $langTemplate))));
+                   ['perform_array'=>[[['key_all'],
+                                       ['satisfy_regex'=>'%^([a-zA-Z0-9_]+)$%']]],
+                    'on_error'=>['type'=>'error',
+                                 'text'=>Language::Get('main','invalidInput', $langTemplate)]]);
 
         $valResults = $f->validate();
         $editExternalIdNotifications = array_merge($editExternalIdNotifications,$f->getPrintableNotifications());
@@ -114,27 +114,27 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
         $addExternalIdNotifications = array();
         
         $f->addSet('externalId',
-                   array('satisfy_exists',
-                         'satisfy_not_empty',
-                         'valid_alpha_numeric',
-                         'on_error'=>array('type'=>'error',
-                                           'text'=>Language::Get('main','missingAliasName', $langTemplate))))
+                   ['satisfy_exists',
+                    'satisfy_not_empty',
+                    'valid_alpha_numeric',
+                    'on_error'=>['type'=>'error',
+                                 'text'=>Language::Get('main','missingAliasName', $langTemplate)]])
           ->addSet('externalType',
-                   array('satisfy_exists',
-                         'satisfy_not_empty',
-                         'on_error'=>array('type'=>'error',
-                                           'text'=>Language::Get('main','missingAliasType', $langTemplate))))
+                   ['satisfy_exists',
+                    'satisfy_not_empty',
+                    'on_error'=>['type'=>'error',
+                                 'text'=>Language::Get('main','missingAliasType', $langTemplate)]])
           ->addSet('externalType',
-                   array('to_integer',
-                         'satisfy_in_list' => array(1,2),
-                         'on_error'=>array('type'=>'error',
-                                           'text'=>Language::Get('main','invalidInput', $langTemplate))))
+                   ['to_integer',
+                    'satisfy_in_list' => [1,2],
+                    'on_error'=>['type'=>'error',
+                                 'text'=>Language::Get('main','invalidInput', $langTemplate)]])
           ->addSet('externalTypeName',
-                   array('satisfy_exact_len'=>1,
-                         'valid_alpha',
-                         'to_upper',
-                         'on_error'=>array('type'=>'error',
-                                           'text'=>Language::Get('main','???3', $langTemplate))));
+                   ['satisfy_exact_len'=>1,
+                    'valid_alpha',
+                    'to_upper',
+                    'on_error'=>['type'=>'error',
+                                 'text'=>Language::Get('main','???3', $langTemplate)]]);
                                            
         $valResults = $f->validate();
         $addExternalIdNotifications = array_merge($addExternalIdNotifications,$f->getPrintableNotifications());
@@ -162,12 +162,12 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
         $pluginsNotifications = array();
         
         $f->addSet('plugins',
-                   array('satisfy_exists',
-                         'is_array',
-                         'perform_array'=>array(array(array('key_all'),
-                                                      array('valid_identifier'))),
-                         'on_error'=>array('type'=>'error',
-                                           'text'=>Language::Get('main','invalidExtensionId', $langTemplate))));
+                   ['satisfy_exists',
+                    'is_array',
+                    'perform_array'=>[['key_all'],
+                                      ['valid_identifier']]],
+                    'on_error'=>['type'=>'error',
+                                 'text'=>Language::Get('main','invalidExtensionId', $langTemplate)]]);
                                            
         $valResults = $f->validate();
         $pluginsNotifications = array_merge($pluginsNotifications,$f->getPrintableNotifications());

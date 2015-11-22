@@ -17,29 +17,29 @@ $langTemplate='Condition_Controller';Language::loadLanguageFile('de', $langTempl
 $f = new Validation($_GET, array('preRules'=>array('sanitize')));
 
 $f->addSet('downloadConditionCsv',
-           array('valid_identifier',
-                 'on_error'=>array('type'=>'error',
-                                   'text'=>'???1')))
+           ['valid_identifier',
+            'on_error'=>['type'=>'error',
+                         'text'=>'???1']])
   ->addSet('downloadConditionPdf',
-           array('valid_identifier',
-                 'on_error'=>array('type'=>'error',
-                                   'text'=>'???2')))
+           ['valid_identifier',
+            'on_error'=>['type'=>'error',
+                         'text'=>'???2']])
   ->addSet('sortby',
-           array('set_default'=>'userName',
-                 'satisfy_in_list'=>array('firstName','userName','studentNumber','isApproved','type'),
-                 'on_error'=>array('type'=>'error',
-                                   'text'=>'???3')))                                
+           ['set_default'=>'userName',
+            'satisfy_in_list'=>['firstName','userName','studentNumber','isApproved','type'],
+            'on_error'=>['type'=>'error',
+                         'text'=>'???3']])                                
   ->addSet('sortId',
-           array('valid_identifier',
-                 'on_error'=>array('type'=>'error',
-                                   'text'=>'???4')));
+           ['valid_identifier',
+            'on_error'=>['type'=>'error',
+                         'text'=>'???4']]);
                                    
 $f2 = new Validation($_POST, array('preRules'=>array('sanitize')));
 $f2->addSet('action',
-            array('set_default'=>'noAction',
-                  'satisfy_in_list'=>array('noAction', 'SetCondition'),
-                  'on_error'=>array('type'=>'error',
-                                    'text'=>'???5')));
+            ['set_default'=>'noAction',
+             'satisfy_in_list'=>['noAction', 'SetCondition'],
+             'on_error'=>['type'=>'error',
+                          'text'=>'???5']]);
                                    
 $valResults = $f->validate();
 $valResults2 = $f2->validate();
@@ -71,13 +71,15 @@ if ($f2->isValid() && $valResults2['action'] !== 'noAction') {
         
         $f = new Validation($_POST, array('preRules'=>array('sanitize')));
         $f->addSet('approvalCondition',
-                   array('set_default'=>array(),
-                         'perform_foreach'=>array(array('key',
-                                                        array('valid_identifier')), 
-                                                  array('elem',
-                                                        array('to_integer','satisfy_min_numeric'=>0,'satisfy_max_numeric'=>100))),
-                         'on_error'=>array('type'=>'warning',
-                                           'text'=>Language::Get('main','invalidInput', $langTemplate))));
+                   ['set_default'=>array(),
+                    'perform_foreach'=>[['key',
+                                         ['valid_identifier']], 
+                                        ['elem',
+                                         ['to_integer',
+                                          'satisfy_min_numeric'=>0,
+                                          'satisfy_max_numeric'=>100]]],
+                    'on_error'=>['type'=>'warning',
+                                 'text'=>Language::Get('main','invalidInput', $langTemplate)]]);
 
         if ($f->isValid()){
             $foundValues = $f->getResult();

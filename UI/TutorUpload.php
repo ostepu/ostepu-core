@@ -23,7 +23,7 @@ $f = new Validation($_POST, array('preRules'=>array('sanitize')));
 
 $f->addSet('action',
            ['set_default'=>'noAction',
-            'satisfy_in_list'=>array('noAction', 'TutorUpload'),
+            'satisfy_in_list'=>['noAction', 'TutorUpload'],
             'on_error'=>['type'=>'error',
                          'text'=>'???1']]);
 $valResults = $f->validate();

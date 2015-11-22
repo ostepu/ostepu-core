@@ -20,22 +20,22 @@ $sheetNotifications = array();
 
 $f = new Validation($_POST, array('preRules'=>array('sanitize')));
 $f->addSet('deleteSubmissionWarning',
-           array('set_default'=>null,
-                 'valid_identifier',
-                 'satisfy_not_equals_field'=>'deleteSubmission',
-                 'on_error'=>array('type'=>'error',
-                                   'text'=>'???1')))
+           ['set_default'=>null,
+            'valid_identifier',
+            'satisfy_not_equals_field'=>'deleteSubmission',
+            'on_error'=>['type'=>'error',
+                         'text'=>'???1']])
   ->addSet('deleteSubmission',
-           array('set_default'=>null,
-                 'valid_identifier',
-                 'satisfy_not_equals_field'=>'deleteSubmissionWarning',
-                 'on_error'=>array('type'=>'error',
-                                   'text'=>'???2')))
+           ['set_default'=>null,
+            'valid_identifier',
+            'satisfy_not_equals_field'=>'deleteSubmissionWarning',
+            'on_error'=>['type'=>'error',
+                         'text'=>'???2']])
   ->addSet('downloadMarkings',
-           array('set_default'=>null,
-                 'valid_identifier',
-                 'on_error'=>array('type'=>'error',
-                                   'text'=>'???3')));
+           ['set_default'=>null,
+            'valid_identifier',
+            'on_error'=>['type'=>'error',
+                         'text'=>'???3']]);
                                    
 $valResults = $f->validate();
 $notifications = array_merge($notifications,$f->getPrintableNotifications());

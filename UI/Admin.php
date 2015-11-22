@@ -23,27 +23,27 @@ $sheetNotifications = array();
 $f = new Validation($_POST, array('preRules'=>array('sanitize')));
 
 $f->addSet('action',
-           array('set_default'=>'noAction',
-                 'satisfy_in_list'=>array('noAction', 'ExerciseSheetLecturer'),
-                 'on_error'=>array('type'=>'error',
-                                   'text'=>'???1')));
+           ['set_default'=>'noAction',
+            'satisfy_in_list'=>['noAction', 'ExerciseSheetLecturer'],
+            'on_error'=>['type'=>'error',
+                         'text'=>'???1']]);
 $valResults = $f->validate();
 $notifications = array_merge($notifications,$f->getPrintableNotifications());
 $f->resetNotifications()->resetErrors();
 
 if ($f->isValid() && $valResults['action'] !== 'noAction') {  
     $f->addSet('deleteSheetWarning',
-               array('set_default'=>null,
-                     'valid_identifier',
-                     'satisfy_not_equals_field'=>'deleteSheet',
-                     'on_error'=>array('type'=>'error',
-                                       'text'=>'???2')))
+               ['set_default'=>null,
+                'valid_identifier',
+                'satisfy_not_equals_field'=>'deleteSheet',
+                'on_error'=>['type'=>'error',
+                             'text'=>'???2']])
       ->addSet('deleteSheet',
-               array('set_default'=>null,
-                     'valid_identifier',
-                     'satisfy_not_equals_field'=>'deleteSheetWarning',
-                     'on_error'=>array('type'=>'error',
-                                       'text'=>'???3')));
+               ['set_default'=>null,
+                'valid_identifier',
+                'satisfy_not_equals_field'=>'deleteSheetWarning',
+                'on_error'=>['type'=>'error',
+                             'text'=>'???3']]);
     $valResults = $f->validate();
     $notifications = array_merge($notifications,$f->getPrintableNotifications());
     $f->resetNotifications()->resetErrors();
