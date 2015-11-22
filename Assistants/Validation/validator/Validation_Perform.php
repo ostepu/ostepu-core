@@ -10,7 +10,6 @@ class Validation_Perform {
             return false;
         }
         
-        $allValid = true;
         $result = array();
         foreach($input[$key] as $elemName => $elem){
             $f = new Validation(array('key'=>$elemName, 'elem'=>$elem), $setting);
@@ -38,8 +37,6 @@ class Validation_Perform {
             return false;
         }
         
-        $allValid = true;
-        $result = array();
         $f = new Validation($input[$key], $setting);
         foreach($param as $set){
             $f->addSet($set[0],$set[1]);
@@ -51,5 +48,20 @@ class Validation_Perform {
             return array('valid'=>false, 'notifications'=>$f->getNotifications(), 'errors'=>$f->getErrors());
         }
         return false;
+    }
+    
+    public static function validate_perform_switch_case($key, $input, $setting = null, $param = null)
+    {
+        if ($setting['setError'] || !isset($input[$key]) || !isset($param)){
+            return;
+        }
+        
+        /// ??? ///
+        
+        foreach ($param as $case){
+            
+        }
+        
+        return;
     }
 }

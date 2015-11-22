@@ -248,4 +248,216 @@ class Validation_Condition {
         
         return false;
     }
+    
+    public static function validate_satisfy_file_exists($key, $input, $setting = null, $param = null)
+    {
+        if (!$setting['setError'] && ( !isset($input[$key]) || !isset($input[$key]['error']) || !isset($input[$key]['tmp_name']))) {
+            return false;
+        }
+        
+        if ($setting['setError']) {
+            return;
+        }
+        
+        $file = $input[$key];
+        
+        if ($file['error'] === 0 && file_exists($file['tmp_name'])){
+            return;
+        }
+        
+        return false;
+    }
+    
+    public static function validate_satisfy_file_isset($key, $input, $setting = null, $param = null)
+    {
+        if (!$setting['setError'] && ( !isset($input[$key]) || !isset($input[$key]['error']) || !isset($input[$key]['tmp_name']) || !isset($input[$key]['name']) || !isset($input[$key]['size']))) {
+            return false;
+        }
+        
+        if ($setting['setError']) {
+            return;
+        }
+        
+        return;
+    }
+    
+    public static function validate_satisfy_file_error($key, $input, $setting = null, $param = null)
+    {
+        if (!$setting['setError'] && ( !isset($input[$key]['error']))) {
+            return;
+        }
+        
+        $file = $input[$key];
+        
+        if ($file['error'] !== 0 && $file['error'] !== 4){
+            return;
+        }
+        
+        return false;
+    }
+    
+    public static function validate_satisfy_file_no_error($key, $input, $setting = null, $param = null)
+    {
+        if (!$setting['setError'] && ( !isset($input[$key]) || !isset($input[$key]['error']))) {
+            return false;
+        }
+        
+        if ($setting['setError']) {
+            return;
+        }
+        
+        $file = $input[$key];
+        
+        if ($file['error'] === 0 || $file['error'] === 4){
+            return;
+        }
+        
+        return false;
+    }
+    
+    public static function validate_satisfy_file_extension($key, $input, $setting = null, $param = null)
+    {
+        if (!$setting['setError'] && ( !isset($input[$key]) || !isset($input[$key]['tmp_name']))) {
+            return;
+        }
+        
+        if ($setting['setError']) {
+            return;
+        }
+        
+        $file = $input[$key];
+        
+        if (!file_exists($file['tmp_name'])){
+            return false;
+        }
+        
+        $ext = strtolower(pathinfo($file['tmp_name'], PATHINFO_EXTENSION));
+       
+        if (!is_array($param)){
+            if ($ext === strtolower($param)){
+                return;
+            } else {
+                return false;
+            }
+        } else {
+            $f = new Validation(array('ext'=>$ext), $setting);
+            foreach($param as $rule){
+                $f->addSet('ext',$rule);
+            }
+        
+            if ($f->isValid()){
+                return;
+            } else {
+                return false;
+            }
+        }
+       
+        return false;
+    }
+    
+    public static function validate_satisfy_file_mime($key, $input, $setting = null, $param = null)
+    {
+        if (!$setting['setError'] && ( !isset($input[$key]) || !isset($input[$key]['tmp_name']))) {
+            return;
+        }
+        
+        if ($setting['setError']) {
+            return;
+        }
+        
+        $file = $input[$key];
+        
+        if (!file_exists($file['tmp_name'])){
+            return false;
+        }
+        
+        $mime = MimeReader::get_mime($file['tmp_name']);
+       
+        if (!is_array($param)){
+            if ($mime === strtolower($param)){
+                return;
+            } else {
+                return false;
+            }
+        } else {
+            $f = new Validation(array('mime'=>$mime), $setting);
+            foreach($param as $rule){
+                $f->addSet('mime',$rule);
+            }
+        
+            if ($f->isValid()){
+                return;
+            } else {
+                return false;
+            }
+        }
+       
+        return false;
+    }
+    
+    public static function validate_satisfy_file_size($key, $input, $setting = null, $param = null)
+    {
+        if ($setting['setError'] || !isset($input[$key])) {
+            return;
+        }
+        
+        /// ??? ///
+        
+        return false;
+    }
+    
+    public static function validate_satisfy_file_name($key, $input, $setting = null, $param = null)
+    {
+        if (!$setting['setError'] && ( !isset($input[$key]) || !isset($input[$key]['name']))) {
+            return;
+        }
+        
+        if ($setting['setError']) {
+            return;
+        }
+        
+        $file = $input[$key];
+       
+        if (!is_array($param)){
+            if ($file['name'] === $param){
+                return;
+            } else {
+                return false;
+            }
+        } else {
+            $f = new Validation(array('name'=>$file['name']), $setting);
+            foreach($param as $rule){
+                $f->addSet('name',$rule);
+            }
+        
+            if ($f->isValid()){
+                return;
+            } else {
+                return false;
+            }
+        }
+       
+        return false;
+    }
+    
+    public static function validate_satisfy_file_name_strict($key, $input, $setting = null, $param = null)
+    {
+        if (!$setting['setError'] && ( !isset($input[$key]) || !isset($input[$key]['name']))) {
+            return;
+        }
+        
+        if ($setting['setError']) {
+            return;
+        }
+        
+        $file = $input[$key];
+       
+        if (preg_match("%^((?!\.)[a-zA-Z0-9\\.\\-_]+)$%", $file['name']) === 1){
+            return;
+        } else {
+            return false;
+        }
+        
+        return false;
+    }
 }

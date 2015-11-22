@@ -7,6 +7,7 @@
  */
 
 include_once dirname(__FILE__) . '/../../UI/include/Helpers.php';
+include_once dirname(__FILE__) . '/../MimeReader.php';
 include_once dirname(__FILE__) . '/validator/Validation_Structure.php';
 include_once dirname(__FILE__) . '/validator/Validation_Converter.php';
 include_once dirname(__FILE__) . '/validator/Validation_Event.php';
