@@ -41,9 +41,14 @@ class Selection_Key {
             return;
         }
         
-        /// ??? ///
+        $tempKeys = array();
+        foreach($keys as $key){
+            if (preg_match($param, $key) === 1) {
+                $tempKeys[] = $key;
+            }
+        }
         
-        return array('keys'=>array());
+        return array('keys'=>$tempKeys);
     }
     
     public static function select_key_numeric($keys, $input, $setting = null, $param = null)
@@ -51,10 +56,22 @@ class Selection_Key {
         if ($setting['setError']) {
             return;
         }
+        $tempKeys = array();
+        foreach($keys as $key){
+            if (is_int($key)){
+                $tempKeys[] = $key;
+                continue;
+            }
+            if (is_string($key) && !ctype_digit($key)) {
+                continue;
+            }
+            if (!is_int((int) $input[$key])) {
+                continue;
+            }
+            $tempKeys[] = $key;
+        }          
         
-        /// ??? ///
-        
-        return array('keys'=>array());
+        return array('keys'=>$tempKeys);
     }
     
     public static function select_key_integer($keys, $input, $setting = null, $param = null)
@@ -62,10 +79,14 @@ class Selection_Key {
         if ($setting['setError']) {
             return;
         }
+        $tempKeys = array();
+        foreach($keys as $key){
+            if (is_int($key)){
+                $tempKeys[] = $key;
+            }
+        }          
         
-        /// ??? ///
-        
-        return array('keys'=>array());
+        return array('keys'=>$tempKeys);
     }
     
     public static function select_key_min_numeric($keys, $input, $setting = null, $param = null)

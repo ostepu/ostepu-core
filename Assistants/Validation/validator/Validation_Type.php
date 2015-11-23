@@ -37,7 +37,9 @@ class Validation_Type {
         if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
             return;
         }
-        
+        if (is_int($input[$key])){
+            return;
+        }
         if (is_string($input[$key]) && !ctype_digit($input[$key])) {
             return false; // contains non digit characters
         }

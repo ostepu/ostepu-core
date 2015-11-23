@@ -249,6 +249,19 @@ class Validation_Condition {
         return false;
     }
     
+    public static function validate_satisfy_value($key, $input, $setting = null, $param = null)
+    {
+        if ($setting['setError'] || !isset($input[$key])) {
+            return;
+        }
+        
+        if ($input[$key] === $param) {
+            return;
+        }
+        
+        return false;
+    }
+    
     public static function validate_satisfy_file_exists($key, $input, $setting = null, $param = null)
     {
         if (!$setting['setError'] && ( !isset($input[$key]) || !isset($input[$key]['error']) || !isset($input[$key]['tmp_name']))) {

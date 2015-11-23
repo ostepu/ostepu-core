@@ -59,7 +59,25 @@ class Validation_Perform {
         /// ??? ///
         
         foreach ($param as $case){
+            $condition = $case[0];
+            $rules = $case[1];
             
+            $satisfied = false;
+            if (is_string($condition)){
+                if ($input[$key] === $condition){
+                    $satisfied = true;
+                }
+            } else {
+                $f = new Validation($input[$key], $setting);
+                foreach($param as $set){
+                    $f->addSet($set[0],$set[1]);
+                }
+            }
+            
+            if ($satisfied){
+                
+                break;
+            }
         }
         
         return;
