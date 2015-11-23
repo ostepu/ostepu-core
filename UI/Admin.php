@@ -49,16 +49,16 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
     $f->resetNotifications()->resetErrors();
    
     if ($f->isValid() && $valResults['action'] === 'ExerciseSheetLecturer' && isset($valResults['deleteSheetWarning'])) {
-        $sheetNotifications[$valResults['deleteSheetWarning']][] = MakeNotification('warning', Language::Get('main','askDeleteSubmission', $langTemplate));
+        $sheetNotifications[$valResults['deleteSheetWarning']][] = MakeNotification('warning', Language::Get('main','askDeleteSheet', $langTemplate));
     } elseif ($f->isValid() && $valResults['action'] == 'ExerciseSheetLecturer' && isset($valResults['deleteSheet'])) { /// !!! darf er das ??? ///
        
         $URL = $logicURI . "/exercisesheet/exercisesheet/{$valResults['deleteSheet']}"; /// !!! darf er das ??? ///
         $result = http_delete($URL, true, $message);
         
         if ($message === 201){
-            $sheetNotifications[$valResults['deleteSheet']][] = MakeNotification('success', Language::Get('main','successDeleteSubmission', $langTemplate));
+            $sheetNotifications[$valResults['deleteSheet']][] = MakeNotification('success', Language::Get('main','successDeleteSheet', $langTemplate));
         } else {
-            $sheetNotifications[$valResults['deleteSheet']][] = MakeNotification('error', Language::Get('main','errorDeleteSubmission', $langTemplate));
+            $sheetNotifications[$valResults['deleteSheet']][] = MakeNotification('error', Language::Get('main','errorDeleteSheet', $langTemplate));
         }
     }
 }
