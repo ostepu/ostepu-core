@@ -68,7 +68,7 @@
                             } else
                                 print "???";
 
-                            if ($isLeader) {
+                            if ($isLeader || $privileged) {
                                 print '<button name="removeMember" value="';
                                 print $member['id'];
                                 print '" class="right text-button body-option-color">'.Language::Get('main','removeMember', $langTemplate).'</button>';
@@ -97,7 +97,7 @@
                         } else
                             print "???";
 
-                        if ($isLeader) {
+                        if ($isLeader || $privileged) {
                             print '<button name="removeInvitation" value="';
                             print $member['id'];
                             print '" class="right text-button body-option-color">'.Language::Get('main','removeInvitation', $langTemplate).'</button>';

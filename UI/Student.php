@@ -16,7 +16,35 @@ Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $globalUserDat
 
 $langTemplate='Student_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
-$sheetNotifications = array();
+$selectedUser = $uid;
+$privileged = 0;
+if (Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUserData)){
+    if (isset($_POST['selectedUser'])){
+        $URI = $serverURI . "/DB/DBUser/user/course/{$cid}/status/0";
+        $courseUser = http_get($URI, true);
+        $courseUser = User::decodeUser($courseUser);
+        
+        $correct = false;
+        foreach ($courseUser as $user){
+            if ($user->getId() == $_POST['selectedUser']){
+                $correct = true;
+                break;
+            }
+        }
+        
+        if ($correct){
+            $_SESSION['selectedUser'] = $_POST['selectedUser'];
+        }
+    } elseif (!isset($_SESSION['selectedUser'])) {
+        $_SESSION['selectedUser'] = $uid;
+    }
+    $selectedUser = isset($_SESSION['selectedUser']) ? $_SESSION['selectedUser'] : $uid;
+    
+    if (isset($_POST['privileged'])){
+        $_SESSION['privileged'] = $_POST['privileged'];
+    }
+    $privileged = (isset($_SESSION['privileged']) ? $_SESSION['privileged'] : $privileged);
+}
 
 $f = new Validation($_POST, array('preRules'=>array('sanitize')));
 $f->addSet('deleteSubmissionWarning',
@@ -44,7 +72,7 @@ $f->resetNotifications()->resetErrors();
 if (isset($valResults['deleteSubmissionWarning'])) {
     $notifications[] = MakeNotification('warning', Language::Get('main','askDeleteSubmission', $langTemplate));
 } elseif (isset($valResults['deleteSubmission'])) {
-    $suid = cleanInput($valResults['deleteSubmission']);
+    $suid = $valResults['deleteSubmission'];
     
     // extractes the studentId of the submission
     $URI = $databaseURI . '/submission/' . $suid;
@@ -52,7 +80,7 @@ if (isset($valResults['deleteSubmissionWarning'])) {
     $submission = json_decode($submission, true);
                     
     // only deletes the submission if it belongs to the user
-    if ($submission['studentId'] === $uid) {
+    if ($submission['studentId'] === $selectedUser) {
         $URI = $databaseURI . '/selectedsubmission/submission/' . $suid;
         http_delete($URI, true, $message);
         
@@ -69,20 +97,29 @@ if (isset($valResults['deleteSubmissionWarning'])) {
     }
 
 } elseif (isset($valResults['downloadMarkings'])) {
-    downloadMarkingsForSheet($uid, $valResults['downloadMarkings']);
+    downloadMarkingsForSheet($selectedUser, $valResults['downloadMarkings']);
 }
 
 // load tutor data from GetSite
-$URI = $getSiteURI . "/student/user/{$uid}/course/{$cid}";
+$URI = $getSiteURI . "/student/user/{$selectedUser}/course/{$cid}";
 $student_data = http_get($URI, true);
 $student_data = json_decode($student_data, true);
 $student_data['filesystemURI'] = $filesystemURI;
 $student_data['cid'] = $cid;
-$student_data['uid'] = $uid;
+$student_data['uid'] = $selectedUser;
 $user_course_data = $student_data['user'];
 
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::STUDENT);
+     
+$userNavigation = null;
+if (isset($_SESSION['selectedUser'])){
+    $URI = $serverURI . "/DB/DBUser/user/course/{$cid}/status/0";
+    $courseUser = http_get($URI, true);
+    $courseUser = User::decodeUser($courseUser);
+    $userNavigation = MakeUserNavigationElement($globalUserData,$courseUser,$privileged,
+                                                PRIVILEGE_LEVEL::LECTURER);
+}
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
@@ -91,12 +128,13 @@ $h->bind(array('name' => $user_course_data['courses'][0]['course']['name'],
                'backTitle' => Language::Get('main','changeCourse', $langTemplate),
                'backURL' => 'index.php',
                'notificationElements' => $notifications,
-               'navigationElement' => $menu));
+               'navigationElement' => $menu,
+               'userNavigationElement' => $userNavigation));
 $h->bind($student_data);
                
 $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetStudent.template.html');
 $t->bind($student_data);
-$t->bind(array('uid'=>$uid));
+$t->bind(array('uid'=>$selectedUser, 'privileged'=>$privileged));
 
 $w = new HTMLWrapper($h, $t);
 $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $t);

@@ -20,6 +20,8 @@ $langTemplate='Lecturer_Controller';Language::loadLanguageFile('de', $langTempla
 
 $sheetNotifications = array();
 
+unset($_SESSION['selectedUser']);
+
 $f = new Validation($_POST, array('preRules'=>array('sanitize')));
 
 $f->addSet('action',

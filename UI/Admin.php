@@ -20,6 +20,8 @@ $langTemplate='Admin_Controller';Language::loadLanguageFile('de', $langTemplate,
 
 $sheetNotifications = array();
 
+unset($_SESSION['selectedUser']);
+
 $f = new Validation($_POST, array('preRules'=>array('sanitize')));
 
 $f->addSet('action',

@@ -283,6 +283,58 @@ function MakeNavigationElement($user,
     return $navigationElement;
 }
 
+function MakeUserNavigationElement($user,
+                               $courseUser,
+                               $privileged,
+                               $requiredPrivilege,
+                               $sid = null,
+                               $courseSheets = null,
+                               $switchDisabled = false,
+                               $forIndex = false)
+{
+    $courses = isset($user['courses']) ? $user['courses'] : null;
+
+    $isSuperAdmin = isset($user['isSuperAdmin']) ? ($user['isSuperAdmin'] == 1) : null;
+
+    /*if ($forIndex == true && $isSuperAdmin == false) {
+        return "";
+    }*/
+
+    $courseStatus = null;
+    if (isset($courses[0]) && isset($courses[0]['status']))
+        $courseStatus = $courses[0]['status'];
+      
+    $course = null;    
+    if (isset($courses[0]) && isset($courses[0]['course']))
+        $course = $courses[0]['course'];
+
+    $file = 'include/Navigation/UserNavigation.template.html';
+    $navigationElement = Template::WithTemplateFile($file);
+
+    if ($courseUser!==null){
+        function compare_lastName($a, $b) {
+            if ($a->getLastName() === null) return 1;
+            if ($b->getLastName() === null) return 1;
+            return strnatcmp(strtolower($a->getLastName()), strtolower($b->getLastName()));
+        }
+        usort($courseUser, 'compare_lastName');
+    }
+
+    $navigationElement->bind(array('uid' => $user['id'], 'cid' => (isset($course['id']) ? $course['id'] : null),
+                                   'requiredPrivilege' => $requiredPrivilege,
+                                   'courseStatus' => $courseStatus,
+                                   'switchDisabled' => $switchDisabled,
+                                   'sites' => PRIVILEGE_LEVEL::$SITES,
+                                   'isSuperAdmin' => $isSuperAdmin,
+                                   'forIndex' => $forIndex,
+                                   'sid' => $sid,
+                                   'courseUser' => $courseUser,
+                                   'courseSheets' => $courseSheets,
+                                   'privileged' => $privileged));
+
+    return $navigationElement;
+}
+
 /**
  * Updates the selected submission of a group.
  *

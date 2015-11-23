@@ -125,7 +125,7 @@ echo '<span class="content-body-wrapper">';
                                 print '</span>';
                             }
                             
-                            if (isset($submission['marking']['id']) && ($courseStatus>=1 /* PRIVILEGE_LEVEL::TUTOR */ || (isset($isExpired) && $isExpired))){  
+                            if (isset($submission['marking']['id']) && ($courseStatus>=1 /* PRIVILEGE_LEVEL::TUTOR */ || (isset($isExpired) && $isExpired) || $privileged)){  
                                 if (isset($submission['marking']['file']) && $submission['marking']['hideFile']==='0'){
                                     $displayName = $submission['marking']['file']['displayName'];
                                     $fileAddress = $submission['marking']['file']['address'];
@@ -148,7 +148,7 @@ echo '<span class="content-body-wrapper">';
                             echo '<div class="short" style="padding-left: 20px">';
                             if (!isset($submission['accepted']) || $submission['accepted'] == 0){
                                 echo Language::Get('main','notAccepted', $langTemplate);
-                            } elseif (isset($submission['marking']) && ($isExpired || $courseStatus>=1 /* PRIVILEGE_LEVEL::TUTOR */)) {
+                            } elseif (isset($submission['marking']) && ($isExpired || $courseStatus>=1 /* PRIVILEGE_LEVEL::TUTOR */ || $privileged)) {
                                 echo $markingStatus[LArraySorter::multidimensional_search($markingStatus, array('id'=>$submission['marking']['status']))]['longName'];
                             } else {
                                 echo Language::Get('main','uncorrected', $langTemplate);

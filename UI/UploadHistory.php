@@ -15,9 +15,57 @@ Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $globalUserDat
 /// gehört SID zur CID ??? ///
 $langTemplate='UploadHistory_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
+
 if (isset($_POST['sheetID'])){
     $sid = cleanInput($_POST['sheetID']);
 }
+
+$selectedUser = $uid;
+$privileged = 0;
+if (Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUserData)){
+    if (isset($_POST['selectedUser'])){
+        $URI = $serverURI . "/DB/DBUser/user/course/{$cid}/status/0";
+        $courseUser = http_get($URI, true);
+        $courseUser = User::decodeUser($courseUser);
+        
+        $correct = false;
+        foreach ($courseUser as $user){
+            if ($user->getId() == $_POST['selectedUser']){
+                $correct = true;
+                break;
+            }
+        }
+        
+        if ($correct){
+            $_SESSION['selectedUser'] = $_POST['selectedUser'];
+        }
+    }
+    $selectedUser = isset($_SESSION['selectedUser']) ? $_SESSION['selectedUser'] : $uid;
+
+    if (isset($_POST['privileged'])){
+        $_SESSION['privileged'] = $_POST['privileged'];
+    }
+    $privileged = (isset($_SESSION['privileged']) ? $_SESSION['privileged'] : $privileged);
+    
+    if (isset($_POST['selectedSheet'])){
+        $URI = $serverURI . "/DB/DBExerciseSheet/exerciseSheet/course/{$cid}";
+        $courseSheets = http_get($URI, true);
+        $courseSheets = ExerciseSheet::decodeExerciseSheet($courseSheets);
+        
+        $correct = false;
+        foreach ($courseSheets as $sheet){
+            if ($sheet->getId() == $_POST['selectedSheet']){
+                $correct = true;
+                break;
+            }
+        }
+        
+        if ($correct){
+            $sid = $_POST['selectedSheet'];
+        }
+    }
+}
+
 if (isset($sid)){
     $sheetID = $sid;
     $_POST['sheetID'] = $sid;
@@ -53,7 +101,7 @@ if (isset($_POST['updateSelectedSubmission'])) {
 }
     
 // loads data for the settings element
-$URL = $getSiteURI . "/uploadhistoryoptions/user/{$uid}/course/{$cid}";
+$URL = $getSiteURI . "/uploadhistoryoptions/user/{$selectedUser}/course/{$cid}";
 $uploadHistoryOptions_data = http_get($URL, true);
 $uploadHistoryOptions_data = json_decode($uploadHistoryOptions_data, true);
 
@@ -85,12 +133,43 @@ if (isset($user_course_data['courses'][0]['status'])){
     $courseStatus =  -1;
 
 if ($courseStatus==0)
-    $_POST['userID'] = $uid;
+    $_POST['userID'] = $selectedUser;
 
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::STUDENT,
                               true);
                               
+$userNavigation = null;
+if (isset($_SESSION['selectedUser'])){
+    $URI = $serverURI . "/DB/DBUser/user/course/{$cid}/status/0";
+    $courseUser = http_get($URI, true);
+    $courseUser = User::decodeUser($courseUser);
+    $URI = $serverURI . "/DB/DBExerciseSheet/exercisesheet/course/{$cid}/";
+    $courseSheets = http_get($URI, true);
+    $courseSheets = ExerciseSheet::decodeExerciseSheet($courseSheets);
+    $courseSheets = array_reverse($courseSheets);
+    
+    if (!$privileged){
+        foreach ($courseSheets as $key => $sheet){
+            if ($sheet->getEndDate()!==null && $sheet->getStartDate()!==null){
+                // bool if endDate of sheet is greater than the actual date
+                $isExpired = date('U') > date('U', $sheet->getEndDate()); 
+
+                // bool if startDate of sheet is greater than the actual date
+                $hasStarted = date('U') > date('U', $sheet->getStartDate());
+                if ($isExpired || !$hasStarted){
+                   unset($courseSheets[$key]);
+                }
+            } else {
+                unset($courseSheets[$key]);
+            }
+        }
+    }
+    
+    $userNavigation = MakeUserNavigationElement($globalUserData,$courseUser,$privileged,
+                                                PRIVILEGE_LEVEL::LECTURER,$sid,$courseSheets);
+}
+                        
 $isExpired=null;
 $hasStarted=null;
 
@@ -110,9 +189,9 @@ if ($courseStatus<=0 /* PRIVILEGE_LEVEL::STUDENT */){
 
         // bool if startDate of sheet is greater than the actual date
         $hasStarted = date('U') > date('U', $sheet['startDate']);
-        if ($isExpired){
+        if ($isExpired && !$privileged){
             set_error(Language::Get('main','expiredExercisePerion', $langTemplate,array('endDate'=>date('d.m.Y  -  H:i', $sheet['endDate']))));
-        } elseif (!$hasStarted){
+        } elseif (!$hasStarted && !$privileged){
             set_error(Language::Get('main','noStartedExercisePeriod', $langTemplate,array('startDate'=>date('d.m.Y  -  H:i', $sheet['startDate']))));
         }
         
@@ -125,7 +204,8 @@ $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
 $h->bind(array('name' => $user_course_data['courses'][0]['course']['name'],
                'notificationElements' => $notifications,
-               'navigationElement' => $menu));
+               'navigationElement' => $menu),
+               'userNavigationElement' => $userNavigation));
 
 if (!isset($_POST['actionSortUsers']))
 if (isset($_POST['action'])) {
@@ -138,7 +218,7 @@ if (isset($_POST['action'])) {
 
             // loads the upload history of the selected user (uploadUserID) in the 
             // selected course from GetSite
-            $URL = $getSiteURI . "/uploadhistory/user/{$uid}/course/{$cid}/exercisesheet/{$sheetID}/uploaduser/{$uploadUserID}";
+            $URL = $getSiteURI . "/uploadhistory/user/{$selectedUser}/course/{$cid}/exercisesheet/{$sheetID}/uploaduser/{$uploadUserID}";
             $uploadHistory_data = http_get($URL, true);
             $uploadHistory_data = json_decode($uploadHistory_data, true);
             $uploadHistory_data['filesystemURI'] = $filesystemURI;
@@ -159,11 +239,17 @@ if (isset($uploadHistory_data))$uploadHistory->bind($uploadHistory_data);
 if (isset($uploadHistoryNotifications))
     $uploadHistory->bind(array('UploadHistoryNotificationElements' => $uploadHistoryNotifications));
 
+$uploadHistory->bind(array("privileged" => $privileged));
+
 if ($courseStatus >= 1 /* PRIVILEGE_LEVEL::TUTOR */){
     $uploadHistoryGroup = Template::WithTemplateFile('include/UploadHistory/UploadHistoryGroup.template.html');
     if (isset($uploadHistory_data))$uploadHistoryGroup->bind($uploadHistory_data);
     if (isset($uploadHistoryGroupNotifications))
         $uploadHistoryGroup->bind(array('UploadHistoryNotificationElements' => $uploadHistoryGroupNotifications));
+}
+
+if (isset($uploadHistoryGroup)){
+    $uploadHistoryGroup->bind(array("privileged" => $privileged));
 }
 
 // wrap all the elements in some HTML and show them on the page

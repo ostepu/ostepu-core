@@ -5,7 +5,7 @@
     <div class="content-header">
         <?php echo MakeInfoButton('groups','groupManagement.md'); ?>
         <div class="content-title left"><?php echo Language::Get('main','title', $langTemplate); ?></div>
-        <?php if ($isLeader): ?>
+        <?php if ($isLeader || $privileged): ?>
         <button class="right text-button info-color bold"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
         <?php endif; ?>
     </div>
@@ -13,7 +13,7 @@
     <div class="content-body-wrapper">
         <div class="content-body left">
             <div class="content-description">
-                <?php if ($isLeader): ?>
+                <?php if ($isLeader || $privileged): ?>
                 <?php echo Language::Get('main','leaderDescription', $langTemplate); ?>
                 <?php else: ?>
                 <?php echo Language::Get('main','memberDescription', $langTemplate); ?>
@@ -52,10 +52,10 @@
                         $user = $userExerciseSubmission['user'];
 
                         if ($submission['hideFile'] == "0"){
-                            if ($isLeader || isset($submission['selectedForGroup'])){
+                            if (($isLeader || $privileged) || isset($submission['selectedForGroup'])){
                                 $noSubmission = false;
                                 print '<div class="radio">';
-                                if ($isLeader){
+                                if ($isLeader || $privileged){
                                     // prints a radio button for setting the submission as selected
                                     // (group leaders only)
                                     print '<input type="radio" name="';
@@ -113,7 +113,7 @@
                     }
                 }
 
-                if ((!$hasSelectedSubmissions && !$isLeader) || $noSubmission){
+                if ((!$hasSelectedSubmissions && (!$isLeader && !$privileged)) || $noSubmission){
                     print '<div class="radio">';
                     echo Language::Get('main','noSelectedSubmission', $langTemplate);
                     print '</div>';

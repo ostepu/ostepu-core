@@ -17,11 +17,58 @@ Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $globalUserDat
 
 $langTemplate='Upload_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
+$selectedUser = $uid;
+$privileged = 0;
+if (Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUserData)){
+    if (isset($_POST['selectedUser'])){
+        $URI = $serverURI . "/DB/DBUser/user/course/{$cid}/status/0";
+        $courseUser = http_get($URI, true);
+        $courseUser = User::decodeUser($courseUser);
+        
+        $correct = false;
+        foreach ($courseUser as $user){
+            if ($user->getId() == $_POST['selectedUser']){
+                $correct = true;
+                break;
+            }
+        }
+        
+        if ($correct){
+            $_SESSION['selectedUser'] = $_POST['selectedUser'];
+        }
+    }
+    
+    $selectedUser = isset($_SESSION['selectedUser']) ? $_SESSION['selectedUser'] : $uid;
+
+    if (isset($_POST['privileged'])){
+        $_SESSION['privileged'] = $_POST['privileged'];
+    }
+    $privileged = (isset($_SESSION['privileged']) ? $_SESSION['privileged'] : $privileged);
+    
+    if (isset($_POST['selectedSheet'])){
+        $URI = $serverURI . "/DB/DBExerciseSheet/exerciseSheet/course/{$cid}";
+        $courseSheets = http_get($URI, true);
+        $courseSheets = ExerciseSheet::decodeExerciseSheet($courseSheets);
+        
+        $correct = false;
+        foreach ($courseSheets as $sheet){
+            if ($sheet->getId() == $_POST['selectedSheet']){
+                $correct = true;
+                break;
+            }
+        }
+        
+        if ($correct){
+            $sid = $_POST['selectedSheet'];
+        }
+    }
+}
+
 if (isset($_POST['action']) && $_POST['action'] === 'submit') {
     // handle uploading files
     $timestamp = time();
 
-    $URL = $databaseURI . '/group/user/' . $uid . '/exercisesheet/' . $sid;
+    $URL = $databaseURI . '/group/user/' . $selectedUser . '/exercisesheet/' . $sid;
     $group = http_get($URL, true);
     $group = json_decode($group, true);
 
@@ -29,7 +76,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'submit') {
         $errormsg = Language::Get('main','errorNoGroup', $langTemplate, array('status'=>500));
         $notifications[] = MakeNotification('error',
                                             $errormsg);
-        Logger::Log('error', "No group set for user {$uid} in course {$cid}!");
+        Logger::Log('error', "No group set for user {$selectedUser} in course {$cid}!");
     } else {
         
         $URL = $databaseURI . '/exercisesheet/exercisesheet/' . $sid . '/exercise';
@@ -147,7 +194,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'submit') {
                             $uploadFile->setBody(Form::encodeForm($formdata),true);
                         }
 
-                        $uploadSubmission = Submission::createSubmission(null,$uid,null,$exerciseId,$exercise['comment'],1,$timestamp,null,$leaderId);
+                        $uploadSubmission = Submission::createSubmission(null,$selectedUser,null,$exerciseId,$exercise['comment'],1,$timestamp,null,$leaderId);
                         $uploadSubmission->setFile($uploadFile);
                         $uploadSubmission->setExerciseName(isset($exercise['name']) ? $exercise['name'] : null);
                         $uploadSubmission->setSelectedForGroup('1');
@@ -258,7 +305,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'submit') {
 }
 
 // load user data from the database
-$URL = $getSiteURI . "/upload/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
+$URL = $getSiteURI . "/upload/user/{$selectedUser}/course/{$cid}/exercisesheet/{$sid}";
 $upload_data = http_get($URL, true);
 $upload_data = json_decode($upload_data, true);
 $upload_data['filesystemURI'] = $filesystemURI;
@@ -266,7 +313,7 @@ $upload_data['cid'] = $cid;
 $upload_data['sid'] = $sid;
 
 if (!isset($group)){
-    $URL = $databaseURI . "/group/user/{$uid}/exercisesheet/{$sid}";
+    $URL = $databaseURI . "/group/user/{$selectedUser}/exercisesheet/{$sid}";
     $group = http_get($URL, true);
     $group = json_decode($group, true);
     $upload_data['group'] = $group;
@@ -297,10 +344,16 @@ if (isset($upload_data['exerciseSheet']['endDate']) && isset($upload_data['exerc
             $notifications[] = MakeNotification('warning',
                                                 $msg);
         } else {
-            set_error(Language::Get('main','expiredExercisePerion', $langTemplate,array('endDate'=>date('d.m.Y  -  H:i', $upload_data['exerciseSheet']['endDate']))));
+            if ($privileged){
+                $msg = Language::Get('main','expiredExercisePerionDesc', $langTemplate,array('endDate'=>date('d.m.Y  -  H:i', $upload_data['exerciseSheet']['endDate'])));
+                $notifications[] = MakeNotification('warning',
+                                                    $msg);  
+            } else {
+                set_error(Language::Get('main','expiredExercisePerion', $langTemplate,array('endDate'=>date('d.m.Y  -  H:i', $upload_data['exerciseSheet']['endDate']))));
+            }
         }
         
-    } elseif (!$hasStarted){
+    } elseif (!$hasStarted && !$privileged){
         set_error(Language::Get('main','noStartedExercisePeriod', $langTemplate,array('startDate'=>date('d.m.Y  -  H:i', $upload_data['exerciseSheet']['startDate']))));
     }
     
@@ -327,6 +380,51 @@ $upload_data['isExpired'] = $isExpired;
 $user_course_data = $upload_data['user'];
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::STUDENT);
+                              
+$userNavigation = null;
+if (isset($_SESSION['selectedUser'])){
+    $URI = $serverURI . "/DB/DBUser/user/course/{$cid}/status/0";
+    $courseUser = http_get($URI, true);
+    $courseUser = User::decodeUser($courseUser);
+    $URI = $serverURI . "/DB/DBExerciseSheet/exercisesheet/course/{$cid}/";
+    $courseSheets = http_get($URI, true);
+    $courseSheets = ExerciseSheet::decodeExerciseSheet($courseSheets);
+    $courseSheets = array_reverse($courseSheets);
+    
+    if (!$privileged){
+        foreach ($courseSheets as $key => $sheet){
+            if ($sheet->getEndDate()!==null && $sheet->getStartDate()!==null){
+                // bool if endDate of sheet is greater than the actual date
+                $isExpired = date('U') > date('U', $sheet->getEndDate()); 
+
+                // bool if startDate of sheet is greater than the actual date
+                $hasStarted = date('U') > date('U', $sheet->getStartDate());
+                if ($isExpired){
+                    $allowed = 0;
+
+                    if (isset($user_course_data['courses'][0]['course'])){
+                        $obj = Course::decodeCourse(Course::encodeCourse($user_course_data['courses'][0]['course']));
+                        $allowed = Course::containsSetting($obj,'AllowLateSubmissions');
+                    }
+                    
+                    if ($allowed  === null || $allowed==1){
+                    } else {
+                        unset($courseSheets[$key]);
+                    }
+                    
+                } elseif (!$hasStarted){
+                    unset($courseSheets[$key]);
+                }
+                
+            } else {
+                unset($courseSheets[$key]);
+            }
+        }
+    }
+    
+    $userNavigation = MakeUserNavigationElement($globalUserData,$courseUser,$privileged,
+                                                PRIVILEGE_LEVEL::LECTURER,$sid,$courseSheets);
+}
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
@@ -335,7 +433,8 @@ $h->bind(array('name' => $user_course_data['courses'][0]['course']['name'],
                'backTitle' => Language::Get('main','backToCourse', $langTemplate),
                'backURL' => "Student.php?cid={$cid}",
                'notificationElements' => $notifications,
-               'navigationElement' => $menu));
+               'navigationElement' => $menu,
+               'userNavigationElement' => $userNavigation));
 
 
 /**
@@ -352,6 +451,7 @@ $h->bind(array('name' => $user_course_data['courses'][0]['course']['name'],
 
 $t = Template::WithTemplateFile('include/Upload/Upload.template.html');
 $t->bind($upload_data);
+$t->bind(array("privileged" => $privileged));
 
 $w = new HTMLWrapper($h, $t);
 $w->set_config_file('include/configs/config_upload_exercise.json');

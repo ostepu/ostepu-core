@@ -20,7 +20,7 @@
 
            // bool if startDate of sheet is greater than the actual date
            $hasStarted = date('U') > date('U', $sheet['startDate']);
-           if (!$hasStarted) continue;
+           if (!$hasStarted && !$privileged) continue;
            
             $groupMember = array();
             if (isset($sheet['group']['members']))
@@ -54,7 +54,7 @@
             </div>
             
             <div class="exercise-sheet-info info-color bold right">
-                <?php if ($isExpired) echo $sheet['percentage'], '%';?>
+                <?php if ($isExpired || $privileged) echo $sheet['percentage'], '%';?>
             </div>
         </div>
 
@@ -82,10 +82,10 @@
                         <div class="exercise-points">
                             <?php // prints the achieved and the maximum points ?>
                             <?php if (isset($exercise['submission']['marking'])
-                                     && $isExpired
-                                     && $exercise['submission']['marking']['statusId'] >= 2
-                                     && isset($exercise['submission']['accepted']) 
-                                     && $exercise['submission']['accepted'] == 1){
+                                     && ($isExpired || $privileged)
+                                     && ($exercise['submission']['marking']['statusId'] >= 2 || $privileged)
+                                     && (isset($exercise['submission']['accepted']) || $privileged)
+                                     && ($exercise['submission']['accepted'] == 1 || $privileged)){
                                      echo $exercise['submission']['marking']['points']; 
                                 } else { ?>
                                 -
@@ -94,9 +94,9 @@
                         </div>
 
                         <div class="exercise-status">
-                            <?php if (isset($exercise['submission']) && (!isset($exercise['submission']['accepted']) || $exercise['submission']['accepted'] == 0)){ ?>
+                            <?php if (isset($exercise['submission']) && (!isset($exercise['submission']['accepted']) || $exercise['submission']['accepted'] == 0) && (!$privileged)){ ?>
                                 <?php echo Language::Get('sheet','notAccepted', $langTemplate); ?>
-                            <?php } elseif (isset($exercise['submission']['marking']) && $isExpired) { ?>
+                            <?php } elseif (isset($exercise['submission']['marking']) && ($isExpired || !$privileged)) { ?>
                                 <?php echo $exercise['submission']['marking']['status']; ?>
                             <?php } elseif (isset($exercise['submission']) || (isset($exercise['submission']['marking']) && !$isExpired)) { ?>
                                 <?php echo Language::Get('sheet','notCorrected', $langTemplate); ?>
@@ -141,7 +141,7 @@
                             <?php endif; ?>
 
                             <?php // creates a downloadCorrection icon for the marking (if it exists) ?>
-                            <?php if(isset($exercise['submission']['marking']['file']) && $exercise['submission']['marking']['hideFile'] == "0" && $isExpired): ?>
+                            <?php if(isset($exercise['submission']['marking']['file']) && $exercise['submission']['marking']['hideFile'] == "0" && ($isExpired || $privileged)): ?>
                                 <?php $displayName = $exercise['submission']['marking']['file']['displayName']; ?>
                                 <?php $fileAddress = $exercise['submission']['marking']['file']['address']; ?>
                                 <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}";/*{$filesystemURI}*/ ?>
@@ -165,7 +165,9 @@
                              
                     </li>
                             
-                            <?php if (isset($exercise['submission']['marking']['tutorComment']) && trim($exercise['submission']['marking']['tutorComment']) != '') { 
+                            <?php if (isset($exercise['submission']['marking']['tutorComment']) && 
+                                      trim($exercise['submission']['marking']['tutorComment']) != '' && 
+                                      ($isExpired || !$privileged)) { 
                             $comment = trim($exercise['submission']['marking']['tutorComment']); ?>
                             <div class="" style="margin-top:-10px;margin-bottom:0px;word-break: break-all;">
                             <table border="0" style="width:auto">
@@ -193,7 +195,7 @@
             <div class="content-body right">
                 <ol class="body-options body-option-color">
                     <?php // creates a downloadAttachment icon for the exercise (if it exists) ?>
-                    <?php if($isExpired && isset($sheet['sampleSolution'])): ?>
+                    <?php if(($isExpired || $privileged) && isset($sheet['sampleSolution'])): ?>
                         <?php $displayName = $sheet['sampleSolution']['displayName']; ?>
                         <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
                         <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
@@ -221,7 +223,7 @@
                         </li>
                     <?php } ?>
                     
-                    <?php if ($isExpired){ ?> 
+                    <?php if (($isExpired && !$privileged)){ ?> 
                         <!--<li>
                             <a style="color:#b9b8b8">
                                 <?php echo Language::Get('sheetMenu','manageGroup', $langTemplate); ?>
@@ -244,7 +246,7 @@
                                 $allowed = Course::containsSetting($obj,'AllowLateSubmissions');
                             }
                         
-                            if ($allowed  === null || $allowed==1){
+                            if ($allowed  === null || $allowed==1 || $privileged){
                     ?>
                                 <li>
                                     <a class="text-button" href="Upload.php?cid=<?php echo $cid; ?>&sid=<?php echo $sheet['id']; ?>" title="Upload">
@@ -290,7 +292,7 @@
                         </li>
                     <?php } ?>
 
-                    <?php if ($isExpired){ ?>                    
+                    <?php if ($isExpired && !$privileged){ ?>                    
                     <!--<li>
                         <a style="color:#b9b8b8">
                             <?php echo Language::Get('sheetMenu','uploadHistory', $langTemplate); ?>
