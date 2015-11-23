@@ -75,7 +75,7 @@ function custom_sort($a,$b) {
     } else
         return $a['tutor']['courses']['0']['status']>$b['tutor']['courses']['0']['status'];
 }
-usort($tutorAssign_data['tutorAssignments'], "custom_sort");
+usort($tutorAssign_data['tutorAssignments'], 'custom_sort');
 
 $user_course_data = $tutorAssign_data['user'];
 
@@ -89,38 +89,38 @@ $menu = MakeNavigationElement($user_course_data,
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
-$h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
-               "notificationElements" => $notifications,
-               "navigationElement" => $menu));
+$h->bind(array('name' => $user_course_data['courses'][0]['course']['name'],
+               'notificationElements' => $notifications,
+               'navigationElement' => $menu));
 
 // construct a content element for assigning tutors automatically
 $assignAutomatically = Template::WithTemplateFile('include/TutorAssign/AssignAutomatically.template.html');
 $assignAutomatically->bind($tutorAssign_data);
 if (isset($assignAutomaticallyNotifications))
-    $assignAutomatically->bind(array("AssignAutomaticallyNotificationElements" => $assignAutomaticallyNotifications));
+    $assignAutomatically->bind(array('AssignAutomaticallyNotificationElements' => $assignAutomaticallyNotifications));
 
 // construct a content element for assigning tutors manually
 $assignManually = Template::WithTemplateFile('include/TutorAssign/AssignManually.template.html');
 $assignManually->bind($tutorAssign_data);
 if (isset($assignManuallyNotifications))
-    $assignManually->bind(array("AssignManuallyNotificationElements" => $assignManuallyNotifications));
+    $assignManually->bind(array('AssignManuallyNotificationElements' => $assignManuallyNotifications));
 
 // construct a content element for removing assignments from tutors
 $assignRemove = Template::WithTemplateFile('include/TutorAssign/AssignRemove.template.html');
 if (isset($assignRemoveNotifications))
-    $assignRemove->bind(array("AssignRemoveNotificationElements" => $assignRemoveNotifications));
+    $assignRemove->bind(array('AssignRemoveNotificationElements' => $assignRemoveNotifications));
 
 // construct a content element for creating submissions for unsubmitted users
 $assignMake = Template::WithTemplateFile('include/TutorAssign/AssignMake.template.html');
 if (isset($assignMakeNotifications))
-    $assignMake->bind(array("AssignMakeNotificationElements" => $assignMakeNotifications));
+    $assignMake->bind(array('AssignMakeNotificationElements' => $assignMakeNotifications));
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $assignAutomatically, $assignManually, $assignMake, $assignRemove);
-$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $assignAutomatically);
-$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $assignManually);
-$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $assignMake);
-$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $assignRemove);
+$w->defineForm(basename(__FILE__).'?cid='.$cid.'&sid='.$sid, false, $assignAutomatically);
+$w->defineForm(basename(__FILE__).'?cid='.$cid.'&sid='.$sid, false, $assignManually);
+$w->defineForm(basename(__FILE__).'?cid='.$cid.'&sid='.$sid, false, $assignMake);
+$w->defineForm(basename(__FILE__).'?cid='.$cid.'&sid='.$sid, false, $assignRemove);
 $w->set_config_file('include/configs/config_tutor_assign.json');
 //$w->set_config_file('include/configs/config_default.json');
 $w->show();

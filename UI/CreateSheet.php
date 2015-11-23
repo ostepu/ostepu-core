@@ -763,9 +763,9 @@ $menu = MakeNavigationElement($createsheetData['user'],
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($createsheetData['user']);
-$h->bind(array("name" => $createsheetData['user']['courses'][0]['course']['name'],
-               "notificationElements" => $notifications,
-               "navigationElement" => $menu));
+$h->bind(array('name' => $createsheetData['user']['courses'][0]['course']['name'],
+               'notificationElements' => $notifications,
+               'navigationElement' => $menu));
 
 $sheetSettings = Template::WithTemplateFile('include/CreateSheet/SheetSettings.template.html');
 $createExercise = Template::WithTemplateFile('include/CreateSheet/CreateExercise.template.html');
@@ -800,6 +800,6 @@ if (isset($sheet_data))
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $sheetSettings, $createExercise);
-$w->defineForm(basename(__FILE__)."?cid=".$cid.(isset($sid) ? "&sid={$sid}" : ''), true, $sheetSettings, $createExercise);
+$w->defineForm(basename(__FILE__).'?cid='.$cid.(isset($sid) ? "&sid={$sid}" : ''), true, $sheetSettings, $createExercise);
 $w->set_config_file('include/configs/config_createSheet.json');
 $w->show();

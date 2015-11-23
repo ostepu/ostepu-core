@@ -21,13 +21,15 @@ function checkPermission($permission){
     $data = json_decode($data,true);
     $found=false;
     foreach ($data['courses'] as $key=>$course){
-        if ($course['course']['id']==$cid){
-            $data['courses']=array($course);$found=true;
+        if ($course['course']['id'] === $cid){
+            $data['courses']=array($course);
+            $found=true;
             break;
         }
     }
-    if (!$found)
+    if (!$found){
         $data['courses']=array();
+    }
     $user_course_data = $data;
     Authentication::checkRights($permission, $cid, $uid, $user_course_data);
 }

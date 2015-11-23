@@ -19,17 +19,17 @@ $langTemplate='MarkingTool_Controller';Language::loadLanguageFile('de', $langTem
 $timestamp = time();
 
 // changes search settings
-if (isset($_POST['action']) && $_POST['action'] == "ShowMarkingTool") {
+if (isset($_POST['action']) && $_POST['action'] == 'ShowMarkingTool') {
     //if (isset($_POST['sheetID']) && isset($_POST['tutorID']) && isset($_POST['statusID'])) {
     if (isset($_POST['sheetID']))
         $sid = cleanInput($_POST['sheetID']);
 
     if (isset($_POST['tutorID']))
-        if ($_POST['tutorID'] != "all") {
+        if ($_POST['tutorID'] != 'all') {
             $tutorID = cleanInput($_POST['tutorID']);
         }
     if (isset($_POST['statusID']))
-        if ($_POST['statusID'] != "all") {
+        if ($_POST['statusID'] != 'all') {
             $statusID = cleanInput($_POST['statusID']);
         }
     //}
@@ -39,12 +39,12 @@ if (isset($_GET['downloadCSV'])) {
     $sid = cleanInput($_GET['downloadCSV']);
 }
 if (isset($_GET['tutorID'])){
-    if ($_GET['tutorID'] != "all") {
+    if ($_GET['tutorID'] != 'all') {
         $tutorID = cleanInput($_GET['tutorID']);
     }
 }
 if (isset($_GET['statusID']))
-    if ($_GET['statusID'] != "all") {
+    if ($_GET['statusID'] != 'all') {
         $statusID = cleanInput($_GET['statusID']);
     }
 
@@ -108,7 +108,7 @@ if (isset($_POST['MarkingTool'])) {
                     if ($points>$maxPoints){
                         $msg = Language::Get('main','tooManyPoints', $langTemplate, array('maxPoints'=>$maxPoints));
                         if (!isset($GroupNotificationElements[$key])) $GroupNotificationElements[$key]=array();
-                        $GroupNotificationElements[$key][] = MakeNotification("warning", $msg);
+                        $GroupNotificationElements[$key][] = MakeNotification('warning', $msg);
                     }
                     
                     if ((!isset($exercise['oldPoints']) && $points!=null) || (isset($exercise['oldPoints']) && $points!=$exercise['oldPoints'])){
@@ -167,13 +167,13 @@ if (isset($_POST['MarkingTool'])) {
                     //$msg = "Beim Speichern für ".$userName." ist ein Fehler aufgetreten.";
                     $msg = Language::Get('main','errorSaveMarking', $langTemplate);
                     if (!isset($GroupNotificationElements[$key])) $GroupNotificationElements[$key]=array();
-                    $GroupNotificationElements[$key][] = MakeNotification("error", $msg);
+                    $GroupNotificationElements[$key][] = MakeNotification('error', $msg);
                     
                 } else {
                     //$msg = "Die Korrektur für ".$userName." wurde erfolgreich gespeichert.";
                     $msg = Language::Get('main','successSaveMarking', $langTemplate);
                     if (!isset($GroupNotificationElements[$key])) $GroupNotificationElements[$key]=array();
-                    $GroupNotificationElements[$key][] = MakeNotification("success", $msg);
+                    $GroupNotificationElements[$key][] = MakeNotification('success', $msg);
                 }
             }
             
@@ -182,13 +182,13 @@ if (isset($_POST['MarkingTool'])) {
                     //$msg = "Beim Speichern für ".$userName." ist ein Fehler aufgetreten.";
                     $msg = Language::Get('main','errorSaveSubmission', $langTemplate);
                     if (!isset($GroupNotificationElements[$key])) $GroupNotificationElements[$key]=array();
-                    $GroupNotificationElements[$key][] = MakeNotification("error", $msg);
+                    $GroupNotificationElements[$key][] = MakeNotification('error', $msg);
                     
                 } else {
                     //$msg = "Die Korrektur für ".$userName." wurde erfolgreich gespeichert.";
                     $msg = Language::Get('main','editedSubmission', $langTemplate);
                     if (!isset($GroupNotificationElements[$key])) $GroupNotificationElements[$key]=array();
-                    $GroupNotificationElements[$key][] = MakeNotification("success", $msg);
+                    $GroupNotificationElements[$key][] = MakeNotification('success', $msg);
                 }
             }
         }
@@ -299,8 +299,8 @@ $menu = MakeNavigationElement($user_course_data,
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
-$h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
-               "navigationElement" => $menu));
+$h->bind(array('name' => $user_course_data['courses'][0]['course']['name'],
+               'navigationElement' => $menu));
 
 $searchSettings = Template::WithTemplateFile('include/MarkingTool/MarkingToolSettings.template.html');
 $searchSettings->bind($markingTool_data);
@@ -344,7 +344,7 @@ if (!empty($markingTool_data['groups'])) {
         }
             
         $w->insert($markingElement);
-        $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $markingElement);
+        $w->defineForm(basename(__FILE__).'?cid='.$cid.'&sid='.$sid, false, $markingElement);
     }
     if ($allOutputs==0){
         $markingElement = Template::WithTemplateFile('include/MarkingTool/MarkingToolEmpty.template.html');
@@ -363,9 +363,9 @@ if (!empty($GroupNotificationElements)){
     }
 }
 
-$h->bind(array("notificationElements" => $notifications));
+$h->bind(array('notificationElements' => $notifications));
 $searchSettings->bind(array('allOutputs'=>$allOutputs));
 
-$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $searchSettings);
+$w->defineForm(basename(__FILE__).'?cid='.$cid.'&sid='.$sid, false, $searchSettings);
 $w->set_config_file('include/configs/config_marking_tool.json');
 $w->show();

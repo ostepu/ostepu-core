@@ -40,15 +40,15 @@ if (isset($_POST['updateSelectedSubmission'])) {
                              $message,
                              1);
 
-    if ($message != "201") {
+    if ($message !== 201) {
         $RequestError = true;
     }
 
     // shows notification
     if ($RequestError == false) {
-        $uploadHistoryNotifications[] = MakeNotification("success", Language::Get('main','successSelectSubmission', $langTemplate));
+        $uploadHistoryNotifications[] = MakeNotification('success', Language::Get('main','successSelectSubmission', $langTemplate));
     }else {
-        $uploadHistoryNotifications[] = MakeNotification("error", Language::Get('main','errorSelectSubmission', $langTemplate));
+        $uploadHistoryNotifications[] = MakeNotification('error', Language::Get('main','errorSelectSubmission', $langTemplate));
     }
 }
     
@@ -123,13 +123,13 @@ if ($courseStatus<=0 /* PRIVILEGE_LEVEL::STUDENT */){
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
-$h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
-               "notificationElements" => $notifications,
-               "navigationElement" => $menu));
+$h->bind(array('name' => $user_course_data['courses'][0]['course']['name'],
+               'notificationElements' => $notifications,
+               'navigationElement' => $menu));
 
 if (!isset($_POST['actionSortUsers']))
 if (isset($_POST['action'])) {
-    if ($_POST['action'] == "ShowUploadHistory") {
+    if ($_POST['action'] === 'ShowUploadHistory') {
         if (isset($_POST['userID']) && (isset($_POST['sheetID']) || isset($sheetID))) {
             $uploadUserID = cleanInput($_POST['userID']);
             
@@ -157,19 +157,19 @@ if ($courseStatus>=1 /* PRIVILEGE_LEVEL::TUTOR */){
 $uploadHistory = Template::WithTemplateFile('include/UploadHistory/UploadHistory.template.html');
 if (isset($uploadHistory_data))$uploadHistory->bind($uploadHistory_data);
 if (isset($uploadHistoryNotifications))
-    $uploadHistory->bind(array("UploadHistoryNotificationElements" => $uploadHistoryNotifications));
+    $uploadHistory->bind(array('UploadHistoryNotificationElements' => $uploadHistoryNotifications));
 
 if ($courseStatus >= 1 /* PRIVILEGE_LEVEL::TUTOR */){
     $uploadHistoryGroup = Template::WithTemplateFile('include/UploadHistory/UploadHistoryGroup.template.html');
     if (isset($uploadHistory_data))$uploadHistoryGroup->bind($uploadHistory_data);
     if (isset($uploadHistoryGroupNotifications))
-        $uploadHistoryGroup->bind(array("UploadHistoryNotificationElements" => $uploadHistoryGroupNotifications));
+        $uploadHistoryGroup->bind(array('UploadHistoryNotificationElements' => $uploadHistoryGroupNotifications));
 }
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, isset($uploadHistorySettings) ? $uploadHistorySettings : null, isset($uploadHistoryGroup) ? $uploadHistoryGroup : null, isset($uploadHistory) ? $uploadHistory : null);
-if (isset($uploadHistorySettings)) $w->defineForm(basename(__FILE__)."?cid=".$cid, false, $uploadHistorySettings);
-if (isset($uploadHistory))$w->defineForm(basename(__FILE__)."?cid=".$cid, false, $uploadHistory);
+if (isset($uploadHistorySettings)) $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $uploadHistorySettings);
+if (isset($uploadHistory))$w->defineForm(basename(__FILE__).'?cid='.$cid, false, $uploadHistory);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 

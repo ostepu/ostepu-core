@@ -167,7 +167,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'submit') {
                             $errormsg = Language::Get('main','errorUploadSubmission', $langTemplate, array('status'=>$message,'exerciseName'=>$exercise['name']));
                             
                             if ($result!==null && !empty($result)){
-                                $errormsg .= "<br><br>";
+                                $errormsg .= '<br><br>';
                                 $messages = $result->getMessages();
                                 foreach ($messages as $message){
                                     $errormsg.=str_replace("\n",'<br>',$message).'<br>';
@@ -200,7 +200,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'submit') {
                                             $errormsg = Language::Get('main','errorUploadSubmission', $langTemplate, array('status'=>$message,'exerciseName'=>$exercise['name']));
                                             
                                             if ($result2!==null){
-                                                $errormsg .= "<br><br>";
+                                                $errormsg .= '<br><br>';
                                                 $messages2 = $result2->getMessages();
                                                 foreach ($messages2 as $message){
                                                     $errormsg.=str_replace("\n",'<br>',$message).'<br>';
@@ -226,7 +226,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'submit') {
                         }
                       
 
-                        $msg = Language::Get('main','successUploadSubmission', $langTemplate, array('exerciseName'=>$exercise['name']))."<br>".$errormsg;
+                        $msg = Language::Get('main','successUploadSubmission', $langTemplate, array('exerciseName'=>$exercise['name'])).'<br>'.$errormsg;
                         $notifications[] = MakeNotification('success',
                                                             $msg);
                                                             
@@ -331,11 +331,11 @@ $menu = MakeNavigationElement($user_course_data,
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
-$h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
-               "backTitle" => Language::Get('main','backToCourse', $langTemplate),
-               "backURL" => "Student.php?cid={$cid}",
-               "notificationElements" => $notifications,
-               "navigationElement" => $menu));
+$h->bind(array('name' => $user_course_data['courses'][0]['course']['name'],
+               'backTitle' => Language::Get('main','backToCourse', $langTemplate),
+               'backURL' => "Student.php?cid={$cid}",
+               'notificationElements' => $notifications,
+               'navigationElement' => $menu));
 
 
 /**
