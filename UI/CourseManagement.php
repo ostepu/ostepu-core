@@ -134,7 +134,7 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                     'valid_alpha',
                     'to_upper',
                     'on_error'=>['type'=>'error',
-                                 'text'=>Language::Get('main','???3', $langTemplate)]]);
+                                 'text'=>'???3']]);
                                            
         $valResults = $f->validate();
         $addExternalIdNotifications = array_merge($addExternalIdNotifications,$f->getPrintableNotifications());
@@ -162,7 +162,7 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
         $pluginsNotifications = array();
         
         $f->addSet('plugins',
-                   ['satisfy_exists',
+                   ['set_default'=>array(),
                     'is_array',
                     'perform_array'=>[['key_all'],
                                       ['valid_identifier']]],
@@ -258,29 +258,29 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                    ['satisfy_exists',
                     'valid_alpha_numeric',
                     'on_error'=>['type'=>'error',
-                                 'text'=>Language::Get('main','missingFields', $langTemplate)]])
+                                 'text'=>Language::Get('main','invalidCourseName', $langTemplate)]])
           ->addSet('semester',
                    ['satisfy_exists',
                     'on_error'=>['type'=>'error',
-                                 'text'=>Language::Get('main','missingFields', $langTemplate)]])
+                                 'text'=>Language::Get('main','invalidSemester', $langTemplate)]])
           ->addSet('defaultGroupSize',
                    ['satisfy_exists',
                     'satisfy_not_empty',
                     'on_error'=>['type'=>'error',
-                                 'text'=>Language::Get('main','missingFields', $langTemplate)]])
+                                 'text'=>Language::Get('main','invalidGroupSize', $langTemplate)]])
           ->addSet('defaultGroupSize',
                    ['valid_integer',
                     'satisfy_min_numeric' => 0,
                     'to_integer',
                     'on_error'=>['type'=>'error',
-                                 'text'=>Language::Get('main','','???', $langTemplate)]])
+                                 'text'=>Language::Get('main','invalidGroupSize', $langTemplate)]])
           ->addSet('exerciseTypes',
                    ['is_array',
                     'perform_array'=>[[['key_all'],
                                        ['valid_identifier']]],
                     'set_default'=>array(),
                     'on_error'=>['type'=>'error',
-                                 'text'=>Language::Get('main','missingFields', $langTemplate)]])
+                                 'text'=>Language::Get('main','invalidExerciseType', $langTemplate)]])
           ->addSet('setting',
                    ['is_array',
                     'set_default'=>array(),
@@ -472,11 +472,11 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
         $addExerciseTypeNotifications = array();
         
         $f->addSet('exerciseTypeName',
-                   array('satisfy_exists',
-                         'satisfy_not_empty',
-                         'valid_alpha_numeric',
-                         'on_error'=>array('type'=>'error',
-                                           'text'=>Language::Get('main','missingFields', $langTemplate))));
+                   ['satisfy_exists',
+                    'satisfy_not_empty',
+                    'valid_alpha_numeric',
+                    'on_error'=>['type'=>'error',
+                                 'text'=>Language::Get('main','missingFields', $langTemplate]]));
                                            
         $valResults = $f->validate();
         $addExerciseTypeNotifications = array_merge($addExerciseTypeNotifications,$f->getPrintableNotifications());
@@ -503,17 +503,17 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
         $editExerciseTypeNotifications = array();
         
         $f->addSet('exerciseTypeName',
-                   array('satisfy_exists',
-                         'satisfy_not_empty',
-                         'valid_alpha_numeric',
-                         'on_error'=>array('type'=>'error',
-                                           'text'=>Language::Get('main','missingFields', $langTemplate))))
+                   ['satisfy_exists',
+                    'satisfy_not_empty',
+                    'valid_alpha_numeric',
+                    'on_error'=>['type'=>'error',
+                                 'text'=>Language::Get('main','missingFields', $langTemplate)]])
           ->addSet('exerciseTypeID',
-                   array('satisfy_exists',
-                         'satisfy_not_empty',
-                         'valid_identifier',
-                         'on_error'=>array('type'=>'error',
-                                           'text'=>Language::Get('main','???5', $langTemplate))));
+                   ['satisfy_exists',
+                    'satisfy_not_empty',
+                    'valid_identifier',
+                    'on_error'=>['type'=>'error',
+                                 'text'=>'???5']]);
                                            
         $valResults = $f->validate();
         $editExerciseTypeNotifications = array_merge($editExerciseTypeNotifications,$f->getPrintableNotifications());
@@ -541,19 +541,19 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
         $grantRightsNotifications = array();
         
         $f->addSet('Rights',
-                   array('satisfy_exists',
-                         'satisfy_not_empty',
-                         'satisfy_min_numeric'=>0,
-                         'satisfy_max_numeric'=>3,
-                         'to_integer',
-                         'on_error'=>array('type'=>'error',
-                                           'text'=>Language::Get('main','invalidCourseStatus', $langTemplate))))
+                   ['satisfy_exists',
+                    'satisfy_not_empty',
+                    'satisfy_min_numeric'=>0,
+                    'satisfy_max_numeric'=>3,
+                    'to_integer',
+                    'on_error'=>['type'=>'error',
+                                 'text'=>Language::Get('main','invalidCourseStatus', $langTemplate)]])
           ->addSet('userID',
-                   array('satisfy_exists',
-                         'satisfy_not_empty',
-                         'valid_identifier',
-                         'on_error'=>array('type'=>'error',
-                                           'text'=>Language::Get('main','noSelectedUser', $langTemplate))));
+                   ['satisfy_exists',
+                    'satisfy_not_empty',
+                    'valid_identifier',
+                    'on_error'=>['type'=>'error',
+                                 'text'=>Language::Get('main','noSelectedUser', $langTemplate)]]);
                                            
         $valResults = $f->validate();
         $grantRightsNotifications = array_merge($grantRightsNotifications,$f->getPrintableNotifications());
@@ -580,11 +580,11 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
         $revokeRightsNotifications = array();
         
         $f->addSet('userID',
-                   array('satisfy_exists',
-                         'satisfy_not_empty',
-                         'valid_identifier',
-                         'on_error'=>array('type'=>'error',
-                                           'text'=>Language::Get('main','noSelectedUser', $langTemplate))));
+                   ['satisfy_exists',
+                    'satisfy_not_empty',
+                    'valid_identifier',
+                    'on_error'=>['type'=>'error',
+                                 'text'=>Language::Get('main','noSelectedUser', $langTemplate)]]);
                                            
         $valResults = $f->validate();
         $revokeRightsNotifications = array_merge($revokeRightsNotifications,$f->getPrintableNotifications());
@@ -609,19 +609,19 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
         $addUserNotifications = array();
         
         $f->addSet('rights',
-                   array('satisfy_exists',
-                         'satisfy_not_empty',
-                         'satisfy_min_numeric'=>0,
-                         'satisfy_max_numeric'=>3,
-                         'to_integer',
-                         'on_error'=>array('type'=>'error',
-                                           'text'=>Language::Get('main','invalidCourseStatus', $langTemplate))))
+                   ['satisfy_exists',
+                    'satisfy_not_empty',
+                    'satisfy_min_numeric'=>0,
+                    'satisfy_max_numeric'=>3,
+                    'to_integer',
+                    'on_error'=>['type'=>'error',
+                                 'text'=>Language::Get('main','invalidCourseStatus', $langTemplate)]])
           ->addSet('userName',
-                   array('satisfy_exists',
-                         'satisfy_not_empty',
-                         'valid_userName',
-                         'on_error'=>array('type'=>'error',
-                                           'text'=>Language::Get('main','noSelectedUser', $langTemplate))));
+                   ['satisfy_exists',
+                    'satisfy_not_empty',
+                    'valid_userName',
+                    'on_error'=>['type'=>'error',
+                                 'text'=>Language::Get('main','noSelectedUser', $langTemplate)]]);
                                            
         $valResults = $f->validate();
         $addUserNotifications = array_merge($addUserNotifications,$f->getPrintableNotifications());

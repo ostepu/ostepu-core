@@ -19,10 +19,10 @@ $langTemplate='Group_Controller';Language::loadLanguageFile('de', $langTemplate,
 $f = new Validation($_POST, array('preRules'=>array('sanitize')));
 
 $f->addSet('action',
-           array('set_default'=>'noAction',
-                 'satisfy_in_list'=>array('noAction', 'RemoveGroupMember', 'ManageGroup', 'InviteGroup', 'ManageInvitations'),
-                 'on_error'=>array('type'=>'error',
-                                   'text'=>'???1')));
+           ['set_default'=>'noAction',
+            'satisfy_in_list'=>['noAction', 'RemoveGroupMember', 'ManageGroup', 'InviteGroup', 'ManageInvitations'],
+            'on_error'=>['type'=>'error',
+                         'text'=>'???1']]);
 $valResults = $f->validate();
 $notifications = array_merge($notifications,$f->getPrintableNotifications());
 $f->resetNotifications()->resetErrors();
@@ -73,20 +73,20 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
     // removes a group member
     if ($valResults['action'] === 'RemoveGroupMember') {
         $f->addSet('removeMember',
-                   array('valid_identifier',
-                         'set_default'=>null,
-                         'on_error'=>array('type'=>'error',
-                                           'text'=>'???1')))
+                   ['valid_identifier',
+                    'set_default'=>null,
+                    'on_error'=>['type'=>'error',
+                                 'text'=>'???1']])
           ->addSet('removeInvitation',
-                   array('valid_identifier',
-                         'set_default'=>null,
-                         'on_error'=>array('type'=>'error',
-                                           'text'=>'???1')))
+                   ['valid_identifier',
+                    'set_default'=>null,
+                    'on_error'=>['type'=>'error',
+                                 'text'=>'???1']])
           ->addSet('leaveGroup',
-                   array('valid_identifier',
-                         'set_default'=>null,
-                         'on_error'=>array('type'=>'error',
-                                           'text'=>'???1')));
+                   ['valid_identifier',
+                    'set_default'=>null,
+                    'on_error'=>['type'=>'error',
+                                 'text'=>'???1']]);
                                            
         $valResults = $f->validate();
         $notifications = array_merge($notifications,$f->getPrintableNotifications());

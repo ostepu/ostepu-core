@@ -1,5 +1,9 @@
 {
     "main": {
+        "invalidCourseName": "Ungültiger Veranstaltungsname.",
+        "invalidSemester": "Ungültiges Semester.",
+        "invalidGroupSize": "Ungültige Gruppengröße.",
+        "invalidExerciseType": "Ungültige Aufgabentypen.",
         "noSelectedAlias": "Wählen Sie einen Alias!",
         "errorRemoveAlias": "Beim Entfernen ist ein Fehler aufgetreten!",
         "missingAliasName": "Geben Sie einen Alias für die Veranstaltung ein!",
