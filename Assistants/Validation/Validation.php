@@ -291,6 +291,47 @@ class Validation {
         return $selectionFunktion;
     }
     
+    public function collectKeys($fieldNames, $selectors)
+    {        
+        foreach ($selectors as $ruleId => $rule){
+            $ruleName = $rule[0];
+            $ruleParam = $rule[1];
+            
+            $callable = $this->findSelector($ruleName);
+            
+            if ($callable === null){
+                continue;
+            }
+            
+            $res = call_user_func($callable, $fieldNames, $this->input, $this->settings, $ruleParam);
+
+            if (is_array($res) || $res === false){
+                if (isset($res['notification'])){
+                    $this->notifications = array_merge($this->notifications,$res['notification']);
+                }
+                
+                if (isset($res['errors'])){
+                    $this->errors = array_merge($this->errors,$res['errors']);
+                }
+                
+                if(isset($res['keys'])) {
+                    $fieldNames = $res['keys'];
+                }
+                    
+                if ($this->settings['abortSetOnError'] || (isset($res['abortSet']) && $res['abortSet'] === true)){
+                    break;
+                } elseif ($this->settings['abortValidationOnError'] || (isset($res['abortValidation']) && $res['abortValidation'] === true)){
+                    $this->resetResult();
+                    $this->resetValidationRules();
+                    $this->validated=false;
+                    return false;
+                }
+            }
+        }
+        
+        return $fieldNames;
+    }
+    
     public function isValid($input = null)
     {
         if ($this->validated !== null){
@@ -313,42 +354,9 @@ class Validation {
             $setResult = array();
             $this->settings['setError'] = false;
 
-            $fieldNames = array_keys($this->input);
-            
-            foreach ($selector as $ruleId => $rule){
-                $ruleName = $rule[0];
-                $ruleParam = $rule[1];
-                
-                $callable = $this->findSelector($ruleName);
-                
-                if ($callable === null){
-                    continue;
-                }
-                
-                $res = call_user_func($callable, $fieldNames, $this->input, $this->settings, $ruleParam);
-
-                if (is_array($res) || $res === false){
-                    if (isset($res['notification'])){
-                        $this->notifications = array_merge($this->notifications,$res['notification']);
-                    }
-                    
-                    if (isset($res['errors'])){
-                        $this->errors = array_merge($this->errors,$res['errors']);
-                    }
-                    
-                    if(isset($res['keys'])) {
-                        $fieldNames = $res['keys'];
-                    }
-                        
-                    if ($this->settings['abortSetOnError'] || (isset($res['abortSet']) && $res['abortSet'] === true)){
-                        break;
-                    } elseif ($this->settings['abortValidationOnError'] || (isset($res['abortValidation']) && $res['abortValidation'] === true)){
-                        $this->resetResult();
-                        $this->resetValidationRules();
-                        $this->validated=false;
-                        return false;
-                    }
-                }
+            $fieldNames = $this->collectKeys(array_keys($this->input), $selector);
+            if ($fieldNames === false){
+                return false;
             }
             
             

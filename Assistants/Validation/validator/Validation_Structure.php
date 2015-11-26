@@ -82,6 +82,11 @@ class Validation_Structure {
         return Validation_Condition::validate_satisfy_regex($key, $input, $setting, '%^([0-9_]+)$%');
     }
 
+    public static function validate_valid_user_name($key, $input, $setting = null, $param = null)
+    {
+        return Validation_Condition::validate_valid_userName($key, $input, $setting, $param);
+    }
+    
     public static function validate_valid_userName($key, $input, $setting = null, $param = null)
     {
         return Validation_Condition::validate_satisfy_regex($key, $input, $setting, '%^([a-zA-Z0-9äöüÄÖÜß]+)$%');

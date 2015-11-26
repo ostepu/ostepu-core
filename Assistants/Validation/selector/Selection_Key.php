@@ -96,6 +96,7 @@ class Selection_Key {
         }
         
         /// ??? ///
+        throw new Exception('Selection rule \''.__METHOD__.'\' is not implemented.');
         
         return array('keys'=>array());
     }
@@ -107,6 +108,7 @@ class Selection_Key {
         }
         
         /// ??? ///
+        throw new Exception('Selection rule \''.__METHOD__.'\' is not implemented.');
         
         return array('keys'=>array());
     }
@@ -118,6 +120,7 @@ class Selection_Key {
         }
         
         /// ??? ///
+        throw new Exception('Selection rule \''.__METHOD__.'\' is not implemented.');
         
         return array('keys'=>array());
     }
@@ -127,10 +130,15 @@ class Selection_Key {
         if ($setting['setError']) {
             return;
         }
+
+        $tempKeys = array();
+        $f = Validation();
+        foreach($param as $selectors){
+            $m = $f->collectKeys($keys,$selectors);
+            $tempKeys = array_merge($tempKeys, $m);
+        }
         
-        /// ??? ///
-        
-        return array('keys'=>array());
+        return array('keys'=>$tempKeys);
     }
     
     public static function select_key_intersection($keys, $input, $setting = null, $param = null)
@@ -138,9 +146,22 @@ class Selection_Key {
         if ($setting['setError']) {
             return;
         }
-        
-        /// ??? ///
-        
-        return array('keys'=>array());
+
+        $tempKeys = null;
+        $f = Validation();
+        foreach($param as $selectors){
+            $m = $f->collectKeys($keys,$selectors);
+            if ($tempKeys === null){
+                $tempKeys = $m;
+            } else {
+                $tempKeys = array_intersect($tempKeys, $m);   
+            }
+        }
+
+        if ($tempKeys === null){
+            $tempKeys = array();
+        }
+
+        return array('keys'=>$tempKeys);
     }
 }

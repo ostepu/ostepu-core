@@ -6,6 +6,11 @@ class Validation_Condition {
         return self::validate_satisfy_isset($key, $input, $setting, $param);
     }
     
+    public static function validate_satisfy_not_exists($key, $input, $setting = null, $param = null)
+    {
+        return self::validate_satisfy_not_isset($key, $input, $setting, $param);
+    }
+    
     public static function validate_satisfy_required($key, $input, $setting = null, $param = null)
     {
         return self::validate_satisfy_isset($key, $input, $setting, $param);
@@ -20,6 +25,21 @@ class Validation_Condition {
         if (!isset($input[$key])){
             return false;
         }
+        
+        return;
+    }
+    
+    public static function validate_satisfy_not_isset($key, $input, $setting = null, $param = null)
+    {
+        if ($setting['setError']){
+            return;
+        }
+        
+        if (isset($input[$key])){
+            return false;
+        }
+        
+        return;
     }
     
     public static function validate_satisfy_not_empty($key, $input, $setting = null, $param = null)
@@ -35,6 +55,23 @@ class Validation_Condition {
         if (empty($input[$key])){
             return false;
         }
+        return;
+    }
+    
+    public static function validate_satisfy_empty($key, $input, $setting = null, $param = null)
+    {
+        if ($setting['setError']){
+            return;
+        }
+        
+        if (!isset($input[$key])){
+            return;
+        }
+        
+        if (!empty($input[$key])){
+            return false;
+        }
+        
         return;
     }
     
@@ -415,6 +452,7 @@ class Validation_Condition {
         }
         
         /// ??? ///
+        throw new Exception('Validation rule \''.__METHOD__.'\' is not implemented.');
         
         return false;
     }

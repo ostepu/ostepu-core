@@ -57,6 +57,7 @@ class Validation_Perform {
         }
         
         /// ??? ///
+        throw new Exception('Validation rule \''.__METHOD__.'\' is not implemented.');
         
         foreach ($param as $case){
             $condition = $case[0];
