@@ -66,6 +66,7 @@ class BenutzerschnittstelleEinrichten
         $text[]='$serverURI'. " = '{$data['PL']['url']}';";
         $text[]='$databaseURI = $serverURI . "/DB/DBControl";';
         $text[]='$logicURI = $serverURI . "/logic/LController";';
+        $text[]='$logicFileURI = $serverURI . "/logic/LFile";';
         $text[]='$filesystemURI = $serverURI . "/FS/FSControl";';
         $text[]='$getSiteURI = $serverURI . "/logic/LGetSite";';
         $text[]='$globalSiteKey'. " = '{$data['UI']['siteKey']}';";        
