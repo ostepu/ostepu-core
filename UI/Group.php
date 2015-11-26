@@ -22,7 +22,7 @@ $f->addSet('action',
            ['set_default'=>'noAction',
             'satisfy_in_list'=>['noAction', 'RemoveGroupMember', 'ManageGroup', 'InviteGroup', 'ManageInvitations'],
             'on_error'=>['type'=>'error',
-                         'text'=>'???1']]);
+                         'text'=>Language::Get('main','invalidAction', $langTemplate)]]);
 $valResults = $f->validate();
 $notifications = array_merge($notifications,$f->getPrintableNotifications());
 $f->resetNotifications()->resetErrors();
@@ -382,7 +382,7 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                         }
                 
                     } else {
-                       $notifications[] = MakeNotification('error', Language::Get('main','errorInviteMember', $langTemplate));
+                       $notifications[] = MakeNotification('error', Language::Get('main','errorInviteOldMember', $langTemplate));
                     }
                 } else {
                     $notifications[] = MakeNotification('error', Language::Get('main','errorApplyGroup', $langTemplate));

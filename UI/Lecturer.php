@@ -28,7 +28,7 @@ $f->addSet('action',
            ['set_default'=>'noAction',
             'satisfy_in_list'=>['noAction', 'ExerciseSheetLecturer'],
             'on_error'=>['type'=>'error',
-                         'text'=>'???1']]);
+                         'text'=>Language::Get('main','invalidAction', $langTemplate)]]);
 $valResults = $f->validate();
 $notifications = array_merge($notifications,$f->getPrintableNotifications());
 $f->resetNotifications()->resetErrors();
@@ -39,13 +39,13 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                 'valid_identifier',
                 'satisfy_not_equals_field'=>'deleteSheet',
                 'on_error'=>['type'=>'error',
-                             'text'=>'???2']])
+                             'text'=>Language::Get('main','errorDeleteSheetWarningValidation', $langTemplate)]])
       ->addSet('deleteSheet',
                ['set_default'=>null,
                 'valid_identifier',
                 'satisfy_not_equals_field'=>'deleteSheetWarning',
                 'on_error'=>['type'=>'error',
-                             'text'=>'???3']]);
+                             'text'=>Language::Get('main','errorDeleteSheetValidation', $langTemplate)]]);
     $valResults = $f->validate();
     $notifications = array_merge($notifications,$f->getPrintableNotifications());
     $f->resetNotifications()->resetErrors();

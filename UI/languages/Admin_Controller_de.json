@@ -3,6 +3,7 @@
         "askDeleteSheet": "Soll die Übungsserie wirklich gelöscht werden?",
         "successDeleteSheet": "Die Übungsserie wurde gelöscht.",
         "errorDeleteSheet": "Die Übungsserie konnte nicht gelöscht werden.",
-        "changeCourse": "Veranstaltung wechseln"
+        "changeCourse": "Veranstaltung wechseln",
+        "invalidAction": "Die Aktion konnte nicht ausgeführt werden."
     }
 }

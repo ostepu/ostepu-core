@@ -19,27 +19,27 @@ $f = new Validation($_GET, array('preRules'=>array('sanitize')));
 $f->addSet('downloadConditionCsv',
            ['valid_identifier',
             'on_error'=>['type'=>'error',
-                         'text'=>'???1']])
+                         'text'=>Language::Get('main','errorDownloadConditionCsvValidation', $langTemplate)]])
   ->addSet('downloadConditionPdf',
            ['valid_identifier',
             'on_error'=>['type'=>'error',
-                         'text'=>'???2']])
+                         'text'=>Language::Get('main','errorDownloadConditionPdfValidation', $langTemplate)]])
   ->addSet('sortby',
            ['set_default'=>'userName',
             'satisfy_in_list'=>['firstName','userName','studentNumber','isApproved','type'],
             'on_error'=>['type'=>'error',
-                         'text'=>'???3']])                                
+                         'text'=>Language::Get('main','errorSortbyValidation', $langTemplate)]])                                
   ->addSet('sortId',
            ['valid_identifier',
             'on_error'=>['type'=>'error',
-                         'text'=>'???4']]);
+                         'text'=>Language::Get('main','errorSortIdValidation', $langTemplate)]]);
                                    
 $f2 = new Validation($_POST, array('preRules'=>array('sanitize')));
 $f2->addSet('action',
             ['set_default'=>'noAction',
              'satisfy_in_list'=>['noAction', 'SetCondition'],
              'on_error'=>['type'=>'error',
-                          'text'=>'???5']]);
+                          'text'=>Language::Get('main','invalidAction', $langTemplate)]]);
                                    
 $valResults = $f->validate();
 $valResults2 = $f2->validate();
@@ -79,7 +79,7 @@ if ($f2->isValid() && $valResults2['action'] !== 'noAction') {
                                           'satisfy_min_numeric'=>0,
                                           'satisfy_max_numeric'=>100]]],
                     'on_error'=>['type'=>'warning',
-                                 'text'=>Language::Get('main','invalidInput', $langTemplate)]]);
+                                 'text'=>Language::Get('main','errorApprovalConditionValidation', $langTemplate)]]);
 
         if ($f->isValid()){
             $foundValues = $f->getResult();

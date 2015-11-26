@@ -11,7 +11,7 @@
         "successInviteMembers": "Gruppenmitglieder wurden eingeladen!",
         "successJoinMembers": "Gruppenmitglieder sind beigetreten!",
         "errorJoinMember": "Mindestens ein Nutzer konnte der Gruppe nicht beitreten!",
-        "errorInviteMember": "Mindestens ein Nutzer konnte nicht eingeladen werden!",
+        "errorInviteOldMember": "Mindestens ein Nutzer konnte nicht eingeladen werden!",
         "errorApplyGroup": "Beim übernehmen der Gruppe ist ein Fehler aufgetreten!",
         "invalidUserId": "Ungültiges Kürzel.",
         "successInviteMember": "Der Nutzer $memberName wurde eingeladen.",
@@ -22,6 +22,7 @@
         "errorJoinGroup": "Beim Annehmen der Einladung ist ein Fehler aufgetreten!",
         "expiredExercisePerion": "Der Übungszeitraum ist am $endDate abgelaufen!",
         "noStartedExercisePeriod": "Der Übungszeitraum beginnt am $startDate !",
-        "noExercisePeriod": "Kein Übungszeitraum gefunden!"
+        "noExercisePeriod": "Kein Übungszeitraum gefunden!",
+        "invalidAction": "Die Aktion konnte nicht ausgeführt werden."
     }
 }

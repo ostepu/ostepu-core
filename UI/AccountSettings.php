@@ -19,7 +19,7 @@ $f->addSet('action',
            array('set_default'=>'noAction',
                  'satisfy_in_list'=>array('noAction', 'SetPassword', 'SetAccountInfo'),
                  'on_error'=>array('type'=>'error',
-                                   'text'=>'???1')));
+                                   'text'=>Language::Get('main','invalidAction', $langTemplate))));
 
 $valResults = $f->validate();
 $notifications = array_merge($notifications, $f->getPrintableNotifications());

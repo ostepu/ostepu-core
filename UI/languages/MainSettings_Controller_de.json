@@ -16,6 +16,7 @@
         "invalidMail": "Ungültige E-Mail-Adresse.",
         "invalidPassword": "Ungültiges Passwort.",
         "invalidPasswordRepeat": "Ungültige Passwortwiederholung.",
+        "differentPasswords": "Die Passwörter stimmen nicht überein!",
         "successCreateUser": "Der Nutzer wurde erstellt!",
         "errorCreateUser": "Der Nutzer wurde nicht erstellt!",
         "successDeleteUser": "Der Nutzer wurde erfolgreich gelöscht.",

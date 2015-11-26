@@ -7,6 +7,7 @@
         "incorrectOldPassword": "Das alte Passwort ist nicht korrekt!",
         "languageChanged": "Die Sprache wurde geändert!",
         "accountSettings": "Account-Einstellungen",
-        "course": "Veranstaltungen"
+        "course": "Veranstaltungen",
+        "invalidAction": "Die Aktion konnte nicht ausgeführt werden."
     }
 }
