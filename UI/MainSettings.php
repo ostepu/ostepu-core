@@ -9,7 +9,6 @@
  * @author Ralf Busch
  *
  * @todo POST Request to logic instead of DB
- * @todo check rights for whole page
  * @todo create a navigation bar for super admins
  * @todo unset $_POST on success
  */
@@ -34,7 +33,7 @@ $f->addSet('action',
            ['set_default'=>'noAction',
             'satisfy_in_list'=>['noAction', 'CreateCourse', 'SetAdmin', 'CreateUser', 'DeleteUser', ''],
             'on_error'=>['type'=>'error',
-                         'text'=>'???1']]);
+                         'text'=>Language::Get('main','invalidAction', $langTemplate)]]);
 $valResults = $f->validate();
 $notifications = array_merge($notifications,$f->getPrintableNotifications());
 $f->resetNotifications()->resetErrors();
@@ -151,11 +150,27 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
     }
 
     if ($valResults['action'] === 'SetAdmin') {
-        // check if POST data is send
-        if(isset($_POST['courseID']) && isset($_POST['userName'])) {
+        $f->addSet('courseID',
+                   ['satisfy_exists',
+                    'satisfy_not_empty',
+                    'valid_identifier',
+                    'on_error'=>['type'=>'error',
+                                 'text'=>'???1']])
+          ->addSet('userName',
+                   ['satisfy_exists',
+                    'satisfy_not_empty',
+                    'valid_userName',
+                    'on_error'=>['type'=>'error',
+                                 'text'=>'???2']]);
+
+        $valResults = $f->validate();
+        $notifications = array_merge($notifications,$f->getPrintableNotifications());
+        $f->resetNotifications()->resetErrors();
+        
+        if ($f->isValid()){
             // clean Input
-            $courseID = cleanInput($_POST['courseID']);
-            $userName = cleanInput($_POST['userName']);
+            $courseID = cleanInput($valResults['courseID']);
+            $userName = cleanInput($valResults['userName']);
 
             // extracts the userID
             $URI = $databaseURI . "/user/user/{$userName}";
@@ -192,88 +207,91 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
 
     // creates a new user
     if ($valResults['action'] === 'CreateUser') {
+        $f->addSet('lastName',
+                   ['satisfy_exists',
+                    'satisfy_not_empty',
+                    'valid_alpha_numeric',
+                    'on_error'=>['type'=>'error',
+                                 'text'=>Language::Get('main','invalidLastName', $langTemplate)]])
+          ->addSet('firstName',
+                   ['satisfy_exists',
+                    'satisfy_not_empty',
+                    'valid_alpha_numeric',
+                    'on_error'=>['type'=>'error',
+                                 'text'=>Language::Get('main','invalidFirstName', $langTemplate)]])
+          ->addSet('userName',
+                   ['satisfy_exists',
+                    'satisfy_not_empty',
+                    'valid_userName',
+                    'on_error'=>['type'=>'error',
+                                 'text'=>Language::Get('main','invalidUserName', $langTemplate)]])
+          ->addSet('email',
+                   ['valid_email',
+                   'set_default'=>null,
+                    'on_error'=>['type'=>'error',
+                                 'text'=>Language::Get('main','invalidMail', $langTemplate)]])
+          ->addSet('password',
+                   ['satisfy_exists',
+                    'satisfy_not_empty',
+                    'valid_userName',
+                         'satisfy_min_len'=>6,
+                    'on_error'=>['type'=>'error',
+                                 'text'=>Language::Get('main','invalidPassword', $langTemplate)]])
+          ->addSet('passwordRepeat',
+                   ['satisfy_exists',
+                    'satisfy_not_empty',
+                    'valid_userName',
+                    'satisfy_min_len'=>6,
+                    'on_error'=>['type'=>'error',
+                                 'text'=>Language::Get('main','invalidPasswordRepeat', $langTemplate)]])
+          ->addSet('passwordRepeat',
+                   array('satisfy_equals_field'=>'password',
+                         'on_error'=>array('type'=>'error',
+                                           'text'=>Language::Get('main','differentPasswords', $langTemplate))));
 
-        $f = new FormEvaluator($_POST);
-        $f->checkStringForKey('lastName',
-                              FormEvaluator::REQUIRED,
-                              'warning',
-                              Language::Get('main','invalidLastName', $langTemplate),
-                              array('min' => 1));
+        $valResults = $f->validate();
+        $notifications = array_merge($notifications,$f->getPrintableNotifications());
+        $f->resetNotifications()->resetErrors();
 
-        $f->checkStringForKey('firstName',
-                              FormEvaluator::REQUIRED,
-                              'warning',
-                              Language::Get('main','invalidFirstName', $langTemplate),
-                              array('min' => 1));
-
-        $f->checkStringForKey('userName',
-                              FormEvaluator::REQUIRED,
-                              'warning',
-                              Language::Get('main','invalidUserName', $langTemplate),
-                              array('min' => 1));
-
-        $f->checkEmailForKey('email',
-                              FormEvaluator::OPTIONAL,
-                              false,
-                              'warning',
-                              Language::Get('main','invalidMail', $langTemplate));
-
-        $f->checkStringForKey('password',
-                              FormEvaluator::REQUIRED,
-                              'warning',
-                              Language::Get('main','invalidPassword', $langTemplate),
-                              array('min' => 6));
-
-        $f->checkStringForKey('passwordRepeat',
-                              FormEvaluator::REQUIRED,
-                              'warning',
-                              Language::Get('main','invalidPasswordRepeat', $langTemplate),
-                              array('min' => 6));
-
-        if($f->evaluate(true)) {
+        if($f->isValid()) {
 
             $foundValues = $f->foundValues;
 
-            $lastName = $foundValues['lastName'];
-            $firstName = $foundValues['firstName'];
-            $email = isset($foundValues['email']) ? $foundValues['email'] : null;
-            $userName = $foundValues['userName'];
+            $lastName = $valResults['lastName'];
+            $firstName = $valResults['firstName'];
+            $email = $valResults['email'];
+            $userName = $valResults['userName'];
 
-            $password = $foundValues['password'];
-            $passwordRepeat = $foundValues['passwordRepeat'];
+            $password = $valResults['password'];
+            $passwordRepeat = $valResults['passwordRepeat'];
+            
+            $salt = $auth->generateSalt();
+            $passwordHash = $auth->hashPassword($password, $salt);
 
-            // both passwords are equal
-            if($password == $passwordRepeat) {
+            $newUser = User::createUser(null,
+                                        $userName,
+                                        $email,
+                                        $firstName,
+                                        $lastName,
+                                        null,
+                                        1,
+                                        $passwordHash,
+                                        $salt,
+                                        0);
 
-                $salt = $auth->generateSalt();
-                $passwordHash = $auth->hashPassword($password, $salt);
+            $newUserSettings = User::encodeUser($newUser);
 
-                $newUser = User::createUser(null,
-                                            $userName,
-                                            $email,
-                                            $firstName,
-                                            $lastName,
-                                            null,
-                                            1,
-                                            $passwordHash,
-                                            $salt,
-                                            0);
+            $URI = $databaseURI . '/user';
+            $answer=http_post_data($URI, $newUserSettings, true, $message);
 
-                $newUserSettings = User::encodeUser($newUser);
-
-                $URI = $databaseURI . '/user';
-                $answer=http_post_data($URI, $newUserSettings, true, $message);
-
-                if ($message === 201) {
-                    $user = User::decodeUser($answer);
-                    if ($user->getStatus()== '201'){
-                        $notifications[] = MakeNotification('success', Language::Get('main','successCreateUser', $langTemplate));
-                    } else
-                        $notifications[] = MakeNotification('error', Language::Get('main','errorCreateUser', $langTemplate));
+            if ($message === 201) {
+                $user = User::decodeUser($answer);
+                if ($user->getStatus() == '201'){
+                    $notifications[] = MakeNotification('success', Language::Get('main','successCreateUser', $langTemplate));
                 } else
-                        $notifications[] = MakeNotification('error', Language::Get('main','errorCreateUser', $langTemplate));
+                    $notifications[] = MakeNotification('error', Language::Get('main','errorCreateUser', $langTemplate));
             } else {
-                $notifications[] = MakeNotification('error', Language::Get('main','invalidPasswordRepeat', $langTemplate));
+                $notifications[] = MakeNotification('error', Language::Get('main','errorCreateUser', $langTemplate));
             }
         } else {
             $notifications = $notifications + $f->notifications;
@@ -282,9 +300,20 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
 
     // deletes an user
     if ($valResults['action'] === 'DeleteUser') {
-        if(isset($_POST['userName'])) {
+        $f->addSet('userName',
+                   ['satisfy_exists',
+                    'satisfy_not_empty',
+                    'valid_userName',
+                    'on_error'=>['type'=>'error',
+                                 'text'=>Language::Get('main','invalidUserName', $langTemplate)]]);
+
+        $valResults = $f->validate();
+        $notifications = array_merge($notifications,$f->getPrintableNotifications());
+        $f->resetNotifications()->resetErrors();
+        
+        if($f->isValid()) {
             // clean Input
-            $userName = cleanInput($_POST['userName']);
+            $userName = $valResults['userName'];
 
             // extracts the userID
             $URI = $databaseURI . "/user/user/{$userName}";
@@ -334,8 +363,8 @@ $h->bind(array('name' => Language::Get('main','settings', $langTemplate),
 // construct a content element for creating new courses
 $createCourse = Template::WithTemplateFile('include/MainSettings/CreateCourse.template.html');
 $createCourse->bind($mainSettings_data);
-if (count($notifications) != 0) {
-    $createCourse->bind($_POST);
+if (count($notifications) > 0) {
+    ///$createCourse->bind($_POST); /// !!! das geht so nicht ??? ///
 }
 
 // construct a content element for setting admins
@@ -344,16 +373,12 @@ $setAdmin->bind($mainSettings_data);
 
 // construct a content element for creating new users
 $createUser = Template::WithTemplateFile('include/MainSettings/CreateUser.template.html');
-if (count($notifications) != 0) {
-    $createUser->bind($_POST);
+if (count($notifications) > 0) {
+    ///$createUser->bind($_POST); /// !!! das geht so nicht ??? ///
 }
 
 // construct a content element for deleting users
 $deleteUser = Template::WithTemplateFile('include/MainSettings/DeleteUser.template.html');
-
-/**
- * @todo combine the templates into a single file
- */
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $createCourse, $setAdmin, $createUser, $deleteUser);
