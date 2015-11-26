@@ -341,6 +341,7 @@ class LFormPredecessor
                 $forms = $forms[0];
 
                 $formdata = $pro->getRawSubmission()->getFile();
+
                 $timestamp = $formdata->getTimeStamp();
                 if ($timestamp === null) 
                     $timestamp = time();
@@ -443,11 +444,11 @@ class LFormPredecessor
                             
                             $answer="";
                             
-                            if ($forms->getType()==0) $answer = DBJson::mysql_real_escape_string($formdata->getChoices()[0]->getText());
-                            if ($forms->getType()==1) $answer = $this->ChoiceIdToText(DBJson::mysql_real_escape_string($formdata->getChoices()[0]->getText()), $forms->getChoices());
+                            if ($forms->getType()==0) $answer = $formdata->getChoices()[0]->getText();
+                            if ($forms->getType()==1) $answer = $this->ChoiceIdToText($formdata->getChoices()[0]->getText(), $forms->getChoices());
                             if ($forms->getType()==2)
                                 foreach($formdata->getChoices() as $chosen)
-                                    $answer.= $this->ChoiceIdToText(DBJson::mysql_real_escape_string($chosen->getText()), $forms->getChoices()).'<br>';
+                                    $answer.= $this->ChoiceIdToText($chosen->getText(), $forms->getChoices()).'<br>';
                         
                             $Text =  "<h1>AUFGABE {$exerciseName}</h1>".
                                     "<hr>";

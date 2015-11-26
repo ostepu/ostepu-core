@@ -62,7 +62,7 @@ class CHelp
         $negative = function() {
             $input = '<html><head></head><body><span style="color:red">Anfrage nicht erfolgreich</span></body></html>';
             Model::header('Content-Length',strlen($input));
-            return Model::isProblem($input);
+            return array_merge(Model::isProblem($input),array('statusText'=>'Unable to connect to the database.'));
         };
         
         return $this->_component->call('getAlive', array(), '', 200, $positive, array(), $negative, array());

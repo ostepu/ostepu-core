@@ -101,7 +101,7 @@ class FSCsv
                                
         if (isset($params['filename'])){
             
-            Model::header('Content-Type','application/octet-stream');
+            Model::header('Content-Type','text/csv');
             Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");
             Model::header('Accept-Ranges','none');
             
@@ -154,7 +154,7 @@ class FSCsv
              file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
 
             // the file was found
-            Model::header('Content-Type','application/octet-stream');
+            Model::header('Content-Type','text/csv');
             Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");   
             Model::header('Content-Length',filesize($this->config['DIR']['files'].'/'.$filePath));  
             Model::header('Accept-Ranges','none'); 

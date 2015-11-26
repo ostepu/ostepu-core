@@ -49,8 +49,17 @@ if (isset($_POST['action']) && $_POST['action'] == 'TutorUpload') {
                     $notifications[] = MakeNotification('success',
                                                         $successmsg);
                 } else {
-                    $notifications[] = MakeNotification('error',
-                                                        $error);
+                    $errors = @json_decode($error);
+                    if ($errors !== null){
+                        foreach ($errors as $err){
+                            $notifications[] = MakeNotification('error',
+                                                            $err);
+                        }
+                    } else {
+                        $errormsg = Language::Get('main','unknownError', $langTemplate);
+                        $notifications[] = MakeNotification('error',
+                                                            $errormsg);
+                    }
                 }
             } else {
                 $errormsg = Language::Get('main','invalidFileType', $langTemplate);

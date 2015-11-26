@@ -204,7 +204,7 @@ function MakeInfoButton($helpPath)
     global $serverURI;
     $helpPath = implode('/',func_get_args());
     $URL = "{$serverURI}/DB/CHelp/help/".Language::$selectedLanguage."/{$helpPath}";
-    return "<a class='plain image-button' style='width:17px;height:17px' target='popup' onclick=\"window.open('{$URL}', 'popup', 'width=700,height=600,scrollbars=no,location=yes,directories=yes,menubar=yes,toolbar=yes,status=no,resizable=yes')\" title='info' target='_blank'><img src='Images/Info.png' /></a>";
+    return "<a class='plain image-button' target='popup' onclick=\"window.open('{$URL}', 'popup', 'width=700,height=600,scrollbars=no,location=yes,directories=yes,menubar=yes,toolbar=yes,status=no,resizable=yes')\" title='info' target='_blank'><img style='width:17px;height:17px' src='Images/Info.png' /></a>";
 }
 
 /**
@@ -215,6 +215,7 @@ function MakeInfoButton($helpPath)
  */
 function formatBytes($size)
 {
+    if ($size<=0) return '0B';
     $base = log($size) / log(1024);
     $suffixes = array('', 'K', 'M', 'G', 'T');
 
