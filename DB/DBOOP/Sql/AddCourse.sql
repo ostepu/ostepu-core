@@ -62,7 +62,7 @@ END if;
 END;
 
 DROP TRIGGER IF EXISTS `Testcase<?php echo $pre; ?>_BINS_<?php echo $object->getId(); ?>`;
-CREATE TRIGGER `Testcase<?php echo $pre; ?>_BINS_<?php echo $object->getId(); ?>` BEFORE UPDATE ON `Testcase<?php echo $pre; ?>_<?php echo $object->getId(); ?>` FOR EACH ROW
+CREATE TRIGGER `Testcase<?php echo $pre; ?>_BINS_<?php echo $object->getId(); ?>` BEFORE INSERT ON `Testcase<?php echo $pre; ?>_<?php echo $object->getId(); ?>` FOR EACH ROW
 BEGIN
 SET NEW.PRO_id = (select PRO.PRO_id from `Process<?php echo $pre; ?>_<?php echo $object->getId(); ?>` PRO where PRO.PRO_id = NEW.PRO_id limit 1);
 if (NEW.PRO_id is NULL) then
