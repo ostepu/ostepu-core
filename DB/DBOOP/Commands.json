@@ -1,0 +1,4 @@
+[
+    {   "method":"post", "path":"(/:pre)/course" },
+    {   "method":"delete", "path":"(/:pre)/course/:courseid" }
+]

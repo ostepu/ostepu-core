@@ -32,6 +32,7 @@
       {"conf":"DB/DBGroup/Component.json"},
       {"conf":"DB/DBInvitation/Component.json"},
       {"conf":"DB/DBMarking/Component.json"},
+      {"conf":"DB/DBOOP/Component.json"},
       {"conf":"DB/DBProcess/Component.json"},
       {"conf":"DB/DBSelectedSubmission/Component.json"},
       {"conf":"DB/DBSession/Component.json"},

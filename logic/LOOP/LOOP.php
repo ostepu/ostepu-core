@@ -63,8 +63,11 @@ class LOOP
      * @var Link[] $_formDb a list of links
      */
     private $_postProcess = array( );
+    private $_postCourse = array( );
     private $_deleteProcess = array( );
+    private $_deleteCourse = array( );
     private $_getProcess = array( );
+    
     
     /**
      * REST actions
@@ -92,8 +95,11 @@ class LOOP
         $this->_pdf = CConfig::getLinks($conf->getLinks(),"pdf"); // wird nicht genutzt, theoretisch koennten hier PDFs erzeugt werden
          // für POST /course zum eintragen als Verarbeitung (wird dann in CreateSheet aufgelistet)
         $this->_postProcess = CConfig::getLinks($conf->getLinks(),"postProcess");
+        $this->_postCourse = CConfig::getLinks($conf->getLinks(),"postCourse");
         $this->_deleteProcess = CConfig::getLinks($conf->getLinks(),"deleteProcess"); // für DELETE /course/xyz
+        $this->_deleteCourse = CConfig::getLinks($conf->getLinks(),"deleteCourse");
         $this->_getProcess = CConfig::getLinks($conf->getLinks(),"getProcess"); // GET /link/exists/course/:courseid
+        
 
         // POST PostProcess
         $this->app->map('/'.$this->getPrefix().'(/)',
@@ -169,6 +175,19 @@ class LOOP
                                             $this->_deleteProcess,
                                             'process'
                                             );
+
+            // lösche Testcase Datenbank für course (Prüfung ob sie existiert erfolgt in DBOOB)
+            
+
+            $result2 = Request::routeRequest( 
+                                            'DELETE',
+                                            '/course/' . $courseid,
+                                            $this->app->request->headers->all( ),
+                                            '',
+                                            $this->_deleteCourse,
+                                            'course'
+                                            );
+            
                                               
             if (isset($result['status']) && $result['status'] === 201 && isset($result['content']) && $this->_conf !== null){
                 // Eintrag konnte erfolgreich entfernt werden
@@ -239,13 +258,34 @@ class LOOP
             // checks the correctness of the query
             if ( $result['status'] >= 200 && 
                  $result['status'] <= 299 ){
-                // wenn der Erstellvorgang erfolgreich war, können wir dies melden
-                $this->app->response->setStatus( 201 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->app->response->headers->set( 
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
+
+                foreach ( $this->_postCourse as $_link2 ){
+                    $result2 = Request::routeRequest( 
+                                            'POST',
+                                            '/course',
+                                            array(),
+                                            Course::encodeCourse($courses),
+                                            $_link2,
+                                            'course'
+                                            );
+
+
+                    if ( $result2['status'] >= 200 && $result2['status'] <= 299 ){
+                        // wenn der Erstellvorgang erfolgreich war, können wir dies melden
+                        $this->app->response->setStatus( 201 );
+                        if ( isset( $result['headers']['Content-Type'] ) )
+                            $this->app->response->headers->set( 
+                                                                'Content-Type',
+                                                                $result['headers']['Content-Type']
+                                                                );
+                    } else {
+                        $this->app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+                        $this->app->response->setBody( Course::encodeCourse( $courses ) );
+                        $this->app->stop( );
+                    }
+                }
+
+                
                 
             } else {
                 // der Eintrag konnte nicht erstellt werden

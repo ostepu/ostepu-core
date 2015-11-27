@@ -1,0 +1,41 @@
+{
+    "name": "DBOOP",
+    "version": "1.0",
+    "classFile": "DBOOP.php",
+    "className": "DBOOP",
+    "files": [
+        {"path": ".htaccess"},
+        {"path": "DBOOP.php"},
+        {"path": "index.php"},
+        {"path": "Commands.json"},
+        {"path": "Sql/"}
+    ],
+    "links": [
+        {
+            "name": "out",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "/query/:abc"
+                }
+            ]
+        },
+        {
+            "name": "getCourse",             
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBCourseGetCourse/:courseid"
+                }
+            ]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        }
+    ]
+}

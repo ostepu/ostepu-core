@@ -17,7 +17,9 @@
     {"name":"pdf", "target":"FSPdf", "links":[] },
     {"name":"postProcess", "target":"DBProcessList", "links":[{"method":"POST", "path":"/process" }] },
     {"name":"deleteProcess", "target":"DBProcessList", "links":[{"method":"DELETE", "path":"/process/process/:processid" }] },
-    {"name":"getProcess", "target":"DBProcessList", "links":[{"method":"GET", "path":"/process/course/:courseid/component/:componentid" }] }
+    {"name":"getProcess", "target":"DBProcessList", "links":[{"method":"GET", "path":"/process/course/:courseid/component/:componentid" }] },
+    {"name":"postCourse", "target":"DBOOP", "links":[{"method":"POST", "path":"/course" }] },
+    {"name":"deleteCourse", "target":"DBOOP", "links":[{"method":"DELETE", "path":"/course/:courseid" }] }
   ],
   "connector":[
     {"name":"extension", "target":"LExtension"},
