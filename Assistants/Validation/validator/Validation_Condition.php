@@ -81,6 +81,10 @@ class Validation_Condition {
             return;
         }
         
+        if (!isset($param)){
+            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter.');
+        }
+        
         if ((isset($input[$key]) && !isset($input[$param])) || (!isset($input[$key]) && isset($input[$param]))){
             return false;
         }
@@ -100,6 +104,10 @@ class Validation_Condition {
     {
         if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
             return;
+        }
+        
+        if (!isset($param)){
+            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter.');
         }
         
         if ((isset($input[$key]) && !isset($input[$param])) || (!isset($input[$key]) && isset($input[$param]))){
@@ -123,6 +131,10 @@ class Validation_Condition {
             return;
         }
 
+        if (!isset($param)){
+            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter (regex).');
+        }
+        
         if (preg_match($param, $input[$key]) === 0) {
             return false;
         }
@@ -134,6 +146,10 @@ class Validation_Condition {
     {
         if ($setting['setError']|| !isset($input[$key]) || empty($input[$key])) {
             return;
+        }
+        
+        if (!isset($param)){
+            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter.');
         }
         
         if ($input[$key] !== $param){
@@ -149,6 +165,10 @@ class Validation_Condition {
             return;
         }
 
+        if (!isset($param)){
+            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter.');
+        }
+        
         if (is_string($input[$key]) && !ctype_digit($input[$key])) {
             return false; // contains non digit characters
         }
@@ -170,6 +190,10 @@ class Validation_Condition {
             return;
         }
         
+        if (!isset($param)){
+            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter.');
+        }
+
         if (is_string($input[$key]) && !ctype_digit($input[$key])) {
             return false; // contains non digit characters
         }
@@ -189,6 +213,10 @@ class Validation_Condition {
     {
         if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
             return;
+        }
+            
+        if (!isset($param)){
+            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter.');
         }
         
         if (is_string($input[$key]) && !ctype_digit($input[$key])) {
@@ -212,6 +240,10 @@ class Validation_Condition {
             return;
         }
         
+        if (!isset($param)){
+            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter.');
+        }
+        
         if (function_exists('mb_strlen')) {
             if (mb_strlen($input[$key]) >= (int) $param) {
                 return;
@@ -228,6 +260,10 @@ class Validation_Condition {
     {
         if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
             return;
+        }
+        
+        if (!isset($param)){
+            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter.');
         }
         
         if (function_exists('mb_strlen')) {
@@ -248,6 +284,10 @@ class Validation_Condition {
             return;
         }
         
+        if (!isset($param)){
+            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter.');
+        }
+        
         if (function_exists('mb_strlen')) {
             if (mb_strlen($input[$key]) == (int) $param) {
                 return;
@@ -266,6 +306,10 @@ class Validation_Condition {
             return;
         }
         
+        if (!isset($param)){
+            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter (array).');
+        }
+        
         if (in_array($input[$key], $param)) {
             return;
         }
@@ -279,6 +323,10 @@ class Validation_Condition {
             return;
         }
         
+        if (!isset($param)){
+            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter (array).');
+        }
+        
         if (!in_array($input[$key], $param)) {
             return;
         }
@@ -290,6 +338,10 @@ class Validation_Condition {
     {
         if ($setting['setError'] || !isset($input[$key])) {
             return;
+        }
+        
+        if (!isset($param)){
+            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter.');
         }
         
         if ($input[$key] === $param) {
@@ -375,6 +427,10 @@ class Validation_Condition {
             return;
         }
         
+        if (!isset($param)){
+            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter (string = extension or array = Validation).');
+        }
+        
         $file = $input[$key];
         
         if (!file_exists($file['tmp_name'])){
@@ -415,6 +471,10 @@ class Validation_Condition {
             return;
         }
         
+        if (!isset($param)){
+            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter (string = mime or array = Validation).');
+        }
+        
         $file = $input[$key];
         
         if (!file_exists($file['tmp_name'])){
@@ -451,6 +511,10 @@ class Validation_Condition {
             return;
         }
         
+        if (!isset($param)){
+            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter (int or string).');
+        }
+        
         /// ??? ///
         throw new Exception('Validation rule \''.__METHOD__.'\' is not implemented.');
         
@@ -465,6 +529,10 @@ class Validation_Condition {
         
         if ($setting['setError']) {
             return;
+        }
+        
+        if (!isset($param)){
+            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter (string = name or array = Validation).');
         }
         
         $file = $input[$key];

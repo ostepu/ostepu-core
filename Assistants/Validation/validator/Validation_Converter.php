@@ -193,6 +193,10 @@ class Validation_Converter {
             return array('valid'=>true,'field'=>$key,'value'=>null);
         }
         
+        if (!isset($param)){
+            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter.');
+        }
+        
         $method = $param.'::decode'.$param;
         $obj = @$method($input[$key]);
         

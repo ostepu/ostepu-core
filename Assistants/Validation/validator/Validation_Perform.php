@@ -10,6 +10,10 @@ class Validation_Perform {
             return false;
         }
         
+        if (!isset($param)){
+            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter.');
+        }
+        
         $result = array();
         foreach($input[$key] as $elemName => $elem){
             $f = new Validation(array('key'=>$elemName, 'elem'=>$elem), $setting);
@@ -35,6 +39,10 @@ class Validation_Perform {
         
         if (!is_array($input[$key])){
             return false;
+        }
+        
+        if (!isset($param)){
+            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter.');
         }
         
         $f = new Validation($input[$key], $setting);

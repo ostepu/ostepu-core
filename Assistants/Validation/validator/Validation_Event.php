@@ -29,6 +29,11 @@ class Validation_Event {
         return;
     }
     
+    public static function validate_on_no_error($key, $input, $setting = null, $param = null)
+    {
+        return self::validate_on_success($key, $input, $setting, $param);
+    }
+    
     public static function validate_on_success($key, $input, $setting = null, $param = null)
     {
         if (!isset($setting['setError'])){
