@@ -451,7 +451,7 @@ $h->bind(array('name' => $user_course_data['courses'][0]['course']['name'],
 
 $t = Template::WithTemplateFile('include/Upload/Upload.template.html');
 $t->bind($upload_data);
-$t->bind(array("privileged" => $privileged));
+$t->bind(array('privileged' => $privileged));
 
 $w = new HTMLWrapper($h, $t);
 $w->set_config_file('include/configs/config_upload_exercise.json');

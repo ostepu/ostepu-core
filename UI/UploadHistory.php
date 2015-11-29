@@ -239,7 +239,7 @@ if (isset($uploadHistory_data))$uploadHistory->bind($uploadHistory_data);
 if (isset($uploadHistoryNotifications))
     $uploadHistory->bind(array('UploadHistoryNotificationElements' => $uploadHistoryNotifications));
 
-$uploadHistory->bind(array("privileged" => $privileged));
+$uploadHistory->bind(array('privileged' => $privileged));
 
 if ($courseStatus >= 1 /* PRIVILEGE_LEVEL::TUTOR */){
     $uploadHistoryGroup = Template::WithTemplateFile('include/UploadHistory/UploadHistoryGroup.template.html');
@@ -249,7 +249,7 @@ if ($courseStatus >= 1 /* PRIVILEGE_LEVEL::TUTOR */){
 }
 
 if (isset($uploadHistoryGroup)){
-    $uploadHistoryGroup->bind(array("privileged" => $privileged));
+    $uploadHistoryGroup->bind(array('privileged' => $privileged));
 }
 
 // wrap all the elements in some HTML and show them on the page
