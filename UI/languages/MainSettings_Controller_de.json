@@ -10,6 +10,7 @@
         "invalidUserId": "Ungültiges Kürzel.",
         "successSetAdmin": "Der Admin wurde eingetragen.",
         "errorSetAdmin": "Beim Eintragen ist ein Fehler aufgetreten.",
+        "invalidCourseId":"Ungültige Veranstaltung.",
         "invalidLastName": "Ungültiger Nachname.",
         "invalidFirstName": "Ungültiger Vorname.",
         "invalidUserName": "Ungültiger Benutzername.",

@@ -52,18 +52,18 @@ $f->addSet('deleteSubmissionWarning',
             'valid_identifier',
             'satisfy_not_equals_field'=>'deleteSubmission',
             'on_error'=>['type'=>'error',
-                         'text'=>'???1']])
+                         'text'=>Language::Get('main','invalidDeleteSubmissionWarning', $langTemplate)]])
   ->addSet('deleteSubmission',
            ['set_default'=>null,
             'valid_identifier',
             'satisfy_not_equals_field'=>'deleteSubmissionWarning',
             'on_error'=>['type'=>'error',
-                         'text'=>'???2']])
+                         'text'=>Language::Get('main','invalidDeleteSubmission', $langTemplate)]])
   ->addSet('downloadMarkings',
            ['set_default'=>null,
             'valid_identifier',
             'on_error'=>['type'=>'error',
-                         'text'=>'???3']]);
+                         'text'=>Language::Get('main','invalidSheetId', $langTemplate)]]);
                                    
 $valResults = $f->validate();
 $notifications = array_merge($notifications,$f->getPrintableNotifications());

@@ -81,7 +81,7 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                    ['perform_array'=>[[['key_all'],
                                        ['satisfy_regex'=>'%^([a-zA-Z0-9_]+)$%']]],
                     'on_error'=>['type'=>'error',
-                                 'text'=>Language::Get('main','invalidInput', $langTemplate)]]);
+                                 'text'=>Language::Get('main','invalidExternalId', $langTemplate)]]);
 
         $valResults = $f->validate();
         $editExternalIdNotifications = array_merge($editExternalIdNotifications,$f->getPrintableNotifications());
@@ -128,13 +128,13 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                    ['to_integer',
                     'satisfy_in_list' => [1,2],
                     'on_error'=>['type'=>'error',
-                                 'text'=>Language::Get('main','invalidInput', $langTemplate)]])
+                                 'text'=>Language::Get('main','invalidExternalType', $langTemplate)]])
           ->addSet('externalTypeName',
                    ['satisfy_exact_len'=>1,
                     'valid_alpha',
                     'to_upper',
                     'on_error'=>['type'=>'error',
-                                 'text'=>'???3']]);
+                                 'text'=>Language::Get('main','invalidExternalTypeName', $langTemplate)]]);
                                            
         $valResults = $f->validate();
         $addExternalIdNotifications = array_merge($addExternalIdNotifications,$f->getPrintableNotifications());
@@ -280,7 +280,7 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                                        ['valid_identifier']]],
                     'set_default'=>array(),
                     'on_error'=>['type'=>'error',
-                                 'text'=>Language::Get('main','invalidExerciseType', $langTemplate)]])
+                                 'text'=>Language::Get('main','invalidExerciseTypes', $langTemplate)]])
           ->addSet('setting',
                    ['is_array',
                     'set_default'=>array(),
@@ -476,7 +476,7 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                     'satisfy_not_empty',
                     'valid_alpha_numeric',
                     'on_error'=>['type'=>'error',
-                                 'text'=>Language::Get('main','missingFields', $langTemplate]]));
+                                 'text'=>Language::Get('main','invalidExerciseTypeName', $langTemplate]]));
                                            
         $valResults = $f->validate();
         $addExerciseTypeNotifications = array_merge($addExerciseTypeNotifications,$f->getPrintableNotifications());
@@ -507,13 +507,13 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                     'satisfy_not_empty',
                     'valid_alpha_numeric',
                     'on_error'=>['type'=>'error',
-                                 'text'=>Language::Get('main','missingFields', $langTemplate)]])
+                                 'text'=>Language::Get('main','invalidExerciseTypeName', $langTemplate)]])
           ->addSet('exerciseTypeID',
                    ['satisfy_exists',
                     'satisfy_not_empty',
                     'valid_identifier',
                     'on_error'=>['type'=>'error',
-                                 'text'=>'???5']]);
+                                 'text'=>Language::Get('main','invalidExerciseType', $langTemplate)]]);
                                            
         $valResults = $f->validate();
         $editExerciseTypeNotifications = array_merge($editExerciseTypeNotifications,$f->getPrintableNotifications());

@@ -2,6 +2,7 @@
     "main": {
         "sucessFileUpload": "Die Datei wurde hochgeladen.",
         "invalidFileType": "Es handelt sich nicht um ein *.zip-Archiv.",
+        "missingMarkingFile": "Fehlendes Korrketurarchiv!",
         "unknownError": "Unbekannter Fehler!!!",
         "invalidAction": "Die Aktion konnte nicht ausgeführt werden."
     }

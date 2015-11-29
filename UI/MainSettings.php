@@ -155,13 +155,13 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                     'satisfy_not_empty',
                     'valid_identifier',
                     'on_error'=>['type'=>'error',
-                                 'text'=>'???1']])
+                                 'text'=>Language::Get('main','invalidCourseId', $langTemplate)]])
           ->addSet('userName',
                    ['satisfy_exists',
                     'satisfy_not_empty',
                     'valid_userName',
                     'on_error'=>['type'=>'error',
-                                 'text'=>'???2']]);
+                                 'text'=>Language::Get('main','invalidUserName', $langTemplate)]]);
 
         $valResults = $f->validate();
         $notifications = array_merge($notifications,$f->getPrintableNotifications());
@@ -169,8 +169,8 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
         
         if ($f->isValid()){
             // clean Input
-            $courseID = cleanInput($valResults['courseID']);
-            $userName = cleanInput($valResults['userName']);
+            $courseID = $valResults['courseID'];
+            $userName = $valResults['userName'];
 
             // extracts the userID
             $URI = $databaseURI . "/user/user/{$userName}";
@@ -254,8 +254,6 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
         $f->resetNotifications()->resetErrors();
 
         if($f->isValid()) {
-
-            $foundValues = $f->foundValues;
 
             $lastName = $valResults['lastName'];
             $firstName = $valResults['firstName'];

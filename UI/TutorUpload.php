@@ -38,7 +38,7 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                     ['satisfy_file_isset',
                      'satisfy_file_exists',
                      'on_error'=>['type'=>'error',
-                                  'text'=>'???1']])
+                                  'text'=>Language::Get('main','missingMarkingFile', $langTemplate)]])
            ->addSet('MarkingFile',
                     ['satisfy_file_extension'=>'zip',
                      'satisfy_file_mime'=>'application/zip',

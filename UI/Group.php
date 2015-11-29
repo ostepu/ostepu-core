@@ -123,17 +123,17 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                    ['valid_identifier',
                     'set_default'=>null,
                     'on_error'=>['type'=>'error',
-                                 'text'=>'???1']])
+                                 'text'=>Language::Get('main','invalidUserId', $langTemplate)]])
           ->addSet('removeInvitation',
                    ['valid_identifier',
                     'set_default'=>null,
                     'on_error'=>['type'=>'error',
-                                 'text'=>'???1']])
+                                 'text'=>Language::Get('main','invalidUserId', $langTemplate)]])
           ->addSet('leaveGroup',
                    ['valid_identifier',
                     'set_default'=>null,
                     'on_error'=>['type'=>'error',
-                                 'text'=>'???1']]);
+                                 'text'=>Language::Get('main','invalidUserId', $langTemplate)]]);
                                            
         $valResults = $f->validate();
         $notifications = array_merge($notifications,$f->getPrintableNotifications());
@@ -266,7 +266,7 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                                         ['elem',
                                          ['valid_identifier']]],
                     'on_error'=>['type'=>'error',
-                                 'text'=>'???1']]);
+                                 'text'=>Language::Get('main','invalidSelection', $langTemplate)]]);
                                            
         $valResults = $f->validate();
         $notifications = array_merge($notifications,$f->getPrintableNotifications());
@@ -309,7 +309,7 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                    ['default'=>false,
                     'to_boolean',
                     'on_error'=>['type'=>'error',
-                                 'text'=>'???1']]);
+                                 'text'=>Language::Get('main','invalidApplyGroup', $langTemplate)]]);
                                            
         $valResults = $f->validate();
         $notifications = array_merge($notifications,$f->getPrintableNotifications());
@@ -328,7 +328,7 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                     'perform_array'=>[['key_all',
                                        ['valid_identifier']]],
                     'on_error'=>['type'=>'error',
-                                 'text'=>'???1']]);
+                                 'text'=>Language::Get('main','invalidMemberIds', $langTemplate)]]);
                                  
                 $valResults = $f->validate();
                 $notifications = array_merge($notifications,$f->getPrintableNotifications());
@@ -399,7 +399,7 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                                        ['satisfy_not_empty',
                                         'valid_userName']]],
                     'on_error'=>['type'=>'error',
-                                 'text'=>'???1']]);
+                                 'text'=>Language::Get('main','invalidUserNames', $langTemplate)]]);
                                  
                 $valResults = $f->validate();
                 $notifications = array_merge($notifications,$f->getPrintableNotifications());
@@ -439,12 +439,12 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                    ['valid_identifier',
                     'set_default'=>null,
                     'on_error'=>['type'=>'error',
-                                 'text'=>'???1']])
+                                 'text'=>Language::Get('main','invalidUserId', $langTemplate)]])
           ->addSet('acceptInvitation',
                    ['valid_identifier',
                     'set_default'=>null,
                     'on_error'=>['type'=>'error',
-                                 'text'=>'???1']]);
+                                 'text'=>Language::Get('main','invalidUserId', $langTemplate)]]);
                                  
         $valResults = $f->validate();
         $notifications = array_merge($notifications,$f->getPrintableNotifications());
@@ -506,7 +506,7 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                     $notifications[] = MakeNotification('error', Language::Get('main','errorJoinGroup', $langTemplate));
                 }
             } else {
-                $notifications[] = MakeNotification('error', '');
+                $notifications[] = MakeNotification('error', Language::Get('main','invalidManageInvitationsAction', $langTemplate));
             }
         }
     }
@@ -599,27 +599,27 @@ $group_data['isLeader'] = $isLeader;
 // construct a content element for group information
 $groupMembers = Template::WithTemplateFile('include/Group/GroupMembers.template.html');
 $groupMembers->bind($group_data);
-$groupMembers->bind(array("privileged" => $privileged));
+$groupMembers->bind(array('privileged' => $privileged));
 
 // construct a content element for managing groups
 if ($isInGroup) {
     $groupManagement = Template::WithTemplateFile('include/Group/GroupManagement.template.html');
     $groupManagement->bind($group_data);
-    $groupManagement->bind(array("privileged" => $privileged));
+    $groupManagement->bind(array('privileged' => $privileged));
 }
 
 // construct a content element for creating groups
 if ($isLeader) {
     $invitationsFromGroup = Template::WithTemplateFile('include/Group/InvitationsFromGroup.template.html');
     $invitationsFromGroup->bind($group_data);
-    $invitationsFromGroup->bind(array("privileged" => $privileged));
+    $invitationsFromGroup->bind(array('privileged' => $privileged));
 }
 
 // construct a content element for joining groups
 if ($hasInvitations) {
     $invitationsToGroup = Template::WithTemplateFile('include/Group/InvitationsToGroup.template.html');
     $invitationsToGroup->bind($group_data);
-    $invitationsToGroup->bind(array("privileged" => $privileged));
+    $invitationsToGroup->bind(array('privileged' => $privileged));
 }
 
 // wrap all the elements in some HTML and show them on the page

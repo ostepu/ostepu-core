@@ -27,7 +27,7 @@ $f->addSet('action',
            array('set_default'=>'noAction',
                  'satisfy_in_list'=>array('noAction', 'login'),
                  'on_error'=>array('type'=>'error',
-                                   'text'=>'???1')));
+                                   'text'=>Language::Get('main','invalidAction', $langTemplate))));
                                    
 
 $f2 = new Validation($_GET, array('preRules'=>array('sanitize')));
@@ -35,7 +35,7 @@ $f2->addSet('back',
             array('valid_url_query',
                   'set_default'=>null,
                   'on_error'=>array('type'=>'error',
-                                    'text'=>'???4')));
+                                    'text'=>Language::Get('main',Language::Get('main','invalidBackURL', $langTemplate), $langTemplate))));
 
                                    
 $valResults = $f->validate();    
@@ -52,11 +52,11 @@ if ($f->isValid() && $f2->isValid() && $valResults['action'] !== 'noAction') {
                          'valid_userName',
                          'to_lower',
                          'on_error'=>array('type'=>'error',
-                                           'text'=>'???2')))
+                                           'text'=>Language::Get('main','invalidUserName', $langTemplate))))
           ->addSet('password',
                    array('satisfy_exists',
                          'on_error'=>array('type'=>'error',
-                                           'text'=>'???3')));
+                                           'text'=>Language::Get('main','invalidPassword', $langTemplate))));
 
         $valResults = $f->validate();
         $notifications = array_merge($notifications, $f->getPrintableNotifications());

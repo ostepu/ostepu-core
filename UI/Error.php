@@ -13,7 +13,7 @@ $f = new Validation($_GET, array('preRules'=>array('sanitize')));
 $f->addSet('msg',
            array('set_default'=>null,
                  'on_error'=>array('type'=>'error',
-                                   'text'=>'???1')));
+                                   'text'=>Language::Get('main','invalidMessageType', $langTemplate))));
 $valResults = $f->validate();
 $notifications = array_merge($notifications, $f->getPrintableNotifications());
 $f->resetNotifications()->resetErrors();

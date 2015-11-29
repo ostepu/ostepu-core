@@ -78,7 +78,7 @@ if ($f2->isValid() && $valResults2['action'] !== 'noAction') {
                                          ['to_integer',
                                           'satisfy_min_numeric'=>0,
                                           'satisfy_max_numeric'=>100]]],
-                    'on_error'=>['type'=>'warning',
+                    'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','errorApprovalConditionValidation', $langTemplate)]]);
 
         if ($f->isValid()){
