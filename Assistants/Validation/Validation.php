@@ -396,6 +396,16 @@ class Validation {
                                 $this->input[$res['field']] = $res['value'];
                                 $this->insertValue($fieldName, $res['value']);
                             }
+                            
+                            if (isset($res['fields'])){
+                                if (!is_array($res['fields'])){
+                                    throw new Exception('Validation rule \''.__METHOD__.'\', array expected.');
+                                }
+                                foreach($res['fields'] as $field => $value){
+                                    $this->input[$field] = $value;
+                                    $this->insertValue($field, $value);
+                                }
+                            }
                         }
                             
                         if ($this->settings['abortSetOnError'] || (isset($res['abortSet']) && $res['abortSet'] === true)){

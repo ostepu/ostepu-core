@@ -31,6 +31,37 @@ class Validation_Perform {
         return array('valid'=>true, 'field'=>$key, 'value'=>$result);
     }
     
+    public static function validate_perform_foreach($key, $input, $setting = null, $param = null)
+    {
+        if ($setting['setError'] || !isset($input)){
+            return;
+        }
+        
+        if (!is_array($input)){
+            return false;
+        }
+        
+        if (!isset($param)){
+            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter.');
+        }
+        
+        $result = array();
+        foreach($input as $elemName => $elem){
+            $f = new Validation(array('key'=>$elemName, 'elem'=>$elem), $setting);
+            foreach($param as $set){
+                $f->addSet($set[0],$set[1]);
+            }
+
+            if ($f->isValid()){
+                $result[$elemName] = $f->getResult()['elem'];
+            } else {
+                return array('valid'=>false, 'notifications'=>$f->getNotifications(), 'errors'=>$f->getErrors());
+            }
+        }
+
+        return array('valid'=>true, 'fields'=>$result);
+    }
+    
     public static function validate_perform_this_array($key, $input, $setting = null, $param = null)
     {
         if ($setting['setError'] || !isset($input[$key]) || !isset($param)){
@@ -52,6 +83,33 @@ class Validation_Perform {
         
         if ($f->isValid()){
             return array('valid'=>true, 'field'=>$key, 'value'=>$f->getResult());
+        } else {
+            return array('valid'=>false, 'notifications'=>$f->getNotifications(), 'errors'=>$f->getErrors());
+        }
+        return false;
+    }
+    
+    public static function validate_perform_array($key, $input, $setting = null, $param = null)
+    {
+        if ($setting['setError'] || !isset($input) || !isset($param)){
+            return;
+        }
+        
+        if (!is_array($input)){
+            return false;
+        }
+        
+        if (!isset($param)){
+            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter.');
+        }
+        
+        $f = new Validation($input, $setting);
+        foreach($param as $set){
+            $f->addSet($set[0],$set[1]);
+        }
+        
+        if ($f->isValid()){
+            return array('valid'=>true, 'fields'=>$f->getResult());
         } else {
             return array('valid'=>false, 'notifications'=>$f->getNotifications(), 'errors'=>$f->getErrors());
         }
