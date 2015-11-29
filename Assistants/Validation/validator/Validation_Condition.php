@@ -144,19 +144,7 @@ class Validation_Condition {
     
     public static function validate_satisfy_equalTo($key, $input, $setting = null, $param = null)
     {
-        if ($setting['setError']|| !isset($input[$key]) || empty($input[$key])) {
-            return;
-        }
-        
-        if (!isset($param)){
-            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter.');
-        }
-        
-        if ($input[$key] !== $param){
-            return false;
-        }
-        
-        return;
+        return self::validate_satisfy_value($key, $input, $setting, $param);
     }
   
     public static function validate_satisfy_min_numeric($key, $input, $setting = null, $param = null)

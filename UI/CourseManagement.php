@@ -78,7 +78,7 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                     'on_error'=>['type'=>'warning',
                                  'text'=>Language::Get('main','noSelectedAlias', $langTemplate)]])
           ->addSet('externalId',
-                   ['perform_array'=>[[['key_all'],
+                   ['perform_this_array'=>[[['key_all'],
                                        ['satisfy_regex'=>'%^([a-zA-Z0-9_]+)$%']]],
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidExternalId', $langTemplate)]]);
@@ -164,7 +164,7 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
         $f->addSet('plugins',
                    ['set_default'=>array(),
                     'is_array',
-                    'perform_array'=>[['key_all'],
+                    'perform_this_array'=>[['key_all'],
                                       ['valid_identifier']],
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidExtensionId', $langTemplate)]]);
@@ -276,7 +276,7 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                                  'text'=>Language::Get('main','invalidGroupSize', $langTemplate)]])
           ->addSet('exerciseTypes',
                    ['is_array',
-                    'perform_array'=>[[['key_all'],
+                    'perform_this_array'=>[[['key_all'],
                                        ['valid_identifier']]],
                     'set_default'=>array(),
                     'on_error'=>['type'=>'error',
@@ -284,10 +284,10 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
           ->addSet('setting',
                    ['is_array',
                     'set_default'=>array(),
-                    'perform_array'=>[[['key_all'],
+                    'perform_this_array'=>[[['key_all'],
                                        ['is_array',
                                         'satisfy_not_empty',
-                                        'perform_array'=>[['type',
+                                        'perform_this_array'=>[['type',
                                                            ['satisfy_exists',
                                                             'satisfy_not_empty',
                                                             'to_upper',

@@ -261,7 +261,7 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
     if ($valResults['action'] === 'ManageGroup') {
         $f->addSet('exercises',
                    ['default'=>array(),
-                    'perform_foreach'=>[['key',
+                    'perform_this_foreach'=>[['key',
                                          ['valid_identifier']],
                                         ['elem',
                                          ['valid_identifier']]],
@@ -325,7 +325,7 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                    ['satisfy_exists',
                     'satisfy_not_empty',
                     'is_array',
-                    'perform_array'=>[['key_all',
+                    'perform_this_array'=>[['key_all',
                                        ['valid_identifier']]],
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidMemberIds', $langTemplate)]]);
@@ -395,7 +395,7 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                    ['satisfy_exists',
                     'satisfy_not_empty',
                     'is_array',
-                    'perform_array'=>[['key_all',
+                    'perform_this_array'=>[['key_all',
                                        ['satisfy_not_empty',
                                         'valid_userName']]],
                     'on_error'=>['type'=>'error',

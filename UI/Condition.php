@@ -72,7 +72,7 @@ if ($f2->isValid() && $valResults2['action'] !== 'noAction') {
         $f = new Validation($_POST, array('preRules'=>array('sanitize')));
         $f->addSet('approvalCondition',
                    ['set_default'=>array(),
-                    'perform_foreach'=>[['key',
+                    'perform_this_foreach'=>[['key',
                                          ['valid_identifier']], 
                                         ['elem',
                                          ['to_integer',

@@ -63,7 +63,7 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                                  'text'=>Language::Get('main','invalidGroupSize', $langTemplate)]])
           ->addSet('exerciseTypes',
                    ['is_array',
-                    'perform_array'=>[[['key_all'],
+                    'perform_this_array'=>[[['key_all'],
                                        ['valid_identifier']]],
                     'set_default'=>array(),
                     'on_error'=>['type'=>'error',
@@ -71,7 +71,7 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
           ->addSet('plugins',
                    ['is_array',
                     'set_default'=>null,
-                    'perform_array'=>[['key_all'],
+                    'perform_this_array'=>[['key_all'],
                                       ['valid_identifier']],
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidExtensionId', $langTemplate)]]);

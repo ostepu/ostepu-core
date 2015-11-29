@@ -1,6 +1,6 @@
 <?php
 class Validation_Perform {
-    public static function validate_perform_foreach($key, $input, $setting = null, $param = null)
+    public static function validate_perform_this_foreach($key, $input, $setting = null, $param = null)
     {
         if ($setting['setError'] || !isset($input[$key])){
             return;
@@ -31,7 +31,7 @@ class Validation_Perform {
         return array('valid'=>true, 'field'=>$key, 'value'=>$result);
     }
     
-    public static function validate_perform_array($key, $input, $setting = null, $param = null)
+    public static function validate_perform_this_array($key, $input, $setting = null, $param = null)
     {
         if ($setting['setError'] || !isset($input[$key]) || !isset($param)){
             return;
@@ -64,12 +64,17 @@ class Validation_Perform {
             return;
         }
         
-        /// ??? ///
-        throw new Exception('Validation rule \''.__METHOD__.'\' is not implemented.');
+        if (!isset($param)){
+            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter.');
+        }
+        
+        if (!is_array($param)){
+            throw new Exception('Validation rule \''.__METHOD__.'\', parameter should be an array.');
+        }
         
         foreach ($param as $case){
-            $condition = $case[0];
-            $rules = $case[1];
+            $condition = $case[0]; // set (selector, rules)
+            $rules = $case[1]; // rules only
             
             $satisfied = false;
             if (is_string($condition)){
@@ -77,15 +82,32 @@ class Validation_Perform {
                     $satisfied = true;
                 }
             } else {
-                $f = new Validation($input[$key], $setting);
-                foreach($param as $set){
+                $f = new Validation($input, $setting);
+                foreach($condition as $set){
                     $f->addSet($set[0],$set[1]);
+                }
+                if ($f->isValid()){
+                    $satisfied = true;
                 }
             }
             
             if ($satisfied){
+                $f = new Validation($input, $setting);
+                foreach($rules as $set){
+                    $f->addSet($key,$set);
+                }
                 
-                break;
+                if ($f->isValid()){
+                    $r = $f->getResult();
+                    if (isset($r[$key])){
+                        $r = $r[$key];
+                    } else {
+                      $r = null;  
+                    }
+                    return array('valid'=>true, 'field'=>$key, 'value'=>$r);
+                } else {
+                    return array('valid'=>false, 'notifications'=>$f->getNotifications(), 'errors'=>$f->getErrors());
+                }
             }
         }
         
