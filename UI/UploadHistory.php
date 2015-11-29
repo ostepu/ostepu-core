@@ -204,7 +204,7 @@ $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
 $h->bind(array('name' => $user_course_data['courses'][0]['course']['name'],
                'notificationElements' => $notifications,
-               'navigationElement' => $menu),
+               'navigationElement' => $menu,
                'userNavigationElement' => $userNavigation));
 
 if (!isset($_POST['actionSortUsers']))

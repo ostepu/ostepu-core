@@ -165,7 +165,7 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                    ['set_default'=>array(),
                     'is_array',
                     'perform_array'=>[['key_all'],
-                                      ['valid_identifier']]],
+                                      ['valid_identifier']],
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidExtensionId', $langTemplate)]]);
                                            
