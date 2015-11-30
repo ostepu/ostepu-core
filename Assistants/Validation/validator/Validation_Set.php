@@ -7,10 +7,6 @@ class Validation_Set {
             return;
         }
         
-        if (!isset($param)){
-            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter.');
-        }
-        
         if (!isset($input[$key])){
             return array('valid'=>true, 'field'=>$key, 'value'=>$param);
         }
@@ -35,10 +31,6 @@ class Validation_Set {
     {        
         if ($setting['setError']) {
             return;
-        }
-        
-        if (!isset($param)){
-            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter.');
         }
         
         return array('valid'=>true, 'field'=>$key, 'value'=>$param);

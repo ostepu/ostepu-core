@@ -328,10 +328,6 @@ class Validation_Condition {
             return;
         }
         
-        if (!isset($param)){
-            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter.');
-        }
-        
         if ($input[$key] === $param) {
             return;
         }
@@ -517,10 +513,6 @@ class Validation_Condition {
         
         if ($setting['setError']) {
             return;
-        }
-        
-        if (!isset($param)){
-            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter (string = name or array = Validation).');
         }
         
         $file = $input[$key];
