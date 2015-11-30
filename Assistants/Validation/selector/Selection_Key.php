@@ -6,10 +6,14 @@ class Selection_Key {
             return;
         }
         
-        if (is_array($param)){
-            return false;
+        if (!isset($param)){
+            throw new Exception('Selection rule \''.__METHOD__.'\', missing parameter.');
         }
         
+        if (is_array($param)){
+            throw new Exception('Selection rule \''.__METHOD__.'\', string required.');
+        }
+                
         return array('keys'=>array($param));
     }
     
@@ -19,8 +23,12 @@ class Selection_Key {
             return;
         }
         
+        if (!isset($param)){
+            throw new Exception('Selection rule \''.__METHOD__.'\', missing parameter.');
+        }
+        
         if (!is_array($param)){
-            return false;
+            throw new Exception('Selection rule \''.__METHOD__.'\', array required.');
         }
         
         return array('keys'=>$param);
@@ -39,6 +47,10 @@ class Selection_Key {
     {
         if ($setting['setError']) {
             return;
+        }
+        
+        if (!isset($param)){
+            throw new Exception('Selection rule \''.__METHOD__.'\', missing parameter (regex).');
         }
         
         $tempKeys = array();
@@ -131,6 +143,10 @@ class Selection_Key {
             return;
         }
 
+        if (!isset($param)){
+            throw new Exception('Selection rule \''.__METHOD__.'\', missing parameter.');
+        }
+        
         $tempKeys = array();
         $f = Validation();
         foreach($param as $selectors){
@@ -147,6 +163,10 @@ class Selection_Key {
             return;
         }
 
+        if (!isset($param)){
+            throw new Exception('Selection rule \''.__METHOD__.'\', missing parameter.');
+        }
+        
         $tempKeys = null;
         $f = Validation();
         foreach($param as $selectors){
