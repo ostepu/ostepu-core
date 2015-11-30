@@ -133,7 +133,7 @@ class FSBinder
             // the file was found
             $mime = MimeReader::get_mime($this->config['DIR']['files'].'/'.$filePath);
             Model::header('Content-Type',$mime);
-            Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");
+            Model::header('Content-Disposition',"filename=\"".$params['filename']."\"");
             Model::header('Content-Length',filesize($this->config['DIR']['files'].'/'.$filePath));
             Model::header('Accept-Ranges','none');
             readfile( $this->config['DIR']['files'].'/'.$filePath );
