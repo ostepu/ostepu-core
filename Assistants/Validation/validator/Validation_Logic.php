@@ -14,6 +14,9 @@ class Validation_Logic {
             throw new Exception('Validation rule \''.__METHOD__.'\', array required as parameter.');
         }
         
+        /// fehlermeldungen verodern ///
+        /// fehlermeldungen verodern ///
+        /// fehlermeldungen verodern ///
         foreach($param as $rules){
             $f = new Validation(array($key=>$input[$key]), $setting);
             $f->addSet($key,$rules);
