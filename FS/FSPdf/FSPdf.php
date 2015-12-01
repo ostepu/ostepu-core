@@ -101,7 +101,7 @@ class FSPdf
             }
             
             Model::header('Content-Type','application/pdf');
-            Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");
+            Model::header('Content-Disposition',"filename=\"".$params['filename']."\"");
             Model::header('Accept-Ranges','none');
             return Model::isCreated();
         } else {
@@ -295,7 +295,7 @@ class FSPdf
 
             // the file was found
             Model::header('Content-Type','application/pdf');
-            Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");   
+            Model::header('Content-Disposition',"filename=\"".$params['filename']."\"");   
             Model::header('Content-Length',filesize($this->config['DIR']['files'].'/'.$filePath));
             Model::header('Accept-Ranges','none');
             readfile( $this->config['DIR']['files'].'/'.$filePath );
