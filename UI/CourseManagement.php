@@ -51,7 +51,7 @@ $f->addSet('action',
            ['set_default'=>'noAction',
             'satisfy_in_list'=>['noAction', 'EditExternalId', 'AddExternalId', 'Plugins', 'CourseSettings', 'AddExerciseType', 'EditExerciseType', 'GrantRights', 'RevokeRights', 'AddUser'],
             'on_error'=>['type'=>'error',
-                         'text'=>'???1']])
+                         'text'=>Language::Get('main','invalidAction', $langTemplate)]])
   ->addSet('sortUsers',
            ['satisfy_in_list'=>['lastName','firstName','userName'],
             'set_default'=>'lastName',
@@ -79,7 +79,7 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                                  'text'=>Language::Get('main','noSelectedAlias', $langTemplate)]])
           ->addSet('externalId',
                    ['perform_this_array'=>[[['key_all'],
-                                       ['satisfy_regex'=>'%^([a-zA-Z0-9_]+)$%']]],
+                                            ['satisfy_regex'=>'%^([a-zA-Z0-9_]+)$%']]],
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidExternalId', $langTemplate)]]);
 
@@ -476,7 +476,7 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                     'satisfy_not_empty',
                     'valid_alpha_numeric',
                     'on_error'=>['type'=>'error',
-                                 'text'=>Language::Get('main','invalidExerciseTypeName', $langTemplate]]));
+                                 'text'=>Language::Get('main','invalidExerciseTypeName', $langTemplate)]]);
                                            
         $valResults = $f->validate();
         $addExerciseTypeNotifications = array_merge($addExerciseTypeNotifications,$f->getPrintableNotifications());
