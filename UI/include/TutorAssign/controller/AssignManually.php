@@ -77,7 +77,7 @@ if (isset($valResults['actionAssignManually'])){
                                                                                               ['elem',
                                                                                                ['perform_this_array'=>[[['key_all'],
                                                                                                                         ['valid_identifier']]]]]]]],
-                                                                   [['key_all'],
+                                                                   [['',[]],
                                                                     ['set_error'=>true,
                                                                      'on_error'=>['type'=>'error',
                                                                                   'text'=>Language::Get('main','???', $langTemplate)]]]]]]],
