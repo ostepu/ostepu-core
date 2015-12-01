@@ -1,19 +1,18 @@
 <?php
+                         
 // removes all tutor assignments by deleting all markings of the exercisesheet
-if (isset($_POST['action']) && $_POST['action'] == "AssignMakeWarning") {
-    $assignMakeNotifications[] = MakeNotification("warning", Language::Get('main','askMake', $langTemplate));
-} elseif (isset($_POST['action']) && $_POST['action'] == "AssignMake") {
-    set_time_limit(180);
-    $URI = $databaseURI . "/group/exercisesheet/{$sid}"; /// !!! gehört die SID zur CID ??? ///
-    $groups = http_get($URI, true, $message);
-    $groups = Group::decodeGroup($groups);
+set_time_limit(180);
+$URI = $databaseURI . "/group/exercisesheet/{$sid}"; /// !!! gehört die SID zur CID ??? ///
+$groups = http_get($URI, true, $message);
+$groups = Group::decodeGroup($groups);
+
+if ($message === 200) {
+    $URI = $databaseURI . "/exercisesheet/{$sid}/exercise";
+    $exerciseSheet = http_get($URI, true, $message);
+    $exerciseSheet = ExerciseSheet::decodeExerciseSheet($exerciseSheet);
     
-    if ($message == "200") {
-        $URI = $databaseURI . "/exercisesheet/{$sid}/exercise";
-        $exerciseSheet = http_get($URI, true, $message);
-        $exerciseSheet = ExerciseSheet::decodeExerciseSheet($exerciseSheet);
-        
-        if ($message == "200") {
+    if ($message === 200) {
+        if ($exerciseSheet->getCourseId() == $cid){
             $exercises=array();
             foreach($exerciseSheet->getExercises() as $exercise){
                 $exercises[] = $exercise->getId();
@@ -23,7 +22,7 @@ if (isset($_POST['action']) && $_POST['action'] == "AssignMakeWarning") {
             $submissions = http_get($URI, true, $message);
             $submissions = Submission::decodeSubmission($submissions);
             
-            if ($message == "200") {
+            if ($message === 200) {
                 $users = array();
                 foreach ($exercises as $exercise){
                     $users[$exercise] = array();
@@ -60,18 +59,20 @@ if (isset($_POST['action']) && $_POST['action'] == "AssignMakeWarning") {
                 }
                 
                 if (!$failure){
-                    $assignMakeNotifications[] = MakeNotification("success", Language::Get('main','successMake', $langTemplate));
+                    $assignMakeNotifications[] = MakeNotification('success', Language::Get('main','successMake', $langTemplate));
                 } else {
-                    $assignMakeNotifications[] = MakeNotification("error", Language::Get('main','errorMake', $langTemplate));
+                    $assignMakeNotifications[] = MakeNotification('error', Language::Get('main','errorMake', $langTemplate));
                 }
                 
             } else {
-                $assignMakeNotifications[] = MakeNotification("error", Language::Get('main','errorMake', $langTemplate));
+                $assignMakeNotifications[] = MakeNotification('error', Language::Get('main','errorMake', $langTemplate));
             }
         } else {
-            $assignMakeNotifications[] = MakeNotification("error", Language::Get('main','errorMake', $langTemplate));
+            $assignMakeNotifications[] = MakeNotification('error', Language::Get('main','???', $langTemplate));
         }
     } else {
-        $assignMakeNotifications[] = MakeNotification("error", Language::Get('main','errorMake', $langTemplate));
+        $assignMakeNotifications[] = MakeNotification('error', Language::Get('main','errorMake', $langTemplate));
     }
+} else {
+    $assignMakeNotifications[] = MakeNotification('error', Language::Get('main','errorMake', $langTemplate));
 }

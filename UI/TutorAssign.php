@@ -19,11 +19,45 @@ Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $globalUserData)
 
 $langTemplate='TutorAssign_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
+$f = new Validation($_POST, array('preRules'=>array('sanitize')));
+
+
+                         
 if (!isset($_POST['actionSortUsers'])){
-    include_once dirname(__FILE__) . '/include/TutorAssign/controller/AssignManually.php';
-    include_once dirname(__FILE__) . '/include/TutorAssign/controller/AssignAutomatically.php';
-    include_once dirname(__FILE__) . '/include/TutorAssign/controller/AssignRemove.php';
-    include_once dirname(__FILE__) . '/include/TutorAssign/controller/AssignMake.php';
+    $f->addSet('action',
+           ['set_default'=>'noAction',
+            'satisfy_in_list'=>['noAction', 'AssignMakeWarning', 'AssignMake', 'AssignManually', 'AssignRemoveWarning', 'AssignRemove', 'AssignAutomatically'],
+            'on_error'=>['type'=>'error',
+                         'text'=>Language::Get('main','invalidAction', $langTemplate)]]);
+    $valResults = $f->validate();
+    $notifications = array_merge($notifications,$f->getPrintableNotifications());
+    $f->resetNotifications()->resetErrors();
+    
+    if ($f-isValid()){
+        if ($valResults['action'] === 'AssignManually'){
+            include_once dirname(__FILE__) . '/include/TutorAssign/controller/AssignManually.php';
+        }
+        
+        if ($valResults['action'] === 'AssignAutomatically'){
+            include_once dirname(__FILE__) . '/include/TutorAssign/controller/AssignAutomatically.php';
+        }
+        
+        if ($valResults['action'] === 'AssignRemoveWarning'){
+            $assignRemoveNotifications[] = MakeNotification('warning', Language::Get('main','askUnassign', $langTemplate));
+        }
+        
+        if ($valResults['action'] === 'AssignRemove'){
+            include_once dirname(__FILE__) . '/include/TutorAssign/controller/AssignRemove.php';
+        }
+        
+        if ($valResults['action'] === 'AssignMakeWarning'){
+            $assignRemoveNotifications[] = MakeNotification('warning', Language::Get('main','askMake', $langTemplate));
+        }
+        
+        if ($valResults['action'] === 'AssignMake'){
+            include_once dirname(__FILE__) . '/include/TutorAssign/controller/AssignMake.php';
+        }
+    }
 }
 
 // load user data from the database
