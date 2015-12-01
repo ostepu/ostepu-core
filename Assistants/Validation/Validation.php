@@ -13,6 +13,7 @@ include_once dirname(__FILE__) . '/validator/Validation_Converter.php';
 include_once dirname(__FILE__) . '/validator/Validation_Event.php';
 include_once dirname(__FILE__) . '/validator/Validation_Perform.php';
 include_once dirname(__FILE__) . '/validator/Validation_File.php';
+include_once dirname(__FILE__) . '/validator/Validation_Logic.php';
 include_once dirname(__FILE__) . '/validator/Validation_Set.php';
 include_once dirname(__FILE__) . '/validator/Validation_Sanitize.php';
 include_once dirname(__FILE__) . '/validator/Validation_Type.php';
@@ -154,6 +155,7 @@ class Validation {
         $methods = array_merge($methods, get_class_methods('Validation_Set'));
         $methods = array_merge($methods, get_class_methods('Validation_Condition'));
         $methods = array_merge($methods, get_class_methods('Validation_Type'));
+        $methods = array_merge($methods, get_class_methods('Validation_Logic'));
         
         $methodName = 'validate_'.$name;
 
@@ -205,8 +207,8 @@ class Validation {
             return null;
         }
         
-        $validatorIndicators = array('valid', 'to', 'on', 'set', 'perform', 'file', 'sanitize', 'satisfy', 'is');
-        $validatorClasses = array('Validation_Structure', 'Validation_Converter', 'Validation_Event', 'Validation_Set', 'Validation_Perform', 'Validation_File', 'Validation_Sanitize', 'Validation_Condition', 'Validation_Type');
+        $validatorIndicators = array('valid', 'to', 'on', 'set', 'perform', 'file', 'sanitize', 'satisfy', 'is', 'logic');
+        $validatorClasses = array('Validation_Structure', 'Validation_Converter', 'Validation_Event', 'Validation_Set', 'Validation_Perform', 'Validation_File', 'Validation_Sanitize', 'Validation_Condition', 'Validation_Type', 'Validation_Logic');
         $validatorFunktion = null;
         
         if (isset($this->custom_Validations[$ruleName])){

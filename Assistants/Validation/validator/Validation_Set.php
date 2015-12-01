@@ -52,4 +52,15 @@ class Validation_Set {
         
         return array('valid'=>true, 'field'=>$key, 'value'=>$param);
     }
+    
+    public static function validate_set_error($key, $input, $setting = null, $param = null)
+    {   
+        if (!isset($param)){
+            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter.');
+        }
+        
+        $setting['setError'] = $param;
+        
+        return;
+    }
 }
