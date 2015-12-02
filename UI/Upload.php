@@ -201,18 +201,33 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                                 }
                             
                             }
-                            
-                            $messages = $result->getMessages();
+
+                            $warningmsg = Language::Get('main','warningUploadSubmission', $langTemplate, array('exerciseName'=>$exercise['name']));
+                            $showWarnings = false;
+
+                            if ($result!==null && !empty($result)){
+                                $warningmsg .= "<br><br>";
+                                $messages = $result->getMessages();
+                                foreach ($messages as $message){
+                                    $showWarnings = true;
+                                    $warningmsg.=str_replace("\n",'<br>',$message).'<br>';
+                                }
+                            }
+                            if ($showWarnings == true) {
+                                $notifications[] = MakeNotification('warning',
+                                                                $warningmsg);
+                            }
+                            /*$messages = $result->getMessages();
                             
                             if ($messages !== null){
                                 foreach ($messages as $message){
                                     $errormsg.=str_replace("\n",'<br>',$message).'<br>';
                                 }
-                            }
+                            }*/
                         }
                       
 
-                        $msg = Language::Get('main','successUploadSubmission', $langTemplate, array('exerciseName'=>$exercise['name']))."<br>".$errormsg;
+                        $msg = Language::Get('main','successUploadSubmission', $langTemplate, array('exerciseName'=>$exercise['name']));
                         $notifications[] = MakeNotification('success',
                                                             $msg);
                                                             

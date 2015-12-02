@@ -450,6 +450,8 @@ class LOOP
 
             $file = $pro->getRawSubmission()->getFile(); // die unverarbeitete Einsendung (Dateiinhalt im body oder Adresse)
             $timestamp = $file->getTimeStamp();
+
+            $showErrorsEnabled = Testcase::decodeTestcase($pro->getParameter())[0]->getErrorsEnabled();
             
             // der Eingangsstempel müsste natürlich schon existieren, ansonsten gilt dieser als Eingangszeitpunkt (wird nicht verwendet)
             if ($timestamp === null) 
@@ -513,7 +515,11 @@ class LOOP
                                         $pos = strpos($out, ',');
                                         $text.=$out."\n";
                                     }
-                                    $pro->addMessage($text);
+                                    if (!is_null($showErrorsEnabled) && $showErrorsEnabled == "1")
+                                    {
+                                        $pro->addMessage($text);
+                                    }
+                                    
                                     $this->createMarking($pro, $text, null, 2);
                                 }
                                 //$this->app->response->setStatus( 409 );
@@ -575,7 +581,10 @@ class LOOP
                                     }
                                     
                                     // die fertige Fehlermeldung dem Prozessobjekt übergeben    
-                                    $pro->addMessage($text);
+                                    if (!is_null($showErrorsEnabled) && $showErrorsEnabled == "1")
+                                    {
+                                        $pro->addMessage($text);
+                                    }
                                     $this->createMarking($pro, $text, null, 2);
                                 }
                                 //$this->app->response->setStatus( 409 );
@@ -615,7 +624,10 @@ class LOOP
                                         $text.=$out."\n";
                                     }
                                         
-                                    $pro->addMessage($text);
+                                    if (!is_null($showErrorsEnabled) && $showErrorsEnabled == "1")
+                                    {
+                                        $pro->addMessage($text);
+                                    }
                                     $this->createMarking($pro, $text, null, 2);
                                 }
                                 //$this->app->response->setStatus( 409 );

@@ -613,7 +613,15 @@ class LProcessor
 //echo $result['content'].'_______';
                     if ( $result['status'] >= 200 && 
                          $result['status'] <= 299 ){
-                         $process = Process::decodeProcess( $result['content'] ); 
+                         $process = Process::decodeProcess( $result['content'] );
+
+                         if (isset($result['content'])){
+                            $content = Process::decodeProcess($result['content']); 
+                            //$submission->setStatus($content->getStatus());
+                            $submission = $process->getSubmission();
+                            if ($submission===null)$submission = $process->getRawSubmission();
+                            $submission->addMessages($content->getMessages());
+                        } 
 
                     } else {
                         $fail = true;
