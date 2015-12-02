@@ -67,6 +67,7 @@ class LOOP
     private $_deleteProcess = array( );
     private $_deleteCourse = array( );
     private $_getProcess = array( );
+
     
     
     /**
@@ -99,6 +100,8 @@ class LOOP
         $this->_deleteProcess = CConfig::getLinks($conf->getLinks(),"deleteProcess"); // für DELETE /course/xyz
         $this->_deleteCourse = CConfig::getLinks($conf->getLinks(),"deleteCourse");
         $this->_getProcess = CConfig::getLinks($conf->getLinks(),"getProcess"); // GET /link/exists/course/:courseid
+        $this->_pdf = CConfig::getLinks($conf->getLinks(),"pdf");
+
         
 
         // POST PostProcess
@@ -137,6 +140,78 @@ class LOOP
 
         // run Slim
         $this->app->run();
+    }
+
+    public function createMarking(&$pro, $text, $file, $status)
+    {
+        if ($pro->getMarking() === null){
+            $timestamp = time();
+            $raw = $pro->getRawSubmission();
+            $exerciseName = '';
+            
+            if ( $raw !== null )
+                $exerciseName = $raw->getExerciseName();
+            
+        
+            $Text=  "<h1>AUFGABE {$exerciseName}</h1>".
+                    "<hr>";
+                    
+            $Text.= "<p>".
+                    "<h2>Fehler:</h2>".
+                    "<span style=\"color: 'black'\">".
+                    $text.
+                    "</span></p>";
+
+            
+            $pdf = Pdf::createPdf($Text);
+//echo Pdf::encodePdf($pdf);return;
+            $result = Request::routeRequest( 
+                                            'POST',
+                                            '/pdf',
+                                            array(),
+                                            Pdf::encodePdf($pdf),
+                                            $this->_pdf,
+                                            'pdf'
+                                            );
+            // checks the correctness of the query
+            if ( $result['status'] >= 200 && 
+                 $result['status'] <= 299 ){
+                 
+                $pdf = File::decodeFile($result['content']);
+                
+                $pdf->setDisplayName($exerciseName.'.pdf');
+                $pdf->setTimeStamp($timestamp);
+                $pdf->setBody(null);
+                
+                $submission = $pro->getSubmission();
+                if ($submission === null) $submission = $pro->getRawSubmission();
+                
+                $studentId = ($pro->getRawSubmission()!==null ? $pro->getRawSubmission()->getStudentId() : null);
+                
+                if ($studentId===null)
+                    $studentId = ($pro->getSubmission()!==null ? $pro->getSubmission()->getStudentId() : null);
+                
+                $marking = Marking::createMarking( 
+                                                 null,
+                                                 $studentId,
+                                                 null,
+                                                 null,
+                                                 null,
+                                                 null,
+                                                 $status,
+                                                 0,
+                                                 ($submission->getDate()!==null ? $submission->getDate() : time())
+                                                 );
+                if (is_object($submission))
+                    $marking->setSubmission(clone $submission);
+                    
+                $marking->setFile($pdf);
+                $pro->setMarking($marking);
+                
+            } else {
+                $this->app->response->setStatus( 409 );
+            }
+        }
     }
    
     /**
@@ -439,8 +514,9 @@ class LOOP
                                         $text.=$out."\n";
                                     }
                                     $pro->addMessage($text);
+                                    $this->createMarking($pro, $text, null, 2);
                                 }
-                                $this->app->response->setStatus( 409 );
+                                //$this->app->response->setStatus( 409 );
                             }
                         } elseif ($type == 'java'){
                             // behandelt Einsendungen für den Java Compiler
@@ -500,8 +576,9 @@ class LOOP
                                     
                                     // die fertige Fehlermeldung dem Prozessobjekt übergeben    
                                     $pro->addMessage($text);
+                                    $this->createMarking($pro, $text, null, 2);
                                 }
-                                $this->app->response->setStatus( 409 );
+                                //$this->app->response->setStatus( 409 );
                             }
                             
                         } elseif ($type == 'custom'){
@@ -537,12 +614,11 @@ class LOOP
                                         if ($out=='') continue;
                                         $text.=$out."\n";
                                     }
-                                    
-                                    
                                         
                                     $pro->addMessage($text);
+                                    $this->createMarking($pro, $text, null, 2);
                                 }
-                                $this->app->response->setStatus( 409 );
+                                //$this->app->response->setStatus( 409 );
                             }
                         }
                         
