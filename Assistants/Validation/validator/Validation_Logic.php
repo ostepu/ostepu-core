@@ -1,5 +1,13 @@
 <?php
-class Validation_Logic {
+class Validation_Logic implements Validation_Interface
+{
+    private static $indicator = 'logic';
+    
+    public static function getIndicator()
+    {
+        return self::$indicator;
+    }
+    
     public static function validate_logic_or($key, $input, $setting = null, $param = null)
     {
         if ($setting['setError'] || !isset($input[$key]) || !isset($param)){

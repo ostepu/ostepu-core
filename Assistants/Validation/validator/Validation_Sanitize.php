@@ -1,5 +1,12 @@
 <?php
-class Validation_Sanitize {
+class Validation_Sanitize implements Validation_Interface
+{
+    private static $indicator = 'sanitize';
+    
+    public static function getIndicator()
+    {
+        return self::$indicator;
+    }
     
     public static function validate_sanitize_url($key, $input, $setting = null, $param = null)
     {

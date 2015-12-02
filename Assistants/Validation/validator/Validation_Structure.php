@@ -1,5 +1,12 @@
 <?php
-class Validation_Structure {
+class Validation_Structure implements Validation_Interface
+{
+    private static $indicator = 'valid';
+    
+    public static function getIndicator()
+    {
+        return self::$indicator;
+    }
     
     public static function validate_valid_email($key, $input, $setting = null, $param = null)
     {

@@ -1,5 +1,12 @@
 <?php
-class Validation_Converter {
+class Validation_Converter implements Validation_Interface
+{
+    private static $indicator = 'to';
+    
+    public static function getIndicator()
+    {
+        return self::$indicator;
+    }
     
     public static function validate_to_float($key, $input, $setting = null, $param = null)
     {
@@ -178,30 +185,6 @@ class Validation_Converter {
         
         if ($obj === false){
             return false;
-        }
-        
-        return array('valid'=>true,'field'=>$key,'value'=>$obj);
-    }
-    
-    public static function validate_to_structure($key, $input, $setting = null, $param = null)
-    {
-        if ($setting['setError']){
-            return;
-        }
-        
-        if (!isset($input[$key])) {
-            return array('valid'=>true,'field'=>$key,'value'=>null);
-        }
-        
-        if (!isset($param)){
-            throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter.');
-        }
-        
-        $method = $param.'::decode'.$param;
-        $obj = @$method($input[$key]);
-        
-        if ($obj === null){
-           return false; 
         }
         
         return array('valid'=>true,'field'=>$key,'value'=>$obj);

@@ -1,5 +1,12 @@
 <?php
-class Validation_Event {
+class Validation_Event implements Validation_Interface
+{
+    private static $indicator = 'on';
+    
+    public static function getIndicator()
+    {
+        return self::$indicator;
+    }
     
     public static function validate_on_error($key, $input, $setting = null, $param = null)
     {

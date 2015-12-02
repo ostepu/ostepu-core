@@ -7,12 +7,11 @@
  */
 
 include_once dirname(__FILE__) . '/../../UI/include/Helpers.php';
-include_once dirname(__FILE__) . '/../MimeReader.php';
+include_once dirname(__FILE__) . '/Validation_Interface.php';
 include_once dirname(__FILE__) . '/validator/Validation_Structure.php';
 include_once dirname(__FILE__) . '/validator/Validation_Converter.php';
 include_once dirname(__FILE__) . '/validator/Validation_Event.php';
 include_once dirname(__FILE__) . '/validator/Validation_Perform.php';
-include_once dirname(__FILE__) . '/validator/Validation_File.php';
 include_once dirname(__FILE__) . '/validator/Validation_Logic.php';
 include_once dirname(__FILE__) . '/validator/Validation_Set.php';
 include_once dirname(__FILE__) . '/validator/Validation_Sanitize.php';
@@ -20,7 +19,6 @@ include_once dirname(__FILE__) . '/validator/Validation_Type.php';
 include_once dirname(__FILE__) . '/validator/Validation_Condition.php';
 include_once dirname(__FILE__) . '/selector/Selection_Key.php';
 include_once dirname(__FILE__) . '/selector/Selection_Elem.php';
-include_once dirname(__FILE__) . '/../Structures.php';
 
 class Validation {
     private $input = array();
@@ -38,8 +36,10 @@ class Validation {
     private $validated = null;
     
     private $validation_rules = array();
-    private static $custom_Validation = array();
-    private static $custom_Selection = array();
+    private $custom_Validation = array();
+    private $custom_Validation_Classes = array();
+    private $custom_Selection = array();
+    private $custom_Selection_Classes = array();
     
     private $settings = array('preRules' => array(),'postRules' => array(),'abortSetOnError'=>false,'abortValidationOnError'=>false);
     
@@ -140,22 +140,23 @@ class Validation {
         return $this;
     }
     
+    private static $validatorClasses = array('Validation_Structure'=>null, 'Validation_Converter'=>null, 'Validation_Event'=>null, 'Validation_Set'=>null, 'Validation_Perform'=>null, 'Validation_Sanitize'=>null, 'Validation_Condition'=>null, 'Validation_Type'=>null, 'Validation_Logic'=>null);
+    private static $selectionClasses = array('Selection_Key'=>null, 'Selection_Elem'=>null);
+    
     public function addValidator($name, $callback)
     {
         if (isset($this->custom_Validation[$name])) {
             throw new Exception("Validation rule '{$methodName}' already exists (custom).");
         }
 
-        $methods = get_class_methods('Validation_Converter');
-        $methods = array_merge($methods, get_class_methods('Validation_Structure'));
-        $methods = array_merge($methods, get_class_methods('Validation_Event'));
-        $methods = array_merge($methods, get_class_methods('Validation_File'));
-        $methods = array_merge($methods, get_class_methods('Validation_Perform'));
-        $methods = array_merge($methods, get_class_methods('Validation_Sanitize'));
-        $methods = array_merge($methods, get_class_methods('Validation_Set'));
-        $methods = array_merge($methods, get_class_methods('Validation_Condition'));
-        $methods = array_merge($methods, get_class_methods('Validation_Type'));
-        $methods = array_merge($methods, get_class_methods('Validation_Logic'));
+        $methods = array();
+        foreach(self::$validatorClasses as $class => $indicator){
+            $methods = array_merge($methods, get_class_methods($class));            
+        }
+        
+        foreach($this->custom_Validation_Classes as $class){
+            $methods = array_merge($methods, get_class_methods($class));            
+        }
         
         $methodName = 'validate_'.$name;
 
@@ -167,14 +168,26 @@ class Validation {
         return $this;
     }
     
+    public function addValidationClass($name)
+    {
+        $this->custom_Validation_Classes[$name] = $name::getIndicator();
+        return $this;
+    }
+    
     public function addSelector($name, $callback)
     {
         if (isset($this->custom_Selection[$name])) {
             throw new Exception("Selector rule '{$methodName}' already exists (custom).");
         }
 
-        $methods = get_class_methods('Selection_Key');
-        $methods = array_merge($methods, get_class_methods('Selection_Elem'));
+        $methods = array();
+        foreach(self::$selectionClasses as $class => $indicator){
+            $methods = array_merge($methods, get_class_methods($class));            
+        }
+        
+        foreach($this->custom_Selection_Classes as $class){
+            $methods = array_merge($methods, get_class_methods($class));            
+        }
         
         $methodName = 'select_'.$name;
 
@@ -183,6 +196,12 @@ class Validation {
         }
 
         $this->custom_Selection[$name] = $callback;
+        return $this;
+    }
+    
+    public function addSelectionClass($name)
+    {
+        $this->custom_Selection_Classes[$name] = $name::getIndicator();
         return $this;
     }
     
@@ -198,6 +217,15 @@ class Validation {
         }
         
         $this->settings = array_merge($this->settings, $settings);
+        
+        foreach(self::$validatorClasses as $class => $indicator){
+           self::$validatorClasses[$class] = $class::getIndicator();
+        }
+        
+        foreach(self::$selectionClasses as $class => $indicator){
+           self::$selectionClasses[$class] = $class::getIndicator();
+        }
+    
         return $this;
     }
     
@@ -206,14 +234,12 @@ class Validation {
         if (trim($ruleName) === ''){
             return null;
         }
+                
+        $validatorFunction = null;
         
-        $validatorIndicators = array('valid', 'to', 'on', 'set', 'perform', 'file', 'sanitize', 'satisfy', 'is', 'logic');
-        $validatorClasses = array('Validation_Structure', 'Validation_Converter', 'Validation_Event', 'Validation_Set', 'Validation_Perform', 'Validation_File', 'Validation_Sanitize', 'Validation_Condition', 'Validation_Type', 'Validation_Logic');
-        $validatorFunktion = null;
-        
-        if (isset($this->custom_Validations[$ruleName])){
-            if (is_callable($this->custom_Validations[$ruleName])){
-                $validatorFunktion = $this->custom_Validations[$ruleName];
+        if (isset($this->custom_Validation[$ruleName])){
+            if (is_callable($this->custom_Validation[$ruleName])){
+                $validatorFunction = $this->custom_Validation[$ruleName];
             } else {
                 throw new Exception("Validation '{$ruleName}' is not callable (custom).");
             }
@@ -225,26 +251,38 @@ class Validation {
                 throw new Exception("invalid rule name '{$ruleName}'.");
             }
             
-            if (!in_array($indicator, $validatorIndicators)){
+            $possibleClasses = array();
+            foreach(self::$validatorClasses as $class => $classIndicator){
+                if ($classIndicator === $indicator){
+                    $possibleClasses[] = $class; 
+                }
+            }
+            
+            foreach($this->custom_Validation_Classes as $class => $classIndicator){
+                if ($classIndicator === $indicator){
+                    $possibleClasses[] = $class; 
+                }
+            }
+            
+            if (empty($possibleClasses)){               
                 throw new Exception("Invalid indicator '{$indicator}'.");
             }
             
-            $classPos = array_search($indicator,$validatorIndicators);
-            
-            if ($classPos === false){
-                throw new Exception("Indicator'{$indicator}' does not exists.");
+            $found = false;
+            foreach($possibleClasses as $class){
+                if(is_callable($class.'::validate_'.$ruleName)) {
+                    $validatorFunction = $class.'::validate_'.$ruleName;
+                    $found = true;
+                    break;
+                }
             }
             
-            $class = $validatorClasses[$classPos];
-            
-            if(is_callable($class.'::validate_'.$ruleName)) {
-                $validatorFunktion = $class.'::validate_'.$ruleName;
-            } else {
+            if (!$found){
                 throw new Exception("Validation '".$class.'::validate_'.$ruleName."' does not exists.");
             }
         }
         
-        return $validatorFunktion;
+        return $validatorFunction;
     }
     
     public function findSelector($ruleName)
@@ -252,14 +290,12 @@ class Validation {
         if (trim($ruleName) === ''){
             return null;
         }
+
+        $selectionFunction = null;
         
-        $selectionIndicators = array('key', 'elem');
-        $selectionClasses = array('Selection_Key', 'Selection_Elem');
-        $selectionFunktion = null;
-        
-        if (isset($this->custom_Validations[$ruleName])){
-            if (is_callable($this->custom_Validations[$ruleName])){
-                $selectionFunktion = $this->custom_Validations[$ruleName];
+        if (isset($this->custom_Selection[$ruleName])){
+            if (is_callable($this->custom_Selection[$ruleName])){
+                $selectionFunction = $this->custom_Selection[$ruleName];
             } else {
                 throw new Exception("Selection '{$ruleName}' is not callable (custom).");
             }
@@ -271,26 +307,38 @@ class Validation {
                 throw new Exception("invalid rule name '{$ruleName}'.");
             }
             
-            if (!in_array($indicator, $selectionIndicators)){
+            $possibleClasses = array();
+            foreach(self::$selectionClasses as $class => $classIndicator){
+                if ($classIndicator === $indicator){
+                    $possibleClasses[] = $class; 
+                }
+            }
+            
+            foreach($this->custom_Selection_Classes as $class => $classIndicator){
+                if ($classIndicator === $indicator){
+                    $possibleClasses[] = $class; 
+                }
+            }
+            
+            if (empty($possibleClasses)){               
                 throw new Exception("Invalid indicator '{$indicator}'.");
             }
             
-            $classPos = array_search($indicator,$selectionIndicators);
-            
-            if ($classPos === false){
-                throw new Exception("Indicator'{$indicator}' does not exists.");
+            $found = false;
+            foreach($possibleClasses as $class){
+                if(is_callable($class.'::select_'.$ruleName)) {
+                    $selectionFunction = $class.'::select_'.$ruleName;
+                    $found = true;
+                    break;
+                }
             }
             
-            $class = $selectionClasses[$classPos];
-            
-            if(is_callable($class.'::select_'.$ruleName)) {
-                $selectionFunktion = $class.'::select_'.$ruleName;
-            } else {
-                throw new Exception("Selection '".$class.'::validate_'.$ruleName."' does not exists.");
+            if (!$found){
+                throw new Exception("Selection '".$class.'::select_'.$ruleName."' does not exists.");
             }
         }
         
-        return $selectionFunktion;
+        return $selectionFunction;
     }
     
     public function collectKeys($fieldNames, $selectors)

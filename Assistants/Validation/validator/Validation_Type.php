@@ -1,5 +1,12 @@
 <?php
-class Validation_Type {
+class Validation_Type implements Validation_Interface
+{
+    private static $indicator = 'is';
+    
+    public static function getIndicator()
+    {
+        return self::$indicator;
+    }
 
     public static function validate_is_float($key, $input, $setting = null, $param = null)
     {

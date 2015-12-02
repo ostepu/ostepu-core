@@ -1,5 +1,13 @@
 <?php
-class Validation_Perform {
+class Validation_Perform implements Validation_Interface
+{
+    private static $indicator = 'perform';
+    
+    public static function getIndicator()
+    {
+        return self::$indicator;
+    }
+    
     public static function validate_perform_this_foreach($key, $input, $setting = null, $param = null)
     {
         if ($setting['setError'] || !isset($input[$key])){

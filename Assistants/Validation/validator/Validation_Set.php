@@ -1,5 +1,12 @@
 <?php
-class Validation_Set {
+class Validation_Set implements Validation_Interface
+{
+    private static $indicator = 'set';
+    
+    public static function getIndicator()
+    {
+        return self::$indicator;
+    }
           
     public static function validate_set_default($key, $input, $setting = null, $param = null)
     {

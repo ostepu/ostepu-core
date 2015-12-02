@@ -1,5 +1,13 @@
 <?php
-class Selection_Key {
+class Selection_Key implements Validation_Interface
+{
+    private static $indicator = 'key';
+    
+    public static function getIndicator()
+    {
+        return self::$indicator;
+    }
+    
     public static function select_key($keys, $input, $setting = null, $param = null)
     {
         if ($setting['setError']) {
