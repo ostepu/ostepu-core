@@ -31,7 +31,7 @@ $f->addSet('sortUsers',
             'on_error'=>['type'=>'error',
                          'text'=>'???1']]);
 $valResults = $f->validate();
-$notifications = array_merge($notifications,$f->getPrintableNotifications());
+$notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
 $f->resetNotifications()->resetErrors();
                          
 if ($f->isValid() && !isset($valResults['actionSortUsers'])){
@@ -41,7 +41,7 @@ if ($f->isValid() && !isset($valResults['actionSortUsers'])){
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','invalidAction', $langTemplate)]]);
     $valResults = $f->validate();
-    $notifications = array_merge($notifications,$f->getPrintableNotifications());
+    $notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
     $f->resetNotifications()->resetErrors();
     
     if ($f-isValid()){

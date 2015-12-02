@@ -6,7 +6,6 @@
  * @author Till Uhlig
  */
 
-include_once dirname(__FILE__) . '/../../UI/include/Helpers.php';
 include_once dirname(__FILE__) . '/Validation_Interface.php';
 include_once dirname(__FILE__) . '/validator/Validation_Structure.php';
 include_once dirname(__FILE__) . '/validator/Validation_Converter.php';
@@ -124,12 +123,12 @@ class Validation {
         return $this->notifications;
     }
     
-    public function getPrintableNotifications()
+    public function getPrintableNotifications($callback)
     {
         $temp = array();
         $notes = $this->getNotifications();
         foreach($notes as $note){
-            $temp[] = MakeNotification($note['type'],$note['text']);
+            $temp[] = $callback($note['type'],$note['text']);
         }
         return $temp;
     }

@@ -27,7 +27,7 @@ $f->addSet('action',
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','invalidAction', $langTemplate)]]);
 $valResults = $f->validate();
-$notifications = array_merge($notifications,$f->getPrintableNotifications());
+$notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
 $f->resetNotifications()->resetErrors();
 
 if ($f->isValid() && $valResults['action'] !== 'noAction') {
@@ -46,7 +46,7 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                                   'text'=>Language::Get('main','invalidFileType', $langTemplate)]]);
                                   
         $valResults2 = $f2->validate();
-        $notifications = array_merge($notifications,$f2->getPrintableNotifications());
+        $notifications = array_merge($notifications,$f2->getPrintableNotifications('MakeNotification'));
         $f2->resetNotifications()->resetErrors();
 
         if ($f2->isValid()){

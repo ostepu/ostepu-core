@@ -14,7 +14,7 @@ $f->addSet('tutorIds',
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','invalidTutors', $langTemplate)]]);
 $valResults = $f->validate();
-$notifications = array_merge($notifications,$f->getPrintableNotifications());
+$notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
 $f->resetNotifications()->resetErrors();
 
 if ($f->isValid()) {

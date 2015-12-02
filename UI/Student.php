@@ -66,7 +66,7 @@ $f->addSet('deleteSubmissionWarning',
                          'text'=>Language::Get('main','invalidSheetId', $langTemplate)]]);
                                    
 $valResults = $f->validate();
-$notifications = array_merge($notifications,$f->getPrintableNotifications());
+$notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
 $f->resetNotifications()->resetErrors();
 
 if (isset($valResults['deleteSubmissionWarning'])) {

@@ -8,7 +8,7 @@ $f->addSet('actionAssignAllProposals',
         'on_error'=>['type'=>'error',
                      'text'=>Language::Get('main','???', $langTemplate)]]);
 $valResults = $f->validate();
-$notifications = array_merge($notifications,$f->getPrintableNotifications());
+$notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
 $f->resetNotifications()->resetErrors();
     
 // automatically assigns all unassigned proposed submissions to tutors
@@ -85,7 +85,7 @@ if (isset($valResults['actionAssignManually'])){
                              'text'=>Language::Get('main','???', $langTemplate)]]);
                              
     $valResults = $f->validate();
-    $assignManuallyNotifications = array_merge($assignManuallyNotifications,$f->getPrintableNotifications());
+    $assignManuallyNotifications = array_merge($assignManuallyNotifications,$f->getPrintableNotifications('MakeNotification'));
     $f->resetNotifications()->resetErrors();
 
     if ($f->isValid()) {

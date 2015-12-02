@@ -24,7 +24,7 @@ $f->addSet('action',
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','invalidAction', $langTemplate)]]);
 $valResults = $f->validate();
-$notifications = array_merge($notifications,$f->getPrintableNotifications());
+$notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
 $f->resetNotifications()->resetErrors();
 
 $selectedUser = $uid;
@@ -136,7 +136,7 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                                  'text'=>Language::Get('main','invalidUserId', $langTemplate)]]);
                                            
         $valResults = $f->validate();
-        $notifications = array_merge($notifications,$f->getPrintableNotifications());
+        $notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
         $f->resetNotifications()->resetErrors();
 
         if ($f->isValid()){
@@ -269,7 +269,7 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                                  'text'=>Language::Get('main','invalidSelection', $langTemplate)]]);
                                            
         $valResults = $f->validate();
-        $notifications = array_merge($notifications,$f->getPrintableNotifications());
+        $notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
         $f->resetNotifications()->resetErrors();
 
         if ($f->isValid()){
@@ -312,7 +312,7 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                                  'text'=>Language::Get('main','invalidApplyGroup', $langTemplate)]]);
                                            
         $valResults = $f->validate();
-        $notifications = array_merge($notifications,$f->getPrintableNotifications());
+        $notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
         $f->resetNotifications()->resetErrors();
 
         if ($f->isValid()){
@@ -331,7 +331,7 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                                  'text'=>Language::Get('main','invalidMemberIds', $langTemplate)]]);
                                  
                 $valResults = $f->validate();
-                $notifications = array_merge($notifications,$f->getPrintableNotifications());
+                $notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
                 $f->resetNotifications()->resetErrors();
                                  
                 if ($f->isValid()) {
@@ -402,7 +402,7 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                                  'text'=>Language::Get('main','invalidUserNames', $langTemplate)]]);
                                  
                 $valResults = $f->validate();
-                $notifications = array_merge($notifications,$f->getPrintableNotifications());
+                $notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
                 $f->resetNotifications()->resetErrors();
                 
                 if ($f->isValid()) {
@@ -447,7 +447,7 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                                  'text'=>Language::Get('main','invalidUserId', $langTemplate)]]);
                                  
         $valResults = $f->validate();
-        $notifications = array_merge($notifications,$f->getPrintableNotifications());
+        $notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
         $f->resetNotifications()->resetErrors();
 
         if ($f->isValid()){

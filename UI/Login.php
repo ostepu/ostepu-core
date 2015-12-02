@@ -40,8 +40,8 @@ $f2->addSet('back',
                                    
 $valResults = $f->validate();    
 $valResults2 = $f2->validate();
-$notifications = array_merge($notifications, $f->getPrintableNotifications());
-$notifications = array_merge($notifications, $f2->getPrintableNotifications());
+$notifications = array_merge($notifications, $f->getPrintableNotifications('MakeNotification'));
+$notifications = array_merge($notifications, $f2->getPrintableNotifications('MakeNotification'));
 $f->resetNotifications()->resetErrors();
 $f2->resetNotifications()->resetErrors();
 
@@ -59,7 +59,7 @@ if ($f->isValid() && $f2->isValid() && $valResults['action'] !== 'noAction') {
                                            'text'=>Language::Get('main','invalidPassword', $langTemplate))));
 
         $valResults = $f->validate();
-        $notifications = array_merge($notifications, $f->getPrintableNotifications());
+        $notifications = array_merge($notifications, $f->getPrintableNotifications('MakeNotification'));
         $f->resetNotifications()->resetErrors();
 
         if ($f->isValid()){

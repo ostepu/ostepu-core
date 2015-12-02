@@ -22,7 +22,7 @@ $f->addSet('action',
                                    'text'=>Language::Get('main','invalidAction', $langTemplate))));
 
 $valResults = $f->validate();
-$notifications = array_merge($notifications, $f->getPrintableNotifications());
+$notifications = array_merge($notifications, $f->getPrintableNotifications('MakeNotification'));
 $f->resetNotifications()->resetErrors();
 
 if ($f->isValid() && $valResults['action'] !== 'noAction') {
@@ -83,7 +83,7 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                 $notifications[] = MakeNotification('error', Language::Get('main','incorrectOldPassword', $langTemplate));
             }
         } else {
-            $notifications = array_merge($notifications, $f->getPrintableNotifications());
+            $notifications = array_merge($notifications, $f->getPrintableNotifications('MakeNotification'));
             $f->resetNotifications()->resetErrors();
         }
     } else if ($valResults['action'] === 'SetAccountInfo') {    
@@ -108,7 +108,7 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                 $notifications[] = MakeNotification('success', Language::Get('main','languageChanged', $langTemplate));
             }
         } else {
-            $notifications = array_merge($notifications, $f->getPrintableNotifications());
+            $notifications = array_merge($notifications, $f->getPrintableNotifications('MakeNotification'));
             $f->resetNotifications()->resetErrors();
         }
     }

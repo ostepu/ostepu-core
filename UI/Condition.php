@@ -43,8 +43,8 @@ $f2->addSet('action',
                                    
 $valResults = $f->validate();
 $valResults2 = $f2->validate();
-$notifications = array_merge($notifications,$f->getPrintableNotifications());
-$notifications = array_merge($notifications,$f2->getPrintableNotifications());
+$notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
+$notifications = array_merge($notifications,$f2->getPrintableNotifications('MakeNotification'));
 $f->resetNotifications()->resetErrors();
 $f2->resetNotifications()->resetErrors();
                                    
@@ -102,7 +102,7 @@ if ($f2->isValid() && $valResults2['action'] !== 'noAction') {
                 }
             }
         } else {
-            $notifications = $notifications + $f->getPrintableNotifications();
+            $notifications = $notifications + $f->getPrintableNotifications('MakeNotification');
             $f->resetNotifications()->resetErrors();
             $RequestError = true;
         }

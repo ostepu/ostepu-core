@@ -64,7 +64,7 @@ $f->addSet('action',
                          'text'=>'???1']]);
                                    
 $valResults = $f->validate();
-$notifications = array_merge($notifications,$f->getPrintableNotifications());
+$notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
 $f->resetNotifications()->resetErrors();
 
 if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== 'noAction' ) {
@@ -84,7 +84,7 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                                  'text'=>Language::Get('main','invalidExternalId', $langTemplate)]]);
 
         $valResults = $f->validate();
-        $editExternalIdNotifications = array_merge($editExternalIdNotifications,$f->getPrintableNotifications());
+        $editExternalIdNotifications = array_merge($editExternalIdNotifications,$f->getPrintableNotifications('MakeNotification'));
         $f->resetNotifications()->resetErrors();
         
         if ($f->isValid()){
@@ -137,7 +137,7 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                                  'text'=>Language::Get('main','invalidExternalTypeName', $langTemplate)]]);
                                            
         $valResults = $f->validate();
-        $addExternalIdNotifications = array_merge($addExternalIdNotifications,$f->getPrintableNotifications());
+        $addExternalIdNotifications = array_merge($addExternalIdNotifications,$f->getPrintableNotifications('MakeNotification'));
         $f->resetNotifications()->resetErrors();
         
         if ($f->isValid()){            
@@ -170,7 +170,7 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                                  'text'=>Language::Get('main','invalidExtensionId', $langTemplate)]]);
                                            
         $valResults = $f->validate();
-        $pluginsNotifications = array_merge($pluginsNotifications,$f->getPrintableNotifications());
+        $pluginsNotifications = array_merge($pluginsNotifications,$f->getPrintableNotifications('MakeNotification'));
         $f->resetNotifications()->resetErrors();
         
         if ($f->isValid()){
@@ -303,7 +303,7 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                                  'text'=>'???1']]);
                                            
         $valResults = $f->validate();
-        $courseSettingsNotifications = array_merge($courseSettingsNotifications,$f->getPrintableNotifications());
+        $courseSettingsNotifications = array_merge($courseSettingsNotifications,$f->getPrintableNotifications('MakeNotification'));
         $f->resetNotifications()->resetErrors();
         
         if($f->isValid()) {
@@ -479,7 +479,7 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                                  'text'=>Language::Get('main','invalidExerciseTypeName', $langTemplate)]]);
                                            
         $valResults = $f->validate();
-        $addExerciseTypeNotifications = array_merge($addExerciseTypeNotifications,$f->getPrintableNotifications());
+        $addExerciseTypeNotifications = array_merge($addExerciseTypeNotifications,$f->getPrintableNotifications('MakeNotification'));
         $f->resetNotifications()->resetErrors();
         
         // check if POST data is send
@@ -516,7 +516,7 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                                  'text'=>Language::Get('main','invalidExerciseType', $langTemplate)]]);
                                            
         $valResults = $f->validate();
-        $editExerciseTypeNotifications = array_merge($editExerciseTypeNotifications,$f->getPrintableNotifications());
+        $editExerciseTypeNotifications = array_merge($editExerciseTypeNotifications,$f->getPrintableNotifications('MakeNotification'));
         $f->resetNotifications()->resetErrors();
         
         // check if POST data is send
@@ -556,7 +556,7 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                                  'text'=>Language::Get('main','noSelectedUser', $langTemplate)]]);
                                            
         $valResults = $f->validate();
-        $grantRightsNotifications = array_merge($grantRightsNotifications,$f->getPrintableNotifications());
+        $grantRightsNotifications = array_merge($grantRightsNotifications,$f->getPrintableNotifications('MakeNotification'));
         $f->resetNotifications()->resetErrors();
         
         // check if POST data is send
@@ -587,7 +587,7 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                                  'text'=>Language::Get('main','noSelectedUser', $langTemplate)]]);
                                            
         $valResults = $f->validate();
-        $revokeRightsNotifications = array_merge($revokeRightsNotifications,$f->getPrintableNotifications());
+        $revokeRightsNotifications = array_merge($revokeRightsNotifications,$f->getPrintableNotifications('MakeNotification'));
         $f->resetNotifications()->resetErrors();
         
         // check if POST data is send
@@ -624,7 +624,7 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                                  'text'=>Language::Get('main','noSelectedUser', $langTemplate)]]);
                                            
         $valResults = $f->validate();
-        $addUserNotifications = array_merge($addUserNotifications,$f->getPrintableNotifications());
+        $addUserNotifications = array_merge($addUserNotifications,$f->getPrintableNotifications('MakeNotification'));
         $f->resetNotifications()->resetErrors();
 
         if ($f->Valid()) {

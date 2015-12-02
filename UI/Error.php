@@ -15,7 +15,7 @@ $f->addSet('msg',
                  'on_error'=>array('type'=>'error',
                                    'text'=>Language::Get('main','invalidMessageType', $langTemplate))));
 $valResults = $f->validate();
-$notifications = array_merge($notifications, $f->getPrintableNotifications());
+$notifications = array_merge($notifications, $f->getPrintableNotifications('MakeNotification'));
 $f->resetNotifications()->resetErrors();
                
 if ($f->isValid() && isset($valResults['msg'])) {
