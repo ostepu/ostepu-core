@@ -5,6 +5,7 @@ class Zugangspasswort
     public static $name = 'login';
     public static $enabledShow = true;
     private static $initialized=false;
+    public static $rank = 125;
     
     public static function showInfoBar(&$data)
     {

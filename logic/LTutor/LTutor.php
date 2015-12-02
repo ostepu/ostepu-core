@@ -673,16 +673,20 @@ class LTutor
                                         
                     // file
                     $newFile = null;
+                    $selectedFile = null;
                     if (isset($marking['submission']['file']['displayName'])){
                         $fileInfo = pathinfo($marking['submission']['file']['displayName']);
                         $newFile = array_merge(array(),$marking['submission']['file']);
+                        $selectedFile='submission';
                     }
                     $converted=false;
                     
-                    if (isset($marking['file']))
+                    if (isset($marking['file']) && $marking['file']!==array()) {
                         $newFile = array_merge(array(),$marking['file']);
+                        $selectedFile='marking';
+                    }
 
-                    if (!isset($marking['file']))
+                    if ($selectedFile == 'submission')
                     if (!isset($newFile['mimeType']) || strpos($newFile['mimeType'],'text/')!==false){
                    
                         // convert file to pdf
@@ -744,6 +748,7 @@ class LTutor
                                 $address = $file['address'];
                                 $newFile['address'] = $address;
                                 $newFile['displayName'] = $fileInfo['filename'].'.pdf';
+                                $selectedFile='converted';
                                 $sortedMarkings[$exerciseId][$key]['submission']['file']['conv'] = $newFile;
                                 $converted=true;
                             }
@@ -754,8 +759,15 @@ class LTutor
                     //$row[] = $namesOfExercises[$exerciseId].'/'.($converted ? 'K_' :'').$marking['id'].($fileInfo['extension']!='' ? '.'.$fileInfo['extension']:'');
                     //if (!$converted)
                     if (isset($newFile['displayName'])){
-                        if (isset($marking['submission']['file']['displayName']) && $newFile['displayName'] == $marking['submission']['file']['displayName'])
-                            $newFile['displayName'] = 'K_'.$newFile['displayName'];
+                        if (isset($selectedFile) && isset($marking['submission']['file']['displayName']) &&
+                            ($selectedFile == 'marking' || $selectedFile == 'converted') &&
+                              $newFile['displayName'] == $marking['submission']['file']['displayName']
+                           ){
+                                  
+                                $newFile['displayName'] = 'K_'.$newFile['displayName'];
+                                
+                            }
+                        
                         $row['FILE'] = $namesOfExercises[$exerciseId].'/'.$marking['id'].'/'.$newFile['displayName'];
                     }
                     unset($newFile);
@@ -1003,12 +1015,26 @@ class LTutor
                             }
                         }                    
                     } elseif(implode('',$row) != '' && substr($row[0],0,2)!='--'){
-                    
+                        
+                        if ((isset($currectOrder['ID']) && !isset($row[$currectOrder['ID']])) ||
+                            (isset($currectOrder['POINTS']) && !isset($row[$currectOrder['POINTS']])) ||
+                            (isset($currectOrder['FILE']) && !isset($row[$currectOrder['FILE']])) ||
+                            (isset($currectOrder['TUTORCOMMENT']) && !isset($row[$currectOrder['TUTORCOMMENT']])) ||
+                            (isset($currectOrder['OUTSTANDING']) && !isset($row[$currectOrder['OUTSTANDING']])) ||
+                            (isset($currectOrder['STATUS']) && !isset($row[$currectOrder['STATUS']]))){
+                            $errors[] = 'invalid Liste.csv';
+                            fclose($csv);
+                            $this->deleteDir($tempDir);
+                            $this->app->response->setStatus(409);
+                            $this->app->response->setBody(json_encode($errors));
+                            $this->app->stop();
+                        }
+                        
                         $markingId = isset($currectOrder['ID']) ? $row[$currectOrder['ID']] : null;
                         $points = isset($currectOrder['POINTS']) ? $row[$currectOrder['POINTS']] : null;       
                         $points = str_replace(',','.',$points);
-                        $markingFile = isset($currectOrder['FILE']) ? $row[$currectOrder['FILE']] : null;                         
-                        
+                        $markingFile = isset($currectOrder['FILE']) ? $row[$currectOrder['FILE']] : null;
+                            
                         // check if markingId exists in transaction
                         if (!isset($transaction['markings'][$markingId])){
                             // unknown markingId
@@ -1040,7 +1066,7 @@ class LTutor
                                 $fileAddress = $files.'/'.$markingFile; ///file_get_contents($files.'/'.$markingFile);
                                 // file
                                 $fileInfo = pathinfo($markingFile);
-                                $file = newFile();
+                                $file = new File();
                                 $file->setDisplayName($fileInfo['basename']);
                                 $file->setBody( Reference::createReference($fileAddress) );
                             } else {
@@ -1119,20 +1145,28 @@ class LTutor
                         }
                     }
                 }
-                ///echo json_encode($markings); return;
-                //request to database to edit the markings
-                $result = Request::routeRequest(
-                                                'POST',
-                                                '/marking',
-                                                array(),
-                                                json_encode($markings),
-                                                $this->_postMarking,
-                                                'marking'
-                                                );
-                                            
-                /// TODO: prüfen ob jede hochgeladen wurde
-                if ($result['status'] != 201) {
-                    $errors[] = 'send markings failed';
+                
+                $mark = @json_encode($markings);
+                
+                if ($mark !== false){
+                
+                    ///echo json_encode($markings); return;
+                    //request to database to edit the markings
+                    $result = Request::routeRequest(
+                                                    'POST',
+                                                    '/marking',
+                                                    array(),
+                                                    $mark,
+                                                    $this->_postMarking,
+                                                    'marking'
+                                                    );
+                                                
+                    /// TODO: prüfen ob jede hochgeladen wurde
+                    if ($result['status'] != 201) {
+                        $errors[] = 'send markings failed';
+                    }
+                } else {
+                    $errors[] = 'invalid input';
                 }
                 
             } else {
@@ -1264,7 +1298,7 @@ class LTutor
             foreach ($files as $file) {
                 $this->deleteDir(realpath($path) . '/' . $file);
             }
-            return rmdir($path);
+            return @rmdir($path);
         }
 
         // Datei entfernen
