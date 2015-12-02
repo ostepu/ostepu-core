@@ -520,7 +520,7 @@ class LOOP
                                         $pro->addMessage($text);
                                     }
                                     
-                                    $this->createMarking($pro, $text, null, 2);
+                                    $this->createMarking($pro, $text, null, 4);
                                 }
                                 //$this->app->response->setStatus( 409 );
                             }
@@ -585,7 +585,7 @@ class LOOP
                                     {
                                         $pro->addMessage($text);
                                     }
-                                    $this->createMarking($pro, $text, null, 2);
+                                    $this->createMarking($pro, $text, null, 4);
                                 }
                                 //$this->app->response->setStatus( 409 );
                             }
@@ -628,7 +628,7 @@ class LOOP
                                     {
                                         $pro->addMessage($text);
                                     }
-                                    $this->createMarking($pro, $text, null, 2);
+                                    $this->createMarking($pro, $text, null, 4);
                                 }
                                 //$this->app->response->setStatus( 409 );
                             }
