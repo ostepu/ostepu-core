@@ -54,7 +54,7 @@
                         }
                     }
                     ?>
-                    <td style="width: 18.5%;">
+                    <td style="width: 24%;">
                         <label class="label bold" for=""><?php echo Language::Get('main','executable', $langTemplate); ?>:</label>
                     </td>
                     <td>
@@ -67,18 +67,18 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 18.5%;">
-                        <label class="label bold" for=""><?php echo Language::Get('main','compileparameters', $langTemplate); ?>:</label>
+                    <td style="width: 24%;">
+                        <label class="label bold" for=""><?php echo Language::Get('main','showErrors', $langTemplate); ?>:</label>
                     </td>
-                    <td style="width: 81.5%;">
+                    <td style="width: 76%;">
                         <input type="checkbox" class="parameter-choice" style="width: 100%;" name="exercises[0][subexercises][0][showErrorsParameter][0][]" value="1" <?php echo($errorsEnabled == true ? 'checked="checked"' : ''); ?>/>
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 18.5%;">
+                    <td style="width: 24%;">
                         <label class="label bold" for=""><?php echo Language::Get('main','compileparameters', $langTemplate); ?>:</label>
                     </td>
-                    <td style="width: 81.5%;">
+                    <td style="width: 76%;">
                         <input type="text" class="parameter-choice" style="width: 100%;" name="exercises[0][subexercises][0][processorParameterList][0][]" value="<?php echo (count($params)>0 ? implode(' ',$params) : '$file'); ?>"/>
                     </td>
                 </tr>

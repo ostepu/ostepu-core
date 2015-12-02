@@ -15,6 +15,7 @@
         "regex": "regulärer Ausdruck",
         "selectFile": "Datei auswählen",
         "noData": "keine Datei",
-        "addData": "Datei hinzufügen"
+        "addData": "Datei hinzufügen",
+        "showErrors": "Kompilierfehler anzeigen?"
     }
 }
