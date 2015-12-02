@@ -182,7 +182,7 @@ function renameProcessor(){
             var elem3 = $(allChoices[c]);
             var oldName = elem3.attr('name');
             var regex = /exercises\[(.+?)]\[.+?\]\[(.+?)]\[(.+?)]\[[0-9]+\]\[]/gm;
-            var nameString = "exercises[$1][subexercises][$2][processorParameterList]["+ (i) +"][]";
+            var nameString = "exercises[$1][subexercises][$2][$3]["+ (i) +"][]";
 
             // match the regex and replace the numbers
             var newName = oldName.replace(regex, nameString);

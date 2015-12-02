@@ -9,6 +9,16 @@
 function LOOP_createParameters(&$subexercise, $key, $oldparameter = null, $filepaths, $filenames, $fileerrors, $filesystemURI, $databaseURI)
 {
     $parameters = array(Testcase::createTestcase(null,"compile",array($oldparameter)));
+
+    if (isset($subexercise['showErrorsParameter'][$key][0]) && $subexercise['showErrorsParameter'][$key][0] == "1")
+    {
+        $parameters[0]->setErrorsEnabled("1");
+    }
+    else
+    {
+        $parameters[0]->setErrorsEnabled("0");
+    }
+    
     $testcaseType = explode(' ',$oldparameter)[0];
     $timestamp = time();
 

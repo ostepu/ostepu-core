@@ -29,6 +29,7 @@
                     
                     $i=0;
                     $params = array();
+                    $errorsEnabled = true;
 
                     if (isset($process['parameter'])){
                         //check if processparameter is json
@@ -38,6 +39,17 @@
                             if ($data[0]->getTestcaseType()=="compile")
                             {
                                 $params = explode(' ',$data[0]->getInput()[0]);
+                            }
+                            if (!is_null($data[0]->getErrorsEnabled()))
+                            {
+                                if ($data[0]->getErrorsEnabled() == "1")
+                                {
+                                    $errorsEnabled = true;
+                                }
+                                else
+                                {
+                                    $errorsEnabled = false;
+                                }
                             }
                         }
                     }
@@ -52,6 +64,14 @@
                             <?php if (in_array($key, $params))unset($params[array_search($key, $params)]); ?>
                             <?php } ?>
                         </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 18.5%;">
+                        <label class="label bold" for=""><?php echo Language::Get('main','compileparameters', $langTemplate); ?>:</label>
+                    </td>
+                    <td style="width: 81.5%;">
+                        <input type="checkbox" class="parameter-choice" style="width: 100%;" name="exercises[0][subexercises][0][showErrorsParameter][0][]" value="1" <?php echo($errorsEnabled == true ? 'checked="checked"' : ''); ?>/>
                     </td>
                 </tr>
                 <tr>

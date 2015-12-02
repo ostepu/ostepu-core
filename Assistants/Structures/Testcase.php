@@ -33,6 +33,17 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
         $this->testcaseType = $value;
     }
 
+    // Typ: beschreibt die zu testende Programmiersprache
+    private $errorsEnabled = null;
+    public function getErrorsEnabled( )
+    {
+        return $this->errorsEnabled;
+    }
+    public function setErrorsEnabled( $value = null )
+    {
+        $this->errorsEnabled = $value;
+    }
+
     // input beschreibt die Eingabeparameter
     private $input = array();
     public function getInput( )
@@ -334,6 +345,8 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
             $list['file'] = $this->file;
         if ( $this->submission !== null && $this->submission !== array())
             $list['submission'] = $this->submission;
+        if ( $this->errorsEnabled !== null )
+            $list['errorsEnabled'] = $this->errorsEnabled;
         
         // ruft auch die Serialisierung des darüber liegenden Objekts auf (Object.php)
         return array_merge($list,parent::jsonSerialize( ));
