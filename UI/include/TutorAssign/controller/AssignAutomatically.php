@@ -2,17 +2,24 @@
 
 // automatically assigns all unassigned submissions to the selected tutors
 set_time_limit(180);
-$f = new FormEvaluator($_POST);
+$f->addSet('tutorIds',
+           ['satisfy_exists',
+            'satisfy_not_empty',
+            'is_array',
+            'on_error'=>['type'=>'warning',
+                         'text'=>Language::Get('main','???', $langTemplate)]])
+  ->addSet('tutorIds',
+           ['perform_this_array'=>[[['key_all'],
+                                    ['valid_identifier']]],
+            'on_error'=>['type'=>'error',
+                         'text'=>Language::Get('main','invalidTutors', $langTemplate)]]);
+$valResults = $f->validate();
+$notifications = array_merge($notifications,$f->getPrintableNotifications());
+$f->resetNotifications()->resetErrors();
 
-$f->checkArrayOfIntegersForKey('tutorIds',
-                               FormEvaluator::REQUIRED,
-                               'warning',
-                               Language::Get('main','invalidTutors', $langTemplate));
-
-if ($f->evaluate(true)) {
+if ($f->isValid()) {
     // extracts the php POST data
-    $foundValues = $f->foundValues;
-    $selectedTutorIDs = $foundValues['tutorIds'];
+    $selectedTutorIDs = $valResults['tutorIds'];
 
     $data = array('tutors' => array(),
                   'unassigned' => array());
@@ -46,15 +53,11 @@ if ($f->evaluate(true)) {
     $URI = $logicURI . "/tutor/auto/group/course/{$cid}/exercisesheet/{$sid}";
     http_post_data($URI, $data, true, $message);
 
-    if ($message === '201' || $message === '200') {
+    if ($message === 201 || $message === 200) {
         $msg = Language::Get('main','successAssignment', $langTemplate);
         $assignAutomaticallyNotifications[] = MakeNotification('success', $msg);
     } else {
         $msg = Language::Get('main','errorAssignment', $langTemplate);
         $assignAutomaticallyNotifications[] = MakeNotification('error', $msg);
     }
-}  else {
-    if (!isset($assignAutomaticallyNotifications))
-        $assignAutomaticallyNotifications = array();
-    $assignAutomaticallyNotifications = $assignAutomaticallyNotifications + $f->notifications;
 }

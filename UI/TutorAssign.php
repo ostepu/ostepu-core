@@ -20,10 +20,21 @@ Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $globalUserData)
 $langTemplate='TutorAssign_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 $f = new Validation($_POST, array('preRules'=>array('sanitize')));
-
-
+$f->addSet('sortUsers',
+           ['satisfy_in_list'=>['lastName','firstName','userName'],
+            'set_default'=>'lastName',
+            'on_error'=>['type'=>'error',
+                         'text'=>'???1']])
+  ->addSet('actionSortUsers',
+           ['set_default'=>'noAction',
+            'satisfy_in_list'=>['noAction', 'sort'],
+            'on_error'=>['type'=>'error',
+                         'text'=>'???1']]);
+$valResults = $f->validate();
+$notifications = array_merge($notifications,$f->getPrintableNotifications());
+$f->resetNotifications()->resetErrors();
                          
-if (!isset($_POST['actionSortUsers'])){
+if ($f->isValid() && !isset($valResults['actionSortUsers'])){
     $f->addSet('action',
            ['set_default'=>'noAction',
             'satisfy_in_list'=>['noAction', 'AssignMakeWarning', 'AssignMake', 'AssignManually', 'AssignRemoveWarning', 'AssignRemove', 'AssignAutomatically'],
@@ -34,6 +45,11 @@ if (!isset($_POST['actionSortUsers'])){
     $f->resetNotifications()->resetErrors();
     
     if ($f-isValid()){
+        $assignManuallyNotifications = array();
+        $assignAutomaticallyNotifications = array();
+        $assignRemoveNotifications = array();
+        $assignMakeNotifications = array();
+        
         if ($valResults['action'] === 'AssignManually'){
             include_once dirname(__FILE__) . '/include/TutorAssign/controller/AssignManually.php';
         }
@@ -51,7 +67,7 @@ if (!isset($_POST['actionSortUsers'])){
         }
         
         if ($valResults['action'] === 'AssignMakeWarning'){
-            $assignRemoveNotifications[] = MakeNotification('warning', Language::Get('main','askMake', $langTemplate));
+            $assignMakeNotifications[] = MakeNotification('warning', Language::Get('main','askMake', $langTemplate));
         }
         
         if ($valResults['action'] === 'AssignMake'){
@@ -69,29 +85,34 @@ foreach ($tutorAssign_data['tutorAssignments'] as $key2 => $tutorAssignment){
     if (count($tutorAssign_data['tutorAssignments'][$key2]['submissions'])>0){
         $assignments = $tutorAssignment['submissions'];
         $dataList = array();
+        $sortUsersValue = 'lastName';
+        if ($f->isValid()){
+            $sortUsersValue = $valResults['sortUsers'];
+        }
+        
         foreach ($assignments as $key => $submission)
             $dataList[] = array('pos' => $key,'userName'=>$submission['user']['userName'],'lastName'=>$submission['user']['lastName'],'firstName'=>$submission['user']['firstName']);
         $sortTypes = array('lastName','firstName','userName');
-        if (!isset($_POST['sortUsers'])) $_POST['sortUsers'] = null;
-        $_POST['sortUsers'] = (in_array($_POST['sortUsers'],$sortTypes) ? $_POST['sortUsers'] : $sortTypes[0]);
-        $sortTypes = array('lastName','firstName','userName');
-        $dataList=LArraySorter::orderby($dataList, $_POST['sortUsers'], SORT_ASC,$sortTypes[(array_search($_POST['sortUsers'],$sortTypes)+1)%count($sortTypes)], SORT_ASC);
+        $dataList=LArraySorter::orderby($dataList, $sortUsersValue, SORT_ASC,$sortTypes[(array_search($sortUsersValue,$sortTypes)+1)%count($sortTypes)], SORT_ASC);
         $tempData = array();
         foreach($dataList as $data)
             $tempData[] = $tutorAssign_data['tutorAssignments'][$key2]['submissions'][$data['pos']];
             
         $tutorAssign_data['tutorAssignments'][$key2]['submissions'] = $tempData;
     }
+    
     if (!isset($tutorAssign_data['tutorAssignments'][$key2]['proposalSubmissions'])) continue;
     $assignments = $tutorAssignment['proposalSubmissions'];
     $dataList = array();
+    $sortUsersValue = 'lastName';
+    if ($f->isValid()){
+        $sortUsersValue = $valResults['sortUsers'];
+    }
+        
     foreach ($assignments as $key => $submission)
         $dataList[] = array('pos' => $key,'userName'=>$submission['user']['userName'],'lastName'=>$submission['user']['lastName'],'firstName'=>$submission['user']['firstName']);
     $sortTypes = array('lastName','firstName','userName');
-    if (!isset($_POST['sortUsers'])) $_POST['sortUsers'] = null;
-    $_POST['sortUsers'] = (in_array($_POST['sortUsers'],$sortTypes) ? $_POST['sortUsers'] : $sortTypes[0]);
-    $sortTypes = array('lastName','firstName','userName');
-    $dataList=LArraySorter::orderby($dataList, $_POST['sortUsers'], SORT_ASC,$sortTypes[(array_search($_POST['sortUsers'],$sortTypes)+1)%count($sortTypes)], SORT_ASC);
+    $dataList=LArraySorter::orderby($dataList, $sortUsersValue, SORT_ASC,$sortTypes[(array_search($sortUsersValue,$sortTypes)+1)%count($sortTypes)], SORT_ASC);
     $tempData = array();
     foreach($dataList as $data)
         $tempData[] = $tutorAssign_data['tutorAssignments'][$key2]['proposalSubmissions'][$data['pos']];
@@ -113,8 +134,8 @@ usort($tutorAssign_data['tutorAssignments'], 'custom_sort');
 
 $user_course_data = $tutorAssign_data['user'];
 
-if (isset($_POST['sortUsers'])) {
-    $tutorAssign_data['sortUsers'] = $_POST['sortUsers'];
+if (isset($sortUsersValue)) {
+    $tutorAssign_data['sortUsers'] = $sortUsersValue;
 }
 
 $menu = MakeNavigationElement($user_course_data,

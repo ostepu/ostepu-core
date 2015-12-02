@@ -151,10 +151,5 @@ if (isset($valResults['actionAssignManually'])){
             $msg = Language::Get('main','errorAssignment', $langTemplate);
             $assignManuallyNotifications[] = MakeNotification('error', $msg);
         }         
-    }  else {
-        if (!isset($assignManuallyNotifications)){
-            $assignManuallyNotifications = array();
-        }
-        $assignManuallyNotifications = $assignManuallyNotifications + $f->notifications;
     }
 }
