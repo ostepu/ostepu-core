@@ -86,8 +86,13 @@ if (isset($AssignManuallyNotificationElements)) {
             <div class="tutor-assign-element-title">
                 <?php
                 $tutorId = isset($tutorAssignment['tutor']['id']) ? $tutorAssignment['tutor']['id'] : null;
+                
+                // der "unbekannte Kontrolleur" ist ein Kontrolleur, aber mit unbekannter ID
+                if ($tutorAssignment['tutor']['userName'] != "unassigned" && !isset($tutorId)){
+                    $tutorId = 'u';
+                }
 
-                if (isset($tutorAssignment['tutor']['id'])){
+                if (isset($tutorId)){
                     print '<input type="radio" name="tutorId" value="';
                     print $tutorId . '"/>';
                 } else {
@@ -97,7 +102,7 @@ if (isset($AssignManuallyNotificationElements)) {
                 print '<label class="tutor-name">';
 
                 if ($tutorAssignment['tutor']['userName'] != "unassigned") {
-                    if (!isset($tutorAssignment['tutor']['id'])){
+                    if ($tutorId == 'u'){
                         echo Language::Get('main','unknownTutor', $langTemplate);
                     } else {
                         print isset($tutorAssignment['tutor']['firstName']) ? $tutorAssignment['tutor']['firstName'].' ' : '';
@@ -125,8 +130,8 @@ if (isset($AssignManuallyNotificationElements)) {
                 
                 <?php 
                 $tutId=null;
-                if (isset($tutorAssignment['tutor']['id'])) {
-                    $tutId = $tutorAssignment['tutor']['id'];
+                if (isset($tutorId)) {
+                    $tutId = $tutorId;
                 } else 
                     $tutId = -1;
                 

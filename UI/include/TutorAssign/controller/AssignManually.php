@@ -72,17 +72,20 @@ if (isset($_POST['action']) && isset($_POST['action']) && $_POST['action'] == "A
                             $marking->setStatus(1);
                             $marking->setTutorId($selectedTutorID);
                             $markings[] = $marking;
+                                echo "assigned";
                         } else {
                             if ($selectedTutorID==-1){
                                 // remove assignment from tutor (removes the specified marking)
                                 $URI = $serverURI . "/logic/LMarking/marking/marking/".$markingId;
                                 http_delete($URI, true, $message);
+                                echo "removed";
                             } else {
                                 // move assignment from tutor to tutor
                                 $marking = new Marking();
                                 $marking->setId($markingId);
                                 $marking->setTutorId($selectedTutorID);
                                 $markings[] = $marking;
+                                echo "moved";
                             }
                         }
                     }
