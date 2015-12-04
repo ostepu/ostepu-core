@@ -295,28 +295,51 @@ class LTutor
         $body = json_decode($this->app->request->getBody(), true);
 
         $error = false;
-		
-		// initialisiere die Eingabedaten
-		$body['unassigned'] = isset($body['unassigned']) ? $body['unassigned'] : array();
-		if (!is_array($body['unassigned'])){
-			$this->app->response->setStatus(500);
-            $this->app->response->setBody("Error: Invalid Input!");
-			$this->app->stop();
-		}
+        
+        // initialisiere die Eingabedaten
+        $body['unassigned'] = isset($body['unassigned']) ? $body['unassigned'] : array();
+        if (!is_array($body['unassigned'])){
+            $this->app->response->setStatus(500);
+            $this->app->response->setBody("Error: Invalid Input (var=unassigned)!");
+            $this->app->stop();
+        }
+        $body['assigned'] = isset($body['assigned']) ? $body['assigned'] : array();
+        if (!is_array($body['assigned'])){
+            $this->app->response->setStatus(500);
+            $this->app->response->setBody("Error: Invalid Input (var=assigned)!");
+            $this->app->stop();
+        }
+        $body['tutors'] = isset($body['tutors']) ? $body['tutors'] : array();
+        if (!is_array($body['tutors'])){
+            $this->app->response->setStatus(500);
+            $this->app->response->setBody("Error: Invalid Input (var=tutors)!");
+            $this->app->stop();
+        }
 
-		// eine Liste von Tutoren, welchen die Einsendungen bzw. Korrekturen zugewiesen werden sollen
-        $targetTutors = isset($body['tutors']) ? $body['tutors'] : array();
-		
-		// die Einsendungen sollen entsprechend ihrer Gruppenführer gruppiert werden
-        $submissions = array();
+        // eine Liste von Tutoren, welchen die Einsendungen bzw. Korrekturen zugewiesen werden sollen
+        $targetTutors = $body['tutors'];
+        
+        // die Einsendungen sollen entsprechend ihrer Gruppenführer gruppiert werden
+        $selectedMarkings = array(); = array();
         foreach($body['unassigned'] as $submission){
-			if (!isset($submission['leaderId']) || !isset($submission['id'])){
-				// wenn das Feld nicht existiert, wird der Datensatz ignoriert, er ist beschädigt
-				// Todo: eventuell wird eine Fehlermeldung zurückgegeben
-				continue;
-			}
+            if (!isset($submission['leaderId']) || !isset($submission['id'])){
+                // wenn das Feld nicht existiert, wird der Datensatz ignoriert, er ist beschädigt
+                // Todo: eventuell wird eine Fehlermeldung zurückgegeben
+                continue;
+            }
             $leaderId = $submission['leaderId'];
-            $submissions[$leaderId][] = $submission;
+            $selectedMarkings[$leaderId][] = array('submission' => $submission);
+        }
+        
+        // die bereits zugewiesenen Einsendungen sollen entsprechend ihrer Gruppenführer gruppiert werden
+        foreach($body['assigned'] as $marking){
+            if (!isset($marking['submission']['leaderId']) || !isset($marking['submission']['id']) || !isset($marking['id'])){
+                // wenn das Feld nicht existiert, wird der Datensatz ignoriert, er ist beschädigt
+                // Todo: eventuell wird eine Fehlermeldung zurückgegeben
+                continue;
+            }
+            $leaderId = $marking['submission']['leaderId'];
+            $selectedMarkings[$leaderId][] = $marking;
         }
 
         // randomized allocation
@@ -325,21 +348,22 @@ class LTutor
         $i = 0;
         $numberOfTutors = count($targetTutors);
         $markings = array();
-        foreach ($submissions as $submissionsByGroup){
-            foreach($submissionsByGroup as $submission){
-				
-				// erzeugt eine neue "unkorrigierte" Korrektur und weist sie dem
-				// Tutor zu
+        foreach ($selectedMarkings as $markingsByGroup){
+            foreach($markingsByGroup as $marking){
+                
+                // erzeugt eine neue "unkorrigierte" Korrektur (oder behält den bisherigen Zustand)
+                // und weist sie dem Tutor zu
                 $newMarking = array(
-                    'submission' => $submission,
-                    'status' => 1,
+                    'submission' => $marking['submission'],
+                    'id' => (isset($marking['id']) ? $marking['id'] : null)
+                    'status' => (isset($marking['id']) ? null : 1),
                     'tutorId' => $targetTutors[$i]['tutorId']
                 );
                 //adds a submission to a tutor
                 $markings[] = $newMarking;
             }
-			
-			// die Auswahl der Tutoren dreht sich im Kreis
+            
+            // die Auswahl der Tutoren dreht sich im Kreis
             if ($i < $numberOfTutors - 1){
                 $i++;
             } else {

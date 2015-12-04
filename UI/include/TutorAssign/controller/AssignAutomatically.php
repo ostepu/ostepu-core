@@ -15,7 +15,8 @@ if (isset($_POST['action']) && $_POST['action'] == "AssignAutomatically") {
         $selectedTutorIDs = $foundValues['tutorIds'];
 
         $data = array('tutors' => array(),
-                      'unassigned' => array());
+                      'unassigned' => array(),
+                      'assigned' => array());
 
         // load user data from the database for the first time
         $URL = $getSiteURI . "/tutorassign/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
@@ -27,15 +28,39 @@ if (isset($_POST['action']) && $_POST['action'] == "AssignAutomatically") {
             $newTutor = array('tutorId' => $tutorID);
             $data['tutors'][] = $newTutor;
         }
-
-        // adds all unassigned submissions to the request body
-        if (!empty($tutorAssign_data['tutorAssignments'])) {
-            foreach ($tutorAssign_data['tutorAssignments'] as $tutorAssignment) {
-                if ($tutorAssignment['tutor']['userName'] == "unassigned") {
-                    foreach ($tutorAssignment['submissions'] as $submission) {
-                        unset($submission['unassigned']);
-
-                        $data['unassigned'][] = $submission;
+        
+        $fromTutor = isset($_POST['fromTutor']) ? $_POST['fromTutor'] : null;
+        
+        if (isset($fromTutor) && !empty($tutorAssign_data['tutorAssignments'])){
+            if ($fromTutor == -1){ // "unzugeordneter" Kontrolleur
+                // adds all unassigned submissions to the request body
+                foreach ($tutorAssign_data['tutorAssignments'] as $tutorAssignment) {
+                    if ($tutorAssignment['tutor']['userName'] == "unassigned") {
+                        foreach ($tutorAssignment['submissions'] as $submission) {
+                            unset($submission['unassigned']);
+                            unset($submission['markingId']);
+                            $data['unassigned'][] = $submission;
+                        }
+                    }
+                }
+            } elseif($fromTutor == 'u') { // unbekannter Kontrolleur
+                foreach ($tutorAssign_data['tutorAssignments'] as $tutorAssignment) {
+                    if (!isset($tutorAssignment['tutor']['id']) && $tutorAssignment['tutor']['userName'] != "unassigned") {
+                        foreach ($tutorAssignment['submissions'] as $submission) {
+                            unset($submission['unassigned']);
+                            unset($submission['markingId']);
+                            $data['assigned'][] = array('id'=>$markingId,'submission'=>$submission);
+                        }
+                    }
+                }
+            } else { // ein richtiger Kontrolleur
+                foreach ($tutorAssign_data['tutorAssignments'] as $tutorAssignment) {
+                    if (isset($tutorAssignment['tutor']['id']) && $tutorAssignment['tutor']['id'] == $fromTutor) {
+                        foreach ($tutorAssignment['submissions'] as $submission) {
+                            unset($submission['unassigned']);
+                            unset($submission['markingId']);
+                            $data['assigned'][] = array('id'=>$markingId,'submission'=>$submission);
+                        }
                     }
                 }
             }
