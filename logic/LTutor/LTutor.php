@@ -320,7 +320,7 @@ class LTutor
         $targetTutors = $body['tutors'];
         
         // die Einsendungen sollen entsprechend ihrer Gruppenführer gruppiert werden
-        $selectedMarkings = array(); = array();
+        $selectedMarkings = array();
         foreach($body['unassigned'] as $submission){
             if (!isset($submission['leaderId']) || !isset($submission['id'])){
                 // wenn das Feld nicht existiert, wird der Datensatz ignoriert, er ist beschädigt
@@ -355,7 +355,7 @@ class LTutor
                 // und weist sie dem Tutor zu
                 $newMarking = array(
                     'submission' => $marking['submission'],
-                    'id' => (isset($marking['id']) ? $marking['id'] : null)
+                    'id' => (isset($marking['id']) ? $marking['id'] : null),
                     'status' => (isset($marking['id']) ? null : 1),
                     'tutorId' => $targetTutors[$i]['tutorId']
                 );
