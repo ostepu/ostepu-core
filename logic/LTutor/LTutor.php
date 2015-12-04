@@ -264,14 +264,6 @@ class LTutor
 
         //requests to database
         $URL = $this->lURL.'/DB/marking';
-        /*foreach($markings as $marking){
-            $answer = Request::custom('POST', $URL, $header,
-                    json_encode($marking));
-            if ($answer['status'] >= 300){
-                $error = true;
-                $errorstatus = $answer['status'];
-            }
-        }*/
         $answer = Request::custom('POST', $URL, array(),
             json_encode($markings));
         if ($answer['status'] >= 300){
@@ -287,11 +279,6 @@ class LTutor
             $this->app->response->setStatus($errorstatus);
             $this->app->response->setBody("Warning: At least one exercise was not being allocated!");
         }
-
-      //  $URL = $this->lURL.'/getSite/tutorassign/user/3/course/'
-      //                  .$courseid.'/exercisesheet/'.$sheetid;
-      //  $answer = Request::custom('GET', $URL, $header, "");
-      //  $this->app->response->setBody($answer['content']);
     }
 
     /**
@@ -341,14 +328,6 @@ class LTutor
 
         //requests to database
         $URL = $this->lURL.'/DB/marking';
-        /*foreach($markings as $marking){
-            $answer = Request::custom('POST', $URL, array(),
-                    json_encode($marking));
-            if ($answer['status'] >= 300){
-                $error = true;
-                $errorstatus = $answer['status'];
-            }
-        }*/
         $answer = Request::custom('POST', $URL, array(),
                     json_encode($markings));
         if ($answer['status'] >= 300){
@@ -364,12 +343,6 @@ class LTutor
             $this->app->response->setStatus($errorstatus);
             $this->app->response->setBody("Warning: At least one group was not being allocated!");
         }
-
-       // $URL = $this->lURL.'/getsite/tutorassignment/course/'
-       //             .$courseid.'/exercisesheet/'.$sheetid;
-       // $answer = Request::custom('GET', $URL, $header, "");
-       //
-       // $this->app->response->setBody($answer['content']);
     }
     
     
