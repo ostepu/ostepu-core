@@ -295,30 +295,51 @@ class LTutor
         $body = json_decode($this->app->request->getBody(), true);
 
         $error = false;
+		
+		// initialisiere die Eingabedaten
+		$body['unassigned'] = isset($body['unassigned']) ? $body['unassigned'] : array();
+		if (!is_array($body['unassigned'])){
+			$this->app->response->setStatus(500);
+            $this->app->response->setBody("Error: Invalid Input!");
+			$this->app->stop();
+		}
 
-        $tutors = $body['tutors'];
+		// eine Liste von Tutoren, welchen die Einsendungen bzw. Korrekturen zugewiesen werden sollen
+        $targetTutors = isset($body['tutors']) ? $body['tutors'] : array();
+		
+		// die Einsendungen sollen entsprechend ihrer Gruppenführer gruppiert werden
         $submissions = array();
         foreach($body['unassigned'] as $submission){
+			if (!isset($submission['leaderId']) || !isset($submission['id'])){
+				// wenn das Feld nicht existiert, wird der Datensatz ignoriert, er ist beschädigt
+				// Todo: eventuell wird eine Fehlermeldung zurückgegeben
+				continue;
+			}
             $leaderId = $submission['leaderId'];
             $submissions[$leaderId][] = $submission;
         }
 
-        //randomized allocation
-        shuffle($tutors);
+        // randomized allocation
+        shuffle($targetTutors);
 
         $i = 0;
-        $numberOfTutors = count($tutors);
+        $numberOfTutors = count($targetTutors);
         $markings = array();
         foreach ($submissions as $submissionsByGroup){
             foreach($submissionsByGroup as $submission){
+				
+				// erzeugt eine neue "unkorrigierte" Korrektur und weist sie dem
+				// Tutor zu
                 $newMarking = array(
                     'submission' => $submission,
                     'status' => 1,
-                    'tutorId' => $tutors[$i]['tutorId']
+                    'tutorId' => $targetTutors[$i]['tutorId']
                 );
                 //adds a submission to a tutor
                 $markings[] = $newMarking;
             }
+			
+			// die Auswahl der Tutoren dreht sich im Kreis
             if ($i < $numberOfTutors - 1){
                 $i++;
             } else {
