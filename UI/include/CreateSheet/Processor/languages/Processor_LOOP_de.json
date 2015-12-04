@@ -16,6 +16,6 @@
         "selectFile": "Datei auswählen",
         "noData": "keine Datei",
         "addData": "Datei hinzufügen",
-        "showErrors": "Kompilierfehler anzeigen?"
+        "showErrors": "Rückmeldung anzeigen?"
     }
 }
