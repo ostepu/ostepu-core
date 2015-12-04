@@ -462,8 +462,8 @@ class Marking extends Object implements JsonSerializable
                            ),
                      array( 
                            'id' => 4,
-                           'shortName' => 'vla',
-                           'longName' => 'vorläufig'
+                           'shortName' => 'a',
+                           'longName' => 'automatisch'
                            ),
                      );
     }
