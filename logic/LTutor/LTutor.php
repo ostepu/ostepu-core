@@ -372,7 +372,8 @@ class LTutor
         }
 
         //requests to database
-        $URL = $this->lURL.'/DB/marking';
+        $URL = $this->_postMarking[0]->getAddress().'/marking';
+                                                    
         $answer = Request::custom('POST', $URL, array(),
                     json_encode($markings));
         if ($answer['status'] >= 300){

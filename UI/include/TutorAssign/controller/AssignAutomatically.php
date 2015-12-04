@@ -38,7 +38,6 @@ if (isset($_POST['action']) && $_POST['action'] == "AssignAutomatically") {
                     if ($tutorAssignment['tutor']['userName'] == "unassigned") {
                         foreach ($tutorAssignment['submissions'] as $submission) {
                             unset($submission['unassigned']);
-                            unset($submission['markingId']);
                             $data['unassigned'][] = $submission;
                         }
                     }
@@ -48,8 +47,7 @@ if (isset($_POST['action']) && $_POST['action'] == "AssignAutomatically") {
                     if (!isset($tutorAssignment['tutor']['id']) && $tutorAssignment['tutor']['userName'] != "unassigned") {
                         foreach ($tutorAssignment['submissions'] as $submission) {
                             unset($submission['unassigned']);
-                            unset($submission['markingId']);
-                            $data['assigned'][] = array('id'=>$markingId,'submission'=>$submission);
+                            $data['assigned'][] = array('id'=>$submission['markingId'],'submission'=>$submission);
                         }
                     }
                 }
@@ -58,8 +56,7 @@ if (isset($_POST['action']) && $_POST['action'] == "AssignAutomatically") {
                     if (isset($tutorAssignment['tutor']['id']) && $tutorAssignment['tutor']['id'] == $fromTutor) {
                         foreach ($tutorAssignment['submissions'] as $submission) {
                             unset($submission['unassigned']);
-                            unset($submission['markingId']);
-                            $data['assigned'][] = array('id'=>$markingId,'submission'=>$submission);
+                            $data['assigned'][] = array('id'=>$submission['markingId'],'submission'=>$submission);
                         }
                     }
                 }
