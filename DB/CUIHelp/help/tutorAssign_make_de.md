@@ -1,5 +1,5 @@
 #### Einsendungen erzeugen ####
-Es kann vorkommen, dass Punkte auch für Aufgaben vergeben werden müssen zu denen die Studenten aber nichts einsenden können (Präsenzaufgaben). Dann kann hier dummy-Einsendungen erzeugt werden, sodass sie einem Kontrolleur zugeordnet werden können.
+Es kann vorkommen, dass Punkte auch für Aufgaben vergeben werden müssen zu denen die Studenten aber nichts einsenden können (Präsenzaufgaben). Dann können hier dummy-Einsendungen erzeugt werden, sodass sie einem Kontrolleur zugeordnet werden können.
 
 > ##### 1. Aktion anfragen #####
 

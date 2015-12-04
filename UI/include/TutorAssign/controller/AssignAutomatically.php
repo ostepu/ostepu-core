@@ -18,11 +18,12 @@ $notifications = array_merge($notifications,$f->getPrintableNotifications('MakeN
 $f->resetNotifications()->resetErrors();
 
 if ($f->isValid()) {
-    // extracts the php POST data
-    $selectedTutorIDs = $valResults['tutorIds'];
+// extracts the php POST data
+$selectedTutorIDs = $valResults['tutorIds'];
 
-    $data = array('tutors' => array(),
-                  'unassigned' => array());
+$data = array('tutors' => array(),
+              'unassigned' => array(),
+              'assigned' => array());
 
     // load user data from the database for the first time
     $URL = $getSiteURI . "/tutorassign/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
@@ -34,30 +35,51 @@ if ($f->isValid()) {
         $newTutor = array('tutorId' => $tutorID);
         $data['tutors'][] = $newTutor;
     }
-
-    // adds all unassigned submissions to the request body
-    if (!empty($tutorAssign_data['tutorAssignments'])) {
-        foreach ($tutorAssign_data['tutorAssignments'] as $tutorAssignment) {
-            if ($tutorAssignment['tutor']['userName'] === 'unassigned') {
-                foreach ($tutorAssignment['submissions'] as $submission) {
-                    unset($submission['unassigned']);
-
-                    $data['unassigned'][] = $submission;
+    
+    $fromTutor = isset($_POST['fromTutor']) ? $_POST['fromTutor'] : null;
+    
+    if (isset($fromTutor) && !empty($tutorAssign_data['tutorAssignments'])){
+        if ($fromTutor == -1){ // "unzugeordneter" Kontrolleur
+            // adds all unassigned submissions to the request body
+            foreach ($tutorAssign_data['tutorAssignments'] as $tutorAssignment) {
+                if ($tutorAssignment['tutor']['userName'] === 'unassigned') {
+                    foreach ($tutorAssignment['submissions'] as $submission) {
+                        unset($submission['unassigned']);
+                        $data['unassigned'][] = $submission;
+                    }
+                }
+            }
+        } elseif($fromTutor == 'u') { // unbekannter Kontrolleur
+            foreach ($tutorAssign_data['tutorAssignments'] as $tutorAssignment) {
+                if (!isset($tutorAssignment['tutor']['id']) && $tutorAssignment['tutor']['userName'] !== 'unassigned') {
+                    foreach ($tutorAssignment['submissions'] as $submission) {
+                        unset($submission['unassigned']);
+                        $data['assigned'][] = array('id'=>$submission['markingId'],'submission'=>$submission);
+                    }
+                }
+            }
+        } else { // ein richtiger Kontrolleur
+            foreach ($tutorAssign_data['tutorAssignments'] as $tutorAssignment) {
+                if (isset($tutorAssignment['tutor']['id']) && $tutorAssignment['tutor']['id'] == $fromTutor) {
+                    foreach ($tutorAssignment['submissions'] as $submission) {
+                        unset($submission['unassigned']);
+                        $data['assigned'][] = array('id'=>$submission['markingId'],'submission'=>$submission);
+                    }
                 }
             }
         }
     }
+}
 
-    $data = json_encode($data);
+$data = json_encode($data);
 
-    $URI = $logicURI . "/tutor/auto/group/course/{$cid}/exercisesheet/{$sid}";
-    http_post_data($URI, $data, true, $message);
+$URI = $logicURI . "/tutor/auto/group/course/{$cid}/exercisesheet/{$sid}";
+http_post_data($URI, $data, true, $message);
 
-    if ($message === 201 || $message === 200) {
-        $msg = Language::Get('main','successAssignment', $langTemplate);
-        $assignAutomaticallyNotifications[] = MakeNotification('success', $msg);
-    } else {
-        $msg = Language::Get('main','errorAssignment', $langTemplate);
-        $assignAutomaticallyNotifications[] = MakeNotification('error', $msg);
-    }
+if ($message === 201 || $message === 200) {
+    $msg = Language::Get('main','successAssignment', $langTemplate);
+    $assignAutomaticallyNotifications[] = MakeNotification('success', $msg);
+} else {
+    $msg = Language::Get('main','errorAssignment', $langTemplate);
+    $assignAutomaticallyNotifications[] = MakeNotification('error', $msg);
 }

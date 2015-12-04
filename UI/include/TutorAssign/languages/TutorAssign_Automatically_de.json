@@ -2,6 +2,10 @@
     "main": {
         "title": "Automatische Zuweisung",
         "execute": "zuweisen",
-        "assignInGroups": "Unzugeordnete gruppenweise zuteilen an"
+        "assignTo": "Zuteilen an:",
+        "assignFrom": "Zuteilen von:",
+        "unknownTutor": "Unbekannter Kontrolleur",
+        "notAssigned": "Unzugeordnet",
+        "noPossibleAssignments": "Keine Zuweisungen möglich!"
     }
 }
