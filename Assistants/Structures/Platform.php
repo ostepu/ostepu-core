@@ -245,6 +245,29 @@ class Platform extends Object implements JsonSerializable
         $this->externalUrl = $value;
     }
     
+
+    private $settings = array();
+
+    /**
+     * the $settings getter
+     *
+     * @return the value of $settings
+     */
+    public function getSettings( )
+    {
+        return $this->settings;
+    }
+
+    /**
+     * the $settings setter
+     *
+     * @param string $value the new value for $settings
+     */
+    public function setSettings( $value = null )
+    {
+        $this->settings = $value;
+    }
+    
     /**
      * Creates an patform object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -269,7 +292,8 @@ class Platform extends Object implements JsonSerializable
                                           $databaseOperatorPassword,
                                           $tempDirectory,
                                           $filesDirectory,
-                                          $externalUrl=''
+                                          $externalUrl='',
+                                          $settings=array()
                                           )
     {
         return new Platform( array(
@@ -283,6 +307,7 @@ class Platform extends Object implements JsonSerializable
                                    'tempDirectory' => $tempDirectory,
                                    'filesDirectory' => $filesDirectory,
                                    'externalUrl' => $externalUrl,
+                                   'settings' => $settings,
                                    ) );
     }
 
@@ -437,6 +462,8 @@ class Platform extends Object implements JsonSerializable
              $list['filesDirectory'] = $this->filesDirectory;
         if ( $this->externalUrl !== null )
              $list['externalUrl'] = $this->externalUrl;
+        if ( $this->settings !== null )
+             $list['settings'] = $this->settings;
              
         return array_merge($list,parent::jsonSerialize( ));
     }

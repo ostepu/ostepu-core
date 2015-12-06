@@ -54,6 +54,16 @@ class Installation
         
     }
     
+    public static function collectPlatformSettings($data)
+    {
+        $settings = array();
+        foreach(Einstellungen::$segments as $segs){
+            if (!is_callable("{$segs}::platformSetting")) continue;
+            $settings = array_merge($settings,$segs::platformSetting($data));
+        }
+        return $settings;
+    }
+    
     /**
      * Extrahiert die relevanten Daten der Plattform und erzeugt
      * daraus ein Platform-Objekt
@@ -63,6 +73,8 @@ class Installation
      */
     public static function PlattformZusammenstellen($data)
     {   
+        $settings = self::collectPlatformSettings($data);
+    
         // hier aus den Daten ein Plattform-Objekt zusammenstellen
         $platform = Platform::createPlatform(
                                             $data['PL']['url'],
@@ -74,7 +86,8 @@ class Installation
                                             $data['DB']['db_passwd_operator'],
                                             $data['PL']['temp'],
                                             $data['PL']['files'],
-                                            $data['PL']['urlExtern']
+                                            $data['PL']['urlExtern'],
+                                            $settings
                                             );
         return $platform;
     }
