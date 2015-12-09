@@ -10,11 +10,11 @@ class Validation_Converter implements Validation_Interface
     
     public static function validate_to_float($key, $input, $setting = null, $param = null)
     {
-        if ($setting['setError']){
+        if ($setting['setError'] || !isset($input[$key])){
             return;
         }
         
-        if (!isset($input[$key]) || empty($input[$key])) {
+        if (empty($input[$key])) {
             return array('valid'=>true,'field'=>$key,'value'=>null);
         }
         
@@ -35,11 +35,11 @@ class Validation_Converter implements Validation_Interface
 
     public static function validate_to_string($key, $input, $setting = null, $param = null)
     {
-        if ($setting['setError']){
+        if ($setting['setError'] || !isset($input[$key])){
             return;
         }
         
-        if (!isset($input[$key]) || empty($input[$key])) {
+        if (empty($input[$key])) {
             return array('valid'=>true,'field'=>$key,'value'=>null);
         }
         
@@ -52,11 +52,11 @@ class Validation_Converter implements Validation_Interface
       
     public static function validate_to_lower($key, $input, $setting = null, $param = null)
     {
-        if ($setting['setError']){
+        if ($setting['setError'] || !isset($input[$key])){
             return;
         }
         
-        if (!isset($input[$key]) || empty($input[$key])) {
+        if (empty($input[$key])) {
             return;
         }
         
@@ -71,11 +71,11 @@ class Validation_Converter implements Validation_Interface
       
     public static function validate_to_upper($key, $input, $setting = null, $param = null)
     {
-        if ($setting['setError']){
+        if ($setting['setError'] || !isset($input[$key])){
             return;
         }
         
-        if (!isset($input[$key]) || empty($input[$key])) {
+        if (empty($input[$key])) {
             return;
         }
         
@@ -90,11 +90,11 @@ class Validation_Converter implements Validation_Interface
     
     public static function validate_to_integer($key, $input, $setting = null, $param = null)
     {
-        if ($setting['setError']){
+        if ($setting['setError'] || !isset($input[$key]) || ){
             return;
         }
         
-        if (!isset($input[$key]) || empty($input[$key])) {
+        if (empty($input[$key])) {
             return array('valid'=>true,'field'=>$key,'value'=>null);
         }
         
@@ -110,11 +110,11 @@ class Validation_Converter implements Validation_Interface
     
     public static function validate_to_boolean($key, $input, $setting = null, $param = null)
     {
-        if ($setting['setError']){
+        if ($setting['setError'] || !isset($input[$key])){
             return;
         }
         
-        if (!isset($input[$key]) || empty($input[$key])) {
+        if (empty($input[$key])) {
             return array('valid'=>true,'field'=>$key,'value'=>null);
         }
 
@@ -128,12 +128,8 @@ class Validation_Converter implements Validation_Interface
     
     public static function validate_to_md5($key, $input, $setting = null, $param = null)
     {
-        if ($setting['setError']){
+        if ($setting['setError'] || !isset($input[$key])){
             return;
-        }
-        
-        if (!isset($input[$key])) {
-            return array('valid'=>true,'field'=>$key,'value'=>null);
         }
         
         return array('valid'=>true,'field'=>$key,'value'=>md5($input[$key]));
@@ -141,12 +137,8 @@ class Validation_Converter implements Validation_Interface
     
     public static function validate_to_sha1($key, $input, $setting = null, $param = null)
     {
-        if ($setting['setError']){
+        if ($setting['setError'] || !isset($input[$key])){
             return;
-        }
-        
-        if (!isset($input[$key])) {
-            return array('valid'=>true,'field'=>$key,'value'=>null);
         }
         
         return array('valid'=>true,'field'=>$key,'value'=>sha1($input[$key]));
@@ -154,12 +146,8 @@ class Validation_Converter implements Validation_Interface
     
     public static function validate_to_base64($key, $input, $setting = null, $param = null)
     {
-        if ($setting['setError']){
+        if ($setting['setError'] || !isset($input[$key])){
             return;
-        }
-        
-        if (!isset($input[$key])) {
-            return array('valid'=>true,'field'=>$key,'value'=>null);
         }
         
         $obj = @base64_encode($input[$key]);
@@ -173,15 +161,68 @@ class Validation_Converter implements Validation_Interface
     
     public static function validate_to_string_from_base64($key, $input, $setting = null, $param = null)
     {
+        if ($setting['setError'] || !isset($input[$key])){
+            return;
+        }
+        
+        $obj = @base64_decode($input[$key]);
+        
+        if ($obj === false){
+            return false;
+        }
+        
+        return array('valid'=>true,'field'=>$key,'value'=>$obj);
+    }
+    
+    public static function validate_to_object_from_json($key, $input, $setting = null, $param = null)
+    {
         if ($setting['setError']){
             return;
         }
         
         if (!isset($input[$key])) {
-            return array('valid'=>true,'field'=>$key,'value'=>null);
+            return;
         }
         
-        $obj = @base64_decode($input[$key]);
+        $obj = @json_decode($input[$key]);
+        
+        if ($obj === null){
+            return false;
+        }
+        
+        return array('valid'=>true,'field'=>$key,'value'=>$obj);
+    }
+    
+    public static function validate_to_array_from_json($key, $input, $setting = null, $param = null)
+    {
+        if ($setting['setError']){
+            return;
+        }
+        
+        if (!isset($input[$key])) {
+            return;
+        }
+        
+        $obj = @json_decode($input[$key], true);
+        
+        if ($obj === null){
+            return false;
+        }
+        
+        return array('valid'=>true,'field'=>$key,'value'=>$obj);
+    }
+    
+    public static function validate_to_json($key, $input, $setting = null, $param = null)
+    {
+        if ($setting['setError']){
+            return;
+        }
+        
+        if (!isset($input[$key])) {
+            return;
+        }
+        
+        $obj = @json_encode($input[$key]);
         
         if ($obj === false){
             return false;
