@@ -16,9 +16,47 @@ Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $globalUserDat
 /// gehört SID zur CID ??? ///
 $langTemplate='UploadHistory_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
+$f = new Validation($_POST, array('preRules'=>array('sanitize')));
+$f->addSet('action',
+            ['set_default'=>'noAction',
+             'satisfy_in_list'=>['noAction', 'ShowUploadHistory'],
+             'on_error'=>['type'=>'error',
+                          'text'=>Language::Get('main','invalidAction', $langTemplate)]])
+  ->addSet('sheetID',
+           ['valid_identifier',
+            'on_error'=>['type'=>'error',
+                         'text'=>Language::Get('main','invalidSheetID', $langTemplate)]])
+  ->addSet('updateSelectedSubmission',
+           ['to_array_from_json',
+            'on_error'=>['type'=>'error',
+                         'text'=>Language::Get('main','invalidUpdateSelectedSubmission', $langTemplate)]])
+  ->addSet('sortUsers',
+           ['satisfy_in_list'=>['lastName','firstName','userName'],
+            'set_default'=>'lastName',
+            'on_error'=>['type'=>'error',
+                         'text'=>>Language::Get('main','errorSortUsers', $langTemplate)]])
+  ->addSet('actionSortUsers',
+           ['set_default'=>'noAction',
+            'satisfy_in_list'=>['noAction', 'sort'],
+            'on_error'=>['type'=>'error',
+                         'text'=>>Language::Get('main','errorActionSortUsers', $langTemplate)]]);
+                         
+$f2 = new Validation($_GET, array('preRules'=>array('sanitize')));
+$f2->addSet('action',
+            ['set_default'=>'noAction',
+             'satisfy_in_list'=>['noAction', 'ShowUploadHistory'],
+             'on_error'=>['type'=>'error',
+                          'text'=>Language::Get('main','invalidAction', $langTemplate)]]);
 
-if (isset($_POST['sheetID'])){
-    $sid = cleanInput($_POST['sheetID']);
+$postResults = $f->validate();
+$getResults = $f2->validate();
+$notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
+$notifications = array_merge($notifications,$f2->getPrintableNotifications('MakeNotification'));
+$f->resetNotifications()->resetErrors();
+$f2->resetNotifications()->resetErrors();
+
+if (isset($postResults['sheetID'])){
+    $sid = $postResults['sheetID'];
 }
 
 $selectedUser = $uid;
@@ -69,15 +107,15 @@ if (Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUse
 
 if (isset($sid)){
     $sheetID = $sid;
-    $_POST['sheetID'] = $sid;
+    $postResults['sheetID'] = $sid;
 }
-if (isset($_GET['action']) && !isset($_POST['action'])){
-    $_POST['action'] = cleanInput($_GET['action']);
+if (isset($getResults['action']) && !isset($postResults['action'])){
+    $postResults['action'] = $getResults['action'];
 }
 
 // updates the selectedSubmissions for the group
-if (isset($_POST['updateSelectedSubmission'])) {
-    $obj = json_decode($_POST['updateSelectedSubmission'],true); /// darf er das ??? ///
+if (isset($postResults['updateSelectedSubmission'])) {
+    $obj = $postResults['updateSelectedSubmission']; /// darf er das ??? ///
     
     // bool which is true if any error occured
     $RequestError = false;
@@ -107,13 +145,15 @@ $uploadHistoryOptions_data = http_get($URL, true);
 $uploadHistoryOptions_data = json_decode($uploadHistoryOptions_data, true);
 
 $dataList = array();
+$sortUsersValue = 'lastName';
+if ($f->isValid()){
+    $sortUsersValue = $postResults['sortUsers'];
+}
+
 foreach ($uploadHistoryOptions_data['users'] as $key => $user)
     $dataList[] = array('pos' => $key,'userName'=>$user['userName'],'lastName'=>$user['lastName'],'firstName'=>$user['firstName']);
 $sortTypes = array('lastName','firstName','userName');
-if (!isset($_POST['sortUsers'])) $_POST['sortUsers'] = null;
-$_POST['sortUsers'] = (in_array($_POST['sortUsers'],$sortTypes) ? $_POST['sortUsers'] : $sortTypes[0]);
-$sortTypes = array('lastName','firstName','userName');
-$dataList=LArraySorter::orderby($dataList, $_POST['sortUsers'], SORT_ASC, $sortTypes[(array_search($_POST['sortUsers'],$sortTypes)+1)%count($sortTypes)], SORT_ASC);
+$dataList=LArraySorter::orderby($dataList, $sortUsersValue, SORT_ASC, $sortTypes[(array_search($sortUsersValue,$sortTypes)+1)%count($sortTypes)], SORT_ASC);
 $tempData = array();
 foreach($dataList as $data)
     $tempData[] = $uploadHistoryOptions_data['users'][$data['pos']];
@@ -123,8 +163,7 @@ $uploadHistoryOptions_data['users'] = $tempData;
 $uploadHistoryOptions_data['uploadUserID'] = isset($uploadUserID) ? $uploadUserID : '';
 $uploadHistoryOptions_data['sheetID'] = isset($sheetID) ? $sheetID : '';
 
-if (isset($_POST['sortUsers']))
-    $uploadHistoryOptions_data['sortUsers'] = cleanInput($_POST['sortUsers']);
+$uploadHistoryOptions_data['sortUsers'] = $sortUsersValue;
 
 $user_course_data = $uploadHistoryOptions_data['user'];
 
@@ -132,9 +171,6 @@ if (isset($user_course_data['courses'][0]['status'])){
     $courseStatus = $user_course_data['courses'][0]['status'];
 } else
     $courseStatus =  -1;
-
-if ($courseStatus==0)
-    $_POST['userID'] = $selectedUser;
 
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::STUDENT,
@@ -208,14 +244,24 @@ $h->bind(array('name' => $user_course_data['courses'][0]['course']['name'],
                'navigationElement' => $menu,
                'userNavigationElement' => $userNavigation));
 
-if (!isset($_POST['actionSortUsers']))
-if (isset($_POST['action'])) {
-    if ($_POST['action'] === 'ShowUploadHistory') {
-        if (isset($_POST['userID']) && (isset($_POST['sheetID']) || isset($sheetID))) {
-            $uploadUserID = cleanInput($_POST['userID']);
+if ($postResults['actionSortUsers'] === 'noAction' && $postResults['action'] !== 'noAction') {
+    if ($postResults['action'] === 'ShowUploadHistory') {
+        $f->addSet('userID',
+                   ['valid_identifier',
+                    'on_error'=>['type'=>'error',
+                                 'text'=>Language::Get('main','invalidUserID', $langTemplate)]]);
+        $postResults = $f->validate();
+        $notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
+        $f->resetNotifications()->resetErrors();
+
+        if ($f->isValid() && isset($postResults['sheetID'])) {
+            if ($courseStatus==0){
+                $postResults['userID'] = $selectedUser;
+            }
+            $uploadUserID = $postResults['userID'];
             
-            if (isset($_POST['sheetID']))
-                $sheetID = cleanInput($_POST['sheetID']);
+            if (isset($postResults['sheetID']))
+                $sheetID = $postResults['sheetID'];
 
             // loads the upload history of the selected user (uploadUserID) in the 
             // selected course from GetSite
