@@ -7,7 +7,7 @@ select SQL_CACHE
     SS.U_id_leader, SS.S_id_selected, SS.E_id, SS.ES_id
 from
     SelectedSubmission SS
-    join 
+    join
     ExerciseSheet ES ON ES.ES_id = SS.ES_id
 where
     ES.C_id = '",courseid,"';");

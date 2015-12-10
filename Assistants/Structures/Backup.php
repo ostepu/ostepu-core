@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -102,13 +102,13 @@ class Backup extends Object implements JsonSerializable
      *
      * @return an backup object
      */
-    public static function createBackup( 
+    public static function createBackup(
                                         $backupId,
                                         $date,
                                         $fileId
                                         )
     {
-        return new Backup( array( 
+        return new Backup( array(
                                  'id' => $backupId,
                                  'date' => $date,
                                  'file' => array( 'fileId' => $fileId )
@@ -122,7 +122,7 @@ class Backup extends Object implements JsonSerializable
      */
     public static function getDbConvert( )
     {
-        return array( 
+        return array(
                      'B_id' => 'id',
                      'B_date' => 'date',
                      'F_id_file' => 'file',
@@ -174,7 +174,7 @@ class Backup extends Object implements JsonSerializable
         if (is_array($data))reset($data);
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
             $e = new Exception();
-            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());           
             ///return null;
         }
         if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
@@ -195,12 +195,12 @@ class Backup extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeBackup( 
+    public static function decodeBackup(
                                         $data,
                                         $decode = true
                                         )
     {
-        if ( $decode && 
+        if ( $decode &&
              $data == null )
             $data = '{}';
 
@@ -215,7 +215,7 @@ class Backup extends Object implements JsonSerializable
                     $isArray = false;
                 }
             } else {
-               $isArray = false; 
+               $isArray = false;
             }
         }
 
@@ -226,7 +226,7 @@ class Backup extends Object implements JsonSerializable
             }
             return $result;
 
-        } else 
+        } else
             return new Backup( $data );
     }
 

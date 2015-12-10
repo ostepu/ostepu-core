@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -102,15 +102,15 @@ class Invitation extends Object implements JsonSerializable
      *
      * @return an invitation object
      */
-    public static function createInvitation( 
+    public static function createInvitation(
                                             $leaderId,
                                             $memberId,
                                             $sheetId
                                             )
     {
-        return new Invitation( array( 
+        return new Invitation( array(
                                      'sheet' => $sheetId,
-                                     'leader' => User::createUser( 
+                                     'leader' => User::createUser(
                                                                   $leaderId,
                                                                   null,
                                                                   null,
@@ -122,7 +122,7 @@ class Invitation extends Object implements JsonSerializable
                                                                   null,
                                                                   null
                                                                   ),
-                                     'member' => User::createUser( 
+                                     'member' => User::createUser(
                                                                   $memberId,
                                                                   null,
                                                                   null,
@@ -144,7 +144,7 @@ class Invitation extends Object implements JsonSerializable
      */
     public static function getDbConvert( )
     {
-        return array( 
+        return array(
                      'U_leader' => 'leader',
                      'U_member' => 'member',
                      'ES_id' => 'sheet'
@@ -161,28 +161,28 @@ class Invitation extends Object implements JsonSerializable
         $values = '';
 
         if ( $this->sheet != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'ES_id',
                                  DBJson::mysql_real_escape_string( $this->sheet )
                                  );
-        if ( $this->leader != null && 
+        if ( $this->leader != null &&
              $this->leader->getId( ) != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'U_id_member',
                                  DBJson::mysql_real_escape_string( $this->leader->getId( ) )
                                  );
-        if ( $this->member != null && 
+        if ( $this->member != null &&
              $this->member->getId( ) != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'U_id_leader',
                                  DBJson::mysql_real_escape_string( $this->member->getId( ) )
                                  );
 
         if ( $values != '' ){
-            $values = substr( 
+            $values = substr(
                              $values,
                              1
                              );
@@ -197,7 +197,7 @@ class Invitation extends Object implements JsonSerializable
      */
     public static function getDbPrimaryKey( )
     {
-        return array( 
+        return array(
                      'U_id',
                      'ES_id',
                      'U_id2'
@@ -216,12 +216,12 @@ class Invitation extends Object implements JsonSerializable
 
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
-                if ( $key == 'member' || 
+                if ( $key == 'member' ||
                      $key == 'leader' ){
                     $this->{
                         $key
 
-                    } = User::decodeUser( 
+                    } = User::decodeUser(
                                          $value,
                                          false
                                          );
@@ -250,7 +250,7 @@ class Invitation extends Object implements JsonSerializable
         /*if (is_array($data))reset($data);
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
             $e = new Exception();
-            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());           
             ///return null;
         }
         if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
@@ -271,12 +271,12 @@ class Invitation extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeInvitation( 
+    public static function decodeInvitation(
                                             $data,
                                             $decode = true
                                             )
     {
-        if ( $decode && 
+        if ( $decode &&
              $data == null )
             $data = '{}';
 
@@ -291,7 +291,7 @@ class Invitation extends Object implements JsonSerializable
                     $isArray = false;
                 }
             } else {
-               $isArray = false; 
+               $isArray = false;
             }
         }
 
@@ -302,7 +302,7 @@ class Invitation extends Object implements JsonSerializable
             }
             return $result;
 
-        } else 
+        } else
             return new Invitation( $data );
     }
 
@@ -321,7 +321,7 @@ class Invitation extends Object implements JsonSerializable
         return array_merge($list,parent::jsonSerialize( ));
     }
 
-    public static function ExtractInvitation( 
+    public static function ExtractInvitation(
                                              $data,
                                              $singleResult = false,
                                              $LeaderExtension = '',
@@ -333,7 +333,7 @@ class Invitation extends Object implements JsonSerializable
 
         // generates an assoc array of users by using a defined list of
         // its attributes
-        $leader = DBJson::getObjectsByAttributes( 
+        $leader = DBJson::getObjectsByAttributes(
                                                  $data,
                                                  User::getDBPrimaryKey( ),
                                                  User::getDBConvert( ),
@@ -342,7 +342,7 @@ class Invitation extends Object implements JsonSerializable
 
         // generates an assoc array of users by using a defined list of
         // its attributes
-        $member = DBJson::getObjectsByAttributes( 
+        $member = DBJson::getObjectsByAttributes(
                                                  $data,
                                                  User::getDBPrimaryKey( ),
                                                  User::getDBConvert( ),
@@ -351,7 +351,7 @@ class Invitation extends Object implements JsonSerializable
 
         // generates an assoc array of invitations by using a defined list of
         // its attributes
-        $invitations = DBJson::getObjectsByAttributes( 
+        $invitations = DBJson::getObjectsByAttributes(
                                                       $data,
                                                       Invitation::getDBPrimaryKey( ),
                                                       Invitation::getDBConvert( ),
@@ -359,7 +359,7 @@ class Invitation extends Object implements JsonSerializable
                                                       );
 
         // concatenates the invitations and the associated invitation leader
-        $res = DBJson::concatObjectListsSingleResult( 
+        $res = DBJson::concatObjectListsSingleResult(
                                                      $data,
                                                      $invitations,
                                                      Invitation::getDBPrimaryKey( ),
@@ -371,7 +371,7 @@ class Invitation extends Object implements JsonSerializable
                                                      );
 
         // concatenates the invitations and the associated invitation member
-        $res = DBJson::concatObjectListsSingleResult( 
+        $res = DBJson::concatObjectListsSingleResult(
                                                      $data,
                                                      $res,
                                                      Invitation::getDBPrimaryKey( ),
@@ -381,7 +381,7 @@ class Invitation extends Object implements JsonSerializable
                                                      $MemberExtension.'2',
                                                      $InvitationExtension
                                                      );
-        if ($isResult){ 
+        if ($isResult){
             // to reindex
             $res = array_values( $res );
             $res = Invitation::decodeInvitation($res,false);

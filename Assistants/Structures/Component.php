@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -227,7 +227,7 @@ class Component extends Object implements JsonSerializable
      *
      * @return an component object
      */
-    public static function createComponent( 
+    public static function createComponent(
                                            $id,
                                            $name,
                                            $address,
@@ -235,7 +235,7 @@ class Component extends Object implements JsonSerializable
                                            $def=null
                                            )
     {
-        return new Component( array( 
+        return new Component( array(
                                     'id' => $id,
                                     'name' => $name,
                                     'address' => $address,
@@ -251,7 +251,7 @@ class Component extends Object implements JsonSerializable
      */
     public static function getDbConvert( )
     {
-        return array( 
+        return array(
                      'CO_id' => 'id',
                      'CO_name' => 'name',
                      'CO_address' => 'address',
@@ -274,38 +274,38 @@ class Component extends Object implements JsonSerializable
         $values = '';
 
         if ( $this->id != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'CO_id',
                                  DBJson::mysql_real_escape_string( $this->id )
                                  );
         if ( $this->name != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'CO_name',
                                  DBJson::mysql_real_escape_string( $this->name )
                                  );
         if ( $this->address != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'CO_address',
                                  DBJson::mysql_real_escape_string( $this->address )
                                  );
         if ( $this->option != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'CO_option',
                                  DBJson::mysql_real_escape_string( $this->option )
                                  );
         if ( $this->def !== null && $this->def !== array() )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'CO_def',
                                  DBJson::mysql_real_escape_string( $this->def )
                                  );
 
         if ( $values != '' ){
-            $values = substr( 
+            $values = substr(
                              $values,
                              1
                              );
@@ -339,7 +339,7 @@ class Component extends Object implements JsonSerializable
                     $this->{
                         $key
 
-                    } = Link::decodeLink( 
+                    } = Link::decodeLink(
                                          $value,
                                          false
                                          );
@@ -368,7 +368,7 @@ class Component extends Object implements JsonSerializable
         /*if (is_array($data))reset($data);
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
             $e = new Exception();
-            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());           
             ///return null;
         }
         if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
@@ -389,12 +389,12 @@ class Component extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeComponent( 
+    public static function decodeComponent(
                                            $data,
                                            $decode = true
                                            )
     {
-        if ( $decode && 
+        if ( $decode &&
              $data == null )
             $data = '{}';
 
@@ -409,7 +409,7 @@ class Component extends Object implements JsonSerializable
                     $isArray = false;
                 }
             } else {
-               $isArray = false; 
+               $isArray = false;
             }
         }
 
@@ -420,7 +420,7 @@ class Component extends Object implements JsonSerializable
             }
             return $result;
 
-        } else 
+        } else
             return new Component( $data );
     }
 

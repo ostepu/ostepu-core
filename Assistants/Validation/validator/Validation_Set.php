@@ -22,7 +22,7 @@ class Validation_Set implements Validation_Interface
     }
 
     public static function validate_set_copy($key, $input, $setting = null, $param = null)
-    {        
+    {       
         if ($setting['setError'] || !isset($input[$key])) {
             return;
         }
@@ -35,7 +35,7 @@ class Validation_Set implements Validation_Interface
     }
 
     public static function validate_set_value($key, $input, $setting = null, $param = null)
-    {        
+    {       
         if ($setting['setError']) {
             return;
         }
@@ -44,7 +44,7 @@ class Validation_Set implements Validation_Interface
     }
 
     public static function validate_set_field_value($key, $input, $setting = null, $param = null)
-    {        
+    {       
         if ($setting['setError']) {
             return;
         }
@@ -61,7 +61,7 @@ class Validation_Set implements Validation_Interface
     }
 
     public static function validate_set_error($key, $input, $setting = null, $param = null)
-    {   
+    {  
         if (!isset($param)){
             throw new Exception('Validation rule \''.__METHOD__.'\', missing parameter.');
         }

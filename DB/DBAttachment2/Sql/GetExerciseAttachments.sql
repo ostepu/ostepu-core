@@ -4,16 +4,16 @@
  * gets all exerchise attachments from %Attachment table
  * @author Till Uhlig
  * @param int \$eid an %Exercise identifier
- * @result 
+ * @result
  * - A, the attachment data
  * - F, the attachment file
  */
 ?>
 
 SET @course = (select E.C_id from `Exercise` E where E.E_id = <?php echo $eid; ?> limit 1);
-SET @statement = 
+SET @statement =
 concat(
-"select 
+"select
     concat('", @course ,"','_',A.A_id) as A_id,
     concat('", @course ,"','_',A.PRO_id) as PRO_id,
     A.E_id,

@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * @file DeleteExerciseType.sql
  * deletes a specified possible type from %ExerciseType table
  * @author  Till Uhlig
@@ -8,6 +8,6 @@
  */
 ?>
 
-DELETE FROM ExerciseType 
+DELETE FROM ExerciseType
 WHERE
     ET_id = '<?php echo $etid; ?>'

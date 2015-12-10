@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * @file DeleteSetting.sql
  * deletes an specified Setting from %Setting table
  * @author  Till Uhlig

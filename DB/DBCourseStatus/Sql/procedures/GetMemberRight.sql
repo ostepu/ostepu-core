@@ -25,13 +25,13 @@ select SQL_CACHE
     S.SET_type
 from
 
-    CourseStatus CS 
+    CourseStatus CS
         join
     Course C ON (CS.C_id = C.C_id)
  join
     User U
        ON (U.U_id = CS.U_id)
-        left join 
+        left join
     Setting_",courseid," S ON (1)
 WHERE
     CS.U_id = '",userid,"' and CS.C_id = '",courseid,"';");

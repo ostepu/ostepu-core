@@ -4,16 +4,16 @@
  * gets processes from %Process table
  * @author Till Uhlig
  * @param int \$esid an %Sheet identifier
- * @result 
+ * @result
  * - PRO, the process data
  * - CO, the component data
  */
 ?>
 
 SET @course = (select E.C_id from `Exercise` E where E.ES_id = <?php echo $esid; ?> limit 1);
-SET @statement = 
+SET @statement =
 concat(
-"select 
+"select
     concat('", @course ,"','_',PRO.PRO_id) as PRO_id,
     PRO.E_id,
     PRO.E_id as E_id2,

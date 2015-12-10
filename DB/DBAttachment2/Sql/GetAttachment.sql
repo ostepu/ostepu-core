@@ -4,13 +4,13 @@
  * gets an specified attachment from %Attachment table
  * @author Till Uhlig
  * @param int \$aid a %Attachment identifier
- * @result 
+ * @result
  * - A, the attachment data
  * - F, the attachment file
  */
 ?>
 
-select 
+select
     concat('<?php echo Attachment::getCourseFromAttachmentId($aid); ?>','_',A.A_id) as A_id,
     concat('<?php echo Attachment::getCourseFromAttachmentId($aid); ?>','_',A.PRO_id) as PRO_id,
     A.E_id,

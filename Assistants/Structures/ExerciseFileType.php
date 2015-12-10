@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -107,13 +107,13 @@ class ExerciseFileType extends Object implements JsonSerializable
      *
      * @return an exercise type object
      */
-    public static function createExerciseFileType( 
+    public static function createExerciseFileType(
                                                   $typeid,
                                                   $text,
                                                   $exerciseId
                                                   )
     {
-        return new ExerciseFileType( array( 
+        return new ExerciseFileType( array(
                                            'id' => $typeid,
                                            'text' => $text,
                                            'exerciseId' => $exerciseId
@@ -149,7 +149,7 @@ class ExerciseFileType extends Object implements JsonSerializable
      */
     public static function getDbConvert( )
     {
-        return array( 
+        return array(
                      'EFT_id' => 'id',
                      'EFT_text' => 'text',
                      'E_id' => 'exerciseId'
@@ -166,26 +166,26 @@ class ExerciseFileType extends Object implements JsonSerializable
         $values = '';
 
         if ( $this->id != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'EFT_id',
                                  DBJson::mysql_real_escape_string( $this->id )
                                  );
         if ( $this->text != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'EFT_text',
                                  DBJson::mysql_real_escape_string( $this->text )
                                  );
         if ( $this->exerciseId != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'E_id',
                                  DBJson::mysql_real_escape_string( $this->exerciseId )
                                  );
 
         if ( $values != '' ){
-            $values = substr( 
+            $values = substr(
                              $values,
                              1
                              );
@@ -215,7 +215,7 @@ class ExerciseFileType extends Object implements JsonSerializable
         /*if (is_array($data))reset($data);
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
             $e = new Exception();
-            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());           
             ///return null;
         }
         if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
@@ -236,12 +236,12 @@ class ExerciseFileType extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeExerciseFileType( 
+    public static function decodeExerciseFileType(
                                                   $data,
                                                   $decode = true
                                                   )
     {
-        if ( $decode && 
+        if ( $decode &&
              $data == null )
             $data = '{}';
 
@@ -256,7 +256,7 @@ class ExerciseFileType extends Object implements JsonSerializable
                     $isArray = false;
                 }
             } else {
-               $isArray = false; 
+               $isArray = false;
             }
         }
 
@@ -267,7 +267,7 @@ class ExerciseFileType extends Object implements JsonSerializable
             }
             return $result;
 
-        } else 
+        } else
             return new ExerciseFileType( $data );
     }
 
@@ -288,7 +288,7 @@ class ExerciseFileType extends Object implements JsonSerializable
         return array_merge($list,parent::jsonSerialize( ));
     }
 
-    public static function ExtractExerciseFileType( 
+    public static function ExtractExerciseFileType(
                                                    $data,
                                                    $singleResult = false,
                                                    $FileTypeExtension = '',
@@ -298,13 +298,13 @@ class ExerciseFileType extends Object implements JsonSerializable
 
         // generates an assoc array of an exercise file type by using a defined
         // list of its attributes
-        $res = DBJson::getResultObjectsByAttributes( 
+        $res = DBJson::getResultObjectsByAttributes(
                                                     $data,
                                                     ExerciseFileType::getDBPrimaryKey( ),
                                                     ExerciseFileType::getDBConvert( ),
                                                     $FileTypeExtension
                                                     );
-        if ($isResult){ 
+        if ($isResult){
             // to reindex
             $res = array_merge( $res );
             $res = ExerciseFileType::decodeExerciseFileType($res,false);

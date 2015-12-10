@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * @file DeleteTransaction.sql
  * deletes an specified transaction from %Transaction table
  * @author  Till Uhlig

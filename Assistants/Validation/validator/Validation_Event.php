@@ -11,7 +11,7 @@ class Validation_Event implements Validation_Interface
     public static function validate_on_error($key, $input, $setting = null, $param = null)
     {
         if (!isset($setting['setError'])){
-            return;            
+            return;           
         }
 
         if ($setting['setError'] === true){
@@ -44,7 +44,7 @@ class Validation_Event implements Validation_Interface
     public static function validate_on_success($key, $input, $setting = null, $param = null)
     {
         if (!isset($setting['setError'])){
-            return;            
+            return;           
         }
 
         if ($setting['setError'] !== true){

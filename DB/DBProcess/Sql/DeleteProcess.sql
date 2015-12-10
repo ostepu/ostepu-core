@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * @file DeleteProcess.sql
  * deletes a specified process from %Process table
  * @author  Till Uhlig

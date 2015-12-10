@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -91,7 +91,7 @@ class SelectedSubmission extends Object implements JsonSerializable
         $this->exerciseId = $value;
     }
 
-    
+   
     /**
      * @var string $exerciseSheetId a string that identifies the exercisesheet this submission belongs to.
      */
@@ -127,13 +127,13 @@ class SelectedSubmission extends Object implements JsonSerializable
      *
      * @return an selected submission object
      */
-    public static function createSelectedSubmission( 
+    public static function createSelectedSubmission(
                                                     $leaderId,
                                                     $submissionId,
                                                     $exerciseId
                                                     )
     {
-        return new SelectedSubmission( array( 
+        return new SelectedSubmission( array(
                                              'leaderId' => $leaderId,
                                              'submissionId' => $submissionId,
                                              'exerciseId' => $exerciseId
@@ -147,7 +147,7 @@ class SelectedSubmission extends Object implements JsonSerializable
      */
     public static function getDbConvert( )
     {
-        return array( 
+        return array(
                      'U_id_leader' => 'leaderId',
                      'S_id_selected' => 'submissionId',
                      'E_id' => 'exerciseId',
@@ -165,26 +165,26 @@ class SelectedSubmission extends Object implements JsonSerializable
         $values = '';
 
         if ( $this->leaderId != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'U_id_leader',
                                  DBJson::mysql_real_escape_string( $this->leaderId )
                                  );
         if ( $this->submissionId != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'S_id_selected',
                                  DBJson::mysql_real_escape_string( $this->submissionId )
                                  );
         if ( $this->exerciseId != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'E_id',
                                  DBJson::mysql_real_escape_string( $this->exerciseId )
                                  );
 
         if ( $values != '' ){
-            $values = substr( 
+            $values = substr(
                              $values,
                              1
                              );
@@ -199,7 +199,7 @@ class SelectedSubmission extends Object implements JsonSerializable
      */
     public static function getDbPrimaryKey( )
     {
-        return array( 
+        return array(
                      'U_id_leader',
                      'S_id_selected'
                      );
@@ -239,7 +239,7 @@ class SelectedSubmission extends Object implements JsonSerializable
         /*if (is_array($data))reset($data);
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
             $e = new Exception();
-            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());           
             ///return null;
         }
         if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
@@ -260,12 +260,12 @@ class SelectedSubmission extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeSelectedSubmission( 
+    public static function decodeSelectedSubmission(
                                                     $data,
                                                     $decode = true
                                                     )
     {
-        if ( $decode && 
+        if ( $decode &&
              $data == null )
             $data = '{}';
 
@@ -280,7 +280,7 @@ class SelectedSubmission extends Object implements JsonSerializable
                     $isArray = false;
                 }
             } else {
-               $isArray = false; 
+               $isArray = false;
             }
         }
 
@@ -291,7 +291,7 @@ class SelectedSubmission extends Object implements JsonSerializable
             }
             return $result;
 
-        } else 
+        } else
             return new SelectedSubmission( $data );
     }
 
@@ -312,7 +312,7 @@ class SelectedSubmission extends Object implements JsonSerializable
         return array_merge($list,parent::jsonSerialize( ));
     }
 
-    public static function ExtractSelectedSubmission( 
+    public static function ExtractSelectedSubmission(
                                                      $data,
                                                      $singleResult = false,
                                                      $SelectedSubmissionExtension = '',
@@ -322,13 +322,13 @@ class SelectedSubmission extends Object implements JsonSerializable
 
         // generates an assoc array of selected entry's by using a defined list of
         // its attributes
-        $res = DBJson::getResultObjectsByAttributes( 
+        $res = DBJson::getResultObjectsByAttributes(
                                                     $data,
                                                     SelectedSubmission::getDBPrimaryKey( ),
                                                     SelectedSubmission::getDBConvert( ),
                                                     $SelectedSubmissionExtension
                                                     );
-        if ($isResult){ 
+        if ($isResult){
             $res = SelectedSubmission::decodeSelectedSubmission($res,false);
 
             if ( $singleResult == true ){

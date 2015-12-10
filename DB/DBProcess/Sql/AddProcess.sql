@@ -9,7 +9,7 @@
 ?>
 
 SET @course = <?php echo ($object->getExercise()->getCourseId()!== null ? '\''.$object->getExercise()->getCourseId().'\'' : "(select E.C_id from `Exercise` E where E.E_id = {$object->getExercise()->getId()} limit 1)"); ?>;
-SET @statement = 
+SET @statement =
 concat("INSERT INTO `Process<?php echo $pre; ?>_", @course, "` SET <?php echo $object->getInsertData(true); ?>;");
 PREPARE stmt1 FROM @statement;
 EXECUTE stmt1;

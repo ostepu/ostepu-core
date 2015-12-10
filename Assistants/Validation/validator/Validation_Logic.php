@@ -32,7 +32,7 @@ class Validation_Logic implements Validation_Interface
             if ($f->isValid()){
                 $res = $f->getResult()[$key];
                 return array('valid'=>true, 'field'=>$key, 'value'=>$res);
-            } 
+            }
         }
         return false;
     }

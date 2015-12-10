@@ -21,7 +21,7 @@ class Validation_Structures implements Validation_Interface
         $obj = @$method($input[$key]);
 
         if ($obj === null){
-           return false; 
+           return false;
         }
 
         return array('valid'=>true,'field'=>$key,'value'=>$obj);

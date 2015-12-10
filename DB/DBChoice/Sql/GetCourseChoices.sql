@@ -4,12 +4,12 @@
  * gets all choices of a course from %Choice table
  * @author Till Uhlig
  * @param int \$courseid an %Course identifier
- * @result 
+ * @result
  * - CH, the choice data
  */
 ?>
 
-select 
+select
     concat('<?php echo $courseid; ?>_',CH.CH_id) as CH_id,
     CH.FO_id,
     CH.E_id,

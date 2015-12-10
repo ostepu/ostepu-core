@@ -4,12 +4,12 @@
  * gets a setting from %Setting table
  * @author Till Uhlig
  * @param int \$setid an %Setting identifier
- * @result 
+ * @result
  * - S, the Setting data
  */
 ?>
 
-select 
+select
     concat('<?php echo Setting::getCourseFromSettingId($setid); ?>','_',S.SET_id) as SET_id,
     S.SET_name,
     S.SET_state,

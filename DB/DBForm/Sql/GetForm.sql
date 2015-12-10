@@ -4,16 +4,16 @@
  * gets a form from %Form table
  * @author Till Uhlig
  * @param int \$formid an %Form identifier
- * @result 
+ * @result
  * - FO, the form data
  * - CH, the choice data
  */
 ?>
 
 SET @course = '<?php echo Form::getCourseFromFormId($formid); ?>';
-SET @statement = 
+SET @statement =
 concat(
-"select 
+"select
     concat('", @course ,"','_',FO.FO_id) as FO_id,
     FO.FO_type,
     FO.FO_solution,

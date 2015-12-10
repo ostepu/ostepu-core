@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -79,12 +79,12 @@ class ExternalId extends Object implements JsonSerializable
      *
      * @return an external id object
      */
-    public static function createExternalId( 
+    public static function createExternalId(
                                             $externalId,
                                             $courseId
                                             )
     {
-        return new ExternalId( array( 
+        return new ExternalId( array(
                                      'id' => $externalId,
                                      'course' => array( 'id' => $courseId )
                                      ) );
@@ -106,7 +106,7 @@ class ExternalId extends Object implements JsonSerializable
                     $this->{
                         $key
 
-                    } = new Course( 
+                    } = new Course(
                                    $value,
                                    false
                                    );
@@ -130,7 +130,7 @@ class ExternalId extends Object implements JsonSerializable
      */
     public static function getDbConvert( )
     {
-        return array( 
+        return array(
                      'EX_id' => 'id',
                      'EX_course' => 'course'
                      );
@@ -146,21 +146,21 @@ class ExternalId extends Object implements JsonSerializable
         $values = '';
 
         if ( $this->id != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'EX_id',
                                  DBJson::mysql_real_escape_string( $this->id )
                                  );
-        if ( $this->course != null && 
+        if ( $this->course != null &&
              $this->course->getId( ) != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'C_id',
                                  DBJson::mysql_real_escape_string( $this->course->getId( ) )
                                  );
 
         if ( $values != '' ){
-            $values = substr( 
+            $values = substr(
                              $values,
                              1
                              );
@@ -190,7 +190,7 @@ class ExternalId extends Object implements JsonSerializable
         /*if (is_array($data))reset($data);
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
             $e = new Exception();
-            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());           
             ///return null;
         }
         if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
@@ -211,12 +211,12 @@ class ExternalId extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeExternalId( 
+    public static function decodeExternalId(
                                             $data,
                                             $decode = true
                                             )
     {
-        if ( $decode && 
+        if ( $decode &&
              $data == null )
             $data = '{}';
 
@@ -231,7 +231,7 @@ class ExternalId extends Object implements JsonSerializable
                     $isArray = false;
                 }
             } else {
-               $isArray = false; 
+               $isArray = false;
             }
         }
 
@@ -242,7 +242,7 @@ class ExternalId extends Object implements JsonSerializable
             }
             return $result;
 
-        } else 
+        } else
             return new ExternalId( $data );
     }
 
@@ -261,7 +261,7 @@ class ExternalId extends Object implements JsonSerializable
         return array_merge($list,parent::jsonSerialize( ));
     }
 
-    public static function ExtractExternalId( 
+    public static function ExtractExternalId(
                                              $data,
                                              $singleResult = false,
                                              $CourseExtension = '',
@@ -272,7 +272,7 @@ class ExternalId extends Object implements JsonSerializable
 
         // generates an assoc array of courses by using a defined list of
         // its attributes
-        $course = DBJson::getObjectsByAttributes( 
+        $course = DBJson::getObjectsByAttributes(
                                                  $data,
                                                  Course::getDBPrimaryKey( ),
                                                  Course::getDBConvert( ),
@@ -281,7 +281,7 @@ class ExternalId extends Object implements JsonSerializable
 
         // generates an assoc array of external IDs by using a defined list of
         // its attributes
-        $externalIds = DBJson::getObjectsByAttributes( 
+        $externalIds = DBJson::getObjectsByAttributes(
                                                       $data,
                                                       ExternalId::getDBPrimaryKey( ),
                                                       ExternalId::getDBConvert( ),
@@ -289,7 +289,7 @@ class ExternalId extends Object implements JsonSerializable
                                                       );
 
         // concatenates the external IDs and the associated courses
-        $res = DBJson::concatObjectListsSingleResult( 
+        $res = DBJson::concatObjectListsSingleResult(
                                                      $data,
                                                      $externalIds,
                                                      ExternalId::getDBPrimaryKey( ),
@@ -299,7 +299,7 @@ class ExternalId extends Object implements JsonSerializable
                                                      $CourseExtension,
                                                      $ExternalIdExtension
                                                      );
-        if ($isResult){ 
+        if ($isResult){
             // to reindex
             $res = array_values( $res );
             $res = ExternalId::decodeExternalId($res,false);

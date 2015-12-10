@@ -3,7 +3,7 @@ CREATE PROCEDURE `DBApprovalConditionGetCourseApprovalConditions` (IN courseid I
 READS SQL DATA
 begin
 SET @s = concat("
-select SQL_CACHE 
+select SQL_CACHE
     AC_id, C_id, ET_id, AC_percentage
 from
     ApprovalCondition

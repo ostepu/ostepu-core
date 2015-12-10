@@ -27,7 +27,7 @@ class Validation_Converter implements Validation_Interface
         }
 
         if (preg_match('%^\\d+\\.\\d+$%', $input[$key]) && is_float((float) $input[$key])){
-            return array('valid'=>true,'field'=>$key,'value'=>floatval($input[$key]));            
+            return array('valid'=>true,'field'=>$key,'value'=>floatval($input[$key]));           
         }
 
         return false;

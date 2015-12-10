@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * @file DeleteExerciseSheetExerciseFileType.sql
  * deletes specified exercise file types from %ExerciseFileType table
  * @author  Till Uhlig

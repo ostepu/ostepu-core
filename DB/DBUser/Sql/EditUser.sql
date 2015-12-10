@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * @file EditUser.sql
  * updates an specified user from %User table
  * @author  Till Uhlig

@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * @file DeleteUserSheetSubmission.sql
  * deletes a specified selected submission row from %SelectedSubmission and %Submission table
  * @author  Till Uhlig

@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -141,17 +141,17 @@ class Attachment extends Object implements JsonSerializable
      *
      * @return an attachment object.
      */
-    public static function createAttachment( 
+    public static function createAttachment(
                                             $attachmentId,
                                             $exerciseId,
                                             $fileId,
                                             $processId
                                             )
     {
-        return new Attachment( array( 
+        return new Attachment( array(
                                      'id' => $attachmentId,
                                      'exerciseId' => $exerciseId,
-                                     'file' => File::createFile( 
+                                     'file' => File::createFile(
                                                                 $fileId,
                                                                 null,
                                                                 null,
@@ -170,7 +170,7 @@ class Attachment extends Object implements JsonSerializable
      */
     public static function getDbConvert( )
     {
-        return array( 
+        return array(
                      'A_id' => 'id',
                      'E_id' => 'exerciseId',
                      'F_file' => 'file',
@@ -188,33 +188,33 @@ class Attachment extends Object implements JsonSerializable
         $values = '';
 
         if ( $this->id != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'A_id',
                                  DBJson::mysql_real_escape_string( $this->id )
                                  );
         if ( $this->exerciseId != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'E_id',
                                  DBJson::mysql_real_escape_string( $this->exerciseId )
                                  );
-        if ( $this->file != null && 
+        if ( $this->file != null &&
              $this->file->getFileId( ) != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'F_id',
                                  DBJson::mysql_real_escape_string( $this->file->getFileId( ) )
                                  );
         if ( $this->processId != null)
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'PRO_id',
                                  DBJson::mysql_real_escape_string( Process::getIdFromProcessId($this->processId) )
                                  );
 
         if ( $values != '' ){
-            $values = substr( 
+            $values = substr(
                              $values,
                              1
                              );
@@ -248,7 +248,7 @@ class Attachment extends Object implements JsonSerializable
                     $this->{
                         $key
 
-                    } = File::decodeFile( 
+                    } = File::decodeFile(
                                          $value,
                                          false
                                          );
@@ -277,7 +277,7 @@ class Attachment extends Object implements JsonSerializable
         /*if (is_array($data))reset($data);
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
             $e = new Exception();
-            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());           
             ///return null;
         }
         if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
@@ -298,12 +298,12 @@ class Attachment extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeAttachment( 
+    public static function decodeAttachment(
                                             $data,
                                             $decode = true
                                             )
     {
-        if ( $decode && 
+        if ( $decode &&
              $data == null )
             $data = '{}';
 
@@ -318,7 +318,7 @@ class Attachment extends Object implements JsonSerializable
                     $isArray = false;
                 }
             } else {
-               $isArray = false; 
+               $isArray = false;
             }
         }
 
@@ -329,7 +329,7 @@ class Attachment extends Object implements JsonSerializable
             }
             return $result;
 
-        } else 
+        } else
             return new Attachment( $data );
     }
 
@@ -352,7 +352,7 @@ class Attachment extends Object implements JsonSerializable
         return array_merge($list,parent::jsonSerialize( ));
     }
 
-    public static function ExtractAttachment( 
+    public static function ExtractAttachment(
                                              $data,
                                              $singleResult = false,
                                              $FileExtension = '',
@@ -363,7 +363,7 @@ class Attachment extends Object implements JsonSerializable
 
         // generates an assoc array of files by using a defined list of
         // its attributes
-        $files = DBJson::getObjectsByAttributes( 
+        $files = DBJson::getObjectsByAttributes(
                                                 $data,
                                                 File::getDBPrimaryKey( ),
                                                 File::getDBConvert( ),
@@ -372,7 +372,7 @@ class Attachment extends Object implements JsonSerializable
 
         // generates an assoc array of attachments by using a defined list of
         // its attributes
-        $attachments = DBJson::getObjectsByAttributes( 
+        $attachments = DBJson::getObjectsByAttributes(
                                                       $data,
                                                       Attachment::getDBPrimaryKey( ),
                                                       Attachment::getDBConvert( ),
@@ -380,7 +380,7 @@ class Attachment extends Object implements JsonSerializable
                                                       );
 
         // concatenates the attachments and the associated files
-        $res = DBJson::concatObjectListsSingleResult( 
+        $res = DBJson::concatObjectListsSingleResult(
                                                      $data,
                                                      $attachments,
                                                      Attachment::getDBPrimaryKey( ),

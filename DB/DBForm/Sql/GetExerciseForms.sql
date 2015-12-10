@@ -4,16 +4,16 @@
  * gets forms from %Form table
  * @author Till Uhlig
  * @param int \$eid an %Exercise identifier
- * @result 
+ * @result
  * - FO, the form data
  * - CH, the choice data
  */
 ?>
 
 SET @course = (select E.C_id from `Exercise` E where E.E_id = <?php echo $eid; ?> limit 1);
-SET @statement = 
+SET @statement =
 concat(
-"select 
+"select
     concat('", @course ,"','_',FO.FO_id) as FO_id,
     FO.FO_type,
     FO.FO_solution,

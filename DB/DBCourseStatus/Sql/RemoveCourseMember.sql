@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * @file RemoveCourseMember.sql
  * deletes an specified course status from %CourseStatus table
  * @author  Till Uhlig
@@ -9,6 +9,6 @@
  */
 ?>
 
-DELETE FROM CourseStatus 
+DELETE FROM CourseStatus
 WHERE
     C_id = '<?php echo $courseid; ?>' and U_id = '<?php echo $userid; ?>'

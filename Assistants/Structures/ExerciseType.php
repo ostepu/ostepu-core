@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -79,12 +79,12 @@ class ExerciseType extends Object implements JsonSerializable
      *
      * @return an exercise type object
      */
-    public static function createExerciseType( 
+    public static function createExerciseType(
                                               $typeid,
                                               $name
                                               )
     {
-        return new ExerciseType( array( 
+        return new ExerciseType( array(
                                        'id' => $typeid,
                                        'name' => $name
                                        ) );
@@ -119,7 +119,7 @@ class ExerciseType extends Object implements JsonSerializable
      */
     public static function getDbConvert( )
     {
-        return array( 
+        return array(
                      'ET_id' => 'id',
                      'ET_name' => 'name'
                      );
@@ -135,20 +135,20 @@ class ExerciseType extends Object implements JsonSerializable
         $values = '';
 
         if ( $this->id != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'ET_id',
                                  DBJson::mysql_real_escape_string( $this->id )
                                  );
         if ( $this->name != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'ET_name',
                                  DBJson::mysql_real_escape_string( $this->name )
                                  );
 
         if ( $values != '' ){
-            $values = substr( 
+            $values = substr(
                              $values,
                              1
                              );
@@ -178,7 +178,7 @@ class ExerciseType extends Object implements JsonSerializable
         /*if (is_array($data))reset($data);
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
             $e = new Exception();
-            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());           
             ///return null;
         }
         if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
@@ -199,12 +199,12 @@ class ExerciseType extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeExerciseType( 
+    public static function decodeExerciseType(
                                               $data,
                                               $decode = true
                                               )
     {
-        if ( $decode && 
+        if ( $decode &&
              $data == null )
             $data = '{}';
 
@@ -219,7 +219,7 @@ class ExerciseType extends Object implements JsonSerializable
                     $isArray = false;
                 }
             } else {
-               $isArray = false; 
+               $isArray = false;
             }
         }
 
@@ -230,7 +230,7 @@ class ExerciseType extends Object implements JsonSerializable
             }
             return $result;
 
-        } else 
+        } else
             return new ExerciseType( $data );
     }
 
@@ -249,7 +249,7 @@ class ExerciseType extends Object implements JsonSerializable
         return array_merge($list,parent::jsonSerialize( ));
     }
 
-    public static function ExtractExerciseType( 
+    public static function ExtractExerciseType(
                                                $data,
                                                $singleResult = false,
                                                $ExerciseTypeExtension = '',
@@ -259,13 +259,13 @@ class ExerciseType extends Object implements JsonSerializable
 
         // generates an assoc array of an exercise type by using a defined
         // list of its attributes
-        $res = DBJson::getResultObjectsByAttributes( 
+        $res = DBJson::getResultObjectsByAttributes(
                                                     $data,
                                                     ExerciseType::getDBPrimaryKey( ),
                                                     ExerciseType::getDBConvert( ),
                                                     $ExerciseTypeExtension
                                                     );
-        if ($isResult){ 
+        if ($isResult){
             // to reindex
             $res = array_merge( $res );
             $res = ExerciseType::decodeExerciseType($res,false);

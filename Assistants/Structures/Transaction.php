@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -179,7 +179,7 @@ class Transaction extends Object implements JsonSerializable
      */
     public static function getDbConvert( )
     {
-        return array( 
+        return array(
                      'T_id' => 'transactionId',
                      'T_durability' => 'durability',
                      'T_authentication' => 'authentication',
@@ -197,32 +197,32 @@ class Transaction extends Object implements JsonSerializable
         $values = '';
 
         if ( $this->transactionId != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'T_id',
                                  DBJson::mysql_real_escape_string( $this->transactionId )
                                  );
         if ( $this->durability != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'T_durability',
                                  DBJson::mysql_real_escape_string( $this->durability )
                                  );
         if ( $this->authentication != null)
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'T_authentication',
                                  DBJson::mysql_real_escape_string( $this->authentication )
                                  );
         if ( $this->content != null)
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'T_content',
                                  DBJson::mysql_real_escape_string( $this->content )
                                  );
 
         if ( $values != '' ){
-            $values = substr( 
+            $values = substr(
                              $values,
                              1
                              );
@@ -274,7 +274,7 @@ class Transaction extends Object implements JsonSerializable
         /*if (is_array($data))reset($data);
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
             $e = new Exception();
-            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());           
             ///return null;
         }
         if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
@@ -295,12 +295,12 @@ class Transaction extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeTransaction( 
+    public static function decodeTransaction(
                                             $data,
                                             $decode = true
                                             )
     {
-        if ( $decode && 
+        if ( $decode &&
              $data == null )
             $data = '{}';
 
@@ -315,7 +315,7 @@ class Transaction extends Object implements JsonSerializable
                     $isArray = false;
                 }
             } else {
-               $isArray = false; 
+               $isArray = false;
             }
         }
 
@@ -326,7 +326,7 @@ class Transaction extends Object implements JsonSerializable
             }
             return $result;
 
-        } else 
+        } else
             return new Transaction( $data );
     }
 
@@ -349,7 +349,7 @@ class Transaction extends Object implements JsonSerializable
         return array_merge($list,parent::jsonSerialize( ));
     }
 
-    public static function ExtractTransaction( 
+    public static function ExtractTransaction(
                                              $data,
                                              $singleResult = false,
                                              $TransactionExtension = '',
@@ -359,7 +359,7 @@ class Transaction extends Object implements JsonSerializable
 
         // generates an assoc array of transactions by using a defined list of
         // its attributes
-        $res = DBJson::getObjectsByAttributes( 
+        $res = DBJson::getObjectsByAttributes(
                                               $data,
                                               Transaction::getDBPrimaryKey( ),
                                               Transaction::getDBConvert( ),

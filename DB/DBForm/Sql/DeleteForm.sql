@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * @file DeleteForm.sql
  * deletes a specified form from %Form table
  * @author  Till Uhlig

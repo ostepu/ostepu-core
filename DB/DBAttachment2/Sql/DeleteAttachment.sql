@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * @file DeleteAttachment.sql
  * deletes an specified attachment from %Attachment table
  * @author  Till Uhlig

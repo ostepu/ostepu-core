@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -265,7 +265,7 @@ class Link extends Object implements JsonSerializable
      *
      * @return an link object
      */
-    public static function createLink( 
+    public static function createLink(
                                       $id,
                                       $owner,
                                       $target,
@@ -275,7 +275,7 @@ class Link extends Object implements JsonSerializable
                                       $path = null
                                       )
     {
-        return new Link( array( 
+        return new Link( array(
                                'id' => $id,
                                'owner' => $owner,
                                'target' => $target,
@@ -315,7 +315,7 @@ class Link extends Object implements JsonSerializable
      */
     public static function getDbConvert( )
     {
-        return array( 
+        return array(
                      'CL_id' => 'id',
                      'CL_name' => 'name',
                      'CL_address' => 'address',
@@ -339,50 +339,50 @@ class Link extends Object implements JsonSerializable
         $values = '';
 
         if ( $this->id != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'CL_id',
                                  DBJson::mysql_real_escape_string( $this->id )
                                  );
         if ( $this->name != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'CL_name',
                                  DBJson::mysql_real_escape_string( $this->name )
                                  );
         if ( $this->owner != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'CO_id_owner',
                                  DBJson::mysql_real_escape_string( $this->owner )
                                  );
         if ( $this->target != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'CO_id_target',
                                  DBJson::mysql_real_escape_string( $this->target )
                                  );
         if ( $this->relevanz != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'CL_relevanz',
                                  DBJson::mysql_real_escape_string( $this->relevanz )
                                  );
         if ( $this->priority != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'CL_priority',
                                  DBJson::mysql_real_escape_string( $this->priority )
                                  );
         if ( $this->path != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'CL_path',
                                  DBJson::mysql_real_escape_string( $this->path )
                                  );
 
         if ( $values != '' ){
-            $values = substr( 
+            $values = substr(
                              $values,
                              1
                              );
@@ -412,7 +412,7 @@ class Link extends Object implements JsonSerializable
         /*if (is_array($data))reset($data);
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
             $e = new Exception();
-            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());           
             ///return null;
         }
         if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
@@ -433,12 +433,12 @@ class Link extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeLink( 
+    public static function decodeLink(
                                       $data,
                                       $decode = true
                                       )
     {
-        if ( $decode && 
+        if ( $decode &&
              $data == null )
             $data = '{}';
 
@@ -453,7 +453,7 @@ class Link extends Object implements JsonSerializable
                     $isArray = false;
                 }
             } else {
-               $isArray = false; 
+               $isArray = false;
             }
         }
 
@@ -464,7 +464,7 @@ class Link extends Object implements JsonSerializable
             }
             return $result;
 
-        } else 
+        } else
             return new Link( $data );
     }
 

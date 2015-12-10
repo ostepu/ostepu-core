@@ -155,7 +155,7 @@ class Choice extends Object implements JsonSerializable
         $this->submissionId = $value;
     }
 
-    
+   
     /**
      * Creates an Choice object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -294,7 +294,7 @@ class Choice extends Object implements JsonSerializable
         /*if (is_array($data))reset($data);
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
             $e = new Exception();
-            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());           
             ///return null;
         }
         if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
@@ -335,7 +335,7 @@ class Choice extends Object implements JsonSerializable
                     $isArray = false;
                 }
             } else {
-               $isArray = false; 
+               $isArray = false;
             }
         }
 
@@ -382,14 +382,14 @@ class Choice extends Object implements JsonSerializable
 
         // generates an assoc array of choices by using a defined list of
         // its attributes
-        $res = DBJson::getResultObjectsByAttributes( 
+        $res = DBJson::getResultObjectsByAttributes(
                                                     $data,
                                                     Choice::getDBPrimaryKey( ),
                                                     Choice::getDBConvert( ),
                                                     $ChoiceExtension
                                                     );
 
-        if ($isResult){                                             
+        if ($isResult){                                            
             // to reindex
             $res = array_values( $res );
             $res = Choice::decodeChoice($res,false);

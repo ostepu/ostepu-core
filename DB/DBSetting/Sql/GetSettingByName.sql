@@ -5,12 +5,12 @@
  * @author Till Uhlig
  * @param int \$setname a %Setting name
  * @param int \$courseid a %Course identifier
- * @result 
+ * @result
  * - S, the Setting data
  */
 ?>
 
-select 
+select
     concat('<?php echo $courseid; ?>','_',S.SET_id) as SET_id,
     S.SET_name,
     S.SET_state,

@@ -4,13 +4,13 @@
  * gets all exerchise sheet attachments from %Attachment table
  * @author Till Uhlig
  * @param int \$esid an %ExerciseSheet identifier
- * @result 
+ * @result
  * - A, the attachment data
  * - F, the attachment file
  */
 ?>
 
-select 
+select
     A.A_id,
     A.E_id,
     F.F_id,

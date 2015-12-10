@@ -565,7 +565,7 @@ class Validation_Condition implements Validation_Interface
         }
 
         return false;
-    }    
+    }   
 
     /**
      * Ermittelt den mimeType einer Datei

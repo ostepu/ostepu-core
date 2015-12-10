@@ -38,7 +38,7 @@ class Platform extends Object implements JsonSerializable
         $this->baseUrl = $value;
     }
 
-    
+   
     private $databaseUrl = null;
 
     /**
@@ -61,7 +61,7 @@ class Platform extends Object implements JsonSerializable
         $this->databaseUrl = $value;
     }
 
- 
+
     private $databaseName = null;
 
     /**
@@ -84,7 +84,7 @@ class Platform extends Object implements JsonSerializable
         $this->databaseName = $value;
     }
 
-    
+   
     private $databaseRootUser = null;
 
     /**
@@ -130,7 +130,7 @@ class Platform extends Object implements JsonSerializable
         $this->databaseRootPassword = $value;
     }
 
-    
+   
     private $databaseOperatorUser = null;
 
     /**
@@ -153,7 +153,7 @@ class Platform extends Object implements JsonSerializable
         $this->databaseOperatorUser = $value;
     }
 
-    
+   
     private $databaseOperatorPassword = null;
 
     /**
@@ -176,7 +176,7 @@ class Platform extends Object implements JsonSerializable
         $this->databaseOperatorPassword = $value;
     }
 
-    
+   
     private $tempDirectory = null;
 
     /**
@@ -199,7 +199,7 @@ class Platform extends Object implements JsonSerializable
         $this->tempDirectory = $value;
     }
 
-    
+   
     private $filesDirectory = null;
 
     /**
@@ -222,7 +222,7 @@ class Platform extends Object implements JsonSerializable
         $this->filesDirectory = $value;
     }
 
-    
+   
     private $externalUrl = null;
 
     /**
@@ -378,7 +378,7 @@ class Platform extends Object implements JsonSerializable
         /*if (is_array($data))reset($data);
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
             $e = new Exception();
-            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());           
             ///return null;
         }
         if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
@@ -419,7 +419,7 @@ class Platform extends Object implements JsonSerializable
                     $isArray = false;
                 }
             } else {
-               $isArray = false; 
+               $isArray = false;
             }
         }
 

@@ -15,13 +15,13 @@ select SQL_CACHE
 from
     File
 where
-    ((F_mimeType is null and '",base,"' = ':base') or 
+    ((F_mimeType is null and '",base,"' = ':base') or
     (F_mimeType like '",base,"/%' and '",type,"'=':type') or
     (F_mimeType like '",base,"/",base,"')
     )
     and
         ('",beginStamp,"'='0' or F_timeStamp>='",beginStamp,"')
-        and 
+        and
         ('",endStamp,"'='0' or F_timeStamp>='",endStamp,"');");
 PREPARE stmt1 FROM @s;
 EXECUTE stmt1;

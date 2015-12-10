@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * @file DeleteSubmissionSelectedSubmission.sql
  * deletes a specified selected submission row from %SelectedSubmission table
  * @author  Till Uhlig
@@ -8,6 +8,6 @@
  */
 ?>
 
-DELETE FROM SelectedSubmission 
+DELETE FROM SelectedSubmission
 WHERE
     S_id_selected = '<?php echo $suid; ?>'

@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * @file DeleteExerciseFileAttachment.sql
  * deletes an specified attachment from %Attachment table
  * @author  Till Uhlig
@@ -9,7 +9,7 @@
  */
 ?>
 
-DELETE FROM Attachment 
+DELETE FROM Attachment
 WHERE
     E_id = '<?php echo $eid; ?>' and F_id = '<?php echo $fileid; ?>'
 

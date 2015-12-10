@@ -168,7 +168,7 @@ class Validation_Perform implements Validation_Interface
                     if (isset($r[$key])){
                         $r = $r[$key];
                     } else {
-                      $r = null;  
+                      $r = null; 
                     }
                     return array('valid'=>true, 'field'=>$key, 'value'=>$r);
                 } else {

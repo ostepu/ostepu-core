@@ -4,16 +4,16 @@
  * gets a process from %Process table
  * @author Till Uhlig
  * @param int \$processid an %Process identifier
- * @result 
+ * @result
  * - PRO, the process data
  * - CO, the component data
  */
 ?>
 
 SET @course = '<?php echo Process::getCourseFromProcessId($processid); ?>';
-SET @statement = 
+SET @statement =
 concat(
-"select 
+"select
     concat('", @course ,"','_',PRO.PRO_id) as PRO_id,
     PRO.E_id,
     PRO.E_id as E_id2,

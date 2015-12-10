@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 /**
  * the Object class is the parent class of all api structures
@@ -113,7 +113,7 @@ abstract class Object
      * @param string $b left part of assignment
      * @param string $c right part of assignment
      */
-    protected function addInsertData( 
+    protected function addInsertData(
                                       & $a,
                                      $b,
                                      $c

@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * @file DeleteUserPermanent.sql
  * deletes a specified user from %User table
  * @author  Till Uhlig
@@ -8,6 +8,6 @@
  */
 ?>
 
-DELETE FROM User 
+DELETE FROM User
 WHERE
     U_id like '<?php echo $userid; ?>' or U_username = '<?php echo $userid; ?>' or U_externalId = '<?php echo $userid; ?>'

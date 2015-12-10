@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 // fügt die Objektklasse hinzu, hier sind noch allgemeine Eigenschaften enthalten (Statuscode, Antworttext etc.)
 include_once ( dirname( __FILE__ ) . '/Object.php' );
@@ -21,18 +21,18 @@ class BEISPIEL extends Object implements JsonSerializable // muss eingebunden we
         $this->param = $value;
     }
 
-    // diese Funktionen sollen das Erstellen neuer Objekte erleichtern, vorallem wenn 
-    // die Strukturen aus verschiedenen Strukturen zusammengesetzt wurden und 
+    // diese Funktionen sollen das Erstellen neuer Objekte erleichtern, vorallem wenn
+    // die Strukturen aus verschiedenen Strukturen zusammengesetzt wurden und
     // einzelne Felder für einen Datenbankeintrag benötigt werden
     public static function createBEISPIEL( $newParam )
     {
         return new BEISPIEL( array('param' => $param ) );
     }
 
-    // wandelt Datenbankfelder namentlich in Objektattribute um 
+    // wandelt Datenbankfelder namentlich in Objektattribute um
     public static function getDbConvert( )
     {
-        return array( 
+        return array(
                      'P_pa' => 'param'
                      );
     }
@@ -44,14 +44,14 @@ class BEISPIEL extends Object implements JsonSerializable // muss eingebunden we
         $values = '';
 
         if ( $this->param !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'P_pa',
                                  DBJson::mysql_real_escape_string( $this->param )
                                  );
 
         if ( $values != '' ){
-            $values = substr( 
+            $values = substr(
                              $values,
                              1
                              );
@@ -89,7 +89,7 @@ class BEISPIEL extends Object implements JsonSerializable // muss eingebunden we
         if (is_array($data))reset($data);
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
             $e = new Exception();
-            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());           
             ///return null;
         }
         if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
@@ -103,12 +103,12 @@ class BEISPIEL extends Object implements JsonSerializable // muss eingebunden we
 
     // wandelt die Textdarstellung des Objekts in ein Objekt um (Deserialisierung
     // ,behandelt auch Objektlisten
-    public static function decodeBEISPIEL( 
+    public static function decodeBEISPIEL(
                                                    $data,
                                                    $decode = true
                                                    )
     {
-        if ( $decode && 
+        if ( $decode &&
              $data == null )
             $data = '{}'; // stellt sicher, dass übergebene Daten nicht zu einem Absturz führen
 
@@ -123,7 +123,7 @@ class BEISPIEL extends Object implements JsonSerializable // muss eingebunden we
                     $isArray = false;
                 }
             } else {
-               $isArray = false; 
+               $isArray = false;
             }
         }
 
@@ -138,7 +138,7 @@ class BEISPIEL extends Object implements JsonSerializable // muss eingebunden we
             return new BEISPIEL( $data );
     }
 
-    // bereitet die Attribute des Objekts für die 
+    // bereitet die Attribute des Objekts für die
     // Serialisierung vor (nur belegte Felder sollen übertragen werden)
     public function jsonSerialize( )
     {
@@ -152,12 +152,12 @@ class BEISPIEL extends Object implements JsonSerializable // muss eingebunden we
 
     // wandelt ein assoziatives Array, welches einer Datenbankanfrage entstammt
     // anhand der DBConvert und der Primärschlüssel in Objekte um
-    public static function ExtractBEISPIEL( 
+    public static function ExtractBEISPIEL(
                                                     $data
                                                     )
     {
 
-        $res = DBJson::getResultObjectsByAttributes( 
+        $res = DBJson::getResultObjectsByAttributes(
                                                     $data,
                                                     BEISPIEL::getDBPrimaryKey( ),
                                                     BEISPIEL::getDBConvert( )

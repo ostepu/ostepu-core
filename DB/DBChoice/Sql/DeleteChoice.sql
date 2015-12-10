@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * @file DeleteChoice.sql
  * deletes a specified choice from %Choice table
  * @author  Till Uhlig

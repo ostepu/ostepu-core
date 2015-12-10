@@ -89,7 +89,7 @@ class Selection_Key implements Validation_Interface
                 continue;
             }
             $tempKeys[] = $key;
-        }          
+        }         
 
         return array('keys'=>$tempKeys);
     }
@@ -104,7 +104,7 @@ class Selection_Key implements Validation_Interface
             if (is_int($key)){
                 $tempKeys[] = $key;
             }
-        }          
+        }         
 
         return array('keys'=>$tempKeys);
     }
@@ -182,7 +182,7 @@ class Selection_Key implements Validation_Interface
             if ($tempKeys === null){
                 $tempKeys = $m;
             } else {
-                $tempKeys = array_intersect($tempKeys, $m);   
+                $tempKeys = array_intersect($tempKeys, $m);  
             }
         }
 

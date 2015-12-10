@@ -4,12 +4,12 @@
  * gets an specified transaction from %Transaction table
  * @author Till Uhlig
  * @param string \$tid a %Transaction identifier
- * @result 
+ * @result
  * - T, the transaction data
  */
 ?>
 
-select 
+select
     concat('<?php echo Transaction::getCourseFromTransactionId($tid); ?>','_',T.T_id,'_',T.T_random) as T_id,
     T.T_durability,
     T.T_authentication,

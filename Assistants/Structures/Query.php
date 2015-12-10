@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -236,7 +236,7 @@ class Query extends Object implements JsonSerializable
         /*if (is_array($data))reset($data);
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
             $e = new Exception();
-            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());           
             ///return null;
         }
         if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
@@ -258,13 +258,13 @@ class Query extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeQuery( 
+    public static function decodeQuery(
                                        $data,
                                        $decode = true
                                        )
     {
 
-           /* if ( $decode && 
+           /* if ( $decode &&
              $data == null )
             $data = '{}';
 
@@ -279,7 +279,7 @@ class Query extends Object implements JsonSerializable
                     $isArray = false;
                 }
             } else {
-               $isArray = false; 
+               $isArray = false;
             }
         }
 
@@ -290,22 +290,22 @@ class Query extends Object implements JsonSerializable
             }
             return $result;
 
-        } else 
+        } else
             return new Query( $data );*/
 
-        if ( $decode && 
+        if ( $decode &&
              $data == null )
             $data = '{}';
 
         if ( $decode )
-            $data = json_decode( 
+            $data = json_decode(
                                 $data,
                                 true
                                 );
 
-        if ( is_array( $data ) && 
-             !isset( $data['response'] ) && 
-             !isset( $data['request'] ) && 
+        if ( is_array( $data ) &&
+             !isset( $data['response'] ) &&
+             !isset( $data['request'] ) &&
              !isset( $data['insertId'] ) ){
             $result = array( );
             foreach ( $data AS $key => &$value ){
@@ -390,4 +390,4 @@ class Query extends Object implements JsonSerializable
     }
 }
 
- 
+

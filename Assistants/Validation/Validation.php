@@ -150,11 +150,11 @@ class Validation {
 
         $methods = array();
         foreach(self::$validatorClasses as $class => $indicator){
-            $methods = array_merge($methods, get_class_methods($class));            
+            $methods = array_merge($methods, get_class_methods($class));           
         }
 
         foreach($this->custom_Validation_Classes as $class){
-            $methods = array_merge($methods, get_class_methods($class));            
+            $methods = array_merge($methods, get_class_methods($class));           
         }
 
         $methodName = 'validate_'.$name;
@@ -181,11 +181,11 @@ class Validation {
 
         $methods = array();
         foreach(self::$selectionClasses as $class => $indicator){
-            $methods = array_merge($methods, get_class_methods($class));            
+            $methods = array_merge($methods, get_class_methods($class));           
         }
 
         foreach($this->custom_Selection_Classes as $class){
-            $methods = array_merge($methods, get_class_methods($class));            
+            $methods = array_merge($methods, get_class_methods($class));           
         }
 
         $methodName = 'select_'.$name;
@@ -237,7 +237,7 @@ class Validation {
 
     public function close()
     {
-        $this->input = array();    
+        $this->input = array();   
         $this->validation_rules = array();
         $this->custom_Validation = array();
         $this->custom_Validation_Classes = array();
@@ -272,17 +272,17 @@ class Validation {
             $possibleClasses = array();
             foreach(self::$validatorClasses as $class => $classIndicator){
                 if ($classIndicator === $indicator){
-                    $possibleClasses[] = $class; 
+                    $possibleClasses[] = $class;
                 }
             }
 
             foreach($this->custom_Validation_Classes as $class => $classIndicator){
                 if ($classIndicator === $indicator){
-                    $possibleClasses[] = $class; 
+                    $possibleClasses[] = $class;
                 }
             }
 
-            if (empty($possibleClasses)){               
+            if (empty($possibleClasses)){              
                 throw new Exception("Invalid indicator '{$indicator}'.");
             }
 
@@ -328,17 +328,17 @@ class Validation {
             $possibleClasses = array();
             foreach(self::$selectionClasses as $class => $classIndicator){
                 if ($classIndicator === $indicator){
-                    $possibleClasses[] = $class; 
+                    $possibleClasses[] = $class;
                 }
             }
 
             foreach($this->custom_Selection_Classes as $class => $classIndicator){
                 if ($classIndicator === $indicator){
-                    $possibleClasses[] = $class; 
+                    $possibleClasses[] = $class;
                 }
             }
 
-            if (empty($possibleClasses)){               
+            if (empty($possibleClasses)){              
                 throw new Exception("Invalid indicator '{$indicator}'.");
             }
 
@@ -360,7 +360,7 @@ class Validation {
     }
 
     public function collectKeys($fieldNames, $selectors)
-    {        
+    {       
         foreach ($selectors as $ruleId => $rule){
             $ruleName = $rule[0];
             $ruleParam = $rule[1];
@@ -427,7 +427,7 @@ class Validation {
                 return false;
             }
 
-            
+           
             foreach ($fieldNames as $fieldName){
                 $abort = false;
 

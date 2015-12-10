@@ -8,7 +8,7 @@
 ?>
 
 SET @course = (select E.C_id from `Exercise` E where E.E_id = <?php echo $eid; ?> limit 1);
-SET @statement = 
+SET @statement =
 concat("INSERT INTO `Transaction<?php echo $name; ?>_", @course, "` SET <?php echo $object->getInsertData(true); ?>,T_random = '<?php echo $random; ?>';");
 PREPARE stmt1 FROM @statement;
 EXECUTE stmt1;

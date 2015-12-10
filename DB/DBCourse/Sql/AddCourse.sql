@@ -8,7 +8,7 @@
  */
 ?>
 
-INSERT IGNORE INTO Course 
+INSERT IGNORE INTO Course
 SET <?php echo $values; ?> ON DUPLICATE KEY UPDATE <?php echo $values; ?>;
 SET @a = <?php if ($in->getId()!==null){echo "'".$in->getId()."';";} else echo "LAST_INSERT_ID();"; ?>
 

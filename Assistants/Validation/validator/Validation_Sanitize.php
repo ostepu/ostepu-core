@@ -56,7 +56,7 @@ class Validation_Sanitize implements Validation_Interface
 
             if (get_magic_quotes_gpc() == 0) {
                 // magic quotes is turned off
-                $input = htmlspecialchars(trim($input),ENT_QUOTES, 'UTF-8');    
+                $input = htmlspecialchars(trim($input),ENT_QUOTES, 'UTF-8');   
             } else {
                 $input = htmlspecialchars(stripslashes(trim($input)), ENT_QUOTES, 'UTF-8');
             }
