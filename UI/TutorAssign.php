@@ -24,12 +24,12 @@ $postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
            ['satisfy_in_list'=>['lastName','firstName','userName'],
             'set_default'=>'lastName',
             'on_error'=>['type'=>'error',
-                         'text'=>'???1']])
+                         'text'=>'invalidSortUsers']])
   ->addSet('actionSortUsers',
            ['set_default'=>'noAction',
             'satisfy_in_list'=>['noAction', 'sort'],
             'on_error'=>['type'=>'error',
-                         'text'=>'???1']]);
+                         'text'=>'invalidActionSortUser']]);
 $valResults = $postValidation->validate();
 $notifications = array_merge($notifications,$postValidation->getPrintableNotifications('MakeNotification'));
 $postValidation->resetNotifications()->resetErrors();

@@ -8,6 +8,7 @@
         "languageChanged": "Die Sprache wurde geändert!",
         "accountSettings": "Account-Einstellungen",
         "course": "Veranstaltungen",
-        "invalidAction": "Die Aktion konnte nicht ausgeführt werden."
+        "invalidAction": "Die Aktion konnte nicht ausgeführt werden.",
+        "invalidLanguage": "Die gewählte Sprache ist ungültig!"
     }
 }

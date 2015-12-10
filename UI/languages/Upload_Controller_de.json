@@ -13,6 +13,7 @@
         "errorUploadSubmissionFileToLarge": " $status: Aufgabe $exerciseName konnte nicht hochgeladen werden. <br/> Die Datei war zu groß (max. $maxFileSize).",
         "errorInvalidExerciseId": " $status: Die verwendete Aufgabennummer konnte nicht zugeordnet werden.",
         "errorInvalidSheetId": "Die verwendete ID der Übungsserie konnte nicht zugeordnet werden.",
-        "invalidAction": "Die Aktion konnte nicht ausgeführt werden."
+        "invalidAction": "Die Aktion konnte nicht ausgeführt werden.",
+        "invalidExercisesInput": "Die Eingabedaten waren fehlerhaft."
     }
 }

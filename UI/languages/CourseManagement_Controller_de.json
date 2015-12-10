@@ -23,6 +23,8 @@
         "successCreateType": "Die Punkteart wurde erfolgreich angelegt!",
         "invalidExerciseType": "Ungültiger Aufgabentype!",
         "successSetType": "Die Punkteart wurde erfolgreich geändert!",
+        "errorDeleteApprovalCondition": "Punkteart konnte nicht entfernt werden!",
+        "errorAddApprovalCondition": "Punkteart konnte nicht hinzugefügt werden!",
         "successSaveSettings": "Die Einstellungen wurde bearbeitet!",
         "errorSaveSettings": "Beim Speichern der Einstellungen ist ein Fehler aufgetreten!",
         "missingFields": "Es wurden nicht alle Felder ausgefüllt!",
@@ -38,6 +40,9 @@
         "invalidUserId": "Unbekannter Nutzer.",
         "invalidAction": "Unbekannte Aktion.",
         "successEditCourse": "Die Veranstaltung wurde bearbeitet!",
-        "errorEditCourse": "Beim Speichern ist ein Fehler aufgetreten!"
+        "errorEditCourse": "Beim Speichern ist ein Fehler aufgetreten!",
+        "invalidSortUser": "Unbekanntes Sortierkriterium.",
+        "invalidActionSortUsers": "Unbekannte Aktion.",
+        "invalidSettings": "Es wurden ungültige Einstellungen übermittelt!"
     }
 }

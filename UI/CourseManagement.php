@@ -56,12 +56,12 @@ $postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
            ['satisfy_in_list'=>['lastName','firstName','userName'],
             'set_default'=>'lastName',
             'on_error'=>['type'=>'error',
-                         'text'=>'???1']])
+                         'text'=>Language::Get('main','invalidSortUser', $langTemplate)]])
   ->addSet('actionSortUsers',
            ['set_default'=>'noAction',
             'satisfy_in_list'=>['noAction', 'sort'],
             'on_error'=>['type'=>'error',
-                         'text'=>'???1']]);
+                         'text'=>Language::Get('main','invalidActionSortUsers', $langTemplate)]]);
                                    
 $postResults = $postValidation->validate();
 $notifications = array_merge($notifications,$postValidation->getPrintableNotifications('MakeNotification'));
@@ -304,7 +304,7 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
                                                             'on_error'=>['type'=>'error',
                                                                          'text'=>Language::Get('main','faultyTransmission', $langTemplate)]]]]]]]],
                     'on_error'=>['type'=>'error',
-                                 'text'=>'???1']]);
+                                 'text'=>Language::Get('main','invalidSettings', $langTemplate)]]);
                                            
         $foundValues = $postCourseSettingsValidation->validate();
         $courseSettingsNotifications = array_merge($courseSettingsNotifications,$postCourseSettingsValidation->getPrintableNotifications('MakeNotification'));
@@ -422,7 +422,7 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
 
                         if ($message !== 201) {
                             $RequestError = true;
-                            $courseSettingsNotifications[] = MakeNotification('error', '???1');  
+                            $courseSettingsNotifications[] = MakeNotification('error', Language::Get('main','errorDeleteApprovalCondition', $langTemplate));  
                             break;
                         }
                     }
@@ -442,7 +442,7 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
 
                     if ($message !== 201) {
                         $RequestError = true;
-                        $courseSettingsNotifications[] = MakeNotification('error', '???1');  
+                        $courseSettingsNotifications[] = MakeNotification('error', Language::Get('main','errorAddApprovalCondition', $langTemplate));  
                         break;
                     }
                 }

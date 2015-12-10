@@ -136,7 +136,7 @@ if ($postValidation->isValid() && $postResults['action'] === 'submit') {
                                              ['elem',
                                               []]], /// muss noch erweitert werden
                      'on_error'=>['type'=>'error',
-                                  'text'=>Language::Get('main','???', $langTemplate)]]);
+                                  'text'=>Language::Get('main','invalidExercisesInput', $langTemplate)]]);
                                  
         $foundValues = $postSubmitValidation->validate();
         $notifications = array_merge($notifications,$postSubmitValidation->getPrintableNotifications('MakeNotification'));

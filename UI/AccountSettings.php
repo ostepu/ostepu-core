@@ -93,7 +93,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                    array('satisfy_exact_len'=>2,
                          'satisfy_exists',
                          'on_error'=>array('type'=>'error',
-                                           'text'=>'???')));
+                                           'text'=>Language::Get('main','invalidLanguage', $langTemplate))));
                                           
         if($postSetAccountInfoValidation->isValid()) {
 
