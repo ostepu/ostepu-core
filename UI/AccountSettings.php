@@ -6,24 +6,24 @@
  * @author Felix Schmidt
  * @author Florian Lücke
  * @author Ralf Busch
- */
+ */ 
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
-include_once dirname(__FILE__) . '/../Assistants/Validation/Validation.php';
+include_once dirname(__FILE__) . '/../Assistants/Validation/Validation.php'; 
 
-$langTemplate='AccountSettings_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
+$langTemplate='AccountSettings_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); 
 
 $postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
   ->addSet('action',
            array('set_default'=>'noAction',
                  'satisfy_in_list'=>array('noAction', 'SetPassword', 'SetAccountInfo'),
                  'on_error'=>array('type'=>'error',
-                                   'text'=>Language::Get('main','invalidAction', $langTemplate))));
+                                   'text'=>Language::Get('main','invalidAction', $langTemplate)))); 
 
 $postResults = $postValidation->validate();
 $notifications = array_merge($notifications, $postValidation->getPrintableNotifications('MakeNotification'));
-$postValidation->resetNotifications()->resetErrors();
+$postValidation->resetNotifications()->resetErrors(); 
 
 if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
     // changes the user's password
@@ -46,27 +46,27 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
           ->addSet('newPasswordRepeat',
                    array('satisfy_equals_field'=>'newPassword',
                          'on_error'=>array('type'=>'error',
-                                           'text'=>Language::Get('main','differentPasswords', $langTemplate))));
+                                           'text'=>Language::Get('main','differentPasswords', $langTemplate)))); 
 
-        if($postSetPasswordValidation->isValid()) {
+        if($postSetPasswordValidation->isValid()) { 
 
-            $foundValues = $postSetPasswordValidation->getResult();
+            $foundValues = $postSetPasswordValidation->getResult(); 
 
             $oldPassword = $foundValues['oldPassword'];
             $newPassword = $foundValues['newPassword'];
-            $newPasswordRepeat = $foundValues['newPasswordRepeat'];
+            $newPasswordRepeat = $foundValues['newPasswordRepeat']; 
 
             // loads user data from database
             $URI = $databaseURI . "/user/user/{$uid}";
             $user_data = http_get($URI, true);
-            $user_data = json_decode($user_data, true);
+            $user_data = json_decode($user_data, true); 
 
             // generates hashs of old and new password
             $oldSalt = $user_data['salt'];
-            $oldPasswordHash = $auth->hashPassword($oldPassword, $oldSalt);
+            $oldPasswordHash = $auth->hashPassword($oldPassword, $oldSalt); 
 
             $newSalt = $auth->generateSalt();
-            $newPasswordHash = $auth->hashPassword($newPassword, $newSalt);
+            $newPasswordHash = $auth->hashPassword($newPassword, $newSalt); 
 
             // check if the old password is necessary
             if ($user_data['password'] === 'noPassword' || $oldPasswordHash === $user_data['password']) {
@@ -74,7 +74,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                 $newUserSettings = User::encodeUser(User::createUser($uid, null, null, null, null, null, null, 
                                                     $newPasswordHash, $newSalt));
                 $URI = $databaseURI . "/user/" . $uid;
-                http_put_data($URI, $newUserSettings, true, $message);
+                http_put_data($URI, $newUserSettings, true, $message); 
 
                 if ($message === 201) {
                     Authentication::logoutUser();
@@ -93,18 +93,18 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                    array('satisfy_exact_len'=>2,
                          'satisfy_exists',
                          'on_error'=>array('type'=>'error',
-                                           'text'=>Language::Get('main','invalidLanguage', $langTemplate))));
-                                          
-        if($postSetAccountInfoValidation->isValid()) {
+                                           'text'=>Language::Get('main','invalidLanguage', $langTemplate)))); 
+
+        if($postSetAccountInfoValidation->isValid()) { 
 
             $foundValues = $postSetAccountInfoValidation->getResult();
-            $language = $foundValues['language'];
+            $language = $foundValues['language']; 
 
             $newUserSettings = User::encodeUser(User::createUser($uid, null, null, null, null, null, null, 
                                                 null, null, null, null, null, null, null, $language));
-            $URI = $databaseURI . '/user/' . $uid;
-            
-            http_put_data($URI, $newUserSettings, true, $message);
+            $URI = $databaseURI . '/user/' . $uid; 
+
+            http_put_data($URI, $newUserSettings, true, $message); 
 
             if ($message == '201') {
                 $notifications[] = MakeNotification('success', Language::Get('main','languageChanged', $langTemplate));
@@ -114,12 +114,12 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
             $postSetAccountInfoValidation->resetNotifications()->resetErrors();
         }
     }
-}
+} 
 
 // load user data from the database
 $databaseURI = $getSiteURI . "/accountsettings/user/{$uid}";
 $accountSettings_data = http_get($databaseURI, true);
-$accountSettings_data = json_decode($accountSettings_data, true);
+$accountSettings_data = json_decode($accountSettings_data, true); 
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
@@ -127,20 +127,20 @@ $h->bind($accountSettings_data);
 $h->bind(array('name' => Language::Get('main','accountSettings', $langTemplate),
                'backTitle' => Language::Get('main','course', $langTemplate),
                'backURL' => 'index.php',
-               'notificationElements' => $notifications));
+               'notificationElements' => $notifications)); 
 
 // construct a content element for account information
 $accountInfo = Template::WithTemplateFile('include/AccountSettings/AccountInfo.template.html');
-$accountInfo->bind($accountSettings_data);
+$accountInfo->bind($accountSettings_data); 
 
 // construct a content element for changing password
 $changePassword = Template::WithTemplateFile('include/AccountSettings/ChangePassword.template.html');
-$changePassword->bind($accountSettings_data);
+$changePassword->bind($accountSettings_data); 
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $accountInfo, $changePassword);
 $w->defineForm(basename(__FILE__), false, $changePassword);
 $w->defineForm(basename(__FILE__), false, $accountInfo);
 $w->set_config_file('include/configs/config_default.json');
-$w->show();
+$w->show(); 
 

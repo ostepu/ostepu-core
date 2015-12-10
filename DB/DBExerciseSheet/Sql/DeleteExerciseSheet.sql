@@ -7,7 +7,7 @@
  * @result -
  */
 ?>
- 
+
 DELETE FROM ExerciseSheet 
 WHERE
     ES_id = '<?php echo $esid; ?>'

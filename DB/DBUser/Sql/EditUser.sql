@@ -8,7 +8,7 @@
  * @result -
  */
 ?>
- 
+
 UPDATE User
 SET <?php echo $values; ?>
 WHERE U_id like '<?php echo $userid; ?>' or U_username = '<?php echo $userid; ?>' or U_externalId = '<?php echo $userid; ?>'

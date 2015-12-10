@@ -9,7 +9,7 @@
  * - CH, the choice data
  */
 ?>
- 
+
 select 
     concat('<?php echo $courseid; ?>','_',FO.FO_id) as FO_id,
     FO.FO_type,

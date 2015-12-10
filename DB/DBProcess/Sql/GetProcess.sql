@@ -9,7 +9,7 @@
  * - CO, the component data
  */
 ?>
- 
+
 SET @course = '<?php echo Process::getCourseFromProcessId($processid); ?>';
 SET @statement = 
 concat(

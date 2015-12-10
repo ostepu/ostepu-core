@@ -35,7 +35,7 @@ class Pdf extends Object implements JsonSerializable
     {
         $this->orientation = $value;
     }
-    
+
     private $font = null;
     public function getFont( )
     {
@@ -45,7 +45,7 @@ class Pdf extends Object implements JsonSerializable
     {
         $this->font = $value;
     }
-    
+
     private $fontSize = null;
     public function getFontSize( )
     {
@@ -55,7 +55,7 @@ class Pdf extends Object implements JsonSerializable
     {
         $this->fontSize = $value;
     }
-    
+
     private $textColor = null;
     public function getTextColor( )
     {
@@ -65,7 +65,7 @@ class Pdf extends Object implements JsonSerializable
     {
         $this->textColor = $value;
     }
-    
+
     private $subject = null;
     public function getSubject( )
     {
@@ -75,7 +75,7 @@ class Pdf extends Object implements JsonSerializable
     {
         $this->subject = $value;
     }
-    
+
     private $title = null;
     public function getTitle( )
     {
@@ -85,7 +85,7 @@ class Pdf extends Object implements JsonSerializable
     {
         $this->title = $value;
     }
-    
+
     private $author = null;
     public function getAuthor( )
     {
@@ -95,7 +95,7 @@ class Pdf extends Object implements JsonSerializable
     {
         $this->author = $value;
     }
-    
+
     private $format = null;
     public function getFormat( )
     {
@@ -105,7 +105,7 @@ class Pdf extends Object implements JsonSerializable
     {
         $this->format = $value;
     }
-    
+
     private $creator = null;
     public function getCreator( )
     {
@@ -115,14 +115,14 @@ class Pdf extends Object implements JsonSerializable
     {
         $this->creator = $value;
     }
-    
+
     public static function getOrientationDefinition( )
     {
         return array( 
                      'P' => 'Hochformat',
 
                      'L' => 'Querformat'
-        
+
                      );
     }
 
@@ -167,7 +167,7 @@ class Pdf extends Object implements JsonSerializable
                                    'creator' => $creator
                                    ) );
     }
-    
+
     /**
      * the constructor
      *
@@ -177,7 +177,7 @@ class Pdf extends Object implements JsonSerializable
     {
         if ( $data === null )
             $data = array( );
-        
+
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
                 $func = 'set' . strtoupper($key[0]).substr($key,1);
@@ -234,7 +234,7 @@ class Pdf extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -246,7 +246,7 @@ class Pdf extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){

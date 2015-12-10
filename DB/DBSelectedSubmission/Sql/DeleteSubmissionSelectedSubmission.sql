@@ -7,7 +7,7 @@
  * @result -
  */
 ?>
- 
+
 DELETE FROM SelectedSubmission 
 WHERE
     S_id_selected = '<?php echo $suid; ?>'

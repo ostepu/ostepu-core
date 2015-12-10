@@ -9,7 +9,7 @@
  * - CO, the component data
  */
 ?>
- 
+
 SET @course = (select E.C_id from `Exercise` E where E.ES_id = <?php echo $esid; ?> limit 1);
 SET @statement = 
 concat(

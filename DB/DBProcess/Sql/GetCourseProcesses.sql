@@ -9,7 +9,7 @@
  * - CO, the component data
  */
 ?>
- 
+
 select 
     concat('<?php echo $courseid; ?>','_',PRO.PRO_id) as PRO_id,
     PRO.E_id,

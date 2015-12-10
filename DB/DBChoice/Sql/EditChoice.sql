@@ -8,7 +8,7 @@
  * @result -
  */
 ?>
- 
+
 UPDATE `Choice<?php echo $preChoice; ?>_<?php echo Choice::getCourseFromChoiceId($choiceid); ?>`
 SET <?php echo $object->getInsertData(); ?>
 WHERE CH_id = '<?php echo Choice::getIdFromChoiceId($choiceid); ?>'

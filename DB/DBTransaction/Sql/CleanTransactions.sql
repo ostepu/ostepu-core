@@ -6,7 +6,7 @@
  * @result -
  */
 ?>
- 
+
 delete from `Transaction<?php echo $name; ?>_<?php echo $courseid; ?>` 
 where T_durability < UNIX_TIMESTAMP();
 

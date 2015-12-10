@@ -9,7 +9,7 @@
  * - CH, the choice data
  */
 ?>
- 
+
 SET @course = (select E.C_id from `Exercise` E where E.E_id = <?php echo $eid; ?> limit 1);
 SET @statement = 
 concat(
@@ -28,7 +28,7 @@ from
     `Choice_", @course, "` CH ON FO.FO_id = CH.FO_id
 where
     FO.E_id = '<?php echo $eid; ?>'");
-    
+
 PREPARE stmt1 FROM @statement;
 EXECUTE stmt1;
  

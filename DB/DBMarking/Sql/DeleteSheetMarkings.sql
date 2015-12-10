@@ -7,7 +7,7 @@
  * @result -
  */
 ?>
- 
+
 DELETE FROM Marking 
 WHERE
     ES_id = '<?php echo $esid; ?>'

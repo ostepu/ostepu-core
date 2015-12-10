@@ -99,7 +99,7 @@ class ExerciseType extends Object implements JsonSerializable
     {
         if ( $data === null )
             $data = array( );
-        
+
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
                 $func = 'set' . strtoupper($key[0]).substr($key,1);
@@ -210,7 +210,7 @@ class ExerciseType extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -222,14 +222,14 @@ class ExerciseType extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new ExerciseType( $value );
             }
             return $result;
-            
+
         } else 
             return new ExerciseType( $data );
     }

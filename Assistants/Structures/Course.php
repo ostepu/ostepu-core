@@ -166,25 +166,25 @@ class Course extends Object implements JsonSerializable
     {
         $this->settings = $value;
     }
-    
+
     
     public static function containsSetting( $obj, $settingName )
     {
         if ($obj === null) return null;
         $settings = $obj->getSettings();
         if ($settings === null) return null;
-        
+
         $settingName = strtoupper($settingName);
-        
+
         foreach ($settings as $set){
-            
+
             if (strtoupper($set->getName()) == $settingName)
                 return $set->getState();
         }
-        
+
         return null;
     }
-    
+
     /**
      * Creates an Course object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -296,12 +296,12 @@ class Course extends Object implements JsonSerializable
                 if ( $key === 'settings' ){
                     $this->{
                         $key
-                        
+
                     } = Setting::decodeSetting( 
                                                  $value,
                                                  false
                                                  );
-                    
+
                 } else {
                     $func = 'set' . strtoupper($key[0]).substr($key,1);
                     $methodVariable = array($this, $func);
@@ -358,7 +358,7 @@ class Course extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -370,14 +370,14 @@ class Course extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new Course( $value );
             }
             return $result;
-            
+
         } else 
             return new Course( $data );
     }
@@ -400,7 +400,7 @@ class Course extends Object implements JsonSerializable
             $list['defaultGroupSize'] = $this->defaultGroupSize;
         if ( $this->settings !== null && $this->settings !== array() )
             $list['settings'] = $this->settings;
-            
+
         return array_merge($list,parent::jsonSerialize( ));
     }
 
@@ -421,7 +421,7 @@ class Course extends Object implements JsonSerializable
                                                   Course::getDBConvert( ),
                                                   $CourseExtension
                                                   );
-                                                  
+
         // generates an assoc array of settings by using a defined list of
         // its attributes
         $settings = DBJson::getObjectsByAttributes( 
@@ -438,7 +438,7 @@ class Course extends Object implements JsonSerializable
                                                          array( ExerciseSheet::getDBPrimaryKey( ) => ExerciseSheet::getDBConvert( )[ExerciseSheet::getDBPrimaryKey( )] ),
                                                          $SheetExtension
                                                          );
-                                                         
+
         // concatenates the courses and the associated settings
         $res = DBJson::concatObjectListResult( 
                                                      $data,
@@ -448,7 +448,7 @@ class Course extends Object implements JsonSerializable
                                                      $settings,
                                                      Setting::getDBPrimaryKey( )
                                                      );
-                                                     
+
         // concatenates the courses and the associated exercise sheet IDs
         $res = DBJson::concatResultObjectListAsArray( 
                                                      $data,

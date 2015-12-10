@@ -7,7 +7,7 @@
  * @result -
  */
 ?>
- 
+
 DELETE FROM Marking 
 WHERE
     M_id = '<?php echo $mid; ?>'

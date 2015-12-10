@@ -39,7 +39,7 @@ class Choice extends Object implements JsonSerializable
     {
         $this->choiceId = $value;
     }
-    
+
     public static function getCourseFromChoiceId($id)
     {
         $arr = explode('_',$id);
@@ -49,7 +49,7 @@ class Choice extends Object implements JsonSerializable
         else
         return '';
     }
-    
+
     public static function getIdFromChoiceId($id)
     {
         $arr = explode('_',$id);
@@ -59,17 +59,17 @@ class Choice extends Object implements JsonSerializable
         else
         return $id;
     }
-    
+
     public function getObjectCourseFromChoiceId()
     {
         return Choice::getCourseFromChoiceId($this->choiceId);
     }
-    
+
     public function getObjectIdFromChoiceId()
     {
         return Choice::getIdFromChoiceId($this->choiceId);
     }
-    
+
     /**
      * @var string $formId
      */
@@ -144,7 +144,7 @@ class Choice extends Object implements JsonSerializable
     {
         $this->correct = $value;
     }
-    
+
     private $submissionId = null;
     public function getSubmissionId( )
     {
@@ -269,7 +269,7 @@ class Choice extends Object implements JsonSerializable
     {
         if ( $data === null )
             $data = array( );
-        
+
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
                 $func = 'set' . strtoupper($key[0]).substr($key,1);
@@ -326,7 +326,7 @@ class Choice extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -338,7 +338,7 @@ class Choice extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
@@ -368,7 +368,7 @@ class Choice extends Object implements JsonSerializable
             $list['correct'] = $this->correct;
         if ( $this->submissionId !== null )
             $list['submissionId'] = $this->submissionId;
-            
+
         return array_merge($list,parent::jsonSerialize( ));
     }
 
@@ -388,7 +388,7 @@ class Choice extends Object implements JsonSerializable
                                                     Choice::getDBConvert( ),
                                                     $ChoiceExtension
                                                     );
-                                                    
+
         if ($isResult){                                             
             // to reindex
             $res = array_values( $res );

@@ -67,7 +67,7 @@ begin
     CREATE TEMPORARY TABLE IF NOT EXISTS `ColData`
     SELECT COLUMN_NAME as 'aName', COLUMN_TYPE as 'aType', IS_NULLABLE as 'aNullable', COLUMN_DEFAULT as 'aDefault'
       FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = @database and TABLE_NAME = theTable and COLUMN_NAME = theAttrName;
-     
+
     if ((select count(*) from `ColData`)=0) then
         set @c2 = theDefault;
         if (@c2 <> 'NULL') then
@@ -78,7 +78,7 @@ begin
         EXECUTE stmt1;
         DEALLOCATE PREPARE stmt1;
     end if;
-    
+
     if ((select count(*) from `ColData`)>0) then
         set @a = (select aType from `ColData` limit 1);
         set @b = (select aNullable from `ColData` limit 1);
@@ -95,7 +95,7 @@ begin
             if (@c2 <> 'NULL') then
                 set @c2 = concat('\'',@c2,'\'');
             end if;
-            
+
             SET @s = concat('ALTER TABLE ',theTable,' MODIFY COLUMN `',theAttrName,'` ',@a2,' ',@b2,' DEFAULT ',@c2,'');
             PREPARE stmt1 FROM @s;
             EXECUTE stmt1;

@@ -387,23 +387,23 @@ class ExerciseSheet extends Object implements JsonSerializable
                                  'ES_name',
                                  DBJson::mysql_real_escape_string( $this->sheetName )
                                  );
-                                 
+
         $sFId = null;
         if ( $this->sheetFile!==array() && $this->sheetFile !== null && 
              $this->sheetFile->getFileId( ) !== null )
             $sFId = $this->sheetFile->getFileId( );
-            
+
         $this->addInsertData( 
                              $values,
                              'F_id_file',
                              DBJson::mysql_real_escape_string( $sFId )
                              );
-                             
+
         $sSFId = null;       
         if ( $this->sampleSolution!==array() && $this->sampleSolution !== null && 
              $this->sampleSolution->getFileId( ) !== null )
             $sSFId = $this->sampleSolution->getFileId( );
-            
+
         $this->addInsertData( 
                              $values,
                              'F_id_sampleSolution',
@@ -438,28 +438,28 @@ class ExerciseSheet extends Object implements JsonSerializable
     {
         if ( $data === null )
             $data = array( );
-        
+
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
                 if ( $key == 'exercises' ){
                     $this->{
                         $key
-                        
+
                     } = Exercise::decodeExercise( 
                                                  $value,
                                                  false
                                                  );
-                    
+
                 }elseif ( $key == 'sheetFile' || 
                           $key == 'sampleSolution' ){
                     $this->{
                         $key
-                        
+
                     } = File::decodeFile( 
                                          $value,
                                          false
                                          );
-                    
+
                 } else {
                     $func = 'set' . strtoupper($key[0]).substr($key,1);
                     $methodVariable = array($this, $func);
@@ -516,7 +516,7 @@ class ExerciseSheet extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -528,14 +528,14 @@ class ExerciseSheet extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new ExerciseSheet( $value );
             }
             return $result;
-            
+
         } else 
             return new ExerciseSheet( $data );
     }
@@ -570,7 +570,7 @@ class ExerciseSheet extends Object implements JsonSerializable
             $list['sheetName'] = $this->sheetName;
         return array_merge($list,parent::jsonSerialize( ));
     }
-    
+
     public static function ExtractExerciseSheet( 
                                                  $data,
                                                  $singleResult = false,
@@ -632,7 +632,7 @@ class ExerciseSheet extends Object implements JsonSerializable
             // to reindex
             $res = array_merge( $res );
             $res = ExerciseSheet::decodeExerciseSheet($res,false);
-            
+
             if ( $singleResult == true ){
 
                 // only one object as result

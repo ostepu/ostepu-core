@@ -155,12 +155,12 @@ class CourseStatus extends Object implements JsonSerializable
                 if ( $key == 'course' ){
                     $this->{
                         $key
-                        
+
                     } = Course::decodeCourse( 
                                              $value,
                                              false
                                              );
-                    
+
                 } else {
                     $func = 'set' . strtoupper($key[0]).substr($key,1);
                     $methodVariable = array($this, $func);
@@ -217,7 +217,7 @@ class CourseStatus extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -229,14 +229,14 @@ class CourseStatus extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new CourseStatus( $value );
             }
             return $result;
-            
+
         } else 
             return new CourseStatus( $data );
     }

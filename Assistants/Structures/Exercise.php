@@ -291,7 +291,7 @@ class Exercise extends Object implements JsonSerializable
     {
         $this->fileTypes = $value;
     }
-    
+
     private $submittable = null;
     public function getSubmittable( )
     {
@@ -301,7 +301,7 @@ class Exercise extends Object implements JsonSerializable
     {
         $this->submittable = $value;
     }
-    
+
     /**
      * Creates an Exercise object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -452,7 +452,7 @@ class Exercise extends Object implements JsonSerializable
     {
         if ( $data === null )
             $data = array( );
-        
+
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
                 if ( $key == 'submissions' ){
@@ -538,7 +538,7 @@ class Exercise extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -550,7 +550,7 @@ class Exercise extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){

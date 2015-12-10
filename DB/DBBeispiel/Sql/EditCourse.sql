@@ -8,7 +8,7 @@
  * @result -
  */
 ?>
- 
+
 UPDATE Course
 SET <?php echo $values; ?>
 WHERE C_id = '<?php echo $courseid; ?>';

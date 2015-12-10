@@ -8,7 +8,7 @@
  * @result -
  */
 ?>
- 
+
 DELETE FROM CourseStatus 
 WHERE
     C_id = '<?php echo $courseid; ?>' and U_id = '<?php echo $userid; ?>'

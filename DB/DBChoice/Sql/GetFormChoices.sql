@@ -8,7 +8,7 @@
  * - CH, the choice data
  */
 ?>
- 
+
 SET @course = '<?php echo Form::getCourseFromFormId($formid); ?>';
 SET @statement = 
 concat(
@@ -23,6 +23,6 @@ from
     `Choice<?php echo $preChoice; ?>_", @course, "` CH
 where
     CH.FO_id = '<?php echo Form::getIdFromFormId($formid); ?>'");
-    
+
 PREPARE stmt1 FROM @statement;
 EXECUTE stmt1;

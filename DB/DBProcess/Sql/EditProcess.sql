@@ -8,7 +8,7 @@
  * @result -
  */
 ?>
- 
+
 UPDATE `Process<?php echo $pre; ?>_<?php echo Process::getCourseFromProcessId($processid); ?>`
 SET <?php echo $object->getInsertData(); ?>
 WHERE PRO_id = '<?php echo Process::getIdFromProcessId($processid); ?>'

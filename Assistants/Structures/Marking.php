@@ -478,22 +478,22 @@ class Marking extends Object implements JsonSerializable
                 if ( $key == 'file' ){
                     $this->{
                         $key
-                        
+
                     } = File::decodeFile( 
                                          $value,
                                          false
                                          );
-                    
+
                 } else 
                     if ( $key == 'submission' ){
                     $this->{
                         $key
-                        
+
                     } = Submission::decodeSubmission( 
                                                      $value,
                                                      false
                                                      );
-                    
+
                 } else {
                     $func = 'set' . strtoupper($key[0]).substr($key,1);
                     $methodVariable = array($this, $func);
@@ -552,7 +552,7 @@ class Marking extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -564,14 +564,14 @@ class Marking extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new Marking( $value );
             }
             return $result;
-            
+
         } else 
             return new Marking( $data );
     }
@@ -661,7 +661,7 @@ class Marking extends Object implements JsonSerializable
                 if ( isset( $submission['id'] ) && 
                      $submission['id'] == $submission['selectedForGroup'] ){
                     $submission['selectedForGroup'] = ( string )1;
-                    
+
                 } else 
                     unset( $submission['selectedForGroup'] );
             }

@@ -11,21 +11,21 @@
  * @todo POST Request to logic instead of DB
  * @todo create a navigation bar for super admins
  * @todo unset $_POST on success
- */
+ */ 
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
-include_once dirname(__FILE__) . '/../Assistants/Validation/Validation.php';
+include_once dirname(__FILE__) . '/../Assistants/Validation/Validation.php'; 
 
 global $globalUserData;
-Authentication::checkRights(PRIVILEGE_LEVEL::SUPER_ADMIN, null, $uid, $globalUserData);
+Authentication::checkRights(PRIVILEGE_LEVEL::SUPER_ADMIN, null, $uid, $globalUserData); 
 
-$langTemplate='MainSettings_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
+$langTemplate='MainSettings_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); 
 
 // load Plugins data from LogicController
 $URI = $serverURI . "/logic/LExtension/link/extension";
 $temp = http_get($URI, true);
-$plugins_data = json_decode($temp, true);
+$plugins_data = json_decode($temp, true); 
 
 $postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
   ->addSet('action',
@@ -35,7 +35,7 @@ $postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
                          'text'=>Language::Get('main','invalidAction', $langTemplate)]]);
 $postResults = $postValidation->validate();
 $notifications = array_merge($notifications,$postValidation->getPrintableNotifications('MakeNotification'));
-$postValidation->resetNotifications()->resetErrors();
+$postValidation->resetNotifications()->resetErrors(); 
 
 if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
     // creates a new course
@@ -74,38 +74,38 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                     'perform_this_array'=>[['key_all'],
                                       ['valid_identifier']],
                     'on_error'=>['type'=>'error',
-                                 'text'=>Language::Get('main','invalidExtensionId', $langTemplate)]]);
+                                 'text'=>Language::Get('main','invalidExtensionId', $langTemplate)]]); 
 
         $foundValues = $postCreateCourseValidation->validate();
         $notifications = array_merge($notifications,$postCreateCourseValidation->getPrintableNotifications('MakeNotification'));
-        $postCreateCourseValidation->resetNotifications()->resetErrors();
-        
+        $postCreateCourseValidation->resetNotifications()->resetErrors(); 
+
         if($postCreateCourseValidation->isValid()) {
             // bool which is true if any error occured
-            $RequestError = false;
+            $RequestError = false; 
 
             // extracts the php POST data
             $courseName = $foundValues['courseName'];
             $semester = $foundValues['semester'];
             $defaultGroupSize = $foundValues['defaultGroupSize'];
             $plugins = $foundValues['plugins'];
-            $exerciseTypes = $foundValues['exerciseTypes'];
+            $exerciseTypes = $foundValues['exerciseTypes']; 
 
             // creates a new course
             $newCourse = Course::createCourse(null, $courseName, $semester, $defaultGroupSize);
             $newCourseSettings = Course::encodeCourse($newCourse);
             $URI = $logicURI . '/course';
-            $newCourse = http_post_data($URI, $newCourseSettings, true, $messageNewCourse);
-            
+            $newCourse = http_post_data($URI, $newCourseSettings, true, $messageNewCourse); 
+
             if ($messageNewCourse !== 201){
                 $RequestError = true;
-            }
+            } 
 
             if ($RequestError === false){
                 // extracts the id of the new course
                 $newCourse = json_decode($newCourse, true);
                 $newCourseId = $newCourse['id'];
-            }
+            } 
 
             // creates a new approvalCondition for every selected exerciseType
             if ($RequestError === false && isset($exerciseTypes) && !empty($exerciseTypes)){
@@ -116,15 +116,15 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                                                                                        0);
                     $newApprovalConditionSettings = ApprovalCondition::encodeApprovalCondition($newApprovalCondition);
                     $URI = $databaseURI . '/approvalcondition';
-                    http_post_data($URI, $newApprovalConditionSettings, true, $messageNewAc);
+                    http_post_data($URI, $newApprovalConditionSettings, true, $messageNewAc); 
 
                     if ($messageNewAc !== 201) {
                         $RequestError = true;
                         break;
-                    }
+                    } 
 
                 }
-            }
+            } 
 
             // create Plugins
             if ($RequestError === false && isset($plugins) && !empty($plugins)){
@@ -136,7 +136,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                         break;
                     }
                 }
-            }
+            } 
 
             // creates a notification depending on RequestError
             if ($RequestError === false) {
@@ -147,7 +147,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                                                     Language::Get('main','errorCreateCourse', $langTemplate));
             }
         }
-    }
+    } 
 
     if ($postResults['action'] === 'SetAdmin') {
         $postSetAdminValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
@@ -162,37 +162,37 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                     'satisfy_not_empty',
                     'valid_userName',
                     'on_error'=>['type'=>'error',
-                                 'text'=>Language::Get('main','invalidUserName', $langTemplate)]]);
+                                 'text'=>Language::Get('main','invalidUserName', $langTemplate)]]); 
 
         $foundValues = $postSetAdminValidation->validate();
         $notifications = array_merge($notifications,$postSetAdminValidation->getPrintableNotifications('MakeNotification'));
-        $postSetAdminValidation->resetNotifications()->resetErrors();
-        
+        $postSetAdminValidation->resetNotifications()->resetErrors(); 
+
         if ($postSetAdminValidation->isValid()){
             // clean Input
             $courseID = $foundValues['courseID'];
-            $userName = $foundValues['userName'];
+            $userName = $foundValues['userName']; 
 
             // extracts the userID
             $URI = $databaseURI . "/user/user/{$userName}";
             $user_data = http_get($URI, true);
-            $user_data = json_decode($user_data, true);
+            $user_data = json_decode($user_data, true); 
 
             // sets admin rights for the user
             if (empty($user_data)) {
                 $notifications[] = MakeNotification('error', Language::Get('main','invalidUserId', $langTemplate));
             } else {
                 $userID = $user_data['id'];
-                $status = 3;
+                $status = 3; 
 
                 $data = User::encodeUser(User::createCourseStatus($userID, $courseID, $status));
                 $url = $databaseURI . '/coursestatus';
-                http_post_data($url, $data, true, $message);
+                http_post_data($url, $data, true, $message); 
 
                 if ($message !== 201) {
                     $data = User::encodeUser(User::createCourseStatus($userID, $courseID, $status));
                     $url = $databaseURI . "/coursestatus/course/{$courseID}/user/{$userID}";
-                    http_put_data($url, $data, true, $message);
+                    http_put_data($url, $data, true, $message); 
 
                     if ($message === 201) {
                         $notifications[] = MakeNotification('success', Language::Get('main','successSetAdmin', $langTemplate));
@@ -204,7 +204,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                 }
             }
         }
-    }
+    } 
 
     // creates a new user
     if ($postResults['action'] === 'CreateUser') {
@@ -249,15 +249,15 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
           ->addSet('passwordRepeat',
                    array('satisfy_equals_field'=>'password',
                          'on_error'=>array('type'=>'error',
-                                           'text'=>Language::Get('main','differentPasswords', $langTemplate))));
+                                           'text'=>Language::Get('main','differentPasswords', $langTemplate)))); 
 
         $foundValues = $postCreateUserValidation->validate();
         $notifications = array_merge($notifications,$postCreateUserValidation->getPrintableNotifications('MakeNotification'));
-        $postCreateUserValidation->resetNotifications()->resetErrors();
+        $postCreateUserValidation->resetNotifications()->resetErrors(); 
 
         if($postCreateUserValidation->isValid()) {
             $salt = $auth->generateSalt();
-            $passwordHash = $auth->hashPassword($foundValues['password'], $salt);
+            $passwordHash = $auth->hashPassword($foundValues['password'], $salt); 
 
             $newUser = User::createUser(null,
                                         $foundValues['userName'],
@@ -268,12 +268,12 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                                         1,
                                         $passwordHash,
                                         $salt,
-                                        0);
+                                        0); 
 
-            $newUserSettings = User::encodeUser($newUser);
+            $newUserSettings = User::encodeUser($newUser); 
 
             $URI = $databaseURI . '/user';
-            $answer=http_post_data($URI, $newUserSettings, true, $message);
+            $answer=http_post_data($URI, $newUserSettings, true, $message); 
 
             if ($message === 201) {
                 $user = User::decodeUser($answer);
@@ -287,7 +287,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
         } else {
             $notifications = $notifications + $postValidation->notifications;
         }
-    }
+    } 
 
     // deletes an user
     if ($postResults['action'] === 'DeleteUser') {
@@ -297,29 +297,29 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                     'satisfy_not_empty',
                     'valid_userName',
                     'on_error'=>['type'=>'error',
-                                 'text'=>Language::Get('main','invalidUserName', $langTemplate)]]);
+                                 'text'=>Language::Get('main','invalidUserName', $langTemplate)]]); 
 
         $foundValues = $postDeleteUserValidation->validate();
         $notifications = array_merge($notifications,$postDeleteUserValidation->getPrintableNotifications('MakeNotification'));
-        $postDeleteUserValidation->resetNotifications()->resetErrors();
-        
+        $postDeleteUserValidation->resetNotifications()->resetErrors(); 
+
         if($postDeleteUserValidation->isValid()) {
             // clean Input
-            $userName = $foundValues['userName'];
+            $userName = $foundValues['userName']; 
 
             // extracts the userID
             $URI = $databaseURI . "/user/user/{$userName}";
             $user_data = http_get($URI, true);
-            $user_data = json_decode($user_data, true);
+            $user_data = json_decode($user_data, true); 
 
             if (empty($user_data)) {
                 $notifications[] = MakeNotification('error', Language::Get('main','invalidUserId', $langTemplate));
             } else {
-                $userID = $user_data['id'];
+                $userID = $user_data['id']; 
 
                 // deletes the user
                 $url = $databaseURI . "/user/{$userID}";
-                http_delete($url, true, $message);
+                http_delete($url, true, $message); 
 
                 if ($message === 201) {
                     $notifications[] = MakeNotification('success',Language::Get('main','successDeleteUser', $langTemplate));
@@ -329,19 +329,19 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
             }
         }
     }
-}
+} 
 
 // load mainSettings data from GetSite
 $databaseURI = $getSiteURI . "/mainsettings/user/{$uid}";
 $mainSettings_data = http_get($databaseURI, true);
-$mainSettings_data = json_decode($mainSettings_data, true);
+$mainSettings_data = json_decode($mainSettings_data, true); 
 
-$mainSettings_data['plugins'] = $plugins_data;
+$mainSettings_data['plugins'] = $plugins_data; 
 
-$user_course_data = $mainSettings_data['user'];
+$user_course_data = $mainSettings_data['user']; 
 
 $menu = MakeNavigationElement($user_course_data,
-                              PRIVILEGE_LEVEL::SUPER_ADMIN,true);
+                              PRIVILEGE_LEVEL::SUPER_ADMIN,true); 
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
@@ -350,27 +350,27 @@ $h->bind(array('name' => Language::Get('main','settings', $langTemplate),
                'backTitle' => Language::Get('main','courses', $langTemplate),
                'backURL' => 'index.php',
                'notificationElements' => $notifications,
-               'navigationElement' => $menu));
+               'navigationElement' => $menu)); 
 
 // construct a content element for creating new courses
 $createCourse = Template::WithTemplateFile('include/MainSettings/CreateCourse.template.html');
 $createCourse->bind($mainSettings_data);
 if (count($notifications) > 0) {
     ///$createCourse->bind($_POST); /// !!! das geht so nicht ??? ///
-}
+} 
 
 // construct a content element for setting admins
 $setAdmin = Template::WithTemplateFile('include/MainSettings/SetAdmin.template.html');
-$setAdmin->bind($mainSettings_data);
+$setAdmin->bind($mainSettings_data); 
 
 // construct a content element for creating new users
 $createUser = Template::WithTemplateFile('include/MainSettings/CreateUser.template.html');
 if (count($notifications) > 0) {
     ///$createUser->bind($_POST); /// !!! das geht so nicht ??? ///
-}
+} 
 
 // construct a content element for deleting users
-$deleteUser = Template::WithTemplateFile('include/MainSettings/DeleteUser.template.html');
+$deleteUser = Template::WithTemplateFile('include/MainSettings/DeleteUser.template.html'); 
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $createCourse, $setAdmin, $createUser, $deleteUser);
@@ -379,5 +379,5 @@ $w->defineForm(basename(__FILE__), false, $setAdmin);
 $w->defineForm(basename(__FILE__), false, $createUser);
 $w->defineForm(basename(__FILE__), false, $deleteUser);
 $w->set_config_file('include/configs/config_default.json');
-$w->show();
+$w->show(); 
 

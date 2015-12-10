@@ -8,7 +8,7 @@
  * @result -
  */
 ?>
- 
+
 UPDATE `Session`
 SET <?php echo $values; ?>
 WHERE SE_sessionID = '<?php echo $seid; ?>'

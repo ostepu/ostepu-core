@@ -4,7 +4,7 @@
 /**
  * @file Group.php contains the Group class
  */
- 
+
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
@@ -198,12 +198,12 @@ class Group extends Object implements JsonSerializable
                      $key == 'members' ){
                     $this->{
                         $key
-                        
+
                     } = User::decodeUser( 
                                          $value,
                                          false
                                          );
-                    
+
                 } else {
                     $func = 'set' . strtoupper($key[0]).substr($key,1);
                     $methodVariable = array($this, $func);
@@ -260,7 +260,7 @@ class Group extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -272,14 +272,14 @@ class Group extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new Group( $value );
             }
             return $result;
-            
+
         } else 
             return new Group( $data );
     }

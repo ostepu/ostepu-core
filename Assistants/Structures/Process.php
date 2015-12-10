@@ -4,7 +4,7 @@
 /**
  * @file Process.php contains the Process class
  */
- 
+
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
@@ -38,7 +38,7 @@ class Process extends Object implements JsonSerializable
     {
         $this->processId = $value;
     }
-    
+
     public static function getCourseFromProcessId($id)
     {
         $arr = explode('_',$id);
@@ -48,7 +48,7 @@ class Process extends Object implements JsonSerializable
         else
         return '';
     }
-    
+
     public static function getIdFromProcessId($id)
     {
         $arr = explode('_',$id);
@@ -58,17 +58,17 @@ class Process extends Object implements JsonSerializable
         else
         return $id;
     }
-    
+
     public function getObjectCourseFromProcessIdId()
     {
         return Process::getCourseFromProcessId($this->processId);
     }
-    
+
     public function getObjectIdFromProcessId()
     {
         return Process::getIdFromProcessId($this->processId);
     }
-    
+
     private $target = null;
     public function getTarget( )
     {
@@ -78,7 +78,7 @@ class Process extends Object implements JsonSerializable
     {
         $this->target = $value;
     }
-    
+
     private $parameter = null;
     public function getParameter( )
     {
@@ -98,7 +98,7 @@ class Process extends Object implements JsonSerializable
     {
         $this->attachment = $value;
     } 
-    
+
     private $workFiles = array();
     public function getWorkFiles( )
     {
@@ -108,7 +108,7 @@ class Process extends Object implements JsonSerializable
     {
         $this->workFiles = $value;
     } 
-    
+
     private $rawSubmission = null;
     public function getRawSubmission( )
     {
@@ -118,7 +118,7 @@ class Process extends Object implements JsonSerializable
     {
         $this->rawSubmission = $value;
     } 
-    
+
     private $submission = null;
     public function getSubmission( )
     {
@@ -128,7 +128,7 @@ class Process extends Object implements JsonSerializable
     {
         $this->submission = $value;
     } 
-    
+
     private $marking = null;
     public function getMarking( )
     {
@@ -250,72 +250,72 @@ class Process extends Object implements JsonSerializable
                 if ( $key == 'attachment' ){
                     $this->{
                         $key
-                        
+
                     } = Attachment::decodeAttachment( 
                                                            $value,
                                                            false
                                                            );
-                    
+
                 } else 
                 if ( $key == 'workFiles' ){
                     $this->{
                         $key
-                        
+
                     } = Attachment::decodeAttachment( 
                                                            $value,
                                                            false
                                                            );
-                    
+
                 } else 
                 if ( $key == 'target' ){
                     $this->{
                         $key
-                        
+
                     } = Component::decodeComponent( 
                                                            $value,
                                                            false
                                                            );
-                    
+
                 } else
                 if ( $key == 'submission' ){
                     $this->{
                         $key
-                        
+
                     } = Submission::decodeSubmission( 
                                                            $value,
                                                            false
                                                            );
-                    
+
                 }  else
                 if ( $key == 'rawSubmission' ){
                     $this->{
                         $key
-                        
+
                     } = Submission::decodeSubmission( 
                                                            $value,
                                                            false
                                                            );
-                    
+
                 }else
                 if ( $key == 'marking' ){
                     $this->{
                         $key
-                        
+
                     } = Marking::decodeMarking( 
                                                            $value,
                                                            false
                                                            );
-                    
+
                 } else
                 if ( $key == 'exercise' ){
                     $this->{
                         $key
-                        
+
                     } = Exercise::decodeExercise( 
                                                            $value,
                                                            false
                                                            );
-                    
+
                 } else{
                     $func = 'set' . strtoupper($key[0]).substr($key,1);
                     $methodVariable = array($this, $func);
@@ -372,7 +372,7 @@ class Process extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -384,14 +384,14 @@ class Process extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new Process( $value );
             }
             return $result;
-            
+
         } else 
             return new Process( $data );
     }
@@ -459,10 +459,10 @@ class Process extends Object implements JsonSerializable
                                                       Exercise::getDBConvert( ),
                                                       $ExerciseExtension
                                                       );
-                                                      
+
         $attachment = Attachment::extractAttachment($data, false, '_PRO1', '_PRO1',false );
         $workFiles = Attachment::extractAttachment($data, false, '_PRO2', '_PRO2',false );
-        
+
         // concatenates the processes and the associated attachments
         $process =         DBJson::concatObjectListResult(
                                                    $data,
@@ -474,7 +474,7 @@ class Process extends Object implements JsonSerializable
                                                    '_PRO1',
                                                    $ProcessExtension
                                                    );
-                                                   
+
                 // concatenates the processes and the associated attachments
         $process =         DBJson::concatObjectListResult(
                                                    $data,
@@ -486,7 +486,7 @@ class Process extends Object implements JsonSerializable
                                                    '_PRO2',
                                                    $ProcessExtension
                                                    );
-                                                      
+
         // concatenates the processes and the associated components
         $process =         DBJson::concatObjectListsSingleResult(
                                                    $data,
@@ -498,7 +498,7 @@ class Process extends Object implements JsonSerializable
                                                    $ExerciseExtension,
                                                    $ProcessExtension
                                                    );
-                                                   
+
         $res =         DBJson::concatObjectListsSingleResult(
                                                    $data,
                                                    $process,
@@ -513,7 +513,7 @@ class Process extends Object implements JsonSerializable
             // to reindex
             $res = array_values( $res );
             $res = Process::decodeProcess($res,false);
-            
+
             if ( $singleResult == true ){
 
                 // only one object as result
@@ -523,7 +523,7 @@ class Process extends Object implements JsonSerializable
         }
 
         return $res;
-      
+
     }
 }
 

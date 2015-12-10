@@ -394,7 +394,7 @@ class User extends Object implements JsonSerializable
     {
         $this->comment = $value;
     }
-    
+
     /**
      * @var string $lang the selected language
      */
@@ -705,7 +705,7 @@ class User extends Object implements JsonSerializable
 
         // <- the account is active
         '2' => 'locked'// <- login locked
-        
+
                      );
     }
 
@@ -724,12 +724,12 @@ class User extends Object implements JsonSerializable
                 if ( $key == 'courses' ){
                     $this->{
                         $key
-                        
+
                     } = CourseStatus::decodeCourseStatus( 
                                                          $value,
                                                          false
                                                          );
-                    
+
                 } else {
                     $func = 'set' . strtoupper($key[0]).substr($key,1);
                     $methodVariable = array($this, $func);
@@ -786,7 +786,7 @@ class User extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -798,14 +798,14 @@ class User extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new User( $value );
             }
             return $result;
-            
+
         } else 
             return new User( $data );
     }
@@ -888,13 +888,13 @@ class User extends Object implements JsonSerializable
                                                   Course::getDBConvert( ),
                                                   $CourseExtension
                                                   );
-                                                  
+
         $settings = DBJson::getObjectsByAttributes( 
                                                   $data,
                                                   Setting::getDBPrimaryKey( ),
                                                   Setting::getDBConvert( )
                                                   );
-                                                  
+
         // concatenates the courses and the associated settings
         $res = DBJson::concatObjectListResult( 
                                          $data,
@@ -904,7 +904,7 @@ class User extends Object implements JsonSerializable
                                          $settings,
                                          Setting::getDBPrimaryKey( )
                                          );
-                                                     
+
         // concatenates the course stats and the associated courses
         $res = DBJson::concatObjectListsSingleResult( 
                                                      $data,
@@ -933,7 +933,7 @@ class User extends Object implements JsonSerializable
             // to reindex
             // $res = array_merge($res);
             $res = User::decodeUser($res,false);
-            
+
             if ( $singleResult ){
 
                 // only one object as result
@@ -1010,7 +1010,7 @@ class User extends Object implements JsonSerializable
             // to reindex
             // $res = array_merge($res);
             $res = CourseStatus::decodeCourseStatus($res,false);
-            
+
             if ( $singleResult == true ){
 
                 // only one object as result

@@ -91,7 +91,7 @@ class Submission extends Object implements JsonSerializable
     {
         $this->exerciseId = $value;
     }
-    
+
     
     /**
      * @var string $exerciseSheetId a string that identifies the exercise this submission belongs to.
@@ -343,7 +343,7 @@ class Submission extends Object implements JsonSerializable
     {
         $this->leaderId = $value;
     }
-    
+
     private $exerciseName = null;
     public function getExerciseName( )
     {
@@ -353,7 +353,7 @@ class Submission extends Object implements JsonSerializable
     {
         $this->exerciseName = $value;
     }
-    
+
     /**
      * Creates an Submission object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -526,12 +526,12 @@ class Submission extends Object implements JsonSerializable
                 if ( $key == 'file' ){
                     $this->{
                         $key
-                        
+
                     } = File::decodeFile( 
                                          $value,
                                          false
                                          );
-                    
+
                 } else {
                     $func = 'set' . strtoupper($key[0]).substr($key,1);
                     $methodVariable = array($this, $func);
@@ -588,7 +588,7 @@ class Submission extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -607,7 +607,7 @@ class Submission extends Object implements JsonSerializable
                 $result[] = new Submission( $value );
             }
             return $result;
-            
+
         } else 
             return new Submission( $data );
     }
@@ -682,7 +682,7 @@ class Submission extends Object implements JsonSerializable
                 if ( isset( $submission['id'] ) && 
                      $submission['id'] == $submission['selectedForGroup'] ){
                     $submission['selectedForGroup'] = ( string )1;
-                    
+
                 } else 
                     unset( $submission['selectedForGroup'] );
             }

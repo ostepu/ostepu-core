@@ -6,7 +6,7 @@
  */
 
 include_once ( dirname( __FILE__ ) . '/Object.php' );
- 
+
 /**
  * the platform structure
  *
@@ -60,7 +60,7 @@ class Platform extends Object implements JsonSerializable
     {
         $this->databaseUrl = $value;
     }
- 
+
  
     private $databaseName = null;
 
@@ -106,7 +106,7 @@ class Platform extends Object implements JsonSerializable
     {
         $this->databaseRootUser = $value;
     }
-    
+
 
     private $databaseRootPassword = null;
 
@@ -152,7 +152,7 @@ class Platform extends Object implements JsonSerializable
     {
         $this->databaseOperatorUser = $value;
     }
-    
+
     
     private $databaseOperatorPassword = null;
 
@@ -175,7 +175,7 @@ class Platform extends Object implements JsonSerializable
     {
         $this->databaseOperatorPassword = $value;
     }
-    
+
     
     private $tempDirectory = null;
 
@@ -198,7 +198,7 @@ class Platform extends Object implements JsonSerializable
     {
         $this->tempDirectory = $value;
     }
-    
+
     
     private $filesDirectory = null;
 
@@ -221,7 +221,7 @@ class Platform extends Object implements JsonSerializable
     {
         $this->filesDirectory = $value;
     }
-    
+
     
     private $externalUrl = null;
 
@@ -244,7 +244,7 @@ class Platform extends Object implements JsonSerializable
     {
         $this->externalUrl = $value;
     }
-    
+
 
     private $settings = array();
 
@@ -267,7 +267,7 @@ class Platform extends Object implements JsonSerializable
     {
         $this->settings = $value;
     }
-    
+
     /**
      * Creates an patform object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -353,7 +353,7 @@ class Platform extends Object implements JsonSerializable
     {
         if ( $data === null )
             $data = array( );
-        
+
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
                 $func = 'set' . strtoupper($key[0]).substr($key,1);
@@ -410,7 +410,7 @@ class Platform extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -422,7 +422,7 @@ class Platform extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
@@ -464,7 +464,7 @@ class Platform extends Object implements JsonSerializable
              $list['externalUrl'] = $this->externalUrl;
         if ( $this->settings !== null )
              $list['settings'] = $this->settings;
-             
+
         return array_merge($list,parent::jsonSerialize( ));
     }
 

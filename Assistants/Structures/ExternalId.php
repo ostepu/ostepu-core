@@ -4,7 +4,7 @@
 /**
  * @file ExternalId.php contains the ExternalId class
  */
- 
+
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
@@ -99,18 +99,18 @@ class ExternalId extends Object implements JsonSerializable
     {
         if ( $data === null )
             $data = array( );
-        
+
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
                 if ( $key == 'course' ){
                     $this->{
                         $key
-                        
+
                     } = new Course( 
                                    $value,
                                    false
                                    );
-                    
+
                 } else {
                     $func = 'set' . strtoupper($key[0]).substr($key,1);
                     $methodVariable = array($this, $func);
@@ -222,7 +222,7 @@ class ExternalId extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -234,14 +234,14 @@ class ExternalId extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new ExternalId( $value );
             }
             return $result;
-            
+
         } else 
             return new ExternalId( $data );
     }

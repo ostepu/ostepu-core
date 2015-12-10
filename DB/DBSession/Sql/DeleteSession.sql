@@ -7,7 +7,7 @@
  * @result -
  */
 ?>
- 
+
 DELETE FROM `Session` 
 WHERE
     SE_sessionID = '<?php echo $seid; ?>'

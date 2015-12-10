@@ -209,7 +209,7 @@ class Query extends Object implements JsonSerializable
                 if ($key=='response'){
                     $this->{
                         $key
-                        
+
                     } = $value;//json_decode(json_encode($value),true);
                 } else {
                     $func = 'set' . strtoupper($key[0]).substr($key,1);
@@ -263,14 +263,14 @@ class Query extends Object implements JsonSerializable
                                        $decode = true
                                        )
     {
-    
+
            /* if ( $decode && 
              $data == null )
             $data = '{}';
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -282,17 +282,17 @@ class Query extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new Query( $value );
             }
             return $result;
-            
+
         } else 
             return new Query( $data );*/
-            
+
         if ( $decode && 
              $data == null )
             $data = '{}';

@@ -40,7 +40,7 @@ class Form extends Object implements JsonSerializable
     {
         $this->formId = $value;
     }
-    
+
     public static function getCourseFromFormId($id)
     {
         $arr = explode('_',$id);
@@ -50,7 +50,7 @@ class Form extends Object implements JsonSerializable
         else
         return '';
     }
-    
+
     public static function getIdFromFormId($id)
     {
         $arr = explode('_',$id);
@@ -60,12 +60,12 @@ class Form extends Object implements JsonSerializable
         else
         return $id;
     }
-    
+
     public function getObjectCourseFromFormId()
     {
         return Form::getCourseFromFormId($this->formId);
     }
-    
+
     public function getObjectIdFromFormId()
     {
         return Form::getIdFromFormId($this->formId);
@@ -195,7 +195,7 @@ class Form extends Object implements JsonSerializable
     {
         $this->choices = $value;
     }
-    
+
     public static function getTypeDefinition( )
     {
         return array( 
@@ -204,14 +204,14 @@ class Form extends Object implements JsonSerializable
                      '1' => 'Einfachauswahl',
 
                      '2' => 'Mehrfachauswahl'
-        
+
                      );
     }
 
     public static $INPUT = 0;
     public static $RADIO = 1;
     public static $CHECKBOX = 2;
-    
+
     /**
      * Creates an Form object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -326,7 +326,7 @@ class Form extends Object implements JsonSerializable
     {
         if ( $data === null )
             $data = array( );
-        
+
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
                 if ( $key == 'choices' ){
@@ -394,7 +394,7 @@ class Form extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -406,7 +406,7 @@ class Form extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){

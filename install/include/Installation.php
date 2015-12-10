@@ -3,15 +3,15 @@ require_once dirname(__FILE__) . '/../../UI/include/Authentication.php';
 require_once dirname(__FILE__) . '/../../Assistants/Structures.php';
 require_once dirname(__FILE__) . '/../../Assistants/Request.php';
 require_once dirname(__FILE__) . '/../../Assistants/DBRequest.php';
-require_once dirname(__FILE__) . '/../../Assistants/DBJson.php';
+require_once dirname(__FILE__) . '/../../Assistants/DBJson.php';  
 
 /**
  * @file Installation.php contains the Installation class
  *
  * @author Till Uhlig
  * @date 2014
- */
-  
+ */  
+
 class Installation
 {
    /**
@@ -42,18 +42,18 @@ class Installation
         $args[] = &$data;
         call_user_func_array('array_multisort', $args);
         return array_pop($args);
-    }
-    
+    }  
+
     /*
      * @param array $components The array which will be filtered.
      * @param string $type '', 'RegEx'
      * @param string $root '', 'Command', 'ComponentName'
      */
     public static function filterComponents($components, $type, $root)
-    {
-        
-    }
-    
+    {  
+
+    }  
+
     public static function collectPlatformSettings($data)
     {
         $settings = array();
@@ -62,8 +62,8 @@ class Installation
             $settings = array_merge($settings,$segs::platformSetting($data));
         }
         return $settings;
-    }
-    
+    }  
+
     /**
      * Extrahiert die relevanten Daten der Plattform und erzeugt
      * daraus ein Platform-Objekt
@@ -73,8 +73,8 @@ class Installation
      */
     public static function PlattformZusammenstellen($data)
     {   
-        $settings = self::collectPlatformSettings($data);
-    
+        $settings = self::collectPlatformSettings($data);  
+
         // hier aus den Daten ein Plattform-Objekt zusammenstellen
         $platform = Platform::createPlatform(
                                             $data['PL']['url'],
@@ -90,8 +90,8 @@ class Installation
                                             $settings
                                             );
         return $platform;
-    }
-    
+    }  
+
     /**
      * Ermittelt alle vorhandenen Serverkonfigurationsdateien
      * aus dem config Ordners
@@ -115,8 +115,8 @@ class Installation
             return array();
         }
         return $serverFiles;
-    }
-   
+    }  
+
    /** 
     * Finds path, relative to the given root folder, of all files and directories in the given directory and its sub-directories non recursively. 
     * Will return an array of the form 
@@ -132,10 +132,10 @@ class Installation
       $files  = array('files'=>array(), 'dirs'=>array()); 
       $directories  = array(); 
       $last_letter  = $root[strlen($root)-1]; 
-      $root  = ($last_letter == '/') ? $root : $root.'/'; 
-      
-      $directories[]  = $root; 
-      
+      $root  = ($last_letter == '/') ? $root : $root.'/';   
+
+      $directories[]  = $root;   
+
       while (sizeof($directories)) { 
         $dir  = array_pop($directories); 
         if ($handle = opendir($dir)) { 
@@ -154,8 +154,8 @@ class Installation
           } 
           closedir($handle); 
         } 
-      } 
-      
+      }   
+
       return $files; 
     } 
 }

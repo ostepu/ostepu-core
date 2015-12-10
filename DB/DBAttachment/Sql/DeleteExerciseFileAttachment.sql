@@ -8,7 +8,7 @@
  * @result -
  */
 ?>
- 
+
 DELETE FROM Attachment 
 WHERE
     E_id = '<?php echo $eid; ?>' and F_id = '<?php echo $fileid; ?>'

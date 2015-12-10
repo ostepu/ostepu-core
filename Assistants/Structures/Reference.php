@@ -40,7 +40,7 @@ class Reference extends Object implements JsonSerializable
     {
         $this->localRef = $value;
     }
-    
+
     /**
      * @var string $globalRef
      */
@@ -70,7 +70,7 @@ class Reference extends Object implements JsonSerializable
     {
         return file_get_contents($this->localRef);
     }
-    
+
     /**
      * Creates an reference object
      * Not needed attributes can be set to null.
@@ -90,7 +90,7 @@ class Reference extends Object implements JsonSerializable
                                   'globalRef' => $globalReference
                                   ) );
     }
-    
+
     /**
      * the constructor
      *
@@ -157,7 +157,7 @@ class Reference extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -169,14 +169,14 @@ class Reference extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new Reference( $value );
             }
             return $result;
-            
+
         } else 
             return new Reference( $data );
     }

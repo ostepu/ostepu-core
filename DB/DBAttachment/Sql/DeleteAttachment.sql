@@ -7,7 +7,7 @@
  * @result -
  */
 ?>
- 
+
 DELETE FROM Attachment 
 WHERE
     A_id = '<?php echo $aid; ?>'

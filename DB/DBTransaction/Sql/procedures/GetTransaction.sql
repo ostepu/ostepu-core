@@ -8,7 +8,7 @@
  * - T, the transaction data
  */
 ?>
- 
+
 select 
     concat('<?php echo Transaction::getCourseFromTransactionId($tid); ?>','_',T.T_id,'_',T.T_random) as T_id,
     T.T_durability,
@@ -21,5 +21,5 @@ where
     and ((T.T_authentication is null and '<?php echo $auid; ?>' = '') or T.T_authentication = '<?php echo $auid; ?>')
     and T.T_random = '<?php echo Transaction::getRandomFromTransactionId($tid); ?>'
     and UNIX_TIMESTAMP() <= T.T_durability;
-    
+
     

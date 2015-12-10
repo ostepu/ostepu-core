@@ -2,7 +2,7 @@
 class Validation_Type implements Validation_Interface
 {
     private static $indicator = 'is';
-    
+
     public static function getIndicator()
     {
         return self::$indicator;
@@ -13,18 +13,18 @@ class Validation_Type implements Validation_Interface
         if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
             return;
         }
-        
+
         if (is_float($input[$key])){
             return;
         }
-        
+
         if (!is_float((float) $input[$key])){
             return false;
         }
-        
+
         return Validation_Condition::validate_satisfy_regex($key, $input, $setting, '%^\d+\.\d+$%');
     }
-        
+
     public static function validate_is_boolean($key, $input, $setting = null, $param = null)
     {
         if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
@@ -35,10 +35,10 @@ class Validation_Type implements Validation_Interface
         if ($boolean !== null){
             return;
         }
-        
+
         return false;
     }
-    
+
     public static function validate_is_integer($key, $input, $setting = null, $param = null)
     {
         if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
@@ -53,7 +53,7 @@ class Validation_Type implements Validation_Interface
         if (!is_int((int) $input[$key])) {
             return false; // other non-integer value or exceeds PHP_MAX_INT
         }
-        
+
         return;
     }
 
@@ -62,24 +62,24 @@ class Validation_Type implements Validation_Interface
         if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
             return;
         }
-        
+
         if (is_string($input[$key])) {
             return;
         }
-        
+
         return false;
     }
- 
+
     public static function validate_is_array($key, $input, $setting = null, $param = null)
     {
         if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
             return;
         }
-        
+
         if (is_array($input[$key])) {
             return;
         }
-        
+
         return false;
     }
 }

@@ -9,7 +9,7 @@
  * - S, the Setting data
  */
 ?>
- 
+
 select 
     concat('<?php echo $courseid; ?>','_',S.SET_id) as SET_id,
     S.SET_name,

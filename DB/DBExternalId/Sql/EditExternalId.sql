@@ -8,7 +8,7 @@
  * @result -
  */
 ?>
- 
+
 UPDATE ExternalId
 SET <?php echo $values; ?>
 WHERE EX_id = '<?php echo $exid; ?>'

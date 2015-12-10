@@ -70,7 +70,7 @@ class BEISPIEL extends Object implements JsonSerializable // muss eingebunden we
     {
         if ( $data === null )
             $data = array( );
-        
+
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
                 $func = 'set' . strtoupper($key[0]).substr($key,1);
@@ -114,7 +114,7 @@ class BEISPIEL extends Object implements JsonSerializable // muss eingebunden we
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -126,14 +126,14 @@ class BEISPIEL extends Object implements JsonSerializable // muss eingebunden we
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( ); // erzeugt eine Liste von Objekten
             foreach ( $data AS $key => $value ){
                 $result[] = new BEISPIEL( $value );
             }
             return $result;
-            
+
         } else // erzeugt ein einzelnes Objekt
             return new BEISPIEL( $data );
     }
@@ -145,7 +145,7 @@ class BEISPIEL extends Object implements JsonSerializable // muss eingebunden we
         $list = array( );
         if ( $this->param !== null )
             $list['param'] = $this->param;
-        
+
         // ruft auch die Serialisierung des darüber liegenden Objekts auf (Object.php)
         return array_merge($list,parent::jsonSerialize( ));
     }

@@ -44,7 +44,7 @@ class ApprovalCondition extends Object implements JsonSerializable
     }
 
     /**
-     
+
      * The id of the course this condition belongs to.
      *
      * type: string
@@ -228,7 +228,7 @@ class ApprovalCondition extends Object implements JsonSerializable
     {
         if ( $data === null )
             $data = array( );
-        
+
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
                 $func = 'set' . strtoupper($key[0]).substr($key,1);
@@ -285,7 +285,7 @@ class ApprovalCondition extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -297,14 +297,14 @@ class ApprovalCondition extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new ApprovalCondition( $value );
             }
             return $result;
-            
+
         } else 
             return new ApprovalCondition( $data );
     }

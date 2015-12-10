@@ -8,7 +8,7 @@
  */
 
 ?>
- 
+
 INSERT INTO Session (U_id, SE_sessionID) 
 VALUES ('<?php echo $userid; ?>', '<?php echo $sessionid; ?>')
 ON DUPLICATE KEY UPDATE SE_sessionID = '<?php echo $sessionid; ?>'

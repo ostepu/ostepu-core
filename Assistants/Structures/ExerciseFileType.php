@@ -4,7 +4,7 @@
 /**
  * @file ExerciseFileType.php contains the ExerciseFileType class
  */
- 
+
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
@@ -129,7 +129,7 @@ class ExerciseFileType extends Object implements JsonSerializable
     {
         if ( $data === null )
             $data = array( );
-        
+
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
                 $func = 'set' . strtoupper($key[0]).substr($key,1);
@@ -247,7 +247,7 @@ class ExerciseFileType extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -259,14 +259,14 @@ class ExerciseFileType extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new ExerciseFileType( $value );
             }
             return $result;
-            
+
         } else 
             return new ExerciseFileType( $data );
     }

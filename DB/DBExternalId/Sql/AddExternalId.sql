@@ -7,5 +7,5 @@
  * @result -
  */
 ?>
- 
+
 INSERT INTO ExternalId SET <?php echo $values; ?>

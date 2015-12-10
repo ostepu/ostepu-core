@@ -220,12 +220,12 @@ class Invitation extends Object implements JsonSerializable
                      $key == 'leader' ){
                     $this->{
                         $key
-                        
+
                     } = User::decodeUser( 
                                          $value,
                                          false
                                          );
-                    
+
                 } else {
                     $func = 'set' . strtoupper($key[0]).substr($key,1);
                     $methodVariable = array($this, $func);
@@ -282,7 +282,7 @@ class Invitation extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -294,14 +294,14 @@ class Invitation extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new Invitation( $value );
             }
             return $result;
-            
+
         } else 
             return new Invitation( $data );
     }

@@ -6,25 +6,25 @@ class PruefungErweiterungen
     public static $installed = false;
     public static $page = 0;
     public static $rank = 50;
-    public static $enabledShow = true;
-    
-    public static $onEvents = array('check'=>array('name'=>'checkExtensions','event'=>array('actionCheckExtensions','page','install', 'update')));
-    
+    public static $enabledShow = true;  
+
+    public static $onEvents = array('check'=>array('name'=>'checkExtensions','event'=>array('actionCheckExtensions','page','install', 'update')));  
+
     public static function show($console, $result, $data)
     {
         $text = '';
-        $text .= Design::erstelleBeschreibung($console,Language::Get('extensions','description'));
-        
+        $text .= Design::erstelleBeschreibung($console,Language::Get('extensions','description'));  
+
         if (isset($result[self::$onEvents['check']['name']]) && $result[self::$onEvents['check']['name']]!=null){
            $result =  $result[self::$onEvents['check']['name']];
         } else 
-            $result = array('content'=>null,'fail'=>false,'errno'=>null,'error'=>null);
-        
+            $result = array('content'=>null,'fail'=>false,'errno'=>null,'error'=>null);  
+
         $fail = $result['fail'];
         $error = $result['error'];
         $errno = $result['errno'];
-        $content = $result['content'];
-        
+        $content = $result['content'];  
+
         if ($content!=null){
             foreach ($content as $extensionName => $status){
                 if (!$console){
@@ -33,12 +33,12 @@ class PruefungErweiterungen
                     $text .= $extensionName.' '.($status ? Language::Get('main','ok') : Language::Get('main','fail'))."\n";
             }
         } else 
-            $text .= Design::erstelleZeile($console, "<font color='red'>".Language::Get('main','fail')."</font>", 'e');
+            $text .= Design::erstelleZeile($console, "<font color='red'>".Language::Get('main','fail')."</font>", 'e');  
 
         echo Design::erstelleBlock($console, Language::Get('extensions','title'), $text);
         return null;
-    }
-    
+    }  
+
     public static function install($data, &$fail, &$errno, &$error)
     {
         $result = array();
@@ -53,8 +53,8 @@ class PruefungErweiterungen
         $result['sockets'] = self::apache_extension_exists('sockets');
         $result['gd'] = self::apache_extension_exists('gd');
         return $result;
-    }
-    
+    }  
+
     public static function apache_extension_exists($extension)
     {
         if (!function_exists('extension_loaded')) return false;

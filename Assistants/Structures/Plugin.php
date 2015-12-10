@@ -40,7 +40,7 @@ class Plugin extends Object implements JsonSerializable
     {
         $this->name = $value;
     }
-    
+
 
     /**
      * @var string $version.
@@ -66,7 +66,7 @@ class Plugin extends Object implements JsonSerializable
     {
         $this->version = $value;
     }
-    
+
     
     /**
      * @var string $versionDate.
@@ -92,7 +92,7 @@ class Plugin extends Object implements JsonSerializable
     {
         $this->versionDate = $value;
     }
-    
+
     
     /**
      * @var string $author.
@@ -118,7 +118,7 @@ class Plugin extends Object implements JsonSerializable
     {
         $this->author = $value;
     }
-    
+
     
     /**
      * @var string $sourceUrl.
@@ -144,7 +144,7 @@ class Plugin extends Object implements JsonSerializable
     {
         $this->sourceUrl = $value;
     }
-    
+
     
     /**
      * @var string $updateUrl.
@@ -170,7 +170,7 @@ class Plugin extends Object implements JsonSerializable
     {
         $this->updateUrl = $value;
     }
-    
+
     
     /**
      * @var string $requirements.
@@ -196,7 +196,7 @@ class Plugin extends Object implements JsonSerializable
     {
         $this->requirements = $value;
     }
-    
+
     /**
      * Creates an Plugin object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -271,7 +271,7 @@ class Plugin extends Object implements JsonSerializable
     {
         if ( $data === null )
             $data = array( );
-        
+
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
                 if ( $key == 'requirements' ){
@@ -339,7 +339,7 @@ class Plugin extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -351,7 +351,7 @@ class Plugin extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){

@@ -7,7 +7,7 @@
  * @result -
  */
 ?>
- 
+
 DELETE FROM ExerciseFileType 
 WHERE
     EFT_id = '<?php echo $eftid; ?>'

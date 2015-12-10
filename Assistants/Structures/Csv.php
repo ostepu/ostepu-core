@@ -42,7 +42,7 @@ class Csv extends Object implements JsonSerializable
                                    'rows' => $rows
                                    ) );
     }
-    
+
     /**
      * the constructor
      *
@@ -52,7 +52,7 @@ class Csv extends Object implements JsonSerializable
     {
         if ( $data === null )
             $data = array( );
-        
+
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
                 $func = 'set' . strtoupper($key[0]).substr($key,1);
@@ -109,7 +109,7 @@ class Csv extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -121,7 +121,7 @@ class Csv extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){

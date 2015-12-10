@@ -7,7 +7,7 @@
  * @result -
  */
 ?>
- 
+
 DELETE FROM Submission 
 WHERE
     S_id = '<?php echo $suid; ?>'

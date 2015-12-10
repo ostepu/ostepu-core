@@ -7,7 +7,7 @@
  * @result -
  */
 ?>
- 
+
 DELETE FROM `Transaction<?php echo $name; ?>_<?php echo Transaction::getCourseFromTransactionId($tid); ?>`
 WHERE
     T_id = '<?php echo Transaction::getIdFromTransactionId($tid); ?>'

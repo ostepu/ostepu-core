@@ -7,7 +7,7 @@
  * @result -
  */
 ?>
- 
+
 DELETE FROM ExternalId 
 WHERE
     EX_id = '<?php echo $exid; ?>'

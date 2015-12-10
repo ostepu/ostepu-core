@@ -126,7 +126,7 @@ class Backup extends Object implements JsonSerializable
                      'B_id' => 'id',
                      'B_date' => 'date',
                      'F_id_file' => 'file',
-        
+
                      );
     }
 
@@ -149,7 +149,7 @@ class Backup extends Object implements JsonSerializable
     {
         if ( $data === null )
             $data = array( );
-        
+
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
                 $func = 'set' . strtoupper($key[0]).substr($key,1);
@@ -206,7 +206,7 @@ class Backup extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -218,14 +218,14 @@ class Backup extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new Backup( $value );
             }
             return $result;
-            
+
         } else 
             return new Backup( $data );
     }

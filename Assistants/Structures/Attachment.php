@@ -40,7 +40,7 @@ class Attachment extends Object implements JsonSerializable
     {
         $this->id = $value;
     }
-    
+
     public static function getCourseFromAttachmentId($id)
     {
         $arr = explode('_',$id);
@@ -50,7 +50,7 @@ class Attachment extends Object implements JsonSerializable
         else
         return '';
     }
-    
+
     public static function getIdFromAttachmentId($id)
     {
         $arr = explode('_',$id);
@@ -60,19 +60,19 @@ class Attachment extends Object implements JsonSerializable
         else
         return $id;
     }
-    
+
     public function getObjectCourseFromAttachmentId()
     {
         return Attachment::getCourseFromAttachmentId($this->id);
     }
-    
+
     public function getObjectIdFromAttachmentId()
     {
         return Attachment::getIdFromAttachmentId($this->id);
     }
 
     /**
-     
+
      * @var string $exerciseId The id of the exercise this attachment belongs to.
      */
     private $exerciseId = null;
@@ -121,7 +121,7 @@ class Attachment extends Object implements JsonSerializable
     {
         $this->file = $value;
     }
-    
+
     private $processId = null;
     public function getProcessId( )
     {
@@ -241,18 +241,18 @@ class Attachment extends Object implements JsonSerializable
     {
         if ( $data === null )
             $data = array( );
-        
+
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
                 if ( $key == 'file' ){
                     $this->{
                         $key
-                        
+
                     } = File::decodeFile( 
                                          $value,
                                          false
                                          );
-                    
+
                 } else {
                     $func = 'set' . strtoupper($key[0]).substr($key,1);
                     $methodVariable = array($this, $func);
@@ -309,7 +309,7 @@ class Attachment extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -321,14 +321,14 @@ class Attachment extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new Attachment( $value );
             }
             return $result;
-            
+
         } else 
             return new Attachment( $data );
     }

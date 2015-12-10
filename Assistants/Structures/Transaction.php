@@ -4,7 +4,7 @@
 /**
  * @file Transaction.php contains the Transaction class
  */
- 
+
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
@@ -40,7 +40,7 @@ class Transaction extends Object implements JsonSerializable
     {
         $this->transactionId = $value;
     }
-    
+
         public static function getRandomFromTransactionId($id)
     {
         $arr = explode('_',$id);
@@ -50,7 +50,7 @@ class Transaction extends Object implements JsonSerializable
         else
         return '';
     }
-    
+
     public static function getCourseFromTransactionId($id)
     {
         $arr = explode('_',$id);
@@ -60,7 +60,7 @@ class Transaction extends Object implements JsonSerializable
         else
         return '';
     }
-    
+
     public static function getIdFromTransactionId($id)
     {
         $arr = explode('_',$id);
@@ -70,24 +70,24 @@ class Transaction extends Object implements JsonSerializable
         else
         return $id;
     }
-    
+
     public function getObjectRandomFromTransactionId()
     {
         return Transaction::getRandomFromTransactionId($this->id);
     }
-    
+
     public function getObjectCourseFromTransactionId()
     {
         return Transaction::getCourseFromTransactionId($this->id);
     }
-    
+
     public function getObjectIdFromTransactionId()
     {
         return Transaction::getIdFromTransactionId($this->id);
     }
 
     /**
-     
+
      * @var string $durability .
      */
     private $durability = null;
@@ -136,7 +136,7 @@ class Transaction extends Object implements JsonSerializable
     {
         $this->authentication = $value;
     }
-    
+
     private $content = null;
     public function getContent( )
     {
@@ -220,7 +220,7 @@ class Transaction extends Object implements JsonSerializable
                                  'T_content',
                                  DBJson::mysql_real_escape_string( $this->content )
                                  );
-                                 
+
         if ( $values != '' ){
             $values = substr( 
                              $values,
@@ -249,7 +249,7 @@ class Transaction extends Object implements JsonSerializable
     {
         if ( $data === null )
             $data = array( );
-        
+
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
                 $func = 'set' . strtoupper($key[0]).substr($key,1);
@@ -306,7 +306,7 @@ class Transaction extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -318,14 +318,14 @@ class Transaction extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new Transaction( $value );
             }
             return $result;
-            
+
         } else 
             return new Transaction( $data );
     }

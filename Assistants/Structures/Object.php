@@ -34,7 +34,7 @@ abstract class Object
     {
         $this->sender = $_value;
     }
-    
+
     private $status = null;
     public function getStatus( )
     {
@@ -44,7 +44,7 @@ abstract class Object
     {
         $this->status = $_value;
     }
-    
+
     private $messages = array();
     public function getMessages( )
     {
@@ -59,14 +59,14 @@ abstract class Object
         if (is_string($_value))
             $this->messages[] = $_value;
     }
-    
+
     public function addMessages($_values = array())
     {
         foreach($_values as $val){
             $this->addMessage($val);
         }
     }
-    
+
     private $structure = null;
     public function getStructure( )
     {
@@ -76,7 +76,7 @@ abstract class Object
     {
         $this->structure = $_value;
     }
-    
+
     private $language = null;
     public function getLanguage( )
     {
@@ -125,7 +125,7 @@ abstract class Object
             $c='\'' . $c . '\'';
         $a .= ',' . $b . '='.$c.' ';
     }
-    
+
     protected function isStructure($element, $structureName)
     {
     	if (gettype($element) === 'object' && get_class($element) === $structureName){
@@ -133,7 +133,7 @@ abstract class Object
     	}
     	return false;
     }
-    
+
     protected function isString($element)
     {
     	return is_string($element);

@@ -165,7 +165,7 @@ class Component extends Object implements JsonSerializable
     {
         $this->links = $value;
     }
-    
+
     private $status = null;
     public function getStatus( )
     {
@@ -175,7 +175,7 @@ class Component extends Object implements JsonSerializable
     {
         $this->status = $value;
     }
-    
+
     private $classFile = null;
     public function getClassFile( )
     {
@@ -185,7 +185,7 @@ class Component extends Object implements JsonSerializable
     {
         $this->classFile = $value;
     }
-    
+
     private $className = null;
     public function getClassName( )
     {
@@ -195,7 +195,7 @@ class Component extends Object implements JsonSerializable
     {
         $this->className = $value;
     }
-    
+
     private $localPath = null;
     public function getLocalPath( )
     {
@@ -205,7 +205,7 @@ class Component extends Object implements JsonSerializable
     {
         $this->localPath = $value;
     }
-    
+
     private $def = null;
     public function getDef( )
     {
@@ -215,7 +215,7 @@ class Component extends Object implements JsonSerializable
     {
         $this->def = $value;
     }
-    
+
     /**
      * Creates an Component object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -338,12 +338,12 @@ class Component extends Object implements JsonSerializable
                 if ( $key == 'links' ){
                     $this->{
                         $key
-                        
+
                     } = Link::decodeLink( 
                                          $value,
                                          false
                                          );
-                    
+
                 } else {
                     $func = 'set' . strtoupper($key[0]).substr($key,1);
                     $methodVariable = array($this, $func);
@@ -400,7 +400,7 @@ class Component extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -412,14 +412,14 @@ class Component extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new Component( $value );
             }
             return $result;
-            
+
         } else 
             return new Component( $data );
     }

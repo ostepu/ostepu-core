@@ -9,7 +9,7 @@
  * - F, the attachment file
  */
 ?>
- 
+
 select 
     concat('<?php echo $courseid; ?>','_',A.A_id) as A_id,
     concat('<?php echo $courseid; ?>','_',A.PRO_id) as PRO_id,

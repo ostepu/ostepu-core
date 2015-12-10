@@ -7,7 +7,7 @@
  * @result -
  */
 ?>
- 
+
 update User 
 set 
     U_flag = 0

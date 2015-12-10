@@ -211,7 +211,7 @@ class Session extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -223,14 +223,14 @@ class Session extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new Session( $value );
             }
             return $result;
-            
+
         } else 
             return new Session( $data );
     }
@@ -266,7 +266,7 @@ class Session extends Object implements JsonSerializable
                                                     );
         if ($isResult){ 
             $res = Session::decodeSession($res,false);
-            
+
             if ( $singleResult == true ){
 
                 // only one object as result

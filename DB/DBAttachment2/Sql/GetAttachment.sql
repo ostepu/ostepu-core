@@ -9,7 +9,7 @@
  * - F, the attachment file
  */
 ?>
- 
+
 select 
     concat('<?php echo Attachment::getCourseFromAttachmentId($aid); ?>','_',A.A_id) as A_id,
     concat('<?php echo Attachment::getCourseFromAttachmentId($aid); ?>','_',A.PRO_id) as PRO_id,
@@ -28,5 +28,5 @@ from
     File F ON F.F_id = A.F_id
 where
     A.A_id = '<?php echo Attachment::getIdFromAttachmentId($aid); ?>'
-    
+
     

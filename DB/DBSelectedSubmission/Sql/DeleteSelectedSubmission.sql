@@ -8,7 +8,7 @@
  * @result -
  */
 ?>
- 
+
 DELETE FROM SelectedSubmission 
 WHERE
     U_id_leader = '<?php echo $userid; ?>' and E_id = '<?php echo $eid; ?>'

@@ -8,7 +8,7 @@
  * @result -
  */
 ?>
- 
+
 UPDATE Exercise
 SET <?php echo $values; ?>
 WHERE E_id = '<?php echo $eid; ?>'

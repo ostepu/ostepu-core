@@ -90,7 +90,7 @@ class SelectedSubmission extends Object implements JsonSerializable
     {
         $this->exerciseId = $value;
     }
-    
+
     
     /**
      * @var string $exerciseSheetId a string that identifies the exercisesheet this submission belongs to.
@@ -116,7 +116,7 @@ class SelectedSubmission extends Object implements JsonSerializable
     {
         $this->exerciseSheetId = $value;
     }
-    
+
     /**
      * Creates an SelectedSubmission object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -182,7 +182,7 @@ class SelectedSubmission extends Object implements JsonSerializable
                                  'E_id',
                                  DBJson::mysql_real_escape_string( $this->exerciseId )
                                  );
-                                 
+
         if ( $values != '' ){
             $values = substr( 
                              $values,
@@ -214,7 +214,7 @@ class SelectedSubmission extends Object implements JsonSerializable
     {
         if ( $data === null )
             $data = array( );
-        
+
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
                 $func = 'set' . strtoupper($key[0]).substr($key,1);
@@ -271,7 +271,7 @@ class SelectedSubmission extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -283,14 +283,14 @@ class SelectedSubmission extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new SelectedSubmission( $value );
             }
             return $result;
-            
+
         } else 
             return new SelectedSubmission( $data );
     }
@@ -330,7 +330,7 @@ class SelectedSubmission extends Object implements JsonSerializable
                                                     );
         if ($isResult){ 
             $res = SelectedSubmission::decodeSelectedSubmission($res,false);
-            
+
             if ( $singleResult == true ){
 
                 // only one object as result

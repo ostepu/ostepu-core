@@ -7,7 +7,7 @@
  * @result -
  */
 ?>
- 
+
 DELETE FROM `Session` 
 WHERE
     U_id = '<?php echo $userid; ?>'

@@ -7,7 +7,7 @@
  * @result -
  */
 ?>
- 
+
 DELETE FROM Course 
 WHERE
     C_id = '<?php echo $courseid; ?>'

@@ -186,7 +186,7 @@ class File extends Object implements JsonSerializable
     	} elseif ($decode){
     		return base64_decode($this->body);
     	}
-    	
+
         return $this->body;
     }
 
@@ -228,7 +228,7 @@ class File extends Object implements JsonSerializable
     {
         $this->comment = $value;
     }
-    
+
     
     /**
      * @var string $mimeType a file mime type
@@ -254,7 +254,7 @@ class File extends Object implements JsonSerializable
     {
         $this->mimeType = $value;
     }
-    
+
     /**
      * Creates an File object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -370,7 +370,7 @@ class File extends Object implements JsonSerializable
                                  'F_mimeType',
                                  DBJson::mysql_real_escape_string( $this->mimeType )
                                  );
-                                 
+
         if ( $values != '' ){
             $values = substr( 
                              $values,
@@ -409,7 +409,7 @@ class File extends Object implements JsonSerializable
 			                                       $value,
 			                                       false
 			                                       );
-                    
+
                 } else {
 	                $func = 'set' . strtoupper($key[0]).substr($key,1);
 	                $methodVariable = array($this, $func);
@@ -466,7 +466,7 @@ class File extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -478,14 +478,14 @@ class File extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new File( $value );
             }
             return $result;
-            
+
         } else 
             return new File( $data );
     }

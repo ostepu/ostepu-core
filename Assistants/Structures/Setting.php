@@ -40,7 +40,7 @@ class Setting extends Object implements JsonSerializable
     {
         $this->name = $value;
     }
-    
+
     /**
      * @var string $type db type of the Setting
      */
@@ -65,7 +65,7 @@ class Setting extends Object implements JsonSerializable
     {
         $this->type = $value;
     }
-    
+
     /**
      * @var string $id db id of the Setting
      */
@@ -90,7 +90,7 @@ class Setting extends Object implements JsonSerializable
     {
         $this->id = $value;
     }
-    
+
     public static function getCourseFromSettingId($Id)
     {
         $arr = explode('_',$Id);
@@ -100,7 +100,7 @@ class Setting extends Object implements JsonSerializable
         else
         return '';
     }
-    
+
     public static function getIdFromSettingId($Id)
     {
         $arr = explode('_',$Id);
@@ -110,19 +110,19 @@ class Setting extends Object implements JsonSerializable
         else
         return $Id;
     }
-    
+
     public function getObjectCourseFromSettingId()
     {
         return Setting::getCourseFromSettingId($this->id);
     }
-    
+
     public function getObjectIdFromSettingId()
     {
         return Setting::getIdFromSettingId($this->id);
     }
 
     /**
-     
+
      * @var string $state The id of the exercise this Setting belongs to.
      */
     private $state = null;
@@ -136,7 +136,7 @@ class Setting extends Object implements JsonSerializable
     {
         return $this->state;
     }
-    
+
     /**
      * the $state setter
      *
@@ -146,7 +146,7 @@ class Setting extends Object implements JsonSerializable
     {
         $this->state = $value;
     }
-    
+
     /**
      * Creates an Setting object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -194,7 +194,7 @@ class Setting extends Object implements JsonSerializable
     public function getInsertData( $doubleEscaped=false )
     {
         $values = '';
-        
+
         if ( $this->id !== null )
             $this->addInsertData( 
                                  $values,
@@ -305,7 +305,7 @@ class Setting extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -317,14 +317,14 @@ class Setting extends Object implements JsonSerializable
                $isArray = false; 
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new Setting( $value );
             }
             return $result;
-            
+
         } else 
             return new Setting( $data );
     }

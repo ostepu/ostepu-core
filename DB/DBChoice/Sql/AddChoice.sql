@@ -6,7 +6,7 @@
  * @result -
  */
 ?>
- 
+
 SET @course = '<?php echo Form::getCourseFromFormId($object->getFormId()); ?>';
 SET @statement = 
 concat(
