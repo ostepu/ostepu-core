@@ -25,7 +25,7 @@ $getValidation = Validation::open($_GET, array('preRules'=>array('sanitize')))
                          'text'=>Language::Get('main','errorDownloadConditionPdfValidation', $langTemplate)]])
   ->addSet('sortby',
            ['set_default'=>'userName',
-            'satisfy_in_list'=>['firstName','userName','studentNumber','isApproved','type'],
+            'satisfy_in_list'=>['firstName','lastName','userName','studentNumber','isApproved','type'],
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','errorSortbyValidation', $langTemplate)]])                                
   ->addSet('sortId',
