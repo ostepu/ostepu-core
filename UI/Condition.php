@@ -86,18 +86,15 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
             foreach ($foundValues['approvalCondition'] as $approvalConditionId => $percentage) {
                 // changes the percentage for each exercise type
 
-                if ($percentage >= 0 && $percentage <= 100) {
-                    $percentage = $percentage / 100;
+                $percentage /= 100;
+                $newApprovalCondition = ApprovalCondition::createApprovalCondition($approvalConditionId, $cid, null, $percentage);
+                $newApprovalConditionSettings = ApprovalCondition::encodeApprovalCondition($newApprovalCondition);
+                $URI = $databaseURI . '/approvalcondition/approvalcondition/' . $approvalConditionId;
+                http_put_data($URI, $newApprovalConditionSettings, true, $message);
 
-                    $newApprovalCondition = ApprovalCondition::createApprovalCondition($approvalConditionId, $cid, null, $percentage);
-                    $newApprovalConditionSettings = ApprovalCondition::encodeApprovalCondition($newApprovalCondition);
-                    $URI = $databaseURI . '/approvalcondition/approvalcondition/' . $approvalConditionId;
-                    http_put_data($URI, $newApprovalConditionSettings, true, $message);
-
-                    if ($message !== 201) {
-                        $notifications[] = MakeNotification('error', Language::Get('main','errorSetCondition', $langTemplate));
-                        $RequestError = true;
-                    }
+                if ($message !== 201) {
+                    $notifications[] = MakeNotification('error', Language::Get('main','errorSetCondition', $langTemplate));
+                    $RequestError = true;
                 }
             }
         } else {
