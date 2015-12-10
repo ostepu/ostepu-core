@@ -117,6 +117,19 @@ class Validation_Structure implements Validation_Interface
         return Validation_Condition::validate_satisfy_regex($key, $input, $setting, '%^([a-zA-Z]+)$%');
     }
     
+    public static function validate_valid_alpha_space($key, $input, $setting = null, $param = null)
+    {
+        if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
+            return;
+        }
+        
+        if (!is_string($input[$key])){
+            return false;
+        }
+        
+        return Validation_Condition::validate_satisfy_regex($key, $input, $setting, '%^([a-zA-Z\h]+)$%');
+    }
+    
     public static function validate_valid_integer($key, $input, $setting = null, $param = null)
     {
         if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
@@ -144,6 +157,19 @@ class Validation_Structure implements Validation_Interface
         }
         
         return Validation_Condition::validate_satisfy_regex($key, $input, $setting, '%^([0-9a-zA-Z]+)$%');
+    }
+    
+    public static function validate_valid_alpha_space_numeric($key, $input, $setting = null, $param = null)
+    {
+        if ($setting['setError'] || !isset($input[$key]) || empty($input[$key])) {
+            return;
+        }
+        
+        if (!is_string($input[$key])){
+            return false;
+        }
+        
+        return Validation_Condition::validate_satisfy_regex($key, $input, $setting, '%^([0-9a-zA-Z\h]+)$%');
     }
     
     public static function validate_valid_json($key, $input, $setting = null, $param = null)
