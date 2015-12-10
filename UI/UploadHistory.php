@@ -16,14 +16,16 @@ Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $globalUserDat
 /// gehört SID zur CID ??? ///
 $langTemplate='UploadHistory_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
-$postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+$postValidation = Validation::open($_POST, array('preRules'=>array()))
   ->addSet('action',
-            ['set_default'=>'noAction',
+            ['sanitize',
+             'set_default'=>'noAction',
              'satisfy_in_list'=>['noAction', 'ShowUploadHistory'],
              'on_error'=>['type'=>'error',
                           'text'=>Language::Get('main','invalidAction', $langTemplate)]])
   ->addSet('sheetID',
-           ['valid_identifier',
+           ['sanitize',
+            'valid_identifier',
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','invalidSheetID', $langTemplate)]])
   ->addSet('updateSelectedSubmission',
@@ -31,12 +33,14 @@ $postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','invalidUpdateSelectedSubmission', $langTemplate)]])
   ->addSet('sortUsers',
-           ['satisfy_in_list'=>['lastName','firstName','userName'],
+           ['sanitize',
+            'satisfy_in_list'=>['lastName','firstName','userName'],
             'set_default'=>'lastName',
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','errorSortUsers', $langTemplate)]])
   ->addSet('actionSortUsers',
-           ['set_default'=>'noAction',
+           ['sanitize',
+            'set_default'=>'noAction',
             'satisfy_in_list'=>['noAction', 'sort'],
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','errorActionSortUsers', $langTemplate)]]);
@@ -244,7 +248,7 @@ $h->bind(array('name' => $user_course_data['courses'][0]['course']['name'],
                'navigationElement' => $menu,
                'userNavigationElement' => $userNavigation));
 
-if ($postResults['actionSortUsers'] === 'noAction' && $postResults['action'] !== 'noAction') {
+if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction' && $postResults['action'] !== 'noAction') {
     if ($postResults['action'] === 'ShowUploadHistory') {
         $postShowUploadHistoryValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
           ->addSet('userID',
