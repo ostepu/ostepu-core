@@ -4,11 +4,11 @@ Wenn Sie eine externe Verbindung entfernen, ist dennoch der direkte Zugang zur P
 
 #### 1. externen Identifizierer auswählen
 
-![](editExternalIdA.png)
+![](editExternalIdB.png)
 
 #### 2. Vorgang auslösen
 
-![](editExternalIdB.png)
+![](editExternalIdA.png)
 
 Wenn Sie den grünen Hinweis sehen, wurde die Verbindung erfolgreich entfernt.
 
