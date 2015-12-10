@@ -260,7 +260,6 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
         $postCourseSettingsValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
           ->addSet('courseName',
                    ['satisfy_exists',
-                    'valid_alpha_numeric',
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidCourseName', $langTemplate)]])
           ->addSet('semester',
@@ -289,23 +288,23 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
                    ['is_array',
                     'set_default'=>array(),
                     'perform_this_array'=>[[['key_all'],
-                                       ['is_array',
-                                        'satisfy_not_empty',
-                                        'perform_this_array'=>[['type',
-                                                           ['satisfy_exists',
-                                                            'satisfy_not_empty',
-                                                            'to_upper',
-                                                            'satisfy_in_list'=>array('INT','BOOL','STRING','DATE'),
-                                                            'on_error'=>['type'=>'error',
-                                                                         'text'=>Language::Get('main','invalidType', $langTemplate)]],
-                                                          ['value',
-                                                           ['satisfy_exists',
-                                                            '',
-                                                            'on_error'=>['type'=>'error',
-                                                                         'text'=>Language::Get('main','faultyTransmission', $langTemplate)]]]]]]]],
+                                            ['is_array',
+                                             'satisfy_not_empty',
+                                             'perform_this_array'=>[['type',
+                                                                     ['satisfy_exists',
+                                                                      'satisfy_not_empty',
+                                                                      'to_upper',
+                                                                      'satisfy_in_list'=>array('INT','BOOL','STRING','DATE'),
+                                                                      'on_error'=>['type'=>'error',
+                                                                                   'text'=>Language::Get('main','invalidType', $langTemplate)]]],
+                                                                    ['value',
+                                                                     ['satisfy_exists',
+                                                                      '',
+                                                                      'on_error'=>['type'=>'error',
+                                                                                   'text'=>Language::Get('main','faultyTransmission', $langTemplate)]]]]]]],
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidSettings', $langTemplate)]]);
-                                           
+
         $foundValues = $postCourseSettingsValidation->validate();
         $courseSettingsNotifications = array_merge($courseSettingsNotifications,$postCourseSettingsValidation->getPrintableNotifications('MakeNotification'));
         $postCourseSettingsValidation->resetNotifications()->resetErrors();
@@ -318,7 +317,7 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
             #region settings
             
             $RequestError = false;
-            
+  
             if (empty($foundValues['setting']) === false){
                 foreach ($foundValues['setting'] as $key => $params){
                         
