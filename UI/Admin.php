@@ -22,7 +22,7 @@ $sheetNotifications = array();
 
 unset($_SESSION['selectedUser']);
 
-$postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')));
+$postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
   ->addSet('action',
            ['set_default'=>'noAction',
             'satisfy_in_list'=>['noAction', 'ExerciseSheetLecturer'],
@@ -33,7 +33,7 @@ $notifications = array_merge($notifications,$postValidation->getPrintableNotific
 $postValidation->resetNotifications()->resetErrors();
 
 if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
-    $postDeleteSheetValidation = Validation::open($_POST, array('preRules'=>array('sanitize'))); 
+    $postDeleteSheetValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
       ->addSet('deleteSheetWarning',
                ['set_default'=>null,
                 'valid_identifier',

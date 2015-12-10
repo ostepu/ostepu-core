@@ -16,8 +16,8 @@ Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $globalUserDat
 
 $langTemplate='Group_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
-$postValidation = new Validation($_POST, array('preRules'=>array('sanitize')))
-$postValidation->addSet('action',
+$postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+  ->addSet('action',
            ['set_default'=>'noAction',
             'satisfy_in_list'=>['noAction', 'RemoveGroupMember', 'ManageGroup', 'InviteGroup', 'ManageInvitations'],
             'on_error'=>['type'=>'error',
@@ -440,7 +440,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
 
     if ($postResults['action'] === 'ManageInvitations') {
         $postManageInvitationsValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
-        $postManageInvitationsValidation->addSet('denyInvitation',
+          ->addSet('denyInvitation',
                    ['valid_identifier',
                     'set_default'=>null,
                     'on_error'=>['type'=>'error',

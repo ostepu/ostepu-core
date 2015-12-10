@@ -143,7 +143,7 @@ class Validation_Structure implements Validation_Interface
             return false;
         }
         
-        return Validation_Condition::validate_satisfy_regex($key, $input, $setting, '%^([0-9sa-zA-Z]+)$%');
+        return Validation_Condition::validate_satisfy_regex($key, $input, $setting, '%^([0-9a-zA-Z]+)$%');
     }
     
     public static function validate_valid_json($key, $input, $setting = null, $param = null)

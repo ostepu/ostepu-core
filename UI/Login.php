@@ -28,15 +28,13 @@ $postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
                  'on_error'=>array('type'=>'error',
                                    'text'=>Language::Get('main','invalidAction', $langTemplate))));
                                    
-
-$getValidation = Validation::open($_GET, array('preRules'=>array('sanitize')));
+$getValidation = Validation::open($_GET, array('preRules'=>array('sanitize')))
   ->addSet('back',
            array('valid_url_query',
                  'set_default'=>null,
                  'on_error'=>array('type'=>'error',
                                    'text'=>Language::Get('main',Language::Get('main','invalidBackURL', $langTemplate), $langTemplate))));
 
-                                   
 $postResults = $postValidation->validate();    
 $getResults = $getValidation->validate();
 $notifications = array_merge($notifications, $postValidation->getPrintableNotifications('MakeNotification'));

@@ -243,8 +243,7 @@ class Validation {
         $this->custom_Validation_Classes = array();
         $this->custom_Selection = array();
         $this->custom_Selection_Classes = array();
-    
-    private $settings = array('preRules' => array(),'postRules' => array(),'abortSetOnError'=>false,'abortValidationOnError'=>false);
+        $this->settings = array('preRules' => array(),'postRules' => array(),'abortSetOnError'=>false,'abortValidationOnError'=>false);
         
     }
     
