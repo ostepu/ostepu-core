@@ -22,7 +22,7 @@ function download(event)
         if (data.address===undefined){
             fail(trig);
         } else {
-            if (data.size===undefined){
+            if (data.fileSize===undefined){
                 trig.css('color','#DE3838');
                 trig.text('Kein Inhalt...');
                 setTimeout(function() {
