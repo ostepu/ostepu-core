@@ -90,7 +90,7 @@ class Validation_Converter implements Validation_Interface
     
     public static function validate_to_integer($key, $input, $setting = null, $param = null)
     {
-        if ($setting['setError'] || !isset($input[$key]) || ){
+        if ($setting['setError'] || !isset($input[$key])){
             return;
         }
         
