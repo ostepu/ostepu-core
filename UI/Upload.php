@@ -94,6 +94,7 @@ if ($postValidation->isValid() && $postResults['action'] === 'submit') {
         $sheet = http_get($URL, true);
         $sheet = json_decode($sheet, true);
 
+        // die Veranstaltung muss zum Aufgabenblatt gehören
         if (!isset($sheet['courseId']) || ($sheet['courseId']!=$cid)) {
             set_error(Language::Get('main','errorInvalidSheetId', $langTemplate),500);
         }
@@ -118,6 +119,7 @@ if ($postValidation->isValid() && $postResults['action'] === 'submit') {
 
         $leaderId = $group['leader']['id'];
 
+        // stellt eine Liste mit Aufgabennummern zusammen, welche zu dieser Serie gehören
         $allowedExerciseIDs=array();
         if (isset($sheet['exercises'])){
             foreach($sheet['exercises'] as $ex){
@@ -132,9 +134,9 @@ if ($postValidation->isValid() && $postResults['action'] === 'submit') {
           ->addSet('exercises',
                     ['set_default'=>array(),
                      'perform_this_foreach'=>[['key',
-                                              ['valid_integer']],
-                                             ['elem',
-                                              []]], /// muss noch erweitert werden
+                                               ['valid_integer']],
+                                              ['elem',
+                                               []]], /// muss noch erweitert werden
                      'on_error'=>['type'=>'error',
                                   'text'=>Language::Get('main','invalidExercisesInput', $langTemplate)]]);
 

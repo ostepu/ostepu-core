@@ -78,6 +78,8 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
 
                 if ($message === 201) {
                     Authentication::logoutUser();
+                } else {
+                    $notifications[] = MakeNotification('error', Language::Get('main','errorChangePassword', $langTemplate));
                 }
             }
             else {
@@ -92,6 +94,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
           ->addSet('language',
                    array('satisfy_exact_len'=>2,
                          'satisfy_exists',
+                         'satisfy_in_list' => ['en','de'],
                          'on_error'=>array('type'=>'error',
                                            'text'=>Language::Get('main','invalidLanguage', $langTemplate))));
 
@@ -106,8 +109,10 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
 
             http_put_data($URI, $newUserSettings, true, $message);
 
-            if ($message == '201') {
+            if ($message === 201) {
                 $notifications[] = MakeNotification('success', Language::Get('main','languageChanged', $langTemplate));
+            } else {
+                $notifications[] = MakeNotification('error', Language::Get('main','errorChangeLanguage', $langTemplate));
             }
         } else {
             $notifications = array_merge($notifications, $postSetAccountInfoValidation->getPrintableNotifications('MakeNotification'));

@@ -81,16 +81,22 @@ if (isset($postResults['deleteSubmissionWarning'])) {
 
     // only deletes the submission if it belongs to the user
     if ($submission['studentId'] === $selectedUser) {
+        // setzt den Zeiger für die ausgewählte Einsendung zurück
         $URI = $databaseURI . '/selectedsubmission/submission/' . $suid;
         http_delete($URI, true, $message);
+        
+        if ($message === 201) {
+            // markiert die Einsendung als "gelöscht", sie wird hierbei nicht wirklich
+            // aus der Datenbank entfernt, sondern nur verborgen
+            $submissionUpdate = Submission::createSubmission($suid,null,null,null,null,null,null,0);
+            $URI = $databaseURI . '/submission/submission/' . $suid;
+            http_put_data($URI, Submission::encodeSubmission($submissionUpdate), true, $message);
 
-        // todo: treat the case if the previous operation failed
-        $submissionUpdate = Submission::createSubmission($suid,null,null,null,null,null,null,0);
-        $URI = $databaseURI . '/submission/submission/' . $suid;
-        http_put_data($URI, Submission::encodeSubmission($submissionUpdate), true, $message2);
-
-        if ($message === 201 && $message2 === 201) {
-            $notifications[] = MakeNotification('success', Language::Get('main','successDeleteSubmission', $langTemplate));
+            if ($message === 201) {
+                $notifications[] = MakeNotification('success', Language::Get('main','successDeleteSubmission', $langTemplate));
+            } else {
+                $notifications[] = MakeNotification('error', Language::Get('main','errorDeleteSubmission', $langTemplate));
+            }
         } else {
             $notifications[] = MakeNotification('error', Language::Get('main','errorDeleteSubmission', $langTemplate));
         }

@@ -9,6 +9,8 @@
         "accountSettings": "Account-Einstellungen",
         "course": "Veranstaltungen",
         "invalidAction": "Die Aktion konnte nicht ausgeführt werden.",
-        "invalidLanguage": "Die gewählte Sprache ist ungültig!"
+        "invalidLanguage": "Die gewählte Sprache ist ungültig!",
+        "errorChangePassword": "Das Passwort konnte nicht geändert werden!",
+        "errorChangeLanguage": "Die Sprache konnte nicht geändert werden!"
     }
 }
