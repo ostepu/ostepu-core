@@ -22,13 +22,22 @@ function download(event)
         if (data.address===undefined){
             fail(trig);
         } else {
-            window.location.replace("../FS/FSBinder/"+data.address+"/"+data.displayName);
-            trig.css('color','#2DB22D');
-            trig.text('Weiterleitung...');
-            setTimeout(function() {
-                trig.text(trig.attr('tex'));
-                trig.css('color',trig.attr('col'));
-            }, 2000);
+            if (data.size===undefined){
+                trig.css('color','#DE3838');
+                trig.text('Kein Inhalt...');
+                setTimeout(function() {
+                    trig.text(trig.attr('tex'));
+                    trig.css('color',trig.attr('col'));
+                }, 2000);
+            } else {
+                window.location.replace("../FS/FSBinder/"+data.address+"/"+data.displayName);
+                trig.css('color','#2DB22D');
+                trig.text('Weiterleitung...');
+                setTimeout(function() {
+                    trig.text(trig.attr('tex'));
+                    trig.css('color',trig.attr('col'));
+                }, 2000);
+            }
         }
     })
     .fail(function() {
