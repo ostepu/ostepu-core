@@ -1,5 +1,6 @@
 <?php
-$f->addSet('actionAssignAllProposals',
+$postAssignManuallyTypeValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+  ->addSet('actionAssignAllProposals',
        ['set_default'=>null,
         'on_error'=>['type'=>'error',
                      'text'=>Language::Get('main','???', $langTemplate)]])
@@ -7,13 +8,13 @@ $f->addSet('actionAssignAllProposals',
        ['set_default'=>null,
         'on_error'=>['type'=>'error',
                      'text'=>Language::Get('main','???', $langTemplate)]]);
-$valResults = $f->validate();
-$notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
-$f->resetNotifications()->resetErrors();
+$foundValues = $postAssignManuallyTypeValidation->validate();
+$notifications = array_merge($notifications,$postAssignManuallyTypeValidation->getPrintableNotifications('MakeNotification'));
+$postAssignManuallyTypeValidation->resetNotifications()->resetErrors();
     
 // automatically assigns all unassigned proposed submissions to tutors
 set_time_limit(180);
-if (isset($valResults['actionAssignAllProposals'])){
+if (isset($foundValues['actionAssignAllProposals'])){
     // load user data from the database
     $URL = $getSiteURI . "/tutorassign/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
     $tutorAssign_data = http_get($URL, true);
@@ -48,8 +49,9 @@ if (isset($valResults['actionAssignAllProposals'])){
 
 // assigns manually chosen submissions to the selected tutor
 set_time_limit(180);
-if (isset($valResults['actionAssignManually'])){
-    $f->addSet('tutorId',
+if (isset($foundValues['actionAssignManually'])){
+    $postAssignManuallyValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+      ->addSet('tutorId',
                ['satisfy_exists',
                 'satisfy_not_empty',
                 'valid_identifier',
@@ -84,14 +86,14 @@ if (isset($valResults['actionAssignManually'])){
                 'on_error'=>['type'=>'warning',
                              'text'=>Language::Get('main','???', $langTemplate)]]);
                              
-    $valResults = $f->validate();
-    $assignManuallyNotifications = array_merge($assignManuallyNotifications,$f->getPrintableNotifications('MakeNotification'));
-    $f->resetNotifications()->resetErrors();
+    $foundData = $postAssignManuallyValidation->validate();
+    $assignManuallyNotifications = array_merge($assignManuallyNotifications,$postAssignManuallyValidation->getPrintableNotifications('MakeNotification'));
+    $postAssignManuallyValidation->resetNotifications()->resetErrors();
 
-    if ($f->isValid()) {
+    if ($postAssignManuallyValidation->isValid()) {
         // extracts the php POST data
-        $selectedTutorID = $foundValues['tutorId'];
-        $assigns=$foundValues['assign'];
+        $selectedTutorID = $foundData['tutorId'];
+        $assigns=$foundData['assign'];
         $markings = array();
         foreach($assigns as $owner => $ass){
             $markingList = isset($ass['marking']) ? $ass['marking'] : array();

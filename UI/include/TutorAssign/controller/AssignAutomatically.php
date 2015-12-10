@@ -2,7 +2,8 @@
 
 // automatically assigns all unassigned submissions to the selected tutors
 set_time_limit(180);
-$f->addSet('tutorIds',
+$postAssignAutomaticallyValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+  ->addSet('tutorIds',
            ['satisfy_exists',
             'satisfy_not_empty',
             'is_array',
@@ -13,13 +14,13 @@ $f->addSet('tutorIds',
                                     ['valid_identifier']]],
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','invalidTutors', $langTemplate)]]);
-$valResults = $f->validate();
-$notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
-$f->resetNotifications()->resetErrors();
+$foundValues = $postAssignAutomaticallyValidation->validate();
+$notifications = array_merge($notifications,$postAssignAutomaticallyValidation->getPrintableNotifications('MakeNotification'));
+$postAssignAutomaticallyValidation->resetNotifications()->resetErrors();
 
-if ($f->isValid()) {
+if ($postAssignAutomaticallyValidation->isValid()) {
 // extracts the php POST data
-$selectedTutorIDs = $valResults['tutorIds'];
+$selectedTutorIDs = $foundValues['tutorIds'];
 
 $data = array('tutors' => array(),
               'unassigned' => array(),

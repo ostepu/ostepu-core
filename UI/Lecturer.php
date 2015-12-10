@@ -22,19 +22,19 @@ $sheetNotifications = array();
 
 unset($_SESSION['selectedUser']);
 
-$f = new Validation($_POST, array('preRules'=>array('sanitize')));
-
-$f->addSet('action',
+$postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+  ->addSet('action',
            ['set_default'=>'noAction',
             'satisfy_in_list'=>['noAction', 'ExerciseSheetLecturer'],
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','invalidAction', $langTemplate)]]);
-$valResults = $f->validate();
-$notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
-$f->resetNotifications()->resetErrors();
+$postResults = $postValidation->validate();
+$notifications = array_merge($notifications,$postValidation->getPrintableNotifications('MakeNotification'));
+$postValidation->resetNotifications()->resetErrors();
 
-if ($f->isValid() && $valResults['action'] !== 'noAction') {  
-    $f->addSet('deleteSheetWarning',
+if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
+    $postDeleteSheetValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+      ->addSet('deleteSheetWarning',
                ['set_default'=>null,
                 'valid_identifier',
                 'satisfy_not_equals_field'=>'deleteSheet',
@@ -46,21 +46,21 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                 'satisfy_not_equals_field'=>'deleteSheetWarning',
                 'on_error'=>['type'=>'error',
                              'text'=>Language::Get('main','errorDeleteSheetValidation', $langTemplate)]]);
-    $valResults = $f->validate();
-    $notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
-    $f->resetNotifications()->resetErrors();
+    $foundValues = $postDeleteSheetValidation->validate();
+    $notifications = array_merge($notifications,$postDeleteSheetValidation->getPrintableNotifications('MakeNotification'));
+    $postDeleteSheetValidation->resetNotifications()->resetErrors();
    
-    if ($f->isValid() && $valResults['action'] === 'ExerciseSheetLecturer' && isset($valResults['deleteSheetWarning'])) {
-        $sheetNotifications[$valResults['deleteSheetWarning']][] = MakeNotification('warning', Language::Get('main','askDeleteSheet', $langTemplate));
-    } elseif ($f->isValid() && $valResults['action'] == 'ExerciseSheetLecturer' && isset($valResults['deleteSheet'])) { /// !!! darf er das ??? ///
+    if ($postDeleteSheetValidation->isValid() && $postResults['action'] === 'ExerciseSheetLecturer' && isset($foundValues['deleteSheetWarning'])) {
+        $sheetNotifications[$foundValues['deleteSheetWarning']][] = MakeNotification('warning', Language::Get('main','askDeleteSheet', $langTemplate));
+    } elseif ($postDeleteSheetValidation->isValid() && $postResults['action'] == 'ExerciseSheetLecturer' && isset($foundValues['deleteSheet'])) { /// !!! darf er das ??? ///
        
-        $URL = $logicURI . "/exercisesheet/exercisesheet/{$valResults['deleteSheet']}"; /// !!! darf er das ??? ///
+        $URL = $logicURI . "/exercisesheet/exercisesheet/{$foundValues['deleteSheet']}"; /// !!! darf er das ??? ///
         $result = http_delete($URL, true, $message);
         
         if ($message === 201){
-            $sheetNotifications[$valResults['deleteSheet']][] = MakeNotification('success', Language::Get('main','successDeleteSheet', $langTemplate));
+            $sheetNotifications[$foundValues['deleteSheet']][] = MakeNotification('success', Language::Get('main','successDeleteSheet', $langTemplate));
         } else {
-            $sheetNotifications[$valResults['deleteSheet']][] = MakeNotification('error', Language::Get('main','errorDeleteSheet', $langTemplate));
+            $sheetNotifications[$foundValues['deleteSheet']][] = MakeNotification('error', Language::Get('main','errorDeleteSheet', $langTemplate));
         }
     }
 }

@@ -19,38 +19,36 @@ Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $globalUserData)
 
 $langTemplate='TutorUpload_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
-$f = new Validation($_POST, array('preRules'=>array('sanitize')));
-
-$f->addSet('action',
+$postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+  ->addSet('action',
            ['set_default'=>'noAction',
             'satisfy_in_list'=>['noAction', 'TutorUpload'],
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','invalidAction', $langTemplate)]]);
-$valResults = $f->validate();
-$notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
-$f->resetNotifications()->resetErrors();
+$postResults = $postValidation->validate();
+$notifications = array_merge($notifications,$postValidation->getPrintableNotifications('MakeNotification'));
+$postValidation->resetNotifications()->resetErrors();
 
-if ($f->isValid() && $valResults['action'] !== 'noAction') {
-    if ($valResults['action'] === 'TutorUpload') {
-        $f2 = new Validation($_FILES, array('preRules'=>array()));
-
-        $f2->addSet('MarkingFile',
-                    ['satisfy_file_isset',
-                     'satisfy_file_exists',
-                     'on_error'=>['type'=>'error',
-                                  'text'=>Language::Get('main','missingMarkingFile', $langTemplate)]])
-           ->addSet('MarkingFile',
-                    ['satisfy_file_extension'=>'zip',
-                     'satisfy_file_mime'=>'application/zip',
-                     'on_error'=>['type'=>'error',
-                                  'text'=>Language::Get('main','invalidFileType', $langTemplate)]]);
+if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
+    if ($postResults['action'] === 'TutorUpload') {
+        $filesTutorUploadValidation = Validation::open($_FILES, array('preRules'=>array()))
+          ->addSet('MarkingFile',
+                   ['satisfy_file_isset',
+                    'satisfy_file_exists',
+                    'on_error'=>['type'=>'error',
+                                 'text'=>Language::Get('main','missingMarkingFile', $langTemplate)]])
+          ->addSet('MarkingFile',
+                   ['satisfy_file_extension'=>'zip',
+                    'satisfy_file_mime'=>'application/zip',
+                    'on_error'=>['type'=>'error',
+                                 'text'=>Language::Get('main','invalidFileType', $langTemplate)]]);
                                   
-        $valResults2 = $f2->validate();
-        $notifications = array_merge($notifications,$f2->getPrintableNotifications('MakeNotification'));
-        $f2->resetNotifications()->resetErrors();
+        $foundValues = $filesTutorUploadValidation->validate();
+        $notifications = array_merge($notifications,$filesTutorUploadValidation->getPrintableNotifications('MakeNotification'));
+        $filesTutorUploadValidation->resetNotifications()->resetErrors();
 
-        if ($f2->isValid()){
-            $file = $valResults2['MarkingFile'];
+        if ($filesTutorUploadValidation->isValid()){
+            $file = $foundValues['MarkingFile'];
             $error = $file['error'];
 
             $filePath = $file['tmp_name'];

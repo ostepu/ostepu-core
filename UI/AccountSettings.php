@@ -14,21 +14,22 @@ include_once dirname(__FILE__) . '/../Assistants/Validation/Validation.php';
 
 $langTemplate='AccountSettings_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
-$f = new Validation($_POST, array('preRules'=>array('sanitize')));
-$f->addSet('action',
+$postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+  ->addSet('action',
            array('set_default'=>'noAction',
                  'satisfy_in_list'=>array('noAction', 'SetPassword', 'SetAccountInfo'),
                  'on_error'=>array('type'=>'error',
                                    'text'=>Language::Get('main','invalidAction', $langTemplate))));
 
-$valResults = $f->validate();
-$notifications = array_merge($notifications, $f->getPrintableNotifications('MakeNotification'));
-$f->resetNotifications()->resetErrors();
+$postResults = $postValidation->validate();
+$notifications = array_merge($notifications, $postValidation->getPrintableNotifications('MakeNotification'));
+$postValidation->resetNotifications()->resetErrors();
 
-if ($f->isValid() && $valResults['action'] !== 'noAction') {
+if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
     // changes the user's password
-    if ($valResults['action'] === 'SetPassword') {
-        $f->addSet('oldPassword',
+    if ($postResults['action'] === 'SetPassword') {
+        $postSetPasswordValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+          ->addSet('oldPassword',
                    array('satisfy_min_len'=>1,
                          'on_error'=>array('type'=>'warning',
                                            'text'=>Language::Get('main','invalidOldPassword', $langTemplate))))
@@ -47,9 +48,9 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                          'on_error'=>array('type'=>'error',
                                            'text'=>Language::Get('main','differentPasswords', $langTemplate))));
 
-        if($f->isValid()) {
+        if($postSetPasswordValidation->isValid()) {
 
-            $foundValues = $f->getResult();
+            $foundValues = $postSetPasswordValidation->getResult();
 
             $oldPassword = $foundValues['oldPassword'];
             $newPassword = $foundValues['newPassword'];
@@ -83,19 +84,20 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                 $notifications[] = MakeNotification('error', Language::Get('main','incorrectOldPassword', $langTemplate));
             }
         } else {
-            $notifications = array_merge($notifications, $f->getPrintableNotifications('MakeNotification'));
-            $f->resetNotifications()->resetErrors();
+            $notifications = array_merge($notifications, $postSetPasswordValidation->getPrintableNotifications('MakeNotification'));
+            $postSetPasswordValidation->resetNotifications()->resetErrors();
         }
-    } else if ($valResults['action'] === 'SetAccountInfo') {    
-        $f->addSet('language',
+    } else if ($postResults['action'] === 'SetAccountInfo') {    
+        $postSetAccountInfoValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+          ->addSet('language',
                    array('satisfy_exact_len'=>2,
                          'satisfy_exists',
                          'on_error'=>array('type'=>'error',
                                            'text'=>'???')));
                                           
-        if($f->isValid()) {
+        if($postSetAccountInfoValidation->isValid()) {
 
-            $foundValues = $f->getResult();
+            $foundValues = $postSetAccountInfoValidation->getResult();
             $language = $foundValues['language'];
 
             $newUserSettings = User::encodeUser(User::createUser($uid, null, null, null, null, null, null, 
@@ -108,8 +110,8 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                 $notifications[] = MakeNotification('success', Language::Get('main','languageChanged', $langTemplate));
             }
         } else {
-            $notifications = array_merge($notifications, $f->getPrintableNotifications('MakeNotification'));
-            $f->resetNotifications()->resetErrors();
+            $notifications = array_merge($notifications, $postSetAccountInfoValidation->getPrintableNotifications('MakeNotification'));
+            $postSetAccountInfoValidation->resetNotifications()->resetErrors();
         }
     }
 }

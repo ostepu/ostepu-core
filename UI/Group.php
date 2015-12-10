@@ -16,16 +16,15 @@ Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $globalUserDat
 
 $langTemplate='Group_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
-$f = new Validation($_POST, array('preRules'=>array('sanitize')));
-
-$f->addSet('action',
+$postValidation = new Validation($_POST, array('preRules'=>array('sanitize')))
+$postValidation->addSet('action',
            ['set_default'=>'noAction',
             'satisfy_in_list'=>['noAction', 'RemoveGroupMember', 'ManageGroup', 'InviteGroup', 'ManageInvitations'],
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','invalidAction', $langTemplate)]]);
-$valResults = $f->validate();
-$notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
-$f->resetNotifications()->resetErrors();
+$postResults = $postValidation->validate();
+$notifications = array_merge($notifications,$postValidation->getPrintableNotifications('MakeNotification'));
+$postValidation->resetNotifications()->resetErrors();
 
 $selectedUser = $uid;
 $privileged = 0;
@@ -116,10 +115,11 @@ function removeSelectedSubmission($uid, $sid)
     }
 }
 
-if ($f->isValid() && $valResults['action'] !== 'noAction') {
+if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
     // removes a group member
-    if ($valResults['action'] === 'RemoveGroupMember') {
-        $f->addSet('removeMember',
+    if ($postResults['action'] === 'RemoveGroupMember') {
+        $postRemoveGroupMemberValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+          ->addSet('removeMember',
                    ['valid_identifier',
                     'set_default'=>null,
                     'on_error'=>['type'=>'error',
@@ -135,18 +135,18 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidUserId', $langTemplate)]]);
                                            
-        $valResults = $f->validate();
-        $notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
-        $f->resetNotifications()->resetErrors();
+        $foundValues = $postRemoveGroupMemberValidation->validate();
+        $notifications = array_merge($notifications,$postRemoveGroupMemberValidation->getPrintableNotifications('MakeNotification'));
+        $postRemoveGroupMemberValidation->resetNotifications()->resetErrors();
 
-        if ($f->isValid()){
-            if (isset($valResults['removeMember'])){
+        if ($postRemoveGroupMemberValidation->isValid()){
+            if (isset($foundValues['removeMember'])){
                 // bool which is true if any error occured
                 $RequestError = false;
 
                 // removes the user from the group
-                if (removeUserFromGroup($valResults['removeMember'], $sid)) {
-                    if (!removeSelectedSubmission($valResults_POST['removeMember'], $sid)) {
+                if (removeUserFromGroup($foundValues['removeMember'], $sid)) {
+                    if (!removeSelectedSubmission($foundValues['removeMember'], $sid)) {
                         $RequestError = true;
                     }
                 } else {
@@ -158,11 +158,11 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                 } else {
                     $notifications[] = MakeNotification('success', Language::Get('main','successRemoveMember', $langTemplate));
                 }
-            } elseif (isset($valResults['removeInvitation'])){
+            } elseif (isset($foundValues['removeInvitation'])){
                 // removes an invitation from the group
                 
                 // deletes the invitation
-                $URI = $databaseURI . "/invitation/user/{$selectedUser}/exercisesheet/{$sid}/user/{$valResults['removeInvitation']}";
+                $URI = $databaseURI . "/invitation/user/{$selectedUser}/exercisesheet/{$sid}/user/{$foundValues['removeInvitation']}";
                 http_delete($URI, true, $message);
 
                 if ($message === 201) {
@@ -170,16 +170,16 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                 } else {
                     $notifications[] = MakeNotification('error', Language::Get('main','errorRemoveInvitation', $langTemplate));
                 }
-            } elseif (isset($valResults['leaveGroup'])){
+            } elseif (isset($foundValues['leaveGroup'])){
                 // removes all group members and deletes the group
                 
                 // checks if the user that wants to leave is the leader of the group
-                if ($valResults['leaveGroup'] == $selectedUser) {
+                if ($foundValues['leaveGroup'] == $selectedUser) {
                     // bool which is true if any error occured
                     $RequestError = false;
 
                     // returns all invitations from the groups
-                    $URI = $databaseURI . "/invitation/leader/exercisesheet/{$sid}/user/{$valResults['leaveGroup']}";
+                    $URI = $databaseURI . "/invitation/leader/exercisesheet/{$sid}/user/{$foundValues['leaveGroup']}";
                     $invitations = http_get($URI, true);
                     $invitations = json_decode($invitations, true);
 
@@ -191,7 +191,7 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                     // removes all invitations of the group
                     if (!empty($invitations)) {
                         foreach ($invitations as $invitation) {
-                            $URI = $databaseURI . "/invitation/user/{$valResults['leaveGroup']}/";
+                            $URI = $databaseURI . "/invitation/user/{$foundValues['leaveGroup']}/";
                             $URI .= "exercisesheet/{$sid}/user/{$invitation['member']['id']}";
 
                             http_delete($URI, true, $message);
@@ -258,8 +258,9 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
     }
 
     // updates the selectedSubmissions for the group
-    if ($valResults['action'] === 'ManageGroup') {
-        $f->addSet('exercises',
+    if ($postResults['action'] === 'ManageGroup') {
+        $postManageGroupValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+          ->addSet('exercises',
                    ['default'=>array(),
                     'perform_this_foreach'=>[['key',
                                          ['valid_identifier']],
@@ -268,17 +269,17 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidSelection', $langTemplate)]]);
                                            
-        $valResults = $f->validate();
-        $notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
-        $f->resetNotifications()->resetErrors();
+        $foundValues = $postManageGroupValidation->validate();
+        $notifications = array_merge($notifications,$postManageGroupValidation->getPrintableNotifications('MakeNotification'));
+        $postManageGroupValidation->resetNotifications()->resetErrors();
 
-        if ($f->isValid()){
+        if ($postManageGroupValidation->isValid()){
             // bool which is true if any error occured
             $RequestError = false;
             
             // extracts the exerciseIDs and the submissionIDs and updates
             // the selectedSubmissions
-            foreach ($valResults['exercises'] as $key => $value) {
+            foreach ($foundValues['exercises'] as $key => $value) {
                 $exerciseID = $key; // !!! darf er diese IDs nutzen ??? ///
                 $submissionID = $value; // !!! darf er diese IDs nutzen ??? ///
 
@@ -304,24 +305,26 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
         }
     }
 
-    if ($valResults['action'] === 'InviteGroup') {
-        $f->addSet('applyGroup',
+    if ($postResults['action'] === 'InviteGroup') {
+        $postInviteGroupValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+          ->addSet('applyGroup',
                    ['default'=>false,
                     'to_boolean',
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidApplyGroup', $langTemplate)]]);
                                            
-        $valResults = $f->validate();
-        $notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
-        $f->resetNotifications()->resetErrors();
+        $invitationType = $postInviteGroupValidation->validate();
+        $notifications = array_merge($notifications,$postInviteGroupValidation->getPrintableNotifications('MakeNotification'));
+        $postInviteGroupValidation->resetNotifications()->resetErrors();
 
-        if ($f->isValid()){
+        if ($postInviteGroupValidation->isValid()){
             $RequestError = false;
             
-            if ($valResults['applyGroup'] === true){
+            if ($invitationType['applyGroup'] === true){
                 // apply last group
                 
-                $f->addSet('members',
+                $postApplyGroupValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+                  ->addSet('members',
                    ['satisfy_exists',
                     'satisfy_not_empty',
                     'is_array',
@@ -330,13 +333,13 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidMemberIds', $langTemplate)]]);
                                  
-                $valResults = $f->validate();
-                $notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
-                $f->resetNotifications()->resetErrors();
+                $foundValues = $postApplyGroupValidation->validate();
+                $notifications = array_merge($notifications,$postApplyGroupValidation->getPrintableNotifications('MakeNotification'));
+                $postApplyGroupValidation->resetNotifications()->resetErrors();
                                  
-                if ($f->isValid()) {
+                if ($postApplyGroupValidation->isValid()) {
                     // invite old members
-                    foreach ($valResults['members'] as $member){ /// !!! dürfen diese Mitglieder eingeladen werden ??? ///
+                    foreach ($foundValues['members'] as $member){ /// !!! dürfen diese Mitglieder eingeladen werden ??? ///
                         $newInvitation = Invitation::encodeInvitation(Invitation::createInvitation($selectedUser, $member, $sid));
                         $URI = $databaseURI . '/invitation';
                         http_post_data($URI, $newInvitation, true, $message);
@@ -348,7 +351,7 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                     if (!$RequestError){
                         $notifications[] = MakeNotification('success', Language::Get('main','successInviteMembers', $langTemplate));
                         // accept invitations
-                        foreach ($valResults['members'] as $member){
+                        foreach ($foundValues['members'] as $member){
                             
                             // adds the user to the group
                             $newGroupSettings = Group::encodeGroup(Group::createGroup($selectedUser, $member, $sid));
@@ -391,7 +394,8 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
             } else {
                 // invites users to the group
 
-                $f->addSet('userName',
+                $postInviteUsersValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+                  ->addSet('userName',
                    ['satisfy_exists',
                     'satisfy_not_empty',
                     'is_array',
@@ -401,12 +405,12 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidUserNames', $langTemplate)]]);
                                  
-                $valResults = $f->validate();
-                $notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
-                $f->resetNotifications()->resetErrors();
+                $foundValues = $postInviteUsersValidation->validate();
+                $notifications = array_merge($notifications,$postInviteUsersValidation->getPrintableNotifications('MakeNotification'));
+                $postInviteUsersValidation->resetNotifications()->resetErrors();
                 
-                if ($f->isValid()) {
-                    foreach ($valResults['userName'] as $key => $memberName) {
+                if ($postInviteUsersValidation->isValid()) {
+                    foreach ($foundValues['userName'] as $key => $memberName) {
                         // extracts the userID
                         $URI = $databaseURI . "/user/user/{$memberName}";
                         $user_data = http_get($URI, true);
@@ -434,8 +438,9 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
         }
     }
 
-    if ($valResults['action'] === 'ManageInvitations') {
-        $f->addSet('denyInvitation',
+    if ($postResults['action'] === 'ManageInvitations') {
+        $postManageInvitationsValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+        $postManageInvitationsValidation->addSet('denyInvitation',
                    ['valid_identifier',
                     'set_default'=>null,
                     'on_error'=>['type'=>'error',
@@ -446,17 +451,17 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidUserId', $langTemplate)]]);
                                  
-        $valResults = $f->validate();
-        $notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
-        $f->resetNotifications()->resetErrors();
+        $foundValues = $postManageInvitationsValidation->validate();
+        $notifications = array_merge($notifications,$postManageInvitationsValidation->getPrintableNotifications('MakeNotification'));
+        $postManageInvitationsValidation->resetNotifications()->resetErrors();
 
-        if ($f->isValid()){
+        if ($postManageInvitationsValidation->isValid()){
             
-            if (isset($valResults['denyInvitation'])){
+            if (isset($foundValues['denyInvitation'])){
                 // removes an invitation to a group
     
                 // deletes the invitation
-                $URI = $databaseURI . "/invitation/user/{$valResults['denyInvitation']}/exercisesheet/{$sid}/user/{$selectedUser}";
+                $URI = $databaseURI . "/invitation/user/{$foundValues['denyInvitation']}/exercisesheet/{$sid}/user/{$selectedUser}";
                 http_delete($URI, true, $message);
 
                 if ($message === 201) {
@@ -464,7 +469,7 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                 } else {
                     $notifications[] = MakeNotification('error', Language::Get('main','errorRejectInvitation', $langTemplate));
                 }
-            } elseif (isset($valResults['acceptInvitation'])){
+            } elseif (isset($foundValues['acceptInvitation'])){
                 // accepts an invitation to a group
                 
                 // bool which is true if any error occured
@@ -472,7 +477,7 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
 
                 // adds the user to the group
                 if ($RequestError === false){
-                    $newGroupSettings = Group::encodeGroup(Group::createGroup($valResults['acceptInvitation'], $selectedUser, $sid));
+                    $newGroupSettings = Group::encodeGroup(Group::createGroup($foundValues['acceptInvitation'], $selectedUser, $sid));
                     $URI = $databaseURI . "/group/user/{$selectedUser}/exercisesheet/{$sid}";
                     http_put_data($URI, $newGroupSettings, true, $message);
 
@@ -483,7 +488,7 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
 
                 // deletes the invitation
                 if ($RequestError === false){
-                    $URI = $databaseURI . "/invitation/user/{$valResults['acceptInvitation']}/exercisesheet/{$sid}/user/{$selectedUser}";
+                    $URI = $databaseURI . "/invitation/user/{$foundValues['acceptInvitation']}/exercisesheet/{$sid}/user/{$selectedUser}";
                     http_delete($URI, true, $message);
 
                     if ($message !== 201) {

@@ -9,17 +9,17 @@ include_once 'include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Language.php';
 include_once dirname(__FILE__) . '/../Assistants/Validation/Validation.php';
 
-$f = new Validation($_GET, array('preRules'=>array('sanitize')));
-$f->addSet('msg',
+$getValidation = Validation::open($_GET, array('preRules'=>array('sanitize')))
+  ->addSet('msg',
            array('set_default'=>null,
                  'on_error'=>array('type'=>'error',
                                    'text'=>Language::Get('main','invalidMessageType', $langTemplate))));
-$valResults = $f->validate();
-$notifications = array_merge($notifications, $f->getPrintableNotifications('MakeNotification'));
-$f->resetNotifications()->resetErrors();
+$postResults = $getValidation->validate();
+$notifications = array_merge($notifications, $getValidation->getPrintableNotifications('MakeNotification'));
+$getValidation->resetNotifications()->resetErrors();
                
-if ($f->isValid() && isset($valResults['msg'])) {
-  $msg = $valResults['msg'];
+if ($getValidation->isValid() && isset($postResults['msg'])) {
+  $msg = $postResults['msg'];
 }
 
 if (isset($msg) && $msg == '403') {

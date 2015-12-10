@@ -21,33 +21,33 @@ $langTemplate='Login_Controller';Language::loadLanguageFile('de', $langTemplate,
 $auth = new Authentication();
 Authentication::preventSessionFix();
 
-$f = new Validation($_POST, array('preRules'=>array('sanitize')));
-
-$f->addSet('action',
+$postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+  ->addSet('action',
            array('set_default'=>'noAction',
                  'satisfy_in_list'=>array('noAction', 'login'),
                  'on_error'=>array('type'=>'error',
                                    'text'=>Language::Get('main','invalidAction', $langTemplate))));
                                    
 
-$f2 = new Validation($_GET, array('preRules'=>array('sanitize')));
-$f2->addSet('back',
-            array('valid_url_query',
-                  'set_default'=>null,
-                  'on_error'=>array('type'=>'error',
-                                    'text'=>Language::Get('main',Language::Get('main','invalidBackURL', $langTemplate), $langTemplate))));
+$getValidation = Validation::open($_GET, array('preRules'=>array('sanitize')));
+  ->addSet('back',
+           array('valid_url_query',
+                 'set_default'=>null,
+                 'on_error'=>array('type'=>'error',
+                                   'text'=>Language::Get('main',Language::Get('main','invalidBackURL', $langTemplate), $langTemplate))));
 
                                    
-$valResults = $f->validate();    
-$valResults2 = $f2->validate();
-$notifications = array_merge($notifications, $f->getPrintableNotifications('MakeNotification'));
-$notifications = array_merge($notifications, $f2->getPrintableNotifications('MakeNotification'));
-$f->resetNotifications()->resetErrors();
-$f2->resetNotifications()->resetErrors();
+$postResults = $postValidation->validate();    
+$getResults = $getValidation->validate();
+$notifications = array_merge($notifications, $postValidation->getPrintableNotifications('MakeNotification'));
+$notifications = array_merge($notifications, $getValidation->getPrintableNotifications('MakeNotification'));
+$postValidation->resetNotifications()->resetErrors();
+$getValidation->resetNotifications()->resetErrors();
 
-if ($f->isValid() && $f2->isValid() && $valResults['action'] !== 'noAction') {
-    if ($valResults['action'] === 'login') {
-        $f->addSet('username',
+if ($postValidation->isValid() && $getValidation->isValid() && $postResults['action'] !== 'noAction') {
+    if ($postResults['action'] === 'login') {
+        $postLoginValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+          ->addSet('username',
                    array('satisfy_exists',
                          'valid_userName',
                          'to_lower',
@@ -58,23 +58,23 @@ if ($f->isValid() && $f2->isValid() && $valResults['action'] !== 'noAction') {
                          'on_error'=>array('type'=>'error',
                                            'text'=>Language::Get('main','invalidPassword', $langTemplate))));
 
-        $valResults = $f->validate();
-        $notifications = array_merge($notifications, $f->getPrintableNotifications('MakeNotification'));
-        $f->resetNotifications()->resetErrors();
+        $foundValues = $postLoginValidation->validate();
+        $notifications = array_merge($notifications, $postLoginValidation->getPrintableNotifications('MakeNotification'));
+        $postLoginValidation->resetNotifications()->resetErrors();
 
-        if ($f->isValid()){
+        if ($postLoginValidation->isValid()){
             // if a hidden Post named back and the php file exists set backurl
-            if (isset($valResults2['back']) && file_exists(parse_url($valResults2['back'], PHP_URL_PATH))) {
+            if (isset($getResults['back']) && file_exists(parse_url($getResults['back'], PHP_URL_PATH))) {
                 /// --- ///
             } else {
-                $valResults2['back'] = 'index.php';
+                $getResults['back'] = 'index.php';
             }
 
             // log in user and return result
-            $signed = $auth->loginUser($valResults['username'], $valResults['password']);
+            $signed = $auth->loginUser($foundValues['username'], $foundValues['password']);
 
             if ($signed===true) {
-                header('Location: ' . $valResults2['back']);
+                header('Location: ' . $getResults['back']);
                 exit();
             } else {
                 if ($signed!==false){
@@ -103,8 +103,8 @@ $h->bind(array('backTitle' => Language::Get('main','changeCourse', $langTemplate
 // construct a login element
 $userLogin = Template::WithTemplateFile('include/Login/Login.template.html');
 // if back Parameter is given bind it to the userLogin to create hidden input
-if ($f2->isValid() && isset($valResults2['back']) && file_exists(parse_url($valResults2['back'], PHP_URL_PATH))) {
-    $backdata = array('backURL' => $valResults2['back']);
+if ($getValidation->isValid() && isset($getResults['back']) && file_exists(parse_url($getResults['back'], PHP_URL_PATH))) {
+    $backdata = array('backURL' => $getResults['back']);
 } else {
     $backdata = array();
 }

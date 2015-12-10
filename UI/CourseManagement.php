@@ -46,8 +46,8 @@ foreach ($plugins_data['plugins'] as &$plugin){
     }  
 }
 
-$f = new Validation($_POST, array('preRules'=>array('sanitize')));
-$f->addSet('action',
+$postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+  ->addSet('action',
            ['set_default'=>'noAction',
             'satisfy_in_list'=>['noAction', 'EditExternalId', 'AddExternalId', 'Plugins', 'CourseSettings', 'AddExerciseType', 'EditExerciseType', 'GrantRights', 'RevokeRights', 'AddUser'],
             'on_error'=>['type'=>'error',
@@ -63,15 +63,16 @@ $f->addSet('action',
             'on_error'=>['type'=>'error',
                          'text'=>'???1']]);
                                    
-$valResults = $f->validate();
-$notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
-$f->resetNotifications()->resetErrors();
+$postResults = $postValidation->validate();
+$notifications = array_merge($notifications,$postValidation->getPrintableNotifications('MakeNotification'));
+$postValidation->resetNotifications()->resetErrors();
 
-if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== 'noAction' ) {
-    if ($valResults['action'] === 'EditExternalId') {
+if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction' && $postResults['action'] !== 'noAction' ) {
+    if ($postResults['action'] === 'EditExternalId') {
         $editExternalIdNotifications = array();
 
-        $f->addSet('externalId',
+        $postEditExternalIdValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+          ->addSet('externalId',
                    ['satisfy_exists',
                     'is_array',
                     'satisfy_not_empty',
@@ -83,14 +84,14 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidExternalId', $langTemplate)]]);
 
-        $valResults = $f->validate();
-        $editExternalIdNotifications = array_merge($editExternalIdNotifications,$f->getPrintableNotifications('MakeNotification'));
-        $f->resetNotifications()->resetErrors();
+        $foundValues = $postEditExternalIdValidation->validate();
+        $editExternalIdNotifications = array_merge($editExternalIdNotifications,$postEditExternalIdValidation->getPrintableNotifications('MakeNotification'));
+        $postEditExternalIdValidation->resetNotifications()->resetErrors();
         
-        if ($f->isValid()){
+        if ($postEditExternalIdValidation->isValid()){
             
             $RequestError = false;
-            foreach ($valResults['externalId'] as $key => $ext){ /// !!! gehört diese ID zur cid ??? ///
+            foreach ($foundValues['externalId'] as $key => $ext){ /// !!! gehört diese ID zur cid ??? ///
         
                 // delete externalId
                 $URI = $serverURI . "/DB/DBExternalId/externalid/externalid/{$ext}";
@@ -110,10 +111,11 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
  
     }
     
-    if ($valResults['action'] === 'AddExternalId') {
+    if ($postResults['action'] === 'AddExternalId') {
         $addExternalIdNotifications = array();
         
-        $f->addSet('externalId',
+        $postAddExternalIdValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+          ->addSet('externalId',
                    ['satisfy_exists',
                     'satisfy_not_empty',
                     'valid_alpha_numeric',
@@ -136,18 +138,18 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidExternalTypeName', $langTemplate)]]);
                                            
-        $valResults = $f->validate();
-        $addExternalIdNotifications = array_merge($addExternalIdNotifications,$f->getPrintableNotifications('MakeNotification'));
-        $f->resetNotifications()->resetErrors();
+        $foundValues = $postAddExternalIdValidation->validate();
+        $addExternalIdNotifications = array_merge($addExternalIdNotifications,$postAddExternalIdValidation->getPrintableNotifications('MakeNotification'));
+        $postAddExternalIdValidation->resetNotifications()->resetErrors();
         
-        if ($f->isValid()){            
-            if ($valResults['externalType'] === 1){
-                $valResults['externalTypeName'] = 'S';
+        if ($postAddExternalIdValidation->isValid()){            
+            if ($foundValues['externalType'] === 1){
+                $foundValues['externalTypeName'] = 'S';
             }
         
             // add externalId
             $URI = $serverURI . '/DB/DBExternalId/externalid';
-            $ext = ExternalId::createExternalId($valResults['externalTypeName'].'_'.$valResults['externalId'],$cid);
+            $ext = ExternalId::createExternalId($foundValues['externalTypeName'].'_'.$foundValues['externalId'],$cid);
             http_post_data($URI, ExternalId::encodeExternalId($ext), true, $messageNewAc);
             if ($messageNewAc !== 201) {
                 $addExternalIdNotifications[] = MakeNotification('error', Language::Get('main','errorCreateAlias', $langTemplate));
@@ -158,10 +160,11 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
         }
     }
     
-    if ($valResults['action'] === 'Plugins') {
+    if ($postResults['action'] === 'Plugins') {
         $pluginsNotifications = array();
         
-        $f->addSet('plugins',
+        $postPluginsValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+          ->addSet('plugins',
                    ['set_default'=>array(),
                     'is_array',
                     'perform_this_array'=>[['key_all'],
@@ -169,15 +172,15 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidExtensionId', $langTemplate)]]);
                                            
-        $valResults = $f->validate();
-        $pluginsNotifications = array_merge($pluginsNotifications,$f->getPrintableNotifications('MakeNotification'));
-        $f->resetNotifications()->resetErrors();
+        $foundValues = $postPluginsValidation->validate();
+        $pluginsNotifications = array_merge($pluginsNotifications,$postPluginsValidation->getPrintableNotifications('MakeNotification'));
+        $postPluginsValidation->resetNotifications()->resetErrors();
         
-        if ($f->isValid()){
+        if ($postPluginsValidation->isValid()){
         
             // bool which is true if any error occured
             $RequestError=false;
-            $plugins = $valResults['plugins'];
+            $plugins = $foundValues['plugins'];
 
             // which need to be deleted
             if (!empty($plugins)) {
@@ -251,10 +254,11 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
         }
     }
     
-    if ($valResults['action'] === 'CourseSettings') {
+    if ($postResults['action'] === 'CourseSettings') {
         $courseSettingsNotifications = array();
         
-        $f->addSet('courseName',
+        $postCourseSettingsValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+          ->addSet('courseName',
                    ['satisfy_exists',
                     'valid_alpha_numeric',
                     'on_error'=>['type'=>'error',
@@ -302,11 +306,11 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                     'on_error'=>['type'=>'error',
                                  'text'=>'???1']]);
                                            
-        $valResults = $f->validate();
-        $courseSettingsNotifications = array_merge($courseSettingsNotifications,$f->getPrintableNotifications('MakeNotification'));
-        $f->resetNotifications()->resetErrors();
+        $foundValues = $postCourseSettingsValidation->validate();
+        $courseSettingsNotifications = array_merge($courseSettingsNotifications,$postCourseSettingsValidation->getPrintableNotifications('MakeNotification'));
+        $postCourseSettingsValidation->resetNotifications()->resetErrors();
         
-        if($f->isValid()) {
+        if($postCourseSettingsValidation->isValid()) {
             
             ######################
             ### begin settings ###
@@ -315,8 +319,8 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
             
             $RequestError = false;
             
-            if (empty($valResults['setting']) === false){
-                foreach ($valResults['setting'] as $key => $params){
+            if (empty($foundValues['setting']) === false){
+                foreach ($foundValues['setting'] as $key => $params){
                         
                     $value = $params['value'];
                     $type = $params['type'];
@@ -375,7 +379,7 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
             // bool which is true if any error occured
             $RequestError = false;
 
-            $selectedExerciseTypes = $valResults['exerciseTypes'];
+            $selectedExerciseTypes = $foundValues['exerciseTypes'];
 
             // loads ApprovalConditions from database
             $URI = $databaseURI . "/approvalcondition/course/{$cid}";
@@ -446,7 +450,7 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
 
             if ($RequestError === false){
                 // create new course and edit existing one
-                $newCourseSettings = Course::encodeCourse(Course::createCourse($cid,$valResults['courseName'],$valResults['semester'],$valResults['defaultGroupSize']));
+                $newCourseSettings = Course::encodeCourse(Course::createCourse($cid,$foundValues['courseName'],$foundValues['semester'],$foundValues['defaultGroupSize']));
                 $URI = $databaseURI . "/course/course/{$cid}";
                 $courseManagement_data = http_put_data($URI, $newCourseSettings, true, $message);
 
@@ -468,24 +472,25 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
         }
     } 
     
-    if ($valResults['action'] === 'AddExerciseType') {
+    if ($postResults['action'] === 'AddExerciseType') {
         $addExerciseTypeNotifications = array();
         
-        $f->addSet('exerciseTypeName',
+        $postAddExerciseTypeValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+          ->addSet('exerciseTypeName',
                    ['satisfy_exists',
                     'satisfy_not_empty',
                     'valid_alpha_numeric',
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidExerciseTypeName', $langTemplate)]]);
                                            
-        $valResults = $f->validate();
-        $addExerciseTypeNotifications = array_merge($addExerciseTypeNotifications,$f->getPrintableNotifications('MakeNotification'));
-        $f->resetNotifications()->resetErrors();
+        $foundValues = $postAddExerciseTypeValidation->validate();
+        $addExerciseTypeNotifications = array_merge($addExerciseTypeNotifications,$postAddExerciseTypeValidation->getPrintableNotifications('MakeNotification'));
+        $postAddExerciseTypeValidation->resetNotifications()->resetErrors();
         
         // check if POST data is send
-        if($f->isValid()) {
+        if($postAddExerciseTypeValidation->isValid()) {
             // create new exerciseType
-            $data = ExerciseType::encodeExerciseType(ExerciseType::createExerciseType(null, $valResults['exerciseTypeName']));
+            $data = ExerciseType::encodeExerciseType(ExerciseType::createExerciseType(null, $foundValues['exerciseTypeName']));
 
             $url = $databaseURI . '/exercisetype';
             http_post_data($url, $data, true, $message);
@@ -499,10 +504,11 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
         }
     }
     
-    if ($valResults['action'] === 'EditExerciseType') {
+    if ($postResults['action'] === 'EditExerciseType') {
         $editExerciseTypeNotifications = array();
         
-        $f->addSet('exerciseTypeName',
+        $postEditExerciseTypeValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+          ->addSet('exerciseTypeName',
                    ['satisfy_exists',
                     'satisfy_not_empty',
                     'valid_alpha_numeric',
@@ -515,17 +521,17 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidExerciseType', $langTemplate)]]);
                                            
-        $valResults = $f->validate();
-        $editExerciseTypeNotifications = array_merge($editExerciseTypeNotifications,$f->getPrintableNotifications('MakeNotification'));
-        $f->resetNotifications()->resetErrors();
+        $foundValues = $postEditExerciseTypeValidation->validate();
+        $editExerciseTypeNotifications = array_merge($editExerciseTypeNotifications,$postEditExerciseTypeValidation->getPrintableNotifications('MakeNotification'));
+        $postEditExerciseTypeValidation->resetNotifications()->resetErrors();
         
         // check if POST data is send
-        if($f->Valid()) {
+        if($postEditExerciseTypeValidation->Valid()) {
 
             // create new exerciseType
-            $data = ExerciseType::encodeExerciseType(ExerciseType::createExerciseType($valResults['exerciseTypeID'], $valResults['exerciseTypeName']));
+            $data = ExerciseType::encodeExerciseType(ExerciseType::createExerciseType($foundValues['exerciseTypeID'], $foundValues['exerciseTypeName']));
 
-            $url = $databaseURI . '/exercisetype/' . $valResults['exerciseTypeID'];
+            $url = $databaseURI . '/exercisetype/' . $foundValues['exerciseTypeID'];
             http_put_data($url, $data, true, $message);
 
             // show notification
@@ -537,10 +543,11 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
         }
     } 
     
-    if ($valResults['action'] === 'GrantRights') {
+    if ($postResults['action'] === 'GrantRights') {
         $grantRightsNotifications = array();
         
-        $f->addSet('Rights',
+        $postGrantRightsValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+          ->addSet('Rights',
                    ['satisfy_exists',
                     'satisfy_not_empty',
                     'satisfy_min_numeric'=>0,
@@ -555,16 +562,16 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','noSelectedUser', $langTemplate)]]);
                                            
-        $valResults = $f->validate();
-        $grantRightsNotifications = array_merge($grantRightsNotifications,$f->getPrintableNotifications('MakeNotification'));
-        $f->resetNotifications()->resetErrors();
+        $foundValues = $postGrantRightsValidation->validate();
+        $grantRightsNotifications = array_merge($grantRightsNotifications,$postGrantRightsValidation->getPrintableNotifications('MakeNotification'));
+        $postGrantRightsValidation->resetNotifications()->resetErrors();
         
         // check if POST data is send
-        if($f->Valid()) {
+        if($postGrantRightsValidation->Valid()) {
             // create new coursestatus and edit existing one
-            $data = User::encodeUser(User::createCourseStatus($valResults['userID'], $cid, $valResults['Rights']));
+            $data = User::encodeUser(User::createCourseStatus($foundValues['userID'], $cid, $foundValues['Rights']));
 
-            $url = $databaseURI . '/coursestatus/course/'.$cid.'/user/'.$valResults['userID'];
+            $url = $databaseURI . '/coursestatus/course/'.$cid.'/user/'.$foundValues['userID'];
             http_put_data($url, $data, true, $message);
 
             // show notification
@@ -576,24 +583,25 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
         }
     } 
     
-    if ($valResults['action'] === 'RevokeRights') {
+    if ($postResults['action'] === 'RevokeRights') {
         $revokeRightsNotifications = array();
         
-        $f->addSet('userID',
+        $postRevokeRightsValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+          ->addSet('userID',
                    ['satisfy_exists',
                     'satisfy_not_empty',
                     'valid_identifier',
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','noSelectedUser', $langTemplate)]]);
                                            
-        $valResults = $f->validate();
-        $revokeRightsNotifications = array_merge($revokeRightsNotifications,$f->getPrintableNotifications('MakeNotification'));
-        $f->resetNotifications()->resetErrors();
+        $foundValues = $postRevokeRightsValidation->validate();
+        $revokeRightsNotifications = array_merge($revokeRightsNotifications,$postRevokeRightsValidation->getPrintableNotifications('MakeNotification'));
+        $postRevokeRightsValidation->resetNotifications()->resetErrors();
         
         // check if POST data is send
-        if($f->isValid()) {
+        if($postRevokeRightsValidation->isValid()) {
             // delete coursestatus
-            $url = $databaseURI . '/coursestatus/course/'.$cid.'/user/'.$valResults['userID'];
+            $url = $databaseURI . '/coursestatus/course/'.$cid.'/user/'.$foundValues['userID'];
             http_delete($url, true, $message);
 
             // show notification
@@ -605,10 +613,11 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
         }
     } 
     
-    if ($valResults['action'] === 'AddUser') {
+    if ($postResults['action'] === 'AddUser') {
         $addUserNotifications = array();
         
-        $f->addSet('rights',
+        $postAddUserValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+          ->addSet('rights',
                    ['satisfy_exists',
                     'satisfy_not_empty',
                     'satisfy_min_numeric'=>0,
@@ -623,19 +632,19 @@ if ($valResults['actionSortUsers'] === 'noAction' && $valResults['action'] !== '
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','noSelectedUser', $langTemplate)]]);
                                            
-        $valResults = $f->validate();
-        $addUserNotifications = array_merge($addUserNotifications,$f->getPrintableNotifications('MakeNotification'));
-        $f->resetNotifications()->resetErrors();
+        $foundValues = $postAddUserValidation->validate();
+        $addUserNotifications = array_merge($addUserNotifications,$postAddUserValidation->getPrintableNotifications('MakeNotification'));
+        $postAddUserValidation->resetNotifications()->resetErrors();
 
-        if ($f->Valid()) {
-            $URL = $databaseURI . '/user/user/' . $valResults['userName'];
+        if ($postAddUserValidation->Valid()) {
+            $URL = $databaseURI . '/user/user/' . $foundValues['userName'];
             $user = http_get($URL, true);
             $user = json_decode($user, true);
 
             if (isset($user['id'])){
                 $userId = $user['id'];
 
-                $newUser = User::createCourseStatus($userId, $cid, $valResults['rights']);
+                $newUser = User::createCourseStatus($userId, $cid, $foundValues['rights']);
                 $newUser = User::encodeUser($newUser);
 
                 $URL = $databaseURI . '/coursestatus';
@@ -661,8 +670,8 @@ $courseManagement_data = json_decode($courseManagement_data, true);
 
 $dataList = array();
 $sortUsersValue = 'lastName';
-if ($f->isValid()){
-    $sortUsersValue = $valResults['sortUsers'];
+if ($postValidation->isValid()){
+    $sortUsersValue = $postResults['sortUsers'];
 }
 
 foreach ($courseManagement_data['users'] as $key => $user)

@@ -27,21 +27,21 @@ $URI = $serverURI . "/logic/LExtension/link/extension";
 $temp = http_get($URI, true);
 $plugins_data = json_decode($temp, true);
 
-$f = new Validation($_POST, array('preRules'=>array('sanitize')));
-
-$f->addSet('action',
+$postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+  ->addSet('action',
            ['set_default'=>'noAction',
             'satisfy_in_list'=>['noAction', 'CreateCourse', 'SetAdmin', 'CreateUser', 'DeleteUser', ''],
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','invalidAction', $langTemplate)]]);
-$valResults = $f->validate();
-$notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
-$f->resetNotifications()->resetErrors();
+$postResults = $postValidation->validate();
+$notifications = array_merge($notifications,$postValidation->getPrintableNotifications('MakeNotification'));
+$postValidation->resetNotifications()->resetErrors();
 
-if ($f->isValid() && $valResults['action'] !== 'noAction') {
+if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
     // creates a new course
-    if ($valResults['action'] === 'CreateCourse') {
-        $f->addSet('courseName',
+    if ($postResults['action'] === 'CreateCourse') {
+        $postCreateCourseValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+          ->addSet('courseName',
                    ['satisfy_exists',
                     'valid_alpha_numeric',
                     'on_error'=>['type'=>'error',
@@ -76,20 +76,20 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidExtensionId', $langTemplate)]]);
 
-        $valResults = $f->validate();
-        $notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
-        $f->resetNotifications()->resetErrors();
+        $foundValues = $postCreateCourseValidation->validate();
+        $notifications = array_merge($notifications,$postCreateCourseValidation->getPrintableNotifications('MakeNotification'));
+        $postCreateCourseValidation->resetNotifications()->resetErrors();
         
-        if($f->isValid()) {
+        if($postCreateCourseValidation->isValid()) {
             // bool which is true if any error occured
             $RequestError = false;
 
             // extracts the php POST data
-            $courseName = $valResults['courseName'];
-            $semester = $valResults['semester'];
-            $defaultGroupSize = $valResults['defaultGroupSize'];
-            $plugins = $valResults['plugins'];
-            $exerciseTypes = $valResults['exerciseTypes'];
+            $courseName = $foundValues['courseName'];
+            $semester = $foundValues['semester'];
+            $defaultGroupSize = $foundValues['defaultGroupSize'];
+            $plugins = $foundValues['plugins'];
+            $exerciseTypes = $foundValues['exerciseTypes'];
 
             // creates a new course
             $newCourse = Course::createCourse(null, $courseName, $semester, $defaultGroupSize);
@@ -149,8 +149,9 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
         }
     }
 
-    if ($valResults['action'] === 'SetAdmin') {
-        $f->addSet('courseID',
+    if ($postResults['action'] === 'SetAdmin') {
+        $postSetAdminValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+          ->addSet('courseID',
                    ['satisfy_exists',
                     'satisfy_not_empty',
                     'valid_identifier',
@@ -163,14 +164,14 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidUserName', $langTemplate)]]);
 
-        $valResults = $f->validate();
-        $notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
-        $f->resetNotifications()->resetErrors();
+        $foundValues = $postSetAdminValidation->validate();
+        $notifications = array_merge($notifications,$postSetAdminValidation->getPrintableNotifications('MakeNotification'));
+        $postSetAdminValidation->resetNotifications()->resetErrors();
         
-        if ($f->isValid()){
+        if ($postSetAdminValidation->isValid()){
             // clean Input
-            $courseID = $valResults['courseID'];
-            $userName = $valResults['userName'];
+            $courseID = $foundValues['courseID'];
+            $userName = $foundValues['userName'];
 
             // extracts the userID
             $URI = $databaseURI . "/user/user/{$userName}";
@@ -206,8 +207,9 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
     }
 
     // creates a new user
-    if ($valResults['action'] === 'CreateUser') {
-        $f->addSet('lastName',
+    if ($postResults['action'] === 'CreateUser') {
+        $postCreateUserValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+          ->addSet('lastName',
                    ['satisfy_exists',
                     'satisfy_not_empty',
                     'valid_alpha_numeric',
@@ -249,28 +251,19 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                          'on_error'=>array('type'=>'error',
                                            'text'=>Language::Get('main','differentPasswords', $langTemplate))));
 
-        $valResults = $f->validate();
-        $notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
-        $f->resetNotifications()->resetErrors();
+        $foundValues = $postCreateUserValidation->validate();
+        $notifications = array_merge($notifications,$postCreateUserValidation->getPrintableNotifications('MakeNotification'));
+        $postCreateUserValidation->resetNotifications()->resetErrors();
 
-        if($f->isValid()) {
-
-            $lastName = $valResults['lastName'];
-            $firstName = $valResults['firstName'];
-            $email = $valResults['email'];
-            $userName = $valResults['userName'];
-
-            $password = $valResults['password'];
-            $passwordRepeat = $valResults['passwordRepeat'];
-            
+        if($postCreateUserValidation->isValid()) {
             $salt = $auth->generateSalt();
-            $passwordHash = $auth->hashPassword($password, $salt);
+            $passwordHash = $auth->hashPassword($foundValues['password'], $salt);
 
             $newUser = User::createUser(null,
-                                        $userName,
-                                        $email,
-                                        $firstName,
-                                        $lastName,
+                                        $foundValues['userName'],
+                                        $foundValues['email'],
+                                        $foundValues['firstName'],
+                                        $foundValues['lastName'],
                                         null,
                                         1,
                                         $passwordHash,
@@ -292,26 +285,27 @@ if ($f->isValid() && $valResults['action'] !== 'noAction') {
                 $notifications[] = MakeNotification('error', Language::Get('main','errorCreateUser', $langTemplate));
             }
         } else {
-            $notifications = $notifications + $f->notifications;
+            $notifications = $notifications + $postValidation->notifications;
         }
     }
 
     // deletes an user
-    if ($valResults['action'] === 'DeleteUser') {
-        $f->addSet('userName',
+    if ($postResults['action'] === 'DeleteUser') {
+        $postDeleteUserValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+          ->addSet('userName',
                    ['satisfy_exists',
                     'satisfy_not_empty',
                     'valid_userName',
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidUserName', $langTemplate)]]);
 
-        $valResults = $f->validate();
-        $notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
-        $f->resetNotifications()->resetErrors();
+        $foundValues = $postDeleteUserValidation->validate();
+        $notifications = array_merge($notifications,$postDeleteUserValidation->getPrintableNotifications('MakeNotification'));
+        $postDeleteUserValidation->resetNotifications()->resetErrors();
         
-        if($f->isValid()) {
+        if($postDeleteUserValidation->isValid()) {
             // clean Input
-            $userName = $valResults['userName'];
+            $userName = $foundValues['userName'];
 
             // extracts the userID
             $URI = $databaseURI . "/user/user/{$userName}";

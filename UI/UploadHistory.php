@@ -16,8 +16,8 @@ Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $globalUserDat
 /// gehört SID zur CID ??? ///
 $langTemplate='UploadHistory_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
-$f = new Validation($_POST, array('preRules'=>array('sanitize')));
-$f->addSet('action',
+$postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+  ->addSet('action',
             ['set_default'=>'noAction',
              'satisfy_in_list'=>['noAction', 'ShowUploadHistory'],
              'on_error'=>['type'=>'error',
@@ -34,26 +34,26 @@ $f->addSet('action',
            ['satisfy_in_list'=>['lastName','firstName','userName'],
             'set_default'=>'lastName',
             'on_error'=>['type'=>'error',
-                         'text'=>>Language::Get('main','errorSortUsers', $langTemplate)]])
+                         'text'=>Language::Get('main','errorSortUsers', $langTemplate)]])
   ->addSet('actionSortUsers',
            ['set_default'=>'noAction',
             'satisfy_in_list'=>['noAction', 'sort'],
             'on_error'=>['type'=>'error',
-                         'text'=>>Language::Get('main','errorActionSortUsers', $langTemplate)]]);
+                         'text'=>Language::Get('main','errorActionSortUsers', $langTemplate)]]);
                          
-$f2 = new Validation($_GET, array('preRules'=>array('sanitize')));
-$f2->addSet('action',
-            ['set_default'=>'noAction',
-             'satisfy_in_list'=>['noAction', 'ShowUploadHistory'],
-             'on_error'=>['type'=>'error',
-                          'text'=>Language::Get('main','invalidAction', $langTemplate)]]);
+$getValidation = Validation::open($_GET, array('preRules'=>array('sanitize')))
+  ->addSet('action',
+           ['set_default'=>'noAction',
+            'satisfy_in_list'=>['noAction', 'ShowUploadHistory'],
+            'on_error'=>['type'=>'error',
+                         'text'=>Language::Get('main','invalidAction', $langTemplate)]]);
 
-$postResults = $f->validate();
-$getResults = $f2->validate();
-$notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
-$notifications = array_merge($notifications,$f2->getPrintableNotifications('MakeNotification'));
-$f->resetNotifications()->resetErrors();
-$f2->resetNotifications()->resetErrors();
+$postResults = $postValidation->validate();
+$getResults = $getValidation->validate();
+$notifications = array_merge($notifications,$postValidation->getPrintableNotifications('MakeNotification'));
+$notifications = array_merge($notifications,$getValidation->getPrintableNotifications('MakeNotification'));
+$postValidation->resetNotifications()->resetErrors();
+$getValidation->resetNotifications()->resetErrors();
 
 if (isset($postResults['sheetID'])){
     $sid = $postResults['sheetID'];
@@ -146,7 +146,7 @@ $uploadHistoryOptions_data = json_decode($uploadHistoryOptions_data, true);
 
 $dataList = array();
 $sortUsersValue = 'lastName';
-if ($f->isValid()){
+if ($postValidation->isValid()){
     $sortUsersValue = $postResults['sortUsers'];
 }
 
@@ -246,19 +246,20 @@ $h->bind(array('name' => $user_course_data['courses'][0]['course']['name'],
 
 if ($postResults['actionSortUsers'] === 'noAction' && $postResults['action'] !== 'noAction') {
     if ($postResults['action'] === 'ShowUploadHistory') {
-        $f->addSet('userID',
+        $postShowUploadHistoryValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+          ->addSet('userID',
                    ['valid_identifier',
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidUserID', $langTemplate)]]);
-        $postResults = $f->validate();
-        $notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
-        $f->resetNotifications()->resetErrors();
+        $foundValues = $postShowUploadHistoryValidation->validate();
+        $notifications = array_merge($notifications,$postShowUploadHistoryValidation->getPrintableNotifications('MakeNotification'));
+        $postShowUploadHistoryValidation->resetNotifications()->resetErrors();
 
-        if ($f->isValid() && isset($postResults['sheetID'])) {
+        if ($postShowUploadHistoryValidation->isValid() && isset($postResults['sheetID'])) {
             if ($courseStatus==0){
-                $postResults['userID'] = $selectedUser;
+                $foundValues['userID'] = $selectedUser;
             }
-            $uploadUserID = $postResults['userID'];
+            $uploadUserID = $foundValues['userID'];
             
             if (isset($postResults['sheetID']))
                 $sheetID = $postResults['sheetID'];

@@ -46,8 +46,8 @@ if (Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUse
     $privileged = (isset($_SESSION['privileged']) ? $_SESSION['privileged'] : $privileged);
 }
 
-$f = new Validation($_POST, array('preRules'=>array('sanitize')));
-$f->addSet('deleteSubmissionWarning',
+$postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+  ->addSet('deleteSubmissionWarning',
            ['set_default'=>null,
             'valid_identifier',
             'satisfy_not_equals_field'=>'deleteSubmission',
@@ -65,14 +65,14 @@ $f->addSet('deleteSubmissionWarning',
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','invalidSheetId', $langTemplate)]]);
                                    
-$valResults = $f->validate();
-$notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
-$f->resetNotifications()->resetErrors();
+$postResults = $postValidation->validate();
+$notifications = array_merge($notifications,$postValidation->getPrintableNotifications('MakeNotification'));
+$postValidation->resetNotifications()->resetErrors();
 
-if (isset($valResults['deleteSubmissionWarning'])) {
+if (isset($postResults['deleteSubmissionWarning'])) {
     $notifications[] = MakeNotification('warning', Language::Get('main','askDeleteSubmission', $langTemplate));
-} elseif (isset($valResults['deleteSubmission'])) {
-    $suid = $valResults['deleteSubmission'];
+} elseif (isset($postResults['deleteSubmission'])) {
+    $suid = $postResults['deleteSubmission'];
     
     // extractes the studentId of the submission
     $URI = $databaseURI . '/submission/' . $suid;
@@ -96,8 +96,8 @@ if (isset($valResults['deleteSubmissionWarning'])) {
         }
     }
 
-} elseif (isset($valResults['downloadMarkings'])) {
-    downloadMarkingsForSheet($selectedUser, $valResults['downloadMarkings']);
+} elseif (isset($postResults['downloadMarkings'])) {
+    downloadMarkingsForSheet($selectedUser, $postResults['downloadMarkings']);
 }
 
 // load tutor data from GetSite

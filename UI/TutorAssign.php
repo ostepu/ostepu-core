@@ -19,8 +19,8 @@ Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $globalUserData)
 
 $langTemplate='TutorAssign_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
-$f = new Validation($_POST, array('preRules'=>array('sanitize')));
-$f->addSet('sortUsers',
+$postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+  ->addSet('sortUsers',
            ['satisfy_in_list'=>['lastName','firstName','userName'],
             'set_default'=>'lastName',
             'on_error'=>['type'=>'error',
@@ -30,47 +30,48 @@ $f->addSet('sortUsers',
             'satisfy_in_list'=>['noAction', 'sort'],
             'on_error'=>['type'=>'error',
                          'text'=>'???1']]);
-$valResults = $f->validate();
-$notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
-$f->resetNotifications()->resetErrors();
+$valResults = $postValidation->validate();
+$notifications = array_merge($notifications,$postValidation->getPrintableNotifications('MakeNotification'));
+$postValidation->resetNotifications()->resetErrors();
                          
-if ($f->isValid() && !isset($valResults['actionSortUsers'])){
-    $f->addSet('action',
-           ['set_default'=>'noAction',
-            'satisfy_in_list'=>['noAction', 'AssignMakeWarning', 'AssignMake', 'AssignManually', 'AssignRemoveWarning', 'AssignRemove', 'AssignAutomatically'],
-            'on_error'=>['type'=>'error',
-                         'text'=>Language::Get('main','invalidAction', $langTemplate)]]);
-    $valResults = $f->validate();
-    $notifications = array_merge($notifications,$f->getPrintableNotifications('MakeNotification'));
-    $f->resetNotifications()->resetErrors();
+if ($postValidation->isValid() && !isset($valResults['actionSortUsers'])){
+    $postActionValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+      ->addSet('action',
+               ['set_default'=>'noAction',
+                'satisfy_in_list'=>['noAction', 'AssignMakeWarning', 'AssignMake', 'AssignManually', 'AssignRemoveWarning', 'AssignRemove', 'AssignAutomatically'],
+                'on_error'=>['type'=>'error',
+                             'text'=>Language::Get('main','invalidAction', $langTemplate)]]);
+    $foundValues = $postActionValidation->validate();
+    $notifications = array_merge($notifications,$postActionValidation->getPrintableNotifications('MakeNotification'));
+    $postActionValidation->resetNotifications()->resetErrors();
     
-    if ($f-isValid()){
+    if ($postActionValidation-isValid()){
         $assignManuallyNotifications = array();
         $assignAutomaticallyNotifications = array();
         $assignRemoveNotifications = array();
         $assignMakeNotifications = array();
         
-        if ($valResults['action'] === 'AssignManually'){
+        if ($foundValues['action'] === 'AssignManually'){
             include_once dirname(__FILE__) . '/include/TutorAssign/controller/AssignManually.php';
         }
         
-        if ($valResults['action'] === 'AssignAutomatically'){
+        if ($foundValues['action'] === 'AssignAutomatically'){
             include_once dirname(__FILE__) . '/include/TutorAssign/controller/AssignAutomatically.php';
         }
         
-        if ($valResults['action'] === 'AssignRemoveWarning'){
+        if ($foundValues['action'] === 'AssignRemoveWarning'){
             $assignRemoveNotifications[] = MakeNotification('warning', Language::Get('main','askUnassign', $langTemplate));
         }
         
-        if ($valResults['action'] === 'AssignRemove'){
+        if ($foundValues['action'] === 'AssignRemove'){
             include_once dirname(__FILE__) . '/include/TutorAssign/controller/AssignRemove.php';
         }
         
-        if ($valResults['action'] === 'AssignMakeWarning'){
+        if ($foundValues['action'] === 'AssignMakeWarning'){
             $assignMakeNotifications[] = MakeNotification('warning', Language::Get('main','askMake', $langTemplate));
         }
         
-        if ($valResults['action'] === 'AssignMake'){
+        if ($foundValues['action'] === 'AssignMake'){
             include_once dirname(__FILE__) . '/include/TutorAssign/controller/AssignMake.php';
         }
     }
@@ -86,7 +87,7 @@ foreach ($tutorAssign_data['tutorAssignments'] as $key2 => $tutorAssignment){
         $assignments = $tutorAssignment['submissions'];
         $dataList = array();
         $sortUsersValue = 'lastName';
-        if ($f->isValid()){
+        if ($postValidation->isValid()){
             $sortUsersValue = $valResults['sortUsers'];
         }
         
@@ -105,7 +106,7 @@ foreach ($tutorAssign_data['tutorAssignments'] as $key2 => $tutorAssignment){
     $assignments = $tutorAssignment['proposalSubmissions'];
     $dataList = array();
     $sortUsersValue = 'lastName';
-    if ($f->isValid()){
+    if ($postValidation->isValid()){
         $sortUsersValue = $valResults['sortUsers'];
     }
         
