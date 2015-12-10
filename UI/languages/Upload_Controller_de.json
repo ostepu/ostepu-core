@@ -12,6 +12,7 @@
         "errorUploadSubmissionSymbols": " $status: Aufgabe $exerciseName konnte nicht hochgeladen werden. <br/> Der Dateiname enthält unerlaubte Zeichen. <br/> Verwenden Sie nur a-z, A-Z, 0-9 und ._-",
         "errorUploadSubmissionFileToLarge": " $status: Aufgabe $exerciseName konnte nicht hochgeladen werden. <br/> Die Datei war zu groß (max. $maxFileSize).",
         "errorInvalidExerciseId": " $status: Die verwendete Aufgabennummer konnte nicht zugeordnet werden.",
-        "errorInvalidSheetId": "Die verwendete ID der Übungsserie konnte nicht zugeordnet werden."
+        "errorInvalidSheetId": "Die verwendete ID der Übungsserie konnte nicht zugeordnet werden.",
+        "invalidAction": "Die Aktion konnte nicht ausgeführt werden."
     }
 }
