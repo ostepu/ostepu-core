@@ -5,7 +5,7 @@
 ?>
 <div class="content-element">
     <div class="content-header">
-        <?php echo MakeInfoButton('condition','list.md'); ?>
+        <?php echo MakeInfoButton('page/admin/condition','list.md'); ?>
         <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
         <div class="info-color bold right">
             <a href="<?php echo $fileName; ?>?downloadConditionCsv=<?php echo $user['courses'][0]['course']['id']; ?><?php echo (isset($sortby)?'&sortby='.$sortby:'')?><?php echo (isset($sortId)?'&sortId='.$sortId:'')?>" class="download text-button body-option-color">

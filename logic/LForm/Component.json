@@ -69,9 +69,9 @@
             "name": "request",
             "target": "CHelp",
             "links": [
-                {"path": "/help/:language/extension/LForm.md"},
-                {"path": "/help/:language/extension/LFormA.png"},
-                {"path": "/help/:language/extension/LFormB.png"}
+                {"path": "/help/:language/extension/LForm/LForm.md"},
+                {"path": "/help/:language/extension/LForm/LFormA.png"},
+                {"path": "/help/:language/extension/LForm/LFormB.png"}
             ]
         }
     ]
