@@ -32,6 +32,7 @@ if (isset($GroupNotificationElements)) {
 ?>
 <div class="content-element">
     <div class="content-header">
+        <?php echo MakeInfoButton('markingTool','work.md'); ?>
         <div class="content-title left uppercase">
             <?php print $group['leader']['firstName'] . " " . $group['leader']['lastName'] . (isset($group['leader']['userName']) ? " ({$group['leader']['userName']})" : ''); ?>
         </div>

@@ -11,7 +11,7 @@ Diese Einsendung kann ausgewählt werden.
 
 ![](changeC.png)
 
-Bei dieser Einsendung gab es einen Problem mit der Einsendungsdatei (diesen Hinweis sieht der Student in seiner Übersicht ebenfalls).
+Bei dieser Einsendung gab es einen Problem mit der Einsendungsdatei (diesen Hinweis sieht der Student, in seiner Übersicht).
 
 ![](changeD.png)
 

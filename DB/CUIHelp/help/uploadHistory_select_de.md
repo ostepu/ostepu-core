@@ -21,7 +21,7 @@ Um sich die Einsendungen des ausgewählten Studenten anzeigen zu lassen, müssen
 
 Um den gesuchten Studenten schneller zu finden, können Sie die Studentenliste nach einem Kriterium sortieren lassen.
 
-> Standartwert: Nachname
+> Standardwert: Nachname
 
 ![](selectA.png)
 
