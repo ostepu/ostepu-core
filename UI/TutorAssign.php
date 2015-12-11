@@ -34,7 +34,7 @@ $valResults = $postValidation->validate();
 $notifications = array_merge($notifications,$postValidation->getPrintableNotifications('MakeNotification'));
 $postValidation->resetNotifications()->resetErrors();
 
-if ($postValidation->isValid() && !isset($valResults['actionSortUsers'])){
+if ($postValidation->isValid() && $valResults['actionSortUsers'] === 'noAction'){
     $postActionValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
       ->addSet('action',
                ['set_default'=>'noAction',
@@ -45,7 +45,7 @@ if ($postValidation->isValid() && !isset($valResults['actionSortUsers'])){
     $notifications = array_merge($notifications,$postActionValidation->getPrintableNotifications('MakeNotification'));
     $postActionValidation->resetNotifications()->resetErrors();
 
-    if ($postActionValidation-isValid()){
+    if ($postActionValidation->isValid()){
         $assignManuallyNotifications = array();
         $assignAutomaticallyNotifications = array();
         $assignRemoveNotifications = array();
@@ -139,6 +139,16 @@ if (isset($sortUsersValue)) {
     $tutorAssign_data['sortUsers'] = $sortUsersValue;
 }
 
+$dataList = array();
+foreach ($tutorAssign_data['emptyGroups'] as $key => $group)
+    $dataList[] = array('pos' => $key,'userName'=>$group['leader']['userName'],'lastName'=>$group['leader']['lastName'],'firstName'=>$group['leader']['firstName']);
+$sortTypes = array('lastName','firstName','userName');
+$dataList=LArraySorter::orderby($dataList, $sortUsersValue, SORT_ASC, $sortTypes[(array_search($sortUsersValue,$sortTypes)+1)%count($sortTypes)], SORT_ASC);
+$tempData = array();
+foreach($dataList as $data)
+    $tempData[] = $tutorAssign_data['emptyGroups'][$data['pos']];
+$tutorAssign_data['emptyGroups'] = $tempData;
+
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::TUTOR,true);
 
@@ -168,6 +178,7 @@ if (isset($assignRemoveNotifications))
 
 // construct a content element for creating submissions for unsubmitted users
 $assignMake = Template::WithTemplateFile('include/TutorAssign/AssignMake.template.html');
+$assignMake->bind($tutorAssign_data);
 if (isset($assignMakeNotifications))
     $assignMake->bind(array('AssignMakeNotificationElements' => $assignMakeNotifications));
 

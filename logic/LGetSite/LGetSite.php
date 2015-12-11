@@ -190,12 +190,15 @@ class LGetSite
         $URL = $this->lURL . '/exercisesheet/course/' . $courseid.'/exercise';
         $handler6 = Request_CreateRequest::createGet($URL, array(), '');
         
+        $URL = $this->_getGroup->getAddress().'/group/exerciseSheet/'.$sheetid.'';
+        $handler7 = Request_CreateRequest::createGet($URL, array(), '');
 
         $multiRequestHandle = new Request_MultiRequest();
         $multiRequestHandle->addRequest($handler1);
         $multiRequestHandle->addRequest($handler4);
         $multiRequestHandle->addRequest($handler5);
         $multiRequestHandle->addRequest($handler6);
+        $multiRequestHandle->addRequest($handler7);
 
         $answer = $multiRequestHandle->run();
 
@@ -203,7 +206,13 @@ class LGetSite
         $markings = json_decode($answer[1]['content'], true);
         $submissions = json_decode($answer[2]['content'], true);
         $exerciseSheets = json_decode($answer[3]['content'], true);
+        $groups = json_decode($answer[4]['content'], true);
         unset($answer);unset($multiRequestHandle);
+        
+        $emptyGroups = array();
+        foreach($groups as $group){
+            $emptyGroups[$group['leader']['id']] = $group;
+        }
         
         $namesOfExercises = array();
         // find the current sheet and it's exercises
@@ -314,6 +323,7 @@ class LGetSite
 
         foreach ($submissions as &$submission) {
             $submission['id'] = $submission['submissionId'];
+            $emptyGroups[$submission['leaderId']] = null;
             unset($submission['submissionId']);
             if (!in_array($submission['id'], $assignedSubmissionIDs)) {
                 $submission['unassigned'] = true;
@@ -383,6 +393,16 @@ class LGetSite
 
         $response['tutorAssignments'][] = $newTutorAssignment;
         $response['namesOfExercises'] = $namesOfExercises;
+        $response['groups'] = $groups;
+        
+        $tempGroups = array();
+        foreach($emptyGroups as $key => $group){
+            if (isset($group)){
+                $tempGroups[] = $group;
+            }
+        }
+        
+        $response['emptyGroups'] = array_values($tempGroups);
 
 
         $this->flag = 1;
