@@ -1,8 +1,10 @@
 #### AUTOMATISCHE ZUWEISUNG
-Bisher nicht zugewiesene Einsendungen (**unzugeordnet**) können an Kontrolleure gleichmäßig zugewiesen werden. Dabei werden diese Studentenweise auf die Kontrolleure verteilt.
+Einsendungen (**unzugewiesene**) und Korrekturen können hier an Kontrolleure gleichmäßig zugewiesen werden. Dabei werden diese, entsprechend der Auswahl, Studentenweise auf die Kontrolleure verteilt.
 
 > ##### 1. Kontrolleure auswählen
+
 - Wählen Sie die Quelle der Zuweisung aus (Zuteilen von), alle Korrekturen dieses Kontrolleurs werden gleichmäßig auf die Zieltutoren verteilt
+
 - Wählen Sie einen oder mehrere Kontrolleure aus (Zuteilen an).
 
 ![](autoA.png)

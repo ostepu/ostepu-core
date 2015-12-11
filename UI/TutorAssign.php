@@ -139,15 +139,17 @@ if (isset($sortUsersValue)) {
     $tutorAssign_data['sortUsers'] = $sortUsersValue;
 }
 
-$dataList = array();
-foreach ($tutorAssign_data['emptyGroups'] as $key => $group)
-    $dataList[] = array('pos' => $key,'userName'=>$group['leader']['userName'],'lastName'=>$group['leader']['lastName'],'firstName'=>$group['leader']['firstName']);
-$sortTypes = array('lastName','firstName','userName');
-$dataList=LArraySorter::orderby($dataList, $sortUsersValue, SORT_ASC, $sortTypes[(array_search($sortUsersValue,$sortTypes)+1)%count($sortTypes)], SORT_ASC);
-$tempData = array();
-foreach($dataList as $data)
-    $tempData[] = $tutorAssign_data['emptyGroups'][$data['pos']];
-$tutorAssign_data['emptyGroups'] = $tempData;
+foreach($tutorAssign_data['emptyGroups'] as $exercise => $emptyGroups){
+    $dataList = array();
+    foreach ($emptyGroups as $key => $group)
+        $dataList[] = array('pos' => $key,'userName'=>(isset($group['userName'])?$group['userName']:null),'lastName'=>(isset($group['lastName'])?$group['lastName']:null),'firstName'=>(isset($group['firstName'])?$group['firstName']:null));
+    $sortTypes = array('lastName','firstName','userName');
+    $dataList=LArraySorter::orderby($dataList, $sortUsersValue, SORT_ASC, $sortTypes[(array_search($sortUsersValue,$sortTypes)+1)%count($sortTypes)], SORT_ASC);
+    $tempData = array();
+    foreach($dataList as $data)
+        $tempData[] = $emptyGroups[$data['pos']];
+    $tutorAssign_data['emptyGroups'][$exercise] = $tempData;
+}
 
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::TUTOR,true);

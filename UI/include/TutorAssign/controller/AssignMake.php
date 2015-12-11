@@ -28,23 +28,22 @@ if ($message === 200) {
                         $leaderGroups[] = $group->getLeader()->getId();
                     }
                 }
+                unset($groups);
+                    
                 $postAssignMakeValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
                 ->addSet('make',
                          ['set_default'=>array(),
-                          'perform_this_array'=>[['exercises',
-                                                  ['perform_this_array'=>[[['key_all'],
-                                                                          ['satisfy_in_list'=>$exercises,
-                                                                           'on_error'=>['type'=>'error',
-                                                                                        'text'=>Language::Get('main','???', $langTemplate)]]]],
-                                                   'on_error'=>['type'=>'error',
-                                                                'text'=>Language::Get('main','???', $langTemplate)]]],
-                                                 ['groups',
-                                                  ['perform_this_array'=>[[['key_all'],
-                                                                          ['satisfy_in_list'=>$leaderGroups,
-                                                                           'on_error'=>['type'=>'error',
-                                                                                        'text'=>Language::Get('main','???', $langTemplate)]]]],
-                                                   'on_error'=>['type'=>'error',
-                                                                'text'=>Language::Get('main','???', $langTemplate)]]]],
+                          'perform_this_foreach'=>[['key',
+                                                    ['satisfy_in_list'=>$exercises,
+                                                     'on_error'=>['type'=>'error',
+                                                                  'text'=>Language::Get('main','???', $langTemplate)]]],
+                                                   ['elem',
+                                                    ['perform_this_array'=>[[['key_all'],
+                                                                            ['satisfy_in_list'=>$leaderGroups,
+                                                                             'on_error'=>['type'=>'error',
+                                                                                          'text'=>Language::Get('main','???', $langTemplate)]]]],
+                                                     'on_error'=>['type'=>'error',
+                                                                  'text'=>Language::Get('main','???', $langTemplate)]]]],
                           'on_error'=>['type'=>'warning',
                                        'text'=>Language::Get('main','???', $langTemplate)]]);
 
@@ -53,17 +52,16 @@ if ($message === 200) {
                 $postAssignMakeValidation->resetNotifications()->resetErrors();
 
                 if ($postAssignMakeValidation->isValid()) {
-                    $exercises = $foundValues['make']['exercises'];
-                    $leaderGroups = $foundValues['make']['groups'];
+                    $leaderGroups = $foundValues['make'];
                     
                     $users = array();
                     foreach ($exercises as $exercise){
+                        if (!isset($leaderGroups[$exercise])) continue;
                         $users[$exercise] = array();
-                        foreach($leaderGroups as $leader){
+                        foreach($leaderGroups[$exercise] as $leader){
                             $users[$exercise][] = $leader;
                         }
                     }
-                    unset($groups);
                     
                     $submitted=array();
                     foreach ($exercises as $exercise){
@@ -74,11 +72,13 @@ if ($message === 200) {
                     }
                     $noSubmission=array();
                     foreach ($exercises as $exercise){
+                        if (!isset($users[$exercise])) continue;
                         $noSubmission[$exercise] = array_diff($users[$exercise],$submitted[$exercise]);
                     }
                     unset($submitted);
                     unset($users);
                     $failure = false;
+             
                     foreach ($noSubmission as $exercise => $exerciseUsers){
                         foreach ($exerciseUsers as $user){
                             if (createSubmission($user, $exercise) === null){

@@ -147,7 +147,7 @@ if (isset($AssignManuallyNotificationElements)) {
                             print $submission['id'] . '"/>'; 
                             print '<span class="proposal">';
                             $name = (isset($submission['user']['firstName']) && isset($submission['user']['lastName'])) ? $submission['user']['firstName'].' '.$submission['user']['lastName'].',': '';
-                            print (isset($namesOfExercises[$submission['exerciseId']]) ? $namesOfExercises[$submission['exerciseId']] : '?').(isset($submission['user']['userName']) ? ' ('.$name.$submission['user']['userName'].')' : '');
+                            print (isset($namesOfExercises[$submission['exerciseId']]) ? $namesOfExercises[$submission['exerciseId']] : '?').(isset($submission['user']['userName']) ? ' ('.$name.$submission['user']['userName'].')' : ' ???');
                             print '</span><br />';
                         }
                     }

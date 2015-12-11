@@ -21,6 +21,6 @@ Das Erzeugen war erfolgreich, wenn ein grüner Schriftzug erscheint. Sollte es e
 
 ![](makeC.png)
 
-Wenn keine Aufgaben oder Stundenten übrig sind, bei denen Einsendunge fehlen, wird der nachfolgende Hinweis angezeigt.
+Wenn keine Aufgaben oder Stundenten übrig sind, bei denen Einsendungen fehlen, wird der nachfolgende Hinweis angezeigt.
 
 ![](makeE.png)

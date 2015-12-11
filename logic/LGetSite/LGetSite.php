@@ -209,10 +209,27 @@ class LGetSite
         $groups = json_decode($answer[4]['content'], true);
         unset($answer);unset($multiRequestHandle);
         
-        $emptyGroups = array();
-        foreach($groups as $group){
-            $emptyGroups[$group['leader']['id']] = $group;
+
+        $students=array();
+        $tutors=array();
+        foreach ($users as $user){
+            if ($user['courses'][0]['status']==0){
+                $students[$user['id']] = $user;
+            }elseif ($user['courses'][0]['status']>0){
+                $tutors[$user['id']] = $user;
+            }
         }
+        unset($users);
+        
+        $tempGroups = array();
+        foreach($groups as $group){
+            if (isset($students[$group['leader']['id']])){
+                $tempGroups[$group['leader']['id']] = $group['leader'];
+            } else {
+                $tempGroups[$group['leader']['id']] = array('id'=>$group['leader']['id']);
+            }
+        }
+        $groups = $tempGroups;
         
         $namesOfExercises = array();
         // find the current sheet and it's exercises
@@ -231,6 +248,7 @@ class LGetSite
                     $exercises = $sheet['exercises'];
                     foreach ($exercises as $key => $exercise){
                         $exerciseId = $exercise['id'];
+                        $emptyGroups[$exerciseId] = $groups;
 
                         if ($count===null || $exercises[$count]['link'] != $exercise['link']){
                             $count=$key;
@@ -248,21 +266,10 @@ class LGetSite
             unset($sheet['exercises']);
         }
 
-        $students=array();
-        $tutors=array();
-        foreach ($users as $user){
-            if ($user['courses'][0]['status']==0){
-                $students[] = $user;
-            }elseif ($user['courses'][0]['status']>0){
-                $tutors[] = $user;
-            }
-        }
-        unset($users);
-
         $response['tutorAssignments'] = array();
 
         if (!empty($tutors)) {
-            foreach ($tutors as &$tutor) {
+            foreach ($tutors as $key => &$tutor) {
                 unset($tutor['salt']);
                 unset($tutor['password']);
 
@@ -294,12 +301,10 @@ class LGetSite
                     unset($marking['submission']['selectedForGroup']);
                     
                     $marking['submission']['user']=null;
-                    foreach ($students as $student){
-                        if ($student['id']==$marking['submission']['leaderId']){
-                            $marking['submission']['user']=$student;
-                            break;
-                        }
+                    if (isset($students[$marking['submission']['leaderId']])){
+                        $marking['submission']['user']=$students[$marking['submission']['leaderId']];
                     }
+                    
                     $marking['submission']['markingId'] = $marking['id'];
                     $tutorAssignment['submissions'][] = $marking['submission'];
 
@@ -323,17 +328,14 @@ class LGetSite
 
         foreach ($submissions as &$submission) {
             $submission['id'] = $submission['submissionId'];
-            $emptyGroups[$submission['leaderId']] = null;
+            $emptyGroups[$submission['exerciseId']][$submission['leaderId']] = null;
             unset($submission['submissionId']);
             if (!in_array($submission['id'], $assignedSubmissionIDs)) {
                 $submission['unassigned'] = true;
                 $submission['user']=null;
-                    foreach ($students as $student){
-                        if ($student['id']==$submission['leaderId']){
-                            $submission['user']=$student;
-                            break;
-                        }
-                    }
+                if (isset($students[$submission['leaderId']])){
+                    $submission['user']=$students[$submission['leaderId']];
+                }
                 $unassignedSubmissions[] = $submission;
             }
         }
@@ -393,16 +395,19 @@ class LGetSite
 
         $response['tutorAssignments'][] = $newTutorAssignment;
         $response['namesOfExercises'] = $namesOfExercises;
-        $response['groups'] = $groups;
         
         $tempGroups = array();
-        foreach($emptyGroups as $key => $group){
-            if (isset($group)){
-                $tempGroups[] = $group;
+        foreach($emptyGroups as $exercise => $groups){
+            $tempGroups[$exercise] = array();
+            foreach($groups as $key => $group){
+                    if (isset($group)){
+                        $tempGroups[$exercise][] = $group;
+                    }
             }
+            $tempGroups[$exercise] = array_values($tempGroups[$exercise]);
         }
         
-        $response['emptyGroups'] = array_values($tempGroups);
+        $response['emptyGroups'] = $tempGroups;
 
 
         $this->flag = 1;

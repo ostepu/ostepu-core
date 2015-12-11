@@ -5,7 +5,7 @@
         "content": "Es werden leere Einsendungen für Nutzer erzeugt, sodass diese einem Tutor zur Korrektur zugewiesen werden können. Dieser Vorgang ist nicht umkehrbar und betrifft nur nicht eingesendete Aufgaben der Nutzer.",
         "nothing": "Keine",
         "all": "Alle",
-        "exercises": "Aufgaben",
+        "exercise": "Aufgabe",
         "students": "Studenten",
         "noContent": "Keine freien Gruppen gefunden."
     }
