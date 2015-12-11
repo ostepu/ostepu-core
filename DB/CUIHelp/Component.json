@@ -244,7 +244,23 @@
                 {"path": "/help/:language/page/admin/uploadHistory/selectB.png"},
                 {"path": "/help/:language/page/admin/uploadHistory/selectC.png"},
                 {"path": "/help/:language/page/admin/uploadHistory/selectD.png"},
-                {"path": "/help/:language/page/admin/uploadHistory/selectE.png"}
+                {"path": "/help/:language/page/admin/uploadHistory/selectE.png"},
+                {},
+                {"path": "/help/:language/page/admin/studentMode/studentMode.md"},
+                {"path": "/help/:language/page/admin/studentMode/studentModeA.png"},
+                {"path": "/help/:language/page/admin/studentMode/studentModeB.png"},
+                {"path": "/help/:language/page/admin/studentMode/studentModeC.png"},
+                {"path": "/help/:language/page/admin/studentMode/studentModeD.png"},
+                {},
+                {"path": "/help/:language/page/student/upload/upload.md"},
+                {"path": "/help/:language/page/student/upload/uploadA.png"},
+                {"path": "/help/:language/page/student/upload/uploadB.png"},
+                {"path": "/help/:language/page/student/upload/uploadC.png"},
+                {"path": "/help/:language/page/student/upload/uploadD.png"},
+                {"path": "/help/:language/page/student/upload/uploadE.png"},
+                {"path": "/help/:language/page/student/upload/uploadF.png"},
+                {"path": "/help/:language/page/student/upload/uploadG.png"},
+                {"path": "/help/:language/page/student/upload/uploadH.png"},
             ]
         }
     ]

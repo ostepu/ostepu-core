@@ -46,6 +46,9 @@
                     <input onchange="this.form.submit()" type="checkbox" value="1" name="privileged"<?php echo (isset($privileged) && $privileged==1 ? " checked" : ''); ?>/>
                 </form>
             </li>
+            <li>
+                <?php echo MakeInfoButton('page/admin/studentMode','studentMode.md'); ?>
+            </li>
 <?php } ?>
 <?php } ?>
 

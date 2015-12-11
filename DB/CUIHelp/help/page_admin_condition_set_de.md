@@ -4,7 +4,7 @@
 
 ![](setA.png)
 
-Sie können hier die Schwellwerte für Punktearten festlegen, welche Sie zuvor in der **Kursverwaltung**, für diese Veranstaltung, ausgewählt haben.
+Sie können hier die Schwellenwerte für Punktearten festlegen, welche Sie zuvor in der **Kursverwaltung**, für diese Veranstaltung, ausgewählt haben.
 
 > Der zu erreichende Wert wird in **%** angegeben.
 > <br/> Bereich: 0 bis 100
