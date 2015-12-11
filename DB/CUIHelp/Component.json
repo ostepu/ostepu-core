@@ -92,6 +92,8 @@
                 {"path": "/help/:language/tutorAssign/makeA.png"},
                 {"path": "/help/:language/tutorAssign/makeB.png"},
                 {"path": "/help/:language/tutorAssign/makeC.png"},
+                {"path": "/help/:language/tutorAssign/makeD.png"},
+                {"path": "/help/:language/tutorAssign/makeE.png"},
                 {"path": "/help/:language/tutorAssign/manA.png"},
                 {"path": "/help/:language/tutorAssign/manB.png"},
                 {"path": "/help/:language/tutorAssign/manC.png"},
