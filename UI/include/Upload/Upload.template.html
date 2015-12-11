@@ -5,7 +5,6 @@
     <button class="submit" type="submit" name="submit" id="submitButton">
         <div class="content-element">
             <div class="content-header">
-                <?php echo MakeInfoButton('page/student/upload','upload.md'); ?>
                 <div class="content-title left uppercase"><?php echo Language::Get('main','execute', $langTemplate); ?></div>
                 <div class="info-color bold right">
                     <a href="javascript:void(0);"
@@ -40,6 +39,7 @@
     ?>
         <div class="content-element">
             <div class="content-header">
+                <?php echo MakeInfoButton('page/student/upload','upload.md'); ?>
                 <div class="content-title left">
                     <?php echo Language::Get('submission','exercise', $langTemplate); ?> <?php echo $exercise['link']; ?><?php
                     $add="";

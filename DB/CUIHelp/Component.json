@@ -260,7 +260,7 @@
                 {"path": "/help/:language/page/student/upload/uploadE.png"},
                 {"path": "/help/:language/page/student/upload/uploadF.png"},
                 {"path": "/help/:language/page/student/upload/uploadG.png"},
-                {"path": "/help/:language/page/student/upload/uploadH.png"},
+                {"path": "/help/:language/page/student/upload/uploadH.png"}
             ]
         }
     ]
