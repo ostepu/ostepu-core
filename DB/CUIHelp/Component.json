@@ -260,7 +260,30 @@
                 {"path": "/help/:language/page/student/upload/uploadE.png"},
                 {"path": "/help/:language/page/student/upload/uploadF.png"},
                 {"path": "/help/:language/page/student/upload/uploadG.png"},
-                {"path": "/help/:language/page/student/upload/uploadH.png"}
+                {"path": "/help/:language/page/student/upload/uploadH.png"},
+                {},
+                {"path": "/help/:language/page/student/student/sheetHeadA.png"},
+                {"path": "/help/:language/page/student/student/sheetHeadB.png"},
+                {"path": "/help/:language/page/student/student/sheetHeadD.png"},
+                {"path": "/help/:language/page/student/student/sheetHeadD.png"},
+                {"path": "/help/:language/page/student/student/sheetHeadE.png"},
+                {"path": "/help/:language/page/student/student/sheetBodyA.png"},
+                {"path": "/help/:language/page/student/student/sheetBodyB.png"},
+                {"path": "/help/:language/page/student/student/sheetBodyC.png"},
+                {"path": "/help/:language/page/student/student/sheetBodyD.png"},
+                {"path": "/help/:language/page/student/student/sheetBodyE.png"},
+                {"path": "/help/:language/page/student/student/sheetBodyF.png"},
+                {"path": "/help/:language/page/student/student/sheetBodyG.png"},
+                {"path": "/help/:language/page/student/student/sheetBodyH.png"},
+                {"path": "/help/:language/page/student/student/sheetBodyI.png"},
+                {"path": "/help/:language/page/student/student/sheetBodyJ.png"},
+                {"path": "/help/:language/page/student/student/navigationA.png"},
+                {"path": "/help/:language/page/student/student/navigationB.png"},
+                {"path": "/help/:language/page/student/student/navigationC.png"},
+                {"path": "/help/:language/page/student/student/navigationD.png"},
+                {"path": "/help/:language/page/student/student/navigationE.png"},
+                {"path": "/help/:language/page/student/student/navigationF.png"},
+                {"path": "/help/:language/page/student/student/navigationG.png"}
             ]
         }
     ]
