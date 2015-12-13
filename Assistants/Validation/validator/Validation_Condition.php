@@ -410,7 +410,7 @@ class Validation_Condition implements Validation_Interface
 
     public static function validate_satisfy_file_extension($key, $input, $setting = null, $param = null)
     {
-        if (!$setting['setError'] && ( !isset($input[$key]) || !isset($input[$key]['tmp_name']))) {
+        if (!$setting['setError'] && ( !isset($input[$key]) || !isset($input[$key]['name']))) {
             return;
         }
 
@@ -424,11 +424,7 @@ class Validation_Condition implements Validation_Interface
 
         $file = $input[$key];
 
-        if (!file_exists($file['tmp_name'])){
-            return false;
-        }
-
-        $ext = strtolower(pathinfo($file['tmp_name'], PATHINFO_EXTENSION));
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
 
         if (!is_array($param)){
             if ($ext === strtolower($param)){
