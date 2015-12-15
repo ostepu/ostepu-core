@@ -3,17 +3,23 @@ require_once dirname(__FILE__) . '/../../UI/include/Authentication.php';
 require_once dirname(__FILE__) . '/../../Assistants/Structures.php';
 require_once dirname(__FILE__) . '/../../Assistants/Request.php';
 require_once dirname(__FILE__) . '/../../Assistants/DBRequest.php';
-require_once dirname(__FILE__) . '/../../Assistants/DBJson.php';  
+require_once dirname(__FILE__) . '/../../Assistants/DBJson.php';
 
 /**
  * @file Installation.php contains the Installation class
  *
  * @author Till Uhlig
  * @date 2014
- */  
+ */
 
 class Installation
 {
+    public static $logFile = null;
+
+    public static $enableLogs = true;
+
+    public static $logLevel = LogLevel::DEBUG;
+
    /**
      * Orders an array by given keys.
      *
@@ -28,6 +34,7 @@ class Installation
      */
     public static function orderBy()
     {
+        Installation::log(array('text'=>'starte Funktion'));
         $args = func_get_args();
         $data = array_shift($args);
         if ($data === null) $data = array();
@@ -41,8 +48,9 @@ class Installation
         }
         $args[] = &$data;
         call_user_func_array('array_multisort', $args);
+        Installation::log(array('text'=>'beende Funktion'));
         return array_pop($args);
-    }  
+    }
 
     /*
      * @param array $components The array which will be filtered.
@@ -50,19 +58,22 @@ class Installation
      * @param string $root '', 'Command', 'ComponentName'
      */
     public static function filterComponents($components, $type, $root)
-    {  
-
-    }  
+    {
+        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>'beende Funktion'));
+    }
 
     public static function collectPlatformSettings($data)
     {
+        Installation::log(array('text'=>'starte Funktion'));
         $settings = array();
         foreach(Einstellungen::$segments as $segs){
             if (!is_callable("{$segs}::platformSetting")) continue;
             $settings = array_merge($settings,$segs::platformSetting($data));
         }
+        Installation::log(array('text'=>'beende Funktion'));
         return $settings;
-    }  
+    }
 
     /**
      * Extrahiert die relevanten Daten der Plattform und erzeugt
@@ -72,8 +83,9 @@ class Installation
      * @return Patform Die Plattformdaten
      */
     public static function PlattformZusammenstellen($data)
-    {   
-        $settings = self::collectPlatformSettings($data);  
+    {
+        Installation::log(array('text'=>'starte Funktion'));
+        $settings = self::collectPlatformSettings($data);
 
         // hier aus den Daten ein Plattform-Objekt zusammenstellen
         $platform = Platform::createPlatform(
@@ -89,8 +101,13 @@ class Installation
                                             $data['PL']['urlExtern'],
                                             $settings
                                             );
+        $tempPlatform = clone $platform;
+        $tempPlatform->setDatabaseRootPassword('*****');
+        $tempPlatform->setDatabaseOperatorPassword('*****');
+        Installation::log(array('text'=>'Platform = '.json_encode($tempPlatform)));
+        Installation::log(array('text'=>'beende Funktion'));
         return $platform;
-    }  
+    }
 
     /**
      * Ermittelt alle vorhandenen Serverkonfigurationsdateien
@@ -100,10 +117,12 @@ class Installation
      */
     public static function GibServerDateien()
     {
+        Installation::log(array('text'=>'starte Funktion'));
         $serverFiles = array();
         Einstellungen::$path = dirname(__FILE__) . '/../config';
         Einstellungen::generatepath(Einstellungen::$path);
         if (is_dir(Einstellungen::$path)) {
+            Installation::log(array('text'=>'lese Konfigurationen'));
             if ($handle = opendir(Einstellungen::$path)) {
                 while (false !== ($file = readdir($handle))) {
                     if ($file=='.' || $file=='..') continue;
@@ -112,50 +131,94 @@ class Installation
                 closedir($handle);
             }
         } else {
+            Installation::log(array('text'=>'der Pfad existiert nicht: '.Einstellungen::$path,'logLevel'=>LogLevel::ERROR));
             return array();
         }
+
+
+        Installation::log(array('text'=>'ermittelte Konfigurationen = '.implode(',',$serverFiles)));
+        Installation::log(array('text'=>'beende Funktion'));
         return $serverFiles;
-    }  
+    }
 
-   /** 
-    * Finds path, relative to the given root folder, of all files and directories in the given directory and its sub-directories non recursively. 
-    * Will return an array of the form 
-    * array( 
-    *   'files' => [], 
-    *   'dirs'  => [], 
-    * ) 
-    * @author sreekumar 
-    * @param string $root 
-    * @result array 
-    */ 
-    public static function read_all_files($root = '.'){ 
-      $files  = array('files'=>array(), 'dirs'=>array()); 
-      $directories  = array(); 
-      $last_letter  = $root[strlen($root)-1]; 
-      $root  = ($last_letter == '/') ? $root : $root.'/';   
+   /**
+    * Finds path, relative to the given root folder, of all files and directories in the given directory and its sub-directories non recursively.
+    * Will return an array of the form
+    * array(
+    *   'files' => [],
+    *   'dirs'  => [],
+    * )
+    * @author sreekumar
+    * @param string $root
+    * @result array
+    */
+    public static function read_all_files($root = '.')
+    {
+      Installation::log(array('text'=>'starte Funktion'));
+      $files  = array('files'=>array(), 'dirs'=>array());
+      $directories  = array();
+      $last_letter  = $root[strlen($root)-1];
+      $root  = ($last_letter == '/') ? $root : $root.'/';
 
-      $directories[]  = $root;   
+      $directories[]  = $root;
 
-      while (sizeof($directories)) { 
-        $dir  = array_pop($directories); 
-        if ($handle = opendir($dir)) { 
-          while (false !== ($file = readdir($handle))) { 
-            if ($file == '.' || $file == '..') { 
-              continue; 
-            } 
-            $file  = $dir.$file; 
-            if (is_dir($file)) { 
-              $directory_path = $file.'/'; 
-              array_push($directories, $directory_path); 
-              $files['dirs'][]  = $directory_path; 
-            } elseif (is_file($file)) { 
-              $files['files'][]  = $file; 
-            } 
-          } 
-          closedir($handle); 
-        } 
-      }   
+      while (sizeof($directories)) {
+        $dir  = array_pop($directories);
+        if ($handle = opendir($dir)) {
+          while (false !== ($file = readdir($handle))) {
+            if ($file == '.' || $file == '..') {
+              continue;
+            }
+            $file  = $dir.$file;
+            if (is_dir($file)) {
+              $directory_path = $file.'/';
+              array_push($directories, $directory_path);
+              $files['dirs'][]  = $directory_path;
+            } elseif (is_file($file)) {
+              $files['files'][]  = $file;
+            }
+          }
+          closedir($handle);
+        }
+      }
 
-      return $files; 
-    } 
+      Installation::log(array('text'=>'beende Funktion'));
+      return $files;
+    }
+
+    public static function log($data = array())
+    {
+        if (!isset($data['text'])) $data['text'] = null;
+        if (!isset($data['logLevel'])) $data['logLevel'] = LogLevel::INFO;
+
+        if (!isset(Installation::$logFile)){
+            $path = dirname(__FILE__) . '/../logs';
+            Einstellungen::generatepath($path);
+            Installation::$logFile = $path.'/install_'.date('Ymd_Gis').'.log';
+        }
+
+
+        if (!isset($data['name'])){
+            $info = debug_backtrace();
+            $infoString = '';
+            if (isset($info[1])) {
+                $callerInfo = $info[1];
+                if (isset($callerInfo['class']))$infoString .= $callerInfo['class'];
+                if (isset($callerInfo['type']))$infoString .= $callerInfo['type'];
+                if (isset($callerInfo['function']))$infoString .= $callerInfo['function'];
+            } else {
+                $callerInfo = $info[0];
+                if (isset($callerInfo['file']))$infoString .=  basename($callerInfo['file']);
+            }
+
+            if (isset($info[0]['line'])) {
+                $infoString .= ':' . $info[0]['line'] . ')';
+            } elseif (isset($info[1]['line'])) {
+                $infoString .= ' (' . $info[1]['line'] . ')';
+            }
+            $data['name'] = $infoString;
+        }
+
+        Logger::Log($data['text'],$data['logLevel'],false,Installation::$logFile, LogLevel::$names[$data['logLevel']] . ','.$data['name'],false,Installation::$logLevel);
+    }
 }

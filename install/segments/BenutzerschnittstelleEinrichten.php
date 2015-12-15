@@ -8,17 +8,21 @@ class BenutzerschnittstelleEinrichten
     public static $page = 6;
     public static $rank = 50;
     public static $enabledShow = true;
-    public static $enabledInstall = true;  
+    public static $enabledInstall = true;
 
-    public static $onEvents = array('install'=>array('name'=>'UIConf','event'=>array('actionInstallUIConf','install', 'update')));  
+    public static $onEvents = array('install'=>array('name'=>'UIConf','event'=>array('actionInstallUIConf','install', 'update')));
 
     public static function getSettingsBar(&$data)
     {
+        Installation::log(array('text'=>'starte Funktion'));
         $defs = self::getDefaults();
-        return array(
-                     'siteKey' => array(Language::Get('userInterface','siteKey'), $data['UI']['siteKey'], $defs['siteKey'][1])                   
+        $res = array(
+                     'siteKey' => array(Language::Get('userInterface','siteKey'), $data['UI']['siteKey'], $defs['siteKey'][1])
                      );
-    }  
+        Installation::log(array('text'=>'Resultat: '.json_encode($res)));
+        Installation::log(array('text'=>'beende Funktion'));
+        return $res;
+    }
 
     public static function getDefaults()
     {
@@ -26,49 +30,54 @@ class BenutzerschnittstelleEinrichten
                      'conf' => array('data[UI][conf]', '../UI/include/Config.php'),
                      'siteKey' => array('data[UI][siteKey]', 'b67dc54e7d03a9afcd16915a55edbad2d20a954562c482de3863456f01a0dee4')
                      );
-    }  
+    }
 
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
-        $def = self::getDefaults();  
+        Installation::log(array('text'=>'starte Funktion'));
+        $def = self::getDefaults();
 
         $text = '';
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['UI']['conf'], 'data[UI][conf]', $def['conf'][1], true);
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['UI']['siteKey'], 'data[UI][siteKey]', $def['siteKey'][1], true);
         echo $text;
         self::$initialized = true;
-    }  
+        Installation::log(array('text'=>'beende Funktion'));
+    }
 
     public static function show($console, $result, $data)
     {
+        Installation::log(array('text'=>'starte Funktion'));
         $text='';
-        $text .= Design::erstelleBeschreibung($console,Language::Get('userInterface','description'));  
+        $text .= Design::erstelleBeschreibung($console,Language::Get('userInterface','description'));
 
-        if (!$console){    
+        if (!$console){
             $text .= Design::erstelleZeile($console, Language::Get('userInterface','conf'), 'e', Design::erstelleEingabezeile($console, $data['UI']['conf'], 'data[UI][conf]', '../UI/include/Config.php', true), 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0]), 'h');
             $text .= Design::erstelleZeile($console, Language::Get('userInterface','siteKey'), 'e', Design::erstelleEingabezeile($console, $data['UI']['siteKey'], 'data[UI][siteKey]', 'b67dc54e7d03a9afcd16915a55edbad2d20a954562c482de3863456f01a0dee4', true), 'v');
-        }  
+        }
 
         if (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']]!=null){
            $result =  $result[self::$onEvents['install']['name']];
-        } else 
-            $result = array('content'=>null,'fail'=>false,'errno'=>null,'error'=>null);  
+        } else
+            $result = array('content'=>null,'fail'=>false,'errno'=>null,'error'=>null);
 
         $fail = $result['fail'];
         $error = $result['error'];
         $errno = $result['errno'];
-        $content = $result['content'];  
+        $content = $result['content'];
 
-        if (self::$installed) 
-            $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);   
+        if (self::$installed)
+            $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);
 
         echo Design::erstelleBlock($console, Language::Get('userInterface','title'), $text);
-    }  
+        Installation::log(array('text'=>'beende Funktion'));
+    }
 
     public static function install($data, &$fail, &$errno, &$error)
     {
+        Installation::log(array('text'=>'starte Funktion'));
         $fail = false;
-        $file = $data['UI']['conf'];  
+        $file = $data['UI']['conf'];
 
         $text = array("<?php");
         $text[]='$serverURI'. " = '{$data['PL']['url']}';";
@@ -76,11 +85,22 @@ class BenutzerschnittstelleEinrichten
         $text[]='$logicURI = $serverURI . "/logic/LController";';
         $text[]='$filesystemURI = $serverURI . "/FS/FSControl";';
         $text[]='$getSiteURI = $serverURI . "/logic/LGetSite";';
-        $text[]='$globalSiteKey'. " = '{$data['UI']['siteKey']}';"; 
-        $text[]='$externalURI'. " = '{$data['PL']['urlExtern']}';";         
+        $text[]='$globalSiteKey'. " = '{$data['UI']['siteKey']}';";
+        $text[]='$externalURI'. " = '{$data['PL']['urlExtern']}';";
 
         $text = implode("\n",$text);
-        if (!@file_put_contents(dirname(__FILE__).'/../'.$file,$text)){ $fail = true;$error='UI-Konfigurationsdatei, kein Schreiben möglich!';return null;} 
+        Installation::log(array('text'=>'Text = '.json_encode($text)));
+        $resFile = dirname(__FILE__).'/../'.$file;
+        Installation::log(array('text'=>'Datei = '.$resFile));
+
+        if (!@file_put_contents($resFile,$text)){
+            $fail = true;
+            $error='UI-Konfigurationsdatei, kein Schreiben möglich!';
+            Installation::log(array('text'=>'Fehler: '.$error,'logLevel'=>LogLevel::ERROR));
+            return null;
+        }
+
+        Installation::log(array('text'=>'beende Funktion'));
         return null;
     }
 }
