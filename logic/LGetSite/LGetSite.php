@@ -1281,9 +1281,14 @@ class LGetSite
         }
         unset($selectedSubs);
         
-        foreach ($markings as $marking){
+        $computedSubmissions = array();
+        $reversedMarkings = array_reverse($markings);
+        unset($markings);
+        foreach ($reversedMarkings as $marking){
             if (isset($marking['submission']['selectedForGroup']) && $marking['submission']['selectedForGroup']){
+                if (isset($computedSubmissions[$marking['submission']['id']])) continue;
                 $key = $marking['submission']['exerciseSheetId'];
+                $computedSubmissions[$marking['submission']['id']] = 1;
                 
                 if (isset($marking['tutorId']) && $marking['tutorId']==$userid){
                     if (!isset($selectedSubmissionsCount[$key]))
@@ -1317,8 +1322,9 @@ class LGetSite
                 }
             }
         }
+        unset($reversedMarkings);
         
-        if (isset($selectedSubmissionsCount))
+        if (isset($selectedSubmissionsCount)){
             foreach ($selectedSubmissionsCount as $key => $value){
                 if (!isset($selectedSubmissionsCount[$key]['allMarkings']))$selectedSubmissionsCount[$key]['allMarkings']=0;
                 
@@ -1328,7 +1334,7 @@ class LGetSite
                     unset($selectedSubmissionsCount[$key]['allStatus']['-1']);
                 }
             }
-        unset($markings);
+        }
 
         if (isset($sheets)){
             foreach ($sheets as $key => &$sheet) {
