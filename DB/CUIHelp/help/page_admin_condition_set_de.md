@@ -4,10 +4,10 @@
 
 ![](setA.png)
 
-Sie können hier die Schwellenwerte für Punktearten festlegen, welche Sie zuvor in der **Kursverwaltung**, für diese Veranstaltung, ausgewählt haben.
-
 > Der zu erreichende Wert wird in **%** angegeben.
 > <br/> Bereich: 0 bis 100
+
+Sie können hier die Schwellenwerte für Punktearten festlegen, welche Sie zuvor in der **Kursverwaltung**, für diese Veranstaltung, ausgewählt haben.
 
 > ##### 2. Aktion auslösen #####
 
