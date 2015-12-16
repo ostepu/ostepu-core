@@ -230,6 +230,7 @@ class LGetSite
             }
         }
         $groups = $tempGroups;
+        unset($tempGroups);
         
         $namesOfExercises = array();
         // find the current sheet and it's exercises
@@ -274,50 +275,49 @@ class LGetSite
                 unset($tutor['password']);
 
                 // create an empty marking for each tutor
-                $response['tutorAssignments'][] = array('tutor' => $tutor, 'submissions' => array());
+                $response['tutorAssignments'][$tutor['id']] = array('tutor' => $tutor, 'submissions' => array());
             }
         }
-        $response['tutorAssignments'][] = array('tutor' => json_decode(User::encodeUser(User::createUser(null,'','','','',null,null,null,null,null,null)),true), 'submissions' => array());
+        $response['tutorAssignments']['unkown'] = array('tutor' => json_decode(User::encodeUser(User::createUser(null,'','','','',null,null,null,null,null,null)),true), 'submissions' => array());
 
         // assign submissions for the markings to the right tutor
-        foreach ($markings as $marking ) {
+        $computedSubmissions = array();
+        $reversedMarkings = array_reverse($markings);
+        unset($markings);
+        foreach ($reversedMarkings as $marking ) {
 
             // ignore marking if submission is not selected for group
             if (isset($marking['submission']) && (!isset($marking['submission']['selectedForGroup']) || !$marking['submission']['selectedForGroup'])) continue;
+            if (isset($computedSubmissions[$marking['submission']['id']])) continue;
+            $computedSubmissions[$marking['submission']['id']] = 1;
             
-            foreach ($response['tutorAssignments'] as &$tutorAssignment ) {
-                if (!isset($tutorAssignment['tutor']['id']) || $marking['tutorId'] == $tutorAssignment['tutor']['id']) {
-
-                    // rename 'id' to 'submissionId'
-                    //$marking['submission']['id'] = $marking['submission']['id'];
-                    //unset($marking['submission']['id']);
-
-                    // remove unnecessary information
-                    unset($marking['submission']['file']);
-                    unset($marking['submission']['comment']);
-                    unset($marking['submission']['accepted']);
-                    unset($marking['submission']['date']);
-                    unset($marking['submission']['flag']);
-                    unset($marking['submission']['selectedForGroup']);
-                    
-                    $marking['submission']['user']=null;
-                    if (isset($students[$marking['submission']['leaderId']])){
-                        $marking['submission']['user']=$students[$marking['submission']['leaderId']];
-                    }
-                    
-                    $marking['submission']['markingId'] = $marking['id'];
-                    $tutorAssignment['submissions'][] = $marking['submission'];
-
-                    // save ids of all assigned submission
-                    $assignedSubmissionIDs[] = $marking['submission']['id'];
-                    break;
+            if (isset($response['tutorAssignments'][$marking['tutorId']])){
+                unset($marking['submission']['file']);
+                unset($marking['submission']['comment']);
+                unset($marking['submission']['accepted']);
+                unset($marking['submission']['date']);
+                unset($marking['submission']['flag']);
+                unset($marking['submission']['selectedForGroup']);
+                
+                $marking['submission']['user']=null;
+                if (isset($students[$marking['submission']['leaderId']])){
+                    $marking['submission']['user']=$students[$marking['submission']['leaderId']];
                 }
+                
+                $marking['submission']['markingId'] = $marking['id'];
+                $response['tutorAssignments'][$marking['tutorId']]['submissions'][] = $marking['submission'];
+
+                // save ids of all assigned submission
+                $assignedSubmissionIDs[] = $marking['submission']['id'];
             }
         }
+        unset($reversedMarkings);
         
         // remove unknown lecturer if empty
-        if (count($response['tutorAssignments'][count($response['tutorAssignments'])-1]['submissions']) == 0)
-            unset($response['tutorAssignments'][count($response['tutorAssignments'])-1]);
+        if (count($response['tutorAssignments']['unkown']['submissions']) == 0)
+            unset($response['tutorAssignments']['unkown']);
+        
+        $response['tutorAssignments'] = array_values($response['tutorAssignments']);
         
         $virtualTutor = array('id' => null,
                               'userName' => 'unassigned',
@@ -373,8 +373,8 @@ class LGetSite
                             $lastTutorUser[$tutorId][] = $leaderId;
                     }
                 }
-                
                 unset($lastMarkings);
+                
                 foreach ($response['tutorAssignments'] as &$tutorAssignment ) {
                     if (!isset($tutorAssignment['tutor']['id'])) continue;
                     if (!isset($lastTutorUser[$tutorAssignment['tutor']['id']])) continue;
@@ -386,6 +386,7 @@ class LGetSite
                         }
                     }
                 }
+                unset($lastTutorUser);
             }
         }
         
