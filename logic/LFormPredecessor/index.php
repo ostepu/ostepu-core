@@ -7,7 +7,7 @@
  * @author Till Uhlig
  * @date 2014
  */
- 
+
 require_once ( dirname( __FILE__ ) . '/LFormPredecessor.php' );
 
 new LFormPredecessor();

@@ -1,12 +1,12 @@
-<?php 
+<?php
 
 
 /**
  * @file LFile.php contains the LFile class
  *
- * @author Till Uhlig 
+ * @author Till Uhlig
  * @date 2014
- */ 
+ */
 
 require_once ( dirname(__FILE__). '/../../Assistants/Slim/Slim.php' );
 include_once ( dirname(__FILE__). '/../../Assistants/CConfig.php' );
@@ -63,7 +63,7 @@ class LFile
      * @var Link[] $_fs link to component which work with files, e.g. FSFile
      */
     private $_fs = array();
-    
+
         /**
      * @var Link[] $_db link to component which work with files, e.g. DBFile
      */
@@ -83,7 +83,7 @@ class LFile
         // runs the LFile
         if ( $com->used( ) ) return;
         $conf = $com->loadConfig( );
-            
+
         $this->_conf = $conf;
         $this->_fs = CConfig::getLinks($this->_conf->getLinks( ),'file');
         $this->_db = CConfig::getLinks($this->_conf->getLinks( ),'fileDb');
@@ -91,33 +91,33 @@ class LFile
         $this->_app = new \Slim\Slim( array( 'debug' => true ) );
         $this->_app->response->setStatus( 404 );
 
-        $this->_app->response->headers->set( 
+        $this->_app->response->headers->set(
                                             'Content-Type',
                                             'application/json'
                                             );
-                                            
+
         // POST File
-        $this->_app->post( 
+        $this->_app->post(
                           '/' . LFile::$_baseDir . '(/)',
-                          array( 
+                          array(
                                 $this,
                                 'postFile'
                                 )
                           );
-                          
+
         /*// POST PathFile
-        $this->_app->post( 
+        $this->_app->post(
                           '/' . LFile::$_baseDir . '/:path(/)',
-                          array( 
+                          array(
                                 $this,
                                 'postPathFile'
                                 )
                           );*/
-                                                      
+
         // DELETE File
-        $this->_app->delete( 
+        $this->_app->delete(
                             '/' . LFile::$_baseDir. '/:fileid',
-                            array( 
+                            array(
                                   $this,
                                   'deleteFile'
                                   )
@@ -126,7 +126,7 @@ class LFile
         // run Slim
         $this->_app->run( );
     }
-   
+
     /**
      * Adds a file.
      *
@@ -137,12 +137,12 @@ class LFile
      */
     public function postPathFile( $path)
     {
-        Logger::Log( 
+        Logger::Log(
                 'starts POST postFile',
                 LogLevel::DEBUG
                 );
-                   
-        $this->_app->response->setStatus( 201 );                   
+
+        $this->_app->response->setStatus( 201 );
         $body = $this->_app->request->getBody( );
         $fileObjects = File::decodeFile( $body );
 
@@ -171,34 +171,34 @@ class LFile
                 $res[] = $result;
                 continue;
             }
-            
+
             $result = LFileHandler2::add($this->_db,$this->_fs,$path, array(),$fileObject);
-            
+
             if ( $result !== null){
                 $result->setStatus(201);
                 $result->setBody(null);
-                $res[] = $result; 
+                $res[] = $result;
             } else {
                 $result = $fileObject;
                 $result->setBody(null);
                 $result->setStatus(409);
                 $result->addMessage("Die Datei konnte nicht gespeichert werden.");
                 $res[] = $result;
-                
-                Logger::Log( 
+
+                Logger::Log(
                             'POST postPathFile failed',
                             LogLevel::ERROR
                             );
             }
         }
 
-        if ( !$arr && 
+        if ( !$arr &&
              count( $res ) == 1 )
             $res = $res[0];
 
         $this->_app->response->setBody( File::encodeFile( $res ) );
     }
-   
+
     /**
      * Adds a file.
      *
@@ -218,7 +218,7 @@ class LFile
      */
     public function deleteFile( $fileid )
     {
-        Logger::Log( 
+        Logger::Log(
                 'starts Delete deleteFile',
                 LogLevel::DEBUG
                 );
@@ -229,26 +229,26 @@ class LFile
         $fileObject->setFileId($fileid);
 
         $res = null;
-        
+
         if ($fileObject!==null && $fileObject !== array()){
-            $result = LFileHandler2::delete($this->_db, $this->_fs, array(), $fileObject);    
+            $result = LFileHandler2::delete($this->_db, $this->_fs, array(), $fileObject);
         } else
             $result = null;
-            
+
         if ( $result !== null){
             if (is_array($result)) $result = $result[0];
             $result->setStatus(201);
-            $res = $result; 
+            $res = $result;
         } else {
             $result = new File();
             $result->getMessages()[] = ("Die Datei konnte nicht gelöscht werden.");
             $result->setStatus(409);
             $res = $result;
-            
+
             $this->_app->response->setStatus( 409 );
         }
 
-        $this->_app->response->setBody( File::encodeFile( $res ) );                        
+        $this->_app->response->setBody( File::encodeFile( $res ) );
     }
 }
 

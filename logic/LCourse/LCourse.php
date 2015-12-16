@@ -25,7 +25,7 @@ class LCourse
      * @var Slim $_app the slim object
      */
     private $app = null;
-    
+
     /**
      * @var Component $_conf the component data object
      */
@@ -60,13 +60,13 @@ class LCourse
      * @var string $lURL the URL of the logic-controller
      */
     private $lURL = ""; // readed out from config below
-    
+
     /**
      * @var Link[] $_out a list of links
      */
     private $_deleteCourse = array( );
     private $_postCourse = array( );
-    
+
     /**
      * REST actions
      *
@@ -83,7 +83,7 @@ class LCourse
         // runs the LCourse
         if ( $com->used( ) ) return;
             $conf = $com->loadConfig( );
-            
+
         // initialize slim
         $this->app = new \Slim\Slim(array('debug' => true));
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -118,7 +118,7 @@ class LCourse
         //run Slim
         $this->app->run();
     }
-    
+
     /**
      * Adds a course.
      *
@@ -132,18 +132,18 @@ class LCourse
      */
     public function AddCourse()
     {
-         Logger::Log( 
+         Logger::Log(
                     'starts POST AddCourse',
                     LogLevel::DEBUG
                     );
-                    
+
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
-        
+
         $course = Course::decodeCourse($body);
-    
+
         foreach ( $this->_postCourse as $_link ){
-            $result = Request::routeRequest( 
+            $result = Request::routeRequest(
                                             'POST',
                                             '/course',
                                             $header,
@@ -153,7 +153,7 @@ class LCourse
                                             );
 
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
                 $queryResult = Course::decodeCourse( $result['content'] );
                 if (is_array($queryResult)){$queryResult=$queryResult[0];}
@@ -163,18 +163,18 @@ class LCourse
 
                 $this->app->response->setStatus( 201 );
                 if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->app->response->headers->set( 
+                    $this->app->response->headers->set(
                                                         'Content-Type',
                                                         $result['headers']['Content-Type']
                                                         );
-                
+
             } else {
-            
+
                 if ($course->getId()!==null){
                     $this->deleteCourse($course->getId());
                 }
-            
-                Logger::Log( 
+
+                Logger::Log(
                             'POST AddCourse failed',
                             LogLevel::ERROR
                             );
@@ -183,7 +183,7 @@ class LCourse
                 $this->app->stop( );
             }
         }
-        
+
         $this->app->response->setBody( Course::encodeCourse( $course ) );
     }
 
@@ -218,17 +218,17 @@ class LCourse
      * @date 2014
      */
     public function deleteCourse($courseid){
-        Logger::Log( 
+        Logger::Log(
                     'starts DELETE DeleteCourse',
                     LogLevel::DEBUG
                     );
         $this->app->response->setStatus( 201 );
-                        
+
         $header = $this->app->request->headers->all();
-        $courseid = DBJson::mysql_real_escape_string( $courseid ); 
-        
+        $courseid = DBJson::mysql_real_escape_string( $courseid );
+
         foreach ( $this->_deleteCourse as $_link ){
-            $result = Request::routeRequest( 
+            $result = Request::routeRequest(
                                             'DELETE',
                                             '/course/'.$courseid,
                                             $header,
@@ -241,7 +241,7 @@ class LCourse
             if ( $result['status'] == 201){
                 // ok
             } else {
-                Logger::Log( 
+                Logger::Log(
                             'DELETE DeleteCourse failed',
                             LogLevel::ERROR
                             );

@@ -66,7 +66,7 @@ class LController
         // runs the LController
         if ( $com->used( ) ) return;
             $conf = $com->loadConfig( );
-            
+
         // initialize slim
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -122,7 +122,7 @@ class LController
                     $this->app->stop();
                 }
             }
-            
+
             $this->app->response->setStatus(412);
             $this->app->response->stop();
         }

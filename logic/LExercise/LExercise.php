@@ -73,7 +73,7 @@ class LExercise
         // runs the LExercise
         if ( $com->used( ) ) return;
             $conf = $com->loadConfig( );
-            
+
         // initialize slim
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -115,35 +115,35 @@ class LExercise
                     $FileTypesArrayTemp = $subexercise['fileTypes'];
                     unset($subexercise['fileTypes']);
                 }
-                
+
                 $subexerciseJSON = json_encode($subexercise);
                 $URL = $this->lURL.'/DB/exercise';
                 $method='POST';
                 if (isset($subexercise['id']) && $subexercise['id'] !== null){
-                   $method='PUT'; 
+                   $method='PUT';
                    $URL = $this->lURL.'/DB/exercise/'.$subexercise['id'];
                 }
                 $subexerciseAnswer = Request::custom($method, $URL, $header, $subexerciseJSON);
 
                 if ($subexerciseAnswer['status'] == 201) {
                     $subexerciseOutput = json_decode($subexerciseAnswer['content'], true);
-                    
+
                     if (isset($subexercise['id'])){
                         $result[] = $subexercise;
                         $subexerciseOutput = $subexercise;
                     } else {
                         $result[] = Exercise::decodeExercise($subexerciseAnswer['content']);
                     }
-                    
+
                     if (isset($subexerciseOutput['id'])) {
                         $linkid = $subexerciseOutput['id'];
                     }
-                    
+
                     // create attachement in DB and FS
-                    if (isset($subexercise['attachments']) && !empty($subexercise['attachments'])) { 
+                    if (isset($subexercise['attachments']) && !empty($subexercise['attachments'])) {
                         foreach($subexercise['attachments'] as &$attachment)
                             $attachment['exerciseId'] = $linkid;
-                            
+
                         $attachments = $subexercise['attachments'];
                         $tempAttachments = array();
                         foreach ($attachments as $attachment){
@@ -151,8 +151,8 @@ class LExercise
                             $temp->setFile($attachment);
                             $tempAttachments[] = $temp;
                         }
-                        
-                        $res = Request::routeRequest( 
+
+                        $res = Request::routeRequest(
                                                         'POST',
                                                         '/attachment',
                                                         $header,
@@ -162,8 +162,8 @@ class LExercise
                                                         );
 
                         // checks the correctness of the query
-                        if ( $res['status'] >= 200 && 
-                             $res['status'] <= 299 ){                          
+                        if ( $res['status'] >= 200 &&
+                             $res['status'] <= 299 ){
                             // ...
                         } else {
                             $allright = false;
@@ -185,11 +185,11 @@ class LExercise
                             }
                         }
                     }
-                    
+
                     if ($allright == false) {
                         break;
                     }
-                    
+
                 } else {
                     $allright = false;
                     break;
