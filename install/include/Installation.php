@@ -18,7 +18,7 @@ class Installation
 
     public static $enableLogs = true;
 
-    public static $logLevel = LogLevel::DEBUG;
+    public static $logLevel = LogLevel::NONE;
 
    /**
      * Orders an array by given keys.
@@ -194,7 +194,7 @@ class Installation
         if (!isset(Installation::$logFile)){
             $path = dirname(__FILE__) . '/../logs';
             Einstellungen::generatepath($path);
-            Installation::$logFile = $path.'/install_'.date('Ymd_Gis').'.log';
+            Installation::$logFile = $path.'/install_'.date('Ymd_His').'.log';
         }
 
 

@@ -633,8 +633,10 @@ class Installer
                     }
                 }
                 echo "</table>";
-                echo "</div";
+                echo "</div>";
 
+                echo "<input type='hidden' name='data[LOGGER][logLevel]' value='".Installation::$logLevel."'>";
+                
                 echo "</th></tr></form></table>";
 
                 echo "</div></body></html>";
@@ -687,6 +689,10 @@ class Installer
 }
 
 // create a new instance of Installer class
-Installation::log(array('text'=>'erzeuge Instanz','logLevel'=>LogLevel::INFO));
+if (isset($_POST['data']['LOGGER']['logLevel'])){
+    Installation::$logLevel = $_POST['data']['LOGGER']['logLevel'];
+}
+
+Installation::log(array('text'=>'erzeuge Instanz'));
 new Installer((isset($argv) ? $argv : null));
-Installation::log(array('text'=>'verlasse Instanz','logLevel'=>LogLevel::INFO));
+Installation::log(array('text'=>'verlasse Instanz'));
