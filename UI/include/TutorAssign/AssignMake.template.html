@@ -21,7 +21,8 @@ if (isset($AssignMakeNotificationElements)) {
             <div>
                 <?php echo Language::Get('main','content', $langTemplate); ?>
             </div>
-            <?php if (count($emptyGroups)>0 && count($namesOfExercises)) { ?>
+            <?php $elements=0;foreach($emptyGroups as $exercise){ $elements+=count($exercise); } ?>
+            <?php if ($elements>0 && count($namesOfExercises)) { ?>
                 <?php if (isset($_POST['action']) && $_POST['action'] === 'AssignMakeWarning') { ?>
                 <?php foreach($namesOfExercises as $exerciseId => $exerciseName) { ?>
                 <?php   if (!isset($emptyGroups[$exerciseId])) continue; ?>
