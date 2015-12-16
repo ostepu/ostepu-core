@@ -7,17 +7,17 @@
  * @author Till Uhlig
  * @date 2014
  */
- 
+
 require_once ( dirname( __FILE__ ) . '/CGate.php' );
 
-Logger::Log( 
+Logger::Log(
             'begin CGate',
             LogLevel::DEBUG
             );
-            
+
 new CGate();
 
-Logger::Log( 
+Logger::Log(
             'end CGate',
             LogLevel::DEBUG
             );

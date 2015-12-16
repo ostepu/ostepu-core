@@ -23,7 +23,7 @@ Die maximale Größe der Einsendung, wenn Sie eine größere Datei versuchen hoc
 
 ![](uploadF.png)
 
-Hier können Sie die Datei auswählen, welche Sie hochladen möchten. Dabei können Sie nur eine einzelne Datei auswählen, sollten Sie mehrere Dateien zu dieser Aufgabe abgeben wollen, können Sie diese in ein Archiv verpacken und anschließend hochladen. 
+Hier können Sie die Datei auswählen, welche Sie hochladen möchten. Dabei können Sie nur eine einzelne Datei auswählen, sollten Sie mehrere Dateien zu dieser Aufgabe abgeben wollen, können Sie diese in ein Archiv verpacken und anschließend hochladen.
 
 ![](uploadH.png)
 

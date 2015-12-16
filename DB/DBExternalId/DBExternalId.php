@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -59,7 +59,7 @@ class DBExternalId
      */
     public function deleteExternalId( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteExternalId.sql',$params,201,'Model::isCreated',array(new ExternalId()),'Model::isProblem',array(new ExternalId()));  
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteExternalId.sql',$params,201,'Model::isCreated',array(new ExternalId()),'Model::isProblem',array(new ExternalId()));
     }
 
     /**
@@ -98,7 +98,7 @@ class DBExternalId
             }
             return $result;
         };
-        
+
         $params = DBJson::mysql_real_escape_string( $params );
         return $this->_component->call($linkName, $params, '', 200, $positive, array(), 'Model::isProblem', array(), 'Query');
     }
@@ -107,7 +107,7 @@ class DBExternalId
     {
         return $this->get($callName,$callName,$params);
     }
-    
+
         /**
      * Removes the component from the platform
      *
@@ -118,7 +118,7 @@ class DBExternalId
     {
         return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
-    
+
     /**
      * Adds the component to the platform
      *
@@ -131,4 +131,4 @@ class DBExternalId
     }
 }
 
- 
+

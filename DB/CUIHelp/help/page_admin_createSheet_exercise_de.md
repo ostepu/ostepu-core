@@ -9,7 +9,7 @@ Hier kann nichts eingestellt werden. Diese Aufgabennummer (bzw. Nummer der Teila
 
 ![](createExerciseB.png)
 
-Wenn Sie dieses Feld leer lassen, wird die Maximalpunktzahl **0** betragen. 
+Wenn Sie dieses Feld leer lassen, wird die Maximalpunktzahl **0** betragen.
 > Die Maximalpunktzahl muss zwischen 0 und 65535 liegen.
 
 ---
@@ -39,14 +39,14 @@ Aufbau:
 **mimeVertreter.Endung**
 
 > Es ist möglich den mimeVertreter einzeln anzugeben (ohne Dateiendung und ohne Punkt).
-> <br/>Beispiel: 
+> <br/>Beispiel:
 >
 >![](createExerciseH.png)
 >
 >Erklärung: Es sind PDFs (mimeType: pdf, Dateiendung: beliebig) und zip-Archive (mime-Type: zip, Dateiendung: beliebig) erlaubt.
 
 | mimeVertreter | mime-type |
-| :--- | :---- 
+| :--- | :----
 | gz   | application/gzip
 | xls  | application/msexcel
 | ppt  | application/mspowerpoint

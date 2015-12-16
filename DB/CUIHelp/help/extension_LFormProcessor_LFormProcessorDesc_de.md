@@ -15,7 +15,7 @@ Wenn Sie diese Einstellung auswählen, gilt die Antwort des Nutzers als korrekt,
 
 ![](LFormProcessorAhnlichkeit.png "ähnliche Antworten zulassen")
 
-Um ähnliche Antworten als Lösung zuzulassen, können Sie diese Vergleichsart verwenden. Wählen Sie dazu den Grad der Übereinstimmung aus, indem Sie ihn in Prozent, in das nebenstehende Eingabefeld eintragen. 
+Um ähnliche Antworten als Lösung zuzulassen, können Sie diese Vergleichsart verwenden. Wählen Sie dazu den Grad der Übereinstimmung aus, indem Sie ihn in Prozent, in das nebenstehende Eingabefeld eintragen.
 
 Bsp.: 90
 

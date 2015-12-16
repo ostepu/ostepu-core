@@ -1,5 +1,5 @@
 
-Sie können sowohl Erweiterungen installieren (Haken gesetzt) und deinstallieren (Haken nicht gesetzt). 
+Sie können sowohl Erweiterungen installieren (Haken gesetzt) und deinstallieren (Haken nicht gesetzt).
 
 > Beachten Sie dabei, das beim Deinstallieren einer Erweiterung ebenfalls die durch diese Erweiterung angelegten Daten verloren gehen können.
 

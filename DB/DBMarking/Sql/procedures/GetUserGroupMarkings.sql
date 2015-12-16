@@ -41,7 +41,7 @@ select SQL_CACHE
     S.S_hideFile as S_hideFile2,
     S.E_id as E_id2,
     S.ES_id as ES_id2
-from       
+from
     `Group` G
         join
     `Group` G2 ON (G.U_id_leader = '",userid,"'

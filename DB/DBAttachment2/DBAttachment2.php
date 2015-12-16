@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -77,110 +77,110 @@ class DBAttachment2
 
         // runs the DBAttachment2
         if ( $com->used( ) ) return;
-            
+
         $this->_conf = $com;
-        
+
         // initialize slim
         $this->_app = new \Slim\Slim(array('debug' => true));
-        $this->_app->response->headers->set( 
+        $this->_app->response->headers->set(
                                             'Content-Type',
                                             'application/json'
                                             );
-                                            
+
         // POST AddCourse
-        $this->_app->post( 
+        $this->_app->post(
                          '(/:pre)/course(/)',
-                         array( 
+                         array(
                                $this,
                                'addCourse'
                                )
                          );
-                         
+
         // POST DeleteCourse
-        $this->_app->delete( 
+        $this->_app->delete(
                          '(/:pre)/course/:courseid(/)',
-                         array( 
+                         array(
                                $this,
                                'deleteCourse'
                                )
                          );
 
         // PUT EditAttachment
-        $this->_app->put( 
+        $this->_app->put(
                          '(/:pre)/' . $this->getPrefix( ) . '(/attachment)/:aid(/)',
-                         array( 
+                         array(
                                $this,
                                'editAttachment'
                                )
                          );
 
         // DELETE DeleteAttachment
-        $this->_app->delete( 
+        $this->_app->delete(
                             '(/:pre)/' . $this->getPrefix( ) . '(/attachment)/:aid(/)',
-                            array( 
+                            array(
                                   $this,
                                   'deleteAttachment'
                                   )
                             );
 
         // POST AddAttachment
-        $this->_app->post( 
+        $this->_app->post(
                           '(/:pre)/' . $this->getPrefix( ),
-                          array( 
+                          array(
                                 $this,
                                 'addAttachment'
                                 )
                           );
-                          
+
         // GET GetExistsCourseAttachments
-        $this->_app->get( 
+        $this->_app->get(
                          '(/:pre)/link/exists/course/:courseid(/)',
-                         array( 
+                         array(
                                $this,
                                'getExistsCourseAttachments'
                                )
                         );
-                        
+
         // GET GetAttachment
-        $this->_app->get( 
+        $this->_app->get(
                          '(/:pre)/' . $this->getPrefix( ) . '(/attachment)/:aid(/)',
-                         array( 
+                         array(
                                $this,
                                'getAttachment'
                                )
                          );
 
         // GET GetExerciseAttachments
-        $this->_app->get( 
+        $this->_app->get(
                          '(/:pre)/' . $this->getPrefix( ) . '/exercise/:eid(/)',
-                         array( 
+                         array(
                                $this,
                                'getExerciseAttachments'
                                )
                          );
 
         // GET GetSheetAttachments
-        $this->_app->get( 
+        $this->_app->get(
                          '(/:pre)/' . $this->getPrefix( ) . '/exercisesheet/:esid(/)',
-                         array( 
+                         array(
                                $this,
                                'getSheetAttachments'
                                )
                          );
-                                             
+
         // GET GetCourseAttachments
-        $this->_app->get( 
+        $this->_app->get(
                          '(/:pre)/' . $this->getPrefix( ) . '/course/:courseid(/)',
-                         array( 
+                         array(
                                $this,
                                'getCourseAttachments'
                                )
                          );
-                         
+
         // run Slim
         $this->_app->run( );
     }
-    
+
     /**
      * Loads the configuration data for the component from CConfig.json file
      *
@@ -191,7 +191,7 @@ class DBAttachment2
     public function loadConfig( $pre='' ){
         // initialize component
         $this->_conf = $this->_conf->loadConfig( $pre );
-        $this->query = array( CConfig::getLink( 
+        $this->query = array( CConfig::getLink(
                                                $this->_conf->getLinks( ),
                                                'out'
                                                ) );
@@ -212,8 +212,8 @@ class DBAttachment2
     {
         $this->loadConfig($pre);
         $pre = ($pre === '' ? '' : '_') . $pre;
-        
-        Logger::Log( 
+
+        Logger::Log(
                     'starts PUT EditAttachment',
                     LogLevel::DEBUG
                     );
@@ -234,10 +234,10 @@ class DBAttachment2
         foreach ( $insert as $in ){
 
             // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile( 
+            $result = DBRequest::getRoutedSqlFile(
                                                   $this->query,
                                                   dirname(__FILE__) . '/Sql/EditAttachment.sql',
-                                                  array( 
+                                                  array(
                                                         'aid' => $aid,
                                                         'object' => $in,
                                                         'pre' => $pre
@@ -245,17 +245,17 @@ class DBAttachment2
                                                   );
 
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
                 $this->_app->response->setStatus( 201 );
                 if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
+                    $this->_app->response->headers->set(
                                                         'Content-Type',
                                                         $result['headers']['Content-Type']
                                                         );
-                
+
             } else {
-                Logger::Log( 
+                Logger::Log(
                             'PUT EditAttachment failed',
                             LogLevel::ERROR
                             );
@@ -278,8 +278,8 @@ class DBAttachment2
     {
         $this->loadConfig($pre);
         $pre = ($pre === '' ? '' : '_') . $pre;
-        
-        Logger::Log( 
+
+        Logger::Log(
                     'starts DELETE DeleteAttachment',
                     LogLevel::DEBUG
                     );
@@ -288,24 +288,24 @@ class DBAttachment2
         $pre = DBJson::mysql_real_escape_string( $pre );
 
         // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
+        $result = DBRequest::getRoutedSqlFile(
                                               $this->query,
                                               dirname(__FILE__) . '/Sql/DeleteAttachment.sql',
                                               array( 'aid' => $aid,'pre' => $pre )
                                               );
 
         // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
+        if ( $result['status'] >= 200 &&
              $result['status'] <= 299 ){
             $this->_app->response->setStatus( 201 );
             if ( isset( $result['headers']['Content-Type'] ) )
-                $this->_app->response->headers->set( 
+                $this->_app->response->headers->set(
                                                     'Content-Type',
                                                     $result['headers']['Content-Type']
                                                     );
-            
+
         } else {
-            Logger::Log( 
+            Logger::Log(
                         'DELETE DeleteAttachment failed',
                         LogLevel::ERROR
                         );
@@ -328,8 +328,8 @@ class DBAttachment2
     {
         $this->loadConfig($pre);
         $pre = ($pre === '' ? '' : '_') . $pre;
-        
-        Logger::Log( 
+
+        Logger::Log(
                     'starts POST AddAttachment',
                     LogLevel::DEBUG
                     );
@@ -343,7 +343,7 @@ class DBAttachment2
             $insert = array( $insert );
             $arr = false;
         }
-        
+
         $pre = DBJson::mysql_real_escape_string( $pre );
 
         // this array contains the indices of the inserted objects
@@ -354,14 +354,14 @@ class DBAttachment2
             $data = $in->getInsertData( );
 
             // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile( 
+            $result = DBRequest::getRoutedSqlFile(
                                                   $this->query,
                                                   dirname(__FILE__) . '/Sql/AddAttachment.sql',
                                                   array( 'object' => $in,'pre' => $pre )
                                                   );
 
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
                 $queryResult = Query::decodeQuery( $result['content'] );
 
@@ -370,18 +370,18 @@ class DBAttachment2
                 $course = Course::ExtractCourse($queryResult[count($queryResult)-1]->getResponse(),true);
 
                 $obj->setId( $course->getId() . '_' . $queryResult[count($queryResult)-2]->getInsertId( ) );
-                
+
 
                 $res[] = $obj;
                 $this->_app->response->setStatus( 201 );
                 if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
+                    $this->_app->response->headers->set(
                                                         'Content-Type',
                                                         $result['headers']['Content-Type']
                                                         );
-                
+
             } else {
-                Logger::Log( 
+                Logger::Log(
                             'POST AddAttachment failed',
                             LogLevel::ERROR
                             );
@@ -391,15 +391,15 @@ class DBAttachment2
             }
         }
 
-        if ( !$arr && 
+        if ( !$arr &&
              count( $res ) == 1 ){
             $this->_app->response->setBody( Attachment::encodeAttachment( $res[0] ) );
-            
-        } else 
+
+        } else
             $this->_app->response->setBody( Attachment::encodeAttachment( $res ) );
     }
 
-    public function get( 
+    public function get(
                         $functionName,
                         $sqlFile,
                         $pre='' ,
@@ -414,8 +414,8 @@ class DBAttachment2
     {
         $this->loadConfig($pre);
         $pre = ($pre === '' ? '' : '_') . $pre;
-        
-        Logger::Log( 
+
+        Logger::Log(
                     'starts GET ' . $functionName,
                     LogLevel::DEBUG
                     );
@@ -429,10 +429,10 @@ class DBAttachment2
         $aid = DBJson::mysql_real_escape_string( $aid );
 
         // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
+        $result = DBRequest::getRoutedSqlFile(
                                               $this->query,
                                               $sqlFile,
-                                              array( 
+                                              array(
                                                     'pre' => $pre,
                                                     'userid' => $userid,
                                                     'courseid' => $courseid,
@@ -444,15 +444,15 @@ class DBAttachment2
                                               );
 
         // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
+        if ( $result['status'] >= 200 &&
              $result['status'] <= 299 ){
             $query = Query::decodeQuery( $result['content'] );
-            
+
             if (is_array($query))
             $query = $query[count($query)-1];
 
             if ( $query->getNumRows( ) > 0 ){
-                $res = Attachment::ExtractAttachment( 
+                $res = Attachment::ExtractAttachment(
                                                      $query->getResponse( ),
                                                      $singleResult
                                                      );
@@ -461,22 +461,22 @@ class DBAttachment2
 
                 $this->_app->response->setStatus( 200 );
                 if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
+                    $this->_app->response->headers->set(
                                                         'Content-Type',
                                                         $result['headers']['Content-Type']
                                                         );
 
                 $this->_app->stop( );
-                
+
             } else
                 $result['status'] = 404;
         }
 
-        Logger::Log( 
+        Logger::Log(
                     'GET ' . $functionName . ' failed',
                     LogLevel::ERROR
                     );
-                    
+
         $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
         $this->_app->response->setBody( Attachment::encodeAttachment( new Attachment( ) ) );
         $this->_app->stop( );
@@ -493,7 +493,7 @@ class DBAttachment2
      */
     public function getAttachment( $pre='' ,$aid )
     {
-        $this->get( 
+        $this->get(
                    'GetAttachment',
                    dirname(__FILE__) . '/Sql/GetAttachment.sql',
                    isset( $pre ) ? $pre : '',
@@ -518,7 +518,7 @@ class DBAttachment2
      */
     public function getExerciseAttachments( $pre='' ,$eid )
     {
-        $this->get( 
+        $this->get(
                    'GetExerciseAttachments',
                    dirname(__FILE__) . '/Sql/GetExerciseAttachments.sql',
                    isset( $pre ) ? $pre : '',
@@ -542,7 +542,7 @@ class DBAttachment2
      */
     public function getSheetAttachments($pre='' , $esid )
     {
-        $this->get( 
+        $this->get(
                    'GetSheetAttachments',
                    dirname(__FILE__) . '/Sql/GetSheetAttachments.sql',
                    isset( $pre ) ? $pre : '',
@@ -554,7 +554,7 @@ class DBAttachment2
                    isset( $aid ) ? $aid : ''
                    );
     }
-    
+
     /**
      * Returns the attachments to a given course.
      *
@@ -566,7 +566,7 @@ class DBAttachment2
      */
     public function getCourseAttachments($pre='' , $courseid )
     {
-        $this->get( 
+        $this->get(
                    'GetCourseAttachments',
                    dirname(__FILE__) . '/Sql/GetCourseAttachments.sql',
                    isset( $pre ) ? $pre : '',
@@ -578,7 +578,7 @@ class DBAttachment2
                    isset( $aid ) ? $aid : ''
                    );
     }
-    
+
     /**
      * Returns status code 200, if this component is correctly installed for the given course
      *
@@ -590,7 +590,7 @@ class DBAttachment2
      */
     public function getExistsCourseAttachments( $pre='' , $courseid )
     {
-        $this->get( 
+        $this->get(
                    'GetExistsCourseAttachments',
                    dirname(__FILE__) . '/Sql/GetExistsCourseAttachments.sql',
                    isset( $pre ) ? $pre : '',
@@ -603,7 +603,7 @@ class DBAttachment2
                    true
                    );
     }
-    
+
     /**
      * Removes the component from a given course
      *
@@ -617,35 +617,35 @@ class DBAttachment2
     {
         $this->loadConfig($pre);
         $pre = ($pre === '' ? '' : '_') . $pre;
-        
-        Logger::Log( 
+
+        Logger::Log(
                     'starts DELETE DeleteCourse',
                     LogLevel::DEBUG
                     );
-                    
-        $courseid = DBJson::mysql_real_escape_string( $courseid ); 
-        
+
+        $courseid = DBJson::mysql_real_escape_string( $courseid );
+
         // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
+        $result = DBRequest::getRoutedSqlFile(
                                               $this->query,
                                               dirname(__FILE__) . '/Sql/DeleteCourse.sql',
                                               array( 'courseid' => $courseid,'pre' => $pre )
                                               );
 
         // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
+        if ( $result['status'] >= 200 &&
              $result['status'] <= 299 ){
 
             $this->_app->response->setStatus( 201 );
             $this->_app->response->setBody( '' );
             if ( isset( $result['headers']['Content-Type'] ) )
-                $this->_app->response->headers->set( 
+                $this->_app->response->headers->set(
                                                     'Content-Type',
                                                     $result['headers']['Content-Type']
                                                     );
-            
+
         } else {
-            Logger::Log( 
+            Logger::Log(
                         'DELETE DeleteCourse failed',
                         LogLevel::ERROR
                         );
@@ -654,7 +654,7 @@ class DBAttachment2
             $this->_app->stop( );
         }
     }
-    
+
     /**
      * Adds the component to a course
      *
@@ -667,8 +667,8 @@ class DBAttachment2
     {
         $this->loadConfig($pre);
         $pre = ($pre === '' ? '' : '_') . $pre;
-        
-        Logger::Log( 
+
+        Logger::Log(
                     'starts POST AddCourse',
                     LogLevel::DEBUG
                     );
@@ -686,29 +686,29 @@ class DBAttachment2
         // this array contains the indices of the inserted objects
         $res = array( );
         foreach ( $insert as $in ){
-        
+
             // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile( 
+            $result = DBRequest::getRoutedSqlFile(
                                                   $this->query,
                                                   dirname(__FILE__) . '/Sql/AddCourse.sql',
                                                   array( 'object' => $in,'pre' => $pre )
                                                   );
 
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
                 $queryResult = Query::decodeQuery( $result['content'] );
 
                 $res[] = $in;
                 $this->_app->response->setStatus( 201 );
                 if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
+                    $this->_app->response->headers->set(
                                                         'Content-Type',
                                                         $result['headers']['Content-Type']
                                                         );
-                
+
             } else {
-                Logger::Log( 
+                Logger::Log(
                             'POST AddCourse failed',
                             LogLevel::ERROR
                             );
@@ -718,11 +718,11 @@ class DBAttachment2
             }
         }
 
-        if ( !$arr && 
+        if ( !$arr &&
              count( $res ) == 1 ){
             $this->_app->response->setBody( Course::encodeCourse( $res[0] ) );
-            
-        } else 
+
+        } else
             $this->_app->response->setBody( Course::encodeCourse( $res ) );
     }
 }

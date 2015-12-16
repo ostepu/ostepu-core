@@ -16,7 +16,7 @@ Jeder Admin/Tutor der Veranstaltung, sofern ihm eine Einsendung zur Kontrolle zu
 
 #### Zuordnung ändern ####
 > ##### 1. Einsendungen und Zielkontrolleur auswählen #####
-Sie können beliebig viele Einsendungen auswählen und einen einzelnen Kontrolleur, dem sie zugeordnet werden sollen. Dabei werden bisherige Bewertungen und Korrekturen, dieser Einsendungen, gelöscht (sofern solche existieren). 
+Sie können beliebig viele Einsendungen auswählen und einen einzelnen Kontrolleur, dem sie zugeordnet werden sollen. Dabei werden bisherige Bewertungen und Korrekturen, dieser Einsendungen, gelöscht (sofern solche existieren).
 
 ![](manA.png)
 

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * @file DBForm.php contains the DBForm class
  *
@@ -76,106 +76,106 @@ class DBForm
         // runs the DBForm
         if ( $com->used( ) ) return;
             $conf = $com->loadConfig( );
-            
+
         // initialize component
         $this->_conf = $conf;
-        $this->query = array( CConfig::getLink( 
+        $this->query = array( CConfig::getLink(
                                                $conf->getLinks( ),
                                                'out'
                                                ) );
 
         // initialize slim
         $this->_app = new \Slim\Slim( );
-        $this->_app->response->headers->set( 
+        $this->_app->response->headers->set(
                                             'Content-Type',
                                             'application/json'
                                             );
-                                                                  
+
         // POST AddCourse
-        $this->_app->post( 
+        $this->_app->post(
                          '/course(/)',
-                         array( 
+                         array(
                                $this,
                                'addCourse'
                                )
                          );
-                         
+
         // POST DeleteCourse
-        $this->_app->delete( 
+        $this->_app->delete(
                          '/course/:courseid(/)',
-                         array( 
+                         array(
                                $this,
                                'deleteCourse'
                                )
                          );
 
         // PUT EditForm
-        $this->_app->put( 
+        $this->_app->put(
                          '/' . $this->getPrefix( ) . '(/form)/:formid(/)',
-                         array( 
+                         array(
                                $this,
                                'editForm'
                                )
                          );
 
         // DELETE DeleteForm
-        $this->_app->delete( 
+        $this->_app->delete(
                             '/' . $this->getPrefix( ) . '(/form)/:formid(/)',
-                            array( 
+                            array(
                                   $this,
                                   'deleteForm'
                                   )
                             );
 
         // POST AddForm
-        $this->_app->post( 
+        $this->_app->post(
                           '/' . $this->getPrefix( ) . '(/)',
-                          array( 
+                          array(
                                 $this,
                                 'addForm'
                                 )
                           );
 
         // GET GetForm
-        $this->_app->get( 
+        $this->_app->get(
                          '/' . $this->getPrefix( ) . '(/form)/:formid(/)',
-                         array( 
+                         array(
                                $this,
                                'getForm'
                                )
                          );
 
         // GET GetCourseForms
-        $this->_app->get( 
+        $this->_app->get(
                          '/' . $this->getPrefix( ) . '/course/:courseid(/)',
-                         array( 
+                         array(
                                $this,
                                'getCourseForms'
                                )
                          );
-                         
+
         // GET GetExistsCourseForms
-        $this->_app->get( 
+        $this->_app->get(
                          '/link/exists/course/:courseid(/)',
-                         array( 
+                         array(
                                $this,
                                'getExistsCourseForms'
                                )
                          );
 
         // GET GetSheetForms
-        $this->_app->get( 
+        $this->_app->get(
                          '/' . $this->getPrefix( ) . '/exercisesheet/:esid(/)',
-                         array( 
+                         array(
                                $this,
                                'getSheetForms'
                                )
                          );
-                         
+
         // GET GetExerciseForms
-        $this->_app->get( 
+        $this->_app->get(
                          '/' . $this->getPrefix( ) . '/exercise/:eid(/)',
-                         array( 
+                         array(
                                $this,
                                'getExerciseForms'
                                )
@@ -184,7 +184,7 @@ class DBForm
             // run Slim
             $this->_app->run( );
     }
-    
+
     /**
      * Edits a form.
      *
@@ -197,7 +197,7 @@ class DBForm
      */
     public function editForm( $formid )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts PUT EditForm',
                     LogLevel::DEBUG
                     );
@@ -217,27 +217,27 @@ class DBForm
         foreach ( $insert as $in ){
 
             // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile( 
+            $result = DBRequest::getRoutedSqlFile(
                                                   $this->query,
                                                   dirname(__FILE__) . '/Sql/EditForm.sql',
-                                                  array( 
+                                                  array(
                                                         'formid' => $formid,
                                                         'object' => $in
                                                         )
                                                   );
 
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
                 $this->_app->response->setStatus( 201 );
                 if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
+                    $this->_app->response->headers->set(
                                                         'Content-Type',
                                                         $result['headers']['Content-Type']
                                                         );
-                
+
             } else {
-                Logger::Log( 
+                Logger::Log(
                             'PUT EditForm failed',
                             LogLevel::ERROR
                             );
@@ -246,7 +246,7 @@ class DBForm
             }
         }
     }
-    
+
     /**
      * Deletes a form.
      *
@@ -257,7 +257,7 @@ class DBForm
      */
     public function deleteForm( $formid )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts DELETE DeleteForm',
                     LogLevel::DEBUG
                     );
@@ -265,27 +265,27 @@ class DBForm
         $formid = DBJson::mysql_real_escape_string( $formid );
 
         // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
+        $result = DBRequest::getRoutedSqlFile(
                                               $this->query,
                                               dirname(__FILE__) . '/Sql/DeleteForm.sql',
                                               array( 'formid' => $formid )
                                               );
 
         // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
+        if ( $result['status'] >= 200 &&
              $result['status'] <= 299 ){
 
             if ( isset( $result['headers']['Content-Type'] ) )
-                $this->_app->response->headers->set( 
+                $this->_app->response->headers->set(
                                                     'Content-Type',
                                                     $result['headers']['Content-Type']
                                                     );
 
             $this->_app->response->setStatus( 201 );
             $this->_app->stop( );
-            
+
         } else {
-            Logger::Log( 
+            Logger::Log(
                         'DELETE DeleteForm failed',
                         LogLevel::ERROR
                         );
@@ -295,7 +295,7 @@ class DBForm
             $this->_app->stop( );
         }
     }
-    
+
     /**
      * Adds a form.
      *
@@ -304,7 +304,7 @@ class DBForm
      */
     public function addForm( )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts POST AddForm',
                     LogLevel::DEBUG
                     );
@@ -324,14 +324,14 @@ class DBForm
         foreach ( $insert as $in ){
 
             // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile( 
+            $result = DBRequest::getRoutedSqlFile(
                                                   $this->query,
                                                   dirname(__FILE__) . '/Sql/AddForm.sql',
                                                   array( 'object' => $in)
                                                   );
 
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
                 $queryResult = Query::decodeQuery( $result['content'] );
 
@@ -344,13 +344,13 @@ class DBForm
                 $res[] = $obj;
                 $this->_app->response->setStatus( 201 );
                 if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
+                    $this->_app->response->headers->set(
                                                         'Content-Type',
                                                         $result['headers']['Content-Type']
                                                         );
-                
+
             } else {
-                Logger::Log( 
+                Logger::Log(
                             'POST AddForm failed',
                             LogLevel::ERROR
                             );
@@ -360,15 +360,15 @@ class DBForm
             }
         }
 
-        if ( !$arr && 
+        if ( !$arr &&
              count( $res ) == 1 ){
             $this->_app->response->setBody( Form::encodeForm( $res[0] ) );
-            
-        } else 
+
+        } else
             $this->_app->response->setBody( Form::encodeForm( $res ) );
     }
-    
-    public function get( 
+
+    public function get(
                         $functionName,
                         $sqlFile,
                         $formid,
@@ -379,7 +379,7 @@ class DBForm
                         $checkSession = true
                         )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts GET ' . $functionName,
                     LogLevel::DEBUG
                     );
@@ -387,7 +387,7 @@ class DBForm
         // checks whether incoming data has the correct data type
         $formid = DBJson::mysql_real_escape_string( $formid );
 
-        DBJson::checkInput( 
+        DBJson::checkInput(
                            $this->_app,
                            $courseid == '' ? true : ctype_digit( $courseid ),
                            $esid == '' ? true : ctype_digit( $esid ),
@@ -395,10 +395,10 @@ class DBForm
                            );
 
         // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
+        $result = DBRequest::getRoutedSqlFile(
                                               $this->query,
                                               $sqlFile,
-                                              array( 
+                                              array(
                                                     'formid' => $formid,
                                                     'courseid' => $courseid,
                                                     'esid' => $esid,
@@ -408,15 +408,15 @@ class DBForm
                                               );
 
         // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
+        if ( $result['status'] >= 200 &&
              $result['status'] <= 299 ){
             $query = Query::decodeQuery( $result['content'] );
 
             if (is_array($query))
             $query = $query[count($query)-1];
-            
+
             if ( $query->getNumRows( ) > 0 ){
-                $res = Form::ExtractForm( 
+                $res = Form::ExtractForm(
                                          $query->getResponse( ),
                                          $singleResult
                                          );
@@ -424,18 +424,18 @@ class DBForm
 
                 $this->_app->response->setStatus( 200 );
                 if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
+                    $this->_app->response->headers->set(
                                                         'Content-Type',
                                                         $result['headers']['Content-Type']
                                                         );
 
                 $this->_app->stop( );
-                
-            } else 
+
+            } else
                 $result['status'] = 404;
         }
 
-        Logger::Log( 
+        Logger::Log(
                     'GET ' . $functionName . ' failed',
                     LogLevel::ERROR
                     );
@@ -443,7 +443,7 @@ class DBForm
         $this->_app->response->setBody( Form::encodeForm( new Form( ) ) );
         $this->_app->stop( );
     }
-    
+
     /**
      * Returns a form.
      *
@@ -454,7 +454,7 @@ class DBForm
      */
     public function getForm( $formid )
     {
-        $this->get( 
+        $this->get(
                    'GetForm',
                    dirname(__FILE__) . '/Sql/GetForm.sql',
                    isset( $formid ) ? $formid : '',
@@ -464,7 +464,7 @@ class DBForm
                    true
                    );
     }
-    
+
     /**
      * Returns forms to a given course.
      *
@@ -475,7 +475,7 @@ class DBForm
      */
     public function getCourseForms( $courseid )
     {
-        $this->get( 
+        $this->get(
                    'GetCourseForms',
                    dirname(__FILE__) . '/Sql/GetCourseForms.sql',
                    isset( $formid ) ? $formid : '',
@@ -485,7 +485,7 @@ class DBForm
                    false
                    );
     }
-    
+
     /**
      * Returns status code 200, if this component is correctly installed for the given course
      *
@@ -496,7 +496,7 @@ class DBForm
      */
     public function getExistsCourseForms( $courseid )
     {
-        $this->get( 
+        $this->get(
                    'GetExistsCourseForms',
                    dirname(__FILE__) . '/Sql/GetExistsCourseForms.sql',
                    isset( $formid ) ? $formid : '',
@@ -507,7 +507,7 @@ class DBForm
                    false
                    );
     }
-    
+
     /**
      * Returns forms to a given exercise sheet.
      *
@@ -518,7 +518,7 @@ class DBForm
      */
     public function getSheetForms( $esid )
     {
-        $this->get( 
+        $this->get(
                    'GetSheetForms',
                    dirname(__FILE__) . '/Sql/GetSheetForms.sql',
                    isset( $formid ) ? $formid : '',
@@ -528,7 +528,7 @@ class DBForm
                    false
                    );
     }
-    
+
     /**
      * Returns forms to a given exercise.
      *
@@ -539,7 +539,7 @@ class DBForm
      */
     public function getExerciseForms( $eid )
     {
-        $this->get( 
+        $this->get(
                    'GetExerciseForms',
                    dirname(__FILE__) . '/Sql/GetExerciseForms.sql',
                    isset( $formid ) ? $formid : '',
@@ -549,7 +549,7 @@ class DBForm
                    false
                    );
     }
-    
+
     /**
      * Removes the component from a given course
      *
@@ -560,34 +560,34 @@ class DBForm
      */
     public function deleteCourse( $courseid )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts DELETE DeleteCourse',
                     LogLevel::DEBUG
                     );
-                    
-        $courseid = DBJson::mysql_real_escape_string( $courseid ); 
-        
+
+        $courseid = DBJson::mysql_real_escape_string( $courseid );
+
         // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
+        $result = DBRequest::getRoutedSqlFile(
                                               $this->query,
                                               dirname(__FILE__) . '/Sql/DeleteCourse.sql',
                                               array( 'courseid' => $courseid )
                                               );
 
         // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
+        if ( $result['status'] >= 200 &&
              $result['status'] <= 299 ){
 
             $this->_app->response->setStatus( 201 );
             $this->_app->response->setBody( '' );
             if ( isset( $result['headers']['Content-Type'] ) )
-                $this->_app->response->headers->set( 
+                $this->_app->response->headers->set(
                                                     'Content-Type',
                                                     $result['headers']['Content-Type']
                                                     );
-            
+
         } else {
-            Logger::Log( 
+            Logger::Log(
                         'DELETE DeleteCourse failed',
                         LogLevel::ERROR
                         );
@@ -596,7 +596,7 @@ class DBForm
             $this->_app->stop( );
         }
     }
-    
+
     /**
      * Adds the component to a course
      *
@@ -605,7 +605,7 @@ class DBForm
      */
     public function addCourse( )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts POST AddCourse',
                     LogLevel::DEBUG
                     );
@@ -623,29 +623,29 @@ class DBForm
         // this array contains the indices of the inserted objects
         $res = array( );
         foreach ( $insert as $in ){
-        
+
             // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile( 
+            $result = DBRequest::getRoutedSqlFile(
                                                   $this->query,
                                                   dirname(__FILE__) . '/Sql/AddCourse.sql',
                                                   array( 'object' => $in )
                                                   );
 
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
                 $queryResult = Query::decodeQuery( $result['content'] );
 
                 $res[] = $in;
                 $this->_app->response->setStatus( 201 );
                 if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
+                    $this->_app->response->headers->set(
                                                         'Content-Type',
                                                         $result['headers']['Content-Type']
                                                         );
-                
+
             } else {
-                Logger::Log( 
+                Logger::Log(
                             'POST AddCourse failed',
                             LogLevel::ERROR
                             );
@@ -655,11 +655,11 @@ class DBForm
             }
         }
 
-        if ( !$arr && 
+        if ( !$arr &&
              count( $res ) == 1 ){
             $this->_app->response->setBody( Course::encodeCourse( $res[0] ) );
-            
-        } else 
+
+        } else
             $this->_app->response->setBody( Course::encodeCourse( $res ) );
     }
 }

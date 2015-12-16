@@ -6,8 +6,8 @@
 > <br/> Bereich: 0 bis ...
 
 Beispieleingaben:
-512000 => **500KB**, 
-2097152 => **2MB**, 
+512000 => **500KB**,
+2097152 => **2MB**,
 5242880 => **5MB**
 
 Studentenasicht beim Hochladen einer Einsendung:

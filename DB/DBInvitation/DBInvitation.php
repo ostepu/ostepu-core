@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -63,7 +63,7 @@ class DBInvitation
      */
     public function deleteInvitation( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteInvitation.sql',$params,201,'Model::isCreated',array(new Invitation()),'Model::isProblem',array(new Invitation()));  
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteInvitation.sql',$params,201,'Model::isCreated',array(new Invitation()),'Model::isProblem',array(new Invitation()));
     }
 
     /**
@@ -100,7 +100,7 @@ class DBInvitation
             }
             return $result;
         };
-        
+
         $params = DBJson::mysql_real_escape_string( $params );
         return $this->_component->call($linkName, $params, '', 200, $positive, array(), 'Model::isProblem', array(), 'Query');
     }
@@ -109,7 +109,7 @@ class DBInvitation
     {
         return $this->get($callName,$callName,$params);
     }
-    
+
     /**
      * Removes the component from the platform
      *
@@ -120,7 +120,7 @@ class DBInvitation
     {
         return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
-    
+
     /**
      * Adds the component to the platform
      *
@@ -133,4 +133,4 @@ class DBInvitation
     }
 }
 
- 
+

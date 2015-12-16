@@ -1,5 +1,5 @@
 #### Korrekturen hochladen
-Nachdem Sie die Liste.csv und alle Korrekturdateien in ein zip-Archiv verpackt haben, können Sie dieses zur Verarbeitung in die Plattform laden. 
+Nachdem Sie die Liste.csv und alle Korrekturdateien in ein zip-Archiv verpackt haben, können Sie dieses zur Verarbeitung in die Plattform laden.
 
 ![](sampleD.png)
 

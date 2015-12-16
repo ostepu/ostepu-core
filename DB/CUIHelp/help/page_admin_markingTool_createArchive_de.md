@@ -35,7 +35,7 @@ Sie finden dort die Liste.csv (hier müssen die Bewertungen eingetragen werden) 
 
 Eventuell enthält der jeweilige Ordner mit der Einsendung noch eine .pdf Datei, welche generiert wurde, weil die Einsendung als Text erkannt wurde. Diese .pdf kann direkt als Korrekturhilfe genutzt werden.
 
-Beispiel: Wenn der Student eine Hallo.java einsendet, wird zudem eine Hallo.pdf erzeugt. 
+Beispiel: Wenn der Student eine Hallo.java einsendet, wird zudem eine Hallo.pdf erzeugt.
 
 Wenn der Name der Einsendung (des Studenten) und der Korekturdatei (vom Kontrolleur erstellt) übereinstimmen, wird der Korrekturdatei ein K_ vorangestellt. Dieser Fall tritt ebenfalls auf, wenn dem Studenten seine eigene Einsendung als Korrekturdatei (Namensgleich) überlassen wird.
 
@@ -43,7 +43,7 @@ Wenn der Name der Einsendung (des Studenten) und der Korekturdatei (vom Kontroll
 
 > ##### 2. Bewerten #####
 
-Sie können die **Bewertung**, die **Korrekturdatei**, den **Korrekturstatus** und einen **Kommentar** in die Liste.csv eintragen. Dazu müssen Sie diese mit einem passenden Editor öffnen. 
+Sie können die **Bewertung**, die **Korrekturdatei**, den **Korrekturstatus** und einen **Kommentar** in die Liste.csv eintragen. Dazu müssen Sie diese mit einem passenden Editor öffnen.
 
 ![](libreA.png "LibreOffice")
 

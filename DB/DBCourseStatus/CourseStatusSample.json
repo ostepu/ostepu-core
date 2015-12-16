@@ -1,9 +1,9 @@
 /**
  * @file CourseStatusSample.json This file represents a valid JSON object of type CourseStatus for DBCourseStatus.
- * 
+ *
  * @author Till Uhlig
  */
- 
+
     [
        {
            "id": "2",

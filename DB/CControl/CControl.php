@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -23,7 +23,7 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
 /**
  * A class, to abstract the "Component" and "ComponentLinkage" table from database
  *
- 
+
  */
 class CControl
 {
@@ -32,8 +32,8 @@ class CControl
      * @var Slim $_app the slim object
      */
     private $_app = null;
-    
-    
+
+
     /**
      * @var string $_prefix the prefixes, the class works with (comma separated)
      */
@@ -69,144 +69,144 @@ class CControl
 
         // runs the DBSubmission
         if ( $com->used( ) ) return;
-            
+
         // initialize slim
         $this->_app = new \Slim\Slim( );
-        $this->_app->response->headers->set( 
+        $this->_app->response->headers->set(
                                             'Content-Type',
                                             'application/json'
                                             );
-                                            
+
         // POST AddPlatform
-        $this->_app->post( 
+        $this->_app->post(
                          '/platform',
-                         array( 
+                         array(
                                $this,
                                'addPlatform'
                                )
                          );
-                         
+
         // DELETE DeletePlatform
-        $this->_app->delete( 
+        $this->_app->delete(
                          '/platform',
-                         array( 
+                         array(
                                $this,
                                'deletePlatform'
                                )
                          );
-                         
+
         // GET GetExistsPlatform
-        $this->_app->get( 
+        $this->_app->get(
                          '/link/exists/platform',
-                         array( 
+                         array(
                                $this,
                                'getExistsPlatform'
                                )
                          );
-                         
+
         // GET GetTableReferences
-        $this->_app->get( 
+        $this->_app->get(
                          '/tableReferences',
-                         array( 
+                         array(
                                $this,
                                'getTableReferences'
                                )
                          );
 
         // PUT EditLink
-        $this->_app->put( 
+        $this->_app->put(
                          '/link/:linkid(/)',
-                         array( 
+                         array(
                                $this,
                                'editLink'
                                )
                          );
 
         // DELETE DeleteLink
-        $this->_app->delete( 
+        $this->_app->delete(
                             '/link/:linkid(/)',
-                            array( 
+                            array(
                                   $this,
                                   'deleteLink'
                                   )
                             );
 
         // POST SetLink
-        $this->_app->post( 
+        $this->_app->post(
                           '/link(/)',
-                          array( 
+                          array(
                                 $this,
                                 'setLink'
                                 )
                           );
 
         // GET GetLink
-        $this->_app->get( 
+        $this->_app->get(
                          '/link/:linkid(/)',
-                         array( 
+                         array(
                                $this,
                                'getLink'
                                )
                          );
 
         // PUT EditComponent
-        $this->_app->put( 
+        $this->_app->put(
                          '/component/:componentid(/)',
-                         array( 
+                         array(
                                $this,
                                'editComponent'
                                )
                          );
 
         // DELETE DeleteComponent
-        $this->_app->delete( 
+        $this->_app->delete(
                             '/component/:componentid(/)',
-                            array( 
+                            array(
                                   $this,
                                   'deleteComponent'
                                   )
                             );
 
         // POST SetComponent
-        $this->_app->post( 
+        $this->_app->post(
                           '/component(/)',
-                          array( 
+                          array(
                                 $this,
                                 'setComponent'
                                 )
                           );
 
         // GET GetComponent
-        $this->_app->get( 
+        $this->_app->get(
                          '/component/:componentid(/)',
-                         array( 
+                         array(
                                $this,
                                'getComponent'
                                )
                          );
 
         // GET GetComponentDefinitions
-        $this->_app->get( 
+        $this->_app->get(
                          '/definition(/)',
-                         array( 
+                         array(
                                $this,
                                'getComponentDefinitions'
                                )
                          );
 
         // GET SendComponentDefinitions
-        $this->_app->get( 
+        $this->_app->get(
                          '(/definition)/send(/)',
-                         array( 
+                         array(
                                $this,
                                'sendComponentDefinitions'
                                )
                          );
 
         // GET GetComponentDefinition
-        $this->_app->get( 
+        $this->_app->get(
                          '/definition/:componentid(/)',
-                         array( 
+                         array(
                                $this,
                                'getComponentDefinition'
                                )
@@ -225,7 +225,7 @@ class CControl
     {
 
         // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
+        DBJson::checkInput(
                            $this->_app,
                            ctype_digit( $linkid )
                            );
@@ -247,22 +247,22 @@ class CControl
             eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/PutLink.sql' ));
             $sql = ob_get_contents();
             ob_end_clean();
-            $result = DBRequest::request( 
+            $result = DBRequest::request(
                                          $sql,
                                          false,
-                                           parse_ini_file( 
+                                           parse_ini_file(
                                      dirname(__FILE__).'/config.ini',
                                      TRUE
                                      )
                                          );
 
             // checks the correctness of the query
-            if ( (!isset($result['errno']) || !$result['errno']) && 
+            if ( (!isset($result['errno']) || !$result['errno']) &&
                  $result['content'] ){
                 $this->_app->response->setStatus( 201 );
-                
+
             } else {
-                Logger::Log( 
+                Logger::Log(
                             'PUT EditLink failed',
                             LogLevel::ERROR
                             );
@@ -280,7 +280,7 @@ class CControl
     {
 
         // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
+        DBJson::checkInput(
                            $this->_app,
                            ctype_digit( $linkid )
                            );
@@ -290,22 +290,22 @@ class CControl
         eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/DeleteLink.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
-        $result = DBRequest::request( 
+        $result = DBRequest::request(
                                      $sql,
                                      false,
-                                           parse_ini_file( 
+                                           parse_ini_file(
                                      dirname(__FILE__).'/config.ini',
                                      TRUE
                                      )
                                      );
 
         // checks the correctness of the query
-        if ( (!isset($result['errno']) || !$result['errno']) && 
+        if ( (!isset($result['errno']) || !$result['errno']) &&
              $result['content'] ){
             $this->_app->response->setStatus( 201 );
-            
+
         } else {
-            Logger::Log( 
+            Logger::Log(
                         'DELETE DeleteLink failed',
                         LogLevel::ERROR
                         );
@@ -334,17 +334,17 @@ class CControl
             eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/PostLink.sql' ));
             $sql = ob_get_contents();
             ob_end_clean();
-            $result = DBRequest::request( 
+            $result = DBRequest::request(
                                          $sql,
                                          false,
-                                           parse_ini_file( 
+                                           parse_ini_file(
                                      dirname(__FILE__).'/config.ini',
                                      TRUE
                                      )
                                          );
 
             // checks the correctness of the query
-            if ( (!isset($result['errno']) || !$result['errno']) && 
+            if ( (!isset($result['errno']) || !$result['errno']) &&
                  $result['content'] ){
 
                 // sets the new auto-increment id
@@ -353,9 +353,9 @@ class CControl
 
                 $this->_app->response->setBody( Link::encodeLink( $obj ) );
                 $this->_app->response->setStatus( 201 );
-                
+
             } else {
-                Logger::Log( 
+                Logger::Log(
                             'POST SetLink failed',
                             LogLevel::ERROR
                             );
@@ -373,7 +373,7 @@ class CControl
     {
 
         // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
+        DBJson::checkInput(
                            $this->_app,
                            ctype_digit( $linkid )
                            );
@@ -383,29 +383,29 @@ class CControl
         eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/GetLink.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
-        $result = DBRequest::request( 
+        $result = DBRequest::request(
                                      $sql,
                                      false,
-                                           parse_ini_file( 
+                                           parse_ini_file(
                                      dirname(__FILE__).'/config.ini',
                                      TRUE
                                      )
                                      );
 
         // checks the correctness of the query
-        if ( (!isset($result['errno']) || !$result['errno']) && 
+        if ( (!isset($result['errno']) || !$result['errno']) &&
              $result['content'] ){
             $data = DBJson::getRows( $result['content'] );
-            $links = DBJson::getResultObjectsByAttributes( 
+            $links = DBJson::getResultObjectsByAttributes(
                                                           $data,
                                                           Link::getDBPrimaryKey( ),
                                                           Link::getDBConvert( )
                                                           );
             $this->_app->response->setBody( Link::encodeLink( $links ) );
             $this->_app->response->setStatus( 200 );
-            
+
         } else {
-            Logger::Log( 
+            Logger::Log(
                         'GET GetLink failed',
                         LogLevel::ERROR
                         );
@@ -422,7 +422,7 @@ class CControl
     {
 
         // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
+        DBJson::checkInput(
                            $this->_app,
                            ctype_digit( $componentid )
                            );
@@ -440,22 +440,22 @@ class CControl
             eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/PutComponent.sql' ));
             $sql = ob_get_contents();
             ob_end_clean();
-            $result = DBRequest::request( 
+            $result = DBRequest::request(
                                          $sql,
                                          false,
-                                           parse_ini_file( 
+                                           parse_ini_file(
                                      dirname(__FILE__).'/config.ini',
                                      TRUE
                                      )
                                          );
 
             // checks the correctness of the query
-            if ( (!isset($result['errno']) || !$result['errno']) && 
+            if ( (!isset($result['errno']) || !$result['errno']) &&
                  $result['content'] ){
                 $this->_app->response->setStatus( 201 );
-                
+
             } else {
-                Logger::Log( 
+                Logger::Log(
                             'PUT EditComponent failed',
                             LogLevel::ERROR
                             );
@@ -473,7 +473,7 @@ class CControl
     {
 
         // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
+        DBJson::checkInput(
                            $this->_app,
                            ctype_digit( $componentid )
                            );
@@ -483,22 +483,22 @@ class CControl
         eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/DeleteComponent.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
-        $result = DBRequest::request( 
+        $result = DBRequest::request(
                                      $sql,
                                      false,
-                                           parse_ini_file( 
+                                           parse_ini_file(
                                      dirname(__FILE__).'/config.ini',
                                      TRUE
                                      )
                                      );
 
         // checks the correctness of the query
-        if ( (!isset($result['errno']) || !$result['errno']) && 
+        if ( (!isset($result['errno']) || !$result['errno']) &&
              $result['content'] ){
             $this->_app->response->setStatus( 201 );
-            
+
         } else {
-            Logger::Log( 
+            Logger::Log(
                         'DELETE DeleteComponent failed',
                         LogLevel::ERROR
                         );
@@ -523,16 +523,16 @@ class CControl
             eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/PostComponent.sql' ));
             $sql = ob_get_contents();
             ob_end_clean();
-            $result = DBRequest::request( 
+            $result = DBRequest::request(
                                          $sql,
                                          false,
-                                           parse_ini_file( 
+                                           parse_ini_file(
                                      dirname(__FILE__).'/config.ini',
                                      TRUE
                                      )
                                          );
 
-            if ( (!isset($result['errno']) || !$result['errno']) && 
+            if ( (!isset($result['errno']) || !$result['errno']) &&
                  $result['content'] ){
 
                 $obj = new Component( );
@@ -540,9 +540,9 @@ class CControl
 
                 $this->_app->response->setBody( Component::encodeComponent( $obj ) );
                 $this->_app->response->setStatus( 201 );
-                
+
             } else {
-                Logger::Log( 
+                Logger::Log(
                             'POST SetComponent failed',
                             LogLevel::ERROR
                             );
@@ -560,7 +560,7 @@ class CControl
     {
 
         // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
+        DBJson::checkInput(
                            $this->_app,
                            ctype_digit( $componentid )
                            );
@@ -570,29 +570,29 @@ class CControl
         eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/GetComponent.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
-        $result = DBRequest::request( 
+        $result = DBRequest::request(
                                      $sql,
                                      false,
-                                           parse_ini_file( 
+                                           parse_ini_file(
                                      dirname(__FILE__).'/config.ini',
                                      TRUE
                                      )
                                      );
 
         // checks the correctness of the query
-        if ( (!isset($result['errno']) || !$result['errno']) && 
+        if ( (!isset($result['errno']) || !$result['errno']) &&
              $result['content'] ){
             $data = DBJson::getRows( $result['content'] );
-            $components = DBJson::getResultObjectsByAttributes( 
+            $components = DBJson::getResultObjectsByAttributes(
                                                                $data,
                                                                Component::getDBPrimaryKey( ),
                                                                Component::getDBConvert( )
                                                                );
             $this->_app->response->setBody( json_encode( $components ) );
             $this->_app->response->setStatus( 200 );
-            
+
         } else {
-            Logger::Log( 
+            Logger::Log(
                         'GET GetComponent failed',
                         LogLevel::ERROR
                         );
@@ -611,31 +611,31 @@ class CControl
         eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/GetComponentDefinitions.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
-        $result = DBRequest::request( 
+        $result = DBRequest::request(
                                      $sql,
                                      false,
-                                           parse_ini_file( 
+                                           parse_ini_file(
                                      dirname(__FILE__).'/config.ini',
                                      TRUE
                                      )
                                      );
 
         // checks the correctness of the query
-        if ( (!isset($result['errno']) || !$result['errno']) && 
+        if ( (!isset($result['errno']) || !$result['errno']) &&
              $result['content'] ){
             $data = DBJson::getRows( $result['content'] );
 
-            $components = DBJson::getObjectsByAttributes( 
+            $components = DBJson::getObjectsByAttributes(
                                                          $data,
                                                          Component::getDBPrimaryKey( ),
                                                          Component::getDBConvert( )
                                                          );
-            $links = DBJson::getObjectsByAttributes( 
+            $links = DBJson::getObjectsByAttributes(
                                                     $data,
                                                     Link::getDBPrimaryKey( ),
                                                     Link::getDBConvert( )
                                                     );
-            $result = DBJson::concatResultObjectLists( 
+            $result = DBJson::concatResultObjectLists(
                                                       $data,
                                                       $components,
                                                       Component::getDBPrimaryKey( ),
@@ -645,9 +645,9 @@ class CControl
                                                       );
             $this->_app->response->setBody( json_encode( $result ) );
             $this->_app->response->setStatus( 200 );
-            
+
         } else {
-            Logger::Log( 
+            Logger::Log(
                         'GET GetComponentDefinitions failed',
                         LogLevel::ERROR
                         );
@@ -663,37 +663,37 @@ class CControl
     public function getComponentDefinition( $componentid )
     {
         $componentid = DBJson::mysql_real_escape_string( $componentid );
-        
+
         // starts a query
         ob_start();
         eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/GetComponentDefinition.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
-        $result = DBRequest::request( 
+        $result = DBRequest::request(
                                      $sql,
                                      false,
-                                           parse_ini_file( 
+                                           parse_ini_file(
                                      dirname(__FILE__).'/config.ini',
                                      TRUE
                                      )
                                      );
 
         // checks the correctness of the query
-        if ( (!isset($result['errno']) || !$result['errno']) && 
+        if ( (!isset($result['errno']) || !$result['errno']) &&
              $result['content'] ){
             $data = DBJson::getRows( $result['content'] );
 
-            $Components = DBJson::getObjectsByAttributes( 
+            $Components = DBJson::getObjectsByAttributes(
                                                          $data,
                                                          Component::getDBPrimaryKey( ),
                                                          Component::getDBConvert( )
                                                          );
-            $Links = DBJson::getObjectsByAttributes( 
+            $Links = DBJson::getObjectsByAttributes(
                                                     $data,
                                                     Link::getDBPrimaryKey( ),
                                                     Link::getDBConvert( )
                                                     );
-            $result = DBJson::concatResultObjectLists( 
+            $result = DBJson::concatResultObjectLists(
                                                       $data,
                                                       $Components,
                                                       Component::getDBPrimaryKey( ),
@@ -704,9 +704,9 @@ class CControl
             if ( count( $result ) > 0 )
                 $this->_app->response->setBody( json_encode( $result[0] ) );
             $this->_app->response->setStatus( 200 );
-            
+
         } else {
-            Logger::Log( 
+            Logger::Log(
                         'GET GetComponentDefinition failed',
                         LogLevel::ERROR
                         );
@@ -725,33 +725,33 @@ class CControl
         eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/GetComponentDefinitions.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
-        $result = DBRequest::request( 
+        $result = DBRequest::request(
                                      $sql,
                                      false,
-                                           parse_ini_file( 
+                                           parse_ini_file(
                                      dirname(__FILE__).'/config.ini',
                                      TRUE
                                      )
                                      );
-                                     
+
         // checks the correctness of the query
-        if ( (!isset($result['errno']) || !$result['errno']) && 
+        if ( (!isset($result['errno']) || !$result['errno']) &&
              $result['content'] ){
             $data = DBJson::getRows( $result['content'] );
 
-            $Components = DBJson::getObjectsByAttributes( 
+            $Components = DBJson::getObjectsByAttributes(
                                                          $data,
                                                          Component::getDBPrimaryKey( ),
                                                          Component::getDBConvert( )
                                                          );
-                                                         
 
-            $Links = DBJson::getObjectsByAttributes( 
+
+            $Links = DBJson::getObjectsByAttributes(
                                                     $data,
                                                     Link::getDBPrimaryKey( ),
                                                     Link::getDBConvert( )
                                                     );
-            $objects = DBJson::concatResultObjectLists( 
+            $objects = DBJson::concatResultObjectLists(
                                                       $data,
                                                       $Components,
                                                       Component::getDBPrimaryKey( ),
@@ -759,23 +759,23 @@ class CControl
                                                       $Links,
                                                       Link::getDBPrimaryKey( )
                                                       );
-            
+
             $request = new Request_MultiRequest();
-            $data =  parse_ini_file( 
+            $data =  parse_ini_file(
                                      dirname(__FILE__).'/config.ini',
                                      TRUE
                                      );
-                                     
+
             $tempObjects = array();
             foreach ( $objects as $object ){
                 $object = Component::decodeComponent( json_encode( $object ) );
-                
+
                 // prüfen, welche Komponente auf diesem Server ist
                 // es werden nur "lokale" Komponenten initialisiert
                 if (strpos($object->getAddress().'/', $data['PL']['urlExtern'].'/')===false) continue;
 
                 $URL = $object->getAddress();//$data['PL']['url'].substr($object->getAddress(),strlen($data['PL']['urlExtern']));
-                $result = Request_CreateRequest::createPost( 
+                $result = Request_CreateRequest::createPost(
                                                             $URL . '/control',
                                                             array( ),
                                                             Component::encodeComponent( $object )
@@ -791,7 +791,7 @@ class CControl
             foreach ( $objects as $object){
                 $object = Component::decodeComponent( Component::encodeComponent( $object ) );
                 $result = $results[$i++];
-                                   
+
                 $newObject = new Component();
                 $newObject->setId($object->getId());
                 $newObject->setName($object->getName());
@@ -806,24 +806,24 @@ class CControl
                     if ( isset( $result['content'] ) )
                         $add = $result['content'];
 
-                    Logger::Log( 
+                    Logger::Log(
                                 $result['status'] . '--' . $object->getName( ) . '--' . $object->getAddress( ) . "\n" . $add . "\n",
                                 LogLevel::ERROR
                                 );
                 }
             }
-            
+
             $this->_app->response->setBody( json_encode($res) );
-            
+
         } else {
-            Logger::Log( 
+            Logger::Log(
                         'GET SendComponentDefinitions failed',
                         LogLevel::ERROR
                         );
             $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
         }
     }
-    
+
     /**
      * Returns status code 200, if this component is correctly installed for the platform
      *
@@ -832,11 +832,11 @@ class CControl
      */
     public function getExistsPlatform( )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts GET GetExistsPlatform',
                     LogLevel::DEBUG
                     );
-                    
+
         if (!file_exists(dirname(__FILE__).'/config.ini')){
             $this->_app->response->setStatus( 409 );
             $this->_app->stop();
@@ -847,24 +847,24 @@ class CControl
         eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/GetExistsPlatform.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
-        $result = DBRequest::request( 
+        $result = DBRequest::request(
                                      $sql,
                                      false,
-                                           parse_ini_file( 
+                                           parse_ini_file(
                                      dirname(__FILE__).'/config.ini',
                                      TRUE
                                      )
                                      );
 
         // checks the correctness of the query
-        if ( (!isset($result['errno']) || !$result['errno']) && 
+        if ( (!isset($result['errno']) || !$result['errno']) &&
              $result['content'] ){
 
             $this->_app->response->setStatus( 200 );
             $this->_app->response->setBody( '' );
-            
+
         } else {
-            Logger::Log( 
+            Logger::Log(
                         'GET GetExistsPlatform failed',
                         LogLevel::ERROR
                         );
@@ -873,14 +873,14 @@ class CControl
             $this->_app->stop( );
         }
     }
-    
+
     public function getTableReferences( )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts GET GetTableReferences',
                     LogLevel::DEBUG
                     );
-                    
+
         if (!file_exists(dirname(__FILE__).'/config.ini')){
             $this->_app->response->setStatus( 409 );
             $this->_app->stop();
@@ -892,14 +892,14 @@ class CControl
         eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/GetTableReferences.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
-        $result = DBRequest::request( 
+        $result = DBRequest::request(
                                      $sql,
                                      false,
                                      $conf
                                      );
 
         // checks the correctness of the query
-        if ( (!isset($result['errno']) || !$result['errno']) && 
+        if ( (!isset($result['errno']) || !$result['errno']) &&
              $result['content'] ){
             $data = DBJson::getRows( $result['content'] );
             $res = array();
@@ -908,12 +908,12 @@ class CControl
                     $res[$dat['table_name']] = array();
                 $res[$dat['table_name']][] = $dat['referenced_table_name'];
             }
-            
+
             $this->_app->response->setStatus( 200 );
             $this->_app->response->setBody( json_encode($res) );
-            
+
         } else {
-            Logger::Log( 
+            Logger::Log(
                         'GET GetTableReferences failed',
                         LogLevel::ERROR
                         );
@@ -930,7 +930,7 @@ class CControl
      */
     public function deletePlatform( )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts DELETE DeletePlatform',
                     LogLevel::DEBUG
                     );
@@ -940,10 +940,10 @@ class CControl
         eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/DeletePlatform.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
-        $result = DBRequest::request2( 
+        $result = DBRequest::request2(
                                      $sql,
                                      false,
-                                           parse_ini_file( 
+                                           parse_ini_file(
                                      dirname(__FILE__).'/config.ini',
                                      TRUE
                                      )
@@ -954,9 +954,9 @@ class CControl
 
             $this->_app->response->setStatus( 201 );
             $this->_app->response->setBody( '' );
-            
+
         } else {
-            Logger::Log( 
+            Logger::Log(
                         'DELETE DeletePlatform failed',
                         LogLevel::ERROR
                         );
@@ -965,7 +965,7 @@ class CControl
             $this->_app->stop( );
         }
     }
-    
+
     /**
      * Adds the component to the platform
      *
@@ -974,7 +974,7 @@ class CControl
      */
     public function addPlatform( )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts POST AddPlatform',
                     LogLevel::DEBUG
                     );
@@ -992,7 +992,7 @@ class CControl
         // this array contains the indices of the inserted objects
         $res = array( );
         foreach ( $insert as $in ){
-        
+
             $file = dirname(__FILE__).'/config.ini';
             $text = "[DB]\n".
                     "db_path = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getDatabaseUrl())."\"\n".
@@ -1002,38 +1002,38 @@ class CControl
                     "[PL]\n".
                     "urlExtern = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getExternalUrl())."\"\n".
                     "url = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getBaseUrl())."\"";
-            
+
             if (!@file_put_contents($file,$text)){
-                Logger::Log( 
+                Logger::Log(
                             'POST AddPlatform failed, config.ini no access',
                             LogLevel::ERROR
                             );
 
                 $this->_app->response->setStatus( 409 );
                 $this->_app->stop();
-            }   
-            
+            }
+
             $file2 = dirname(__FILE__).'/../../Assistants/config.ini';
             if (!@file_put_contents($file2,$text)){
-                Logger::Log( 
+                Logger::Log(
                             'POST AddPlatform failed, config.ini no access',
                             LogLevel::ERROR
                             );
 
                 $this->_app->response->setStatus( 409 );
                 $this->_app->stop();
-            }   
-            
+            }
+
             // starts a query
             ob_start();
             eval("?>" .  file_get_contents( dirname(__FILE__).'/Sql/AddPlatform.sql' ));
             $sql = ob_get_contents();
             ob_end_clean();
-            
-            $result = DBRequest::request2( 
+
+            $result = DBRequest::request2(
                                          $sql,
                                          false,
-                                         parse_ini_file( 
+                                         parse_ini_file(
                                      dirname(__FILE__).'/config.ini',
                                      TRUE
                                      )
@@ -1046,9 +1046,9 @@ class CControl
                 $platform->setStatus(201);
                 $res[] = $platform;
                 $this->_app->response->setStatus( 201 );
-                
+
             } else {
-                Logger::Log( 
+                Logger::Log(
                             'POST AddPlatform failed',
                             LogLevel::ERROR
                             );
@@ -1058,13 +1058,13 @@ class CControl
             }
         }
 
-        if ( !$arr && 
+        if ( !$arr &&
              count( $res ) == 1 ){
             $this->_app->response->setBody( Platform::encodePlatform( $res[0] ) );
-            
-        } else 
+
+        } else
             $this->_app->response->setBody( Platform::encodePlatform( $res ) );
     }
 }
 
- 
+

@@ -10,15 +10,15 @@
 
 require_once ( dirname( __FILE__ ) . '/DBBeispiel.php' );
 
-Logger::Log( 
+Logger::Log(
             'begin DBBeispiel',
             LogLevel::DEBUG
             );
 
-// ruft die Beispielkomponente auf            
+// ruft die Beispielkomponente auf
 new DBBeispiel();
 
-Logger::Log( 
+Logger::Log(
             'end DBBeispiel',
             LogLevel::DEBUG
             );

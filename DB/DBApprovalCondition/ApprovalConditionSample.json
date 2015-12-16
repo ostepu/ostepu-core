@@ -1,9 +1,9 @@
 /**
  * @file ApprovalConditionSample.json This file represents a valid JSON object of type ApprovalCondition for DBApprovalCondition.
- * 
+ *
  * @author Till Uhlig
  */
- 
+
     [
        {
            "id": "1",

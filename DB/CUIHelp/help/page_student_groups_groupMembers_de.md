@@ -2,7 +2,7 @@
 
 > ##### Gruppe verlassen #####
 Sie können eine Gruppe auflösen (als Gruppenführer) oder verlassen (als Gruppenmitglied), indem Sie die Schaltfläche **verlassen** in der **Gruppenverwaltung** unter **Gruppenübersicht** betätigen.
- 
+
 ![img](G.png "Gruppe verlassen/auflösen")
 
 ![img](H.png "Gruppe wurde verlassen")
