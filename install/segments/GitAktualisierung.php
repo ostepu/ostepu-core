@@ -64,7 +64,7 @@ class GitAktualisierung
                 }
                 if (count($collected['content']['commits'])>20){
                     if (!$console){
-                        $text .= Design::erstelleZeile($console, Language::Get('gitUpdate','additionalCommits',array('additionalCommits'=>count($collected['content']['commits'])-20)), 'v');
+                        $text .= Design::erstelleZeile($console, Language::Get('gitUpdate','additionalCommits','default', array('additionalCommits'=>count($collected['content']['commits'])-20)), 'v');
                     } else  {
 
                     }
