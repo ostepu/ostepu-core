@@ -36,16 +36,16 @@ if ($message === 200) {
                           'perform_this_foreach'=>[['key',
                                                     ['satisfy_in_list'=>$exercises,
                                                      'on_error'=>['type'=>'error',
-                                                                  'text'=>Language::Get('main','???', $langTemplate)]]],
+                                                                  'text'=>Language::Get('main','invalidExerciseId', $langTemplate)]]],
                                                    ['elem',
                                                     ['perform_this_array'=>[[['key_all'],
                                                                             ['satisfy_in_list'=>$leaderGroups,
                                                                              'on_error'=>['type'=>'error',
-                                                                                          'text'=>Language::Get('main','???', $langTemplate)]]]],
+                                                                                          'text'=>Language::Get('main','invalidLeader', $langTemplate)]]]],
                                                      'on_error'=>['type'=>'error',
-                                                                  'text'=>Language::Get('main','???', $langTemplate)]]]],
+                                                                  'text'=>Language::Get('main','errorValidateSelection', $langTemplate)]]]],
                           'on_error'=>['type'=>'warning',
-                                       'text'=>Language::Get('main','???', $langTemplate)]]);
+                                       'text'=>Language::Get('main','errorValidateSelection', $langTemplate)]]);
 
                 $foundValues = $postAssignMakeValidation->validate();
                 $assignMakeNotifications = array_merge($assignMakeNotifications,$postAssignMakeValidation->getPrintableNotifications('MakeNotification'));
@@ -100,7 +100,7 @@ if ($message === 200) {
                 $assignMakeNotifications[] = MakeNotification('error', Language::Get('main','errorMake', $langTemplate));
             }
         } else {
-            $assignMakeNotifications[] = MakeNotification('error', Language::Get('main','???', $langTemplate));
+            $assignMakeNotifications[] = MakeNotification('error', Language::Get('main','invalidCourseId', $langTemplate));
         }
     } else {
         $assignMakeNotifications[] = MakeNotification('error', Language::Get('main','errorMake', $langTemplate));

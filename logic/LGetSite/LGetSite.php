@@ -320,7 +320,7 @@ class LGetSite
             unset($response['tutorAssignments'][count($response['tutorAssignments'])-1]);
         
         $virtualTutor = array('id' => null,
-                              'userName' => "unassigned",
+                              'userName' => 'unassigned',
                               'firstName' => null,
                               'lastName' => null);
 

@@ -3,11 +3,11 @@ $postAssignManuallyTypeValidation = Validation::open($_POST, array('preRules'=>a
   ->addSet('actionAssignAllProposals',
        ['set_default'=>null,
         'on_error'=>['type'=>'error',
-                     'text'=>Language::Get('main','???', $langTemplate)]])
+                     'text'=>Language::Get('main','errorValidateAssignAllProposals', $langTemplate)]])
   ->addSet('actionAssignManually',
        ['set_default'=>null,
         'on_error'=>['type'=>'error',
-                     'text'=>Language::Get('main','???', $langTemplate)]]);
+                     'text'=>Language::Get('main','errorValidateAssignManually', $langTemplate)]]);
 $foundValues = $postAssignManuallyTypeValidation->validate();
 $notifications = array_merge($notifications,$postAssignManuallyTypeValidation->getPrintableNotifications('MakeNotification'));
 $postAssignManuallyTypeValidation->resetNotifications()->resetErrors();
@@ -56,35 +56,31 @@ if (isset($foundValues['actionAssignManually'])){
                 'satisfy_not_empty',
                 'valid_identifier',
                 'on_error'=>['type'=>'warning',
-                             'text'=>Language::Get('main','???', $langTemplate)]])
+                             'text'=>Language::Get('main','invalidTutor', $langTemplate)]])
       ->addSet('assign',
                ['satisfy_exists',
                 'satisfy_not_empty',
                 'on_error'=>['type'=>'warning',
-                             'text'=>Language::Get('main','???', $langTemplate)]])
+                             'text'=>Language::Get('main','noAssignment', $langTemplate)]])
                              
       // structure: $_POST['assign'][-1|id]['proposal'] = array(id,id,id,...)
       //            $_POST['assign'][-1|id]['marking'][id] = array(id,id,id,...)
       ->addSet('assign',
                ['perform_this_foreach'=>[['key',
-                                          ['logic_or'=>['satisfy_value'=>'-1',
-                                                        'valid_identifier']]], 
+                                          ['logic_or'=>[['satisfy_value'=>'-1'],
+                                                        ['valid_identifier']]]], 
                                          ['elem',
-                                          ['perform_switch_case'=>[[['proposal',['satisfy_exists']],
+                                          ['perform_switch_case'=>[['proposal',
                                                                     ['perform_this_array'=>[[['key_all'],
                                                                                              ['valid_identifier']]]]],
-                                                                   [['marking',['satisfy_exists']],
+                                                                   ['marking',
                                                                     ['perform_this_foreach'=>[['key',
                                                                                                ['valid_identifier']], 
                                                                                               ['elem',
                                                                                                ['perform_this_array'=>[[['key_all'],
-                                                                                                                        ['valid_identifier']]]]]]]],
-                                                                   [['',[]],
-                                                                    ['set_error'=>true,
-                                                                     'on_error'=>['type'=>'error',
-                                                                                  'text'=>Language::Get('main','???', $langTemplate)]]]]]]],
+                                                                                                                        ['valid_identifier']]]]]]]]]]]],
                 'on_error'=>['type'=>'warning',
-                             'text'=>Language::Get('main','???', $langTemplate)]]);
+                             'text'=>Language::Get('main','invalidAssignment', $langTemplate)]]);
                              
     $foundData = $postAssignManuallyValidation->validate();
     $assignManuallyNotifications = array_merge($assignManuallyNotifications,$postAssignManuallyValidation->getPrintableNotifications('MakeNotification'));

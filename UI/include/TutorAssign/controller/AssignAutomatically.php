@@ -8,7 +8,7 @@ $postAssignAutomaticallyValidation = Validation::open($_POST, array('preRules'=>
             'satisfy_not_empty',
             'is_array',
             'on_error'=>['type'=>'warning',
-                         'text'=>Language::Get('main','???', $langTemplate)]])
+                         'text'=>Language::Get('main','noTutorSelected', $langTemplate)]])
   ->addSet('tutorIds',
            ['perform_this_array'=>[[['key_all'],
                                     ['valid_identifier']]],

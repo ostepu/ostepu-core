@@ -41,7 +41,7 @@ if ($postValidation->isValid() && $valResults['actionSortUsers'] === 'noAction')
                 'satisfy_in_list'=>['noAction', 'AssignMakeWarning', 'AssignMake', 'AssignManually', 'AssignRemoveWarning', 'AssignRemove', 'AssignAutomatically'],
                 'on_error'=>['type'=>'error',
                              'text'=>Language::Get('main','invalidAction', $langTemplate)]]);
-    $foundValues = $postActionValidation->validate();
+    $postActionResult = $postActionValidation->validate();
     $notifications = array_merge($notifications,$postActionValidation->getPrintableNotifications('MakeNotification'));
     $postActionValidation->resetNotifications()->resetErrors();
 
@@ -51,27 +51,27 @@ if ($postValidation->isValid() && $valResults['actionSortUsers'] === 'noAction')
         $assignRemoveNotifications = array();
         $assignMakeNotifications = array();
 
-        if ($foundValues['action'] === 'AssignManually'){
+        if ($postActionResult['action'] === 'AssignManually'){
             include_once dirname(__FILE__) . '/include/TutorAssign/controller/AssignManually.php';
         }
 
-        if ($foundValues['action'] === 'AssignAutomatically'){
+        if ($postActionResult['action'] === 'AssignAutomatically'){
             include_once dirname(__FILE__) . '/include/TutorAssign/controller/AssignAutomatically.php';
         }
 
-        if ($foundValues['action'] === 'AssignRemoveWarning'){
+        if ($postActionResult['action'] === 'AssignRemoveWarning'){
             $assignRemoveNotifications[] = MakeNotification('warning', Language::Get('main','askUnassign', $langTemplate));
         }
 
-        if ($foundValues['action'] === 'AssignRemove'){
+        if ($postActionResult['action'] === 'AssignRemove'){
             include_once dirname(__FILE__) . '/include/TutorAssign/controller/AssignRemove.php';
         }
 
-        if ($foundValues['action'] === 'AssignMakeWarning'){
+        if ($postActionResult['action'] === 'AssignMakeWarning'){
             $assignMakeNotifications[] = MakeNotification('warning', Language::Get('main','askMake', $langTemplate));
         }
 
-        if ($foundValues['action'] === 'AssignMake'){
+        if ($postActionResult['action'] === 'AssignMake'){
             include_once dirname(__FILE__) . '/include/TutorAssign/controller/AssignMake.php';
         }
     }

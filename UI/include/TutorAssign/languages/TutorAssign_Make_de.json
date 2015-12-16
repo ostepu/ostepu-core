@@ -7,6 +7,10 @@
         "all": "Alle",
         "exercise": "Aufgabe",
         "students": "Studenten",
-        "noContent": "Keine freien Gruppen gefunden."
+        "noContent": "Keine freien Gruppen gefunden.",
+        "invalidExerciseId": "Ungültige Aufgabennummer.",
+        "invalidLeader": "Ungültige Nutzerkennung.",
+        "errorValidateSelection": "Eingabe konnte nicht validiert werden.",
+        "invalidCourseId": "Ungültige Veranstaltung."
     }
 }
