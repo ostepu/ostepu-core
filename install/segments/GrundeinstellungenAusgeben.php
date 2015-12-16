@@ -42,10 +42,10 @@ class GrundeinstellungenAusgeben
             $text .= Design::erstelleBeschreibung($console,Language::Get('general_settings','description'));
 
             $text .= Design::erstelleZeile($console, Language::Get('general_settings','init'), 'e', '', 'v', Design::erstelleSubmitButton('actionInstallInit'), 'h');
-            $text .= Design::erstelleZeile($console, Language::Get('database','db_override'), 'e', Design::erstelleAuswahl($console, $data['DB']['db_override'], 'data[DB][db_override]', 'override', null, true), 'v');
-            $text .= Design::erstelleZeile($console, Language::Get('database','db_ignore'), 'e', Design::erstelleAuswahl($console, $data['DB']['db_ignore'], 'data[DB][db_ignore]', 'ignore', null, true), 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('database','db_override'), 'e', Design::erstelleAuswahl($console, $data['DB']['db_override'], 'data[DB][db_override]', 'override', null, true), 'v_c');
+            $text .= Design::erstelleZeile($console, Language::Get('database','db_ignore'), 'e', Design::erstelleAuswahl($console, $data['DB']['db_ignore'], 'data[DB][db_ignore]', 'ignore', null, true), 'v_c');
 
-            $text .= Design::erstelleZeile($console, Language::Get('general_settings','details'), 'e', Design::erstelleAuswahl($console, $data['PL']['pl_main_details'], 'data[PL][pl_main_details]', 'details', null, true), 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('general_settings','details'), 'e', Design::erstelleAuswahl($console, $data['PL']['pl_main_details'], 'data[PL][pl_main_details]', 'details', null, true), 'v_c');
         }
 
         if (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']]!=null){

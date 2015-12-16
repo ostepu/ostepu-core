@@ -23,7 +23,7 @@ class LoggerSegment
         if (Einstellungen::$accessAllowed){
             echo "<tr><td class='e'>".Language::Get('logger','title')."</td></tr>";
             foreach (self::$logLevel as $levelName => $level) {
-                echo "<tr><td class='v'>".Language::Get('logger','log_level_'.$levelName).Design::erstelleAuswahl(false, $data['LOGGER']['log_level_'.$levelName], 'data[LOGGER][log_level_'.$levelName.']', 'selected', null, true)."</td></tr>";
+                echo "<tr><td class='v'>".Design::erstelleAuswahl(false, $data['LOGGER']['log_level_'.$levelName], 'data[LOGGER][log_level_'.$levelName.']', 'selected', null, true).Language::Get('logger','log_level_'.$levelName)."</td></tr>";
             }
         }
         Installation::log(array('text'=>'beende Funktion'));

@@ -41,7 +41,7 @@ class Komponenten
             $text .= Design::erstelleBeschreibung($console,Language::Get('components','description'));
 
             $text .= Design::erstelleZeile($console, Language::Get('components','init'), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0]), 'h');
-            $text .= Design::erstelleZeile($console, Language::Get('components','details'), 'e', Design::erstelleAuswahl($console, $data['CO']['co_details'], 'data[CO][co_details]', 'details', null, true), 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('components','details'), 'e', Design::erstelleAuswahl($console, $data['CO']['co_details'], 'data[CO][co_details]', 'details', null, true), 'v_c');
         }
 
         if (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']]!=null){

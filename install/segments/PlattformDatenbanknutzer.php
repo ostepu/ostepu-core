@@ -37,7 +37,7 @@ class PlattformDatenbanknutzer
 
         if (!$console){
             $text .= Design::erstelleBeschreibung($console,Language::Get('createDatabasePlatformUser','description'));
-            $text .= Design::erstelleZeile($console, Language::Get('createDatabasePlatformUser','db_user_override_operator'), 'e', Design::erstelleAuswahl($console, $data['DB']['db_user_override_operator'], 'data[DB][db_user_override_operator]', 'override', null, true), 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('createDatabasePlatformUser','db_user_override_operator'), 'e', Design::erstelleAuswahl($console, $data['DB']['db_user_override_operator'], 'data[DB][db_user_override_operator]', 'override', null, true), 'v_c');
             $text .= Design::erstelleZeile($console, Language::Get('createDatabasePlatformUser','createUser'), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0], Language::Get('main','create')), 'h');
         }
 

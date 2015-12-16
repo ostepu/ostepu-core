@@ -308,7 +308,7 @@ class Design
 
         $empty = '_';
         $result = Design::erstelleVersteckteEingabezeile($console, $empty , $variablenName, $default, $save);
-        $result .= "<input style='width:100%' type='checkbox' name='{$variablenName}' value='".$value."'".(($variable==$value && $variable != null) ? "checked" : ($default === null ? '' : ($default===$value ? "checked" : '')) ).">";
+        $result .= "<input style='' type='checkbox' id='{$variablenName}' name='{$variablenName}' value='".$value."'".(($variable==$value && $variable != null) ? "checked" : ($default === null ? '' : ($default===$value ? "checked" : '')) ).">";
         return $result;
     }
 

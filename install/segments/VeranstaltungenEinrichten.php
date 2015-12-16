@@ -40,7 +40,7 @@ class VeranstaltungenEinrichten
 
         if (!$console){
             $text .= Design::erstelleZeile($console, Language::Get('courses','createTables'), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0]), 'h');
-            $text .= Design::erstelleZeile($console, Language::Get('courses','details'), 'e', Design::erstelleAuswahl($console, $data['C']['c_details'], 'data[C][c_details]', 'details', null), 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('courses','details'), 'e', Design::erstelleAuswahl($console, $data['C']['c_details'], 'data[C][c_details]', 'details', null), 'v_c');
         }
 
         if (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']]!=null){

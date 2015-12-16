@@ -40,7 +40,7 @@ class PlattformEinrichten
 
         if (!$console){
             $text .= Design::erstelleZeile($console, Language::Get('platform','createTables'), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0]), 'h');
-            $text .= Design::erstelleZeile($console, Language::Get('platform','details'), 'e', Design::erstelleAuswahl($console, $data['PL']['pl_details'], 'data[PL][pl_details]', 'details', null), 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('platform','details'), 'e', Design::erstelleAuswahl($console, $data['PL']['pl_details'], 'data[PL][pl_details]', 'details', null), 'v_c');
         }
 
         if (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']]!=null){

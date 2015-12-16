@@ -108,7 +108,7 @@ class PlugInsInstallieren
             $voraussetzungen = $dat['requirements'];
             if (!is_array($voraussetzungen)) $voraussetzungen = array($voraussetzungen);
 
-            $text .= Design::erstelleZeile($console, "{$name} v{$dat['version']}", 'e', ((self::$onEvents['install']['enabledInstall'] || self::$onEvents['uninstall']['enabledInstall']) ? Design::erstelleAuswahl($console, $data['PLUG']['plug_install_'.$name], 'data[PLUG][plug_install_'.$name.']', $plug, null, true) : ''), 'v');
+            $text .= Design::erstelleZeile($console, "{$name} v{$dat['version']}", 'e', ((self::$onEvents['install']['enabledInstall'] || self::$onEvents['uninstall']['enabledInstall']) ? Design::erstelleAuswahl($console, $data['PLUG']['plug_install_'.$name], 'data[PLUG][plug_install_'.$name.']', $plug, null, true) : ''), 'v_c');
 
             $isInstalled=false;
             if (isset($installedPlugins)){
