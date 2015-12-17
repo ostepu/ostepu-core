@@ -145,15 +145,6 @@ class DBTransaction
                                )
                          );
 
-        // GET GetTransactionShort
-        $this->_app->get(
-                         '(/:name)/transaction/transaction/:tid',
-                         array(
-                               $this,
-                               'getTransactionShort'
-                               )
-                         );
-
         // GET GetAmountOfExpiredTransactions
         $this->_app->get(
                          '(/:name)/clean/clean/course/:courseid',
@@ -462,11 +453,6 @@ class DBTransaction
                    isset( $tid ) ? $tid : '',
                    true
                    );
-    }
-
-    public function getTransactionShort( $name='' ,$auid, $tid )
-    {
-        $this->getTransaction($name, null, $tid);
     }
 
     /**

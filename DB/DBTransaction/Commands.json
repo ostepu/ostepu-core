@@ -1,12 +1,8 @@
 [
     {    "method":"delete", "path":"(/:name)/transaction/authentication/:auid/transaction/:tid" },
     {    "method":"delete", "path":"(/:name)/transaction/transaction/:tid" },
-    {    "method":"post", "path":"(/:name)/transaction/course/:courseid" },
-    {    "method":"post", "path":"(/:name)/transaction/exercisesheet/:esid" },
-    {    "method":"post", "path":"(/:name)/transaction/exercise/:eid" },
     {    "method":"get", "path":"(/:name)/link/exists/course/:courseid" },
     {    "method":"get", "path":"(/:name)/transaction/authentication/:auid/transaction/:tid" },
-    {    "method":"get", "path":"(/:name)/transaction/transaction/:tid" },
     {    "method":"get", "path":"(/:name)/clean/clean/course/:courseid" },
     {    "method":"delete", "path":"(/:name)/clean/clean/course/:courseid" },
     {    "method":"delete", "path":"(/:name)/course" },
