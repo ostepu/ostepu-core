@@ -4,7 +4,7 @@
         "outputType": "ExerciseSheet",
         "inputType": "ExerciseSheet",
         "method": "PUT",
-        "placeholder":[{"name":"esid","regex":"%^([0-9]+)$%"}],
+        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
         "path": "/exercisesheet(/exercisesheet)/:esid"
     },
     {
@@ -12,7 +12,7 @@
         "outputType": "ExerciseSheet",
         "inputType": "",
         "method": "DELETE",
-        "placeholder":[{"name":"esid","regex":"%^([0-9]+)$%"}],
+        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
         "path": "/exercisesheet(/exercisesheet)/:esid"
     },
     {
@@ -29,7 +29,7 @@
         "outputType": "",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^([0-9]+)$%"}],
+        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
         "path": "/exercisesheet(/exercisesheet)/:esid/url"
     },
     {
@@ -38,7 +38,7 @@
         "outputType": "",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"courseid","regex":"%^([0-9]+)$%"}],
+        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],
         "path": "/exercisesheet/course/:courseid/url"
     },
     {
@@ -46,7 +46,7 @@
         "outputType": "",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"courseid","regex":"%^([0-9]+)$%"}],
+        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],
         "path": "/exercisesheet/course/:courseid(/:exercise)"
     },
     {
@@ -55,7 +55,7 @@
         "outputType": "",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^([0-9]+)$%"}],
+        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
         "path": "/exercisesheet(/exercisesheet)/:esid(/:exercise)"
     },
     {

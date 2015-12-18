@@ -63,7 +63,7 @@
         "outputType": "Session",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"seid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"seid","regex":"%^([0-9_]+)$%"}],
         "path": "/session(/session)/:seid"
     },
     {
