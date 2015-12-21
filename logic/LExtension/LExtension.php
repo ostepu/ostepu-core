@@ -23,7 +23,7 @@ class LExtension
      * @var Slim $_app the slim object
      */
     private $app = null;
-    
+
     /**
      * @var Component $_conf the component data object
      */
@@ -53,9 +53,9 @@ class LExtension
     {
         LExtension::$_prefix = $value;
     }
-    
+
     private $_extension = array( );
-    
+
     /**
      * REST actions
      *
@@ -70,7 +70,7 @@ class LExtension
         // runs the LExtension
         if ( $com->used( ) ) return;
             $conf = $com->loadConfig( );
-            
+
         // initialize slim
         $this->app = new \Slim\Slim(array('debug' => true));
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -78,39 +78,39 @@ class LExtension
         // initialize component
         $this->_conf = $conf;
         $this->_extension = CConfig::getLinks($conf->getLinks(),"extension");
-        
+
         //POST AddCourseExtension
         $this->app->post('/link/course/:courseid/extension/:name', array($this, 'addCourseExtension'));
 
         //DELETE DeleteCourseExtension
         $this->app->delete('/link/course/:courseid/extension/:name', array($this, 'deleteCourseExtension'));
-        
+
         //DELETE DeleteCourse
         $this->app->delete('/course/:courseid/', array($this, 'deleteCourse'));
-        
+
         //GET GetExtensionInstalled
         $this->app->get('/link/exists/course/:courseid/extension/:name', array($this, 'getExtensionInstalled'));
-        
+
         //GET GetInstalledExtensions
         $this->app->get('/link/course/:courseid/extension', array($this, 'getInstalledExtensions'));
-        
-        
-        
-        
-        
+
+
+
+
+
         //GET GetExtensions
         $this->app->get('/link/extension(/)', array($this, 'getExtensions'));
-        
+
         //GET GetExtensionExists
         $this->app->get('/link/exists/extension/:name', array($this, 'getExtensionExists'));
-        
+
         //GET GetExtension
         $this->app->get('/link/extension/:name', array($this, 'getExtension'));
 
         //run Slim
         $this->app->run();
     }
-    
+
     /**
      * Removes the given extension from course.
      *
@@ -124,8 +124,8 @@ class LExtension
     {
         foreach($this->_extension as $link){
             if ($link->getTargetName() === $name || $link->getTarget() === $name){
-            
-                $result = Request::routeRequest( 
+
+                $result = Request::routeRequest(
                                                 'DELETE',
                                                 '/course/'.$courseid,
                                                 $this->app->request->headers->all(),
@@ -135,20 +135,20 @@ class LExtension
                                                 );
 
                 // checks the correctness of the query
-                if ( $result['status'] >= 200 && 
+                if ( $result['status'] >= 200 &&
                      $result['status'] <= 299 ){
 
                     $this->app->response->setStatus( 201 );
                     $this->app->response->setBody( null );
                     if ( isset( $result['headers']['Content-Type'] ) )
-                        $this->app->response->headers->set( 
+                        $this->app->response->headers->set(
                                                             'Content-Type',
                                                             $result['headers']['Content-Type']
                                                             );
                     $this->app->stop( );
-                    
+
                 } else {
-                    Logger::Log( 
+                    Logger::Log(
                                 'DELETE DeleteCourseExtension failed',
                                 LogLevel::ERROR
                                 );
@@ -157,11 +157,11 @@ class LExtension
                 }
             }
         }
-        
+
         $this->app->response->setStatus( 404 );
         $this->app->response->setBody( null );
     }
-    
+
     /**
      * Removes all extensions from the given course.
      *
@@ -175,7 +175,7 @@ class LExtension
     {
         $extensions = array();
         foreach($this->_extension as $link){
-            $result = Request::routeRequest( 
+            $result = Request::routeRequest(
                                             'GET',
                                             '/link/exists/course/'.$courseid,
                                             $this->app->request->headers->all(),
@@ -185,15 +185,15 @@ class LExtension
                                             );
 
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
-                $extensions[] = $link;                  
+                $extensions[] = $link;
             }
         }
-        
+
         foreach($extensions as $link){
-            
-            $result = Request::routeRequest( 
+
+            $result = Request::routeRequest(
                                             'DELETE',
                                             '/course/'.$courseid,
                                             $this->app->request->headers->all(),
@@ -203,12 +203,12 @@ class LExtension
                                             );
 
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
                 // ok
-                
+
             } else {
-                Logger::Log( 
+                Logger::Log(
                             'DELETE DeleteCourse failed',
                             LogLevel::ERROR
                             );
@@ -216,11 +216,11 @@ class LExtension
                 $this->app->stop( );
             }
         }
-        
+
         $this->app->response->setStatus( 201 );
         $this->app->response->setBody( null );
     }
-   
+
     /**
      * Install the given component to a course.
      *
@@ -234,7 +234,7 @@ class LExtension
     {
         foreach($this->_extension as $link){
             if ($link->getTargetName() === $name || $link->getTarget() === $name){
-            
+
                 // TODO: hier eventuell alle Course Daten verwenden (vorher Abrufen)
                 $courseObject = Course::createCourse(
                                                     $courseid,
@@ -243,7 +243,7 @@ class LExtension
                                                     null
                                                     );
 
-                $result = Request::routeRequest( 
+                $result = Request::routeRequest(
                                                 'POST',
                                                 '/course',
                                                 $this->app->request->headers->all(),
@@ -253,20 +253,20 @@ class LExtension
                                                 );
 
                 // checks the correctness of the query
-                if ( $result['status'] >= 200 && 
+                if ( $result['status'] >= 200 &&
                      $result['status'] <= 299 ){
 
                     $this->app->response->setStatus( 201 );
                     $this->app->response->setBody( null );
                     if ( isset( $result['headers']['Content-Type'] ) )
-                        $this->app->response->headers->set( 
+                        $this->app->response->headers->set(
                                                             'Content-Type',
                                                             $result['headers']['Content-Type']
                                                             );
                     $this->app->stop( );
-                    
+
                 } else {
-                    Logger::Log( 
+                    Logger::Log(
                                 'POST AddCourseExtension failed',
                                 LogLevel::ERROR
                                 );
@@ -275,11 +275,11 @@ class LExtension
                 }
             }
         }
-        
+
         $this->app->response->setStatus( 404 );
         $this->app->response->setBody( null );
     }
-  
+
     /**
      * Returns all installed extensions for the given course.
      *
@@ -293,7 +293,7 @@ class LExtension
         $extensions = array();
 
         foreach($this->_extension as $link){
-            $result = Request::routeRequest( 
+            $result = Request::routeRequest(
                                             'GET',
                                             '/link/exists/course/'.$courseid,
                                             $this->app->request->headers->all(),
@@ -303,12 +303,12 @@ class LExtension
                                             );
 
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
-                $extensions[] = $link;                  
+                $extensions[] = $link;
             }
         }
-        
+
         if (!empty($extensions)){
             $this->app->response->setStatus( 200 );
         } else
@@ -316,7 +316,7 @@ class LExtension
 
         $this->app->response->setBody( Link::encodeLink( $extensions ) );
     }
-  
+
     /**
      * Returns whether the component is installed for the given course
      *
@@ -330,7 +330,7 @@ class LExtension
     {
         foreach($this->_extension as $link){
             if ($link->getTargetName() === $name || $link->getTarget() === $name){
-                $result = Request::routeRequest( 
+                $result = Request::routeRequest(
                                                 'GET',
                                                 '/link/exists/course/'.$courseid,
                                                 $this->app->request->headers->all(),
@@ -340,19 +340,19 @@ class LExtension
                                                 );
 
                 // checks the correctness of the query
-                if ( $result['status'] >= 200 && 
+                if ( $result['status'] >= 200 &&
                      $result['status'] <= 299 ){
 
                     $this->app->response->setStatus( 200 );
                     $this->app->response->setBody( null );
                     if ( isset( $result['headers']['Content-Type'] ) )
-                        $this->app->response->headers->set( 
+                        $this->app->response->headers->set(
                                                             'Content-Type',
                                                             $result['headers']['Content-Type']
                                                             );
                     $this->app->stop( );
                 } else {
-                    Logger::Log( 
+                    Logger::Log(
                                 'POST GetExtensionInstalled failed',
                                 LogLevel::ERROR
                                 );
@@ -364,7 +364,7 @@ class LExtension
         $this->app->response->setStatus( 404 );
         $this->app->response->setBody( null );
     }
-  
+
     /**
      * Returns whether the extension exists (can be installed)
      *
@@ -382,11 +382,11 @@ class LExtension
                 $this->app->stop( );
             }
         }
-        
+
         $this->app->response->setStatus( 404 );
         $this->app->response->setBody( null );
     }
-   
+
     /**
      * Returns informations about a given extension
      *
@@ -404,11 +404,11 @@ class LExtension
                 $this->app->stop( );
             }
         }
-        
+
         $this->app->response->setStatus( 404 );
         $this->app->response->setBody( null );
     }
-    
+
     /**
      * Returns informations about all existing extensions
      *

@@ -3,7 +3,7 @@ CREATE PROCEDURE `DBSubmissionGetCourseSubmissions` (IN courseid INT)
 READS SQL DATA
 begin
 SET @s = concat("
-select SQL_CACHE 
+select SQL_CACHE
     F.F_id,
     F.F_displayName,
     F.F_address,

@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -394,7 +394,7 @@ class User extends Object implements JsonSerializable
     {
         $this->comment = $value;
     }
-    
+
     /**
      * @var string $lang the selected language
      */
@@ -442,7 +442,7 @@ class User extends Object implements JsonSerializable
      *
      * @return an user object
      */
-    public static function createUser( 
+    public static function createUser(
                                       $userId,
                                       $userName,
                                       $email,
@@ -460,7 +460,7 @@ class User extends Object implements JsonSerializable
                                       $lang = null
                                       )
     {
-        return new User( array( 
+        return new User( array(
                                'id' => $userId,
                                'userName' => $userName,
                                'email' => $email,
@@ -489,15 +489,15 @@ class User extends Object implements JsonSerializable
      *
      * @return an course status object
      */
-    public static function createCourseStatus( 
+    public static function createCourseStatus(
                                               $userId,
                                               $courseId,
                                               $status
                                               )
     {
-        return new User( array( 
+        return new User( array(
                                'id' => $userId,
-                               'courses' => array( array( 
+                               'courses' => array( array(
                                                          'status' => $status,
                                                          'course' => new Course( array( 'id' => $courseId ) )
                                                          ) )
@@ -511,7 +511,7 @@ class User extends Object implements JsonSerializable
      */
     public static function getDbConvert( )
     {
-        return array( 
+        return array(
                      'U_id' => 'id',
                      'U_username' => 'userName',
                      'U_email' => 'email',
@@ -541,98 +541,98 @@ class User extends Object implements JsonSerializable
         $values = '';
 
         if ( $this->id !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'U_id',
                                  DBJson::mysql_real_escape_string( $this->id )
                                  );
         if ( $this->userName !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'U_username',
                                  DBJson::mysql_real_escape_string( $this->userName )
                                  );
         if ( $this->email !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'U_email',
                                  DBJson::mysql_real_escape_string( $this->email )
                                  );
         if ( $this->firstName !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'U_firstName',
                                  DBJson::mysql_real_escape_string( $this->firstName )
                                  );
         if ( $this->lastName !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'U_lastName',
                                  DBJson::mysql_real_escape_string( $this->lastName )
                                  );
         if ( $this->title != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'U_title',
                                  DBJson::mysql_real_escape_string( $this->title )
                                  );
         if ( $this->flag != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'U_flag',
                                  DBJson::mysql_real_escape_string( $this->flag )
                                  );
         if ( $this->password !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'U_password',
                                  DBJson::mysql_real_escape_string( $this->password )
                                  );
         if ( $this->salt !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'U_salt',
                                  DBJson::mysql_real_escape_string( $this->salt )
                                  );
         if ( $this->failedLogins !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'U_failed_logins',
                                  DBJson::mysql_real_escape_string( $this->failedLogins )
                                  );
         if ( $this->externalId != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'U_externalId',
                                  DBJson::mysql_real_escape_string( $this->externalId )
                                  );
         if ( $this->studentNumber !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'U_studentNumber',
                                  DBJson::mysql_real_escape_string( $this->studentNumber )
                                  );
         if ( $this->isSuperAdmin !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'U_isSuperAdmin',
                                  DBJson::mysql_real_escape_string( $this->isSuperAdmin )
                                  );
         if ( $this->comment !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'U_comment',
                                  DBJson::mysql_real_escape_string( $this->comment )
                                  );
         if ( $this->lang !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'U_Lang',
                                  DBJson::mysql_real_escape_string( $this->lang )
                                  );
 
         if ( $values != '' ){
-            $values = substr( 
+            $values = substr(
                              $values,
                              1
                              );
@@ -650,29 +650,29 @@ class User extends Object implements JsonSerializable
         $values = '';
 
         if ( $this->id != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'U_id',
                                  $this->id
                                  );
-        if ( $this->courses != null && 
+        if ( $this->courses != null &&
              $this->courses != array( ) )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'CS_status',
                                  $this->courses[0]->getStatus( )
                                  );
-        if ( $this->courses != null && 
-             $this->courses != array( ) && 
+        if ( $this->courses != null &&
+             $this->courses != array( ) &&
              $this->courses[0]->getCourse( ) != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'C_id',
                                  $this->courses[0]->getCourse( )->getId( )
                                  );
 
         if ( $values != '' ){
-            $values = substr( 
+            $values = substr(
                              $values,
                              1
                              );
@@ -697,7 +697,7 @@ class User extends Object implements JsonSerializable
      */
     public static function getFlagDefinition( )
     {
-        return array( 
+        return array(
                      '0' => 'inactive',
 
         // <- removes all private user data, account removed
@@ -705,7 +705,7 @@ class User extends Object implements JsonSerializable
 
         // <- the account is active
         '2' => 'locked'// <- login locked
-        
+
                      );
     }
 
@@ -724,12 +724,12 @@ class User extends Object implements JsonSerializable
                 if ( $key == 'courses' ){
                     $this->{
                         $key
-                        
-                    } = CourseStatus::decodeCourseStatus( 
+
+                    } = CourseStatus::decodeCourseStatus(
                                                          $value,
                                                          false
                                                          );
-                    
+
                 } else {
                     $func = 'set' . strtoupper($key[0]).substr($key,1);
                     $methodVariable = array($this, $func);
@@ -751,18 +751,18 @@ class User extends Object implements JsonSerializable
      */
     public static function encodeUser( $data )
     {
-        if (is_array($data))reset($data);
+        /*if (is_array($data))reset($data);
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
             $e = new Exception();
-            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
-            return null;
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());           
+            ///return null;
         }
         if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
             $e = new Exception();
             $class = (is_array($data) && is_array(current($data)) ? 'array' : (is_array($data) ? (current($data)!==false ? get_class(current($data)) : 'array') : get_class($data)));
             error_log(__FILE__.':'.__LINE__.' wrong type, '.$class.' given, '.get_called_class()." expected\n".$e->getTraceAsString());
-            return null;
-        }
+            ///return null;
+        }*/
         return json_encode( $data );
     }
 
@@ -775,18 +775,18 @@ class User extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeUser( 
+    public static function decodeUser(
                                       $data,
                                       $decode = true
                                       )
     {
-        if ( $decode && 
+        if ( $decode &&
              $data == null )
             $data = '{}';
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -795,18 +795,18 @@ class User extends Object implements JsonSerializable
                     $isArray = false;
                 }
             } else {
-               $isArray = false; 
+               $isArray = false;
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new User( $value );
             }
             return $result;
-            
-        } else 
+
+        } else
             return new User( $data );
     }
 
@@ -828,7 +828,7 @@ class User extends Object implements JsonSerializable
             $list['lastName'] = $this->lastName;
         if ( $this->title !== null )
             $list['title'] = $this->title;
-        if ( $this->courses !== array( ) && 
+        if ( $this->courses !== array( ) &&
              $this->courses !== null )
             $list['courses'] = $this->courses;
         if ( $this->flag !== null )
@@ -852,7 +852,7 @@ class User extends Object implements JsonSerializable
         return array_merge($list,parent::jsonSerialize( ));
     }
 
-    public static function ExtractUser( 
+    public static function ExtractUser(
                                        $data,
                                        $singleResult = false,
                                        $UserExtension = '',
@@ -864,7 +864,7 @@ class User extends Object implements JsonSerializable
 
         // generates an assoc array of users by using a defined list of its
         // attributes
-        $users = DBJson::getObjectsByAttributes( 
+        $users = DBJson::getObjectsByAttributes(
                                                 $data,
                                                 User::getDBPrimaryKey( ),
                                                 User::getDBConvert( ),
@@ -873,7 +873,7 @@ class User extends Object implements JsonSerializable
 
         // generates an assoc array of course stats by using a defined list of
         // its attributes
-        $courseStatus = DBJson::getObjectsByAttributes( 
+        $courseStatus = DBJson::getObjectsByAttributes(
                                                        $data,
                                                        CourseStatus::getDBPrimaryKey( ),
                                                        CourseStatus::getDBConvert( ),
@@ -882,21 +882,21 @@ class User extends Object implements JsonSerializable
 
         // generates an assoc array of courses by using a defined list of
         // its attributes
-        $courses = DBJson::getObjectsByAttributes( 
+        $courses = DBJson::getObjectsByAttributes(
                                                   $data,
                                                   Course::getDBPrimaryKey( ),
                                                   Course::getDBConvert( ),
                                                   $CourseExtension
                                                   );
-                                                  
-        $settings = DBJson::getObjectsByAttributes( 
+
+        $settings = DBJson::getObjectsByAttributes(
                                                   $data,
                                                   Setting::getDBPrimaryKey( ),
                                                   Setting::getDBConvert( )
                                                   );
-                                                  
+
         // concatenates the courses and the associated settings
-        $res = DBJson::concatObjectListResult( 
+        $res = DBJson::concatObjectListResult(
                                          $data,
                                          $courses,
                                          Course::getDBPrimaryKey( ),
@@ -904,9 +904,9 @@ class User extends Object implements JsonSerializable
                                          $settings,
                                          Setting::getDBPrimaryKey( )
                                          );
-                                                     
+
         // concatenates the course stats and the associated courses
-        $res = DBJson::concatObjectListsSingleResult( 
+        $res = DBJson::concatObjectListsSingleResult(
                                                      $data,
                                                      $courseStatus,
                                                      CourseStatus::getDBPrimaryKey( ),
@@ -918,7 +918,7 @@ class User extends Object implements JsonSerializable
                                                      );
 
         // concatenates the users and the associated course stats
-        $res = DBJson::concatResultObjectLists( 
+        $res = DBJson::concatResultObjectLists(
                                                $data,
                                                $users,
                                                User::getDBPrimaryKey( ),
@@ -929,11 +929,11 @@ class User extends Object implements JsonSerializable
                                                $UserExtension
                                                );
 
-        if ($isResult){ 
+        if ($isResult){
             // to reindex
             // $res = array_merge($res);
             $res = User::decodeUser($res,false);
-            
+
             if ( $singleResult ){
 
                 // only one object as result
@@ -945,7 +945,7 @@ class User extends Object implements JsonSerializable
         return $res;
     }
 
-    public static function ExtractCourseStatus( 
+    public static function ExtractCourseStatus(
                                                $data,
                                                $singleResult = false,
                                                $UserExtension = '',
@@ -957,7 +957,7 @@ class User extends Object implements JsonSerializable
 
         // generates an assoc array of a user by using a defined list of its
         // attributes
-        $user = DBJson::getObjectsByAttributes( 
+        $user = DBJson::getObjectsByAttributes(
                                                $data,
                                                User::getDBPrimaryKey( ),
                                                User::getDBConvert( ),
@@ -966,7 +966,7 @@ class User extends Object implements JsonSerializable
 
         // generates an assoc array of course stats by using a defined list of
         // its attributes
-        $courseStatus = DBJson::getObjectsByAttributes( 
+        $courseStatus = DBJson::getObjectsByAttributes(
                                                        $data,
                                                        CourseStatus::getDBPrimaryKey( ),
                                                        CourseStatus::getDBConvert( ),
@@ -975,7 +975,7 @@ class User extends Object implements JsonSerializable
 
         // generates an assoc array of courses by using a defined list of
         // its attributes
-        $courses = DBJson::getObjectsByAttributes( 
+        $courses = DBJson::getObjectsByAttributes(
                                                   $data,
                                                   Course::getDBPrimaryKey( ),
                                                   Course::getDBConvert( ),
@@ -983,7 +983,7 @@ class User extends Object implements JsonSerializable
                                                   );
 
         // concatenates the course stats and the associated courses
-        $res = DBJson::concatObjectListsSingleResult( 
+        $res = DBJson::concatObjectListsSingleResult(
                                                      $data,
                                                      $courseStatus,
                                                      CourseStatus::getDBPrimaryKey( ),
@@ -995,7 +995,7 @@ class User extends Object implements JsonSerializable
                                                      );
 
         // concatenates the users and the associated course stats
-        $res = DBJson::concatResultObjectLists( 
+        $res = DBJson::concatResultObjectLists(
                                                $data,
                                                $user,
                                                User::getDBPrimaryKey( ),
@@ -1006,11 +1006,11 @@ class User extends Object implements JsonSerializable
                                                $UserExtension
                                                );
 
-        if ($isResult){                    
+        if ($isResult){                   
             // to reindex
             // $res = array_merge($res);
             $res = CourseStatus::decodeCourseStatus($res,false);
-            
+
             if ( $singleResult == true ){
 
                 // only one object as result

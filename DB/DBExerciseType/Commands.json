@@ -4,6 +4,7 @@
         "outputType": "ExerciseType",
         "inputType": "ExerciseType",
         "method": "PUT",
+        "placeholder":[{"name":"etid","regex":"%^([0-9_]+)$%"}],
         "path": "/exercisetype(/exercisetype)/:etid"
     },
     {
@@ -11,6 +12,7 @@
         "outputType": "ExerciseType",
         "inputType": "",
         "method": "DELETE",
+        "placeholder":[{"name":"etid","regex":"%^([0-9_]+)$%"}],
         "path": "/exercisetype(/exercisetype)/:etid"
     },
     {
@@ -27,6 +29,7 @@
         "outputType": "ExerciseType",
         "inputType": "",
         "method": "GET",
+        "placeholder":[{"name":"etid","regex":"%^([0-9_]+)$%"}],
         "path": "/exercisetype(/exercisetype)/:etid"
     },
     {

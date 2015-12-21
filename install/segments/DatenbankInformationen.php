@@ -9,19 +9,24 @@ class DatenbankInformationen
     public static $rank = 100;
     public static $enabledShow = true;
     public static $enabledInstall = true;
-    
+
     public static $onEvents = array();
-    
+
     public static function getSettingsBar(&$data)
     {
-        return array(
-                     'db_name' => array(Language::Get('database_informations','db_name'), $data['DB']['db_name']),
-                     'db_path' => array(Language::Get('database_informations','db_path'), $data['DB']['db_path']),
-                     'db_user' => array(Language::Get('databaseAdmin','db_user'), $data['DB']['db_user']),
-                     'db_user_operator' => array(Language::Get('databasePlatformUser','db_user_operator'), $data['DB']['db_user_operator'])
+        Installation::log(array('text'=>'starte Funktion'));
+        $defs = self::getDefaults();
+        $res = array(
+                     'db_name' => array(Language::Get('database_informations','db_name'), $data['DB']['db_name'], $defs['db_name'][1]),
+                     'db_path' => array(Language::Get('database_informations','db_path'), $data['DB']['db_path'], $defs['db_path'][1]),
+                     'db_user' => array(Language::Get('databaseAdmin','db_user'), $data['DB']['db_user'], $defs['db_user'][1]),
+                     'db_user_operator' => array(Language::Get('databasePlatformUser','db_user_operator'), $data['DB']['db_user_operator'], $defs['db_user_operator'][1])
                      );
+        Installation::log(array('text'=>'Resultat: '.json_encode($res)));
+        Installation::log(array('text'=>'beende Funktion'));
+        return $res;
     }
-    
+
     public static function getDefaults()
     {
         return array(
@@ -33,24 +38,27 @@ class DatenbankInformationen
                      'db_path' => array('data[DB][db_path]', 'localhost')
                      );
     }
-    
+
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
+        Installation::log(array('text'=>'starte Funktion'));
         $def = self::getDefaults();
-        
+
         $text = '';
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_passwd'], 'data[DB][db_passwd]', $def['db_passwd'][1]);
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_passwd_operator'], 'data[DB][db_passwd_operator]', $def['db_passwd_operator'][1]);
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_passwd'], 'data[DB][db_passwd]', $def['db_passwd'][1],true);
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_passwd_operator'], 'data[DB][db_passwd_operator]', $def['db_passwd_operator'][1],true);
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_user_operator'], 'data[DB][db_user_operator]', $def['db_user_operator'][1],true);
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_user'], 'data[DB][db_user]', $def['db_user'][1] ,true);
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_name'], 'data[DB][db_name]', $def['db_name'][1],true);
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_path'], 'data[DB][db_path]', $def['db_path'][1],true);
         echo $text;
         self::$initialized = true;
+        Installation::log(array('text'=>'beende Funktion'));
     }
-    
+
     public static function show($console, $result, $data)
     {
+        Installation::log(array('text'=>'starte Funktion'));
         $text = '';
         if (!$console){
             $text .= Design::erstelleBeschreibung($console,Language::Get('database_informations','description'));
@@ -59,30 +67,33 @@ class DatenbankInformationen
 
             echo Design::erstelleBlock($console, Language::Get('database_informations','title'), $text);
         }
-            
+
         $text = '';
         if (!$console){
             $text .= "<tr><td colspan='2'>".Language::Get('databaseAdmin','description')."</td></tr>";
             $text .= Design::erstelleZeile($console, Language::Get('databaseAdmin','db_user'), 'e', Design::erstelleEingabezeile($console, $data['DB']['db_user'], 'data[DB][db_user]', 'root', true), 'v');
-            $text .= Design::erstelleZeile($console, Language::Get('databaseAdmin','db_passwd'), 'e', Design::erstellePasswortzeile($console, $data['DB']['db_passwd'], 'data[DB][db_passwd]', ''), 'v');
-        
+            $text .= Design::erstelleZeile($console, Language::Get('databaseAdmin','db_passwd'), 'e', Design::erstellePasswortzeile($console, $data['DB']['db_passwd'], 'data[DB][db_passwd]', '', true), 'v');
+
             echo Design::erstelleBlock($console, Language::Get('databaseAdmin','title'), $text);
         }
-            
+
         $text = '';
         if (!$console){
             $text .= "<tr><td colspan='2'>".Language::Get('databasePlatformUser','description')."</td></tr>";
             $text .= Design::erstelleZeile($console, Language::Get('databasePlatformUser','db_user_operator'), 'e', Design::erstelleEingabezeile($console, $data['DB']['db_user_operator'], 'data[DB][db_user_operator]', 'DBOperator',true), 'v');
-            $text .= Design::erstelleZeile($console, Language::Get('databasePlatformUser','db_passwd_operator'), 'e', Design::erstellePasswortzeile($console, $data['DB']['db_passwd_operator'], 'data[DB][db_passwd_operator]', ''), 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('databasePlatformUser','db_passwd_operator'), 'e', Design::erstellePasswortzeile($console, $data['DB']['db_passwd_operator'], 'data[DB][db_passwd_operator]', '', true), 'v');
 
             echo Design::erstelleBlock($console, Language::Get('databasePlatformUser','title'), $text);
         }
-        
+
+        Installation::log(array('text'=>'beende Funktion'));
         return null;
     }
-    
+
     public static function install($data, &$fail, &$errno, &$error)
     {
+        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>'beende Funktion'));
         return null;
     }
 }

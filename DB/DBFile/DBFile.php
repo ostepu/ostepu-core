@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -59,7 +59,19 @@ class DBFile
      */
     public function removeFile( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteFile.sql',$params,201,'Model::isCreated',array(new File()),'Model::isProblem',array(new File()));  
+        $positive = function($input) {
+            $result = Model::isProblem();$result['content']=array();
+            foreach ($input as $inp){
+                if ( $inp->getNumRows( ) > 0 ){
+                    // extract File data from db answer
+                      $res = File::ExtractFile( $inp->getResponse( ), false);
+                    $result['content'] = array_merge($result['content'], (is_array($res) ? $res : array($res)));
+                    $result['status'] = 201;
+                }
+            }
+            return $result;
+        };
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteFile.sql',$params,201,$positive,array(),'Model::isProblem',array(new File()), 'Query');
     }
 
     /**
@@ -75,7 +87,9 @@ class DBFile
         $positive = function($input) {
             // sets the new auto-increment id
             $obj = new File( );
-            $obj->setFileId( $input[0]->getInsertId( ) );
+            $id = $input[count($input)-1]->getResponse();
+            $id = $id[0]['ID'];
+            $obj->setFileId( $id );
             return array("status"=>201,"content"=>$obj);
         };
         return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddFile.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new File()));
@@ -96,7 +110,7 @@ class DBFile
             }
             return $result;
         };
-        
+
         $params = DBJson::mysql_real_escape_string( $params );
         return $this->_component->call($linkName, $params, '', 200, $positive, array(), 'Model::isProblem', array(), 'Query');
     }
@@ -105,7 +119,7 @@ class DBFile
     {
         return $this->get($callName,$callName,$params);
     }
-    
+
         /**
      * Removes the component from the platform
      *
@@ -116,7 +130,7 @@ class DBFile
     {
         return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
-    
+
     /**
      * Adds the component to the platform
      *
@@ -143,14 +157,14 @@ class DBFile
             }
             return $result;
         };
-        
+
         $params = DBJson::mysql_real_escape_string( $params );
         return $this->_component->call($callName, $params, '', 200, $positive,  array(), 'Model::isProblem', array(), 'Query');
     }
-    
+
     public function postSamples( $callName, $input, $params = array() )
-    {   
+    {
         set_time_limit(0);
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));  
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));
     }
 }

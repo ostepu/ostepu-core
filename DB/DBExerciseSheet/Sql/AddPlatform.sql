@@ -46,8 +46,8 @@ CREATE TRIGGER `ExerciseSheet_AINS` AFTER INSERT ON `ExerciseSheet` FOR EACH ROW
 @author Lisa*/
 ?>
 begin
-INSERT IGNORE INTO `Group` 
-SELECT C.U_id , C.U_id , null , NEW.ES_id 
+INSERT IGNORE INTO `Group`
+SELECT C.U_id , C.U_id , null , NEW.ES_id
 FROM CourseStatus C
 WHERE C.C_id = NEW.C_id and C.CS_status = 0 ;
 end;
@@ -60,7 +60,7 @@ CREATE TRIGGER `ExerciseSheet_BINS` BEFORE INSERT ON `ExerciseSheet` FOR EACH RO
 @author Lisa*/
 ?>
 begin
-IF NEW.ES_groupSize is null 
+IF NEW.ES_groupSize is null
 then Set NEW.ES_groupSize = (SELECT C_defaultGroupSize FROM Course WHERE C_id = NEW.C_id limit 1);
 end if;
 

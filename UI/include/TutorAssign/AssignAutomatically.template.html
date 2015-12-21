@@ -11,15 +11,69 @@ if (isset($AssignAutomaticallyNotificationElements)) {
 <input type="hidden" name="action" value="AssignAutomatically">
 <div class="content-element">
     <div class="content-header">
+        <?php echo MakeInfoButton('page/admin/tutorAssign','automatically.md'); ?>
         <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
         <button class="text-button right bold info-color"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body">
+            <?php 
+            $tutors = array('-1' => null,'u' => null);
+            $statusList = CourseStatus::getStatusDefinition();
+            foreach ($tutorAssignments as $tutorAssignment){
+                $tutorId = isset($tutorAssignment['tutor']['id']) ? $tutorAssignment['tutor']['id'] : null;
+                if (count($tutorAssignment['submissions']) === 0){
+                    // dieser Tutor besitzt keine Einsendungen, also soll er nicht
+                    // aufgelistet werden
+                    continue;
+                }
+                
+                if (isset($tutorAssignment['tutor']['userName']) && $tutorAssignment['tutor']['userName'] == 'unassigned'){
+                    // diese Einsendungen wurde noch nicht zugewiesen
+                    $tutors['-1'] = Language::Get('main','notAssigned', $langTemplate)."(" . count($tutorAssignment['submissions']) . ")";;
+                }
+                
+                if (!isset($tutorAssignment['tutor']['id']) && isset($tutorAssignment['tutor']['userName']) && $tutorAssignment['tutor']['userName'] != 'unassigned'){
+                    // diese Korrekturen gehören einem unbekannten Kontrolleur
+                    $tutors['u'] = Language::Get('main','unknownTutor', $langTemplate)."(" . count($tutorAssignment['submissions']) . ")";
+                }
+                
+                if (isset($tutorId) && $tutorAssignment['tutor']['userName'] != "unassigned"){
+                    $firstName = isset($tutorAssignment['tutor']['firstName']) ? $tutorAssignment['tutor']['firstName'].' ' : '';
+                    $lastName = isset($tutorAssignment['tutor']['lastName']) ? $tutorAssignment['tutor']['lastName'].' ': '';
+                    $status = isset($tutorAssignment['tutor']['courses'][0]['status']) ? ','.$statusList[$tutorAssignment['tutor']['courses'][0]['status']] : '';
+                    $name = isset($tutorAssignment['tutor']['userName']) ? '('.$tutorAssignment['tutor']['userName'].$status.')' : '';
+                    $amount = "(" . count($tutorAssignment['submissions']) . ")";
+                    $tutors[$tutorId] = $firstName.$lastName.$name.$amount;
+                }
+            }
+            
+            foreach($tutors as $key => $tut){
+                if (!isset($tut)){
+                    unset($tutors[$key]);
+                }
+            }
+            ?>
+            
+            <?php if (!empty($tutors)){ ?>
             <div>
                 <label class="form-field label bold">
-                    <?php echo Language::Get('main','assignInGroups', $langTemplate); ?>:
+                    <?php echo Language::Get('main','assignFrom', $langTemplate); ?>
+                </label>
+            </div>               
+            <div>
+                <select class="form-field text-input" name="fromTutor" id="fromTutor">
+                        <?php
+                            foreach ($tutors as $key => $value) {
+                                echo "<option value='{$key}'".">{$value}</option>";
+                            }
+                        ?>
+                </select>
+            </div>
+            <div>
+                <label class="form-field label bold">
+                    <?php echo Language::Get('main','assignTo', $langTemplate); ?>
                 </label>
             </div>
             <div>
@@ -27,8 +81,8 @@ if (isset($AssignAutomaticallyNotificationElements)) {
                 foreach ($tutorAssignments as $tutorAssignment){
                     $tutorId = isset($tutorAssignment['tutor']['id']) ? $tutorAssignment['tutor']['id'] : null;
                     
-                    if (isset($tutorAssignment['tutor']['id']) && $tutorAssignment['tutor']['userName'] != "unassigned"){
-                        echo "<span style='display:inline-block' class='tutor-assign-element'>";
+                    if (isset($tutorId) && $tutorAssignment['tutor']['userName'] != "unassigned"){
+                        echo "<div style='display:inline-block;margin-right:10px' class=''>";
                         print '<input type="checkbox" name="tutorIds[]" value="';
                         print $tutorId . '" id="';
                         print $tutorId . '" />';
@@ -42,11 +96,16 @@ if (isset($AssignAutomaticallyNotificationElements)) {
                         echo isset($tutorAssignment['tutor']['userName']) ? '('.$tutorAssignment['tutor']['userName'].$status.')' : '';
                         print "(" . count($tutorAssignment['submissions']) . ")";
                         print '</label>';
-                        echo "</span>";
+                        echo "</div>";
                     }
                 }
                 ?>
             </div>
+            <?php } else { ?>
+                <label class="form-field label bold">
+                    <?php echo Language::Get('main','noPossibleAssignments', $langTemplate); ?>
+                </label>
+            <?php } ?>
         </div>
     </div> <!-- end: content-body-wrapper -->
 </div> <!-- end: content-element -->

@@ -5,7 +5,7 @@ begin
 UPDATE `User` SET U_failed_logins=UNIX_TIMESTAMP(NOW())
 where U_id = userid or U_username = userid or U_externalId = userid;
 
-SELECT 
+SELECT
     U.U_id,
     U.U_username,
     U.U_firstName,

@@ -1,11 +1,11 @@
 {
   "name":"INSTALL",
-  "version":"0.3",
-  "versionDate":"19.04.2015",
+  "version":"0.4.3",
+  "versionDate":"05.12.2015",
   "author":"",
   "sourceURL":null,
   "updateURL":null,
-  "requirements":[{"type":"plugin","name":"CORE","version":"0.2"},{"type":"plugin","name":"OSTEPU-UI","version":"0.2"}],
+  "requirements":[{"type":"plugin","name":"CORE","version":"0.3.7"},{"type":"plugin","name":"OSTEPU-UI","version":"0.3.7"}],
   "files":
     [
       {"path":"install/include/"},

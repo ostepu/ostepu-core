@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -17,7 +17,7 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
  */
 class DBCourse
 {
-    
+
     /**
      * REST actions
      *
@@ -59,7 +59,7 @@ class DBCourse
      */
     public function deleteCourse( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteCourse.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));  
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteCourse.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));
     }
 
     /**
@@ -80,7 +80,7 @@ class DBCourse
             $resp =$queryResult->getResponse();
             if (isset($resp[0]['@a']))
                 $id = $resp[0]['@a'];
-            
+
             // sets the new auto-increment id
             $obj = new Course( );
             $obj->setId( ($input[0]->getInsertId( )==0 ? $id : $input[0]->getInsertId( )) );
@@ -103,7 +103,7 @@ class DBCourse
             }
             return $result;
         };
-        
+
         $params = DBJson::mysql_real_escape_string( $params );
         return $this->_component->call($linkName, $params, '', 200, $positive, array(), 'Model::isProblem', array(), 'Query');
     }
@@ -112,7 +112,7 @@ class DBCourse
     {
         return $this->get($callName,$callName,$params);
     }
-    
+
     /**
      * Removes the component from the platform
      *
@@ -123,7 +123,7 @@ class DBCourse
     {
         return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
-    
+
     /**
      * Adds the component to the platform
      *
@@ -134,7 +134,7 @@ class DBCourse
     {
         return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
-    
+
     public function getSamplesInfo( $callName, $input, $params = array() )
     {
         $positive = function($input) {
@@ -150,14 +150,14 @@ class DBCourse
             }
             return $result;
         };
-        
+
         $params = DBJson::mysql_real_escape_string( $params );
         return $this->_component->call($callName, $params, '', 200, $positive,  array(), 'Model::isProblem', array(), 'Query');
     }
-    
+
     public function postSamples( $callName, $input, $params = array() )
-    {   
+    {
         set_time_limit(0);
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));  
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));
     }
 }

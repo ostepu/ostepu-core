@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -40,7 +40,7 @@ class Setting extends Object implements JsonSerializable
     {
         $this->name = $value;
     }
-    
+
     /**
      * @var string $type db type of the Setting
      */
@@ -65,7 +65,7 @@ class Setting extends Object implements JsonSerializable
     {
         $this->type = $value;
     }
-    
+
     /**
      * @var string $id db id of the Setting
      */
@@ -90,7 +90,7 @@ class Setting extends Object implements JsonSerializable
     {
         $this->id = $value;
     }
-    
+
     public static function getCourseFromSettingId($Id)
     {
         $arr = explode('_',$Id);
@@ -100,7 +100,7 @@ class Setting extends Object implements JsonSerializable
         else
         return '';
     }
-    
+
     public static function getIdFromSettingId($Id)
     {
         $arr = explode('_',$Id);
@@ -110,19 +110,19 @@ class Setting extends Object implements JsonSerializable
         else
         return $Id;
     }
-    
+
     public function getObjectCourseFromSettingId()
     {
         return Setting::getCourseFromSettingId($this->id);
     }
-    
+
     public function getObjectIdFromSettingId()
     {
         return Setting::getIdFromSettingId($this->id);
     }
 
     /**
-     
+
      * @var string $state The id of the exercise this Setting belongs to.
      */
     private $state = null;
@@ -136,7 +136,7 @@ class Setting extends Object implements JsonSerializable
     {
         return $this->state;
     }
-    
+
     /**
      * the $state setter
      *
@@ -146,7 +146,7 @@ class Setting extends Object implements JsonSerializable
     {
         $this->state = $value;
     }
-    
+
     /**
      * Creates an Setting object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -156,14 +156,14 @@ class Setting extends Object implements JsonSerializable
      *
      * @return an Setting object.
      */
-    public static function createSetting( 
+    public static function createSetting(
                                             $settingId,
                                             $settingName,
                                             $state=null,
                                             $type=null
                                             )
     {
-        return new Setting( array( 
+        return new Setting( array(
                                      'id' => $settingId,
                                      'name' => $settingName,
                                      'state' => $state,
@@ -178,7 +178,7 @@ class Setting extends Object implements JsonSerializable
      */
     public static function getDbConvert( )
     {
-        return array( 
+        return array(
                      'SET_id' => 'id',
                      'SET_name' => 'name',
                      'SET_state' => 'state',
@@ -194,34 +194,34 @@ class Setting extends Object implements JsonSerializable
     public function getInsertData( $doubleEscaped=false )
     {
         $values = '';
-        
+
         if ( $this->id !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'SET_id',
                                  DBJson::mysql_real_escape_string( self::getIdFromSettingId($this->id) )
                                  );
         if ( $this->name !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'SET_name',
                                  DBJson::mysql_real_escape_string( $this->name )
                                  );
         if ( $this->state !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'SET_state',
                                  DBJson::mysql_real_escape_string( $this->state )
                                  );
         if ( $this->type !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'SET_type',
                                  DBJson::mysql_real_escape_string( $this->state )
                                  );
 
         if ( $values != '' ){
-            $values = substr( 
+            $values = substr(
                              $values,
                              1
                              );
@@ -270,18 +270,18 @@ class Setting extends Object implements JsonSerializable
      */
     public static function encodeSetting( $data )
     {
-        if (is_array($data))reset($data);
+        /*if (is_array($data))reset($data);
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
             $e = new Exception();
-            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
-            return null;
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());           
+            ///return null;
         }
         if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
             $e = new Exception();
             $class = (is_array($data) && is_array(current($data)) ? 'array' : (is_array($data) ? (current($data)!==false ? get_class(current($data)) : 'array') : get_class($data)));
             error_log(__FILE__.':'.__LINE__.' wrong type, '.$class.' given, '.get_called_class()." expected\n".$e->getTraceAsString());
-            return null;
-        }
+            ///return null;
+        }*/
         return json_encode( $data );
     }
 
@@ -294,18 +294,18 @@ class Setting extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeSetting( 
+    public static function decodeSetting(
                                             $data,
                                             $decode = true
                                             )
     {
-        if ( $decode && 
+        if ( $decode &&
              $data == null )
             $data = '{}';
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -314,18 +314,18 @@ class Setting extends Object implements JsonSerializable
                     $isArray = false;
                 }
             } else {
-               $isArray = false; 
+               $isArray = false;
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new Setting( $value );
             }
             return $result;
-            
-        } else 
+
+        } else
             return new Setting( $data );
     }
 
@@ -348,7 +348,7 @@ class Setting extends Object implements JsonSerializable
         return array_merge($list,parent::jsonSerialize( ));
     }
 
-    public static function ExtractSetting( 
+    public static function ExtractSetting(
                                              $data,
                                              $singleResult = false,
                                              $SettingExtension = '',
@@ -357,7 +357,7 @@ class Setting extends Object implements JsonSerializable
     {
         // generates an assoc array of Settings by using a defined list of
         // its attributes
-        $res = DBJson::getObjectsByAttributes( 
+        $res = DBJson::getObjectsByAttributes(
                                                       $data,
                                                       Setting::getDBPrimaryKey( ),
                                                       Setting::getDBConvert( ),

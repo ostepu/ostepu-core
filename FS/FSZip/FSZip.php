@@ -82,7 +82,7 @@ class FSZip
         $hashArray = array( );
         foreach ( $input as $part ){
             if ( $part->getBody( ) !== null ){
-                $hashArray[] = $part->getBody( );
+                $hashArray[] = base64_encode($part->getBody( true ));
                 
             } else 
                 $hashArray[] = $part->getAddress( ) . $part->getDisplayName( );
@@ -113,7 +113,7 @@ class FSZip
                     if ( $part->getBody( ) !== null ){
                         $zip->addFromString( 
                                             $part->getDisplayName( ),
-                                            base64_decode( $part->getBody( ) )
+                                            $part->getBody( true )
                                             );
                         
                     } else {
@@ -142,8 +142,10 @@ class FSZip
 
         if (isset($params['filename'])){
             readfile( $this->config['DIR']['files'].'/'.$filePath );
-            Model::header('Content-Type','application/octet-stream');
-            Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");
+            Model::header('Content-Type','application/zip');
+            Model::header('Content-Disposition',"filename=\"".$params['filename']."\"");
+            Model::header('Content-Length',filesize($this->config['DIR']['files'].'/'.$filePath));
+            Model::header('Accept-Ranges','none');
             return Model::isCreated();
         } else {
             $zipFile = new File( );
@@ -184,8 +186,9 @@ class FSZip
              file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
 
             // the file was found
-            Model::header('Content-Type','application/octet-stream');
-            Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");                                            
+            Model::header('Content-Type','application/zip');
+            Model::header('Content-Disposition',"filename=\"".$params['filename']."\"");  
+            Model::header('Accept-Ranges','none');                                          
             readfile( $this->config['DIR']['files'].'/'.$filePath );
             return Model::isOk();
             

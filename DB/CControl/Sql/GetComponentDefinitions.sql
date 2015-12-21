@@ -1,4 +1,4 @@
-select 
+select
     CO.CO_id,
     CO.CO_name,
     CO.CO_address,

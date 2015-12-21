@@ -1,7 +1,7 @@
 <?php
 /**
  * @file TEST_LFile.php Contains the TEST_LFile class
- * 
+ *
  * @author Till Uhlig
  * @date 2014
  */
@@ -27,7 +27,7 @@ class LFileTest extends PHPUnit_Framework_TestCase
     private $app = null;
     public static $data = null;
     private static $Tester = null;
-    
+
     /**
      * REST actions
      *
@@ -36,22 +36,22 @@ class LFileTest extends PHPUnit_Framework_TestCase
      */
     public function __construct()
     {
-        // initialize slim                
+        // initialize slim
         if (!isset($_SERVER['REQUEST_METHOD'])){
 
-        } else {   
+        } else {
             $this->app = new \Slim\Slim(array('debug' => true));
             $this->app->response->headers->set('Content-Type', 'application/json');
-            
+
             $this->app->map('/test',
                             array($this, 'testLFile'))->via('POST');
-                            
+
             $this->app->map('/fileDb/:path+/hash/:hash',
                             array($this, 'fileDbGet'))->via('GET');
-                            
+
             $this->app->map('/fileDb/file',
                             array($this, 'fileDbPost'))->via('POST');
-                            
+
             $this->app->map('/file/file',
                             array($this, 'fileFsPost'))->via('POST');
 
@@ -59,7 +59,7 @@ class LFileTest extends PHPUnit_Framework_TestCase
             $this->app->run();
         }
     }
-  
+
     public static function Init($data)
     {
         $component = new Component();
@@ -67,71 +67,71 @@ class LFileTest extends PHPUnit_Framework_TestCase
         $link = new Link();
         $link->setName('fileDb');
         $link->setAddress('http://localhost/'.$data['path'].'/fileDb');
-        $link->setPrefix('file');        
+        $link->setPrefix('file');
         $links[] = $link;
-        
+
         $link = new Link();
         $link->setName('file');
         $link->setAddress('http://localhost/'.$data['path'].'/file');
-        $link->setPrefix('file');        
+        $link->setPrefix('file');
         $links[] = $link;
-        
+
         $component->setLinks($links);
         chdir(dirname(__FILE__));
         CConfig::saveConfigGlobal('',Component::encodeComponent($component));
 
     }
-    
+
     private static $ass = null;
     public static function createTests()
     {
         LFileTest::$Tester = new Testsystem();
-        
+
         $aufruf = function($methode, $url, $data){
             return Request::custom($methode, 'http://localhost/uebungsplattform/logic/LFile'.$url,array(),$data);
         };
-        
+
         $auswertungOK = function($result, $methode, $url, $data, $fileDbGet, $fileDbPost, $fileFsPost){
             PHPUnit_Framework_Assert::assertTrue(isset($result['content']));
             PHPUnit_Framework_Assert::assertTrue(isset($result['status']));
             PHPUnit_Framework_Assert::assertEquals(201,$result['status'],$data);
             $objData = File::decodeFile($data);
-            
+
             $obj = File::decodeFile($result['content']);
             PHPUnit_Framework_Assert::assertEquals(is_array($objData),is_array($obj));
-            
+
             if (!is_array($obj)) $obj = array($obj);
             if (!is_array($objData)) $objData = array($objData);
             foreach($obj as $res){
                 PHPUnit_Framework_Assert::assertEquals(null,$res->getBody());
                 PHPUnit_Framework_Assert::assertEquals(201,$res->getStatus(),$data);
-                
+
                 // prüfe Inhalt der Objekte
             }
         };
-        
+
         $auswertungWrongSyntax = function($result, $methode, $url, $data, $fileDbGet, $fileDbPost, $fileFsPost){
             PHPUnit_Framework_Assert::assertTrue(isset($result['content']));
             PHPUnit_Framework_Assert::assertTrue(isset($result['status']));
             PHPUnit_Framework_Assert::assertEquals(201,$result['status'],$data);
             $objData = File::decodeFile($data);
-            
+
             $obj = File::decodeFile($result['content']);
             PHPUnit_Framework_Assert::assertEquals(is_array($objData),is_array($obj));
-            
+
             if (!is_array($obj)) $obj = array($obj);
             if (!is_array($objData)) $objData = array($objData);
             foreach($obj as $res){
                 PHPUnit_Framework_Assert::assertEquals(null,$res->getBody());
                 PHPUnit_Framework_Assert::assertEquals(409,$res->getStatus(),$data);
             }
-            
+
         };
-        
+
         $filesOK = array('{"fileId":"1_?aÖ","body":"f4","address":"a","hash":"hh"}',
                          '{"body":"f4"}',
                          '[{"fileId":"1_?aÖ","body":"f4","address":"a","hash":"hh"}]');
-                       
+
         $filesWrongSyntax = array('{"fileId":"1_?aÖ","body":"f4","address"a}',
                                   '[{"fileId":"1_?aÖ","body":"f4","address":"a","hash":"h]',
                                   '{"fileId":"1_?aÖ",}',
@@ -143,8 +143,8 @@ class LFileTest extends PHPUnit_Framework_TestCase
                                   '{}',
                                   null,
                                   array());
-        
-                                     
+
+
         LFileTest::$Tester->situationHinzufuegen(new Situation('Funktioniert',
                                                         $aufruf,
                                                         $auswertungOK,
@@ -156,7 +156,7 @@ class LFileTest extends PHPUnit_Framework_TestCase
                                                         new Sammlung('fileFsPost','{"address":"a","hash":"hh"}')
                                                                )
                                                 );
-                                                
+
         LFileTest::$Tester->situationHinzufuegen(new Situation('SyntaxFehlerhaft',
                                                         $aufruf,
                                                         $auswertungWrongSyntax,
@@ -177,7 +177,7 @@ class LFileTest extends PHPUnit_Framework_TestCase
         $this->app->response->setStatus( 201 );
         $this->app->stop();
     }
-    
+
     public function fileDbPost()
     {
         LFileTest::createTests();
@@ -185,7 +185,7 @@ class LFileTest extends PHPUnit_Framework_TestCase
         $this->app->response->setStatus( 201 );
         $this->app->stop();
     }
-    
+
     public function fileFsPost()
     {
         LFileTest::createTests();
@@ -193,12 +193,12 @@ class LFileTest extends PHPUnit_Framework_TestCase
         $this->app->response->setStatus( 201 );
         $this->app->stop();
     }
-    
+
     public function testLFile()
     {
         $data = LFileTest::$data;
-        $data['path'] = 'uebungsplattform/logic/LFile/LFileTest.php';       
-        
+        $data['path'] = 'uebungsplattform/logic/LFile/LFileTest.php';
+
         // Testsituation initialisieren
         LFileTest::Init($data);
         LFileTest::createTests();

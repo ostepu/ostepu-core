@@ -7,18 +7,19 @@ class ZugangAusgeben
     public static $rank = 50;
     public static $enabledShow = false;
     public static $enabledInstall = false;
-    
+
     public static $onEvents = array();
-    
+
     public static function show($console, $result, $data)
     {
+        Installation::log(array('text'=>'starte Funktion'));
         $text='';
-        
+
         if (!$console){
             $text .= Design::erstelleBeschreibung($console,Language::Get('access','description'));
 
             $text .= Design::erstelleZeile($console, Language::Get('access','local'), 'e', Design::erstelleGruppenAuswahl($console, $data['ZV']['zv_type'], 'data[ZV][zv_type]', 'local', 'local', true), 'v');
-            
+
             $text .= Design::erstelleZeile($console, '&nbsp;', '', '', '');
             $text .= Design::erstelleZeile($console, Language::Get('access','ssh'), 'e', Design::erstelleGruppenAuswahl($console, $data['ZV']['zv_type'], 'data[ZV][zv_type]', 'ssh', null, true), 'v');
             $text .= Design::erstelleZeile($console, Language::Get('access','username'), 'e', Design::erstelleEingabezeile($console, $data['ZV']['zv_ssh_login'], 'data[ZV][zv_ssh_login]', 'root'), 'v');
@@ -28,6 +29,7 @@ class ZugangAusgeben
 
             echo Design::erstelleBlock($console, Language::Get('access','title'), $text);
         }
+        Installation::log(array('text'=>'beende Funktion'));
         return null;
     }
 }

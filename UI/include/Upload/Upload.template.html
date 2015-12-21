@@ -39,6 +39,7 @@
     ?>
         <div class="content-element">
             <div class="content-header">
+                <?php echo MakeInfoButton('page/student/upload','upload.md'); ?>
                 <div class="content-title left">
                     <?php echo Language::Get('submission','exercise', $langTemplate); ?> <?php echo $exercise['link']; ?><?php
                     $add="";
@@ -71,12 +72,13 @@
                             </div>
 
                             <?php $sub = $exercise['selectedSubmission']; ?>
-                            <?php $file = $sub['file']; ?>
-                            <?php $displayName = $file['displayName']; ?>
-                            <?php $fileAddress = $file['address']; ?>
+                            <?php $file = (isset($sub['file']) ? $sub['file'] : null); ?>
+                            <?php $displayName = (isset($file['displayName']) ? $file['displayName'] : ''); ?>
+                            <?php $fileAddress = (isset($file['address']) ? $file['address'] : ''); ?>
                             <?php $date = $sub['date']; ?>
                             <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
 
+                            <?php if (isset($file)){ ?>
                             <a href="<?php echo $fileURL; ?>"
                                title="<?php echo $displayName; ?>"
                                class="left body-option-color"
@@ -86,6 +88,15 @@
                                 <?php echo formatBytes($file['fileSize']); ?>
                                 )
                             </a>
+                            <?php } else { ?>
+                            <span class ="left error-color">
+                                <img src="Images/Error.png" class='exercise-sheet-images' title="<?php echo Language::Get('submission','invalidSubmission', $langTemplate);?>"/>
+                                <?php echo Language::Get('submission','invalidSubmission', $langTemplate); ?> (
+                                <?php echo date('d.m.Y  -  H:i', $date); ?>
+                                )
+                            </span>
+                            <?php } ?>
+                            
                             <?php if (count($groupMember)>1){
                                 if (isset($exercise['selectedSubmission']['studentId']) && isset($groupMember[$exercise['selectedSubmission']['studentId']]['userName'])){
                                     print '('.$groupMember[$exercise['selectedSubmission']['studentId']]['userName'].')';
@@ -93,7 +104,7 @@
                                     print "(???)";
                             } ?>
 
-                            <?php if (isset($sub['comment']) && trim($sub['comment'])!=''): ?>
+                            <?php if (isset($sub['comment']) && trim($sub['comment'])!=''){  ?>
                                 <br><div class="form-field wider left bold new-line">
                                     <?php echo Language::Get('submission','currentStudentComment', $langTemplate); ?>:
                                 </div>                               
@@ -102,7 +113,7 @@
                                     echo '<span style="white-space: pre;">'.str_replace(array(' ', "\r\n", "\n"), array(' ','<br>','<br>'), htmlspecialchars_decode($sub['comment'])).'</span>';
                                     ?>
                                 </div>
-                            <?php endif; ?>
+                            <?php } ?>
                             <br><br>
                     <?php endif; ?>
                     
@@ -194,7 +205,16 @@
                     ?>
                     <?php if (!isset($exercise['submittable']) || $exercise['submittable'] == '1'){ ?>
                     <label class="short left label bold new-line"
-                           for="studentComment"><?php echo Language::Get('submission','file', $langTemplate); ?>:</label>
+                           <?php 
+                                $maxFileSize = parse_size(ini_get('upload_max_filesize'));
+                                
+                                global $globalUserData; 
+                                if (isset($globalUserData['courses'][0]['course'])){
+                                    $obj = Course::decodeCourse(Course::encodeCourse($globalUserData['courses'][0]['course']));
+                                    $maxFileSize = Course::containsSetting($obj,'MaxStudentUploadSize');
+                                }
+                           ?>
+                           for="studentComment"><?php echo Language::Get('submission','file', $langTemplate, array('maxFileSize'=>formatBytes($maxFileSize))); ?>:</label>
                     <input type="file"
                            class="button left"
                            name="file<?php echo $exercise['id']; ?>">

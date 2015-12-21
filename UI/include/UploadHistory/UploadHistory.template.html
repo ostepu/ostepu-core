@@ -62,6 +62,7 @@ if (isset($UploadHistoryNotificationElements)) {
 ?>
 <div class="content-element">
     <div class="content-header">
+        <?php echo MakeInfoButton('page/common/uploadHistory','change.md'); ?>
         <div class="content-title left"><?php echo $namesOfExercises[$key];?></div>
     </div>
 
@@ -81,7 +82,7 @@ echo '<span class="content-body-wrapper">';
                             // prints the submission date
                             $selected = (isset($submission['selectedForGroup']) && $submission['selectedForGroup']==1) ? true : false;
                             echo '<div class="form-field left bold new-line '. ($selected ? 'critical-color' : '') .'">';
-                            print date('d.m.Y  -  H:i', $submission['date']);
+                            print date('d.m.Y  -  H:i:s', $submission['date']);
                             if (!$selected){ 
                             $obj=array("id"=>$submission['id'], "leaderId"=>$submission['leaderId'], "exerciseId"=>$submission['exerciseId']);
                                 if (count($groupMember)==1 || $_POST['userID']==$group['leader']['id'] || $courseStatus>=1 /* PRIVILEGE_LEVEL::TUTOR */){
@@ -103,20 +104,29 @@ echo '<span class="content-body-wrapper">';
                             <?php
                             print '</div>';                            
 
-                            $displayName = $submission['file']['displayName'];
-                            $fileAddress = $submission['file']['address'];
-                            $fileSize = $submission['file']['fileSize'];
+
 
                             // prints the link for downloading the submission
-                            $fileURL = '../FS/FSBinder/' . $fileAddress . '/' . $displayName;
                             print '<span class="wider left '.($selected ? 'bold critical-color' : 'body-option-color').'">';
                             print '<div class="exercise-sheet-images">';
-                            print '<a href="'.$fileURL.'" title="'.$displayName.'" class="plain" target="_blank">';
-                            print '        <img src="Images/Download.png" />';
-                            print ' (' . formatBytes($fileSize) . ') ';
-                            print '</a>';
                             
-                            if (isset($submission['marking']['id']) && ($courseStatus>=1 /* PRIVILEGE_LEVEL::TUTOR */ || (isset($isExpired) && $isExpired))){  
+                            if (isset($submission['file']) && (!isset($submission['hideFile']) || !$submission['hideFile'])){
+                                $displayName = (isset($submission['file']['displayName']) ? $submission['file']['displayName'] : '');
+                                $fileAddress = (isset($submission['file']['address']) ? $submission['file']['address'] : '');
+                                $fileSize = (isset($submission['file']['fileSize']) ? $submission['file']['fileSize'] : 0);
+                                $fileURL = '../FS/FSBinder/' . $fileAddress . '/' . $displayName;
+                                print '<a href="'.$fileURL.'" title="'.$displayName.'" class="plain" target="_blank">';
+                                print '        <img src="Images/Download.png" />';
+                                print ' (' . formatBytes($fileSize) . ') ';
+                                print '</a>';
+                            } elseif(!isset($submission['file'])) {
+                                print '<span class ="">';
+                                print '<img src="Images/Error.png" title="'.Language::Get('main','invalidSubmission', $langTemplate).'"/>';
+                                print ' (' . formatBytes(0) . ') ';
+                                print '</span>';
+                            }
+                            
+                            if (isset($submission['marking']['id']) && ($courseStatus>=1 /* PRIVILEGE_LEVEL::TUTOR */ || (isset($isExpired) && $isExpired) || $privileged)){  
                                 if (isset($submission['marking']['file']) && $submission['marking']['hideFile']==='0'){
                                     $displayName = $submission['marking']['file']['displayName'];
                                     $fileAddress = $submission['marking']['file']['address'];
@@ -139,7 +149,7 @@ echo '<span class="content-body-wrapper">';
                             echo '<div class="short" style="padding-left: 20px">';
                             if (!isset($submission['accepted']) || $submission['accepted'] == 0){
                                 echo Language::Get('main','notAccepted', $langTemplate);
-                            } elseif (isset($submission['marking']) && ($isExpired || $courseStatus>=1 /* PRIVILEGE_LEVEL::TUTOR */)) {
+                            } elseif (isset($submission['marking']) && ($isExpired || $courseStatus>=1 /* PRIVILEGE_LEVEL::TUTOR */ || $privileged)) {
                                 echo $markingStatus[LArraySorter::multidimensional_search($markingStatus, array('id'=>$submission['marking']['status']))]['longName'];
                             } else {
                                 echo Language::Get('main','uncorrected', $langTemplate);

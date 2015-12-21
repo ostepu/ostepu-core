@@ -7,6 +7,6 @@
  * @result -
  */
 ?>
- 
+
 insert into User SET <?php echo $values; ?>;
 

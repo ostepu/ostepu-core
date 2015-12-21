@@ -1,5 +1,5 @@
 #### Eingänge
-- procedure = der Name der `stored procdure`
+- procedure = der Name der `stored procedure`
 - params = Aufrufparameter einer `stored procedure`
 
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |

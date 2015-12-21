@@ -85,8 +85,22 @@ class Request
     {
         $begin = microtime(true);
         
+        $configData = null;
+        $confFile = dirname(__FILE__).'/config.ini';
+        if (file_exists($confFile)){
+            $configData =  parse_ini_file($confFile,TRUE);
+        }
+        
+        // nun soll eine globale URL erkannt werden und in eine lokale überführt werden (wenn möglich)
+        if (isset($configData['PL']['urlExtern']) && isset($configData['PL']['url'])){
+            if (strpos($target,$configData['PL']['urlExtern'].'/')===0){
+                // es wurde eine globale URL erkannt, welche zu einer lokalen umgewandelt werden kann
+                $target = $configData['PL']['url'].substr($target,strlen($configData['PL']['urlExtern']));
+            }
+        }
+
         $done = false;
-        if (!CConfig::$onload && strpos($target,'http://localhost/')===0 && file_exists(dirname(__FILE__) . '/request_cconfig.json')){
+        if (!CConfig::$onload && isset($configData['PL']['url']) && strpos($target,$configData['PL']['url'].'/')===0 && file_exists(dirname(__FILE__) . '/request_cconfig.json')){
             if (self::$components===null){
                 self::$components=CConfig::loadStaticConfig('','',dirname(__FILE__),'request_cconfig.json');
             }
@@ -94,20 +108,29 @@ class Request
             $coms = self::$components->getLinks();
             if ($coms!=null){      
                 if (!is_array($coms)) $coms = array($coms);
-                
-                $e = strlen(rtrim($_SERVER['DOCUMENT_ROOT'],'/'));
-                $f = substr(str_replace("\\","/",dirname(__FILE__)),$e);
-                $g = substr(str_replace("\\","/",$_SERVER['SCRIPT_FILENAME']),$e);
 
-                $a=0;
-                for (;$a<strlen($g) && $a<strlen($f) && $f[$a] == $g[$a];$a++){}
-                $h = substr(str_replace("\\","/",$_SERVER['PHP_SELF']),0,$a-1);
                 foreach ($coms as $com){
                     if ($com->getPrefix() === null || $com->getLocalPath()==null || $com->getClassFile()==null || $com->getClassName()==null) {
                         Logger::Log('nodata: '.$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
                         continue;
                     }
-                    $url = 'http://localhost'.$h.'/'.$com->getLocalPath();
+                    
+                    // die Länge des Serverpfades Bsp.: 15
+                    $e = strlen(rtrim($_SERVER['DOCUMENT_ROOT'],'/'));
+                    
+                    $f = substr(str_replace("\\","/",dirname(__FILE__)),$e);
+                    $g = substr(str_replace("\\","/",$_SERVER['SCRIPT_FILENAME']),$e);
+
+                    $a=0;
+                    for (;$a<strlen($g) && $a<strlen($f) && $f[$a] == $g[$a];$a++){}
+                    
+                    // der Unterordner. Bsp.: uebungsplattform/
+                    $h = substr(str_replace("\\","/",$_SERVER['PHP_SELF']),0,$a-1);
+                    
+                    // ermittelt den Anfang der lokalen URL (ohne Unterordner). Bsp.: http://localhost
+                    $basePath = substr($configData['PL']['url'], 0,strlen($configData['PL']['url'])-strlen($h));
+
+                    $url = $configData['PL']['url'].'/'.$com->getLocalPath();
 
                     if (strpos($target,$url.'/')===0){
                         $result = array();
@@ -174,11 +197,8 @@ class Request
                             $oldRequestURI = $_SERVER['REQUEST_URI'];
                             $oldScriptName = $_SERVER['SCRIPT_NAME'];
                             ///$oldRedirectURL = $_SERVER['REDIRECT_URL'];
-                            ///echo "old: ".$_SERVER['REQUEST_URI']."\n";
-                            $_SERVER['REQUEST_URI'] = substr($target,strlen('http://localhost/')-1);//$tar.$add;
-                            ///$_SERVER['REDIRECT_URL']= substr($target,strlen('http://localhost/')-1);
-                            ///echo "mein: ".substr($target,strlen('http://localhost/')-1)."\n";
-                            $_SERVER['SCRIPT_NAME'] = $h.'/'.$com->getLocalPath().'/'.$com->getClassFile(); //$tar;
+                            $_SERVER['REQUEST_URI'] = substr($target,strlen($basePath.'/')-1);
+                            $_SERVER['SCRIPT_NAME'] = $h.'/'.$com->getLocalPath().'/'.$com->getClassFile();
                             $_SERVER['QUERY_STRING']='';
                             $_SERVER['REQUEST_METHOD']=$method;
                             \Slim\Environment::mock($args);

@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -21,11 +21,11 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
 /**
  * A class, to abstract ...
  *
- 
+
  */
 class CAbstract
 {
-    
+
     /**
      * the component constructor
      */
@@ -48,7 +48,7 @@ class CAbstract
                 }
             }
         }
-            
+
         return;
     }
 } 

@@ -21,15 +21,18 @@ function checkPermission($permission){
     $data = json_decode($data,true);
     $found=false;
     foreach ($data['courses'] as $key=>$course){
-        if ($course['course']['id']==$cid){
-            $data['courses']=array($course);$found=true;
+        if ($course['course']['id'] === $cid){
+            $data['courses']=array($course);
+            $found=true;
             break;
         }
     }
-    if (!$found)
+    if (!$found){
         $data['courses']=array();
+    }
     $user_course_data = $data;
     Authentication::checkRights($permission, $cid, $uid, $user_course_data);
+    return $user_course_data;
 }
 
 $_GET=cleanInput($_GET);
@@ -45,7 +48,7 @@ foreach ($types as $type){
 }
 if (isset($_GET['downloadCSV'])) {
     checkPermission(PRIVILEGE_LEVEL::TUTOR);
-    $sid = cleanInput($_GET['downloadCSV']);
+    $sid = $_GET['downloadCSV'];
     $location = $logicURI . '/tutor/user/' . $uid . '/exercisesheet/' . $sid.(isset($status) ? '/status/'.$status : '');
     $result = http_get($location, true);
     echo $result;
@@ -53,7 +56,13 @@ if (isset($_GET['downloadCSV'])) {
 }
 
 if (isset($_GET['downloadAttachments'])) {
-    checkPermission(PRIVILEGE_LEVEL::STUDENT);
+    $user_course_data = checkPermission(PRIVILEGE_LEVEL::STUDENT);
+
+    $selectedUser = $uid;
+    if (Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $user_course_data)){
+        $selectedUser = isset($_SESSION['selectedUser']) ? $_SESSION['selectedUser'] : $uid;
+    }
+
     $sid = $_GET['downloadAttachments'];
     $URL = "{$logicURI}/DB/attachment/exercisesheet/{$sid}";
     $attachments = http_get($URL, true);
@@ -73,16 +82,23 @@ if (isset($_GET['downloadAttachments'])) {
     echo $zipfile;
     exit(0);
 
-} elseif (isset($_GET['downloadMarkings'])) {
-    checkPermission(PRIVILEGE_LEVEL::STUDENT);
-    $sid = $_GET['downloadMarkings'];
+}
+
+if (isset($_GET['downloadMarkings'])) {
+    $user_course_data = checkPermission(PRIVILEGE_LEVEL::STUDENT);
+    $sid = $_GET['downloadMarkings'];    
+
+    $selectedUser = $uid;
+    if (Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $user_course_data)){
+        $selectedUser = isset($_SESSION['selectedUser']) ? $_SESSION['selectedUser'] : $uid;
+    }
 
     $multiRequestHandle = new Request_MultiRequest();
-    
+
     //request to database to get the markings
-    $handler = Request_CreateRequest::createCustom('GET', "{$logicURI}/DB/marking/exercisesheet/{$sid}/user/{$uid}", array(),'');
+    $handler = Request_CreateRequest::createCustom('GET', "{$logicURI}/DB/marking/exercisesheet/{$sid}/user/{$selectedUser}", array(),'');
     $multiRequestHandle->addRequest($handler);
-    
+
     $handler = Request_CreateRequest::createCustom('GET', "{$logicURI}/DB/exercisesheet/exercisesheet/{$sid}/exercise", array(),'');
     $multiRequestHandle->addRequest($handler);
 
@@ -91,17 +107,17 @@ if (isset($_GET['downloadAttachments'])) {
 
     $sheet = json_decode($answer[1]['content'], true);
     $exercises = $sheet['exercises'];
-    
+
     //an array to descripe the subtasks
     $alphabet = range('a', 'z');
     $count = 0;
     $namesOfExercises = array();
     $attachments = array();
-    
+
     $count=null;
     foreach ($exercises as $key => $exercise){
         $exerciseId = $exercise['id'];
-        
+
         if (isset($exercise['attachments']))
             $attachments[$exerciseId] = $exercise['attachments'];
 
@@ -118,40 +134,40 @@ if (isset($_GET['downloadAttachments'])) {
 
     $files = array();
     foreach ($markings as $marking) {
-        if (isset($marking['submission']['selectedForGroup']) && $marking['submission']['selectedForGroup']){                   
+        if (isset($marking['submission']['selectedForGroup']) && $marking['submission']['selectedForGroup']){                  
             $exerciseId = $marking['submission']['exerciseId'];
-            
+
             // marking
             if (isset($marking['file']) && (!isset($marking['hideFile']) || !$marking['hideFile']) ){
                 $marking['file']['displayName'] = "{$namesOfExercises[$exerciseId]}/K_{$marking['file']['hash']}_{$marking['file']['displayName']}";
                 $files[] = $marking['file'];
             }
-            
+
             // submission
             if (isset($marking['submission']['file']) && (!isset($marking['submission']['hideFile']) || !$marking['submission']['hideFile'])){
                 $marking['submission']['file']['displayName'] = "{$namesOfExercises[$exerciseId]}/{$marking['submission']['file']['hash']}_{$marking['submission']['file']['displayName']}";
-                $files[] = $marking['submission']['file']; 
+                $files[] = $marking['submission']['file'];
             }
-            
+
             // attachments
             if (isset($attachments[$exerciseId])){
                 foreach ($attachments[$exerciseId] as $attachment){
                     if (isset($attachment['file']['address'])){
                         $attachment['file']['displayName'] = "{$namesOfExercises[$exerciseId]}/A_{$attachment['file']['hash']}_{$attachment['file']['displayName']}";
-                        $files[] = $attachment['file'];     
+                        $files[] = $attachment['file'];    
                     }
                 }
             }
         }
     }
     unset($attachments, $markings, $exercises);
-    
+
     // sheetFile
     if (isset($sheet['sheetFile']['address'])){
         $sheet['sheetFile']['displayName'] = "{$sheet['sheetFile']['displayName']}";
         $files[] = $sheet['sheetFile'];
     }
-    
+
     // sampleSolution
     if (isset($sheet['sampleSolution']['address'])){
         $sheet['sampleSolution']['displayName'] = "{$sheet['sampleSolution']['displayName']}";

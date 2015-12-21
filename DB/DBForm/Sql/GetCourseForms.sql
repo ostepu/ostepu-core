@@ -4,13 +4,13 @@
  * gets all forms of a course from %Form table
  * @author Till Uhlig
  * @param int \$courseid an %Course identifier
- * @result 
+ * @result
  * - FO, the form data
  * - CH, the choice data
  */
 ?>
- 
-select 
+
+select
     concat('<?php echo $courseid; ?>','_',FO.FO_id) as FO_id,
     FO.FO_type,
     FO.FO_solution,

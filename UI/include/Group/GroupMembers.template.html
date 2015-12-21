@@ -3,6 +3,7 @@
 <input type="hidden" name="action" value="RemoveGroupMember">
 <div class="content-element">
     <div class="content-header">
+        <?php echo MakeInfoButton('page/student/groups','groupMembers.md'); ?>
         <div class="content-title left"><?php echo Language::Get('main','title', $langTemplate); ?></div>
         <?php if ($isInGroup): ?>
         <button 
@@ -67,7 +68,7 @@
                             } else
                                 print "???";
 
-                            if ($isLeader) {
+                            if ($isLeader || $privileged) {
                                 print '<button name="removeMember" value="';
                                 print $member['id'];
                                 print '" class="right text-button body-option-color">'.Language::Get('main','removeMember', $langTemplate).'</button>';
@@ -96,7 +97,7 @@
                         } else
                             print "???";
 
-                        if ($isLeader) {
+                        if ($isLeader || $privileged) {
                             print '<button name="removeInvitation" value="';
                             print $member['id'];
                             print '" class="right text-button body-option-color">'.Language::Get('main','removeInvitation', $langTemplate).'</button>';

@@ -1,7 +1,7 @@
 #### Eingänge
-- esid = ??? 
-- courseid = ??? 
-- courseAmount = ??? 
+- esid = ???
+- courseid = ???
+- courseAmount = ???
 
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
@@ -18,8 +18,8 @@
 |postSamples|-|Query|POST<br>/samples/course/:courseAmount/user/:userAmount| ??? |
 
 #### Ausgänge
-- courseid = ??? 
-- esid = ??? 
+- courseid = ???
+- esid = ???
 
 | Bezeichnung  | Ziel  | Verwendung | Beschreibung |
 | :----------- |:----- | :--------- | :----------- |

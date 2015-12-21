@@ -1,7 +1,7 @@
 <?php
 /**
  * @file LForm.php Contains the LForm class
- * 
+ *
  * @author Till Uhlig
  * @date 2014
  */
@@ -52,13 +52,13 @@ class LForm
      * @var Link[] $_form a list of links
      */
     private $_form = array( );
-    
+
     /**
      * @var Link[] $_choice a list of links
      */
     private $_choice = array( );
     private $_createCourse = array( );
-    
+
     /**
      * REST actions
      *
@@ -73,8 +73,8 @@ class LForm
         // runs the LForm
         if ( $com->used( ) ) return;
             $conf = $com->loadConfig( );
-            
-        // initialize slim    
+
+        // initialize slim
         $this->app = new \Slim\Slim(array('debug' => true));
         $this->app->response->headers->set('Content-Type', 'application/json');
 
@@ -87,38 +87,38 @@ class LForm
         // POST AddForm
         $this->app->post('/'.$this->getPrefix().'(/)',
                         array($this, 'addForm'));
-                        
+
         // POST AddCourse
-        $this->app->post( 
+        $this->app->post(
                          '/course(/)',
-                         array( 
+                         array(
                                $this,
                                'addCourse'
                                )
                          );
-                         
+
         // DELETE DeleteCourse
-        $this->app->delete( 
+        $this->app->delete(
                          '/course/:courseid(/)',
-                         array( 
+                         array(
                                $this,
                                'deleteCourse'
                                )
                          );
-                         
+
         // GET GetExistsCourse
-        $this->app->get( 
+        $this->app->get(
                          '/link/exists/course/:courseid(/)',
-                         array( 
+                         array(
                                $this,
                                'getExistsCourse'
                                )
                         );
-                         
+
         // run Slim
         $this->app->run();
     }
-    
+
     /**
      * Returns whether the component is installed for the given course
      *
@@ -129,13 +129,13 @@ class LForm
      */
     public function getExistsCourse($courseid)
     {
-         Logger::Log( 
+         Logger::Log(
                     'starts GET GetExistsCourse',
                     LogLevel::DEBUG
                     );
 
         foreach ( $this->_createCourse as $_link ){
-            $result = Request::routeRequest( 
+            $result = Request::routeRequest(
                                             'GET',
                                             '/link/exists/course/'.$courseid,
                                             $this->app->request->headers->all(),
@@ -145,7 +145,7 @@ class LForm
                                             );
 
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
                 // nothing
             } else {
@@ -154,11 +154,11 @@ class LForm
                 $this->app->stop( );
             }
         }
-        
+
         $this->app->response->setStatus( 200 );
         $this->app->response->setBody( null );
     }
-   
+
    /**
      * Adds the component to a course
      *
@@ -167,18 +167,18 @@ class LForm
      */
     public function addCourse()
     {
-         Logger::Log( 
+         Logger::Log(
                     'starts POST AddCourse',
                     LogLevel::DEBUG
                     );
-                    
+
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
-        
+
         $course = Course::decodeCourse($body);
-    
+
         foreach ( $this->_createCourse as $_link ){
-            $result = Request::routeRequest( 
+            $result = Request::routeRequest(
                                             'POST',
                                             '/course',
                                             $header,
@@ -188,23 +188,23 @@ class LForm
                                             );
 
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
 
                 $this->app->response->setStatus( 201 );
                 if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->app->response->headers->set( 
+                    $this->app->response->headers->set(
                                                         'Content-Type',
                                                         $result['headers']['Content-Type']
                                                         );
-                
+
             } else {
-            
+
                 if ($course->getId()!==null){
                     $this->deleteCourse($course->getId());
                 }
-            
-                Logger::Log( 
+
+                Logger::Log(
                             'POST AddCourse failed',
                             LogLevel::ERROR
                             );
@@ -213,10 +213,10 @@ class LForm
                 $this->app->stop( );
             }
         }
-        
+
         $this->app->response->setBody( Course::encodeCourse( $course ) );
     }
-   
+
     /**
      * Removes the component from a given course
      *
@@ -228,16 +228,16 @@ class LForm
     public function deleteCourse($courseid)
     {
         $this->app->response->setStatus( 201 );
-        Logger::Log( 
+        Logger::Log(
                     'starts DELETE DeleteCourse',
                     LogLevel::DEBUG
                     );
-                    
+
         $header = $this->app->request->headers->all();
-        $courseid = DBJson::mysql_real_escape_string( $courseid ); 
-        
+        $courseid = DBJson::mysql_real_escape_string( $courseid );
+
         foreach ( $this->_createCourse as $_link ){
-            $result = Request::routeRequest( 
+            $result = Request::routeRequest(
                                             'DELETE',
                                             '/course/'.$courseid,
                                             $header,
@@ -247,18 +247,18 @@ class LForm
                                             );
 
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
 
 
                 if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->app->response->headers->set( 
+                    $this->app->response->headers->set(
                                                         'Content-Type',
                                                         $result['headers']['Content-Type']
                                                         );
-                
+
             } else {
-                Logger::Log( 
+                Logger::Log(
                             'POST DeleteCourse failed',
                             LogLevel::ERROR
                             );
@@ -267,7 +267,7 @@ class LForm
             }
         }
     }
-   
+
     /**
      * Adds a form.
      *
@@ -276,17 +276,17 @@ class LForm
      */
     public function addForm()
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts POST AddForm',
                     LogLevel::DEBUG
                     );
-                    
+
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $this->app->response->setStatus( 201 );
-        
+
         $forms = Form::decodeForm($body);
-        
+
         // always been an array
         $arr = true;
         if ( !is_array( $forms ) ){
@@ -301,19 +301,19 @@ class LForm
             $choices[] = $form->getChoices();
             $forms[$key]->setChoices(null);
         }
-               
+
         $resForms = array();
-        
+
         foreach ( $forms as $form ){
-            
+
             $method='POST';
             $URL='/form';
             if ($form->getFormId() !== null){
-               $method='PUT'; 
+               $method='PUT';
                $URL = '/form/'.$form->getFormId();
             }
-            
-            $result = Request::routeRequest( 
+
+            $result = Request::routeRequest(
                                             $method,
                                             $URL,
                                             array(),
@@ -323,12 +323,12 @@ class LForm
                                             );
 
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 && isset($result['content'])){
                  $newform = Form::decodeForm($result['content']);
                  if ($form->getFormId() === null)
                     $form->setFormId($newform->getFormId());
-                $resForms[] = $form; 
+                $resForms[] = $form;
             } else {
                 $f = new Form();
                 $f->setStatus(409);
@@ -336,21 +336,21 @@ class LForm
             }
         }
         $forms = $resForms;
-        
+
         $i=0;
         foreach ( $choices as &$choicelist ){
             foreach ( $choicelist as $key2 => $choice ){
                 if ($forms[$i]->getFormId() !== null){
                     $formId = $forms[$i]->getFormId();
                     $choicelist[$key2]->setFormId($formId);
-                    
+
                     $method='POST';
                     $URL='/choice';
                     if ($choicelist[$key2]->getChoiceId() !== null){
-                       $method='PUT'; 
+                       $method='PUT';
                        $URL = '/choice/'.$choice->getChoiceId();
                     }
-                    $result = Request::routeRequest( 
+                    $result = Request::routeRequest(
                                                     $method,
                                                     $URL,
                                                     array(),
@@ -358,8 +358,8 @@ class LForm
                                                     $this->_choice,
                                                     'choice'
                                                     );
-                                                    
-                    if ( $result['status'] >= 200 && 
+
+                    if ( $result['status'] >= 200 &&
                         $result['status'] <= 299 ){
                         $newchoice = Choice::decodeChoice($result['content']);
                         if ($choicelist[$key2]->getChoiceId() === null)
@@ -371,22 +371,22 @@ class LForm
                 }
             }
             $forms[$i]->setChoices($choicelist);
-            $i++; 
+            $i++;
         }
-                                    
+
         // checks the correctness of the query
-        /*if ( $result['status'] >= 200 && 
+        /*if ( $result['status'] >= 200 &&
              $result['status'] <= 299 && isset($result['content'])){
             $newforms = Form::decodeForm($result['content']);
             if ( !is_array( $newforms ) )
                 $newforms = array($newforms);
-                
-            $i=0;    
+
+            $i=0;
             foreach ($forms as &$form){
                 if ($form->getFormId() === null)
                     $form->setFormId($newforms[$i]->getFormId());
                 $i++;
-            }            
+            }
 
             $sendChoices = array();
             $i=0;
@@ -395,11 +395,11 @@ class LForm
                     $choice->setFormId($forms[$i]->getFormId());
                     $sendChoices[] = $choice;
                 }
-            $i++; 
+            $i++;
             }
             $choices = $sendChoices;
-            
-            $result = Request::routeRequest( 
+
+            $result = Request::routeRequest(
                                             'POST',
                                             '/choice',
                                             $this->app->request->headers->all( ),
@@ -407,9 +407,9 @@ class LForm
                                             $this->_choice,
                                             'choice'
                                             );
-                            
+
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
                 $newchoices = Choice::decodeChoice($result['content']);
 
@@ -417,25 +417,25 @@ class LForm
                 $i=0;
                 foreach ( $choices as &$choice ){
                     $choice->setChoiceId($newchoices[$i]->getChoiceId());
-                    
+
                     if (!isset($choicelist[$choice->getFormId()]))
                         $choicelist[$choice->getFormId()] = array();
-                      
+
                     $choicelist[$choice->getFormId()][] = $choice;
-                    
+
                     $i++;
                 }
-                
+
                 foreach ( $forms as &$form ){
                     $form->setChoices($choicelist[$form->getFormId()]);
                 }
-                
+
                 $res[] = $forms;
-                
+
             } else{
                 // remove forms on failure
                 foreach ($forms as $form){
-                    $result = Request::routeRequest( 
+                    $result = Request::routeRequest(
                                     'DELETE',
                                     '/form/'.$form->getFormId(),
                                     $this->app->request->headers->all( ),
@@ -444,27 +444,27 @@ class LForm
                                     'form'
                                     );
                 }
-                
+
                 $res[] = null;
                 $this->app->response->setStatus( 409 );
             }
-                      
+
         } else {
             $res[] = null;
             $this->app->response->setStatus( 409 );
         }*/
-           
+
         if ($this->app->response->getStatus( ) != 201)
-            Logger::Log( 
+            Logger::Log(
                         'POST AddForms failed',
                         LogLevel::ERROR
                         );
 
-        if ( !$arr && 
+        if ( !$arr &&
              count( $res ) == 1 ){
             $this->app->response->setBody( Form::encodeForm( $res[0] ) );
-            
-        } else 
+
+        } else
             $this->app->response->setBody( Form::encodeForm( $res ) );
     }
 }

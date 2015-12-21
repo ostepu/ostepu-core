@@ -2,6 +2,10 @@
     "main": {
         "errorLogin": "Die Anmeldung war fehlerhaft!",
         "changeCourse": "Veranstaltung wechseln",
-        "title": "Übungsplattform"
+        "title": "Übungsplattform",
+        "invalidAction": "Die Aktion konnte nicht ausgeführt werden.",
+        "invalidUserName": "Ungültiger Benutzername.",
+        "invalidPassword": "Ungültiges Passwort.",
+        "invalidBackURL": "Ungültige Rücksprungadresse"
     }
 }

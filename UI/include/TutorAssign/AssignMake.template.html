@@ -11,13 +11,54 @@ if (isset($AssignMakeNotificationElements)) {
 <input type="hidden" name="action" value="<?php echo (!isset($_POST['action']) || $_POST['action'] != "AssignMakeWarning") ? 'AssignMakeWarning' : 'AssignMake'; ?>">
 <div class="content-element">
     <div class="content-header">
+        <?php echo MakeInfoButton('page/admin/tutorAssign','make.md'); ?>
         <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
         <button class="text-button<?php echo (!isset($_POST['action']) || $_POST['action'] != "AssignMakeWarning") ? ' right' : '-simple  error-simple' ;?> bold critical-color"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
-            <?php echo Language::Get('main','content', $langTemplate); ?>
+            <div>
+                <?php echo Language::Get('main','content', $langTemplate); ?>
+            </div>
+            <?php $elements=0;foreach($emptyGroups as $exercise){ $elements+=count($exercise); } ?>
+            <?php if ($elements>0 && count($namesOfExercises)) { ?>
+                <?php if (isset($_POST['action']) && $_POST['action'] === 'AssignMakeWarning') { ?>
+                <?php foreach($namesOfExercises as $exerciseId => $exerciseName) { ?>
+                <?php   if (!isset($emptyGroups[$exerciseId])) continue; ?>
+                    <span style='display:inline-block;margin-right:10px' class="">
+                        <div class="tutor-assign-element-title">
+                            <label class="tutor-name">
+                                <?php echo Language::Get('main','exercise', $langTemplate).' '.$exerciseName; ?>
+                            </label>
+                        </div>                
+                        <div class="form-field checkbox-container">
+                            <a href="javascript:void(0)" class="text-button bold info-color selectAll"><?php echo Language::Get('main','all', $langTemplate); ?></a>
+                            <a href="javascript:void(0)" class="text-button bold info-color selectNothing"><?php echo Language::Get('main','nothing', $langTemplate); ?></a><br>               
+                            <?php
+                            foreach ($emptyGroups[$exerciseId] as $group){
+                                print '<input type="checkbox" checked name="';
+                                print 'make['.$exerciseId.'][]';
+                                print '" value="';
+                                print $group['id'] . '"/>';
+                                print '<span>';
+                                $name = (isset($group['firstName']) && isset($group['lastName'])) ? $group['firstName'].' '.$group['lastName'].',': '';
+                                print (isset($group['userName']) ? ''.$name.$group['userName'].'' : '???');
+                                print '</span><br />';
+                            }
+                            ?>
+                            
+                        </div>
+                    </span>
+                <?php } ?>
+                <?php } ?>
+            <?php } else { ?>
+            <div class="info-color">
+                <label class="">
+                    <?php echo Language::Get('main','noContent', $langTemplate); ?>
+                </label>
+            </div>
+            <?php } ?>
         </div>
     </div> <!-- end: content-body-wrapper -->
 </div> <!-- end: content-element -->

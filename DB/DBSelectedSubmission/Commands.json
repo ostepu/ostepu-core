@@ -4,6 +4,7 @@
         "outputType": "SelectedSubmission",
         "inputType": "SelectedSubmission",
         "method": "PUT",
+        "placeholder":[{"name":"userid","regex":"%^([0-9_]+)$%"},{"name":"eid","regex":"%^([0-9_]+)$%"}],
         "path": "/selectedsubmission/leader/:userid/exercise/:eid"
     },
     {
@@ -11,6 +12,7 @@
         "outputType": "SelectedSubmission",
         "inputType": "",
         "method": "DELETE",
+        "placeholder":[{"name":"userid","regex":"%^([0-9_]+)$%"},{"name":"eid","regex":"%^([0-9_]+)$%"}],
         "path": "/selectedsubmission/leader/:userid/exercise/:eid"
     },
     {
@@ -18,6 +20,7 @@
         "outputType": "SelectedSubmission",
         "inputType": "SelectedSubmission",
         "method": "PUT",
+        "placeholder":[{"name":"suid","regex":"%^([0-9_]+)$%"}],
         "path": "/selectedsubmission/submission/:suid"
     },
     {
@@ -25,6 +28,7 @@
         "outputType": "SelectedSubmission",
         "inputType": "",
         "method": "DELETE",
+        "placeholder":[{"name":"suid","regex":"%^([0-9_]+)$%"}],
         "path": "/selectedsubmission/submission/:suid"
     },
     {
@@ -32,6 +36,7 @@
         "outputType": "SelectedSubmission",
         "inputType": "",
         "method": "DELETE",
+        "placeholder":[{"name":"userid","regex":"%^([0-9_]+)$%"},{"name":"esid","regex":"%^([0-9_]+)$%"}],
         "path": "/selectedsubmission/user/:userid/exercisesheet/:esid"
     },
     {
@@ -47,6 +52,7 @@
         "outputType": "SelectedSubmission",
         "inputType": "",
         "method": "GET",
+        "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
         "path": "/selectedsubmission/exercise/:eid"
     },
     {
@@ -55,6 +61,7 @@
         "outputType": "SelectedSubmission",
         "inputType": "",
         "method": "GET",
+        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
         "path": "/selectedsubmission/exercisesheet/:esid"
     },
     {
@@ -63,6 +70,7 @@
         "outputType": "SelectedSubmission",
         "inputType": "",
         "method": "GET",
+        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],
         "path": "/selectedsubmission/course/:courseid"
     },
     {

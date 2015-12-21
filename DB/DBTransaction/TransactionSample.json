@@ -1,0 +1,6 @@
+{
+    "transactionId": "2_245_d32d8eb8cc844f409e11b324147dd68a",
+    "durability": "1452896447",
+    "authentication": "TutorCSV_2_2",
+    "content": "{\"userId\":\"2\",\"markings\":{\"2966\":{\"sheetId\":\"35\",\"courseId\":\"2\",\"exerciseId\":\"73\",\"studentId\":\"54\",\"leaderId\":\"54\",\"maxPoints\":\"6\",\"submissionId\":\"3199\"},\"2971\":{\"sheetId\":\"35\",\"courseId\":\"2\",\"exerciseId\":\"73\",\"studentId\":\"4\",\"leaderId\":\"4\",\"maxPoints\":\"6\",\"submissionId\":\"3464\"}}}"
+}

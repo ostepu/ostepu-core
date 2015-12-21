@@ -1,10 +1,10 @@
 <?php
 /**
  * @file LSubmission.php Contains the LSubmission class
- * 
+ *
  * @author Peter Koenig
  * @author Christian Elze
- * @author Martin Daute 
+ * @author Martin Daute
  * @date 2013-2014
  */
 
@@ -25,7 +25,7 @@ class LSubmission
      * @var Component $_conf the component data object
      */
     private $_conf=null;
-    
+
     private $_file = array( );
     private $_zip = array( );
     private $_submission = array( );
@@ -55,7 +55,7 @@ class LSubmission
     {
         LSubmission::$_prefix = $value;
     }
-    
+
     /**
      * @var string $lURL the URL of the logic-controller
      */
@@ -77,11 +77,11 @@ class LSubmission
         // runs the LSubmission
         if ( $com->used( ) ) return;
             $conf = $com->loadConfig( );
-            
-        // initialize slim 
+
+        // initialize slim
         $this->app = new \Slim\Slim( array( 'debug' => true ) );
         $this->app->response->headers->set('Content-Type', 'application/json');
-        
+
         // initialize component
         $this->_conf = $conf;
         ///$this->query = array();
@@ -89,7 +89,7 @@ class LSubmission
         $this->_submission = CConfig::getLinks($conf->getLinks(),"submission");
         $this->_selectedSubmission = CConfig::getLinks($conf->getLinks(),"selectedSubmission");
          $this->_zip = CConfig::getLinks($conf->getLinks(),"zip");
-               
+
         // initialize lURL
         ///$this->lURL = $this->query->getAddress();
 
@@ -133,24 +133,24 @@ class LSubmission
     {
 
         $body = $this->app->request->getBody();
-        
+
         $submission = Submission::decodeSubmission($body);
         $file = $submission->getFile();
         if (!isset($file) || $file==array()) $file = new File();
         if ($file->getTimeStamp()===null) $file->setTimeStamp(time());
-///echo File::encodeFile($file);return;   
-        // upload file to filesystem        
-        $result = Request::routeRequest( 
+///echo File::encodeFile($file);return;
+        // upload file to filesystem
+        $result = Request::routeRequest(
                                         'POST',
                                         '/file',
                                         array(),
                                         File::encodeFile($file),
                                         $this->_file,
                                         'file'
-                                        );     
-///var_dump($result);                                
-///echo $result['content'];return;       
-        if ( $result['status'] >= 200 && 
+                                        );
+///var_dump($result);
+///echo $result['content'];return;
+        if ( $result['status'] >= 200 &&
              $result['status'] <= 299 ){
             // file is uploaded
             $newFile = File::decodeFile($result['content']);
@@ -163,7 +163,7 @@ class LSubmission
             // upload submission to database
             if ($submission->getId()===null){
 //echo Submission::encodeSubmission($submission);return;
-            $result = Request::routeRequest( 
+            $result = Request::routeRequest(
                                     'POST',
                                     '/submission',
                                     array(),
@@ -176,34 +176,34 @@ class LSubmission
                 $result['status'] = 201;
                 $result['content'] = Submission::encodeSubmission($submission);
             }
-//var_dump($result);           
-            if ( $result['status'] >= 200 && 
+//var_dump($result);
+            if ( $result['status'] >= 200 &&
              $result['status'] <= 299 ){
                 // submission is uploaded
                 $newsubmission = Submission::decodeSubmission($result['content']);
                 $submission->setId($newsubmission->getId());
-                
+
                 // select new submission
                 if ($submission->getSelectedForGroup()=='1'){
                     $selectedSubmission = SelectedSubmission::createSelectedSubmission($submission->getLeaderId(),$submission->getId(),$submission->getExerciseId());
-                
-                $result = Request::routeRequest( 
+
+                $result = Request::routeRequest(
                                     'POST',
                                     '/selectedsubmission',
                                     array(),
                                     SelectedSubmission::encodeSelectedSubmission($selectedSubmission),
                                     $this->_selectedSubmission,
                                     'selectedsubmission'
-                                    );        
-        
-                if ( $result['status'] >= 200 && 
+                                    );
+
+                if ( $result['status'] >= 200 &&
                     $result['status'] <= 299 ){
                     $this->app->response->setBody(Submission::encodeSubmission($submission));
                     $this->app->response->setStatus( 201 );
                     $this->app->stop( );
                 }
                 else{
-                    $result = Request::routeRequest( 
+                    $result = Request::routeRequest(
                                     'PUT',
                                     '/selectedsubmission/leader/'.$submission->getLeaderId().'/exercise/'.$submission->getExerciseId(),
                                     $this->app->request->headers->all( ),
@@ -211,8 +211,8 @@ class LSubmission
                                     $this->_selectedSubmission,
                                     'selectedsubmission'
                                     );
-                                    
-                    if ( $result['status'] >= 200 && 
+
+                    if ( $result['status'] >= 200 &&
                     $result['status'] <= 299 ){
                     $this->app->response->setBody(Submission::encodeSubmission($submission));
                     $this->app->response->setStatus( 201 );
@@ -226,10 +226,10 @@ class LSubmission
                     $this->app->response->setStatus( 201 );
                     $this->app->stop( );
                 }
-            }         
+            }
         }
-     
-        Logger::Log( 
+
+        Logger::Log(
                     'POST AddSubmission failed',
                     LogLevel::ERROR
                     );
@@ -271,7 +271,7 @@ class LSubmission
      * @date 2014
      */
     public function deleteSubmission($submissionid){
-        $result = Request::routeRequest( 
+        $result = Request::routeRequest(
                                         'DELETE',
                                         '/submission/'.$submissionid,
                                         array(),
@@ -279,20 +279,20 @@ class LSubmission
                                         $this->_submission,
                                         'submission'
                                         );
-                
-        if ( $result['status'] >= 200 && 
+
+        if ( $result['status'] >= 200 &&
              $result['status'] <= 299 ){
-             
-            // submission is deleted        
+
+            // submission is deleted
             $this->app->response->setStatus( 201 );
             $this->app->response->setBody( '' );
             if ( isset( $result['headers']['Content-Type'] ) )
-                $this->app->response->headers->set( 
+                $this->app->response->headers->set(
                                                     'Content-Type',
                                                     $result['headers']['Content-Type']
                                                     );
         } else {
-            Logger::Log( 
+            Logger::Log(
                         'DELETE DeleteSubmission failed',
                         LogLevel::ERROR
                         );
@@ -316,8 +316,8 @@ class LSubmission
      * @date 2014
      */
     public function loadSubmissionAsZip($sheetid, $userid)
-    {       
-        $result = Request::routeRequest( 
+    {
+        $result = Request::routeRequest(
                             'GET',
                             '/submission/group/user/'.$userid.'/exercisesheet/'.$sheetid.'/selected',
                             $this->app->request->headers->all( ),
@@ -325,11 +325,11 @@ class LSubmission
                             $this->_submission,
                             'submission'
                             );
-            
-        if ( $result['status'] >= 200 && 
+
+        if ( $result['status'] >= 200 &&
              $result['status'] <= 299 ){
              $submissions = Submission::decodeSubmission($result['content']);
-             
+
              $files = array();
              foreach ($submissions as $submission){
                 $file = $submission->getFile();
@@ -337,8 +337,8 @@ class LSubmission
                 $files[] = $file;
              }
 
-             
-            $result = Request::routeRequest( 
+
+            $result = Request::routeRequest(
                                             'POST',
                                             '/zip/'.$sheetid.'.zip',
                                             $this->app->request->headers->all( ),
@@ -346,26 +346,26 @@ class LSubmission
                                             $this->_zip,
                                             'zip'
                                             );
-            
-            if ( $result['status'] >= 200 && 
+
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
-                 
+
                 $this->app->response->setBody($result['content']);
                 $this->app->response->setStatus( 200 );
                 if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->app->response->headers->set( 
+                    $this->app->response->headers->set(
                                                         'Content-Type',
                                                         $result['headers']['Content-Type']
                                                         );
                 if ( isset( $result['headers']['Content-Disposition'] ) )
-                    $this->app->response->headers->set( 
+                    $this->app->response->headers->set(
                                                         'Content-Disposition',
                                                         $result['headers']['Content-Disposition']
                                                         );
                 $this->app->stop( );
                 }
         }
-        
+
         $this->app->response->setBody('');
         $this->app->response->setStatus( 404 );
         $this->app->stop( );
@@ -404,11 +404,11 @@ class LSubmission
         $URL = $this->lURL.'/DB/submission/'.$submissionid;
         $answer = Request::custom('GET', $URL, $header, "");
         $submission = json_decode($answer['content'], true);
-        
+
 
         $URL = $this->lURL.'/FS/'.$submission['file']['address'].'/'.$submission['file']['displayName'];
         $answer = Request::custom('GET', $URL, $header, "");
-        
+
         $this->app->response->headers->set('Content-Type', $answer['headers']['Content-Type']);
         $this->app->response->headers->set('Content-Disposition', $answer['headers']['Content-Disposition']);
         $this->app->response->setBody($answer['content']);

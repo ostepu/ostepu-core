@@ -5,14 +5,11 @@
         <div class="course-title uppercase" style="">
             <?php print $name; ?>
         </div>
+        <?php $titleState=0; ?>
         <?php if (isset($backURL) && isset($backTitle) && !is_null($backURL)
-            && !is_null($backTitle)){ ?>
-            <div class="">
-            <a class="change-course" href="<?php echo $backURL; ?>">
-                <?php print $backTitle; ?>
-            </a>
-            </div>
-        <?php } elseif (!isset($hideBackLink)) { ?>
+            && !is_null($backTitle)){ 
+                $titleState=1;
+            } elseif (!isset($hideBackLink)) { ?>
             <div class="">
             <a class="change-course" href="
                 <?php echo PRIVILEGE_LEVEL::$SITES[$courses[0]['status']] . "?cid=" . $courses[0]['course']['id']; ?>
@@ -25,7 +22,16 @@
         <?php if (isset($firstName) && isset($lastName)) {
                   print $firstName . ' ' . $lastName.(isset($userName) ? ' ('.$userName.')' : '');    
               }?>
+            <?php if ($titleState == 1 && isset($backURL) && isset($backTitle) && !is_null($backURL)
+            && !is_null($backTitle)){ ?>
+            <div class="">
+            <a class="change-course" href="<?php echo $backURL; ?>">
+                <?php print $backTitle; ?>
+            </a>
+            </div>
+            <?php } ?>
        </div>
+
     </div>
     <div class="course-extra-info left">
         <?php echo isset($extraInfo) ? $extraInfo : NULL; ?>
@@ -93,6 +99,8 @@
 </div> 
 
 <?php echo isset($navigationElement) ? $navigationElement : NULL; ?>
+
+<?php echo isset($userNavigationElement) ? $userNavigationElement : NULL; ?>
 
 <?php
 if (isset($notificationElements)) {

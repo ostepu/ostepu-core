@@ -1,4 +1,4 @@
-select 
+select
     CL.CL_id,
     CL.CL_name,
     CL.CL_relevanz,

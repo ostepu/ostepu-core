@@ -8,15 +8,21 @@
         {"path": "CHelp.php"},
         {"path": "index.php"},
         {"path": "Commands.json"},
-        {"path": "info/"}
+        {"path": "info/"},
+        {"path": "help/"}
     ],
     "links": [
-        {
-            "name": "request"
-        }
+        {"name": "request"},
+        {"name": "getAlive"}
     ],
     "connector": [
-        {"name": "request","target": "CLocalObjectRequest"},
-        {"name": "postPlatform","target": "CInstall"}
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        },
+        {
+            "name": "postPlatform",
+            "target": "CInstall"
+        }
     ]
 }

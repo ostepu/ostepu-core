@@ -9,17 +9,11 @@
     </li>
 <?php } ?>
 <?php if (!$switchDisabled && !$forIndex) { ?>
-    <?php if ($requiredPrivilege == $courseStatus){ ?>
+    <?php if ($courseStatus >= 2 /* PRIVILEGE_LEVEL::LECTURER */ ){ ?>
         <li>
             <a href="Student.php?cid=<?php echo $cid; ?>"><?php echo Language::Get('main','student', $langTemplate); ?></a>
         </li>
-    <?php } else { ?>
-        <li>
-            <a href="<?php echo $sites[$courseStatus]; ?>?cid=<?php echo $cid; ?>"><?php echo Language::Get('main','leaveStudent', $langTemplate); ?></a>
-        </li>
     <?php } ?>
-<?php } ?>
-<?php if ($courseStatus == 3 /* PRIVILEGE_LEVEL::ADMIN */  && !$forIndex) { ?>
 <?php } ?>
 
 <?php if ($courseStatus == 3 /* PRIVILEGE_LEVEL::ADMIN */  && !$forIndex) { ?>
@@ -29,6 +23,8 @@
     <li>
         <a href="Condition.php?cid=<?php echo $cid; ?>"><?php echo Language::Get('main','condition', $langTemplate); ?></a>
     </li>
+<?php } ?>
+<?php if ($courseStatus >= 2 /* PRIVILEGE_LEVEL::LECTURER */  && !$forIndex) { ?>
     <li>
         <a href="UploadHistory.php?cid=<?php echo $cid; ?>"><?php echo Language::Get('main','uploadHistory', $langTemplate); ?></a>
     </li>

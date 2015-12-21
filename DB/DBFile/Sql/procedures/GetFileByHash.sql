@@ -3,7 +3,7 @@ CREATE PROCEDURE `DBFileGetFileByHash` (IN hash varchar(40))
 READS SQL DATA
 begin
 SET @s = concat("
-select SQL_CACHE 
+select SQL_CACHE
     F_id,
     F_displayName,
     F_address,

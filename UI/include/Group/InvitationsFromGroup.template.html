@@ -5,6 +5,7 @@
 
 <div class="content-element">
     <div class="content-header">
+        <?php echo MakeInfoButton('page/student/groups','invitationsFromGroup.md'); ?>
         <div class="content-title left"><?php echo Language::Get('main','title', $langTemplate); ?></div>
         <?php if ($emptyGroupMembers > 0) { ?>
         <button class="right text-button info-color bold"><?php echo Language::Get('main','execute', $langTemplate); ?></button>

@@ -8,7 +8,7 @@
  * @result -
  */
 ?>
- 
+
 UPDATE Marking
 SET <?php echo $values; ?>
 WHERE M_id = '<?php echo $mid; ?>'

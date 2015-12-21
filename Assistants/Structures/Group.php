@@ -1,10 +1,10 @@
-<?php 
+<?php
 
 
 /**
  * @file Group.php contains the Group class
  */
- 
+
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
@@ -102,13 +102,13 @@ class Group extends Object implements JsonSerializable
      *
      * @return an group object
      */
-    public static function createGroup( 
+    public static function createGroup(
                                        $leaderId,
                                        $memberId,
                                        $sheetId
                                        )
     {
-        return new Group( array( 
+        return new Group( array(
                                 'sheetId' => $sheetId,
                                 'leader' => new User( array( 'id' => $leaderId ) ),
                                 'members' => array( new User( array( 'id' => $memberId ) ) )
@@ -122,7 +122,7 @@ class Group extends Object implements JsonSerializable
      */
     public static function getDbConvert( )
     {
-        return array( 
+        return array(
                      'U_member' => 'members',
                      'U_leader' => 'leader',
                      'ES_id' => 'sheetId'
@@ -139,29 +139,29 @@ class Group extends Object implements JsonSerializable
         $values = '';
 
         if ( $this->sheetId != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'ES_id',
                                  DBJson::mysql_real_escape_string( $this->sheetId )
                                  );
-        if ( $this->members != null && 
-             $this->members != array( ) && 
+        if ( $this->members != null &&
+             $this->members != array( ) &&
              $this->members[0] != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'U_id_leader',
                                  DBJson::mysql_real_escape_string( $this->members[0]->getId( ) )
                                  );
-        if ( $this->leader != null && 
+        if ( $this->leader != null &&
              $this->leader->getId( ) != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'U_id_member',
                                  DBJson::mysql_real_escape_string( $this->leader->getId( ) )
                                  );
 
         if ( $values != '' ){
-            $values = substr( 
+            $values = substr(
                              $values,
                              1
                              );
@@ -176,7 +176,7 @@ class Group extends Object implements JsonSerializable
      */
     public static function getDbPrimaryKey( )
     {
-        return array( 
+        return array(
                      'U_id',
                      'ES_id'
                      );
@@ -194,16 +194,16 @@ class Group extends Object implements JsonSerializable
 
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
-                if ( $key == 'leader' || 
+                if ( $key == 'leader' ||
                      $key == 'members' ){
                     $this->{
                         $key
-                        
-                    } = User::decodeUser( 
+
+                    } = User::decodeUser(
                                          $value,
                                          false
                                          );
-                    
+
                 } else {
                     $func = 'set' . strtoupper($key[0]).substr($key,1);
                     $methodVariable = array($this, $func);
@@ -225,18 +225,18 @@ class Group extends Object implements JsonSerializable
      */
     public static function encodeGroup( $data )
     {
-        if (is_array($data))reset($data);
+        /*if (is_array($data))reset($data);
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
             $e = new Exception();
-            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
-            return null;
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());           
+            ///return null;
         }
         if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
             $e = new Exception();
             $class = (is_array($data) && is_array(current($data)) ? 'array' : (is_array($data) ? (current($data)!==false ? get_class(current($data)) : 'array') : get_class($data)));
             error_log(__FILE__.':'.__LINE__.' wrong type, '.$class.' given, '.get_called_class()." expected\n".$e->getTraceAsString());
-            return null;
-        }
+            ///return null;
+        }*/
         return json_encode( $data );
     }
 
@@ -249,18 +249,18 @@ class Group extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeGroup( 
+    public static function decodeGroup(
                                        $data,
                                        $decode = true
                                        )
     {
-        if ( $decode && 
+        if ( $decode &&
              $data == null )
             $data = '{}';
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -269,18 +269,18 @@ class Group extends Object implements JsonSerializable
                     $isArray = false;
                 }
             } else {
-               $isArray = false; 
+               $isArray = false;
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new Group( $value );
             }
             return $result;
-            
-        } else 
+
+        } else
             return new Group( $data );
     }
 
@@ -299,7 +299,7 @@ class Group extends Object implements JsonSerializable
         return array_merge($list,parent::jsonSerialize( ));
     }
 
-    public static function ExtractGroup( 
+    public static function ExtractGroup(
                                         $data,
                                         $singleResult = false,
                                         $LeaderExtension = '',
@@ -311,7 +311,7 @@ class Group extends Object implements JsonSerializable
 
         // generates an assoc array of an user by using a defined list of
         // its attributes
-        $leader = DBJson::getObjectsByAttributes( 
+        $leader = DBJson::getObjectsByAttributes(
                                                  $data,
                                                  User::getDBPrimaryKey( ),
                                                  User::getDBConvert( ),
@@ -320,7 +320,7 @@ class Group extends Object implements JsonSerializable
 
         // generates an assoc array of users by using a defined list of
         // its attributes
-        $member = DBJson::getObjectsByAttributes( 
+        $member = DBJson::getObjectsByAttributes(
                                                  $data,
                                                  User::getDBPrimaryKey( ),
                                                  User::getDBConvert( ),
@@ -329,7 +329,7 @@ class Group extends Object implements JsonSerializable
 
         // generates an assoc array of groups by using a defined list of
         // its attributes
-        $groups = DBJson::getObjectsByAttributes( 
+        $groups = DBJson::getObjectsByAttributes(
                                                  $data,
                                                  Group::getDBPrimaryKey( ),
                                                  Group::getDBConvert( ),
@@ -337,7 +337,7 @@ class Group extends Object implements JsonSerializable
                                                  );
 
         // concatenates the groups and the associated group leader
-        $res = DBJson::concatObjectListsSingleResult( 
+        $res = DBJson::concatObjectListsSingleResult(
                                                      $data,
                                                      $groups,
                                                      Group::getDBPrimaryKey( ),
@@ -349,7 +349,7 @@ class Group extends Object implements JsonSerializable
                                                      );
 
         // concatenates the groups and the associated group member
-        $res = DBJson::concatResultObjectLists( 
+        $res = DBJson::concatResultObjectLists(
                                                $data,
                                                $res,
                                                Group::getDBPrimaryKey( ),
@@ -359,7 +359,7 @@ class Group extends Object implements JsonSerializable
                                                $MemberExtension.'2',
                                                $GroupExtension
                                                );
-        if ($isResult){ 
+        if ($isResult){
             // to reindex
             $res = array_merge( $res );
             $res = Group::decodeGroup($res,false);

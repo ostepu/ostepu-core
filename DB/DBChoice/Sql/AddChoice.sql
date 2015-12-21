@@ -6,9 +6,9 @@
  * @result -
  */
 ?>
- 
+
 SET @course = '<?php echo Form::getCourseFromFormId($object->getFormId()); ?>';
-SET @statement = 
+SET @statement =
 concat(
 "INSERT INTO `Choice<?php echo $preChoice; ?>_", @course, "` SET <?php echo $object->getInsertData(true); ?>;");
 PREPARE stmt1 FROM @statement;

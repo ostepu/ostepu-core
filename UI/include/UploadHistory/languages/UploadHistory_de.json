@@ -4,6 +4,7 @@
         "notAccepted": "nicht akzeptiert",
         "uncorrected": "unkorrigiert",
         "removed": "gel&ouml;scht",
-        "noSubmissions": "Keine Einsendungen vorhanden."
+        "noSubmissions": "Keine Einsendungen vorhanden.",
+        "invalidSubmission": "fehlerhafte Einsendung"
     }
 }

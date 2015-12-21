@@ -11,22 +11,25 @@ include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
 include_once dirname(__FILE__) . '/include/FormEvaluator.php';
 
+global $globalUserData;
+Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $globalUserData);
+
 $langTemplate='MarkingTool_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 $timestamp = time();
 
 // changes search settings
-if (isset($_POST['action']) && $_POST['action'] == "ShowMarkingTool") {
+if (isset($_POST['action']) && $_POST['action'] == 'ShowMarkingTool') {
     //if (isset($_POST['sheetID']) && isset($_POST['tutorID']) && isset($_POST['statusID'])) {
     if (isset($_POST['sheetID']))
         $sid = cleanInput($_POST['sheetID']);
 
     if (isset($_POST['tutorID']))
-        if ($_POST['tutorID'] != "all") {
+        if ($_POST['tutorID'] != 'all') {
             $tutorID = cleanInput($_POST['tutorID']);
         }
     if (isset($_POST['statusID']))
-        if ($_POST['statusID'] != "all") {
+        if ($_POST['statusID'] != 'all') {
             $statusID = cleanInput($_POST['statusID']);
         }
     //}
@@ -36,12 +39,12 @@ if (isset($_GET['downloadCSV'])) {
     $sid = cleanInput($_GET['downloadCSV']);
 }
 if (isset($_GET['tutorID'])){
-    if ($_GET['tutorID'] != "all") {
+    if ($_GET['tutorID'] != 'all') {
         $tutorID = cleanInput($_GET['tutorID']);
     }
 }
 if (isset($_GET['statusID']))
-    if ($_GET['statusID'] != "all") {
+    if ($_GET['statusID'] != 'all') {
         $statusID = cleanInput($_GET['statusID']);
     }
 
@@ -67,14 +70,14 @@ if (isset($_POST['MarkingTool'])) {
                 $markingID = cleanInput($exercise['markingID']);
                 $userName = (isset($exercise['user']) ? $exercise['user'] : '???');
                 if (isset($exercise['points'])) $exercise['points'] = str_replace(',','.',$exercise['points']);
-                
+
                 $f = new FormEvaluator($exercise);
 
                 $f->checkNumberForKey('points',
                                        FormEvaluator::OPTIONAL,
                                        'warning',
                                        Language::Get('main','invalidPoints', $langTemplate),
-                                       array('min' => 0, 'max' => $maxPoints));
+                                       array('min' => 0));
 
                 $f->checkStringForKey('tutorComment',
                                       FormEvaluator::OPTIONAL,
@@ -90,7 +93,7 @@ if (isset($_POST['MarkingTool'])) {
                                        'warning',
                                        Language::Get('main','invalidStatus', $langTemplate),
                                        array('min' => 0, 'max' => $maxMarkingStatus));
-                                       
+
                 $f->checkIntegerForKey('accepted',
                                        FormEvaluator::OPTIONAL,
                                        'warning',
@@ -99,46 +102,52 @@ if (isset($_POST['MarkingTool'])) {
 
                 if ($f->evaluate(true)) {
                     $foundValues = $f->foundValues;
-                    $changed = false; 
-                    
+                    $changed = false;
+
                     $points = (isset($foundValues['points']) ? $foundValues['points'] : null);
+                    if ($points>$maxPoints){
+                        $msg = Language::Get('main','tooManyPoints', $langTemplate, array('maxPoints'=>$maxPoints));
+                        if (!isset($GroupNotificationElements[$key])) $GroupNotificationElements[$key]=array();
+                        $GroupNotificationElements[$key][] = MakeNotification('warning', $msg);
+                    }
+
                     if ((!isset($exercise['oldPoints']) && $points!=null) || (isset($exercise['oldPoints']) && $points!=$exercise['oldPoints'])){
                           $changed=true;///echo "A";
                     }
-                    
+
                     $tutorComment = (isset($foundValues['tutorComment']) ? $foundValues['tutorComment'] : '');
                     if (isset($exercise['oldTutorComment'])) $exercise['oldTutorComment']=htmlspecialchars($exercise['oldTutorComment']);
                     if ((!isset($exercise['oldTutorComment']) && isset($foundValues['tutorComment'])) || (isset($exercise['oldTutorComment']) && $tutorComment!=$exercise['oldTutorComment'])){
                           $changed=true;///echo "B";
                     }
-                          
+
                     $status = (isset($foundValues['status']) ? $foundValues['status'] : null);
-                    if ((!isset($exercise['oldStatus']) && isset($foundValues['status'])) || (isset($exercise['oldStatus']) && $status!=$exercise['oldStatus'])){
+                    if ((!isset($exercise['oldStatus']) && isset($foundValues['status']) && $foundValues['status']!=0 ) || (isset($exercise['oldStatus']) && $status!=$exercise['oldStatus'])){
                           $changed=true;///echo "C";
                     }
-                          
+
                     if ($changed){
                         $hasChangedMarking=true;
 
-                        if (!saveMarking($points, 
-                                         $tutorComment, 
-                                         $status, 
-                                         $submissionID, 
-                                         $markingID, 
-                                         $leaderID, 
-                                         $uid, 
+                        if (!saveMarking($points,
+                                         $tutorComment,
+                                         $status,
+                                         $submissionID,
+                                         $markingID,
+                                         $leaderID,
+                                         $uid,
                                          $exerciseId)) {
                             $RequestErrorMarking = true;//echo "FAIL";
                         }
                     }
-                    
+
                     // check for changed submission attributes
                     $changed=false;
                     $accepted = (isset($foundValues['accepted']) ? $foundValues['accepted'] : 0);
                     if ((!isset($exercise['oldAccepted']) && isset($foundValues['accepted'])) || (isset($exercise['oldAccepted']) && $accepted!=$exercise['oldAccepted'])){
                           $changed=true;///echo "D";
                     }
-                    
+
                     if ($changed){
                         $hasChangedSubmission=true;
 
@@ -146,7 +155,7 @@ if (isset($_POST['MarkingTool'])) {
                             $RequestErrorSubmission = true;//echo "FAIL";
                         }
                     }
-                    
+
                 } else {
                     //$GroupNotificationElements[$key] = $notifications + $f->notifications;
                     //$RequestErrorMarking = true;echo "OK";
@@ -158,28 +167,28 @@ if (isset($_POST['MarkingTool'])) {
                     //$msg = "Beim Speichern für ".$userName." ist ein Fehler aufgetreten.";
                     $msg = Language::Get('main','errorSaveMarking', $langTemplate);
                     if (!isset($GroupNotificationElements[$key])) $GroupNotificationElements[$key]=array();
-                    $GroupNotificationElements[$key][] = MakeNotification("error", $msg);
-                    
+                    $GroupNotificationElements[$key][] = MakeNotification('error', $msg);
+
                 } else {
                     //$msg = "Die Korrektur für ".$userName." wurde erfolgreich gespeichert.";
                     $msg = Language::Get('main','successSaveMarking', $langTemplate);
                     if (!isset($GroupNotificationElements[$key])) $GroupNotificationElements[$key]=array();
-                    $GroupNotificationElements[$key][] = MakeNotification("success", $msg);
+                    $GroupNotificationElements[$key][] = MakeNotification('success', $msg);
                 }
             }
-            
+
             if ($hasChangedSubmission){
                 if ($RequestErrorSubmission) {
                     //$msg = "Beim Speichern für ".$userName." ist ein Fehler aufgetreten.";
                     $msg = Language::Get('main','errorSaveSubmission', $langTemplate);
                     if (!isset($GroupNotificationElements[$key])) $GroupNotificationElements[$key]=array();
-                    $GroupNotificationElements[$key][] = MakeNotification("error", $msg);
-                    
+                    $GroupNotificationElements[$key][] = MakeNotification('error', $msg);
+
                 } else {
                     //$msg = "Die Korrektur für ".$userName." wurde erfolgreich gespeichert.";
                     $msg = Language::Get('main','editedSubmission', $langTemplate);
                     if (!isset($GroupNotificationElements[$key])) $GroupNotificationElements[$key]=array();
-                    $GroupNotificationElements[$key][] = MakeNotification("success", $msg);
+                    $GroupNotificationElements[$key][] = MakeNotification('success', $msg);
                 }
             }
         }
@@ -228,7 +237,7 @@ if (isset($_GET['downloadCSV'])) {
             foreach ($group['exercises'] as $key2 => $exercise){
                 if (!isset($exercise['submission']['marking']) && (isset($tutorID) && $tutorID!='all') && (!isset($statusID) || ($statusID!=-1 && $statusID!=0))) continue;
                 if (!isset($exercise['submission']) && ((isset($statusID) && $statusID!=0) || (isset($tutorID) && $tutorID!='all'))) continue;
-        
+
                 if (isset($exercise['submission'])){
                     if (isset($exercise['submission']['marking'])){
                         // submission + marking
@@ -284,38 +293,35 @@ $markingTool_data['cid'] = $cid;
 
 $user_course_data = $markingTool_data['user'];
 
-Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $user_course_data);
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::TUTOR,true);
-                              
+
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
-$h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
-               "navigationElement" => $menu));
-
+$h->bind(array('name' => $user_course_data['courses'][0]['course']['name'],
+               'navigationElement' => $menu));
 
 $searchSettings = Template::WithTemplateFile('include/MarkingTool/MarkingToolSettings.template.html');
 $searchSettings->bind($markingTool_data);
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $searchSettings);
+$allOutputs = 0;
 
 if (!empty($markingTool_data['groups'])) {
-// find selected sheet
-$selectedSheet=null;
-foreach ($markingTool_data['exerciseSheets'] as $sheet){
-    if (!isset($sheet['id'])) continue;
-    if ($sheet['id'] == $sid){
-        $selectedSheet = $sheet;
-        break;
+    // find selected sheet
+    $selectedSheet=null;
+    foreach ($markingTool_data['exerciseSheets'] as $sheet){
+        if (!isset($sheet['id'])) continue;
+        if ($sheet['id'] == $sid){
+            $selectedSheet = $sheet;
+            break;
+        }
     }
-}
 
-    
-$allOutputs = 0;
-$groups = $markingTool_data['groups'];
-//unset($markingTool_data['groups']);
+    $groups = $markingTool_data['groups'];
+    //unset($markingTool_data['groups']);
     $allOutputs=0;
     foreach ($groups as $group) {
         $anz=0;
@@ -327,7 +333,7 @@ $groups = $markingTool_data['groups'];
             $allOutputs++;
         }
         if ($anz==0)continue;
-    
+
         $markingElement = Template::WithTemplateFile('include/MarkingTool/MarkingTool.template.html');
         $markingElement->bind($markingTool_data);
         $markingElement->bind(array('selectedSheet'=>$selectedSheet));
@@ -336,9 +342,9 @@ $groups = $markingTool_data['groups'];
             $markingElement->bind(array('GroupNotificationElements'=>$GroupNotificationElements[$group['leader']['id']]));
             unset($GroupNotificationElements[$group['leader']['id']]);
         }
-            
+
         $w->insert($markingElement);
-        $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $markingElement);
+        $w->defineForm(basename(__FILE__).'?cid='.$cid.'&sid='.$sid, false, $markingElement);
     }
     if ($allOutputs==0){
         $markingElement = Template::WithTemplateFile('include/MarkingTool/MarkingToolEmpty.template.html');
@@ -346,18 +352,20 @@ $groups = $markingTool_data['groups'];
         $w->insert($markingElement);
     }
 } else {
-        $markingElement = Template::WithTemplateFile('include/MarkingTool/MarkingToolEmpty.template.html');
-        $markingElement->bind($markingTool_data);
-        $w->insert($markingElement);
+    $markingElement = Template::WithTemplateFile('include/MarkingTool/MarkingToolEmpty.template.html');
+    $markingElement->bind($markingTool_data);
+    $w->insert($markingElement);
 }
 
 if (!empty($GroupNotificationElements)){
-    foreach ($GroupNotificationElements as $key => $notifs)
+    foreach ($GroupNotificationElements as $key => $notifs){
         $notifications = array_merge($notifications,$notifs);
+    }
 }
 
-$h->bind(array("notificationElements" => $notifications));
+$h->bind(array('notificationElements' => $notifications));
+$searchSettings->bind(array('allOutputs'=>$allOutputs));
 
-$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $searchSettings);
+$w->defineForm(basename(__FILE__).'?cid='.$cid.'&sid='.$sid, false, $searchSettings);
 $w->set_config_file('include/configs/config_marking_tool.json');
 $w->show();

@@ -7,5 +7,5 @@
  * @result -
  */
 ?>
- 
+
 INSERT INTO Submission SET <?php echo $values; ?>

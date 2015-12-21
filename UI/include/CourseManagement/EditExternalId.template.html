@@ -11,6 +11,7 @@ if (isset($EditExternalIdNotificationElements)) {
 <input type="hidden" name="action" value="EditExternalId">
 <div class="content-element">
     <div class="content-header">
+        <?php echo MakeInfoButton('page/admin/courseManagement','editExternalId.md'); ?>
         <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
         <button class="text-button info-color bold right"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
     </div>
@@ -29,7 +30,7 @@ if (isset($EditExternalIdNotificationElements)) {
             $begin = array_shift($parts);
             $end = implode('_',$parts);
             
-            echo "<tr><td width='0%'><input type='checkbox' name='externalId' id='externalId' value='{$extern['id']}'/></td><td width='10%'>";
+            echo "<tr><td width='0%'><input type='checkbox' name='externalId[]' id='externalId' value='{$extern['id']}'/></td><td width='10%'>";
             switch($begin){
                 case 'S':
                     echo Language::Get('main','studipId', $langTemplate);break;

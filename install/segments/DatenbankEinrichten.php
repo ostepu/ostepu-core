@@ -1,5 +1,5 @@
 <?php
-#region DatenbankEinrichten   
+#region DatenbankEinrichten
 class DatenbankEinrichten
 {
     private static $initialized=false;
@@ -8,22 +8,27 @@ class DatenbankEinrichten
     public static $page = 1;
     public static $rank = 150;
     public static $enabledShow = true;
-    
+
     public static $onEvents = array();
-    
-    
+
+
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
+        Installation::log(array('text'=>'starte Funktion'));
         self::$initialized = true;
+        Installation::log(array('text'=>'beende Funktion'));
     }
-    
+
     public static function show($console, $result, $data)
-    {  
+    {   Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>'beende Funktion'));
         return null;
     }
-    
+
     public static function install($data, &$fail, &$errno, &$error)
     {
+        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>'beende Funktion'));
         return null;
     }
 }
@@ -43,7 +48,7 @@ class DatenbankEinrichten
         echo $text;
     }
 }
-    
+
 if (!$console || !isset($segmentDatenbankEinrichten)){
     if ($selected_menu === 1 && false && isset($segmentDatenbankEinrichten)){ /// ausgeblendet
         $text='';

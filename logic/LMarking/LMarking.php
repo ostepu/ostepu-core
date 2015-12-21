@@ -1,7 +1,7 @@
 <?php
 /**
  * @file LMarking.php Contains the LMarking class
- * 
+ *
  * @author Peter Koenig
  * @author Christian Elze
  * @author Martin Daute
@@ -52,7 +52,7 @@ class LMarking
     {
         LMarking::$_prefix = $value;
     }
-    
+
     private $_file = array( );
     private $_marking = array( );
 
@@ -72,8 +72,8 @@ class LMarking
         // runs the LMarking
         if ( $com->used( ) ) return;
             $conf = $com->loadConfig( );
-            
-        // initialize slim    
+
+        // initialize slim
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
 
@@ -93,7 +93,7 @@ class LMarking
         // DELETE DeleteMarking
         $this->app->delete('/'.$this->getPrefix().'/marking/:markingid(/)',
                         array($this, 'deleteMarking'));
-                        
+
         // PUT EditMarking
         $this->app->put('/'.$this->getPrefix().'/marking/:markingid(/)',
                         array($this, 'editMarking'));
@@ -119,8 +119,8 @@ class LMarking
     public function addMarking(){
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
-        
-        $markings = Marking::decodeMarking($body);                
+
+        $markings = Marking::decodeMarking($body);
 
         $this->app->response->setStatus( 201 );
 
@@ -133,26 +133,26 @@ class LMarking
 
         // this array contains the inserted objects
         $res = array( );
-                                
+
         foreach ( $markings as $marking ){
             if ($marking->getDate()===null) $marking->setDate(time());
-        
+
             $file = $marking->getFile();
             if (!isset($file)) {$file = new File();}
             if ($file->getTimeStamp()===null) $file->setTimeStamp(time());
-            
-            // upload file to filesystem        
-            $result = Request::routeRequest( 
+
+            // upload file to filesystem
+            $result = Request::routeRequest(
                                     'POST',
                                     '/file',
                                     $this->app->request->headers->all( ),
                                     File::encodeFile($file),
                                     $this->_file,
                                     'file'
-                                    );    
+                                    );
 
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
                 // file is uploaded
                 $newFile = File::decodeFile($result['content']);
@@ -161,10 +161,10 @@ class LMarking
                 $file->setFileId($newFile->getFileId());
                 $file->setBody(null);
                 $marking->setFile($file);
-                
+
                 // upload marking to database
                 if ($marking->getId()===null){
-                    $result = Request::routeRequest( 
+                    $result = Request::routeRequest(
                                                     'POST',
                                                     '/marking',
                                                     $this->app->request->headers->all( ),
@@ -174,7 +174,7 @@ class LMarking
                                                     );
                 }
                 else{
-                    $result = Request::routeRequest( 
+                    $result = Request::routeRequest(
                                                     'PUT',
                                                     '/marking/marking/'.$marking->getId(),
                                                     $this->app->request->headers->all( ),
@@ -183,24 +183,24 @@ class LMarking
                                                     'marking'
                                                     );
                 }
-                
-                if ( $result['status'] >= 200 && 
+
+                if ( $result['status'] >= 200 &&
                      $result['status'] <= 299 ){
                     // marking is uploaded
                     $newmarking = Marking::decodeMarking($result['content']);
                     if (is_array($newmarking)) $newmarking = $newmarking[0];
-                    
+
                     if ($newmarking->getId()!==null)
                         $marking->setId($newmarking->getId());
-                
+
                     $res[] = $marking;
                     if ( isset( $result['headers']['Content-Type'] ) )
-                        $this->app->response->headers->set( 
+                        $this->app->response->headers->set(
                                                             'Content-Type',
                                                             $result['headers']['Content-Type']
                                                             );
                 } else {
-                    Logger::Log( 
+                    Logger::Log(
                                 'POST AddMarking failed',
                                 LogLevel::ERROR
                                 );
@@ -208,9 +208,9 @@ class LMarking
                     $this->app->response->setBody( Marking::encodeMarking( $res ) );
                     $this->app->stop( );
                 }
-                
+
             } else {
-                Logger::Log( 
+                Logger::Log(
                             'POST AddMarking failed',
                             LogLevel::ERROR
                             );
@@ -219,12 +219,12 @@ class LMarking
                 $this->app->stop( );
             }
         }
-        
-        if ( !$arr && 
+
+        if ( !$arr &&
              count( $res ) == 1 ){
             $this->app->response->setBody( Marking::encodeMarking( $res[0] ) );
-            
-        } else 
+
+        } else
             $this->app->response->setBody( Marking::encodeMarking( $res ) );
     }
 
@@ -237,7 +237,7 @@ class LMarking
      * @param int $markingid The id of the marking the returned URL belongs to.
      */
     public function getMarkingURL($markingid) {
-        
+
     }
 
     /**
@@ -252,7 +252,7 @@ class LMarking
      * @date 2014
      */
     public function deleteMarking($markingid){
-        $result = Request::routeRequest( 
+        $result = Request::routeRequest(
                                         'DELETE',
                                         '/marking/'.$markingid,
                                         $this->app->request->headers->all( ),
@@ -260,20 +260,20 @@ class LMarking
                                         $this->_marking,
                                         'marking'
                                         );
-                
-        if ( $result['status'] >= 200 && 
+
+        if ( $result['status'] >= 200 &&
              $result['status'] <= 299 ){
-             
-            // marking is deleted        
+
+            // marking is deleted
             $this->app->response->setStatus( 201 );
             $this->app->response->setBody( '' );
             if ( isset( $result['headers']['Content-Type'] ) )
-                $this->app->response->headers->set( 
+                $this->app->response->headers->set(
                                                     'Content-Type',
                                                     $result['headers']['Content-Type']
                                                     );
         } else {
-            Logger::Log( 
+            Logger::Log(
                         'DELETE DeleteMarking failed',
                         LogLevel::ERROR
                         );

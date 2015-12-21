@@ -1,8 +1,11 @@
 {
     "main": {
-        "askDeleteSubmission": "Soll die Übungsserie wirklich gelöscht werden?",
-        "successDeleteSubmission": "Die Übungsserie wurde gelöscht.",
-        "errorDeleteSubmission": "Die Übungsserie konnte nicht gelöscht werden.",
-        "changeCourse": "Veranstaltung wechseln"
+        "askDeleteSheet": "Soll die Übungsserie wirklich gelöscht werden?",
+        "successDeleteSheet": "Die Übungsserie wurde gelöscht.",
+        "errorDeleteSheet": "Die Übungsserie konnte nicht gelöscht werden.",
+        "invalidDeleteSheetWarning": "Ungültige Löschanfrage!",
+        "invalidDeleteSheet": "Ungültiger Löschversuch!",
+        "changeCourse": "Veranstaltung wechseln",
+        "invalidAction": "Die Aktion konnte nicht ausgeführt werden."
     }
 }

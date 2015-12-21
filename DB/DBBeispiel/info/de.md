@@ -1,6 +1,6 @@
 #### Eingänge
-- cid = ??? 
-- courseid = ??? 
+- cid = ???
+- courseid = ???
 
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
@@ -8,8 +8,8 @@
 |getCourse|-|Course|GET<br>/course(/course)/:courseid| ??? |
 
 #### Ausgänge
-- abc = ??? 
-- courseid = ??? 
+- abc = ???
+- courseid = ???
 
 | Bezeichnung  | Ziel  | Verwendung | Beschreibung |
 | :----------- |:----- | :--------- | :----------- |

@@ -1,6 +1,6 @@
 #### Eingänge
-- userid = eine Veranstaltungs ID (`User`) 
-- esid = die ID einer Übungsserie (`ExerciseSheet`) 
+- userid = eine Veranstaltungs ID (`User`)
+- esid = die ID einer Übungsserie (`ExerciseSheet`)
 
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
@@ -18,7 +18,7 @@
 |getExistsPlatform|-|Platform|GET<br>/link/exists/platform| prüft, ob die Tabelle und die Prozeduren existieren |
 
 #### Ausgänge
-- userid = eine Veranstaltungs ID (`User`) 
+- userid = eine Veranstaltungs ID (`User`)
 - esid = die ID einer Übungsserie (`ExerciseSheet`)
 
 | Bezeichnung  | Ziel  | Verwendung | Beschreibung |

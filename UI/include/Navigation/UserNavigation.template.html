@@ -1,0 +1,55 @@
+<?php $langTemplate='UserNavigation';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
+<ul id="navigation2" class="navigation2">
+<!--<div class="">-->
+<?php if ($isSuperAdmin || $courseStatus > 1) { ?>
+
+<?php if ($courseStatus >= 2 /* PRIVILEGE_LEVEL::LECTURER */  && !$forIndex) { ?>
+        <li>
+            <a href="<?php echo $sites[$courseStatus]; ?>?cid=<?php echo $cid; ?>"><?php echo Language::Get('main','leaveStudent', $langTemplate); ?></a>
+        </li>
+        <li>
+            <form action="#" method="POST">
+            <?php echo Language::Get('main','selectUser', $langTemplate); ?>
+                <select name="selectedUser" size="1" onchange="this.form.submit()">
+            <?php if ($_SESSION['selectedUser'] == '' || $_SESSION['selectedUser'] == $uid){ ?>
+                <option value="" selected="selected"></option>
+            <?php } ?>
+            
+            <?php foreach($courseUser as $user){?>
+                    <option value="<?php echo $user->getId(); ?>" <?php echo ($_SESSION['selectedUser'] == $user->getId() ?"selected=\"selected\"":''); ?>>
+                        <?php echo ($user->getFirstName()!==null?$user->getFirstName():'???').','.($user->getLastName()!==null?$user->getLastName():'???').' ('.($user->getUserName()!==null?$user->getUserName():'???').')';?>
+                    </option>
+            <?php }?>
+                </select>
+            </form>
+        </li>
+        <?php if (isset($sid) && isset($courseSheets)){ ?>
+            <li>
+                <form action="#" method="POST">
+                <?php echo Language::Get('main','selectSheet', $langTemplate); ?>
+                    <select name="selectedSheet" size="1" onchange="this.form.submit()">
+                
+                <?php foreach($courseSheets as $sheet){?>
+                        <option value="<?php echo $sheet->getId(); ?>" <?php echo ($sid == $sheet->getId() ?"selected=\"selected\"":''); ?>>
+                            <?php echo $sheet->getSheetName(); ?>
+                        </option>
+                <?php }?>
+                    </select>
+                </form>
+            </li>
+        <?php } ?>
+            <li>
+                <form action="#" method="POST">
+                    <?php echo Language::Get('main','privileged', $langTemplate);?>
+                    <input type="hidden" value="0" name="privileged"/>
+                    <input onchange="this.form.submit()" type="checkbox" value="1" name="privileged"<?php echo (isset($privileged) && $privileged==1 ? " checked" : ''); ?>/>
+                </form>
+            </li>
+            <li>
+                <?php echo MakeInfoButton('page/admin/studentMode','studentMode.md'); ?>
+            </li>
+<?php } ?>
+<?php } ?>
+
+    </ul>

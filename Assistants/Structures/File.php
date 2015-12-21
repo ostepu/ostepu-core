@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -179,8 +179,14 @@ class File extends Object implements JsonSerializable
      *
      * @return the value of $body
      */
-    public function getBody( )
+    public function getBody( $decode = false)
     {
+    	if ($decode && self::isStructure($this->body, 'Reference')){
+    		return $this->body->getContent();
+    	} elseif ($decode){
+    		return base64_decode($this->body);
+    	}
+
         return $this->body;
     }
 
@@ -189,9 +195,13 @@ class File extends Object implements JsonSerializable
      *
      * @param string $value the new value for $body
      */
-    public function setBody( $value = null )
+    public function setBody( $value = null, $encode = false )
     {
-        $this->body = $value;
+    	if ($value !== null && !self::isStructure($value,'Reference') && $encode){
+        	$this->body = base64_encode($value);
+    	} else {
+    		$this->body = $value;
+    	}
     }
 
     /**
@@ -218,8 +228,8 @@ class File extends Object implements JsonSerializable
     {
         $this->comment = $value;
     }
-    
-    
+
+   
     /**
      * @var string $mimeType a file mime type
      */
@@ -244,7 +254,7 @@ class File extends Object implements JsonSerializable
     {
         $this->mimeType = $value;
     }
-    
+
     /**
      * Creates an File object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -260,7 +270,7 @@ class File extends Object implements JsonSerializable
      *
      * @return an file object
      */
-    public static function createFile( 
+    public static function createFile(
                                       $fileId,
                                       $displayName,
                                       $address,
@@ -271,7 +281,7 @@ class File extends Object implements JsonSerializable
                                       $mimeType = null
                                       )
     {
-        return new File( array( 
+        return new File( array(
                                'fileId' => $fileId,
                                'displayName' => $displayName,
                                'address' => $address,
@@ -290,7 +300,7 @@ class File extends Object implements JsonSerializable
      */
     public static function getDbConvert( )
     {
-        return array( 
+        return array(
                      'F_id' => 'fileId',
                      'F_displayName' => 'displayName',
                      'F_address' => 'address',
@@ -313,56 +323,56 @@ class File extends Object implements JsonSerializable
         $values = '';
 
         if ( $this->fileId !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'F_id',
                                  DBJson::mysql_real_escape_string( $this->fileId )
                                  );
         if ( $this->displayName !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'F_displayName',
                                  DBJson::mysql_real_escape_string( $this->displayName )
                                  );
         if ( $this->address !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'F_address',
                                  DBJson::mysql_real_escape_string( $this->address )
                                  );
         if ( $this->timeStamp !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'F_timeStamp',
                                  DBJson::mysql_real_escape_string( $this->timeStamp )
                                  );
         if ( $this->fileSize !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'F_fileSize',
                                  DBJson::mysql_real_escape_string( $this->fileSize )
                                  );
         if ( $this->hash !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'F_hash',
                                  DBJson::mysql_real_escape_string( $this->hash )
                                  );
         if ( $this->comment !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'F_comment',
                                  DBJson::mysql_real_escape_string( $this->comment )
                                  );
         if ( $this->mimeType !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'F_mimeType',
                                  DBJson::mysql_real_escape_string( $this->mimeType )
                                  );
-                                 
+
         if ( $values != '' ){
-            $values = substr( 
+            $values = substr(
                              $values,
                              1
                              );
@@ -392,12 +402,22 @@ class File extends Object implements JsonSerializable
 
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
-                $func = 'set' . strtoupper($key[0]).substr($key,1);
-                $methodVariable = array($this, $func);
-                if (is_callable($methodVariable)){
-                    $this->$func($value);
-                } else
-                    $this->{$key} = $value;
+            	if ( $key == 'body' && is_object($value)){
+                    $this->{
+                        $key
+                    } = Reference::decodeReference(
+			                                       $value,
+			                                       false
+			                                       );
+
+                } else {
+	                $func = 'set' . strtoupper($key[0]).substr($key,1);
+	                $methodVariable = array($this, $func);
+	                if (is_callable($methodVariable)){
+	                    $this->$func($value);
+	                } else
+	                    $this->{$key} = $value;
+                }
             }
         }
     }
@@ -411,18 +431,18 @@ class File extends Object implements JsonSerializable
      */
     public static function encodeFile( $data )
     {
-        if (is_array($data))reset($data);
+        /*if (is_array($data))reset($data);
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
             $e = new Exception();
-            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
-            return null;
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());           
+            ///return null;
         }
         if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
             $e = new Exception();
             $class = (is_array($data) && is_array(current($data)) ? 'array' : (is_array($data) ? (current($data)!==false ? get_class(current($data)) : 'array') : get_class($data)));
             error_log(__FILE__.':'.__LINE__.' wrong type, '.$class.' given, '.get_called_class()." expected\n".$e->getTraceAsString());
-            return null;
-        }
+            ///return null;
+        }*/
         return json_encode( $data );
     }
 
@@ -435,18 +455,18 @@ class File extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeFile( 
+    public static function decodeFile(
                                       $data,
                                       $decode = true
                                       )
     {
-        if ( $decode && 
+        if ( $decode &&
              $data == null )
             $data = '{}';
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -455,18 +475,18 @@ class File extends Object implements JsonSerializable
                     $isArray = false;
                 }
             } else {
-               $isArray = false; 
+               $isArray = false;
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new File( $value );
             }
             return $result;
-            
-        } else 
+
+        } else
             return new File( $data );
     }
 
@@ -497,7 +517,7 @@ class File extends Object implements JsonSerializable
         return array_merge($list,parent::jsonSerialize( ));
     }
 
-    public static function ExtractFile( 
+    public static function ExtractFile(
                                        $data,
                                        $singleResult = false
                                        )
@@ -505,14 +525,14 @@ class File extends Object implements JsonSerializable
 
         // generates an assoc array of files by using a defined list of
         // its attributes
-        $res = DBJson::getResultObjectsByAttributes( 
+        $res = DBJson::getResultObjectsByAttributes(
                                                     $data,
                                                     File::getDBPrimaryKey( ),
                                                     File::getDBConvert( )
                                                     );
 
+        $res = File::decodeFile($res,false);
         if ( $singleResult == true ){
-            $res = File::decodeFile($res,false);
 
             // only one object as result
             if ( count( $res ) > 0 )

@@ -10,8 +10,14 @@
 
 include_once dirname(__FILE__).'/include/Boilerplate.php';
 include_once dirname(__FILE__).'/../Assistants/Structures.php';
+include_once dirname(__FILE__) . '/../Assistants/Validation/Validation.php';
+
+global $globalUserData;
+Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $globalUserData);
 
 $langTemplate='Tutor_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
+
+unset($_SESSION['selectedUser']);
 
 // load tutor data from GetSite
 $URI = $getSiteURI . "/tutor/user/{$uid}/course/{$cid}";
@@ -23,24 +29,23 @@ $tutor_data['cid'] = $cid;
 // check userrights for course
 $user_course_data = $tutor_data['user'];
 
-Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $user_course_data);
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::TUTOR);
-                              
+
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
-$h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
-               "backTitle" => Language::Get('main','changeCourse', $langTemplate),
-               "backURL" => "index.php",
-               "notificationElements" => $notifications,
-               "navigationElement" => $menu));
+$h->bind(array('name' => $user_course_data['courses'][0]['course']['name'],
+               'backTitle' => Language::Get('main','changeCourse', $langTemplate),
+               'backURL' => 'index.php',
+               'notificationElements' => $notifications,
+               'navigationElement' => $menu));
 
 $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetTutor.template.html');
 $t->bind($tutor_data);
 
 $w = new HTMLWrapper($h, $t);
-$w->defineForm(basename(__FILE__)."?cid=".$cid, false, $t);
+$w->defineForm(basename(__FILE__).'?cid='.$cid, false, $t);
 $w->set_config_file('include/configs/config_student_tutor.json');
 $w->show();
 

@@ -8,7 +8,7 @@
  * @result -
  */
 ?>
- 
+
 UPDATE SelectedSubmission
 SET <?php echo $values; ?>
 WHERE S_id_selected = '<?php echo $suid; ?>'

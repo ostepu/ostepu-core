@@ -19,6 +19,7 @@
         "rights": "Rechte",
         "student": "Student",
         "tutor": "Tutor",
-        "dozent": "Dozent"
+        "dozent": "Dozent",
+        "admin": "Administrator"
     }
 }

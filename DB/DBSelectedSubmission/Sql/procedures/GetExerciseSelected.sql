@@ -3,7 +3,7 @@ CREATE PROCEDURE `DBSelectedSubmissionGetExerciseSelected` (IN eid INT)
 READS SQL DATA
 begin
 SET @s = concat("
-select SQL_CACHE 
+select SQL_CACHE
     U_id_leader, S_id_selected, E_id, ES_id
 from
     SelectedSubmission

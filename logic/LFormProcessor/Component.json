@@ -21,6 +21,6 @@
   "connector":[
     {"name":"extension", "target":"LExtension", "priority":150},
     {"name":"request", "target":"CLocalObjectRequest"},
-    {"name":"request", "target":"CHelp", "links":[{"path":"/help/:language/extension/LFormProcessor.md"},{"path":"/help/:language/extension/LFormProcessorAhnlichkeit.png"},{"path":"/help/:language/extension/LFormProcessorNormal.png"},{"path":"/help/:language/extension/LFormProcessorRegular.png"}]}
+    {"name":"request", "target":"CHelp", "links":[{"path":"/help/:language/extension/LFormProcessor/LFormProcessor.md"},{"path":"/help/:language/extension/LFormProcessor/LFormProcessorAhnlichkeit.png"},{"path":"/help/:language/extension/LFormProcessor/LFormProcessorNormal.png"},{"path":"/help/:language/extension/LFormProcessor/LFormProcessorRegular.png"}]}
   ]
 }

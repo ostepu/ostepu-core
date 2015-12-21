@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -43,5 +43,3 @@ class LSamples
     }
 }
 
- 
-?>

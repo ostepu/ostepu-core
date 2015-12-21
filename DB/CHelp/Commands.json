@@ -2,7 +2,22 @@
     {
         "name": "getHelp",
         "outputType": "binary",
+        "placeholder": [
+            {
+                "name": "language",
+                "regex": "%^[a-zA-Z]{2}$%"
+            },
+            {
+                "name": "path",
+                "regex": "%^([a-zA-Z0-9\\.\\-_]+)$%"
+            }
+        ],
         "path": "/help/:language/:path+"
+    },
+    {
+        "name": "getSystemStatus",
+        "outputType": "binary",
+        "path": "/status"
     },
     {
         "name": "addPlatform",

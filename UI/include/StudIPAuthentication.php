@@ -9,7 +9,7 @@
 include_once dirname(__FILE__) . '/Helpers.php';
 include_once dirname(__FILE__) . '/AbstractAuthentication.php';
 include_once dirname(__FILE__) . '/../../Assistants/Structures.php';
-include_once dirname(__FILE__) . '/Config.php';
+if (file_exists(dirname(__FILE__) . '/Config.php')) include_once dirname(__FILE__) . '/Config.php';
 include_once dirname(__FILE__) . '/../../Assistants/Logger.php';
 
 /**
@@ -401,7 +401,7 @@ class StudIPAuthentication extends AbstractAuthentication
                 }
 
                 if (!isset($this->cid) || $this->cid===null){
-                    set_error("409");
+                    set_error("unbekannte Veranstaltung!!!");
                     exit(); 
                 }
                     

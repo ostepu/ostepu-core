@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -50,16 +50,16 @@ class DBQuery2
     {
         return "CALL `{$procedure}`(".implode(',',array_map(array($this,'generateParam'), $params)).");";
     }
-    
+
     public function postMultiGetRequest( $callName, $input, $par = array() )
-    {     
+    {
         $params=array();
-        extract( 
+        extract(
                 $par,
                 EXTR_OVERWRITE
         );
-        
-        $config = parse_ini_file( 
+
+        $config = parse_ini_file(
                                 dirname(__FILE__).'/config.ini',
                                 TRUE
                                 );
@@ -74,41 +74,41 @@ class DBQuery2
             $sql.=$this->generateQuery($procedure,$params)."select 'next';";
         }
 
-        $answer = DBRequest::request2( 
+        $answer = DBRequest::request2(
                                            $sql,
                                            false,
                                            $config
-                                     );                  
+                                     );
         $result = Model::isOK();
         $res = array();
         $resArray=array();
         foreach ($answer as $query_result){
             $obj = new Query( );
             if (isset($query_result['content']) && $query_result['content']===array(array("next"=>'next'))){
-                $resArray[]=array(Query::encodeQuery($res),'ETag'=>CacheManager::generateETag($res));  
+                $resArray[]=array(Query::encodeQuery($res),'ETag'=>CacheManager::generateETag($res));
                 $res=array();
                 continue;
             }
-            
+
         if ( $query_result['errno'] != 0 ){
             if ( isset($query_result['errno']) && $query_result['errno'] != 0 )
-                Logger::Log( 
+                Logger::Log(
                             'GET queryResult failed errno: ' . $query_result['errno'] . ' error: ' . $query_result['error'],
                             LogLevel::ERROR
                             );
 
             if ( !isset($query_result['content']) || !$query_result['content'] )
-                Logger::Log( 
+                Logger::Log(
                             'GET queryResult failed, no content',
                             LogLevel::ERROR
                             );
 
             if ( isset($query_result['errno']) && $query_result['errno'] == 401 ){
                 $result = Model::isRejected();
-                
-            } else 
+
+            } else
                 $result = Model::isProblem();
-            
+
         }elseif ( gettype( $query_result['content'] ) == 'boolean' ){
             $obj->setResponse( array( ) );
             if ( isset( $query_result['affectedRows'] ) )
@@ -125,10 +125,10 @@ class DBQuery2
           }
           else
             $result = Model::isOK();
-            
+
         } else {
             $data = array( );
-            if ( isset( $query_result['numRows'] ) && 
+            if ( isset( $query_result['numRows'] ) &&
                  $query_result['numRows'] > 0 ){
                 $data = $query_result['content'];
             }
@@ -143,14 +143,14 @@ class DBQuery2
             if ( isset( $query_result['numRows'] ) )
                 $obj->setNumRows( $query_result['numRows'] );
 
-            
+
             $result = Model::isOK();
         }
         $res[]=$obj;
         }
         //$resArray[]=array('content'=>$res,'ETag'=>CacheManager::generateETag($res));
         $result['content'] = $resArray;
-                 
+
         return $result;
     }
 
@@ -158,48 +158,48 @@ class DBQuery2
     {
         $par = DBJson::mysql_real_escape_string( $par );
         $params=array();
-        extract( 
+        extract(
                 $par,
                 EXTR_OVERWRITE
         );
-        $config = parse_ini_file( 
+        $config = parse_ini_file(
                                 dirname(__FILE__).'/config.ini',
                                 TRUE
                                 );
 
         $result = Model::isOK();$result['content']=array();
         $sql = $this->generateQuery($procedure,$params);
-        $answer = DBRequest::request2( 
+        $answer = DBRequest::request2(
                                            $sql,
                                            false,
                                            $config
-                                     );        
+                                     );
 
         $res = array();
         $hash=null;
 
         foreach ($answer as $query_result){
             $obj = new Query( );
-            
+
         if ( $query_result['errno'] != 0 ){
             if ( isset($query_result['errno']) && $query_result['errno'] != 0 )
-                Logger::Log( 
+                Logger::Log(
                             'GET queryResult failed errno: ' . $query_result['errno'] . ' error: ' . $query_result['error'],
                             LogLevel::ERROR
                             );
 
             if ( !isset($query_result['content']) || !$query_result['content'] )
-                Logger::Log( 
+                Logger::Log(
                             'GET queryResult failed, no content',
                             LogLevel::ERROR
                             );
 
             if ( isset($query_result['errno']) && $query_result['errno'] == 401 ){
                 $result = Model::isRejected();
-                
-            } else 
+
+            } else
                 $result = Model::isProblem();
-            
+
         }elseif ( gettype( $query_result['content'] ) == 'boolean' ){
             $obj->setResponse( array( ) );
             if ( isset( $query_result['affectedRows'] ) )
@@ -214,10 +214,10 @@ class DBQuery2
           if ( isset( $query_result['errno'] ) && $query_result['errno']>0 ){
             $result = Model::isProblem();
           }
-            
+
         } else {
             $data = array( );
-            if ( isset( $query_result['numRows'] ) && 
+            if ( isset( $query_result['numRows'] ) &&
                  $query_result['numRows'] > 0 ){
                 $data = $query_result['content'];
             }
@@ -231,65 +231,65 @@ class DBQuery2
                 $obj->setErrno( $query_result['errno'] );
             if ( isset( $query_result['numRows'] ) )
                 $obj->setNumRows( $query_result['numRows'] );
-                
+
             $result = Model::isOK();
         }
         $res[]=$obj;
         }
 
-        if (count($res)==1) $res = $res[0]; 
+        if (count($res)==1) $res = $res[0];
         $result['content'] = $res;
-        
+
         return $result;
     }
-    
+
     public function postQuery( $callName, $input, $par = array() )
     {
         $par = DBJson::mysql_real_escape_string( $par );
         $params=array();
-        extract( 
+        extract(
                 $par,
                 EXTR_OVERWRITE
         );
-        $config = parse_ini_file( 
+        $config = parse_ini_file(
                                 dirname(__FILE__).'/config.ini',
                                 TRUE
                                 );
-                 
+
         $obj = $input;
 
-        $answer = DBRequest::request2( 
+        $answer = DBRequest::request2(
                                            $obj->getRequest( ),
                                            $obj->getCheckSession( ),
                                            $config
                                      );
-                                           
+
         $result = Model::isOK();$result['content']=array();
         $res=array();
-             
+
         foreach ($answer as $query_result){
             $obj = new Query( );
-            
+
         if ( $query_result['errno'] != 0 ){
             if ( isset($query_result['errno']) && $query_result['errno'] != 0 )
-                Logger::Log( 
+                Logger::Log(
                             'GET queryResult failed errno: ' . $query_result['errno'] . ' error: ' . $query_result['error'],
                             LogLevel::ERROR
                             );
 
             if ( !isset($query_result['content']) || !$query_result['content'] )
-                Logger::Log( 
+                Logger::Log(
                             'GET queryResult failed, no content',
                             LogLevel::ERROR
                             );
 
             if ( isset($query_result['errno']) && $query_result['errno'] == 401 ){
                 $result = Model::isRejected();
-                
+
             } else {
                 $result = Model::isProblem();
             }
-            
+
         }elseif ( gettype( $query_result['content'] ) == 'boolean' ){
             $obj->setResponse( array( ) );
             if ( isset( $query_result['affectedRows'] ) )
@@ -307,10 +307,10 @@ class DBQuery2
           else {
             $result = Model::isCreated();
           }
-            
+
         } else {
             $data = array( );
-            if ( isset( $query_result['numRows'] ) && 
+            if ( isset( $query_result['numRows'] ) &&
                  $query_result['numRows'] > 0 ){
                 $data = $query_result['content'];
             }
@@ -335,12 +335,12 @@ class DBQuery2
         }
         $res[]=$obj;
         }
-        if (count($res)==1) $res = $res[0]; 
+        if (count($res)==1) $res = $res[0];
         $result['content'] = $res;
-        
+
         return $result;
     }
-    
+
     /**
      * Returns status code 200, if this component is correctly installed for the platform
      *
@@ -348,14 +348,14 @@ class DBQuery2
      * /link/exists/platform.
      */
     public function getExistsPlatform( $callName, $input, $params = array() )
-    {         
+    {
         if (!file_exists(dirname(__FILE__) . '/config.ini')){
             return Model::isProblem();
         }
-       
+
         return Model::isOK();
     }
-    
+
     /**
      * Removes the component from the platform
      *
@@ -364,20 +364,20 @@ class DBQuery2
      */
     public function deletePlatform( $callName, $input, $params = array() )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts DELETE DeletePlatform',
                     LogLevel::DEBUG
                     );
-          
-        $this->loadConfig($name);  
+
+        $this->loadConfig($name);
         $configFile = dirname(__FILE__) . '/config.ini';
         if (file_exists($configFile) && !unlink($configFile)){
             return Model::isProblem();
         }
-        
+
         return Model::isCreated();
     }
-    
+
     /**
      * Adds the component to the platform
      *
@@ -386,11 +386,11 @@ class DBQuery2
      */
     public function addPlatform( $callName, $input, $params = array() )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts POST AddPlatform',
                     LogLevel::DEBUG
                     );
-                    
+
         //$this->loadConfig($name);
         // decode the received course data, as an object
         $insert = $input;
@@ -406,7 +406,7 @@ class DBQuery2
         // this array contains the indices of the inserted objects
         $res = array( );
         foreach ( $insert as $in ){
-        
+
             $file = dirname(__FILE__) . '/config.ini';
             $text = "[DB]\n".
                     "db_path = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getDatabaseUrl())."\"\n".
@@ -416,24 +416,24 @@ class DBQuery2
                     "[PL]\n".
                     "urlExtern = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getExternalUrl())."\"\n".
                     "url = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getBaseUrl())."\"";
-                    
+
             if (!@file_put_contents($file,$text)){
-                Logger::Log( 
+                Logger::Log(
                             'POST AddPlatform failed, config.ini no access',
                             LogLevel::ERROR
                             );
 
                 $result=Model::isProblem();
-            }   
+            }
 
             $platform = new Platform();
             $platform->setStatus(201);
             $res[] = $platform;
-            $result=Model::isCreated();            
+            $result=Model::isCreated();
         }
         $return['content'] = $res;
         return $return;
     }
 }
 
- 
+

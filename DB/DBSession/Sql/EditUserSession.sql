@@ -8,7 +8,7 @@
  * @result -
  */
 ?>
- 
+
 UPDATE `Session`
 SET <?php echo $values; ?>
 WHERE U_id = '<?php echo $userid; ?>'

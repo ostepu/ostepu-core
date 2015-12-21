@@ -18,7 +18,7 @@ class DBBeispiel
         // erzeugt das Model Objekt, welches einiges erleichtern soll
         $component = new Model('course', dirname(__FILE__), $this);
         $this->_component=$component;
-        
+
         // startet nun unsere Komponente, dabei kommt die Zuordnung von Aufruf und Funktion
         // aus der Commands.json
         $component->run();
@@ -45,7 +45,7 @@ class DBBeispiel
         // in diesem Beispiel wird der Name, welcher in der Commands.json für diesen Funktionsaufruf angegeben wurde,
         // direkt Verwendet, um einen gleichnamigen Ausgang der Component.json anzusprechen und den dort
         // angegeben Aufruf auzulösen (wobei courseid entsprechend ersetzt wird)
-        
+
         // diese Funktion soll aufgerufen werden, wenn unsere Anfrage an die Datenbank positiv war
         $positive = function($input, $singleResult) {
             $result = Model::isEmpty();$result['content']=array();
@@ -58,7 +58,7 @@ class DBBeispiel
             }
             return $result;
         };
-        
+
         // hier wird eine MySql stored-procedure aufgerufen
         // dabei haben die aufzurufen Befehle die Form /funktionsname/:idA/:idB  (stehen in der Component.json)
         // dabei werden idA und idB durch die Werte in $params ersetzt Bsp.: $params = array("idA"=>2, "idB"=>3)
@@ -74,7 +74,7 @@ class DBBeispiel
                                        'Query' // der Rückgabetyp der Anfrage, unsere Funktionen erhalten diesen Typ als $input (muss daher eine /Assistants/Structures sein)
                                        );
     }
-    
+
     public function getDaten($callName, $input, $params = array())
     {
         return Model::isProblem();

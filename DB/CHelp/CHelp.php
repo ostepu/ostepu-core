@@ -46,6 +46,27 @@ class CHelp
         $replace = array('&auml;', '&Auml;', '&ouml;', '&Ouml;', '&uuml;', '&Uuml;', '&szlig;');
         return str_replace($search, $replace, $text);;
     }
+    
+    public function getSystemStatus($callName, $input, $params = array())
+    {
+        if (!isset($this->config['MAIN']['externalUrl'])){
+            return Model::isProblem();
+        }
+        
+        $positive = function($input) {
+            $input = '<html><head></head><body><span style="color:green">Anfrage erfolgreich</span></body></html>';
+            Model::header('Content-Length',strlen($input));
+            return Model::isOk($input);
+        };
+        
+        $negative = function() {
+            $input = '<html><head></head><body><span style="color:red">Anfrage nicht erfolgreich</span></body></html>';
+            Model::header('Content-Length',strlen($input));
+            return array_merge(Model::isProblem($input),array('statusText'=>'Unable to connect to the database.'));
+        };
+        
+        return $this->_component->call('getAlive', array(), '', 200, $positive, array(), $negative, array());
+    }
 
     public function getHelp($callName, $input, $params = array())
     {
@@ -69,25 +90,51 @@ class CHelp
         
         $cachePath = dirname(__FILE__).'/cache/'.implode('/',$params['path']).$cacheExtension;
         if (file_exists($cachePath)){
+            Model::header('Content-Length',filesize($cachePath));
             return Model::isOk(file_get_contents($cachePath));
         }
         
         $order = implode('/',$params['path']);
-        $order = '/help/'.$order;
+        $order = '/help/'.$order;      
         
-        
-        $positive = function($input, $cachePath, $realExtension) {
+        $positive = function($input, $cachePath, $realExtension, $negativeMethod, $cacheFilename) {
+            if (empty($input)){
+                // wenn die zurückgegebene Datei leer ist, wird nicht gecached und die negative Methode aufgerufen
+                return call_user_func_array($negativeMethod, array());
+            }
+            
             if ($realExtension == '.md'){
                 $parser = new \Michelf\MarkdownExtra;
                 $input = $this->umlaute($input);
                 $my_html = $parser->transform($input);
-                $input = '<link rel="stylesheet" href="'.$this->config['MAIN']['externalUrl'].'/UI/css/github-markdown.css" type="text/css"><span class="markdown-body">'.$my_html.'</span>';
+                $contact = isset($this->config['HELP']['contactUrl']) ? $this->config['HELP']['contactUrl'] : null;
+                if (isset($contact)){
+                    $contact = '<a href="'.$contact.'">Kontakt</a>';
+                }
+                
+                $input = '<html><head></head><body><link rel="stylesheet" href="'.$this->config['MAIN']['externalUrl'].'/UI/css/github-markdown.css" type="text/css"><span class="markdown-body">'.$my_html.$contact.'</span></body></html>';
             }
             
+            
+            Model::header('Content-Length',strlen($input));
+            
+            // die Hilfedatei wird lokal gespeichert
             @file_put_contents($cachePath,$input);
             return Model::isOk($input);
         };
-        return $this->_component->callByURI('request', $order, array('language'=>$params['language']), '', 200, $positive, array('cachePath'=>$cachePath, 'realExtension'=>$realExtension), 'Model::isEmpty', array());
+        
+        $negative = function() {
+            $input = '#### !!!Kein Inhalt!!!';
+            $parser = new \Michelf\MarkdownExtra;
+            $input = $this->umlaute($input);
+            $my_html = $parser->transform($input);
+            $input = '<html><head></head><body><link rel="stylesheet" href="'.$this->config['MAIN']['externalUrl'].'/UI/css/github-markdown.css" type="text/css"><span class="markdown-body">'.$my_html.'</span></body></html>';
+
+            Model::header('Content-Length',strlen($input));
+            return Model::isOk($input);
+        };
+        
+        return $this->_component->callByURI('request', $order, array('language'=>$params['language']), '', 200, $positive, array('cachePath'=>$cachePath, 'realExtension'=>$realExtension, 'negativeMethod'=>$negative, 'cacheFilename'=>$path_parts['filename'].$cacheExtension), $negative, array());
     }
     
     /**
@@ -118,6 +165,12 @@ class CHelp
                 "files = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$input->getFilesDirectory()))."\"\n".
                 "[MAIN]\n".
                 "externalUrl = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$input->getExternalUrl()))."\"\n";
+                
+        $settings = $input->getSettings();
+        if (isset($settings->contactUrl)){
+            $text .= "[HELP]\n";
+            $text .= "contactUrl = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$settings->contactUrl))."\"\n";
+        }
                 
         if (!@file_put_contents($file,$text)){
             Logger::Log( 

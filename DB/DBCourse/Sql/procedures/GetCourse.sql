@@ -17,7 +17,7 @@ from
     Course C
         left join
     ExerciseSheet ES ON C.C_id = ES.C_id
-        left join 
+        left join
     Setting_",courseid," S ON (1)
 where
     C.C_id = '",courseid,"';");

@@ -13,6 +13,18 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Language.php' );
 include_once ( dirname(__FILE__) . '/Helpers/FILE_TYPE.php' );
 include_once ( dirname(__FILE__) . '/Helpers/PRIVILEGE_LEVEL.php' );
 
+function parse_size($size) {
+  $unit = preg_replace('/[^bkmgtpezy]/i', '', $size); // Remove the non-unit characters from the size.
+  $size = preg_replace('/[^0-9\.]/', '', $size); // Remove the non-numeric characters from the size.
+  if ($unit) {
+    // Find the position of the unit in the ordered string which is the power of magnitude to multiply a kilobyte by.
+    return round($size * pow(1024, stripos('bkmgtpezy', $unit[0])));
+  }
+  else {
+    return round($size);
+  }
+}
+                    
 /**
  * Remove a value fom an array
  *
@@ -189,9 +201,10 @@ EOF;
 
 function MakeInfoButton($helpPath)
 {
-    global $serverURI;
+    global $externalURI;
     $helpPath = implode('/',func_get_args());
-    return "<a target='popup' onclick=\"window.open('', 'popup', 'width=700,height=600,scrollbars=no, toolbar=no,status=no,resizable=yes,menubar=no,location=no,directories=no')\" href='{$serverURI}/DB/CHelp/help/".Language::$selectedLanguage."/{$helpPath}' title='info' target='_blank'><img src='Images/Info.png' /></a>";
+    $URL = "{$externalURI}/DB/CHelp/help/".Language::$selectedLanguage."/{$helpPath}";
+    return "<a href='{$URL}' class='plain image-button exercise-sheet-images' target='popup' onclick=\"window.open('', 'popup', 'width=700,height=600,scrollbars=yes,location=no,directories=no,menubar=no,toolbar=no,status=no,resizable=yes')\" title='info' target='_blank'><img src='Images/Info.png' /></a>";
 }
 
 /**
@@ -202,6 +215,7 @@ function MakeInfoButton($helpPath)
  */
 function formatBytes($size)
 {
+    if ($size<=0) return '0B';
     $base = log($size) / log(1024);
     $suffixes = array('', 'K', 'M', 'G', 'T');
 
@@ -225,9 +239,9 @@ function cleanInput($input)
 
         if (get_magic_quotes_gpc() == 0) {
             // magic quotes is turned off
-            $input = htmlspecialchars(trim(($input)),ENT_QUOTES, 'UTF-8');     //stripcslashes       
+            $input = htmlspecialchars(trim($input),ENT_QUOTES, 'UTF-8');    
         } else {
-            $input = htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
+            $input = htmlspecialchars(stripslashes(trim($input)), ENT_QUOTES, 'UTF-8');
         }
     }
 
@@ -265,6 +279,58 @@ function MakeNavigationElement($user,
                                    'sites' => PRIVILEGE_LEVEL::$SITES,
                                    'isSuperAdmin' => $isSuperAdmin,
                                    'forIndex' => $forIndex));
+
+    return $navigationElement;
+}
+
+function MakeUserNavigationElement($user,
+                               $courseUser,
+                               $privileged,
+                               $requiredPrivilege,
+                               $sid = null,
+                               $courseSheets = null,
+                               $switchDisabled = false,
+                               $forIndex = false)
+{
+    $courses = isset($user['courses']) ? $user['courses'] : null;
+
+    $isSuperAdmin = isset($user['isSuperAdmin']) ? ($user['isSuperAdmin'] == 1) : null;
+
+    /*if ($forIndex == true && $isSuperAdmin == false) {
+        return "";
+    }*/
+
+    $courseStatus = null;
+    if (isset($courses[0]) && isset($courses[0]['status']))
+        $courseStatus = $courses[0]['status'];
+      
+    $course = null;    
+    if (isset($courses[0]) && isset($courses[0]['course']))
+        $course = $courses[0]['course'];
+
+    $file = 'include/Navigation/UserNavigation.template.html';
+    $navigationElement = Template::WithTemplateFile($file);
+
+    if ($courseUser!==null){
+        function compare_lastName($a, $b) {
+            if ($a->getLastName() === null) return 1;
+            if ($b->getLastName() === null) return 1;
+            return strnatcmp(strtolower($a->getLastName()), strtolower($b->getLastName()));
+        }
+        usort($courseUser, 'compare_lastName');
+    }
+
+    $navigationElement->bind(array('uid' => $user['id'], 'cid' => (isset($course['id']) ? $course['id'] : null),
+                                   'requiredPrivilege' => $requiredPrivilege,
+                                   'courseStatus' => $courseStatus,
+                                   'switchDisabled' => $switchDisabled,
+                                   'sites' => PRIVILEGE_LEVEL::$SITES,
+                                   'isSuperAdmin' => $isSuperAdmin,
+                                   'forIndex' => $forIndex,
+                                   'sid' => $sid,
+                                   'courseUser' => $courseUser,
+                                   'courseSheets' => $courseSheets,
+                                   'privileged' => $privileged));
 
     return $navigationElement;
 }
@@ -330,15 +396,18 @@ function updateSelectedSubmission($databaseURI,
  */
 function initPage($uid, $courseid=null){
     global $getSiteURI;
+    global $globalUserData;
     
     // load user data from the database
-    $databaseURI = $getSiteURI . "/accountsettings/user/{$uid}";
+    $databaseURI = $getSiteURI . "/accountsettings/user/{$uid}".(isset($courseid) ? '/course/'.$courseid : '');
     $accountSettings_data = http_get($databaseURI, true);
     $accountSettings_data = json_decode($accountSettings_data, true);
 
     if (isset($accountSettings_data['lang'])){
         Language::setPreferedLanguage($accountSettings_data['lang']);
     }
+    
+    $globalUserData = $accountSettings_data;
 }
 
 /**

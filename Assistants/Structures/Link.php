@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -190,7 +190,7 @@ class Link extends Object implements JsonSerializable
     {
         $this->prefix = $value;
     }
-    
+
 
     private $targetName = null;
     public function getTargetName( )
@@ -201,7 +201,7 @@ class Link extends Object implements JsonSerializable
     {
         $this->targetName = $value;
     }
-    
+
     private $classFile = null;
     public function getClassFile( )
     {
@@ -211,7 +211,7 @@ class Link extends Object implements JsonSerializable
     {
         $this->classFile = $value;
     }
-    
+
     private $className = null;
     public function getClassName( )
     {
@@ -221,7 +221,7 @@ class Link extends Object implements JsonSerializable
     {
         $this->className = $value;
     }
-    
+
     private $localPath = null;
     public function getLocalPath( )
     {
@@ -231,7 +231,7 @@ class Link extends Object implements JsonSerializable
     {
         $this->localPath = $value;
     }
-    
+
     // default: 100, low value = high priority, high value = low priority
     private $priority = null;
     public function getPriority( )
@@ -242,7 +242,7 @@ class Link extends Object implements JsonSerializable
     {
         $this->priority = $value;
     }
-    
+
     private $path = null;
     public function getPath( )
     {
@@ -252,7 +252,7 @@ class Link extends Object implements JsonSerializable
     {
         $this->path = $value;
     }
-    
+
     /**
      * Creates an Link object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -265,7 +265,7 @@ class Link extends Object implements JsonSerializable
      *
      * @return an link object
      */
-    public static function createLink( 
+    public static function createLink(
                                       $id,
                                       $owner,
                                       $target,
@@ -275,7 +275,7 @@ class Link extends Object implements JsonSerializable
                                       $path = null
                                       )
     {
-        return new Link( array( 
+        return new Link( array(
                                'id' => $id,
                                'owner' => $owner,
                                'target' => $target,
@@ -315,7 +315,7 @@ class Link extends Object implements JsonSerializable
      */
     public static function getDbConvert( )
     {
-        return array( 
+        return array(
                      'CL_id' => 'id',
                      'CL_name' => 'name',
                      'CL_address' => 'address',
@@ -339,50 +339,50 @@ class Link extends Object implements JsonSerializable
         $values = '';
 
         if ( $this->id != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'CL_id',
                                  DBJson::mysql_real_escape_string( $this->id )
                                  );
         if ( $this->name != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'CL_name',
                                  DBJson::mysql_real_escape_string( $this->name )
                                  );
         if ( $this->owner != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'CO_id_owner',
                                  DBJson::mysql_real_escape_string( $this->owner )
                                  );
         if ( $this->target != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'CO_id_target',
                                  DBJson::mysql_real_escape_string( $this->target )
                                  );
         if ( $this->relevanz != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'CL_relevanz',
                                  DBJson::mysql_real_escape_string( $this->relevanz )
                                  );
         if ( $this->priority != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'CL_priority',
                                  DBJson::mysql_real_escape_string( $this->priority )
                                  );
         if ( $this->path != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'CL_path',
                                  DBJson::mysql_real_escape_string( $this->path )
                                  );
 
         if ( $values != '' ){
-            $values = substr( 
+            $values = substr(
                              $values,
                              1
                              );
@@ -409,18 +409,18 @@ class Link extends Object implements JsonSerializable
      */
     public static function encodeLink( $data )
     {
-        if (is_array($data))reset($data);
+        /*if (is_array($data))reset($data);
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
             $e = new Exception();
-            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
-            return null;
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());           
+            ///return null;
         }
         if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
             $e = new Exception();
             $class = (is_array($data) && is_array(current($data)) ? 'array' : (is_array($data) ? (current($data)!==false ? get_class(current($data)) : 'array') : get_class($data)));
             error_log(__FILE__.':'.__LINE__.' wrong type, '.$class.' given, '.get_called_class()." expected\n".$e->getTraceAsString());
-            return null;
-        }
+            ///return null;
+        }*/
         return json_encode( $data );
     }
 
@@ -433,18 +433,18 @@ class Link extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeLink( 
+    public static function decodeLink(
                                       $data,
                                       $decode = true
                                       )
     {
-        if ( $decode && 
+        if ( $decode &&
              $data == null )
             $data = '{}';
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -453,7 +453,7 @@ class Link extends Object implements JsonSerializable
                     $isArray = false;
                 }
             } else {
-               $isArray = false; 
+               $isArray = false;
             }
         }
 
@@ -463,8 +463,8 @@ class Link extends Object implements JsonSerializable
                 $result[] = new Link( $value );
             }
             return $result;
-            
-        } else 
+
+        } else
             return new Link( $data );
     }
 
@@ -500,7 +500,7 @@ class Link extends Object implements JsonSerializable
             $list['localPath'] = $this->localPath;
         if ( $this->path !== null )
             $list['path'] = $this->path;
-            
+
         return array_merge($list,parent::jsonSerialize( ));
     }
 }

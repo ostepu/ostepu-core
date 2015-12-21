@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -74,7 +74,7 @@ class DBSelectedSubmission
      */
     public function deleteSelectedSubmission($callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteSelectedSubmission.sql',$params,201,'Model::isCreated',array(new SelectedSubmission()),'Model::isProblem',array(new SelectedSubmission()));  
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteSelectedSubmission.sql',$params,201,'Model::isCreated',array(new SelectedSubmission()),'Model::isProblem',array(new SelectedSubmission()));
     }
 
     /**
@@ -88,7 +88,7 @@ class DBSelectedSubmission
      */
     public function deleteUserSheetSelectedSubmission($callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteUserSheetSelectedSubmission.sql',$params,201,'Model::isCreated',array(new SelectedSubmission()),'Model::isProblem',array(new SelectedSubmission()));  
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteUserSheetSelectedSubmission.sql',$params,201,'Model::isCreated',array(new SelectedSubmission()),'Model::isProblem',array(new SelectedSubmission()));
     }
 
     /**
@@ -101,7 +101,7 @@ class DBSelectedSubmission
      */
     public function deleteSubmissionSelectedSubmission( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteSubmissionSelectedSubmission.sql',$params,201,'Model::isCreated',array(new SelectedSubmission()),'Model::isProblem',array(new SelectedSubmission()));  
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteSubmissionSelectedSubmission.sql',$params,201,'Model::isCreated',array(new SelectedSubmission()),'Model::isProblem',array(new SelectedSubmission()));
     }
 
     /**
@@ -137,7 +137,7 @@ class DBSelectedSubmission
             }
             return $result;
         };
-        
+
         $params = DBJson::mysql_real_escape_string( $params );
         return $this->_component->call($linkName, $params, '', 200, $positive, array(), 'Model::isProblem', array(), 'Query');
     }
@@ -146,7 +146,7 @@ class DBSelectedSubmission
     {
         return $this->get($callName,$callName,$params);
     }
-    
+
     /**
      * Removes the component from the platform
      *
@@ -157,7 +157,7 @@ class DBSelectedSubmission
     {
         return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
-    
+
     /**
      * Adds the component to the platform
      *
@@ -168,7 +168,7 @@ class DBSelectedSubmission
     {
         return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
-    
+
     public function getSamplesInfo( $callName, $input, $params = array() )
     {
         $positive = function($input) {
@@ -184,16 +184,16 @@ class DBSelectedSubmission
             }
             return $result;
         };
-        
+
         $params = DBJson::mysql_real_escape_string( $params );
         return $this->_component->call($callName, $params, '', 200, $positive,  array(), 'Model::isProblem', array(), 'Query');
     }
-    
+
     public function postSamples( $callName, $input, $params = array() )
-    {   
+    {
         set_time_limit(0);
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new SelectedSubmission()),'Model::isProblem',array(new SelectedSubmission()));  
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new SelectedSubmission()),'Model::isProblem',array(new SelectedSubmission()));
     }
 }
 
- 
+

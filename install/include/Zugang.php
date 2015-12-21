@@ -30,10 +30,10 @@ class Zugang
             }
             $ssh->setTimeout(0);
         }
-        
+
         return $ssh;
     }
-    
+
     /**
      * ???
      *
@@ -45,7 +45,7 @@ class Zugang
     public static function EntferneDateien($files,$filesAddresses, $data)
     {
         $mainPath = dirname(__FILE__) . '/../..';
-        
+
         if ($data['ZV']['zv_type'] == 'local' || $data['ZV']['zv_type'] == ''){
             // leer
         } elseif ($data['ZV']['zv_type'] == 'ssh'){
@@ -53,16 +53,16 @@ class Zugang
             $ssh = Zugang::Verbinden($data);
             // Dateien entfernen
             if (!is_array($files)) $files = array($files);
-            
+
             $allPaths = array();
             foreach ($filesAddresses as $addresses)
                 $allPaths[] = dirname($addresses);
-            
+
             sort($allPaths);
             $allPaths = array_unique($allPaths);
             $allPaths = array_values($allPaths);
             $allPaths = array_reverse($allPaths);
-            
+
             $scp = new Net_SCP($ssh);
             for($i=0;$i<count($filesAddresses);$i++){
                 if (count($ssh->channel_status)>0 && $ssh->channel_status[0] != 97){$ssh = Zugang::Verbinden($data);$scp = new Net_SCP($ssh);}
@@ -80,25 +80,25 @@ class Zugang
                     $ssh->exec('php -r '.$command);
                 }
             }
-                
+
             $ssh->disconnect();
-            
+
             if (isset($result['fail'])){
                 $fail = $result['fail'];unset($result['fail']);
             }
-            
+
             if (isset($result['errno'])){
                 $errno = $result['errno'];unset($result['errno']);
             }
-            
+
             if (isset($result['error'])){
                 $error = $result['error'];unset($result['error']);
             }
-            
+
         } else
             return array();
     }
-    
+
     /**
      * ???
      *
@@ -110,12 +110,12 @@ class Zugang
     {
         $answer = $ssh->exec('php -r \'$g=1;echo "OK";\'');
 
-        if ($answer=='OK')           
+        if ($answer=='OK')
             return "'".$command."'";
-        
+
         return '"'.str_replace("\"","'",$command).'"';
     }
-    
+
     /**
      * Sendet die Konfigurationsdatei des Servers an den Clienten
      *
@@ -139,25 +139,25 @@ class Zugang
     public static function SendeDateien($files,$filesAddresses, $data)
     {
         $mainPath = dirname(__FILE__) . '/../..';
-        
+
         if ($data['ZV']['zv_type'] == 'local' || $data['ZV']['zv_type'] == ''){
             // leer
         } elseif ($data['ZV']['zv_type'] == 'ssh'){
 
             // Dateien senden
             if (!is_array($files)) $files = array($files);
-            
+
             $allPaths = array();
             foreach ($filesAddresses as $addresses)
                 $allPaths[] = dirname($addresses);
-            
+
             $allPaths = array_unique($allPaths);
             $allPaths = array_values($allPaths);
 
             for($i=0;$i<count($allPaths)-1;$i++)
                 if (strpos($allPaths[$i+1].'/',$allPaths[$i].'/') === 0)
                     $allPaths[$i]=null;
-                    
+
             $ssh = Zugang::Verbinden($data);
             foreach ($allPaths as $path){
                 if ($path!=null){
@@ -167,16 +167,16 @@ class Zugang
                     $ssh->exec('php -r '.$command);
                 }
             }
-            
+
             $zip = new ZipArchive( );
             Einstellungen::generatepath( dirname(__FILE__).'/../temp' );
-            if ( $zip->open( 
+            if ( $zip->open(
                                 dirname(__FILE__).'/../temp/data.zip',
                                 ZIPARCHIVE::CREATE | ZIPARCHIVE::OVERWRITE
                                 ) === TRUE ){
                 for($i=0;$i<count($files);$i++){
                     if (file_exists($files[$i]) && is_readable($files[$i])){
-                        $zip->addFromString( 
+                        $zip->addFromString(
                                             $filesAddresses[$i],
                                             file_get_contents($files[$i])
                                             );
@@ -184,31 +184,31 @@ class Zugang
                 }
                 $zip->close( );
             }
-            
+
             if (count($ssh->channel_status)>0 && $ssh->channel_status[0] != 97){$ssh = Zugang::Verbinden($data);}
             $scp = new Net_SCP($ssh);
             if (count($ssh->channel_status)>0 && $ssh->channel_status[0] != 97){$ssh = Zugang::Verbinden($data);$scp = new Net_SCP($ssh);}
             $scp->put('data.zip', dirname(__FILE__).'/../temp/data.zip', NET_SCP_LOCAL_FILE);
-            
+
             $command = '$zip = new ZipArchive;$zip->open("data.zip");$zip->extractTo(".");$zip->close();unlink("data.zip");';
             if (count($ssh->channel_status)>0 && $ssh->channel_status[0] != 97){$ssh = Zugang::Verbinden($data);$scp = new Net_SCP($ssh);}
             $command = Zugang::checkServerType($ssh,$command);
             $ssh->exec('php -r '.$command);
 
             $ssh->disconnect();
-            
+
             if (isset($result['fail'])){
                 $fail = $result['fail'];unset($result['fail']);
             }
-            
+
             if (isset($result['errno'])){
                 $errno = $result['errno'];unset($result['errno']);
             }
-            
+
             if (isset($result['error'])){
                 $error = $result['error'];unset($result['error']);
             }
-            
+
         } else
             return array();
     }
@@ -221,7 +221,7 @@ class Zugang
      * @param string[][] $data Die Serverdaten
      * @param bool $fail true = Fehler, false = sonst
      * @param int $errno Die Fehlernummer
-     * @param string $error Der Fehlertext 
+     * @param string $error Der Fehlertext
      * @return ???
      */
     public static function Ermitteln($action, $func, $data, &$fail, &$errno, &$error)
@@ -229,40 +229,40 @@ class Zugang
         if (!isset($data['ZV']['zv_type']) || $data['ZV']['zv_type'] == 'local' || $data['ZV']['zv_type'] == ''){
             if (is_callable($func)){
                     $temp = explode('::',$func);
-                    
+
                     $answer = $temp[0]::$temp[1]($data, $fail, $errno, $error);
                     return $answer;
             } else {
                 $error = "Funktion $func kann nicht aufgerufen werden!";
                 return array();
             }
-           
+
         } elseif ($data['ZV']['zv_type'] == 'ssh'){
 
             $ssh = Zugang::Verbinden($data);
             $result = $ssh->exec('php -f install/install.php -- '.$action);
             $result = json_decode($result,true);
             $ssh->disconnect();
-            
+
             if (!isset($result[$action])) return array();
-            
+
             $result = $result[$action];
-            
+
             if (isset($result['fail'])){
                 $fail = $result['fail'];
             }
             unset($result['fail']);
-            
+
             if (isset($result['errno']) ){
                 $errno = $result['errno'];
             }
             unset($result['errno']);
-            
+
             if (isset($result['error'])){
                 $error = $result['error'];
             }
             unset($result['error']);
-            
+
             return $result;
         } else
             return array();

@@ -16,7 +16,7 @@ from
     File
     where
         ('",beginStamp,"'='0' or F_timeStamp>='",beginStamp,"')
-        and 
+        and
         ('",endStamp,"'='0' or F_timeStamp>='",endStamp,"');");
 PREPARE stmt1 FROM @s;
 EXECUTE stmt1;

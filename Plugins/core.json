@@ -1,7 +1,7 @@
 {
   "name":"CORE",
-  "version":"0.3",
-  "versionDate":"19.04.2015",
+  "version":"0.4.3",
+  "versionDate":"05.12.2015",
   "author":"",
   "sourceURL":null,
   "updateURL":null,
@@ -18,7 +18,7 @@
     [
       {"conf":"DB/CControl/Component.json"},
       {"conf":"DB/CSystem/Component.json"},
-      {"conf":"---DB/CFilter/Component.json"},
+      {"conf":"---DB/CGate/Component.json"},
       {"conf":"DB/CAbstract/Component.json"},
       {"conf":"DB/CHelp/Component.json"},
       {"conf":"DB/DBQuery2/DBQuery.json"},

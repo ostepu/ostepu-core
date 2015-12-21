@@ -2,7 +2,7 @@
     "main": {
         "title": "Punkteart &auml;ndern",
         "execute": "ver&auml;ndern",
-        "description": "W&auml;hlen Sie die gew&uuml;nschte Punkteart aus und vergeben Sie anschlie&szlig;end einen neuen Namen. Achtung: Die &auml;nderung betrifft alle Veranstaltungen der &uuml;bungsplattform!",
+        "description": "W&auml;hlen Sie die gew&uuml;nschte Punkteart aus und vergeben Sie anschlie&szlig;end einen neuen Namen. Achtung: Die &auml;nderung betrifft alle Veranstaltungen der &Uuml;bungsplattform!",
         "exerciseType": "Punkteart",
         "exerciseTypeName": "Neuer Name"
     }

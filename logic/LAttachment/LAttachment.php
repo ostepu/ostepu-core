@@ -73,7 +73,7 @@ class LAttachment
         // runs the LAttachment
         if ( $com->used( ) ) return;
             $conf = $com->loadConfig( );
-            
+
         // initialize slim
         $this->app = new \Slim\Slim();
         $this->app->response->setStatus( 409 );
@@ -119,7 +119,7 @@ class LAttachment
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $fileObjects = Attachment::decodeAttachment($body);
-        
+
         // always been an array
         $arr = true;
         if ( !is_array( $fileObjects ) ){
@@ -129,12 +129,12 @@ class LAttachment
 
         $res = array( );
         $files=array();
-        
+
         foreach ( $fileObjects as $fileObject )
             $files[] = $fileObject->getFile();
 
         //add the Files
-        $result = Request::routeRequest( 
+        $result = Request::routeRequest(
                                         'POST',
                                         '/file',
                                         array(),
@@ -142,18 +142,18 @@ class LAttachment
                                         $this->_postFile,
                                         'file'
                                         );
-                                        
+
         $tempFiles = File::decodeFile($result['content']);
-        
+
           // checks the correctness of the query
-        if ( $result['status'] === 201 && isset($result['content'])){   
-             
+        if ( $result['status'] === 201 && isset($result['content'])){
+
             // upload files
             $countObjects = count($fileObjects);
             for($i=0;$i<$countObjects;$i++){
                 if ($tempFiles[$i]->getStatus() === 201){
                     $fileObjects[$i]->setFile($tempFiles[$i]);
-                    
+
                     if ($files[$i] !== null)
                         $files[$i]->setStatus(201);
                 } else {
@@ -168,9 +168,9 @@ class LAttachment
             $this->app->response->setBody( Attachment::encodeAttachment( new Attachment()) );
             $this->app->stop();
         }
-        
+
         // upload attachments
-        $result = Request::routeRequest( 
+        $result = Request::routeRequest(
                                         'POST',
                                         '/attachment',
                                         array(),
@@ -178,32 +178,32 @@ class LAttachment
                                         $this->_postAttachment,
                                         'attachment'
                                         );
-         
-        if ( $result['status'] === 201 && isset($result['content'])){ 
+
+        if ( $result['status'] === 201 && isset($result['content'])){
             $tempAttachments = Attachment::decodeAttachment($result['content']);
-            
+
             $countObjects = count($fileObjects);
             for($i=0;$i<$countObjects;$i++){
                 $fileObjects[$i]->setStatus($tempAttachments[$i]->getStatus());
                 $fileObjects[$i]->addMessages($tempAttachments[$i]->getMessages());
-                
+
                 if ($tempAttachments[$i]->getStatus() !== 201){
                     $fileObjects[$i]->addMessage('Anhang konnte nicht erstellt werden.');
                     $fileObjects[$i]->getFile()->setBody();
                 } else
                     $fileObjects[$i]->setId($tempAttachments[$i]->getId());
-                
+
                 $res[] = $fileObjects[$i];
             }
-             
+
         } else {
             $this->app->response->setStatus(409);
             $this->app->response->setBody( Attachment::encodeAttachment( new Attachment()) );
             $this->app->stop();
-            
-        }          
- 
-        if ( !$arr && 
+
+        }
+
+        if ( !$arr &&
              count( $res ) == 1 )
             $res = $res[0];
 

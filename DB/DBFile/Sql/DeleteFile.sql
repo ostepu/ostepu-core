@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * @file DeleteFile.sql
  * deletes a specified file from %File table
  * @author  Till Uhlig
@@ -11,8 +11,8 @@ set @a = (select F_address from `File` where F_id = '<?php echo $fileid; ?>' lim
 
 Delete from File
     where F_id = '<?php echo $fileid; ?>';
- 
-SELECT @a as F_address;
+
+select A.`F_address` from (SELECT @a as F_address, count(*) as 'count' from `File` where F_address = @a) A where A.`count` = 0;
 
 
 

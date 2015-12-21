@@ -4,13 +4,16 @@
         "outputType": "File",
         "inputType": "File",
         "method": "PUT",
+        "placeholder":[{"name":"fileid","regex":"%^([0-9_]+)$%"}],
         "path": "/file(/file)/:fileid"
     },
     {
         "name": "removeFile",
         "outputType": "File",
+        "singleOutput": "TRUE",
         "inputType": "",
         "method": "DELETE",
+        "placeholder":[{"name":"fileid","regex":"%^([0-9_]+)$%"}],
         "path": "/file(/file)/:fileid"
     },
     {
@@ -27,6 +30,7 @@
         "outputType": "File",
         "inputType": "",
         "method": "GET",
+        "placeholder":[{"name":"fileid","regex":"%^([0-9_]+)$%"}],
         "path": "/file(/file)/:fileid"
     },
     {
@@ -36,6 +40,7 @@
         "outputType": "File",
         "inputType": "",
         "method": "GET",
+        "placeholder":[{"name":"hash","regex":"%^[0-9a-fA-F]{40}$%"}],
         "path": "/file/hash/:hash"
     },
     {
@@ -44,6 +49,7 @@
         "outputType": "File",
         "inputType": "",
         "method": "GET",
+        "placeholder":[{"name":"beginStamp","regex":"%^([0-9_]+)$%"},{"name":"endStamp","regex":"%^([0-9_]+)$%"}],
         "path": "/file(/timestamp/begin/:beginStamp/end/:endStamp)"
     },
     {
@@ -52,7 +58,8 @@
         "outputType": "File",
         "inputType": "",
         "method": "GET",
-        "path": "/file/mimetype/:base(/:type)(/timestamp/begin/:beginSttamp/end/:endStamp)"
+        "placeholder":[{"name":"base","regex":"%^[a-zA-Z]+$%"},{"name":"type","regex":"%^[a-zA-Z]+$%"},{"name":"beginStamp","regex":"%^([0-9_]+)$%"},{"name":"endStamp","regex":"%^([0-9_]+)$%"}],
+        "path": "/file/mimetype/:base(/:type)(/timestamp/begin/:beginStamp/end/:endStamp)"
     },
     {
         "name": "addPlatform",

@@ -1,0 +1,13 @@
+{
+    "formId": "1_1",
+    "exerciseId": "1",
+    "type": "0",
+    "solution": "<p>sdagsadgsdg<\/p>",
+    "task": "<p><span style=\"color:#FF0000\">L&ouml;sen Sie<\/span> die Aufgabe.<\/p>",
+    "choices": [{
+        "choiceId": "1_1",
+        "formId": "1_1",
+        "text": "A",
+        "correct": "1"
+    }]
+}

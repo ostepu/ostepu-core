@@ -36,27 +36,28 @@ select SQL_CACHE
     S.S_date as S_date2,
     SS.S_id_selected as S_selected2,
     S.S_accepted as S_accepted2,
-    S.S_flag as S_flag2, 
+    S.S_flag as S_flag2,
     S.S_leaderId as S_leaderId2,
     S.S_hideFile as S_hideFile2,
     S.E_id as E_id2,
     S.ES_id as ES_id2
 from
-    Marking M
+    `Group` G
         join
-    Submission S ON ('",sub,"'<>'nosubmission' and M.S_id = S.S_id)
+    `Group` G2 ON (G.U_id_leader = '",userid,"'
+        and G.U_id_member = G2.U_id_member
+        and G.ES_id = '",esid,"'
+        and G2.ES_id = G.ES_id)
+        join
+    Submission S ON (S.ES_id = '",esid,"' and G2.U_id_leader = S.U_id)
+        join
+    Marking M ON (S.S_id = M.S_id)
         left join
     SelectedSubmission SS ON (S.S_id = SS.S_id_selected)
-        join
-    `Group` G ON (G.ES_id = S.ES_id)
         left join
     File F ON (F.F_id = M.F_id_file)
-        left join 
-    File F2 ON (F2.F_id = S.F_id_file)
-where
-    M.ES_id = '",esid,"'
-        and G.U_id_leader = '",userid,"'
-        and G.U_id_member = S.U_id;");
+        left join
+    File F2 ON (F2.F_id = S.F_id_file) order by M_id;");
 PREPARE stmt1 FROM @s;
 EXECUTE stmt1;
 DEALLOCATE PREPARE stmt1;

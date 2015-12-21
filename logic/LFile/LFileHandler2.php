@@ -6,7 +6,7 @@
  * @author Till Uhlig
  * @date 2014
  */
- 
+
  include_once ( dirname(__FILE__). '/../../Assistants/Structures.php' );
  include_once ( dirname(__FILE__). '/../../Assistants/Request.php' );
 
@@ -35,7 +35,7 @@ class LFileHandler2
         $displayName = $file->getDisplayName();
         //request to filesystem to save the file
         if ($file->getAddress() == null || $file->getHash() == null){
-            $answer = Request::routeRequest( 
+            $answer = Request::routeRequest(
                                             'POST',
                                             '/file'.$path,
                                             $header,
@@ -56,19 +56,20 @@ class LFileHandler2
             if ($file->getFileId() != null){
                 return $file;
             }
-            
+
             //request to database file table to check if the file already exists
-            $answer = Request::routeRequest( 
+            /*$answer = Request::routeRequest(
                                             'GET',
                                            '/file'.$path.'/hash/'.$file->getHash(),
                                             $header,
                                             '',
                                             $database,
                                             'file'
-                                            );
-                                     
+                                            );*/
+            $answer = array('status'=>404); // überspringt das Abfragen über den Hash der Datei
+
             if ($answer['status'] < 200 || $answer['status'] > 299 || !isset($answer['content'])) { //if file does not exists, add it to db file table
-                $answer = Request::routeRequest( 
+                $answer = Request::routeRequest(
                                                 'POST',
                                                 '/file'.$path,
                                                 $header,
@@ -115,7 +116,7 @@ class LFileHandler2
     {
         if ($file !== null && $file!==array()){
             // requests to file-table of DB
-            $answer = Request::routeRequest( 
+            $answer = Request::routeRequest(
                                             'DELETE',
                                             '/file/'.$file->getFileId(),
                                             $header,
@@ -123,26 +124,30 @@ class LFileHandler2
                                             $database,
                                             'file'
                                             );
-                                                
+
             // even if file has been deleted from db file table delete it from fs
             if ($answer['status'] >= 200 && $answer['status'] <= 299 && isset($answer['content']) && !empty($answer['content'])) {
                 $file = File::decodeFile($answer['content']);
-            
-                // requests to filesystem
-                $answer = Request::routeRequest( 
-                                                'DELETE',
-                                                '/'.$file->getAddress(),
-                                                $header,
-                                                '',
-                                                $filesystem,
-                                                'file'
-                                                );
-                                                
-                if ($answer['status'] >= 200 && $answer['status'] <= 299) {
-                    return File::decodeFile($answer['content']);
-                }
-                else
+
+                if (is_object($file) && $file->getAddress() !== null){
+                    // requests to filesystem
+                    $answer = Request::routeRequest(
+                                                    'DELETE',
+                                                    '/'.$file->getAddress(),
+                                                    $header,
+                                                    '',
+                                                    $filesystem,
+                                                    'file'
+                                                    );
+
+                    if ($answer['status'] >= 200 && $answer['status'] <= 299) {
+                        return File::decodeFile($answer['content']);
+                    }
+                    else
+                        return null;
+                } else {
                     return null;
+                }
             }
             else
                 return $file;

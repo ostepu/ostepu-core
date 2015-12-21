@@ -7,12 +7,12 @@
  * @author Till Uhlig
  * @date 2014
  */
- 
+
  //require_once dirname(__FILE__) . '/Einstellungen.php';
- 
+
 class Design
 {
-    
+
     /**
      * Erzeugt eine Tabellenzeile (für erstelleBlock())
      * Es wird von 3 Spalten ausgegangen (Bei 2 Eingabespalten wird auf die letzte zusammengefasst,
@@ -28,17 +28,17 @@ class Design
         $console = array_shift($args);
         $text = '';
         $result = '';
-        
+
         if (count($args)%2!=0)
             $args[] = '';
-        
+
         if (!$console){
             $addToLast = '';
             if (count($args)<=4)
                 $addToLast = ' colspan="2" ';
             if (count($args)<=2)
                 $addToLast = ' colspan="3" ';
-            
+
             $result = '<tr>';
             foreach($args as $pos => $data){
                 if ($pos%2===0){
@@ -56,12 +56,12 @@ class Design
                     $result.=" {$text}";
                 }
             }
-            $result.="\n";         
+            $result.="\n";
         }
-        
+
         return trim($result,' ');
     }
-    
+
     /**
      * Erzeugt eine Tabellenzeile (für erstelleBlock())
      *
@@ -75,12 +75,12 @@ class Design
         $console = array_shift($args);
         $text = '';
         $result = '';
-        
+
         if (count($args)%2!=0)
             $args[] = '';
-        
+
         if (!$console){
-            
+
             $result = '<tr>';
             foreach($args as $pos => $data){
                 if ($pos%2===0){
@@ -98,12 +98,12 @@ class Design
                     $result.=" {$text}";
                 }
             }
-            $result.="\n";         
+            $result.="\n";
         }
-        
+
         return trim($result,' ');
     }
-    
+
     /**
      * Erzeugt einen Block (fasst Elemente zu einem Block zusammen)
      *
@@ -129,7 +129,7 @@ class Design
         }
         return $result;
     }
-    
+
     /**
      * Erzeugt eine Beschreibung
      *
@@ -146,7 +146,7 @@ class Design
         }
         return $result;
     }
-    
+
     /**
      * Erzeugt eine Eingabezeile
      *
@@ -159,24 +159,24 @@ class Design
      */
     public static function erstelleEingabezeile($console, &$variable, $variablenName, $default, $save=false)
     {
-        if ($save == true && $variable == null){
+        if ($save == true && $variable === null){
             $variable = Einstellungen::Get($variablenName, $default);
-        } 
-        
-        if ($save == true && $variable != null)
+        }
+
+        if ($save == true && $variable !== null)
             Einstellungen::Set($variablenName, $variable);
-            
-        if ($variable == null)
+
+        if ($variable === null)
             $variable = $default;
-        
+
         $result = '';
-        
+
         if (!$console)
-            $result = "<input style='width:100%' type='text' name='{$variablenName}' value='".($variable != null? $variable : $default)."'>";
-        
+            $result = "<input style='width:100%' type='text' name='{$variablenName}' value='".(isset($variable) ? $variable : $default)."'>";
+
         return $result;
     }
-    
+
     /**
      * Erzeugt einen Eingabebereich
      *
@@ -191,22 +191,22 @@ class Design
     {
         if ($save == true && $variable == null){
             $variable = Einstellungen::Get($variablenName, $default);
-        } 
-        
+        }
+
         if ($save == true && $variable != null)
             Einstellungen::Set($variablenName, $variable);
-            
+
         if ($variable == null)
             $variable = $default;
-        
+
         $result = '';
- 
+
         if (!$console)
-            $result = self::zeichneEingabebereich($console, $variablenName, ($variable != null? $variable : $default)); 
+            $result = self::zeichneEingabebereich($console, $variablenName, ($variable != null? $variable : $default));
 
         return $result;
     }
-    
+
     /**
      * Erzeugt einen Eingabebereich
      *
@@ -225,7 +225,7 @@ class Design
         }
         return $result;
     }
-    
+
     /**
      * Erzeugt eine verstecke Eingabezeile
      *
@@ -238,24 +238,25 @@ class Design
      */
     public static function erstelleVersteckteEingabezeile($console, &$variable, $variablenName, $default, $save=false)
     {
-        if ($save == true && $variable == null){
+        if ($save == true && $variable === null){
             $variable = Einstellungen::Get($variablenName, $default);
-        } 
-        
-        if ($save == true && $variable != null)
+        }
+
+        if ($save == true && $variable !== null){
             Einstellungen::Set($variablenName, $variable);
-            
-        if ($variable == null)
+        }
+
+        if ($variable === null)
             $variable = $default;
-        
+
         $result = '';
-        
+
         if (!$console)
-            $result = "<input type='hidden' name='{$variablenName}' value='".($variable != null ? $variable : $default)."'>";
-        
+            $result = "<input type='hidden' name='{$variablenName}' value='".(isset($variable) ? $variable : $default)."'>";
+
         return $result;
     }
-    
+
     /**
      * Erzeugt eine Gruppen-Auswahl
      *
@@ -270,11 +271,11 @@ class Design
     {
         if ($save == true && $variable == null){
            $variable = Einstellungen::Get($variablenName, $default);
-        } 
-        
+        }
+
         if ($save == true && $variable != null)
             Einstellungen::Set($variablenName, $variable);
-            
+
         if ($variable == null)
             $variable = $default;
 
@@ -282,7 +283,7 @@ class Design
         $result = "<input style='width:100%' type='radio' name='{$variablenName}' value='".$value."'".(($variable==$value && $variable != null) ? "checked" : ($default === null ? '' : ($default===$value ? "checked" : '')) ).">";
         return $result;
     }
-    
+
     /**
      * Erzeugt eine Auswahlbox
      *
@@ -297,20 +298,20 @@ class Design
     {
         if ($save == true && $variable == null){
            $variable = Einstellungen::Get($variablenName, $default);
-        } 
-        
+        }
+
         if ($save == true && $variable != null)
             Einstellungen::Set($variablenName, $variable);
-            
+
         if ($variable == null)
             $variable = $default;
 
         $empty = '_';
         $result = Design::erstelleVersteckteEingabezeile($console, $empty , $variablenName, $default, $save);
-        $result .= "<input style='width:100%' type='checkbox' name='{$variablenName}' value='".$value."'".(($variable==$value && $variable != null) ? "checked" : ($default === null ? '' : ($default===$value ? "checked" : '')) ).">";
+        $result .= "<input style='' type='checkbox' id='{$variablenName}' name='{$variablenName}' value='".$value."'".(($variable==$value && $variable != null) ? "checked" : ($default === null ? '' : ($default===$value ? "checked" : '')) ).">";
         return $result;
     }
-    
+
     /**
      * Erzeugt eine Passwortzeile
      *
@@ -323,11 +324,21 @@ class Design
      */
     public static function erstellePasswortzeile($console, $variable, $variablenName, $default, $save=false)
     {
+        if ($save == true && $variable === null){
+            $variable = Einstellungen::Get($variablenName, $default);
+        }
+
+        if ($save == true && $variable !== null)
+            Einstellungen::Set($variablenName, $variable);
+
+        if ($variable === null)
+            $variable = $default;
+
         $result = '';
-        
+
         if (!$console)
             $result = "<input style='width:100%' type='password' name='{$variablenName}' value='".(isset($variable) ? $variable : $default)."'>";
-        
+
         return $result;
     }
 
@@ -338,28 +349,30 @@ class Design
      * @param bool $console true = Konsolendarstellung, false = HTML
      * @param bool $fail true = Fehler, false = sonst
      * @param int $errno Die Fehlernummer
-     * @param string $error Der Fehlertext 
+     * @param string $error Der Fehlertext
      * @return string Der Text der Installationszeile
      */
-    public static function erstelleInstallationszeile($console, $fail, $errno, $error)
+    public static function erstelleInstallationszeile($console, $fail, $errno, $error, $descText = null)
     {
+        $descText = (isset($descText) ? $descText : Language::Get('main','installation'));
+
         if (!$console){
             if ($fail === true){
                 //$installFail = true;
-                return Design::erstelleZeile($console, Language::Get('main','installation'), 'e', '', 'v', "<div align ='center'><font color='red'>".Language::Get('main','fail'). (($errno!=null && $errno!='') ? " ({$errno})" : '') ."<br> {$error}</font></align>", 'v');
+                return Design::erstelleZeile($console, $descText, 'e', '', 'v', "<div align ='center'><font color='red'>".Language::Get('main','fail'). (($errno!=null && $errno!='') ? " ({$errno})" : '') ."<br> {$error}</font></align>", 'v');
             } else{
-                return Design::erstelleZeile($console, Language::Get('main','installation'), 'e', '', 'v', '<div align ="center">'.Language::Get('main','ok').'</align>', 'v');
+                return Design::erstelleZeile($console, $descText, 'e', '', 'v', '<div align ="center">'.Language::Get('main','ok').'</align>', 'v');
             }
         } else {
             if ($fail === true){
                 //$installFail = true;
-                return Design::erstelleZeile($console, Language::Get('main','installation'), 'e', '', 'v', Language::Get('main','fail'). (($errno!=null && $errno!='') ? " ({$errno})" : '') ." {$error}", 'v');
+                return Design::erstelleZeile($console, $descText, 'e', '', 'v', Language::Get('main','fail'). (($errno!=null && $errno!='') ? " ({$errno})" : '') ." {$error}", 'v');
             } else{
-                return Design::erstelleZeile($console, Language::Get('main','installation'), 'e', '', 'v', Language::Get('main','ok'), 'v');
+                return Design::erstelleZeile($console, $descText, 'e', '', 'v', Language::Get('main','ok'), 'v');
             }
         }
     }
-    
+
     /**
      * Erzeugt einen Forumular Auslöser
      *
@@ -373,7 +386,7 @@ class Design
             $text = Language::Get('main','install');
         return "<input type='submit' name='{$var}' value=' {$text} '>";
     }
-    
+
     /**
      * Erzeugt einen Auslöser
      *
@@ -388,7 +401,7 @@ class Design
             $text = Language::Get('main','install');
         return "<button class='text-button info-color bold' name='{$varName}' value='{$value}'>{$text}</button>";
     }
-    
+
     /**
      * Erzeugt einen grafischen Auslöser
      *
@@ -402,7 +415,7 @@ class Design
     {
         return "<input type='image' src='{$bild}' name='{$var}' style='".($width!==null ? 'width:'.$width.'px;': '' ).($height!==null ? 'height:'.$height.'px;': '' )."'>";
     }
-    
+
     /**
      * Converts bytes into a readable file size.
      *

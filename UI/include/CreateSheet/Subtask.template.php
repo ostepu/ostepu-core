@@ -5,7 +5,7 @@
 header('Content-Type: text/html; charset=utf-8');
 //include_once dirname(__FILE__) . '/../../../Assistants/Structures.php';
 include_once dirname(__FILE__) . '/../../../Assistants/Request.php';
-include dirname(__FILE__) . '/../Config.php';
+if (file_exists(dirname(__FILE__) . '/../Config.php')){ include dirname(__FILE__) . '/../Config.php';}
 include_once dirname(__FILE__) . '/../Helpers.php';
 ?>
 

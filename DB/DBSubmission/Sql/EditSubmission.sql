@@ -8,7 +8,7 @@
  * @result -
  */
 ?>
- 
+
 UPDATE Submission
 SET <?php echo $values; ?>
 WHERE S_id = '<?php echo $suid; ?>'

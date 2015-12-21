@@ -7,5 +7,5 @@
  * @result -
  */
 ?>
- 
+
 INSERT INTO Marking SET <?php echo $values; ?>

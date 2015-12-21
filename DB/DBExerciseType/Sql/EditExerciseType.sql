@@ -8,7 +8,7 @@
  * @result -
  */
 ?>
- 
+
 UPDATE ExerciseType
 SET <?php echo $values; ?>
 WHERE ET_id = '<?php echo $etid; ?>'

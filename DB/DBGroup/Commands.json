@@ -4,6 +4,7 @@
         "outputType": "Group",
         "inputType": "Group",
         "method": "PUT",
+        "placeholder":[{"name":"userid","regex":"%^([0-9_]+)$%"},{"name":"esid","regex":"%^([0-9_]+)$%"}],
         "path": "/group/user/:userid/exercisesheet/:esid"
     },
     {
@@ -11,6 +12,7 @@
         "outputType": "Group",
         "inputType": "",
         "method": "DELETE",
+        "placeholder":[{"name":"userid","regex":"%^([0-9_]+)$%"},{"name":"esid","regex":"%^([0-9_]+)$%"}],
         "path": "/group/user/:userid/exercisesheet/:esid"
     },
     {
@@ -26,6 +28,7 @@
         "outputType": "Group",
         "inputType": "",
         "method": "GET",
+        "placeholder":[{"name":"userid","regex":"%^([0-9_]+)$%"}],
         "path": "/group/user/:userid"
     },
     {
@@ -43,6 +46,7 @@
         "outputType": "Group",
         "inputType": "",
         "method": "GET",
+        "placeholder":[{"name":"userid","regex":"%^([0-9_]+)$%"},{"name":"esid","regex":"%^([0-9_]+)$%"}],
         "path": "/group/user/:userid/exercisesheet/:esid"
     },
     {
@@ -51,6 +55,7 @@
         "outputType": "Group",
         "inputType": "",
         "method": "GET",
+        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
         "path": "/group/exercisesheet/:esid"
     },
     {
@@ -59,6 +64,7 @@
         "outputType": "Group",
         "inputType": "",
         "method": "GET",
+        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],
         "path": "/group/course/:courseid"
     },
     {

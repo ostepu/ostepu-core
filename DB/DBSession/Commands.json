@@ -4,6 +4,7 @@
         "outputType": "Session",
         "inputType": "Session",
         "method": "PUT",
+        "placeholder":[{"name":"seid","regex":"%^[0-9A-Fa-f]{32}$%"}],
         "path": "/session(/session)/:seid"
     },
     {
@@ -11,6 +12,7 @@
         "outputType": "Session",
         "inputType": "",
         "method": "DELETE",
+        "placeholder":[{"name":"seid","regex":"%^[0-9A-Fa-f]{32}$%"}],
         "path": "/session(/session)/:seid"
     },
     {
@@ -18,6 +20,7 @@
         "outputType": "Session",
         "inputType": "Session",
         "method": "PUT",
+        "placeholder":[{"name":"userid","regex":"%^[a-zA-Z0-9äöüÄÖÜß]+$%"}],
         "path": "/session/user/:userid"
     },
     {
@@ -25,6 +28,7 @@
         "outputType": "Session",
         "inputType": "",
         "method": "DELETE",
+        "placeholder":[{"name":"userid","regex":"%^[a-zA-Z0-9äöüÄÖÜß]+$%"}],
         "path": "/session/user/:userid"
     },
     {
@@ -49,6 +53,7 @@
         "outputType": "Session",
         "inputType": "",
         "method": "GET",
+        "placeholder":[{"name":"userid","regex":"%^[a-zA-Z0-9äöüÄÖÜß]+$%"}],
         "path": "/session/user/:userid"
     },
     {
@@ -58,6 +63,7 @@
         "outputType": "Session",
         "inputType": "",
         "method": "GET",
+        "placeholder":[{"name":"seid","regex":"%^([0-9_]+)$%"}],
         "path": "/session(/session)/:seid"
     },
     {

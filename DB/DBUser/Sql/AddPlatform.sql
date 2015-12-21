@@ -47,7 +47,7 @@ SET NEW.U_title = '';
 SET NEW.U_password = '';
 SET NEW.U_failed_logins = ' ';
 END IF;
-end; 
+end;
 
 DROP TRIGGER IF EXISTS `User_AUPD`;
 CREATE TRIGGER `User_AUPD` AFTER UPDATE ON `User` FOR EACH ROW
@@ -59,7 +59,7 @@ begin
 If NEW.U_flag != 1
 then delete from `Session` where NEW.U_id = U_id;
 end if;
-end; 
+end;
 
 <?php if (is_dir($sqlPath.'/procedures')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/procedures/'.$inp);}},scandir($sqlPath.'/procedures'),array_pad(array(),count(scandir($sqlPath.'/procedures')),$sqlPath));?>
 <?php if (is_dir($sqlPath.'/migrations')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/migrations/'.$inp);}},scandir($sqlPath.'/migrations'),array_pad(array(),count(scandir($sqlPath.'/migrations')),$sqlPath));?>

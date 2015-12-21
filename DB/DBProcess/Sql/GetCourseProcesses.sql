@@ -4,13 +4,13 @@
  * gets all processes of a course from %Process table
  * @author Till Uhlig
  * @param int \$courseid an %Course identifier
- * @result 
+ * @result
  * - PRO, the process data
  * - CO, the component data
  */
 ?>
- 
-select 
+
+select
     concat('<?php echo $courseid; ?>','_',PRO.PRO_id) as PRO_id,
     PRO.E_id,
     PRO.E_id as E_id2,

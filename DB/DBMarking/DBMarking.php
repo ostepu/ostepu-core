@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -60,9 +60,9 @@ class DBMarking
      */
     public function deleteMarking( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/DeleteMarking.sql',$params,201,'Model::isCreated',array(new Marking()),'Model::isProblem',array(new Marking()));  
+        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/DeleteMarking.sql',$params,201,'Model::isCreated',array(new Marking()),'Model::isProblem',array(new Marking()));
     }
-    
+
     /**
      * Deletes markings.
      *
@@ -73,7 +73,7 @@ class DBMarking
      */
     public function deleteSheetMarkings( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/DeleteSheetMarkings.sql',$params,201,'Model::isCreated',array(new Marking()),'Model::isProblem',array(new Marking()));  
+        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/DeleteSheetMarkings.sql',$params,201,'Model::isCreated',array(new Marking()),'Model::isProblem',array(new Marking()));
     }
 
     /**
@@ -110,7 +110,7 @@ class DBMarking
             }
             return $result;
         };
-        
+
         $params = DBJson::mysql_real_escape_string( $params );
         return $this->_component->call($linkName, $params, '', 200, $positive, array(), 'Model::isProblem', array(), 'Query');
     }
@@ -119,7 +119,7 @@ class DBMarking
     {
         return $this->get($callName,$callName,$params);
     }
-    
+
     /**
      * Removes the component from the platform
      *
@@ -130,7 +130,7 @@ class DBMarking
     {
         return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
-    
+
     /**
      * Adds the component to the platform
      *
@@ -141,7 +141,7 @@ class DBMarking
     {
         return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
-    
+
     public function getSamplesInfo( $callName, $input, $params = array() )
     {
         $positive = function($input) {
@@ -157,16 +157,16 @@ class DBMarking
             }
             return $result;
         };
-        
+
         $params = DBJson::mysql_real_escape_string( $params );
         return $this->_component->call($callName, $params, '', 200, $positive,  array(), 'Model::isProblem', array(), 'Query');
     }
-    
+
     public function postSamples( $callName, $input, $params = array() )
-    {   
+    {
         set_time_limit(0);
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));  
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));
     }
 }
 
- 
+

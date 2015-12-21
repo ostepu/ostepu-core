@@ -4,6 +4,7 @@
         "outputType": "ApprovalCondition",
         "inputType": "ApprovalCondition",
         "method": "PUT",
+        "placeholder":[{"name":"apid","regex":"%^([0-9_]+)$%"}],
         "path": "/approvalcondition(/approvalcondition)/:apid"
     },
     {
@@ -11,6 +12,7 @@
         "outputType": "ApprovalCondition",
         "inputType": "",
         "method": "DELETE",
+        "placeholder":[{"name":"apid","regex":"%^([0-9_]+)$%"}],
         "path": "/approvalcondition(/approvalcondition)/:apid"
     },
     {
@@ -27,6 +29,7 @@
         "outputType": "ApprovalCondition",
         "inputType": "",
         "method": "GET",
+        "placeholder":[{"name":"apid","regex":"%^([0-9_]+)$%"}],
         "path": "/approvalcondition(/approvalcondition)/:apid"
     },
     {
@@ -43,6 +46,7 @@
         "outputType": "ApprovalCondition",
         "inputType": "",
         "method": "GET",
+        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],
         "path": "/approvalcondition/course/:courseid"
     },
     {

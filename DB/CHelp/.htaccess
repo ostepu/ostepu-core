@@ -1,6 +1,6 @@
 RewriteEngine On
 RewriteCond %{HTTP_HOST} !^localhost$
 RewriteCond %{REQUEST_METHOD} !^GET$ [OR]
-RewriteCond %{THE_REQUEST} !(.)*\/CHelp\/(help)\/(([0-9,a-f])+\/)*(\.(.+))?
+RewriteCond %{THE_REQUEST} !(.)*\/CHelp\/(help(\/.)+(\.(.+))?|status)
 RewriteRule ^ - [F]
 RewriteRule ^ index.php [QSA,L]
