@@ -284,7 +284,12 @@
                 {"path": "/help/:language/page/student/student/navigationD.png"},
                 {"path": "/help/:language/page/student/student/navigationE.png"},
                 {"path": "/help/:language/page/student/student/navigationF.png"},
-                {"path": "/help/:language/page/student/student/navigationG.png"}
+                {"path": "/help/:language/page/student/student/navigationG.png"},
+                {},
+                {"path": "/help/:language/page/common/courseSelect/courseSelect.md"},
+                {"path": "/help/:language/page/common/courseSelect/courseSelectA.png"},
+                {"path": "/help/:language/page/common/courseSelect/courseSelectB.png"},
+                {"path": "/help/:language/page/common/courseSelect/courseSelectC.png"}
             ]
         }
     ]
