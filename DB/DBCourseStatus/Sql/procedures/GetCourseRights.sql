@@ -11,6 +11,7 @@ select SQL_CACHE
     U.U_email,
     U.U_title,
     U.U_flag,
+    U.U_lang,
     U.U_studentNumber,
     U.U_isSuperAdmin,
     U.U_comment,
