@@ -12,9 +12,7 @@
 
 select
     concat('<?php echo $courseid; ?>','_',S.SET_id) as SET_id,
-    S.SET_name,
-    S.SET_state,
-    S.SET_type
+    S.*
 from
     `Setting<?php echo $pre; ?>_<?php echo $courseid; ?>` S
 WHERE SET_name = '<?php echo $setname; ?>'
