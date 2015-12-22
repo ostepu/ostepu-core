@@ -39,6 +39,7 @@
       {"conf":"DB/DBSubmission/Component.json"},
       {"conf":"DB/DBTransaction/Component.json"},
       {"conf":"DB/DBUser/Component.json"},
+      {"conf":"DB/DBNotification/Component.json"},
       {"conf":"forms/DBFormResult.json"},
       {"conf":"forms/DBProcessList.json"},
       {"conf":"forms/DBProcessAttachment.json"},
