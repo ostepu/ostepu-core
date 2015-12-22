@@ -104,7 +104,7 @@ if (isset($RevokeRightsNotificationElements)) {
             <div class="left">
             <?php foreach(CourseStatus::getStatusDefinition() as $statusType){
                 $count = (isset($rights[$statusType]) ? $rights[$statusType] : 0); ?>
-                <label><?php echo $statusType; ?>: <?php echo $count; ?></label><br>                     
+                <label><?php echo Language::Get('main',$statusType, $langTemplate); ?>: <?php echo $count; ?></label><br>                     
             <?php } ?>
             </div>
             

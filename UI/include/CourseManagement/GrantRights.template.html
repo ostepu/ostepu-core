@@ -103,7 +103,7 @@ if (isset($GrantRightsNotificationElements)) {
             <div class="left">
             <?php foreach(CourseStatus::getStatusDefinition() as $statusType){
                 $count = (isset($rights[$statusType]) ? $rights[$statusType] : 0); ?>
-                <label><?php echo $statusType; ?>: <?php echo $count; ?></label><br>                     
+                <label><?php echo Language::Get('main',$statusType, $langTemplate); ?>: <?php echo $count; ?></label><br>                     
             <?php } ?>
             </div>
             
@@ -130,9 +130,9 @@ if (isset($GrantRightsNotificationElements)) {
                 <input type="radio" name="Rights" id="grantTutorRights" value="1"/>
                 <label for="grantTutorRights"> <?php echo Language::Get('main','tutor', $langTemplate); ?></label>
                 <input type="radio" name="Rights" id="grantLecturerRights" value="2"/>
-                <label for="grantLecturerRights"> <?php echo Language::Get('main','dozent', $langTemplate); ?></label>
+                <label for="grantLecturerRights"> <?php echo Language::Get('main','lecturer', $langTemplate); ?></label>
                 <input type="radio" name="Rights" id="grantAdminRights" value="3"/>
-                <label for="grantAdminRights"> <?php echo Language::Get('main','admin', $langTemplate); ?></label>
+                <label for="grantAdminRights"> <?php echo Language::Get('main','administrator', $langTemplate); ?></label>
             </div>
         </div>
     </div> <!-- end: content-body -->
