@@ -157,7 +157,7 @@ class node extends Object implements JsonSerializable
                                       )
     {
         if ( $decode && 
-             $data == null )
+             $data === null )
             $data = '{}';
 
         if ( $decode )

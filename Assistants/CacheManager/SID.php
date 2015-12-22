@@ -25,11 +25,11 @@ class SID
         if (isset($header['Cachesid'])){
             $id = intval($header['Cachesid']);
            
-            if (self::$currentBaseSID!==$id)
+            if (self::$currentBaseSID !== $id)
                 return $id;
         }
             
-        if ($id===self::$currentBaseSID) self::$currentBaseSID = self::$maxSid+1;
+        if ($id === self::$currentBaseSID) self::$currentBaseSID = self::$maxSid+1;
         self::$maxSid=self::$maxSid+1;
         return self::$maxSid;
     }
