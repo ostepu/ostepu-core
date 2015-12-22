@@ -131,8 +131,8 @@ if (isset($CourseSettingsNotificationElements)) {
 
                             echo "<div class='' style='display:block;margin-bottom: 0px'>";
                             echo '<label class="form-field label bold" for="">';
-                            echo Language::Get($setting['name'],'title', $langTemplateSetting);
                             print MakeInfoButton('setting/'.$setting['name'],$setting['name'].'Desc.md');
+                            echo Language::Get($setting['name'],'title', $langTemplateSetting);
                             echo "</label>";
                             if ($setting['type']==='TIMESTAMP'){
                                 $data = ($setting['state']!=0 ? $setting['state'] : null);
