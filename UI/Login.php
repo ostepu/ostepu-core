@@ -22,14 +22,20 @@ $langTemplate='Login_Controller';Language::loadLanguageFile('de', $langTemplate,
 $auth = new Authentication();
 Authentication::preventSessionFix();
 
-$postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+$postValidation = Validation::open($_POST, array('preRules'=>array('')))
+  ->addSet('back',
+           array('valid_url_query',
+                 'set_default'=>null,
+                 'on_error'=>array('type'=>'error',
+                                   'text'=>Language::Get('main',Language::Get('main','invalidBackURL', $langTemplate), $langTemplate))))
   ->addSet('action',
-           array('set_default'=>'noAction',
+           array('sanitize',
+                 'set_default'=>'noAction',
                  'satisfy_in_list'=>array('noAction', 'login'),
                  'on_error'=>array('type'=>'error',
                                    'text'=>Language::Get('main','invalidAction', $langTemplate))));
 
-$getValidation = Validation::open($_GET, array('preRules'=>array('sanitize')))
+$getValidation = Validation::open($_GET, array('preRules'=>array('')))
   ->addSet('back',
            array('valid_url_query',
                  'set_default'=>null,
@@ -63,17 +69,17 @@ if ($postValidation->isValid() && $getValidation->isValid() && $postResults['act
 
         if ($postLoginValidation->isValid()){
             // if a hidden Post named back and the php file exists set backurl
-            if (isset($getResults['back']) && file_exists(parse_url($getResults['back'], PHP_URL_PATH))) {
+            if (isset($postResults['back']) && file_exists(parse_url($postResults['back'], PHP_URL_PATH))) {
                 /// --- ///
             } else {
-                $getResults['back'] = 'index.php';
+                $postResults['back'] = 'index.php';
             }
 
             // log in user and return result
             $signed = $auth->loginUser($foundValues['username'], $foundValues['password']);
 
             if ($signed===true) {
-                header('Location: ' . $getResults['back']);
+                header('Location: ' . $postResults['back']);
                 exit();
             } else {
                 if ($signed!==false){
