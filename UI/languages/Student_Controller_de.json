@@ -6,6 +6,7 @@
         "invalidDeleteSubmission": "Ungültiger Löschversuch!",
         "errorDeleteSubmission": "Beim Löschen ist ein Fehler aufgetreten!",
         "changeCourse": "Veranstaltung wechseln",
-        "invalidSheetId": "Ungültige Übungsserie!"
+        "invalidSheetId": "Ungültige Übungsserie!",
+        "leaveStudent": "Studentenrolle verlassen"
     }
 }

@@ -28,6 +28,7 @@
         "expiredExercisePerion": "Der Übungszeitraum ist am $endDate abgelaufen!",
         "noStartedExercisePeriod": "Der Übungszeitraum beginnt am $startDate !",
         "noExercisePeriod": "Kein Übungszeitraum gefunden!",
-        "invalidAction": "Die Aktion konnte nicht ausgeführt werden."
+        "invalidAction": "Die Aktion konnte nicht ausgeführt werden.",
+        "leaveStudent": "Studentenrolle verlassen"
     }
 }

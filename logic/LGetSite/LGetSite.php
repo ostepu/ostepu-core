@@ -53,6 +53,7 @@ class LGetSite
     private $_getSubmission = array();
     private $_getCourse = array();
     private $_getInvitation = array();
+    private $_getNotification = array();
 
     private $flag = 0;
 
@@ -85,6 +86,7 @@ class LGetSite
         $this->_getSubmission = CConfig::getLink($conf->getLinks(),"getSubmission");
         $this->_getCourse = CConfig::getLink($conf->getLinks(),"getCourse");
         $this->_getInvitation = CConfig::getLink($conf->getLinks(),"getInvitation");
+        $this->_getNotification = CConfig::getLink($conf->getLinks(),"getNotification");
 
         $this->lURL = $this->query->getAddress();
 
@@ -396,6 +398,7 @@ class LGetSite
 
         $response['tutorAssignments'][] = $newTutorAssignment;
         $response['namesOfExercises'] = $namesOfExercises;
+        $response['exerciseSheets'] = $exerciseSheets;
 
         $tempGroups = array();
         foreach($emptyGroups as $exercise => $groups){
@@ -1821,6 +1824,13 @@ class LGetSite
         $answer = Request::custom('GET', $URL, array(), '');
         $allUsers = json_decode($answer['content'], true);
 
+        // returns all notifications of the given course
+        $URL = $this->_getNotification->getAddress() . '/notification/course/'.$courseid;
+        $answer = Request::custom('GET', $URL, array(), '');
+        $response['notifications'] = json_decode($answer['content'], true);
+        unset($answer);
+        unset($URL);
+
         // adds an 'inCourse' flag to the exerciseType if there is
         // an approvalCondition with the same id in the same course
 
@@ -1877,6 +1887,12 @@ class LGetSite
         $URL = $this->_getExerciseType->getAddress() . '/exercisetype';
         $answer = Request::custom('GET', $URL, array(), '');
         $allexerciseTypes = json_decode($answer['content'], true);
+        
+        $URL = "{$this->lURL}/exercisesheet/course/{$courseid}";
+        $answer = Request::custom('GET', $URL, array(), '');
+        $response['exerciseSheets'] = json_decode($answer['content'], true);
+        unset($answer);
+        unset($URL);
 
         if(!empty($response['exerciseTypes'])) {
             foreach ($response['exerciseTypes'] as &$exerciseType) {

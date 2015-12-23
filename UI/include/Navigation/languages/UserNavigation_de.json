@@ -1,8 +1,7 @@
 {
     "main": {
-        "leaveStudent": "Studentenrolle verlassen",
-        "selectUser": "Student:",
-        "selectSheet": "&Uuml;bungsserie:",
+        "selectUser": "Student",
+        "selectSheet": "&Uuml;bungsserie",
         "privileged": "Erweitert"
     }
 }

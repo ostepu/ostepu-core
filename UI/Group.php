@@ -550,6 +550,10 @@ $menu = MakeNavigationElement($user_course_data,
 
 $userNavigation = null;
 if (isset($_SESSION['selectedUser'])){
+    $courseStatus = null;
+    if (isset($globalUserData['courses'][0]) && isset($globalUserData['courses'][0]['status']))
+        $courseStatus = $globalUserData['courses'][0]['status'];
+    
     $URI = $serverURI . "/DB/DBUser/user/course/{$cid}/status/0";
     $courseUser = http_get($URI, true);
     $courseUser = User::decodeUser($courseUser);
@@ -580,8 +584,16 @@ if (isset($_SESSION['selectedUser'])){
         }
     }
 
-    $userNavigation = MakeUserNavigationElement($globalUserData,$courseUser,$privileged,
-                                                PRIVILEGE_LEVEL::LECTURER,$sid,$courseSheets);
+    $userNavigation = MakeUserNavigationElement($globalUserData,
+                                                $courseUser,
+                                                $privileged,
+                                                PRIVILEGE_LEVEL::LECTURER,
+                                                $sid,
+                                                $courseSheets,
+                                                false,
+                                                false,
+                                                array('page/admin/studentMode','studentMode.md'),
+                                                array(array('title'=>Language::Get('main','leaveStudent', $langTemplate),'target'=>PRIVILEGE_LEVEL::$SITES[$courseStatus].'?cid='.$cid)));
 }
 
 // construct a new header

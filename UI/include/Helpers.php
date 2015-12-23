@@ -290,7 +290,9 @@ function MakeUserNavigationElement($user,
                                $sid = null,
                                $courseSheets = null,
                                $switchDisabled = false,
-                               $forIndex = false)
+                               $forIndex = false,
+                               $helpPath = null,
+                               $buttons = array())
 {
     $courses = isset($user['courses']) ? $user['courses'] : null;
 
@@ -330,7 +332,9 @@ function MakeUserNavigationElement($user,
                                    'sid' => $sid,
                                    'courseUser' => $courseUser,
                                    'courseSheets' => $courseSheets,
-                                   'privileged' => $privileged));
+                                   'privileged' => $privileged,
+                                   'helpPath' => $helpPath,
+                                   'buttons' => $buttons));
 
     return $navigationElement;
 }

@@ -10,6 +10,7 @@
         "invalidSheetID": "Ungültige Übungsserie!",
         "invalidUpdateSelectedSubmission": "Ungültige Auswahl!",
         "errorActionSortUsers": "Ungültige Sortieraktion!",
-        "invalidUserID": "Ungültige Nutzerkennung!"
+        "invalidUserID": "Ungültige Nutzerkennung!",
+        "leaveStudent": "Studentenrolle verlassen"
     }
 }

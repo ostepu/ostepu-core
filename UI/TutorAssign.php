@@ -24,17 +24,26 @@ $postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
            ['satisfy_in_list'=>['lastName','firstName','userName'],
             'set_default'=>'lastName',
             'on_error'=>['type'=>'error',
-                         'text'=>'invalidSortUsers']])
+                         'text'=>Language::Get('main','invalidSortUsers', $langTemplate)]])
   ->addSet('actionSortUsers',
            ['set_default'=>'noAction',
             'satisfy_in_list'=>['noAction', 'sort'],
             'on_error'=>['type'=>'error',
-                         'text'=>'invalidActionSortUser']]);
-$valResults = $postValidation->validate();
+                         'text'=>Language::Get('main','invalidActionSortUser', $langTemplate)]])
+  ->addSet('selectedSheet',
+           ['set_default'=>null,
+            'valid_identifier',
+            'on_error'=>['type'=>'error',
+                         'text'=>Language::Get('main','invalidSelectedSheet', $langTemplate)]]);
+$postResults = $postValidation->validate();
 $notifications = array_merge($notifications,$postValidation->getPrintableNotifications('MakeNotification'));
 $postValidation->resetNotifications()->resetErrors();
 
-if ($postValidation->isValid() && $valResults['actionSortUsers'] === 'noAction'){
+if ($postValidation->isValid() && isset($postResults['selectedSheet'])){
+    header('Location: '.$_SERVER['PHP_SELF'].'?sid='.$postResults['selectedSheet'].'&cid='.$cid);
+}
+
+if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'){
     $postActionValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
       ->addSet('action',
                ['set_default'=>'noAction',
@@ -88,7 +97,7 @@ foreach ($tutorAssign_data['tutorAssignments'] as $key2 => $tutorAssignment){
         $dataList = array();
         $sortUsersValue = 'lastName';
         if ($postValidation->isValid()){
-            $sortUsersValue = $valResults['sortUsers'];
+            $sortUsersValue = $postResults['sortUsers'];
         }
 
         foreach ($assignments as $key => $submission)
@@ -107,7 +116,7 @@ foreach ($tutorAssign_data['tutorAssignments'] as $key2 => $tutorAssignment){
     $dataList = array();
     $sortUsersValue = 'lastName';
     if ($postValidation->isValid()){
-        $sortUsersValue = $valResults['sortUsers'];
+        $sortUsersValue = $postResults['sortUsers'];
     }
 
     foreach ($assignments as $key => $submission)
@@ -153,13 +162,22 @@ foreach($tutorAssign_data['emptyGroups'] as $exercise => $emptyGroups){
 
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::TUTOR,true);
-
+                              
+$userNavigation = MakeUserNavigationElement($user_course_data,
+                                            null,
+                                            null,
+                                            PRIVILEGE_LEVEL::TUTOR,
+                                            $sid,
+                                            ExerciseSheet::decodeExerciseSheet(json_encode($tutorAssign_data['exerciseSheets'])),
+                                            false,
+                                            false);
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
 $h->bind(array('name' => $user_course_data['courses'][0]['course']['name'],
                'notificationElements' => $notifications,
-               'navigationElement' => $menu));
+               'navigationElement' => $menu,
+               'userNavigationElement' => $userNavigation));
 
 // construct a content element for assigning tutors automatically
 $assignAutomatically = Template::WithTemplateFile('include/TutorAssign/AssignAutomatically.template.html');

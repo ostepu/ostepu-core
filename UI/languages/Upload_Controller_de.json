@@ -14,6 +14,7 @@
         "errorInvalidExerciseId": " $status: Die verwendete Aufgabennummer konnte nicht zugeordnet werden.",
         "errorInvalidSheetId": "Die verwendete ID der Übungsserie konnte nicht zugeordnet werden.",
         "invalidAction": "Die Aktion konnte nicht ausgeführt werden.",
-        "invalidExercisesInput": "Die Eingabedaten waren fehlerhaft."
+        "invalidExercisesInput": "Die Eingabedaten waren fehlerhaft.",
+        "leaveStudent": "Studentenrolle verlassen"
     }
 }

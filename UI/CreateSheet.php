@@ -10,6 +10,7 @@
  * @todo choose correct groupsize for no Group (0 or 1)
  * @todo evaluate correct exercisetype in $subeval
  */
+ob_start();
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
@@ -35,10 +36,15 @@ if (!isset($sid))
 if (!isset($cid))
     $cid=null;
 
+if (isset($_POST['selectedSheet'])){
+    header('Location: '.$_SERVER['PHP_SELF'].'?sid='.$_POST['selectedSheet'].'&cid='.$cid);
+}
+
 // load user data from the database
 $URL = $getSiteURI . "/createsheet/user/{$uid}/course/{$cid}";
 $createsheetData = http_get($URL, true);
 $createsheetData = json_decode($createsheetData, true);
+$user_course_data = $createsheetData['user'];
 
 $noContent = false;
 
@@ -756,16 +762,25 @@ if (isset($sid)){
     $sheet_data = json_decode($sheet_data, true);
 }
 
-
 $menu = MakeNavigationElement($createsheetData['user'],
                               PRIVILEGE_LEVEL::LECTURER,true);
+                              
+$userNavigation = MakeUserNavigationElement($user_course_data,
+                                            null,
+                                            null,
+                                            PRIVILEGE_LEVEL::TUTOR,
+                                            $sid,
+                                            (isset($sheet_data)?ExerciseSheet::decodeExerciseSheet(json_encode($createsheetData['exerciseSheets'])):null),
+                                            false,
+                                            false);
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($createsheetData['user']);
 $h->bind(array('name' => $createsheetData['user']['courses'][0]['course']['name'],
                'notificationElements' => $notifications,
-               'navigationElement' => $menu));
+               'navigationElement' => $menu,
+               'userNavigationElement' => $userNavigation));
 
 $sheetSettings = Template::WithTemplateFile('include/CreateSheet/SheetSettings.template.html');
 $createExercise = Template::WithTemplateFile('include/CreateSheet/CreateExercise.template.html');
@@ -803,3 +818,7 @@ $w = new HTMLWrapper($h, $sheetSettings, $createExercise);
 $w->defineForm(basename(__FILE__).'?cid='.$cid.(isset($sid) ? "&sid={$sid}" : ''), true, $sheetSettings, $createExercise);
 $w->set_config_file('include/configs/config_createSheet.json');
 $w->show();
+
+$output = ob_get_contents();
+ob_end_clean();
+echo $output;
