@@ -7,6 +7,7 @@
  * @author Florian Lücke
  * @author Ralf Busch
  */
+ob_start();
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
@@ -497,3 +498,5 @@ $t->bind(array('privileged' => $privileged));
 $w = new HTMLWrapper($h, $t);
 $w->set_config_file('include/configs/config_upload_exercise.json');
 $w->show();
+
+ob_end_flush();

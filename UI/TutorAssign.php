@@ -7,6 +7,7 @@
  * @author Florian Lücke
  * @author Ralf Busch
  */
+ob_start();
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/include/FormEvaluator.php';
@@ -212,3 +213,4 @@ $w->set_config_file('include/configs/config_tutor_assign.json');
 //$w->set_config_file('include/configs/config_default.json');
 $w->show();
 
+ob_end_flush();

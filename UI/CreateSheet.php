@@ -819,6 +819,4 @@ $w->defineForm(basename(__FILE__).'?cid='.$cid.(isset($sid) ? "&sid={$sid}" : ''
 $w->set_config_file('include/configs/config_createSheet.json');
 $w->show();
 
-$output = ob_get_contents();
-ob_end_clean();
-echo $output;
+ob_end_flush();

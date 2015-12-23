@@ -4,6 +4,7 @@
  *
  * @author Ralf Busch
  */
+ob_start();
 
 include_once 'include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Language.php';
@@ -47,3 +48,5 @@ $h->bind(array('name' => 'Übungsplattform',
 $w = new HTMLWrapper($h);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
+
+ob_end_flush();

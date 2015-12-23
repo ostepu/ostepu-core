@@ -7,6 +7,7 @@
  * @author Florian Lücke
  * @author Ralf Busch
  */
+ob_start();
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Validation/Validation.php';
@@ -326,3 +327,4 @@ if (isset($uploadHistory))$w->defineForm(basename(__FILE__).'?cid='.$cid, false,
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 
+ob_end_flush();

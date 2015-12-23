@@ -7,6 +7,7 @@
  * @author Florian Lücke
  * @author Ralf Busch
  */
+ob_start();
 
 include_once dirname(__FILE__).'/include/Boilerplate.php';
 include_once dirname(__FILE__).'/../Assistants/Structures.php';
@@ -49,3 +50,4 @@ $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $t);
 $w->set_config_file('include/configs/config_student_tutor.json');
 $w->show();
 
+ob_end_flush();

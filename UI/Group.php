@@ -7,6 +7,7 @@
  * @author Florian Lücke
  * @author Ralf Busch
  */
+ob_start();
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Validation/Validation.php';
@@ -651,3 +652,5 @@ if (isset($invitationsToGroup))
     $w->defineForm(basename(__FILE__).'?cid='.$cid.'&sid='.$sid, false, $invitationsToGroup);
 $w->set_config_file('include/configs/config_group.json');
 $w->show();
+
+ob_end_flush();
