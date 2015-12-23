@@ -10,7 +10,7 @@
  header('Content-Type: text/html; charset=utf-8');
  ?>
 <div class="content-element ProcessorParameterArea" style="outline:2px solid #b9b8b8;border-radius: 0px;margin: 0px;">
-    <?php echo MakeInfoButton('extension','LFormPredecessor.md'); ?>
+    <?php echo MakeInfoButton('extension/LFormPredecessor','LFormPredecessor.md'); ?>
     <div class="content-body-wrapper">
         <div class="content-body left">
             <table border="0" style="width:100%">          
