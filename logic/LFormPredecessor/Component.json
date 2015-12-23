@@ -19,7 +19,7 @@
     {"name":"getProcess", "target":"DBProcessList", "links":[{"method":"GET", "path":"/process/course/:courseid/component/:componentid" }] }
   ],
   "connector":[
-    {"name":"extension", "target":"LExtension", "priority":150},
+    {"name":"postCourse", "target":"LForm", "priority":150},
     {"name":"request", "target":"CLocalObjectRequest"},
     {"name":"request", "target":"CHelp", "links":[{"path":"/help/:language/extension/LFormPredecessor/LFormPredecessor.md"}]}
   ]
