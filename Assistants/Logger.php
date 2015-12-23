@@ -31,17 +31,12 @@
  */
 class Logger
 {
-    /*
-     * @TODO: Add the possibility to bail on errors using "die", optionally printing
-     * a call trace.
-     */
-    //static $shouldTrace = false;
-    //static $shouldBailOnError = false;
-
     /**
      * @var $logFile The path of the log file. Messages will be sent here.
      */
     static $logFile = 'php://stderr';
+    
+    static $defaultLogLevel = LogLevel::ERROR;
 
     /**
      * Log a message to the log file.
@@ -60,7 +55,7 @@ class Logger
                                $currentLogLevel = null)
     {
         if (!isset($currentLogLevel)){
-            $currentLogLevel = error_reporting();
+            $currentLogLevel = self::$defaultLogLevel; //error_reporting();
         }
         
         // if the function is called with the no prority don't log anything
@@ -76,7 +71,7 @@ class Logger
         $infoString = '[' . $name . ']' .($timestamp ? ' '.date('M j G:i:s'): '');
 
         // test if the message should be logged
-        if (($currentLogLevel & $logLevel) > 0) {
+        if (($currentLogLevel & $logLevel) === $logLevel) {
 
             if ($trace){
                 $info = debug_backtrace();
@@ -167,9 +162,9 @@ class Logger
  */
 abstract class LogLevel
 {
-   // const OFF = 0;          /**< enum OFF: tells the Logger to turn off logging. */
-    const NONE = 0; /**< enum NONE: same as above */
-    const DEBUG = 11;        /**< enum DEBUG: log debug info */
+   // const OFF = 0;        /**< enum OFF: tells the Logger to turn off logging. */
+    const NONE = 0;         /**< enum NONE: same as above */
+    const DEBUG = 11;       /**< enum DEBUG: log debug info */
     const INFO = 8;         /**< enum INFO: log general info */
     const WARNING = 2;      /**< enum WARNING: log warnings */
     const ERROR = 1;        /**< enum ERROR: log errors */
