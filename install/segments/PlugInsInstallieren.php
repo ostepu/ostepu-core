@@ -19,13 +19,13 @@ class PlugInsInstallieren
                                         'name'=>'installPlugins',
                                         'event'=>array('actionInstallPlugins'),
                                         'procedure'=>'installInstallPlugins',
-                                        'enabledInstall'=>false
+                                        'enabledInstall'=>true
                                         ),
                                     'uninstall'=>array(
                                         'name'=>'uninstallPlugins',
                                         'event'=>array('actionUninstallPlugins'),
                                         'procedure'=>'installUninstallPlugins',
-                                        'enabledInstall'=>false
+                                        'enabledInstall'=>true
                                         ),
                                     'validateFiles'=>array(
                                         'name'=>'validateFiles',
@@ -37,14 +37,24 @@ class PlugInsInstallieren
 
     public static function getDefaults()
     {
-        return array(
-                     'plug_install_CORE' => array('data[PLUG][plug_install_CORE]', '_'),
-                     'plug_install_OSTEPU-UI' => array('data[PLUG][plug_install_OSTEPU-UI]', '_'),
-                     'plug_install_OSTEPU-DB' => array('data[PLUG][plug_install_OSTEPU-DB]', '_'),
-                     'plug_install_OSTEPU-FS' => array('data[PLUG][plug_install_OSTEPU-FS]', '_'),
-                     'plug_install_OSTEPU-LOGIC' => array('data[PLUG][plug_install_OSTEPU-LOGIC]', '_'),
-                     'plug_install_INSTALL' => array('data[PLUG][plug_install_INSTALL]', '_')
-                     );
+        $res = array();
+        $pluginFiles = self::getPluginFiles();
+        foreach($pluginFiles as $plug){
+            $filePath = dirname(__FILE__) . '/../../Plugins/'.$plug;
+            if (is_readable($filePath)){
+                $input = file_get_contents($filePath);
+                $input = json_decode($input,true);
+                if ($input == null){
+                    // Fehler beim dekodieren
+                } else  {
+                    if (isset($input['name'])){
+                        $name = $input['name'];
+                        $res['plug_install_'.$name] = array('data[PLUG][plug_install_'.$name.']', $name);
+                    }
+                }
+            }
+        }
+        return $res;
     }
 
     public static function init($console, &$data, &$fail, &$errno, &$error)
@@ -53,20 +63,16 @@ class PlugInsInstallieren
         $def = self::getDefaults();
 
         $text = '';
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PLUG']['plug_install_CORE'], 'data[PLUG][plug_install_CORE]', $def['plug_install_CORE'][1], true);
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PLUG']['plug_install_OSTEPU-UI'], 'data[PLUG][plug_install_OSTEPU-UI]', $def['plug_install_OSTEPU-UI'][1], true);
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PLUG']['plug_install_OSTEPU-DB'], 'data[PLUG][plug_install_OSTEPU-DB]', $def['plug_install_OSTEPU-DB'][1], true);
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PLUG']['plug_install_OSTEPU-FS'], 'data[PLUG][plug_install_OSTEPU-FS]', $def['plug_install_OSTEPU-FS'][1], true);
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PLUG']['plug_install_OSTEPU-LOGIC'], 'data[PLUG][plug_install_OSTEPU-LOGIC]', $def['plug_install_OSTEPU-LOGIC'][1], true);
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PLUG']['plug_install_INSTALL'], 'data[PLUG][plug_install_INSTALL]', $def['plug_install_INSTALL'][1], true);
+        foreach($def as $defName => $defVar){
+            $text .= Design::erstelleVersteckteEingabezeile($console, $data['PLUG'][$defName], $defVar[0], $defVar[1], true);
+        }
         echo $text;
         self::$initialized = true;
         Installation::log(array('text'=>'beende Funktion'));
     }
-
-    public static function show($console, $result, $data)
+    
+    private static function getPluginFiles()
     {
-        Installation::log(array('text'=>'starte Funktion'));
         $pluginFiles = array();
         if ($handle = @opendir(dirname(__FILE__) . '/../../Plugins')) {
             while (false !== ($file = readdir($handle))) {
@@ -76,6 +82,13 @@ class PlugInsInstallieren
             }
             closedir($handle);
         }
+        return $pluginFiles;
+    }
+
+    public static function show($console, $result, $data)
+    {
+        Installation::log(array('text'=>'starte Funktion'));
+        $pluginFiles = self::getPluginFiles();
         $text='';
         $text .= Design::erstelleBeschreibung($console,Language::Get('packages','description'));
 
@@ -103,12 +116,13 @@ class PlugInsInstallieren
         foreach ($pluginFiles as $plug){
             $dat = file_get_contents(dirname(__FILE__) . '/../../Plugins/'.$plug);
             $dat = json_decode($dat,true);
-            $name = $dat['name'];
-            $version = $dat['version'];
-            $voraussetzungen = $dat['requirements'];
+            $name = isset($dat['name']) ? $dat['name'] : '???';
+            $version = isset($dat['version']) ? $dat['version'] : null;
+            $voraussetzungen = isset($dat['requirements']) ? $dat['requirements'] : array();
             if (!is_array($voraussetzungen)) $voraussetzungen = array($voraussetzungen);
 
-            $text .= Design::erstelleZeile($console, "{$name} v{$dat['version']}", 'e', ((self::$onEvents['install']['enabledInstall'] || self::$onEvents['uninstall']['enabledInstall']) ? Design::erstelleAuswahl($console, $data['PLUG']['plug_install_'.$name], 'data[PLUG][plug_install_'.$name.']', $plug, null, true) : ''), 'v_c');
+            $versionText = isset($dat['version']) ? ' v'.$dat['version'] : '';
+            $text .= Design::erstelleZeile($console, $name.$versionText, 'e', ((self::$onEvents['install']['enabledInstall'] || self::$onEvents['uninstall']['enabledInstall']) ? Design::erstelleAuswahl($console, $data['PLUG']['plug_install_'.$name], 'data[PLUG][plug_install_'.$name.']', $name, null, true) : ''), 'v_c');
 
             $isInstalled=false;
             if (isset($installedPlugins)){
@@ -116,8 +130,7 @@ class PlugInsInstallieren
                     if ($name == $instPlug['name']){
                         if (isset($instPlug['version'])){
                             $text .= Design::erstelleZeile($console, Language::Get('packages','currentVersion') , 'v', 'v'.$instPlug['version'] , 'v');
-                        } else
-                            $text .= Design::erstelleZeile($console, Language::Get('packages','currentVersion') , 'v', '???' , 'v');
+                        }
                         $isInstalled=true;
                         break;
                     }
@@ -132,11 +145,11 @@ class PlugInsInstallieren
                 $vorText .= "{$vor['name']} v{$vor['version']}, ";
             }
             if ($vorText==''){
-                $vorText = '---';
-            } else
+                
+            } else {
                 $vorText = substr($vorText,0,-2);
-
-            $text .= Design::erstelleZeile($console, Language::Get('packages','requirements') , 'v', $vorText , 'v');
+                $text .= Design::erstelleZeile($console, Language::Get('packages','requirements') , 'v', $vorText , 'v');
+            }
 
             $file = dirname(__FILE__) . '/../../Plugins/'.$plug;
             $fileCount=0;
@@ -184,9 +197,15 @@ class PlugInsInstallieren
                 $componentCount = count($componentFiles);
             }
 
-            $text .= Design::erstelleZeile($console, Language::Get('packages','numberComponents') , 'v', $componentCount , 'v');
-            $text .= Design::erstelleZeile($console, Language::Get('packages','numberFiles') , 'v', $fileCount , 'v');
-            $text .= Design::erstelleZeile($console, Language::Get('packages','size') , 'v', Design::formatBytes($fileSize) , 'v');
+            if ($componentCount>0){
+                $text .= Design::erstelleZeile($console, Language::Get('packages','numberComponents') , 'v', $componentCount , 'v');
+            }
+            if ($fileCount>0){
+                $text .= Design::erstelleZeile($console, Language::Get('packages','numberFiles') , 'v', $fileCount , 'v');
+            }
+            if ($fileSize>0){
+                $text .= Design::erstelleZeile($console, Language::Get('packages','size') , 'v', Design::formatBytes($fileSize) , 'v');
+            }
         }
 
         /*if ($installPlugins){
