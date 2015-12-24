@@ -1,10 +1,16 @@
 <?php $langTemplate='UserNavigation';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 
-<ul id="navigation2" class="navigation2">
 <!--<div class="">-->
 <?php if ($isSuperAdmin || $courseStatus > 1) { ?>
 
 <?php if ($courseStatus >= 2 /* PRIVILEGE_LEVEL::LECTURER */  && !$forIndex) { ?>
+
+<?php if (empty($buttons) && !isset($courseUser) && (!isset($sid) || !isset($courseSheets)) && !isset($privileged) && !isset($helpPath)) {
+
+} else { ?>
+
+<ul id="navigation2" class="navigation2">
+
         <?php foreach ($buttons as $button) { ?>
             <li>
                 <a href="<?php echo $button['target']; ?>"><?php echo $button['title']; ?></a>
@@ -61,7 +67,8 @@
                 <?php echo MakeInfoButton($helpPath[0],$helpPath[1]); ?>
             </li>
         <?php } ?>
+</ul>
 <?php } ?>
 <?php } ?>
 
-    </ul>
+<?php } ?>
