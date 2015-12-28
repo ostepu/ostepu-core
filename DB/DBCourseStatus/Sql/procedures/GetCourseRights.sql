@@ -20,8 +20,8 @@ select SQL_CACHE
     C.C_name,
     C.C_semester,
     C.C_defaultGroupSize,
-    concat(",courseid,",'_',S.SET_id) as SET_id,
-    S.*
+    S.*,
+    concat(",courseid,",'_',S.SET_id) as SET_id
 from
     CourseStatus CS
         join

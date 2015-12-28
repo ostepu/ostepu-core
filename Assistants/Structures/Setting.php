@@ -186,7 +186,7 @@ class Setting extends Object implements JsonSerializable
                                             $settingName,
                                             $state=null,
                                             $type=null,
-                                            $categorie=null
+                                            $category=null
                                             )
     {
         return new Setting( array(
@@ -194,7 +194,7 @@ class Setting extends Object implements JsonSerializable
                                      'name' => $settingName,
                                      'state' => $state,
                                      'type' => $type,
-                                     'categorie' => $categorie
+                                     'category' => $category
                                      ) );
     }
 
@@ -210,7 +210,7 @@ class Setting extends Object implements JsonSerializable
                      'SET_name' => 'name',
                      'SET_state' => 'state',
                      'SET_type' => 'type',
-                     'SET_category' => 'categorie'
+                     'SET_category' => 'category'
                      );
     }
 
@@ -247,11 +247,11 @@ class Setting extends Object implements JsonSerializable
                                  'SET_type',
                                  DBJson::mysql_real_escape_string( $this->type )
                                  );
-        if ( $this->categorie !== null )
+        if ( $this->category !== null )
             $this->addInsertData(
                                  $values,
                                  'SET_category',
-                                 DBJson::mysql_real_escape_string( $this->categorie )
+                                 DBJson::mysql_real_escape_string( $this->category )
                                  );
 
         if ( $values != '' ){
@@ -379,8 +379,8 @@ class Setting extends Object implements JsonSerializable
             $list['state'] = $this->state;
         if ( $this->type !== null )
             $list['type'] = $this->type;
-        if ( $this->categorie !== null )
-            $list['category'] = $this->categorie;
+        if ( $this->category !== null )
+            $list['category'] = $this->category;
         return array_merge($list,parent::jsonSerialize( ));
     }
 

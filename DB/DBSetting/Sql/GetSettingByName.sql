@@ -11,8 +11,8 @@
 ?>
 
 select
-    concat('<?php echo $courseid; ?>','_',S.SET_id) as SET_id,
-    S.*
+    S.*,
+    concat('<?php echo $courseid; ?>','_',S.SET_id) as SET_id
 from
     `Setting<?php echo $pre; ?>_<?php echo $courseid; ?>` S
 WHERE SET_name = '<?php echo $setname; ?>'
