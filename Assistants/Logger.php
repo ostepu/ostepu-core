@@ -36,7 +36,7 @@ class Logger
      */
     static $logFile = 'php://stderr';
     
-    static $defaultLogLevel = LogLevel::ERROR;
+    static $defaultLogLevel = LogLevel::NONE;
 
     /**
      * Log a message to the log file.
