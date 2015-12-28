@@ -306,7 +306,6 @@ class PlugInsInstallieren
                     $sizePath = $location;
                     $repo = $params['URL'];
                     $branch = $params['branch'];
-                    Einstellungen::generatepath($location);
                     $exclude[] = $location . DIRECTORY_SEPARATOR . '.git';
                     
                 
@@ -353,7 +352,7 @@ class PlugInsInstallieren
                         if (!is_array($exclude)) $exclude = array($exclude);
                         foreach($exclude as &$ex){
                             $ex = str_replace(array("\\","/"), array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR), $ex);
-                            $ex = $path . $ex;
+                            $ex = $path . DIRECTORY_SEPARATOR . $ex;
                         }
                     }
                 }

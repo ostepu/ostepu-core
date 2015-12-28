@@ -266,7 +266,7 @@ class KomponentenErstellen
         $res = array();
 
         if (!$fail){
-            $mainPath = dirname(__FILE__) . '/../..';
+            $mainPath = realpath(dirname(__FILE__) . '/../..');
             $components = array();
 
             $componentFiles = array();
