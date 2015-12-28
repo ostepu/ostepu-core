@@ -283,18 +283,11 @@ class PlugInsInstallieren
                 $params = array();
                 $exclude = array();
                 $path = null;
+                $sizePath = null;
                 
                 if (isset($file['path'])){
-                    $path = $file['path'];
-                }
-                
-                if (isset($path) && isset($file['exclude'])){
-                    $exclude = $file['exclude'];
-                    if (!is_array($exclude)) $exclude = array($exclude);
-                    foreach($exclude as &$ex){
-                        $ex = str_replace(array("\\","/"), array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR), $ex);
-                        $ex = $mainPath . DIRECTORY_SEPARATOR . $path . $ex;
-                    }
+                    $path = realpath($mainPath . DIRECTORY_SEPARATOR . $file['path']);
+                    $sizePath = $path;
                 }
                 
                 if (isset($file['type'])){
@@ -305,12 +298,27 @@ class PlugInsInstallieren
                     $params = $file['params'];
                 }
                 
-                if ($type === 'git'){
+                if ($type === 'git'){                
+                    $params['path'] = rtrim($params['path'],"\\/");
                     $location = $mainPath . DIRECTORY_SEPARATOR . $params['path'];
+                    Einstellungen::generatepath($location);
+                    $location = realpath($location);
+                    $sizePath = $location;
                     $repo = $params['URL'];
                     $branch = $params['branch'];
                     Einstellungen::generatepath($location);
                     $exclude[] = $location . DIRECTORY_SEPARATOR . '.git';
+                    
+                
+                    if (isset($file['exclude'])){
+                        $tempExclude = $file['exclude'];
+                        if (!is_array($exclude)) $exclude = array($exclude);
+                        foreach($tempExclude as &$ex){
+                            $ex = str_replace(array("\\","/"), array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR), $ex);
+                            $ex = $location . DIRECTORY_SEPARATOR . $ex;
+                        }
+                        $exclude = array_merge($exclude, $tempExclude);
+                    }
                     
                     if (!file_exists($location."/.git")){
                         // initialisieren
@@ -326,27 +334,41 @@ class PlugInsInstallieren
                     exec('(git pull) 2>&1', $output, $return);
                     chdir($pathOld);       
                     
-                    if ($location === $path){
+                    if ($location . DIRECTORY_SEPARATOR === $path){
                         // kein Verschieben notwendig
                     } else {
                         // verschiebe die Dateien von $location nach $path
+                        $found = Installation::read_all_files($location, $exclude);
+                        foreach ($found['files'] as $temp){
+                            $file = substr($temp,strlen($location)+1);
+                            $file = $path . DIRECTORY_SEPARATOR . $file;
+                            Einstellungen::generatepath(dirname($file));
+                            $res = @copy($temp, $file);
+                        }
                     }
                     
                 } elseif ($type === 'local'){
-                    
+                    if (isset($path) && isset($file['exclude'])){
+                        $exclude = $file['exclude'];
+                        if (!is_array($exclude)) $exclude = array($exclude);
+                        foreach($exclude as &$ex){
+                            $ex = str_replace(array("\\","/"), array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR), $ex);
+                            $ex = $path . $ex;
+                        }
+                    }
                 }
                 
                 
-                if (isset($path)){
-                    if (is_dir($mainPath . DIRECTORY_SEPARATOR . $path)){
-                        $found = Installation::read_all_files($mainPath . DIRECTORY_SEPARATOR . $path, $exclude);
+                if (isset($sizePath)){
+                    if (is_dir($sizePath)){
+                        $found = Installation::read_all_files($sizePath, $exclude);
                         foreach ($found['files'] as $temp){
                             $fileList[] = $temp;
                             $fileListAddress[] = substr($temp,strlen($mainPath)+1);
                         }
                     } else {
-                        $fileList[] = $mainPath . DIRECTORY_SEPARATOR . $path;
-                        $fileListAddress[] = $path;
+                        $fileList[] = $sizePath;
+                        $fileListAddress[] = substr($sizePath,strlen($mainPath)+1);
                     }
                 }
             }
