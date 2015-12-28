@@ -8,7 +8,7 @@
  * @date 2014
  */
 
-require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
+require_once ( dirname(__FILE__) . '/../../Assistants/vendor/Slim/Slim/Slim.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Request.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/DBJson.php' );
@@ -104,7 +104,7 @@ class DBNotification
                                'addPlatform'
                                )
                          );
-                         
+
         // POST DeleteCourse
         $this->_app->delete(
                          '(/:pre)/course/:courseid',
@@ -604,7 +604,7 @@ class DBNotification
         } else
             $this->_app->response->setBody( $type::{'encode'.$type}( $res ) );
     }
-    
+
     /**
      * Adds the component to the platform
      */

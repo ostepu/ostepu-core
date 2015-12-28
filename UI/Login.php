@@ -14,7 +14,7 @@ include_once dirname(__FILE__) . '/include/Authentication.php';
 include_once dirname(__FILE__) . '/include/HTMLWrapper.php';
 include_once dirname(__FILE__) . '/include/Template.php';
 include_once dirname(__FILE__) . '/../Assistants/Logger.php';
-include_once dirname(__FILE__) . '/../Assistants/Validation/Validation.php';
+include_once dirname(__FILE__) . '/../Assistants/vendor/Validation/Validation.php';
 include_once dirname(__FILE__) . '/include/Helpers.php';
 
 $langTemplate='Login_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');

@@ -5,9 +5,9 @@ $elements = scandir(dirname(__FILE__).'/path');
 // für die HTML Ausgabe der Anfragedaten verwenden wir das Designsystem des Installationsassistenten
 include_once dirname(__FILE__) . '/install/include/Design.php';
 
-include_once dirname(__FILE__) . '/Assistants/php-markdown-lib/Michelf/MarkdownInterface.php';
-include_once dirname(__FILE__) . '/Assistants/php-markdown-lib/Michelf/Markdown.php';
-include_once dirname(__FILE__) . '/Assistants/php-markdown-lib/Michelf/MarkdownExtra.php';
+include_once dirname(__FILE__) . '/Assistants/vendor/Markdown/Michelf/MarkdownInterface.php';
+include_once dirname(__FILE__) . '/Assistants/vendor/Markdown/Michelf/Markdown.php';
+include_once dirname(__FILE__) . '/Assistants/vendor/Markdown/Michelf/MarkdownExtra.php';
 
 foreach ($elements as $elem){
     if ($elem=='.' || $elem=='..') continue;

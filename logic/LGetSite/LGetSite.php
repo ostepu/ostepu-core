@@ -5,7 +5,7 @@
  * contains the LGetSite class.
  * @date 2013-2014
  */
-require_once dirname(__FILE__).'/../../Assistants/Slim/Slim.php';
+require_once dirname(__FILE__).'/../../Assistants/vendor/Slim/Slim/Slim.php';
 include_once dirname(__FILE__).'/../../Assistants/Request.php';
 include_once dirname(__FILE__).'/../../Assistants/CConfig.php';
 include_once dirname(__FILE__).'/../../Assistants/Logger.php';
@@ -1887,7 +1887,7 @@ class LGetSite
         $URL = $this->_getExerciseType->getAddress() . '/exercisetype';
         $answer = Request::custom('GET', $URL, array(), '');
         $allexerciseTypes = json_decode($answer['content'], true);
-        
+
         $URL = "{$this->lURL}/exercisesheet/course/{$courseid}";
         $answer = Request::custom('GET', $URL, array(), '');
         $response['exerciseSheets'] = json_decode($answer['content'], true);

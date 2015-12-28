@@ -8,7 +8,7 @@ ob_start();
 
 include_once 'include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Language.php';
-include_once dirname(__FILE__) . '/../Assistants/Validation/Validation.php';
+include_once dirname(__FILE__) . '/../Assistants/vendor/Validation/Validation.php';
 
 $getValidation = Validation::open($_GET, array('preRules'=>array('sanitize')))
   ->addSet('msg',

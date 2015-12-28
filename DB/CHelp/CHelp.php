@@ -7,9 +7,9 @@
  */
 
 include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/php-markdown-lib/Michelf/MarkdownInterface.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/php-markdown-lib/Michelf/Markdown.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/php-markdown-lib/Michelf/MarkdownExtra.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/vendor/Markdown/Michelf/MarkdownInterface.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/vendor/Markdown/Michelf/Markdown.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/vendor/Markdown/Michelf/MarkdownExtra.php' );
 
 /**
  * ???

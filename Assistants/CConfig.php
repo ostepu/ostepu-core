@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 /**
  * @file CConfig.php contains the CConfig class
@@ -7,8 +7,13 @@
  * @date 2013-2014
  */
 include_once ( dirname( __FILE__ ) . '/Structures.php' );
-require_once ( dirname(__FILE__) . '/Slim/Slim.php' );
-\Slim\Slim::registerAutoloader( );
+
+if (file_exists(dirname(__FILE__) . '/vendor/Slim/Slim/Slim.php')){
+    include_once ( dirname(__FILE__) . '/vendor/Slim/Slim/Slim.php' );
+}
+
+if (in_array("Slim\\Slim", get_declared_classes()))
+    \Slim\Slim::registerAutoloader( );
 
 /**
  * this class is used to link components, to save new linkage data and to
@@ -21,7 +26,7 @@ class CConfig
      * @var $_app the slim object
      */
     private $_app;
-    
+
     ///public static $possible = true;
 
     /**
@@ -63,7 +68,7 @@ class CConfig
     {
         $this->_prefix = $value;
     }
-    
+
     private $_noInfo = false;
     private $_noHelp = false;
     private $_defaultLanguage = null;
@@ -75,16 +80,20 @@ class CConfig
      */
     public function __construct( $prefix, $callPath = null, $noInfo = false, $noHelp = false, $defaultLanguage = 'de' )
     {
+        if (!in_array('Slim\Slim', get_declared_classes())){
+            return;
+        }
+
         $this->_noInfo = $noInfo;
         $this->_noHelp = $noHelp;
         $this->_defaultLanguage = $defaultLanguage;
-    
+
         // initialize slim
         $this->setPrefix( $prefix );
-        
+
         $callPath = str_replace("\\",'/',$callPath);
         $this->callPath = $callPath;
-        
+
         $scriptName = $_SERVER['SCRIPT_NAME'];
         $requestUri = $_SERVER['REQUEST_URI'];
         $path = str_replace('?' . (isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : ''), '', substr_replace($requestUri, '', 0, strlen((strpos($requestUri, $scriptName) !== false ? $scriptName : str_replace('\\', '', dirname($scriptName))))));
@@ -94,86 +103,86 @@ class CConfig
         $pregC = @preg_match("%^(/[a-zA-Z0-9_\x7f-\xff]*)?/info/links(/?)$%", $path);
         $pregD = @preg_match("%^(/[a-zA-Z0-9_\x7f-\xff]*)?/info/([a-zA-Z0-9_\x7f-\xff]*)(/?)$%", $path);
         $pregE = @preg_match("%^(/[a-zA-Z0-9_\x7f-\xff]*)?/help/([a-zA-Z0-9_\x7f-\xff]*)/%", $path);
-                       
+
         if ( $pregA || $pregB || $pregC || (!$noInfo && $pregD )  || (!$noHelp && $pregE ) ) {
 
             $this->_app = new \Slim\Slim( array('debug' => true) );
 
-            $this->_app->response->headers->set( 
+            $this->_app->response->headers->set(
                                                 'Content-Type',
                                                 'application/json'
                                                 );
-                                                
+
             // GET Commands
-            $this->_app->map( 
+            $this->_app->map(
                               '(/:pre)/info/commands(/)',
-                              array( 
+                              array(
                                     $this,
                                     'commands'
                                     )
                               )->via('GET','OPTIONS');
 
             // GET Instruction
-            $this->_app->get( 
+            $this->_app->get(
                               '(/:pre)/info/links(/)',
-                              array( 
+                              array(
                                     $this,
                                     'instruction'
                                     )
-                              );   
+                              );
 
             if (!$this->_noInfo){
                 // GET Info
-                $this->_app->get( 
+                $this->_app->get(
                                   '(/:pre)/info/:language(/)',
-                                  array( 
+                                  array(
                                         $this,
                                         'info'
                                         )
-                                  );   
-            }                              
+                                  );
+            }
 
             // POST Config
-            $this->_app->post( 
+            $this->_app->post(
                               '(/:pre)/control',
-                              array( 
+                              array(
                                     $this,
                                     'postConfig'
                                     )
                               );
 
             // GET Config
-            $this->_app->get( 
+            $this->_app->get(
                              '(/:pre)/control',
-                             array( 
+                             array(
                                    $this,
                                    'getConfig'
                                    )
                              );
-                             
+
             if (!$this->_noHelp){
                 // GET Help
-                $this->_app->get( 
+                $this->_app->get(
                                  '(/:pre)/help/:language/:helpPath+',
-                                 array( 
+                                 array(
                                        $this,
                                        'getHelp'
                                        )
                                  );
             }
-                             
+
         // run Slim
         $this->_used = true;
         $this->_app->run( );
         ///unset($this->_app);
         }
     }
-    
+
     public function info( $pre = '', $language = 'de')
     {
         $path = ($this->callPath!=null ? $this->callPath.'/' : '');
         $path = str_replace("\\",'/',$path);
-        
+
         if (file_exists($path.'info/'.$language.'.md')){
             $this->_app->response->setStatus( 200 );
             $this->_app->response->setBody( file_get_contents($path.'info/'.$language.'.md') );
@@ -182,20 +191,20 @@ class CConfig
             $this->_app->response->setBody( '' );
         }
     }
-    
+
     public function getHelp( $pre = '', $language, $helpPath)
     {
         $path = ($this->callPath!=null ? $this->callPath.'/' : '');
         $path = str_replace("\\",'/',$path);
         $path .= 'help/';
-        
+
         $fileName = array_pop($helpPath);
         $path_parts = pathinfo($fileName);
         $helpPath[] = $path_parts['filename'];
         $helpPath[] = $language;
         $extension = (isset($path_parts['extension']) ? ('.'.strtolower($path_parts['extension'])) : '');
         $helpPathString = implode('_',$helpPath).$extension;
-        
+
         if (file_exists($path.$helpPathString)){
             $this->_app->response->setStatus( 200 );
             $this->_app->response->setBody( file_get_contents($path.$helpPathString) );
@@ -203,7 +212,7 @@ class CConfig
             array_pop($helpPath);
             $helpPath[] = $this->_defaultLanguage;
             $helpPathString = implode('_',$helpPath).$extension;
-            
+
             if (file_exists($path.$helpPathString)){
                 $this->_app->response->setStatus( 200 );
                 $this->_app->response->setBody( file_get_contents($path.$helpPathString) );
@@ -213,13 +222,13 @@ class CConfig
             }
         }
     }
-    
+
     public function instruction( $pre ='', $returnData=false)
     {
         if ($pre != ''){
             $pre.='_';
         }
-        
+
         $path = ($this->callPath!=null ? $this->callPath.'/' : '');
         $path = str_replace("\\",'/',$path);
         if ($this->callPath==null && $path!='') $this->callPath=$path;
@@ -227,20 +236,20 @@ class CConfig
         $conf = CConfig::loadStaticConfig($this->getPrefix(),$pre, $this->callPath);
         $defs = explode(";",$conf->getDef());
         $links = array();
-        
+
         $found = false;
         foreach ($defs as $key => $value){
             if ($key%2 == 0) continue;
             if (file_exists($value)){
                 $found=true;
                 $content = json_decode(file_get_contents($value),true);
-                
+
                 if (isset($content['links'])){
                     $links = array_merge($links,$content['links']);
                 }
             }
         }
-        
+
         if ($returnData){
             if (!$found) return array();
             return $links;
@@ -253,15 +262,15 @@ class CConfig
             }
         }
     }
-    
+
     public function commands( $pre = '', $nativeOnly=false, $returnData=false )
     {
         if (file_exists(($this->callPath!=null ? $this->callPath.'/':'').'Commands.json')){
             if (!$returnData)
                 $this->_app->response->setStatus( 200 );
-            
+
             $commands = json_decode(file_get_contents(($this->callPath!=null ? $this->callPath.'/':'').'Commands.json'), true);
-            
+
             if (!$nativeOnly){
                 $commands[] = array('method' => 'get', 'path' => '(/:pre)/info/commands(/)');
                 $commands[] = array('method' => 'get', 'path' => '(/:pre)/info/links(/)');
@@ -270,7 +279,7 @@ class CConfig
                 $commands[] = array('method' => 'get', 'path' => '(/:pre)/control');
                 if (!$this->_noHelp) $commands[] = array('method' => 'get', 'path' => '(/:pre)/help/:language/path+');
             }
-            
+
             if ($returnData){
                 return $commands;
             } else
@@ -305,7 +314,7 @@ class CConfig
         if ($pre != ''){
             $pre.='_';
         }
-        
+
         $this->_app->response->setStatus( 451 );
         $body = $this->_app->request->getBody( );
         $Component = Component::decodeComponent( $body );
@@ -323,14 +332,14 @@ class CConfig
         if ($path=='' && $this->callPath!=null) $path = $this->callPath;
         if ($path!='') $path.='/';
         $path = str_replace("\\",'/',$path);
-        
+
         if ($pre != ''){
             $pre.='_';
-        }  
-        
+        }
+
         if ( file_exists( $path . $pre . CConfig::$CONF_FILE ) ){
             $com = Component::decodeComponent( file_get_contents( $path . $pre . CConfig::$CONF_FILE ) );
-            
+
             if (file_exists($path . 'Component.json')){
                 $def = Component::decodeComponent( file_get_contents( $path . 'Component.json' ) );
                 $com->setClassFile( $def->getClassFile() );
@@ -340,11 +349,11 @@ class CConfig
                     $com->setLocalPath( substr(substr($path,0,-1),strrpos($myPath,'/')+1 ) );
                 }
             }
-            
+
             $com->setPrefix( $this->getPrefix( ) );
             $this->_app->response->setBody( Component::encodeComponent( $com ) );
             $this->_app->response->setStatus( 200 );
-            
+
         } else {
             $this->_app->response->setStatus( 409 );
             $com = new Component( );
@@ -363,25 +372,25 @@ class CConfig
         $path='';
         if ($this->callPath!=null) $path = $this->callPath;
         $path = str_replace("\\",'/',$path);
-        
+
         CConfig::saveConfigGlobal($pre,$content,$path);
         $this->pre = substr($pre,0,-1);
     }
-     
+
     public static function saveConfigGlobal( $pre='', $content, $path='', $file=null )
     {
         if ($path!='')$path.='/';
         $path = str_replace("\\",'/',$path);
-        
+
         $ff = $path . $pre . CConfig::$CONF_FILE;
         if ($file!=null)
             $ff=$path.$file;
-        
-        $file = fopen( 
+
+        $file = fopen(
                       $ff,
                       'w'
                       );
-        fwrite( 
+        fwrite(
                $file,
                $content
                );
@@ -399,7 +408,7 @@ class CConfig
         $this->confFile = $path . '/' . CConfig::$CONF_FILE;
         return CConfig::loadStaticConfig($this->getPrefix(), '', $this->callPath);
     }
-    
+
     public static function loadStaticConfig( $pref, $pre, $path='', $file=null )
     {
         CConfig::$onload = true;
@@ -413,7 +422,7 @@ class CConfig
             // file was found, create a Component object from file content
             $com = Component::decodeComponent( file_get_contents( $ff ) );
             $com->setPrefix( $pref );
-            
+
             // check if the links
             // know their prefixes
             $conf = $com;
@@ -434,8 +443,8 @@ class CConfig
                     if ($failed === true){
                         continue;
                     }
-                    
-                    $result = Request::get( 
+
+                    $result = Request::get(
                                            $link->getAddress( ) . '/control',
                                            array( ),
                                            ''
@@ -456,7 +465,7 @@ class CConfig
                         continue;
                     }
                 }
-                
+
                 $possibleLinks[] = $link;
             }
 
@@ -466,12 +475,12 @@ class CConfig
                 CConfig::saveConfigGlobal( $pre, Component::encodeComponent( $conf ), substr($path,0,-1),$file );
                 $com = $conf;
             }
-            
+
             $com->setLinks( $possibleLinks );
-            
+
             CConfig::$onload=false;
             return $com;
-            
+
         } else {
 
             // can't find the file, create an empty object
@@ -482,16 +491,16 @@ class CConfig
         }
         CConfig::$onload=false;
     }
-    
+
     public function loadConfig( $pre = '')
     {
         if ($pre != ''){
             $pre.='_';
         }
-        
+
         $path ='';
         if ($this->callPath!=null) $path=$this->callPath;
-        
+
         $this->confFile = $path . $pre . CConfig::$CONF_FILE;
         return CConfig::loadStaticConfig($this->getPrefix(), $pre, $this->callPath);
     }
@@ -504,7 +513,7 @@ class CConfig
      *
      * @return a link object, with the name $name
      */
-    public static function getLink( 
+    public static function getLink(
                                    $linkList,
                                    $name
                                    )
@@ -527,7 +536,7 @@ class CConfig
      *
      * @return a array of link objects, which are named $name
      */
-    public static function getLinks( 
+    public static function getLinks(
                                     $linkList,
                                     $name
                                     )
@@ -551,7 +560,7 @@ class CConfig
      *
      * @return the link list without these links
      */
-    public static function deleteFromArray( 
+    public static function deleteFromArray(
                                            $links,
                                            $linkName
                                            )
@@ -567,4 +576,4 @@ class CConfig
         return $result;
     }
 }
- 
+
