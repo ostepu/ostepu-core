@@ -1,28 +1,96 @@
 {
-  "name":"CORE",
-  "version":"0.4.3",
-  "versionDate":"05.12.2015",
-  "author":"",
-  "sourceURL":null,
-  "updateURL":null,
-  "requirements":[],
-  "files":
-    [
-      {"path":"Assistants/"},
-      {"path":".htaccess"},
-      {"path":"Plugins/.htaccess"},
-      {"path":"Plugins/core.json"},
-      {"path":"DB/Components2.sql"}
+    "name": "CORE",
+    "version": "0.4.3",
+    "versionDate": "05.12.2015",
+    "requirements": [
+        {
+            "type": "plugin",
+            "name": "SLIM",
+            "version": "2.6.3"
+        },
+        {
+            "type": "plugin",
+            "name": "PHP-MARKDOWN",
+            "version": "1.6.0"
+        },
+        {
+            "type": "plugin",
+            "name": "PHPFASTCACHE",
+            "version": "3.0.0"
+        },
+        {
+            "type": "plugin",
+            "name": "VALIDATION",
+            "version": "1.0"
+        }
     ],
-  "components":
-    [
-      {"conf":"DB/CControl/Component.json"},
-      {"conf":"---DB/CGate/Component.json"},
-      {"conf":"DB/CAbstract/Component.json"},
-      {"conf":"DB/CHelp/Component.json"},
-      {"conf":"DB/DBQuery2/DBQuery.json"},
-      {"conf":"DB/DBQuery2/Component.json"},
-      {"conf":"Assistants/Request.json"},
-      {"conf":"install/component/CInstall.json"}
+    "files": [
+        {"path": "DB/.htaccess"},
+        {"path": "FS/.htaccess"},
+        {"path": "logic/Include/"},
+        {"path": "logic/.htaccess"},
+        {"path": "UI/"},
+        {"path": ".htaccess"},
+        {
+            "path": "Assistants/",
+            "exclude": ["vendor"]
+        },
+        {"path": ".htaccess"},
+        {"path": "Plugins/.htaccess"},
+        {"path": "Plugins/core.json"}
+    ],
+    "components": [
+        {"conf": "DB/DBApprovalCondition/Component.json"},
+        {"conf": "DB/DBAttachment/Component.json"},
+        {"conf": "DB/DBAttachment2/Component.json"},
+        {"conf": "DB/DBBeispiel/Component.json"},
+        {"conf": "DB/DBControl/Component.json"},
+        {"conf": "DB/DBCourse/Component.json"},
+        {"conf": "DB/DBCourseStatus/Component.json"},
+        {"conf": "DB/DBExercise/Component.json"},
+        {"conf": "DB/DBExerciseFileType/Component.json"},
+        {"conf": "DB/DBExerciseSheet/Component.json"},
+        {"conf": "DB/DBExerciseType/Component.json"},
+        {"conf": "DB/DBExternalId/Component.json"},
+        {"conf": "DB/DBFile/Component.json"},
+        {"conf": "DB/DBGroup/Component.json"},
+        {"conf": "DB/DBInvitation/Component.json"},
+        {"conf": "DB/DBMarking/Component.json"},
+        {"conf": "DB/DBProcess/Component.json"},
+        {"conf": "DB/DBSelectedSubmission/Component.json"},
+        {"conf": "DB/DBSession/Component.json"},
+        {"conf": "DB/DBSetting/Component.json"},
+        {"conf": "DB/DBSubmission/Component.json"},
+        {"conf": "DB/DBTransaction/Component.json"},
+        {"conf": "DB/DBUser/Component.json"},
+        {"conf": "DB/DBNotification/Component.json"},
+        {"conf": "FS/FSBinder/Component.json"},
+        {"conf": "FS/FSControl/Component.json"},
+        {"conf": "FS/FSFile/Component.json"},
+        {"conf": "FS/FSPdf/Component.json"},
+        {"conf": "FS/FSCsv/Component.json"},
+        {"conf": "FS/FSZip/Component.json"},
+        {"conf": "logic/LAttachment/Component.json"},
+        {"conf": "logic/LController/Component.json"},
+        {"conf": "logic/LCourse/Component.json"},
+        {"conf": "logic/LExercise/Component.json"},
+        {"conf": "logic/LExerciseSheet/Component.json"},
+        {"conf": "logic/LExtension/Component.json"},
+        {"conf": "logic/LFile/Component.json"},
+        {"conf": "logic/LFormProcessor/Component.json"},
+        {"conf": "logic/LGetSite/Component.json"},
+        {"conf": "logic/LMarking/Component.json"},
+        {"conf": "logic/LOOP/Component.json"},
+        {"conf": "logic/LProcessor/Component.json"},
+        {"conf": "logic/LSubmission/Component.json"},
+        {"conf": "logic/LTutor/Component.json"},
+        {"conf": "DB/CUIHelp/Component.json"},
+        {"conf": "DB/CControl/Component.json"},
+        {"conf": "---DB/CGate/Component.json"},
+        {"conf": "DB/CAbstract/Component.json"},
+        {"conf": "DB/CHelp/Component.json"},
+        {"conf": "DB/DBQuery2/DBQuery.json"},
+        {"conf": "DB/DBQuery2/Component.json"},
+        {"conf": "Assistants/Request.json"}
     ]
 }

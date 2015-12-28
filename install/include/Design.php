@@ -238,11 +238,11 @@ class Design
      */
     public static function erstelleVersteckteEingabezeile($console, &$variable, $variablenName, $default, $save=false)
     {
-        if ($save == true && $variable === null){
+        if ($save === true && $variable === null){
             $variable = Einstellungen::Get($variablenName, $default);
         }
 
-        if ($save == true && $variable !== null){
+        if ($save === true && $variable !== null){
             Einstellungen::Set($variablenName, $variable);
         }
 
@@ -251,8 +251,9 @@ class Design
 
         $result = '';
 
-        if (!$console)
+        if (!$console){
             $result = "<input type='hidden' name='{$variablenName}' value='".(isset($variable) ? $variable : $default)."'>";
+        }
 
         return $result;
     }
@@ -296,18 +297,18 @@ class Design
      */
     public static function erstelleAuswahl($console, &$variable, $variablenName, $value, $default, $save=false)
     {
-        if ($save == true && $variable == null){
+        if ($save === true && $variable === null){
            $variable = Einstellungen::Get($variablenName, $default);
         }
 
-        if ($save == true && $variable != null)
+        if ($save === true && $variable !== null)
             Einstellungen::Set($variablenName, $variable);
 
-        if ($variable == null)
+        if ($variable === null)
             $variable = $default;
 
         $empty = '_';
-        $result = Design::erstelleVersteckteEingabezeile($console, $empty , $variablenName, $default, $save);
+        $result = Design::erstelleVersteckteEingabezeile($console, $empty , $variablenName, $default, false);
         $result .= "<input style='' type='checkbox' id='{$variablenName}' name='{$variablenName}' value='".$value."'".(($variable==$value && $variable != null) ? "checked" : ($default === null ? '' : ($default===$value ? "checked" : '')) ).">";
         return $result;
     }

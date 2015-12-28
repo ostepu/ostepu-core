@@ -73,13 +73,17 @@ class Komponenten
                     $component['links'] = Link::decodeLink(json_encode($component['links']));
 
                 if (isset($component['commands'])){
-                    $router = new \Slim\Router();
-                    foreach($component['commands'] as $command){
-                        $route = new \Slim\Route($command['path'],'is_array');
-                        $route->via((isset($command['method']) ? strtoupper($command['method']) : 'GET'));
-                        $router->map($route);
+                    if (in_array("Slim\\Slim", get_declared_classes())){
+                        $router = new \Slim\Router();
+                        foreach($component['commands'] as $command){
+                            $route = new \Slim\Route($command['path'],'is_array');
+                            $route->via((isset($command['method']) ? strtoupper($command['method']) : 'GET'));
+                            $router->map($route);
+                        }
+                        $component['router'] = $router;
+                    } else {
+                        Installation::log(array('text'=>'Slim existiert nicht'));
                     }
-                    $component['router'] = $router;
                 }
             }
 

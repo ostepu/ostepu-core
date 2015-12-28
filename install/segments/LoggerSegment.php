@@ -38,10 +38,9 @@ class LoggerSegment
         }
    
         $def = self::getDefaults();
-
         $text = '';
         foreach (self::$logLevel as $levelName => $level) {
-            $text .= Design::erstelleVersteckteEingabezeile($console, $data['LOGGER']['log_level_'.$levelName], 'data[LOGGER][log_level_'.$levelName.']', $def['log_level_'.$levelName][1], true);
+            $text .= Design::erstelleVersteckteEingabezeile($console, $data['LOGGER']['log_level_'.$levelName], 'data[LOGGER][log_level_'.$levelName.']', '_', true);
         }
         echo $text;
         self::$initialized = true;

@@ -9,13 +9,14 @@ set_time_limit(0);
  */
 define('ISCLI', PHP_SAPI === 'cli');
 
-// wenn der Installationsassitent über die Konsole aufgerufen wird, dürfen wird
-// Slim nicht verwenden (stürzt ab)
-if (!constant('ISCLI'))
-    include_once dirname(__FILE__) . '/../Assistants/Slim/Slim.php';
+if (file_exists(dirname(__FILE__) . '/../Assistants/vendor/Slim/Slim/Route.php') && file_exists(dirname(__FILE__) . '/../Assistants/vendor/Slim/Slim/Slim.php')){
+    // wenn der Installationsassitent über die Konsole aufgerufen wird, dürfen wird
+    // Slim nicht verwenden (stürzt ab)
+    if (!constant('ISCLI'))
+        include_once dirname(__FILE__) . '/../Assistants/vendor/Slim/Slim/Slim.php';
 
-
-include_once dirname(__FILE__) . '/../Assistants/Slim/Route.php';
+    include_once dirname(__FILE__) . '/../Assistants/vendor/Slim/Slim/Route.php';
+}
 
 include_once dirname(__FILE__) . '/../Assistants/Request.php';
 include_once dirname(__FILE__) . '/../Assistants/DBRequest.php';
@@ -28,8 +29,9 @@ include_once dirname(__FILE__) . '/include/Installation.php';
 include_once dirname(__FILE__) . '/../Assistants/Language.php';
 include_once dirname(__FILE__) . '/include/Zugang.php';
 
-if (!constant('ISCLI'))
+if (!constant('ISCLI') && in_array('Slim\Slim', get_declared_classes())){
     \Slim\Slim::registerAutoloader();
+}
 
 
 
@@ -78,21 +80,26 @@ class Installer
         }
 
         Installation::log(array('text'=>'initialisiere Slim'));
-        // initialize slim
-        $app = new \Slim\Slim(array( 'debug' => true ));
-        $app->contentType('text/html; charset=utf-8');
+        if (in_array("Slim\\Slim", get_declared_classes())){
+            // initialize slim
+            $app = new \Slim\Slim(array( 'debug' => true ));
+            $app->contentType('text/html; charset=utf-8');
 
-        // POST,GET showInstall
-        $app->map('(/)',
-                        array($this, 'CallInstall'))->via('POST', 'GET','INFO' );
+            // POST,GET showInstall
+            $app->map('(/)',
+                            array($this, 'CallInstall'))->via('POST', 'GET','INFO' );
 
-        // POST,GET showInstall
-        $app->map('/checkModulesExtern(/)',
-                        array($this, 'checkModulesExtern'))->via('POST', 'GET','INFO' );
+            // POST,GET showInstall
+            $app->map('/checkModulesExtern(/)',
+                            array($this, 'checkModulesExtern'))->via('POST', 'GET','INFO' );
 
-        // run Slim
-        Installation::log(array('text'=>'rufe Slim'));
-        $app->run();
+            // run Slim
+            Installation::log(array('text'=>'rufe Slim'));
+            $app->run();
+        } else {
+            Installation::log(array('text'=>'Slim existiert nicht'));
+            $this->CallInstall();
+        }
 
         Installation::log(array('text'=>'beende Funktion'));
     }
@@ -636,7 +643,7 @@ class Installer
                 echo "</div>";
 
                 echo "<input type='hidden' name='data[LOGGER][logLevel]' value='".Installation::$logLevel."'>";
-                
+
                 echo "</th></tr></form></table>";
 
                 echo "</div></body></html>";
