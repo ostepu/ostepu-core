@@ -78,7 +78,7 @@ if (isset($_POST['action'])){
 }
 $form_data_old=null;
 if (isset($_POST['action'])){
-    $URL = $serverURI."/DB/DBForm/form/exercisesheet/{$sid}";
+    $URL = $serverURI."/vendor/forms/DBForm/form/exercisesheet/{$sid}";
     $form_data_old = http_get($URL, true);
     $form_data_old = json_decode($form_data_old, true);
 }
@@ -663,7 +663,7 @@ if (isset($_POST['action'])) {// && $_POST['action'] == "new"
 
                 if (!empty($forms)){
                     // upload forms
-                    $URL = $serverURI."/logic/LForm/form";
+                    $URL = $serverURI."/vendor/forms/LForm/form";
                     ///echo Form::encodeForm($forms);
                     http_post_data($URL, json_encode($forms), true, $message);
                     if ($message != 201) {
@@ -795,7 +795,7 @@ if (isset($sid)){
     $sheetSettings->bind(array('sid'=>$sid));
 
    // if (!isset($_POST['action']) || $_POST['action']=='new'){
-        $result = http_get($serverURI."/DB/DBForm/form/exercisesheet/{$sid}",true);
+        $result = http_get($serverURI."/vendor/forms/DBForm/form/exercisesheet/{$sid}",true);
         $forms = json_decode($result,true);
 
         $result = http_get($serverURI."/DB/DBProcess/process/exercisesheet/{$sid}",true);

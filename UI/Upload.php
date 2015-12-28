@@ -267,26 +267,26 @@ if ($postValidation->isValid() && $postResults['action'] === 'submit') {
                                             $choice->setSubmissionId($result->getId());
                                         }
 
-                                        $URL = $serverURI.'/DB/DBChoice/formResult/choice';
+                                        /*$URL = $serverURI.'/vendor/forms/DBChoice/formResult/choice';
                                         $result2 = http_post_data($URL, Choice::encodeChoice($choices), true, $message);
 
-                                            if ($message !== 201) {
-                                                $result2 = Choice::decodeChoice($result2);
-                                                $exercise = $key + 1;
-                                                $errormsg = Language::Get('main','errorUploadSubmission', $langTemplate, array('status'=>$message,'exerciseName'=>$exercise['name']));
+                                        if ($message !== 201) {
+                                            $result2 = Choice::decodeChoice($result2);
+                                            $exercise = $key + 1;
+                                            $errormsg = Language::Get('main','errorUploadSubmission', $langTemplate, array('status'=>$message,'exerciseName'=>$exercise['name']));
 
-                                                if ($result2!==null){
-                                                    $errormsg .= '<br><br>';
-                                                    $messages2 = $result2->getMessages();
-                                                    foreach ($messages2 as $message){
-                                                        $errormsg.=str_replace("\n",'<br>',$message).'<br>';
-                                                    }
+                                            if ($result2!==null){
+                                                $errormsg .= '<br><br>';
+                                                $messages2 = $result2->getMessages();
+                                                foreach ($messages2 as $message){
+                                                    $errormsg.=str_replace("\n",'<br>',$message).'<br>';
                                                 }
-
-                                                $notifications[] = MakeNotification('error',
-                                                                                    $errormsg);
-                                                continue;
                                             }
+
+                                            $notifications[] = MakeNotification('error',
+                                                                                $errormsg);
+                                            continue;
+                                        }*/
                                         $i++;
                                     }
 
@@ -391,7 +391,7 @@ if (isset($upload_data['exerciseSheet']['endDate']) && isset($upload_data['exerc
     set_error(Language::Get('main','noExercisePeriod', $langTemplate));
 
 //$formdata = file_get_contents('FormSample.json');
-$URL = $serverURI."/DB/DBForm/form/exercisesheet/{$sid}";
+$URL = $serverURI."/vendor/forms/DBForm/form/exercisesheet/{$sid}";
 $formdata = http_get($URL, true);
 
 $formdata = Form::decodeForm($formdata);
