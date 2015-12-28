@@ -303,7 +303,7 @@ class PlugInsInstallieren
                     $location = $mainPath . DIRECTORY_SEPARATOR . $params['path'];
                     Einstellungen::generatepath($location);
                     $location = realpath($location);
-                    $sizePath = $location;
+                    //$sizePath = $location;
                     $repo = $params['URL'];
                     $branch = $params['branch'];
                     $exclude[] = $location . DIRECTORY_SEPARATOR . '.git';
@@ -333,17 +333,24 @@ class PlugInsInstallieren
                     exec('(git pull) 2>&1', $output, $return);
                     chdir($pathOld);       
                     
+                    $found = Installation::read_all_files($location, $exclude);
                     if ($location . DIRECTORY_SEPARATOR === $path){
                         // kein Verschieben notwendig
                     } else {
                         // verschiebe die Dateien von $location nach $path
-                        $found = Installation::read_all_files($location, $exclude);
                         foreach ($found['files'] as $temp){
                             $file = substr($temp,strlen($location)+1);
                             $file = $path . DIRECTORY_SEPARATOR . $file;
                             Einstellungen::generatepath(dirname($file));
                             $res = @copy($temp, $file);
                         }
+                    }
+                    
+                    foreach($found['files'] as $temp){
+                        $file = substr($temp,strlen($location)+1);
+                        $file = $path . DIRECTORY_SEPARATOR . $file;
+                        $fileList[] = $file;
+                        $fileListAddress[] = substr($file,strlen($mainPath)+1);
                     }
                     
                 } elseif ($type === 'local'){
@@ -355,19 +362,19 @@ class PlugInsInstallieren
                             $ex = $path . DIRECTORY_SEPARATOR . $ex;
                         }
                     }
-                }
                 
                 
-                if (isset($sizePath)){
-                    if (is_dir($sizePath)){
-                        $found = Installation::read_all_files($sizePath, $exclude);
-                        foreach ($found['files'] as $temp){
-                            $fileList[] = $temp;
-                            $fileListAddress[] = substr($temp,strlen($mainPath)+1);
+                    if (isset($sizePath)){
+                        if (is_dir($sizePath)){
+                            $found = Installation::read_all_files($sizePath, $exclude);
+                            foreach ($found['files'] as $temp){
+                                $fileList[] = $temp;
+                                $fileListAddress[] = substr($temp,strlen($mainPath)+1);
+                            }
+                        } else {
+                            $fileList[] = $sizePath;
+                            $fileListAddress[] = substr($sizePath,strlen($mainPath)+1);
                         }
-                    } else {
-                        $fileList[] = $sizePath;
-                        $fileListAddress[] = substr($sizePath,strlen($mainPath)+1);
                     }
                 }
             }
@@ -379,9 +386,11 @@ class PlugInsInstallieren
 
             foreach ($files as $file){
                 if (isset($file['conf'])){
+                    $file['conf'] = str_replace(array("\\","/"), array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR), $file['conf']);
+                    
                     if (!file_exists($mainPath . DIRECTORY_SEPARATOR . $file['conf']) || !is_readable($mainPath . DIRECTORY_SEPARATOR . $file['conf'])) continue;
                     $componentFiles[] = $mainPath . DIRECTORY_SEPARATOR . $file['conf'];
-                    $definition = file_get_contents($mainPath . '/' . $file['conf']);
+                    $definition = file_get_contents($mainPath . DIRECTORY_SEPARATOR . $file['conf']);
                     $definition = json_decode($definition,true);
                     $comPath = dirname($mainPath . DIRECTORY_SEPARATOR . $file['conf']);
 
@@ -394,6 +403,7 @@ class PlugInsInstallieren
                         foreach ($definition['files'] as $paths){
                             if (!isset($paths['path'])) continue;
 
+                            $paths['path'] = str_replace(array("\\","/"), array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR), $paths['path']);
                             if (is_dir($comPath . DIRECTORY_SEPARATOR . $paths['path'])){
                                 $found = Installation::read_all_files($comPath . DIRECTORY_SEPARATOR . $paths['path']);
                                 foreach ($found['files'] as $temp){
@@ -410,6 +420,19 @@ class PlugInsInstallieren
             }
         }
 
+        $newFileListAddress = array();
+        foreach ($fileListAddress as $key => $a){
+            if (!isset($newFileListAddress[$a])){
+                $newFileListAddress[$a] = $fileList[$key];
+            }
+        }
+        
+        $fileListAddress = array();
+        $fileList = array();
+        foreach ($newFileListAddress as $key => $a){
+            $fileListAddress[] = $key;
+            $fileList[] = $a;
+        }
         Installation::log(array('text'=>'beende Funktion'));
     }
 
