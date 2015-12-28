@@ -90,7 +90,7 @@ class KomponentenErstellen
                     // normale Komponente
 
                     if (!isset($input['registered'])){
-                        $comList[] = "('{$input['name']}', '{$input['urlExtern']}{$input['path']}', '".(isset($input['option']) ? $input['option'] : '')."', '".implode(';',(isset($input['def']) ? $input['def'] : array()))."')";
+                        $comList[] = "('{$input['name']}', '{$input['urlExtern']}/{$input['path']}', '".(isset($input['option']) ? $input['option'] : '')."', '".implode(';',(isset($input['def']) ? $input['def'] : array()))."')";
 
                         // Verknüpfungen erstellen
                         $setDBNames[] = " SET @{$key}_{$input['name']} = (select CO_id from Component where CO_address='{$input['urlExtern']}/{$input['path']}' limit 1); ";
@@ -294,7 +294,7 @@ class KomponentenErstellen
 
                 if (isset($data['PL']['urlExtern'])) $input['urlExtern'] = $data['PL']['urlExtern'];
                 if (isset($data['PL']['url'])) $input['url'] = $data['PL']['url'];
-                $input['path'] = substr(dirname($comFile),strlen($mainPath));
+                $input['path'] = substr(dirname($comFile),strlen($mainPath)+1);
                 $input['path'] = str_replace(array("\\"), array('/'), $input['path']);
                 $input['def'] = array($input['name'],str_replace("\\","/",realpath($comFile)));
                 if (isset($data['CO']['co_link_type'])) $input['link_type'] = $data['CO']['co_link_type'];
