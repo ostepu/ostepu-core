@@ -13,8 +13,12 @@
             "params": {
                 "branch": "master",
                 "URL": "https://github.com/tilluhlig/Forms",
-                "path": "install/vendor/Forms"
-            }
+                "path": "install/vendor/Forms/"
+            },
+            "exclude": [
+                ".gitignore",
+                "README.md"
+            ]
         },
         {"path": "Plugins/forms.json"}
     ],

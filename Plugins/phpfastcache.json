@@ -4,12 +4,12 @@
     "sourceType": "git",
     "files": [
         {
-            "path": "Assistants/vendor/phpfastcache",
+            "path": "Assistants/vendor/phpfastcache/",
             "type": "git",
             "params": {
                 "branch": "final",
                 "URL": "https://github.com/khoaofgod/phpfastcache",
-                "path": "Assistants/vendor/phpfastcache"
+                "path": "Assistants/vendor/phpfastcache/"
             }
         },
         {"path": "Plugins/phpfastcache.json"}

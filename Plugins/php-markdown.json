@@ -3,12 +3,12 @@
     "version": "1.6.0",
     "files": [
         {
-            "path": "Assistants/vendor/Markdown",
+            "path": "Assistants/vendor/Markdown/",
             "type": "git",
             "params": {
                 "branch": "lib",
                 "URL": "https://github.com/michelf/php-markdown",
-                "path": "Assistants/vendor/Markdown"
+                "path": "Assistants/vendor/Markdown/"
             }
         },
         {"path": "Plugins/php-markdown.json"}

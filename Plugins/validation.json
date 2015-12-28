@@ -3,12 +3,12 @@
     "version": "1.0",
     "files": [
         {
-            "path": "Assistants/vendor/Validation",
+            "path": "Assistants/vendor/Validation/",
             "type": "git",
             "params": {
                 "branch": "master",
                 "URL": "https://github.com/tilluhlig/Validation",
-                "path": "Assistants/vendor/Validation"
+                "path": "Assistants/vendor/Validation/"
             }
         },
         {"path": "Plugins/validation.json"}
