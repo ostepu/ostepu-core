@@ -165,12 +165,15 @@ class Komponenten
 
                             $notRoutable = false;
                             if ($calls!==null){
+                                $errorMessage='';
                                 foreach($calls as $pos => $callList){
                                     if ($link->getName() !== $callList['name']) continue;
                                     if (isset($callList['links']) && $callList['links'] !== null){
                                         foreach($callList['links'] as $pos2 => $call){
                                             if (!isset($content[$link->getTargetName()]['router'])){
+                                                Installation::log(array('text'=>'Unbekannte Komponente: '.$link->getTargetName()));
                                                 $notRoutable=true;
+                                                $errorMessage=Language::Get('components','notRoutable');
                                                 break;
                                             }
                                             if ($content[$link->getTargetName()]['router']==null) continue;
@@ -180,16 +183,18 @@ class Komponenten
 
                                             $routes = count($content[$link->getTargetName()]['router']->getMatchedRoutes(strtoupper($call['method']), $call['path']),true);
                                             if ($routes===0){
+                                                Installation::log(array('text'=>$link->getTargetName().': unterstützt den Aufruf '.strtoupper($call['method']).' '.$call['path'].' nicht'));
+                                                $errorMessage=Language::Get('components','notRoutable2','default',array('component'=>$link->getTargetName(),'method'=>strtoupper($call['method']),'path'=>$call['path']));
                                                 $notRoutable=true;
                                                 break;
                                             }
                                         }
                                     }
-                                    if ($notRoutable) break;
+                                    if ($notRoutable) {$fail = true; break;}
                                 }
 
                                 if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate)
-                                    $text .= "<tr><td class='v'>{$link->getName()}</td><td class='e'><div align ='center'>".(!$notRoutable ? Language::Get('main','ok') : '<font color="red">'.Language::Get('components','notRoutable').'</font>')."</align></td></tr>";
+                                    $text .= "<tr><td class='v'>{$link->getName()}</td><td class='e'><div align ='center'>".(!$notRoutable ? Language::Get('main','ok') : '<font color="red">'.$errorMessage.'</font>')."</align></td></tr>";
                             }
                         }
 

@@ -1,26 +1,77 @@
 {
-  "name":"LFormProcessor",
-  "version":"1.0",
-  "classFile":"LFormProcessor.php",
-  "className":"LFormProcessor",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"LFormProcessor.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"},
-    {"path":"info/"},
-    {"path":"help/"}
-  ],
-  "links":[
-    {"name":"formDb", "target":"DBForm", "links":[{"method":"GET", "path":"/form/exercise/:exerciseid" }] },
-    {"name":"postProcess", "target":"DBProcessList", "links":[{"method":"POST", "path":"/process" }] },
-    {"name":"deleteProcess", "target":"DBProcessList", "links":[{"method":"DELETE", "path":"/process/process/:processid" }] },
-    {"name":"getProcess", "target":"DBProcessList", "links":[{"method":"GET", "path":"/process/course/:courseid/component/:componentid" }] },
-    {"name":"pdf", "target":"FSPdf", "links":[{"method":"POST", "path":"/pdf" }] }
-  ],
-  "connector":[
-    {"name":"postCourse", "target":"LForm", "priority":150},
-    {"name":"request", "target":"CLocalObjectRequest"},
-    {"name":"request", "target":"CHelp", "links":[{"path":"/help/:language/extension/LFormProcessor/LFormProcessor.md"},{"path":"/help/:language/extension/LFormProcessor/LFormProcessorAhnlichkeit.png"},{"path":"/help/:language/extension/LFormProcessor/LFormProcessorNormal.png"},{"path":"/help/:language/extension/LFormProcessor/LFormProcessorRegular.png"}]}
-  ]
+    "name": "LFormProcessor",
+    "version": "1.0",
+    "classFile": "LFormProcessor.php",
+    "className": "LFormProcessor",
+    "files": [
+        {"path": ".htaccess"},
+        {"path": "LFormProcessor.php"},
+        {"path": "index.php"},
+        {"path": "Commands.json"},
+        {"path": "info/"},
+        {"path": "help/"}
+    ],
+    "links": [
+        {
+            "name": "formDb",
+            "target": "DBForm",
+            "links": [{
+                "method": "GET",
+                "path": "/form/exercise/:exerciseid"
+            }]
+        },
+        {
+            "name": "postProcess",
+            "target": "DBProcessList",
+            "links": [{
+                "method": "POST",
+                "path": "/process"
+            }]
+        },
+        {
+            "name": "deleteProcess",
+            "target": "DBProcessList",
+            "links": [{
+                "method": "DELETE",
+                "path": "/process/process/:processid"
+            }]
+        },
+        {
+            "name": "getProcess",
+            "target": "DBProcessList",
+            "links": [{
+                "method": "GET",
+                "path": "/process/course/:courseid/component/:componentid"
+            }]
+        },
+        {
+            "name": "pdf",
+            "target": "FSPdf",
+            "links": [{
+                "method": "POST",
+                "path": "/pdf"
+            }]
+        }
+    ],
+    "connector": [
+        {
+            "name": "postCourse",
+            "target": "LForm",
+            "priority": 150
+        },
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        },
+        {
+            "name": "request",
+            "target": "CHelp",
+            "links": [
+                {"path": "/help/:language/extension/LFormProcessor/LFormProcessor.md"},
+                {"path": "/help/:language/extension/LFormProcessor/LFormProcessorAhnlichkeit.png"},
+                {"path": "/help/:language/extension/LFormProcessor/LFormProcessorNormal.png"},
+                {"path": "/help/:language/extension/LFormProcessor/LFormProcessorRegular.png"}
+            ]
+        }
+    ]
 }

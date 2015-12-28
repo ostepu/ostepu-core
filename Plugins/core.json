@@ -77,6 +77,7 @@
         {"conf": "logic/LExerciseSheet/Component.json"},
         {"conf": "logic/LExtension/Component.json"},
         {"conf": "logic/LFile/Component.json"},
+        {"conf": "logic/LFormPredecessor/Component.json"},
         {"conf": "logic/LFormProcessor/Component.json"},
         {"conf": "logic/LGetSite/Component.json"},
         {"conf": "logic/LMarking/Component.json"},
