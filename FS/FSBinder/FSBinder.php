@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -36,7 +36,7 @@ class FSBinder
                                            TRUE
                                            );
         }
-        
+       
         $component = new Model('', dirname(__FILE__), $this);
         $this->_component=$component;
         $component->run();
@@ -57,9 +57,9 @@ class FSBinder
         $path = array($params['folder'],$params['a'],$params['b'],$params['c'], $params['file']);
         $fileobject = $input;
 
-        $filePath = implode( 
+        $filePath = implode(
                             '/',
-                            array_slice( 
+                            array_slice(
                                         $path,
                                         0
                                         )
@@ -74,22 +74,22 @@ class FSBinder
                           'w'
                           );
             if ($file){
-                fwrite( 
+                fwrite(
                        $file,
                        $fileobject->getBody( true )
                        );
                 fclose( $file );
                 $fileObject->setStatus(201);
-                
+               
             }else{
                 $fileobject->setBody( null );
                 $fileobject->addMessage("Datei konnte nicht im Dateisystem angelegt werden.");
                 $fileObject->setStatus(409);
-                Logger::Log( 
+                Logger::Log(
                         'POST postFile failed',
                         LogLevel::ERROR
                         );
-                    
+                   
                 return Model::isProblem( $fileobject );
             }
         }
@@ -118,16 +118,16 @@ class FSBinder
     {
     	set_time_limit(600);
         $path = array($params['folder'],$params['a'],$params['b'],$params['c'], $params['file']);
-        
-        $filePath = implode( 
+       
+        $filePath = implode(
                             '/',
-                            array_slice( 
+                            array_slice(
                                         $path,
                                         0
                                         )
                             );
 
-        if ( strlen( $this->config['DIR']['files'].'/'.$filePath ) > 1 && 
+        if ( strlen( $this->config['DIR']['files'].'/'.$filePath ) > 1 &&
              file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
 
             // the file was found
@@ -136,9 +136,8 @@ class FSBinder
             Model::header('Content-Disposition',"filename=\"".$params['filename']."\"");
             Model::header('Content-Length',filesize($this->config['DIR']['files'].'/'.$filePath));
             Model::header('Accept-Ranges','none');
-            readfile( $this->config['DIR']['files'].'/'.$filePath );
-            return Model::isOk();
-            
+            return Model::isOk(file_get_contents($this->config['DIR']['files'].'/'.$filePath));
+           
         } else {
             return Model::isProblem();
         }
@@ -155,16 +154,16 @@ class FSBinder
     public function getFiledata( $callName, $input, $params = array() )
     {
         $path = array($params['folder'],$params['a'],$params['b'],$params['c'], $params['file']);
-        
-        $filePath = implode( 
+       
+        $filePath = implode(
                             '/',
-                            array_slice( 
+                            array_slice(
                                         $path,
                                         0
                                         )
                             );
 
-        if ( strlen( $this->config['DIR']['files'].'/'.$filePath ) > 0 && 
+        if ( strlen( $this->config['DIR']['files'].'/'.$filePath ) > 0 &&
              file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
 
             // the file was found
@@ -174,7 +173,7 @@ class FSBinder
             $file->setHash( sha1_file( $this->config['DIR']['files'].'/'.$filePath ) );
             $file->setMimeType(MimeReader::get_mime($this->config['DIR']['files'].'/'.$filePath));
             return Model::isOk($file);
-            
+           
         } else {
             return Model::isProblem(new File( ));
         }
@@ -191,16 +190,16 @@ class FSBinder
     public function deleteFile( $callName, $input, $params = array() )
     {
         $path = array($params['folder'],$params['a'],$params['b'],$params['c'], $params['file']);
-        
-        $filePath = implode( 
+       
+        $filePath = implode(
                             '/',
-                            array_slice( 
+                            array_slice(
                                         $path,
                                         0
                                         )
                             );
 
-        if ( strlen( $filePath ) > 0 && 
+        if ( strlen( $filePath ) > 0 &&
              file_exists( $this->config['DIR']['files'] . '/' . $filePath ) ){
 
             // after the successful deletion, we want to return the file data
@@ -225,7 +224,7 @@ class FSBinder
             return Model::isProblem(new File( ));
         }
     }
-    
+   
     /**
      * Returns status code 200, if this component is correctly installed for the platform
      *
@@ -234,18 +233,18 @@ class FSBinder
      */
     public function getExistsPlatform( $callName, $input, $params = array() )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts GET GetExistsPlatform',
                     LogLevel::DEBUG
                     );
-                    
+                   
         if (!file_exists(dirname(__FILE__).'/config.ini')){
             return Model::isProblem();
         }
-       
-        return Model::isOk(); 
+      
+        return Model::isOk();
     }
-    
+   
     /**
      * Removes the component from the platform
      *
@@ -254,17 +253,17 @@ class FSBinder
      */
     public function deletePlatform( $callName, $input, $params = array() )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts DELETE DeletePlatform',
                     LogLevel::DEBUG
                     );
         if (file_exists(dirname(__FILE__).'/config.ini') && !unlink(dirname(__FILE__).'/config.ini')){
             return Model::isProblem();
         }
-        
+       
         return Model::isCreated();
     }
-    
+   
     /**
      * Adds the component to the platform
      *
@@ -273,31 +272,31 @@ class FSBinder
      */
     public function addPlatform( $callName, $input, $params = array() )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts POST AddPlatform',
                     LogLevel::DEBUG
                     );
-        
+       
         $file = dirname(__FILE__).'/config.ini';
         $text = "[DIR]\n".
                 "temp = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$input->getTempDirectory()))."\"\n".
                 "files = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$input->getFilesDirectory()))."\"\n";
-                
+               
         if (!@file_put_contents($file,$text)){
-            Logger::Log( 
+            Logger::Log(
                         'POST AddPlatform failed, config.ini no access',
                         LogLevel::ERROR
                         );
 
             return Model::isProblem();
-        }   
+        }  
 
         $platform = new Platform();
         $platform->setStatus(201);
-        
+       
         return Model::isCreated($platform);
     }
-    
+   
     /**
      * Creates the path in the filesystem, if necessary.
      *

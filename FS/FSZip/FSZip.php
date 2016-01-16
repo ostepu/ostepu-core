@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -61,7 +61,7 @@ class FSZip
                                            TRUE
                                            );
         }
-        
+       
         $component = new Model('zip', dirname(__FILE__), $this);
         $this->_component=$component;
         $component->run();
@@ -83,19 +83,19 @@ class FSZip
         foreach ( $input as $part ){
             if ( $part->getBody( ) !== null ){
                 $hashArray[] = base64_encode($part->getBody( true ));
-                
-            } else 
+               
+            } else
                 $hashArray[] = $part->getAddress( ) . $part->getDisplayName( );
         }
-        
-        $hash = sha1( implode( 
+       
+        $hash = sha1( implode(
                               "\n",
                               $hashArray
                               ) );
        // unset($hashArray);
 
         // generate zip
-        $filePath = FSZip::generateFilePath( 
+        $filePath = FSZip::generateFilePath(
                                             self::getBaseDir( ),
                                             $hash
                                             );
@@ -105,22 +105,22 @@ class FSZip
             // if the directory doesn't exist, create it
             FSZip::generatepath( $this->config['DIR']['files'].'/'.dirname( $filePath ) );
 
-            if ( $zip->open( 
+            if ( $zip->open(
                             $this->config['DIR']['files'].'/'.$filePath,
                             ZIPARCHIVE::CREATE
                             ) === TRUE ){
                 foreach ( $input as &$part ){
                     if ( $part->getBody( ) !== null ){
-                        $zip->addFromString( 
+                        $zip->addFromString(
                                             $part->getDisplayName( ),
                                             $part->getBody( true )
                                             );
-                        
+                       
                     } else {
-                        
+                       
                         $file = $this->config['DIR']['files']. '/' . $part->getAddress( );
                         if (file_exists($file)){
-                            $zip->addFromString( 
+                            $zip->addFromString(
                                                 $part->getDisplayName( ),
                                                 file_get_contents($file)
                                                 );
@@ -141,25 +141,24 @@ class FSZip
         }
 
         if (isset($params['filename'])){
-            readfile( $this->config['DIR']['files'].'/'.$filePath );
             Model::header('Content-Type','application/zip');
             Model::header('Content-Disposition',"filename=\"".$params['filename']."\"");
             Model::header('Content-Length',filesize($this->config['DIR']['files'].'/'.$filePath));
             Model::header('Accept-Ranges','none');
-            return Model::isCreated();
+            return Model::isCreated(file_get_contents($this->config['DIR']['files'].'/'.$filePath));
         } else {
             $zipFile = new File( );
             $zipFile->setHash( $hash );
             $zipFile->setAddress( $filePath );
             $zipFile->setMimeType("application/zip");
-            
+           
             if (file_exists($this->config['DIR']['files'].'/'.$filePath)){
                 $zipFile->setFileSize( filesize( $this->config['DIR']['files'].'/'.$filePath ) );
             }
             return Model::isCreated($zipFile);
         }
     }
-    
+   
     /**
      * Returns a file.
      *
@@ -174,24 +173,23 @@ class FSZip
 
         $path = array(self::getBaseDir( ),$a,$b,$c,$file);
 
-        $filePath = implode( 
+        $filePath = implode(
                             '/',
-                            array_slice( 
+                            array_slice(
                                         $path,
                                         0
                                         )
                             );
 
-        if ( strlen( $this->config['DIR']['files'].'/'.$filePath ) > 1 && 
+        if ( strlen( $this->config['DIR']['files'].'/'.$filePath ) > 1 &&
              file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
 
             // the file was found
             Model::header('Content-Type','application/zip');
-            Model::header('Content-Disposition',"filename=\"".$params['filename']."\"");  
-            Model::header('Accept-Ranges','none');                                          
-            readfile( $this->config['DIR']['files'].'/'.$filePath );
-            return Model::isOk();
-            
+            Model::header('Content-Disposition',"filename=\"".$params['filename']."\""); 
+            Model::header('Accept-Ranges','none');
+            return Model::isOk(file_get_contents($this->config['DIR']['files'].'/'.$filePath));
+           
         }
         return Model::isProblem();
     }
@@ -208,15 +206,15 @@ class FSZip
     {
         $path = array(self::getBaseDir(),$params['a'],$params['b'],$params['c'], $params['file']);
 
-        $filePath = implode( 
+        $filePath = implode(
                             '/',
-                            array_slice( 
+                            array_slice(
                                         $path,
                                         0
                                         )
                             );
 
-        if ( strlen( $this->config['DIR']['files'].'/'.$filePath ) > 0 && 
+        if ( strlen( $this->config['DIR']['files'].'/'.$filePath ) > 0 &&
              file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
 
             // the file was found
@@ -226,7 +224,7 @@ class FSZip
             $file->setHash( sha1_file( $this->config['DIR']['files'].'/'.$filePath ) );
             $file->setMimeType("application/zip");
             return Model::isOk($file);
-            
+           
         }
         return Model::isProblem(new File( ));
     }
@@ -243,15 +241,15 @@ class FSZip
     {
         $path = array(self::getBaseDir(),$params['a'],$params['b'],$params['c'], $params['file']);
 
-        $filePath = implode( 
+        $filePath = implode(
                             '/',
-                            array_slice( 
+                            array_slice(
                                         $path,
                                         0
                                         )
                             );
 
-        if ( strlen( $filePath ) > 0 && 
+        if ( strlen( $filePath ) > 0 &&
              file_exists( $this->config['DIR']['files'] . '/' . $filePath ) ){
 
             // after the successful deletion, we want to return the file data
@@ -271,14 +269,14 @@ class FSZip
 
             // the file is removed
             return Model::isCreated($file);
-            
+           
         } else {
 
             // file does not exist
             return Model::isProblem(new File( ));
         }
     }
-    
+   
     /**
      * Returns status code 200, if this component is correctly installed for the platform
      *
@@ -287,18 +285,18 @@ class FSZip
      */
     public function getExistsPlatform( $callName, $input, $params = array() )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts GET GetExistsPlatform',
                     LogLevel::DEBUG
                     );
-                    
+                   
         if (!file_exists(dirname(__FILE__).'/config.ini')){
             return Model::isProblem();
         }
-       
-        return Model::isOk(); 
+      
+        return Model::isOk();
     }
-    
+   
     /**
      * Removes the component from the platform
      *
@@ -307,17 +305,17 @@ class FSZip
      */
     public function deletePlatform( $callName, $input, $params = array() )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts DELETE DeletePlatform',
                     LogLevel::DEBUG
                     );
         if (file_exists(dirname(__FILE__).'/config.ini') && !unlink(dirname(__FILE__).'/config.ini')){
             return Model::isProblem();
         }
-        
+       
         return Model::isCreated();
     }
-    
+   
     /**
      * Adds the component to the platform
      *
@@ -326,28 +324,28 @@ class FSZip
      */
     public function addPlatform( $callName, $input, $params = array() )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts POST AddPlatform',
                     LogLevel::DEBUG
                     );
-        
+       
         $file = dirname(__FILE__).'/config.ini';
         $text = "[DIR]\n".
                 "temp = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$input->getTempDirectory()))."\"\n".
                 "files = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$input->getFilesDirectory()))."\"\n";
-                
+               
         if (!@file_put_contents($file,$text)){
-            Logger::Log( 
+            Logger::Log(
                         'POST AddPlatform failed, config.ini no access',
                         LogLevel::ERROR
                         );
 
             return Model::isProblem();
-        }   
+        }  
 
         $platform = new Platform();
         $platform->setStatus(201);
-        
+       
         return Model::isCreated($platform);
     }
 
@@ -357,18 +355,18 @@ class FSZip
      * @param string $type The prefix of the file path.
      * @param string $hash The hash of the file.
      */
-    public static function generateFilePath( 
+    public static function generateFilePath(
                                             $type,
                                             $file
                                             )
     {
         if ( strlen( $file ) >= 4 ){
-            return $type . '/' . $file[0] . '/' . $file[1] . '/' . $file[2] . '/' . substr( 
+            return $type . '/' . $file[0] . '/' . $file[1] . '/' . $file[2] . '/' . substr(
                                                                                            $file,
                                                                                            3
                                                                                            );
-            
-        } else 
+           
+        } else
             return'';
     }
 
@@ -404,21 +402,21 @@ class FSZip
      * possibly handle the file.
      * @param string $hash The hash of the file.
      */
-    public static function filterRelevantLinks( 
+    public static function filterRelevantLinks(
                                                $linkedComponents,
                                                $hash
                                                )
     {
         $result = array( );
         foreach ( $linkedComponents as $link ){
-            $in = explode( 
+            $in = explode(
                           '-',
                           $link->getRelevanz( )
                           );
             if ( count( $in ) < 2 ){
                 $result[] = $link;
-                
-            }elseif ( FSZip::isRelevant( 
+               
+            }elseif ( FSZip::isRelevant(
                                         $hash,
                                         $in[0],
                                         $in[1]
@@ -436,7 +434,7 @@ class FSZip
      * @param string $_relevantBegin The minimum hash the component is responsible for.
      * @param string $_relevantEnd The maximum hash the component is responsible for.
      */
-    public static function isRelevant( 
+    public static function isRelevant(
                                       $hash,
                                       $relevant_begin,
                                       $relevant_end
@@ -444,29 +442,29 @@ class FSZip
     {
 
         // to compare the begin and the end, we need an other form
-        $begin = hexdec( substr( 
+        $begin = hexdec( substr(
                                 $relevant_begin,
                                 0,
                                 strlen( $relevant_begin )
                                 ) );
-        $end = hexdec( substr( 
+        $end = hexdec( substr(
                               $relevant_end,
                               0,
                               strlen( $relevant_end )
                               ) );
 
         // the numeric form of the test hash
-        $current = hexdec( substr( 
+        $current = hexdec( substr(
                                   $hash,
                                   0,
                                   strlen( $relevant_end )
                                   ) );
 
-        if ( $current >= $begin && 
+        if ( $current >= $begin &&
              $current <= $end ){
             return true;
-            
-        } else 
+           
+        } else
             return false;
     }
 }
