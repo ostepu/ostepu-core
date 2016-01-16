@@ -1,0 +1,20 @@
+{"components": {
+    "title": "Komponenten",
+    "description": "Zur Initialisierung der Komponenten werden in deren Ordnern Schreibrechte benoetigt. (zum Schreiben der CConfig.json Dateien)",
+    "init": "Initialisierung (Komponenten)",
+    "details": "Details anzeigen",
+    "installedCommands": "installierte Befehle",
+    "installedCalls": "installierte Befehle",
+    "installedComponents": "installierte Komponenten",
+    "installedLinks": "installierte Verbindungen",
+    "unallocated": "nicht belegt",
+    "unknown": "unbekannt",
+    "notRoutable": "Fehler",
+    "notRoutable2": " $component: unterstützt den Aufruf $method $path nicht",
+    "noComponents": "Es wurden keine Komponenten installiert",
+    "noLinks": "Es wurden keine Verbindungen installiert",
+    "noCommands": "Es wurden keine Befehle installiert",
+    "noDefinitions": "Es wurden keine Definitionen gefunden",
+    "operationFailed": "Initialisierung fehlgeschlagen",
+    "componentCrashed": "Mindestens eine Installation schlug fehl"
+}}

@@ -2,22 +2,34 @@
 #region KomponentenErstellen
 class KomponentenErstellen
 {
+    private static $initialized=false;
     public static $name = 'componentDefs';
     public static $installed = false;
     public static $page = 3;
     public static $rank = 50;
     public static $enabledShow = true;
     public static $enabledInstall = true;
+    private static $langTemplate='KomponentenErstellen';
 
     public static $onEvents = array('install'=>array('name'=>'componentDefs','event'=>array('actionInstallComponentDefs','install', 'update')));
 
+
+    public static function init($console, &$data, &$fail, &$errno, &$error)
+    {
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
+        Installation::log(array('text'=>Language::Get('main','languageInstantiated')));
+        self::$initialized = true;
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
+    }
+    
     public static function show($console, $result, $data)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $text='';
 
         if (!$console)
-            $text .= Design::erstelleBeschreibung($console,Language::Get('generateComponents','description'));
+            $text .= Design::erstelleBeschreibung($console,Language::Get('generateComponents','description',self::$langTemplate));
 
         if (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']]!=null){
            $result =  $result[self::$onEvents['install']['name']];
@@ -30,25 +42,25 @@ class KomponentenErstellen
         $content = $result['content'];
 
         if (!$console)
-            $text .= Design::erstelleZeile($console, Language::Get('generateComponents','generateComponents'), 'e', '','v',Design::erstelleSubmitButton(self::$onEvents['install']['event'][0]), 'h');
+            $text .= Design::erstelleZeile($console, Language::Get('generateComponents','generateComponents',self::$langTemplate), 'e', '','v',Design::erstelleSubmitButton(self::$onEvents['install']['event'][0]), 'h');
 
         if (self::$installed){
             if (isset($content['components'])){
-                $text .= Design::erstelleZeile($console, Language::Get('generateComponents','numberComponents'), 'v', $content['componentsCount'],'v');
-                $text .= Design::erstelleZeile($console, Language::Get('generateComponents','numberLinks'), 'v', $content['linksCount'],'v');
+                $text .= Design::erstelleZeile($console, Language::Get('generateComponents','numberComponents',self::$langTemplate), 'v', $content['componentsCount'],'v');
+                $text .= Design::erstelleZeile($console, Language::Get('generateComponents','numberLinks',self::$langTemplate), 'v', $content['linksCount'],'v');
             }
 
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);
         }
 
-        echo Design::erstelleBlock($console, Language::Get('generateComponents','title'), $text);
-        Installation::log(array('text'=>'beende Funktion'));
+        echo Design::erstelleBlock($console, Language::Get('generateComponents','title',self::$langTemplate), $text);
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
         return null;
     }
 
     public static function install($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $serverFiles = Installation::GibServerDateien();
 
         $installComponentDefsResult['components']=array();
@@ -57,7 +69,7 @@ class KomponentenErstellen
             $tempData = Einstellungen::ladeEinstellungenDirekt($sf,$data);
             if ($tempData === null){
                 $fail = true;
-                $error = Language::Get('generateComponents','noAccess');
+                $error = Language::Get('generateComponents','noAccess',self::$langTemplate);
                 return;
             }
 
@@ -257,13 +269,13 @@ class KomponentenErstellen
         Installation::log(array('text'=>'Resultat: '.json_encode($res)));
         $installComponentDefsResult['components'] = $ComponentListInput;
 
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
         return $installComponentDefsResult;
     }
 
     public static function installiereKomponentenDefinitionen($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $res = array();
 
         if (!$fail){
@@ -306,7 +318,7 @@ class KomponentenErstellen
             }
         }
 
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
         return $res;
     }
 }

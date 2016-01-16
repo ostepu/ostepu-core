@@ -1,0 +1,6 @@
+{"createDatabasePlatformUser": {
+    "title": "Plattform-Datenbanknutzer",
+    "createUser": "Nutzer anlegen",
+    "db_user_override_operator": "Benutzer ueberschreiben",
+    "description": "Hier kann der Datenbanknutzer der Komponenten angelegt und zusätzlich ausgewählt werden, ob er, falls er bereits existiert, überschrieben werden soll. Beachten Sie dabei, das der hier gewählte Nutzer, nur für die Nutzung der Datenbank, dieser Plattform, berechtigt sein wird."
+}}

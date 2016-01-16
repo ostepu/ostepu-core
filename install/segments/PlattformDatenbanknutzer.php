@@ -8,6 +8,7 @@ class PlattformDatenbanknutzer
     public static $page = 2; // zu welcher Seite das Segment gehört
     public static $rank = 50;
     public static $enabledShow = true;
+    private static $langTemplate='PlattformDatenbanknutzer';
 
     public static $onEvents = array('install'=>array('name'=>'DBOperator','event'=>array('actionInstallDBOperator','install')));
 
@@ -20,25 +21,28 @@ class PlattformDatenbanknutzer
 
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
+        Installation::log(array('text'=>Language::Get('main','languageInstantiated')));
+        
         $def = self::getDefaults();
 
         $text = '';
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_user_override_operator'], 'data[DB][db_user_override_operator]', $def['db_user_override_operator'][1], true);
         echo $text;
         self::$initialized = true;
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
     }
 
     public static function show($console, $result, $data)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $text='';
 
         if (!$console){
-            $text .= Design::erstelleBeschreibung($console,Language::Get('createDatabasePlatformUser','description'));
-            $text .= Design::erstelleZeile($console, Language::Get('createDatabasePlatformUser','db_user_override_operator'), 'e', Design::erstelleAuswahl($console, $data['DB']['db_user_override_operator'], 'data[DB][db_user_override_operator]', 'override', null, true), 'v_c');
-            $text .= Design::erstelleZeile($console, Language::Get('createDatabasePlatformUser','createUser'), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0], Language::Get('main','create')), 'h');
+            $text .= Design::erstelleBeschreibung($console,Language::Get('createDatabasePlatformUser','description',self::$langTemplate));
+            $text .= Design::erstelleZeile($console, Language::Get('createDatabasePlatformUser','db_user_override_operator',self::$langTemplate), 'e', Design::erstelleAuswahl($console, $data['DB']['db_user_override_operator'], 'data[DB][db_user_override_operator]', 'override', null, true), 'v_c');
+            $text .= Design::erstelleZeile($console, Language::Get('createDatabasePlatformUser','createUser',self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0], Language::Get('main','create')), 'h');
         }
 
         if (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']]!=null){
@@ -53,15 +57,15 @@ class PlattformDatenbanknutzer
         if (self::$installed)
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);
 
-        echo Design::erstelleBlock($console, Language::Get('createDatabasePlatformUser','title'), $text);
+        echo Design::erstelleBlock($console, Language::Get('createDatabasePlatformUser','title',self::$langTemplate), $text);
 
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
         return null;
     }
 
     public static function install($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         if (!$fail && ((isset($data['action']) && $data['action']=='update') ||isset($data['DB']['db_user_override_operator']) && $data['DB']['db_user_override_operator'] === 'override')){
             Installation::log(array('text'=>'lösche Nutzer'));
             $oldName = $data['DB']['db_name'];
@@ -143,7 +147,7 @@ class PlattformDatenbanknutzer
             Installation::log(array('text'=>'Fehler: '.$error, 'logLevel'=>LogLevel::ERROR));
         }
 
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
         return null;
     }
 }

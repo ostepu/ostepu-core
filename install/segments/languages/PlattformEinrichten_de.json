@@ -1,0 +1,7 @@
+{"platform": {
+    "title": "Plattform anlegen",
+    "countComponents": "Komponenten",
+    "createTables": "Tabellen anlegen",
+    "details": "Details anzeigen",
+    "description": "Dieser Vorgang sendet, an eine eingetragene Menge von Komponenten, einen <span class='info-color'>POST /platform<\/span> Aufruf, um die Datenbanktabellen der Plattform zu initialisieren."
+}}

@@ -8,6 +8,7 @@ class PlattformEinrichten
     public static $page = 4;
     public static $rank = 50;
     public static $enabledShow = true;
+    private static $langTemplate='PlattformEinrichten';
 
     public static $onEvents = array('install'=>array('name'=>'initPlatform','event'=>array('actionInstallPlatform','install', 'update')));
 
@@ -20,27 +21,30 @@ class PlattformEinrichten
 
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
+        Installation::log(array('text'=>Language::Get('main','languageInstantiated')));
+        
         $def = self::getDefaults();
 
         $text = '';
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['PL']['pl_details'], 'data[PL][pl_details]', $def['pl_details'][1],true);
         echo $text;
         self::$initialized = true;
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
     }
 
     public static function show($console, $result, $data)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $isUpdate = (isset($data['action']) && $data['action']=='update') ? true : false;
 
         $text='';
-        $text .= Design::erstelleBeschreibung($console,Language::Get('platform','description'));
+        $text .= Design::erstelleBeschreibung($console,Language::Get('platform','description',self::$langTemplate));
 
         if (!$console){
-            $text .= Design::erstelleZeile($console, Language::Get('platform','createTables'), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0]), 'h');
-            $text .= Design::erstelleZeile($console, Language::Get('platform','details'), 'e', Design::erstelleAuswahl($console, $data['PL']['pl_details'], 'data[PL][pl_details]', 'details', null), 'v_c');
+            $text .= Design::erstelleZeile($console, Language::Get('platform','createTables',self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0]), 'h');
+            $text .= Design::erstelleZeile($console, Language::Get('platform','details',self::$langTemplate), 'e', Design::erstelleAuswahl($console, $data['PL']['pl_details'], 'data[PL][pl_details]', 'details', null), 'v_c');
         }
 
         if (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']]!=null){
@@ -60,20 +64,20 @@ class PlattformEinrichten
                     $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Language::Get('main','ok') : "<font color='red'>".Language::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
                 }
             } else {
-                $text .= Design::erstelleZeile($console, Language::Get('platform','countComponents'), 'e', count($content), 'v_c');
+                $text .= Design::erstelleZeile($console, Language::Get('platform','countComponents',self::$langTemplate), 'e', count($content), 'v_c');
             }
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);
         }
 
-        echo Design::erstelleBlock($console, Language::Get('platform','title'), $text);
+        echo Design::erstelleBlock($console, Language::Get('platform','title',self::$langTemplate), $text);
 
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
         return null;
     }
 
     public static function install($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $res = array();
 
         if (!$fail){
@@ -117,7 +121,7 @@ class PlattformEinrichten
             }
         }
 
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
         return $res;
     }
 }

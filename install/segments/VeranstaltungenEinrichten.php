@@ -8,6 +8,7 @@ class VeranstaltungenEinrichten
     public static $page = 4;
     public static $rank = 100;
     public static $enabledShow = true;
+    private static $langTemplate='VeranstaltungenEinrichten';
 
     public static $onEvents = array('install'=>array('name'=>'initCourses','event'=>array('actionInstallCourses','install', 'update')));
 
@@ -20,27 +21,30 @@ class VeranstaltungenEinrichten
 
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
+        Installation::log(array('text'=>Language::Get('main','languageInstantiated')));
+        
         $def = self::getDefaults();
 
         $text = '';
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['C']['c_details'], 'data[C][c_details]', $def['c_details'][1],true);
         echo $text;
         self::$initialized = true;
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
     }
 
     public static function show($console, $result, $data)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $isUpdate = (isset($data['action']) && $data['action']=='update') ? true : false;
 
         $text='';
-        $text .= Design::erstelleBeschreibung($console,Language::Get('courses','description'));
+        $text .= Design::erstelleBeschreibung($console,Language::Get('courses','description',self::$langTemplate));
 
         if (!$console){
-            $text .= Design::erstelleZeile($console, Language::Get('courses','createTables'), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0]), 'h');
-            $text .= Design::erstelleZeile($console, Language::Get('courses','details'), 'e', Design::erstelleAuswahl($console, $data['C']['c_details'], 'data[C][c_details]', 'details', null), 'v_c');
+            $text .= Design::erstelleZeile($console, Language::Get('courses','createTables',self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0]), 'h');
+            $text .= Design::erstelleZeile($console, Language::Get('courses','details',self::$langTemplate), 'e', Design::erstelleAuswahl($console, $data['C']['c_details'], 'data[C][c_details]', 'details', null), 'v_c');
         }
 
         if (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']]!=null){
@@ -59,18 +63,18 @@ class VeranstaltungenEinrichten
                     $text .= "<tr><td class='e' rowspan='1'>({$dat['course']->getId()}) {$dat['course']->getSemester()}</td><td class='v'>{$dat['course']->getName()}</td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Language::Get('main','ok') : "<font color='red'>".Language::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
                 }
             } else
-                $text .= Design::erstelleZeile($console, Language::Get('courses','countCourses'), 'e', count($content) , 'v_c');
+                $text .= Design::erstelleZeile($console, Language::Get('courses','countCourses',self::$langTemplate), 'e', count($content) , 'v_c');
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);
         }
 
-        echo Design::erstelleBlock($console, Language::Get('courses','title'), $text);
-        Installation::log(array('text'=>'beende Funktion'));
+        echo Design::erstelleBlock($console, Language::Get('courses','title',self::$langTemplate), $text);
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
         return null;
     }
 
     public static function install($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $res = array();
 
         if (!$fail){
@@ -127,7 +131,7 @@ class VeranstaltungenEinrichten
 
             } else {
                 $fail = true;
-                $error = "GET /DB/DBCourse/course ".Language::Get('courses','operationFailed');
+                $error = "GET /DB/DBCourse/course ".Language::Get('courses','operationFailed',self::$langTemplate);
                 if (isset($result[0]['status'])){
                     $errno = $result[0]['status'];
                 }
@@ -135,7 +139,7 @@ class VeranstaltungenEinrichten
             }
         }
 
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
         return $res;
     }
 }

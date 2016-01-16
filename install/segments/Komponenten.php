@@ -9,6 +9,7 @@ class Komponenten
     public static $rank = 75;
     public static $enabledShow = true;
     public static $enabledInstall = true;
+    private static $langTemplate='Komponenten';
 
     public static $onEvents = array('install'=>array('name'=>'initComponents','event'=>array('actionInitComponents','install', 'update')));
 
@@ -21,27 +22,30 @@ class Komponenten
 
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
+        Installation::log(array('text'=>Language::Get('main','languageInstantiated')));
+        
         $def = self::getDefaults();
 
         $text = '';
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['CO']['co_details'], 'data[CO][co_details]', $def['co_details'][1],true);
         echo $text;
         self::$initialized = true;
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
     }
 
     public static function show($console, $result, $data)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $isUpdate = (isset($data['action']) && $data['action']=='update') ? true : false;
 
         $text='';
         if (!$console){
-            $text .= Design::erstelleBeschreibung($console,Language::Get('components','description'));
+            $text .= Design::erstelleBeschreibung($console,Language::Get('components','description',self::$langTemplate));
 
-            $text .= Design::erstelleZeile($console, Language::Get('components','init'), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0]), 'h');
-            $text .= Design::erstelleZeile($console, Language::Get('components','details'), 'e', Design::erstelleAuswahl($console, $data['CO']['co_details'], 'data[CO][co_details]', 'details', null, true), 'v_c');
+            $text .= Design::erstelleZeile($console, Language::Get('components','init',self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0]), 'h');
+            $text .= Design::erstelleZeile($console, Language::Get('components','details',self::$langTemplate), 'e', Design::erstelleAuswahl($console, $data['CO']['co_details'], 'data[CO][co_details]', 'details', null, true), 'v_c');
         }
 
         if (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']]!=null){
@@ -119,7 +123,7 @@ class Komponenten
                 } else {
                     if (!isset($component['init']) || $component['init']===null){
                         $fail = true;
-                        $error = Language::Get('components','componentCrashed');
+                        $error = Language::Get('components','componentCrashed',self::$langTemplate);
                     }
                 }
 
@@ -136,7 +140,7 @@ class Komponenten
                     $installedCommands+=$countCommands;
 
                     if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate)
-                        $text .= "<tr><td class='v' colspan='2'>".Language::Get('components','installedCalls').": {$countCommands}</td></tr>";
+                        $text .= "<tr><td class='v' colspan='2'>".Language::Get('components','installedCalls',self::$langTemplate).": {$countCommands}</td></tr>";
 
                     $links = array();
                     if (isset($component['links']))
@@ -173,7 +177,7 @@ class Komponenten
                                             if (!isset($content[$link->getTargetName()]['router'])){
                                                 Installation::log(array('text'=>'Unbekannte Komponente: '.$link->getTargetName()));
                                                 $notRoutable=true;
-                                                $errorMessage=Language::Get('components','notRoutable');
+                                                $errorMessage=Language::Get('components','notRoutable',self::$langTemplate);
                                                 break;
                                             }
                                             if ($content[$link->getTargetName()]['router']==null) continue;
@@ -184,7 +188,7 @@ class Komponenten
                                             $routes = count($content[$link->getTargetName()]['router']->getMatchedRoutes(strtoupper($call['method']), $call['path']),true);
                                             if ($routes===0){
                                                 Installation::log(array('text'=>$link->getTargetName().': unterstützt den Aufruf '.strtoupper($call['method']).' '.$call['path'].' nicht'));
-                                                $errorMessage=Language::Get('components','notRoutable2','default',array('component'=>$link->getTargetName(),'method'=>strtoupper($call['method']),'path'=>$call['path']));
+                                                $errorMessage=Language::Get('components','notRoutable2',self::$langTemplate,array('component'=>$link->getTargetName(),'method'=>strtoupper($call['method']),'path'=>$call['path']));
                                                 $notRoutable=true;
                                                 break;
                                             }
@@ -199,7 +203,7 @@ class Komponenten
                         }
 
                         if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate)
-                            $text .= "<tr><td class='v'>{$link->getName()}".(!$linkFound ? " (<font color='red'>".Language::Get('components','unknown')."</font>)" : '')."</td><td class='v'>{$link->getTargetName()}</td></tr>";
+                            $text .= "<tr><td class='v'>{$link->getName()}".(!$linkFound ? " (<font color='red'>".Language::Get('components','unknown',self::$langTemplate)."</font>)" : '')."</td><td class='v'>{$link->getTargetName()}</td></tr>";
 
                         $lastLink = $link->getName();
                     }
@@ -219,7 +223,7 @@ class Komponenten
                             }
                             if (!$found){
                                 if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate)
-                                    $text .= "<tr><td class='v'>{$callList['name']}</td><td class='e'><font color='red'>".Language::Get('components','unallocated')."</font></td></tr>";
+                                    $text .= "<tr><td class='v'>{$callList['name']}</td><td class='e'><font color='red'>".Language::Get('components','unallocated',self::$langTemplate)."</font></td></tr>";
                             }
                         }
                     }
@@ -229,32 +233,32 @@ class Komponenten
 
             if ($installedComponents==0){
                 $fail = true;
-                $error = Language::Get('components','noComponents');
+                $error = Language::Get('components','noComponents',self::$langTemplate);
             } else if ($installedLinks==0){
                 $fail = true;
-                $error = Language::Get('components','noLinks');
+                $error = Language::Get('components','noLinks',self::$langTemplate);
             } else if ($installedCommands==0){
                 $fail = true;
-                $error = Language::Get('components','noCommands');
+                $error = Language::Get('components','noCommands',self::$langTemplate);
             }
 
             if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate)
                 $text .= Design::erstelleZeile($console, '', '', '', '', '' , '');
 
-            $text .= Design::erstelleZeile($console, Language::Get('components','installedComponents'), 'e', '', 'v', $installedComponents, 'v');
-            $text .= Design::erstelleZeile($console, Language::Get('components','installedLinks'), 'e', '', 'v', $installedLinks, 'v');
-            $text .= Design::erstelleZeile($console, Language::Get('components','installedCommands'), 'e', '', 'v',$installedCommands, 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('components','installedComponents',self::$langTemplate), 'e', '', 'v', $installedComponents, 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('components','installedLinks',self::$langTemplate), 'e', '', 'v', $installedLinks, 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('components','installedCommands',self::$langTemplate), 'e', '', 'v',$installedCommands, 'v');
 
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);
         }
 
-        echo Design::erstelleBlock($console, Language::Get('components','title'), $text);
-        Installation::log(array('text'=>'beende Funktion'));
+        echo Design::erstelleBlock($console, Language::Get('components','title',self::$langTemplate), $text);
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
     }
 
     public static function install($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $fail = false;
         $url = $data['PL']['init'];
         $components = array();
@@ -276,7 +280,7 @@ class Komponenten
 
             if (count($results)==0){
                 $fail = true;
-                $error = Language::Get('components','noComponents');
+                $error = Language::Get('components','noComponents',self::$langTemplate);
             }
 
             foreach($results as $res){
@@ -295,7 +299,7 @@ class Komponenten
 
                 if (count($definitions)==0){
                     $fail = true;
-                    $error = Language::Get('components','noDefinitions');
+                    $error = Language::Get('components','noDefinitions',self::$langTemplate);
                 }
 
                 $result2 = new Request_MultiRequest();
@@ -365,24 +369,24 @@ class Komponenten
                 }
             } else{
                $fail = true;
-               $error = Language::Get('components','noDefinitions');
+               $error = Language::Get('components','noDefinitions',self::$langTemplate);
                Installation::log(array('text'=>'Fehler: '.$error, 'logLevel'=>LogLevel::ERROR));
             }
 
        }else{
             $fail = true;
-            $error = Language::Get('components','operationFailed');
+            $error = Language::Get('components','operationFailed',self::$langTemplate);
                Installation::log(array('text'=>'Fehler: '.$error, 'logLevel'=>LogLevel::ERROR));
        }
 
         if (isset($result['status']) && $result['status'] !== 200){
             $fail = true;
-            $error = Language::Get('components','operationFailed');
+            $error = Language::Get('components','operationFailed',self::$langTemplate);
             $errno = $result['status'];
             Installation::log(array('text'=>'Fehler: '.$error.' status = '.$errno, 'logLevel'=>LogLevel::ERROR));
         }
 
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
         return $components;
     }
 }

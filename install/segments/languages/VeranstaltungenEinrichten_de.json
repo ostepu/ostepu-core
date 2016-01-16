@@ -1,0 +1,9 @@
+{"courses": {
+    "title": "Veranstaltungen initialisieren",
+    "countCourses": "Veranstaltungen",
+    "createTables": "initialisieren",
+    "details": "Details anzeigen",
+    "operationFailed": "konnte nicht aufgerufen werden oder es gibt keine Veranstaltungen.",
+    "differentAnswers": "Anfrageergebnisse stimmen nicht überein",
+    "description": "Dieser Vorgang sendet, an alle existierenden Veranstaltungen, einen <span class='info-color'>POST /course<\/span> Aufruf über LCourse, um u.a. die Datenbanktabellen zu initialisieren/aktualisieren."
+}}

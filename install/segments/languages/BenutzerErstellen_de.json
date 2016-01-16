@@ -1,0 +1,9 @@
+{"createSuperAdmin": {
+    "title": "Plattform - Systemadministrator anlegen",
+    "db_user_insert": "Benutzername",
+    "db_passwd_insert": "Passwort",
+    "db_first_name_insert": "Vorname (optional)",
+    "db_last_name_insert": "Nachname (optional)",
+    "db_email_insert": "E-Mail (optional)",
+    "description": "Hier kann ein neuer Nutzer in die Plattform eingetragen werden, dabei erhält dieser Nutzer des Status eines <span class='info-color'>super-admin<\/span>. Um Einstellungen an der Plattform vornehmen zu können, wir mindestens ein solcher Systemadministrator benötigt. Die optionalen Informationen, sowie das Passwort, können auch in der Plattform selbst noch verändert werden."
+}}

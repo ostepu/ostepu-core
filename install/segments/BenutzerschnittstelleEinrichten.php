@@ -9,18 +9,19 @@ class BenutzerschnittstelleEinrichten
     public static $rank = 50;
     public static $enabledShow = true;
     public static $enabledInstall = true;
+    private static $langTemplate='BenutzerschnittstelleEinrichten';
 
     public static $onEvents = array('install'=>array('name'=>'UIConf','event'=>array('actionInstallUIConf','install', 'update')));
 
     public static function getSettingsBar(&$data)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $defs = self::getDefaults();
         $res = array(
-                     'siteKey' => array(Language::Get('userInterface','siteKey'), $data['UI']['siteKey'], $defs['siteKey'][1])
+                     'siteKey' => array(Language::Get('userInterface','siteKey',self::$langTemplate), $data['UI']['siteKey'], $defs['siteKey'][1])
                      );
         Installation::log(array('text'=>'Resultat: '.json_encode($res)));
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
         return $res;
     }
 
@@ -34,7 +35,10 @@ class BenutzerschnittstelleEinrichten
 
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
+        Installation::log(array('text'=>Language::Get('main','languageInstantiated')));
+        
         $def = self::getDefaults();
 
         $text = '';
@@ -42,18 +46,18 @@ class BenutzerschnittstelleEinrichten
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['UI']['siteKey'], 'data[UI][siteKey]', $def['siteKey'][1], true);
         echo $text;
         self::$initialized = true;
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
     }
 
     public static function show($console, $result, $data)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $text='';
-        $text .= Design::erstelleBeschreibung($console,Language::Get('userInterface','description'));
+        $text .= Design::erstelleBeschreibung($console,Language::Get('userInterface','description',self::$langTemplate));
 
         if (!$console){
-            $text .= Design::erstelleZeile($console, Language::Get('userInterface','conf'), 'e', Design::erstelleEingabezeile($console, $data['UI']['conf'], 'data[UI][conf]', '../UI/include/Config.php', true), 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0]), 'h');
-            $text .= Design::erstelleZeile($console, Language::Get('userInterface','siteKey'), 'e', Design::erstelleEingabezeile($console, $data['UI']['siteKey'], 'data[UI][siteKey]', 'b67dc54e7d03a9afcd16915a55edbad2d20a954562c482de3863456f01a0dee4', true), 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('userInterface','conf',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['UI']['conf'], 'data[UI][conf]', '../UI/include/Config.php', true), 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0]), 'h');
+            $text .= Design::erstelleZeile($console, Language::Get('userInterface','siteKey',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['UI']['siteKey'], 'data[UI][siteKey]', 'b67dc54e7d03a9afcd16915a55edbad2d20a954562c482de3863456f01a0dee4', true), 'v');
         }
 
         if (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']]!=null){
@@ -69,13 +73,13 @@ class BenutzerschnittstelleEinrichten
         if (self::$installed)
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);
 
-        echo Design::erstelleBlock($console, Language::Get('userInterface','title'), $text);
-        Installation::log(array('text'=>'beende Funktion'));
+        echo Design::erstelleBlock($console, Language::Get('userInterface','title',self::$langTemplate), $text);
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
     }
 
     public static function install($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $fail = false;
         $file = $data['UI']['conf'];
 
@@ -100,7 +104,7 @@ class BenutzerschnittstelleEinrichten
             return null;
         }
 
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
         return null;
     }
 }

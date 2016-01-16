@@ -8,6 +8,7 @@ class GrundeinstellungenAusgeben
     public static $page = 2;
     public static $rank = 75;
     public static $enabledShow = true;
+    private static $langTemplate='GrundeinstellungenAusgeben';
 
     public static $onEvents = array('install'=>array('name'=>'installInit','event'=>array('actionInstallInit','install','update')));
 
@@ -22,7 +23,10 @@ class GrundeinstellungenAusgeben
 
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
+        Installation::log(array('text'=>Language::Get('main','languageInstantiated')));
+        
         $def = self::getDefaults();
 
         $text = '';
@@ -31,21 +35,21 @@ class GrundeinstellungenAusgeben
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['PL']['pl_main_details'], 'data[PL][pl_main_details]', $def['pl_main_details'][1], true);
         echo $text;
         self::$initialized = true;
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
     }
 
     public static function show($console, $result, $data)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $text = '';
         if (!$console){
-            $text .= Design::erstelleBeschreibung($console,Language::Get('general_settings','description'));
+            $text .= Design::erstelleBeschreibung($console,Language::Get('general_settings','description',self::$langTemplate));
 
-            $text .= Design::erstelleZeile($console, Language::Get('general_settings','init'), 'e', '', 'v', Design::erstelleSubmitButton('actionInstallInit'), 'h');
-            $text .= Design::erstelleZeile($console, Language::Get('database','db_override'), 'e', Design::erstelleAuswahl($console, $data['DB']['db_override'], 'data[DB][db_override]', 'override', null, true), 'v_c');
-            $text .= Design::erstelleZeile($console, Language::Get('database','db_ignore'), 'e', Design::erstelleAuswahl($console, $data['DB']['db_ignore'], 'data[DB][db_ignore]', 'ignore', null, true), 'v_c');
+            $text .= Design::erstelleZeile($console, Language::Get('general_settings','init',self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton('actionInstallInit'), 'h');
+            $text .= Design::erstelleZeile($console, Language::Get('database','db_override',self::$langTemplate), 'e', Design::erstelleAuswahl($console, $data['DB']['db_override'], 'data[DB][db_override]', 'override', null, true), 'v_c');
+            $text .= Design::erstelleZeile($console, Language::Get('database','db_ignore',self::$langTemplate), 'e', Design::erstelleAuswahl($console, $data['DB']['db_ignore'], 'data[DB][db_ignore]', 'ignore', null, true), 'v_c');
 
-            $text .= Design::erstelleZeile($console, Language::Get('general_settings','details'), 'e', Design::erstelleAuswahl($console, $data['PL']['pl_main_details'], 'data[PL][pl_main_details]', 'details', null, true), 'v_c');
+            $text .= Design::erstelleZeile($console, Language::Get('general_settings','details',self::$langTemplate), 'e', Design::erstelleAuswahl($console, $data['PL']['pl_main_details'], 'data[PL][pl_main_details]', 'details', null, true), 'v_c');
         }
 
         if (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']]!=null){
@@ -71,14 +75,14 @@ class GrundeinstellungenAusgeben
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);
         }
 
-        echo Design::erstelleBlock($console, Language::Get('general_settings','title'), $text);
-        Installation::log(array('text'=>'beende Funktion'));
+        echo Design::erstelleBlock($console, Language::Get('general_settings','title',self::$langTemplate), $text);
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
         return null;
     }
 
     public static function install($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         // Datenbank einrichten
         if (!isset($data['action']) || $data['action']!='update'){
             if (!$fail && (isset($data['DB']['db_override']) && $data['DB']['db_override'] === 'override')){
@@ -139,7 +143,7 @@ class GrundeinstellungenAusgeben
             }
         }
 
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
         return $res;
     }
 }

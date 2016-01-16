@@ -1,0 +1,15 @@
+{
+    "general_settings": {
+        "title": "Grundeinstellungen",
+        "details": "Details anzeigen",
+        "init": "Initialisieren",
+        "description": "Dieser Bereich erstellt die definierte Datenbank und initialisiert die Komponenten CControl, DBQuery und DBQuery2 über einen <span class='info-color'>POST /platform<\/span> Aufruf."
+    },
+    "database": {
+        "title": "Datenbank einrichten",
+        "db_override": "Datenbank ueberschreiben",
+        "db_ignore": "Existierende DB ignorieren",
+        "databaseSql": "Datenbankdatei",
+        "description": "..."
+    }
+}

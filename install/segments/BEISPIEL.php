@@ -41,8 +41,8 @@ class BEISPIEL // der Name der Klasse muss mit dem Dateinamen uebereinstimmen
     public static function install($data, &$fail, &$errno, &$error)
     {
         Installation::log(array('text'=>'starte Funktion'));
-        return null;
         Installation::log(array('text'=>'beende Funktion'));
+        return null;
     }
 }
 #endregion BEISPIEL

@@ -8,6 +8,7 @@ class VeranstaltungenBereinigen
     public static $page = 4;
     public static $rank = 250;
     public static $enabledShow = true;
+    private static $langTemplate='VeranstaltungenBereinigen';
 
     public static $onEvents = array('collectCleanCourses'=>array('procedure'=>'collectCleanCourses','name'=>'collectCleanCourses','event'=>array('actionCollectCleanCourses')),'cleanCourses'=>array('procedure'=>'cleanCourses','name'=>'cleanCourses','event'=>array('actionCleanCourses')));
 
@@ -16,24 +17,27 @@ class VeranstaltungenBereinigen
     }
 
     public static function init($console, &$data, &$fail, &$errno, &$error)
-    {   Installation::log(array('text'=>'starte Funktion'));
+    {   Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
+        Installation::log(array('text'=>Language::Get('main','languageInstantiated')));
+        
         self::$initialized = true;
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
     }
 
     public static function show($console, $result, $data)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $executedEvents = array();
         foreach($result as $key => $value){
            $executedEvents[] = $key;
         }
 
         $text='';
-        $text .= Design::erstelleBeschreibung($console,Language::Get('cleanCourses','description'));
+        $text .= Design::erstelleBeschreibung($console,Language::Get('cleanCourses','description',self::$langTemplate));
 
         if (!$console){
-            $text .= Design::erstelleZeile($console, Language::Get('cleanCourses','getAmount'), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['collectCleanCourses']['event'][0],Language::Get('cleanCourses','collectAmount')), 'h');
+            $text .= Design::erstelleZeile($console, Language::Get('cleanCourses','getAmount',self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['collectCleanCourses']['event'][0],Language::Get('cleanCourses','collectAmount',self::$langTemplate)), 'h');
         }
 
         if (isset($result[self::$onEvents['collectCleanCourses']['name']]) && $result[self::$onEvents['collectCleanCourses']['name']]!=null){
@@ -61,24 +65,24 @@ class VeranstaltungenBereinigen
                     }
                 }
 
-                $text .= Design::erstelleZeile($console, Language::Get('cleanCourses','dirtyRows'), 'e', $count , 'v_c');
+                $text .= Design::erstelleZeile($console, Language::Get('cleanCourses','dirtyRows',self::$langTemplate), 'e', $count , 'v_c');
             }
 
             if (!$console && in_array(self::$onEvents['collectCleanCourses']['name'],$executedEvents)){
-                $text .= Design::erstelleZeile($console, Language::Get('cleanCourses','cleanCourses'), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['cleanCourses']['event'][0],Language::Get('cleanCourses','clean')), 'h');
+                $text .= Design::erstelleZeile($console, Language::Get('cleanCourses','cleanCourses',self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['cleanCourses']['event'][0],Language::Get('cleanCourses','clean',self::$langTemplate)), 'h');
             } elseif (!$console && in_array(self::$onEvents['cleanCourses']['name'],$executedEvents)){
                 $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);
             }
         }
 
-        echo Design::erstelleBlock($console, Language::Get('cleanCourses','title'), $text);
-        Installation::log(array('text'=>'beende Funktion'));
+        echo Design::erstelleBlock($console, Language::Get('cleanCourses','title',self::$langTemplate), $text);
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
         return null;
     }
 
     public static function collectCleanCourses($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $res = array();
 
         if (!$fail){
@@ -140,7 +144,7 @@ class VeranstaltungenBereinigen
 
             } else {
                 $fail = true;
-                $error = "GET /DB/DBCourse/course ".Language::Get('courses','operationFailed');
+                $error = "GET /DB/DBCourse/course ".Language::Get('courses','operationFailed',self::$langTemplate);
                 if (isset($result[0]['status'])){
                     $errno = $result[0]['status'];
                 }
@@ -148,13 +152,13 @@ class VeranstaltungenBereinigen
             }
         }
 
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
         return $res;
     }
 
     public static function cleanCourses($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $res = array();
 
         if (!$fail){
@@ -195,7 +199,7 @@ class VeranstaltungenBereinigen
 
             } else {
                 $fail = true;
-                $error = "GET /DB/DBCourse/course ".Language::Get('courses','operationFailed');
+                $error = "GET /DB/DBCourse/course ".Language::Get('courses','operationFailed',self::$langTemplate);
                 if (isset($result[0]['status'])){
                     $errno = $result[0]['status'];
                 }
@@ -203,7 +207,7 @@ class VeranstaltungenBereinigen
             }
         }
 
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
         return $res;
     }
 }

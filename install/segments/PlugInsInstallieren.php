@@ -8,6 +8,7 @@ class PlugInsInstallieren
     public static $page = 6;
     public static $rank = 100;
     public static $enabledShow = true;
+    private static $langTemplate='PlugInsInstallieren';
 
     public static $onEvents = array(
                                     'check'=>array(
@@ -59,7 +60,10 @@ class PlugInsInstallieren
 
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
+        Installation::log(array('text'=>Language::Get('main','languageInstantiated')));
+        
         $def = self::getDefaults();
 
         $text = '';
@@ -68,7 +72,7 @@ class PlugInsInstallieren
         }
         echo $text;
         self::$initialized = true;
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
     }
     
     private static $pluginFiles=null;
@@ -93,18 +97,18 @@ class PlugInsInstallieren
 
     public static function show($console, $result, $data)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $pluginFiles = self::getPluginFiles();
         $text='';
-        $text .= Design::erstelleBeschreibung($console,Language::Get('packages','description'));
+        $text .= Design::erstelleBeschreibung($console,Language::Get('packages','description',self::$langTemplate));
 
         if (self::$onEvents['install']['enabledInstall'])
-            $text .= Design::erstelleZeile($console, Language::Get('packages','installSelected'), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0],Language::Get('main','install')), 'h');
+            $text .= Design::erstelleZeile($console, Language::Get('packages','installSelected',self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0],Language::Get('main','install')), 'h');
         if (self::$onEvents['uninstall']['enabledInstall'])
-            $text .= Design::erstelleZeile($console, Language::Get('packages','uninstallSelected'), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['uninstall']['event'][0],Language::Get('main','uninstall')), 'h');
+            $text .= Design::erstelleZeile($console, Language::Get('packages','uninstallSelected',self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['uninstall']['event'][0],Language::Get('main','uninstall')), 'h');
 
         if (self::$onEvents['validateFiles']['enabledInstall'])
-            $text .= Design::erstelleZeile($console, Language::Get('packages','validateFilesDesc'), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['validateFiles']['event'][0],Language::Get('packages','validateFiles')), 'h');
+            $text .= Design::erstelleZeile($console, Language::Get('packages','validateFilesDesc',self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['validateFiles']['event'][0],Language::Get('packages','validateFiles',self::$langTemplate)), 'h');
 
         $validateFiles=false;
         if (isset($result[self::$onEvents['validateFiles']['name']])){
@@ -135,7 +139,7 @@ class PlugInsInstallieren
                 foreach($installedPlugins as $instPlug){
                     if ($name == $instPlug['name']){
                         if (isset($instPlug['version'])){
-                            $text .= Design::erstelleZeile($console, Language::Get('packages','currentVersion') , 'v', 'v'.$instPlug['version'] , 'v');
+                            $text .= Design::erstelleZeile($console, Language::Get('packages','currentVersion',self::$langTemplate) , 'v', 'v'.$instPlug['version'] , 'v');
                         }
                         $isInstalled=true;
                         break;
@@ -144,7 +148,7 @@ class PlugInsInstallieren
             }
 
             if (!$isInstalled)
-                $text .= Design::erstelleZeile($console, Language::Get('packages','currentVersion') , 'v', '---' , 'v');
+                $text .= Design::erstelleZeile($console, Language::Get('packages','currentVersion',self::$langTemplate) , 'v', '---' , 'v');
 
             $vorText = '';
             foreach ($voraussetzungen as $vor){
@@ -154,7 +158,7 @@ class PlugInsInstallieren
                 
             } else {
                 $vorText = substr($vorText,0,-2);
-                $text .= Design::erstelleZeile($console, Language::Get('packages','requirements') , 'v', $vorText , 'v');
+                $text .= Design::erstelleZeile($console, Language::Get('packages','requirements',self::$langTemplate) , 'v', $vorText , 'v');
             }
 
             $file = dirname(__FILE__) . '/../../Plugins/'.$plug;
@@ -183,7 +187,7 @@ class PlugInsInstallieren
                                 if (trim($cont) != ''){
                                     $val = @json_decode(file_get_contents($f));
                                     if ($val===null){
-                                        $text .= Design::erstelleZeileShort($console, realpath($f) , 'break v', Language::Get('packages','jsonInvalid'), 'v error_light break');
+                                        $text .= Design::erstelleZeileShort($console, realpath($f) , 'break v', Language::Get('packages','jsonInvalid',self::$langTemplate), 'v error_light break');
                                     }
                                 }
                             }
@@ -197,6 +201,15 @@ class PlugInsInstallieren
                                     $text .= Design::erstelleZeileShort($console, realpath($f), 'break v', implode('<br>',$output), 'v error_light break');
                                 }
                             }
+                            
+                            if ($fileSize>0 && strtolower(substr($f,-5))==='.ini'){
+                                // validiere die ini Datei
+                                $cont = file_get_contents($f);
+                                $val = parse_ini_file($f);
+                                if ($val===false){
+                                    $text .= Design::erstelleZeileShort($console, realpath($f) , 'break v', Language::Get('packages','iniInvalid',self::$langTemplate), 'v error_light break');
+                                }
+                            }
                         }
                     }
                 }
@@ -204,13 +217,13 @@ class PlugInsInstallieren
             }
 
             if ($componentCount>0){
-                $text .= Design::erstelleZeile($console, Language::Get('packages','numberComponents') , 'v', $componentCount , 'v');
+                $text .= Design::erstelleZeile($console, Language::Get('packages','numberComponents',self::$langTemplate) , 'v', $componentCount , 'v');
             }
             if ($fileCount>0){
-                $text .= Design::erstelleZeile($console, Language::Get('packages','numberFiles') , 'v', $fileCount , 'v');
+                $text .= Design::erstelleZeile($console, Language::Get('packages','numberFiles',self::$langTemplate) , 'v', $fileCount , 'v');
             }
             if ($fileSize>0){
-                $text .= Design::erstelleZeile($console, Language::Get('packages','size') , 'v', Design::formatBytes($fileSize) , 'v');
+                $text .= Design::erstelleZeile($console, Language::Get('packages','size',self::$langTemplate) , 'v', Design::formatBytes($fileSize) , 'v');
             }
         }
 
@@ -231,15 +244,15 @@ class PlugInsInstallieren
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);
         }*/
 
-        echo Design::erstelleBlock($console, Language::Get('packages','title'), $text);
+        echo Design::erstelleBlock($console, Language::Get('packages','title',self::$langTemplate), $text);
 
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
         return null;
     }
 
     public static function installCheckPlugins($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $res = array();
 
         if (!$fail){
@@ -264,13 +277,13 @@ class PlugInsInstallieren
             }
         }
 
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
         return $res;
     }
 
     public static function gibPluginDateien($input, &$fileList, &$fileListAddress, &$componentFiles)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $mainPath = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '../..');
         $mainPath = str_replace(array("\\","/"), array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR), $mainPath);
         
@@ -323,7 +336,7 @@ class PlugInsInstallieren
                         // initialisieren
                         $pathOld = getcwd();
                         chdir($location);                             
-                        exec('(git clone --branch '.$branch.' '.$repo.' .) 2>&1', $output, $return);   
+                        exec('(git clone --single-branch --depth 1 --branch '.$branch.' '.$repo.' .) 2>&1', $output, $return);   
                         chdir($pathOld);          
                     }
                     
@@ -433,7 +446,7 @@ class PlugInsInstallieren
             $fileListAddress[] = $key;
             $fileList[] = $a;
         }
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
     }
 
     public static function installValidateFiles($data, &$fail, &$errno, &$error)
@@ -443,7 +456,7 @@ class PlugInsInstallieren
 
     public static function installInstallPlugins($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $pluginFiles = self::getPluginFiles();
         $res = array();
 
@@ -495,13 +508,13 @@ class PlugInsInstallieren
             //Zugang::SendeDateien($fileList,$fileListAddress,$data);
         }
 
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
         return $res;
     }
 
     public static function installUninstallPlugins($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $res = array();
 
         if (!$fail){
@@ -531,7 +544,7 @@ class PlugInsInstallieren
             }
         }
 
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
         return $res;
     }
 }

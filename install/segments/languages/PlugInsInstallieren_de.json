@@ -1,0 +1,15 @@
+{"packages": {
+    "title": "Pakete",
+    "installSelected": "ausgewaehlte installieren",
+    "uninstallSelected": "ausgewaehlte deinstallieren",
+    "currentVersion": "vorhandene Version",
+    "requirements": "Voraussetzungen",
+    "numberComponents": "Komponenten",
+    "numberFiles": "Dateien",
+    "size": "Größe",
+    "description": "",
+    "validateFilesDesc": "Prüfe *.json, *.ini und *.php Dateien auf syntaktische Korrektheit",
+    "validateFiles": "Prüfen",
+    "jsonInvalid": "Datei konnte nicht validiert werden",
+    "iniInvalid": "Datei konnte nicht validiert werden"
+}}

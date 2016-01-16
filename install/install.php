@@ -62,7 +62,7 @@ class Installer
      */
     public function __construct($_argv)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
 
         if ($_argv!=null){
             Installation::log(array('text'=>'Konsolenparameter gefunden'));
@@ -101,7 +101,7 @@ class Installer
             $this->CallInstall();
         }
 
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
     }
 
     /**
@@ -115,7 +115,7 @@ class Installer
      */
     public static function callCheckModules($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         if (constant('ISCLI')){
             Installation::log(array('text'=>'ISCLI ist gesetzt'));
             return json_decode(Request::get($data['PL']['url'].'/install/install.php/checkModulesExtern',array(),'')['content'],true);
@@ -130,11 +130,11 @@ class Installer
      */
     public function checkModulesExtern()
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $this->loadSegments();
         $dat = null;
         echo json_encode(ModulpruefungAusgeben::install(null,$dat,$dat,$dat));
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
     }
 
     /**
@@ -144,7 +144,7 @@ class Installer
      */
     public function loadSegments()
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $p = dirname(__FILE__) . '/segments';
         Einstellungen::generatepath($p);
         if ($handle = opendir($p)) {
@@ -154,6 +154,7 @@ class Installer
                 $segs[] = $file;
             }
             foreach($segs as $seg){
+                if (is_dir(dirname(__FILE__) . '/segments/'.$seg)) continue;
                 include_once dirname(__FILE__) . '/segments/'.$seg;
                 Einstellungen::$segments[] = substr($seg,0,count($seg)-5);
             }
@@ -189,7 +190,7 @@ class Installer
         Installation::log(array('text'=>'sortiere'));
         usort(Einstellungen::$segments, "cmp");
         Installation::log(array('text'=>'geladene Segmente = '.implode(',',Einstellungen::$segments)));
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
     }
 
     /**
@@ -199,7 +200,7 @@ class Installer
      */
     public function CallInstall($console = false)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
 
         $output = array();
         $installFail = false;

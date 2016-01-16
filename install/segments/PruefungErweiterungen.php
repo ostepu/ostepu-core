@@ -7,14 +7,23 @@ class PruefungErweiterungen
     public static $page = 0;
     public static $rank = 50;
     public static $enabledShow = true;
+    private static $langTemplate='PruefungErweiterungen';
 
     public static $onEvents = array('check'=>array('name'=>'checkExtensions','event'=>array('actionCheckExtensions','page','install', 'update')));
 
+    public static function init($console, &$data, &$fail, &$errno, &$error)
+    {
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
+        Installation::log(array('text'=>Language::Get('main','languageInstantiated')));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
+    }
+    
     public static function show($console, $result, $data)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $text = '';
-        $text .= Design::erstelleBeschreibung($console,Language::Get('extensions','description'));
+        $text .= Design::erstelleBeschreibung($console,Language::Get('extensions','description',self::$langTemplate));
 
         if (isset($result[self::$onEvents['check']['name']]) && $result[self::$onEvents['check']['name']]!=null){
            $result =  $result[self::$onEvents['check']['name']];
@@ -36,15 +45,15 @@ class PruefungErweiterungen
         } else
             $text .= Design::erstelleZeile($console, "<font color='red'>".Language::Get('main','fail')."</font>", 'e');
 
-        echo Design::erstelleBlock($console, Language::Get('extensions','title'), $text);
+        echo Design::erstelleBlock($console, Language::Get('extensions','title',self::$langTemplate), $text);
 
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
         return null;
     }
 
     public static function install($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $result = array();
         // check if php extensions are existing
         $result['curl'] = self::apache_extension_exists('curl');
@@ -58,22 +67,22 @@ class PruefungErweiterungen
         $result['gd'] = self::apache_extension_exists('gd');
 
         Installation::log(array('text'=>'Apache-Erweiterungen = '.json_encode($result)));
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
         return $result;
     }
 
     public static function apache_extension_exists($extension)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         if (!function_exists('extension_loaded')){
             Installation::log(array('text'=>'Die Funktion extension_loaded() existiert nicht', 'logLevel'=>LogLevel::ERROR));
-            Installation::log(array('text'=>'beende Funktion'));
+            Installation::log(array('text'=>Language::Get('main','functionEnd')));
             return false;
         }
 
         Installation::log(array('text'=>'prüfe: '.$extension));
         $res = extension_loaded($extension);
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
         return $res;
     }
 }

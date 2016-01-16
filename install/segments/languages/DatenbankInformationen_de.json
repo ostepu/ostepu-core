@@ -1,0 +1,20 @@
+{
+    "database_informations": {
+        "title": "Datenbankinformationen",
+        "db_path": "Datenbankpfad",
+        "db_name": "Datenbankname",
+        "description": "Tragen Sie hier die URL ein, unter welcher die Datenbankanwendung zu erreichen ist und vergeben Sie einen eindeutigen Namen, für die neue Datenbank. Möchten Sie eine bereits bestehende Datenbank nutzen, so tragen Sie deren Namen ein. "
+    },
+    "databasePlatformUser": {
+        "title": "Plattform-Datenbanknutzer",
+        "db_passwd_operator": "Passwort",
+        "db_user_operator": "Plattform-Datenbanknutzer",
+        "description": "Geben Sie hier den Benutzernamen und das Passwort für den Datenbankzugang, der Komponenten, ein."
+    },
+    "databaseAdmin": {
+        "title": "Datenbankadministrator",
+        "db_user": "Datenbankadministrator",
+        "db_passwd": "Passwort",
+        "description": "Tragen Sie hier einen mit ausreichend Rechten ausgestatteten Datenbanknutzer und sein Passwort ein. Dieser soll zum Erstellen der notwendigen Datenbankaspekte verwendet werden."
+    }
+}

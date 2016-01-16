@@ -8,6 +8,7 @@ class MainInfo
     public static $rank = 0; // bestimmt die Reihenfolge im Vergleich zu anderen Segmenten auf der selben Seite
                               // niedriger Rank = fruehe Ausfuehrung, hoher Rank = spaetere Ausfuehrung
     public static $enabledShow = true; // ob die show() Funktion aufrufbar ist
+    private static $langTemplate='MainInfo';
 
     public static $onEvents = array(
                                     '0' =>array(
@@ -21,16 +22,24 @@ class MainInfo
                                                      )
                                     );
 
+    public static function init($console, &$data, &$fail, &$errno, &$error)
+    {
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
+        Installation::log(array('text'=>Language::Get('main','languageInstantiated')));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
+    }
+    
     public static function show($console, $result, $data)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $text='';
         $failure=false;
         Einstellungen::$path = dirname(__FILE__) . '/../config';
         Installation::log(array('text'=>'prüfe Pfad: '.Einstellungen::$path));
         Installation::log(array('text'=>'prüfe Datei: '.__FILE__));
         if (!is_dir(Einstellungen::$path) || !is_writable(__FILE__)) {
-            $text .= Design::erstelleZeile($console, Language::Get('mainInfo','notWritable'), 'error');
+            $text .= Design::erstelleZeile($console, Language::Get('mainInfo','notWritable',self::$langTemplate), 'error');
             $failure = true;
             Installation::log(array('text'=>'keine Schreibrechte', 'logLevel'=>LogLevel::ERROR));
         } else {
@@ -38,9 +47,9 @@ class MainInfo
         }
 
         if ($failure) {
-            echo Design::erstelleBlock($console, Language::Get('mainInfo','title'), $text);
+            echo Design::erstelleBlock($console, Language::Get('mainInfo','title',self::$langTemplate), $text);
         }
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Language::Get('main','functionEnd')));
     }
 }
 #endregion MainInfo
