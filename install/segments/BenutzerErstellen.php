@@ -53,7 +53,7 @@ class BenutzerErstellen
             $text .= Design::erstelleZeile($console, Language::Get('createSuperAdmin','db_passwd_insert',self::$langTemplate), 'e', Design::erstellePasswortzeile($console, $data['DB']['db_passwd_insert'], 'data[DB][db_passwd_insert]', ''), 'v');
             $text .= Design::erstelleZeile($console, Language::Get('createSuperAdmin','db_first_name_insert',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['DB']['db_first_name_insert'], 'data[DB][db_first_name_insert]', ''), 'v');
             $text .= Design::erstelleZeile($console, Language::Get('createSuperAdmin','db_last_name_insert',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['DB']['db_last_name_insert'], 'data[DB][db_last_name_insert]', ''), 'v');
-            $text .= Design::erstelleZeile($console, Language::Get('createSuperAdmin','db_email_insert',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['DB']['db_email_insert'], 'data[DB][db_email_insert]', ''), 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0], Language::Get('main','create',self::$langTemplate)), 'h');
+            $text .= Design::erstelleZeile($console, Language::Get('createSuperAdmin','db_email_insert',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['DB']['db_email_insert'], 'data[DB][db_email_insert]', ''), 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0], Language::Get('main','create')), 'h');
         }
 
         if (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']]!=null){
