@@ -4,5 +4,6 @@
     "collectAmount": "Ermitteln",
     "description": "Hier werden überfüssige Datenbankeinträge ermittelt und bereinigt.",
     "cleanCourses": "Plattform bereinigen",
-    "clean": "Bereinigen"
+    "clean": "Bereinigen",
+    "rounded":"~"
 }}

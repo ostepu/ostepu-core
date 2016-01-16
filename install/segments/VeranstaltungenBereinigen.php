@@ -54,18 +54,20 @@ class VeranstaltungenBereinigen
             if (!$console && isset($data['C']['c_details']) && $data['C']['c_details'] === 'details'){
                 if (isset($content)){
                     foreach ($content as $component => $dat){
-                        $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'><div align ='center'>{$dat['amount']}</align></td></tr>";
+                        $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'><div align ='center'>".$dat['amount'].' ('.Language::Get('cleanCourses','rounded',self::$langTemplate).Design::formatBytes($dat['size']).')'."</align></td></tr>";
                     }
                 }
             } else {
                 $count=0;
+                $size=0;
                 if (isset($content)){
                     foreach ($content as $component => $dat){
                         $count+=$dat['amount'];
+                        $size+=$dat['size'];
                     }
                 }
 
-                $text .= Design::erstelleZeile($console, Language::Get('cleanCourses','dirtyRows',self::$langTemplate), 'e', $count , 'v_c');
+                $text .= Design::erstelleZeile($console, Language::Get('cleanCourses','dirtyRows',self::$langTemplate), 'e', $count.' ('.Language::Get('cleanCourses','rounded',self::$langTemplate).Design::formatBytes($size).')' , 'v_c');
             }
 
             if (!$console && in_array(self::$onEvents['collectCleanCourses']['name'],$executedEvents)){
@@ -123,14 +125,18 @@ class VeranstaltungenBereinigen
                             $tables = json_decode($result['content'],true);
                             foreach ($tables as $table){
                                 if (!isset($res[$table['component']])){
-                                    $res[$table['component']] = array('amount'=>0,'dirtyTables'=>0,'cleanTables'=>0);
+                                    $res[$table['component']] = array('size'=>0,'amount'=>0,'dirtyTables'=>0,'cleanTables'=>0);
                                 }
+                                
+                                if (!isset($table['amount'])) $table['amount'] = 0;
+                                if (!isset($table['size'])) $table['size'] = 0;
 
                                 if (isset($table['amount'])){
                                     if ($table['amount'] == 0){
                                         $res[$table['component']]['cleanTables']++;
                                     } else {
                                         $res[$table['component']]['amount']+=$table['amount'];
+                                        $res[$table['component']]['size']+=$table['size'];
                                         $res[$table['component']]['dirtyTables']++;
                                     }
                                 } else {
