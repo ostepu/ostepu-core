@@ -63,7 +63,7 @@ class PlugInsInstallieren
         Installation::log(array('text'=>Language::Get('main','functionBegin')));
         Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
         Installation::log(array('text'=>Language::Get('main','languageInstantiated')));
-        
+       
         $def = self::getDefaults();
 
         $text = '';
@@ -74,14 +74,14 @@ class PlugInsInstallieren
         self::$initialized = true;
         Installation::log(array('text'=>Language::Get('main','functionEnd')));
     }
-    
+   
     private static $pluginFiles=null;
     private static function getPluginFiles()
     {
         if(self::$pluginFiles !== null){
             return self::$pluginFiles;
         }
-        
+       
         self::$pluginFiles = array();
         if ($handle = @opendir(dirname(__FILE__) . '/../../Plugins')) {
             while (false !== ($file = readdir($handle))) {
@@ -91,12 +91,14 @@ class PlugInsInstallieren
             }
             closedir($handle);
         }
-        
+       
         return self::$pluginFiles;
     }
 
     public static function show($console, $result, $data)
     {
+        if (!Einstellungen::$accessAllowed) return;
+           
         Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $pluginFiles = self::getPluginFiles();
         $text='';
@@ -155,7 +157,7 @@ class PlugInsInstallieren
                 $vorText .= "{$vor['name']} v{$vor['version']}, ";
             }
             if ($vorText==''){
-                
+               
             } else {
                 $vorText = substr($vorText,0,-2);
                 $text .= Design::erstelleZeile($console, Language::Get('packages','requirements',self::$langTemplate) , 'v', $vorText , 'v');
@@ -201,7 +203,7 @@ class PlugInsInstallieren
                                     $text .= Design::erstelleZeileShort($console, realpath($f), 'break v', implode('<br>',$output), 'v error_light break');
                                 }
                             }
-                            
+                           
                             if ($fileSize>0 && strtolower(substr($f,-5))==='.ini'){
                                 // validiere die ini Datei
                                 $cont = file_get_contents($f);
@@ -286,32 +288,32 @@ class PlugInsInstallieren
         Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $mainPath = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '../..');
         $mainPath = str_replace(array("\\","/"), array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR), $mainPath);
-        
+       
         if (isset($input['files'])){
             $files = $input['files'];
             if (!is_array($files)) $files = array($files);
-            
+           
             foreach ($files as $file){
                 $type = 'local';
                 $params = array();
                 $exclude = array();
                 $path = null;
                 $sizePath = null;
-                
+               
                 if (isset($file['path'])){
                     $path = realpath($mainPath . DIRECTORY_SEPARATOR . $file['path']);
                     $sizePath = $path;
                 }
-                
+               
                 if (isset($file['type'])){
                     $type = $file['type'];
                 }
-                
+               
                 if (isset($file['params'])){
                     $params = $file['params'];
                 }
-                
-                if ($type === 'git'){                
+               
+                if ($type === 'git'){               
                     $params['path'] = rtrim($params['path'],"\\/");
                     $location = $mainPath . DIRECTORY_SEPARATOR . $params['path'];
                     Einstellungen::generatepath($location);
@@ -320,8 +322,8 @@ class PlugInsInstallieren
                     $repo = $params['URL'];
                     $branch = $params['branch'];
                     $exclude[] = $location . DIRECTORY_SEPARATOR . '.git';
-                    
-                
+                   
+               
                     if (isset($file['exclude'])){
                         $tempExclude = $file['exclude'];
                         if (!is_array($exclude)) $exclude = array($exclude);
@@ -331,21 +333,21 @@ class PlugInsInstallieren
                         }
                         $exclude = array_merge($exclude, $tempExclude);
                     }
-                    
+                   
                     if (!file_exists($location."/.git")){
                         // initialisieren
                         $pathOld = getcwd();
-                        chdir($location);                             
-                        exec('(git clone --single-branch --depth 1 --branch '.$branch.' '.$repo.' .) 2>&1', $output, $return);   
-                        chdir($pathOld);          
+                        chdir($location);                            
+                        exec('(git clone --single-branch --depth 1 --branch '.$branch.' '.$repo.' .) 2>&1', $output, $return);  
+                        chdir($pathOld);         
                     }
-                    
+                   
                     $pathOld = getcwd();
-                    chdir($location);     
+                    chdir($location);    
                     exec('(git fetch) 2>&1', $output, $return);
                     exec('(git pull) 2>&1', $output, $return);
-                    chdir($pathOld);       
-                    
+                    chdir($pathOld);      
+                   
                     $found = Installation::read_all_files($location, $exclude);
                     if ($location . DIRECTORY_SEPARATOR === $path){
                         // kein Verschieben notwendig
@@ -358,14 +360,14 @@ class PlugInsInstallieren
                             $res = @copy($temp, $file);
                         }
                     }
-                    
+                   
                     foreach($found['files'] as $temp){
                         $file = substr($temp,strlen($location)+1);
                         $file = $path . DIRECTORY_SEPARATOR . $file;
                         $fileList[] = $file;
                         $fileListAddress[] = substr($file,strlen($mainPath)+1);
                     }
-                    
+                   
                 } elseif ($type === 'local'){
                     if (isset($path) && isset($file['exclude'])){
                         $exclude = $file['exclude'];
@@ -375,8 +377,8 @@ class PlugInsInstallieren
                             $ex = $path . DIRECTORY_SEPARATOR . $ex;
                         }
                     }
-                
-                
+               
+               
                     if (isset($sizePath)){
                         if (is_dir($sizePath)){
                             $found = Installation::read_all_files($sizePath, $exclude);
@@ -400,7 +402,7 @@ class PlugInsInstallieren
             foreach ($files as $file){
                 if (isset($file['conf'])){
                     $file['conf'] = str_replace(array("\\","/"), array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR), $file['conf']);
-                    
+                   
                     if (!file_exists($mainPath . DIRECTORY_SEPARATOR . $file['conf']) || !is_readable($mainPath . DIRECTORY_SEPARATOR . $file['conf'])) continue;
                     $componentFiles[] = $mainPath . DIRECTORY_SEPARATOR . $file['conf'];
                     $definition = file_get_contents($mainPath . DIRECTORY_SEPARATOR . $file['conf']);
@@ -439,7 +441,7 @@ class PlugInsInstallieren
                 $newFileListAddress[$a] = $fileList[$key];
             }
         }
-        
+       
         $fileListAddress = array();
         $fileList = array();
         foreach ($newFileListAddress as $key => $a){
@@ -466,7 +468,7 @@ class PlugInsInstallieren
             $fileListAddress = array();
             $componentFiles = array();
             $selectedPackages = array();
-            
+           
             if (isset($data['PLUG'])){
                 foreach ($data['PLUG'] as $plugs => $value){
                     if ($value !== null && $value !== '_'){
@@ -476,16 +478,16 @@ class PlugInsInstallieren
             }
 
             foreach ($pluginFiles as $plug){
-                $file = dirname(__FILE__) . '/../../Plugins/'.$plug;                
+                $file = dirname(__FILE__) . '/../../Plugins/'.$plug;               
                 if (substr($file,-5)=='.json' && file_exists($file) && is_readable($file)){
                     $dat = file_get_contents($file);
                     $dat = json_decode($dat,true);
                     if (!isset($dat['name'])) continue;
                     if (!in_array('plug_install_'.$dat['name'],$selectedPackages)) continue;
-                    
+                   
                 }
             }
-            
+           
             /*foreach ($pluginFiles as $plug){
                 $file = dirname(__FILE__) . '/../../Plugins/'.$plugs;
 

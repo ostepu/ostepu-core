@@ -14,10 +14,13 @@ class Serverliste
         Installation::log(array('text'=>Language::Get('main','languageInstantiated')));
         Installation::log(array('text'=>Language::Get('main','functionEnd')));
     }
-    
+   
     public static function showInfoBar(&$data)
     {
         Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
+        Installation::log(array('text'=>Language::Get('main','languageInstantiated')));       
+       
         echo "<tr><td class='e'>".Language::Get('serverList','serverList',self::$langTemplate)."</td></tr>";
         foreach(Einstellungen::$serverFiles as $serverFile){
             $file = pathinfo($serverFile)['filename'];

@@ -45,7 +45,7 @@ class DatenbankInformationen
         Installation::log(array('text'=>Language::Get('main','functionBegin')));
         Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
         Installation::log(array('text'=>Language::Get('main','languageInstantiated')));
-        
+       
         $def = self::getDefaults();
 
         $text = '';
@@ -62,6 +62,8 @@ class DatenbankInformationen
 
     public static function show($console, $result, $data)
     {
+        if (!Einstellungen::$accessAllowed) return;
+           
         Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $text = '';
         if (!$console){

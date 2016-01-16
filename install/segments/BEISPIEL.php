@@ -33,6 +33,8 @@ class BEISPIEL // der Name der Klasse muss mit dem Dateinamen uebereinstimmen
 
     public static function show($console, $result, $data)
     {
+        if (!Einstellungen::$accessAllowed) return;
+           
         Installation::log(array('text'=>'starte Funktion'));
         echo '';
         Installation::log(array('text'=>'beende Funktion'));

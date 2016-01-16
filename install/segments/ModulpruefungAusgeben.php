@@ -18,9 +18,11 @@ class ModulpruefungAusgeben
         Installation::log(array('text'=>Language::Get('main','languageInstantiated')));
         Installation::log(array('text'=>Language::Get('main','functionEnd')));
     }
-    
+   
     public static function show($console, $result, $data)
     {
+        if (!Einstellungen::$accessAllowed) return;
+           
         Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $text = '';
         $text .= Design::erstelleBeschreibung($console,Language::Get('modules','description',self::$langTemplate));

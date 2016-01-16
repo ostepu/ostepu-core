@@ -20,13 +20,15 @@ class VeranstaltungenBereinigen
     {   Installation::log(array('text'=>Language::Get('main','functionBegin')));
         Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
         Installation::log(array('text'=>Language::Get('main','languageInstantiated')));
-        
+       
         self::$initialized = true;
         Installation::log(array('text'=>Language::Get('main','functionEnd')));
     }
 
     public static function show($console, $result, $data)
     {
+        if (!Einstellungen::$accessAllowed) return;
+           
         Installation::log(array('text'=>Language::Get('main','functionBegin')));
         $executedEvents = array();
         foreach($result as $key => $value){
@@ -127,7 +129,7 @@ class VeranstaltungenBereinigen
                                 if (!isset($res[$table['component']])){
                                     $res[$table['component']] = array('size'=>0,'amount'=>0,'dirtyTables'=>0,'cleanTables'=>0);
                                 }
-                                
+                               
                                 if (!isset($table['amount'])) $table['amount'] = 0;
                                 if (!isset($table['size'])) $table['size'] = 0;
 

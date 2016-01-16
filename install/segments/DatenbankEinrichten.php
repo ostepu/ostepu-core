@@ -18,13 +18,15 @@ class DatenbankEinrichten
         Installation::log(array('text'=>Language::Get('main','functionBegin')));
         Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
         Installation::log(array('text'=>Language::Get('main','languageInstantiated')));
-        
+       
         self::$initialized = true;
         Installation::log(array('text'=>Language::Get('main','functionEnd')));
     }
 
     public static function show($console, $result, $data)
-    {   Installation::log(array('text'=>Language::Get('main','functionBegin')));
+    {  
+        if (!Einstellungen::$accessAllowed) return;
+            Installation::log(array('text'=>Language::Get('main','functionBegin')));
         Installation::log(array('text'=>Language::Get('main','functionEnd')));
         return null;
     }

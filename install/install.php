@@ -526,10 +526,6 @@ class Installer
                 }
                 echo "</tr>";
                 echo "</table>";
-            } else {
-                $text = '';
-                $text .= Design::erstelleBeschreibung($console,Language::Get('main','insertMasterPassword'));
-                echo Design::erstelleBlock($console, '', $text);
             }
 
             echo "<hr />";
@@ -544,7 +540,7 @@ class Installer
         #endregion Sprachwahl
 
 
-        if (Einstellungen::$accessAllowed){
+        if (true){
             // show segments
             Installation::log(array('text'=>'starte das Zeigen der Segmente'));
             foreach(Einstellungen::$segments as $segs){
@@ -558,7 +554,9 @@ class Installer
                 }
             }
             Installation::log(array('text'=>'beende das Zeigen der Segmente'));
+        }
 
+        if (Einstellungen::$accessAllowed){
             if ($simple){
                  if ($installFail){
                      echo "0";
