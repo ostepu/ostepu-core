@@ -44,7 +44,7 @@ class Installer
      * @var int[] $menuItems Enthält die Reihenfolge der Seiten (anhand der IDs),
      * diese stehen in den Segmente unter $page=Seitennummer
      */
-    public static $menuItems = array(0,1,6,2,3,4); // 5, // ausgeblendet
+    public static $menuItems = array(0,1,6,2,3,4,8); // 5, // ausgeblendet
 
     /**
      * @var int[] $menuTypes Die Art der Menüelemente
@@ -519,10 +519,10 @@ class Installer
                 echo "<tr>";
                 $text = '';
                 for ($i=0;$i<count(self::$menuItems);$i++){
-                    if ($i%5==0 && $i>0) $text .= "<tr>";
+                    if ($i%5==0 && $i>0) echo "</tr><tr>";
                     $item = self::$menuItems[$i];
                     $type = self::$menuTypes[$i];
-                    echo "<td class='".($type==0?'h':'k')."'><div align='center'>".Design::erstelleSubmitButtonFlach('selected_menu',$item,($selected_menu == $item ? '<font color="maroon">'.Language::Get('main','title'.$item).'</font>' : Language::Get('main','title'.$item)))."</div></td>";
+                    echo "<td class='".($type==0?'h':($type==1?'k':'g'))."'><div align='center'>".Design::erstelleSubmitButtonFlach('selected_menu',$item,($selected_menu == $item ? '<font color="maroon">'.Language::Get('main','title'.$item).'</font>' : Language::Get('main','title'.$item)))."</div></td>";
                 }
                 echo "</tr>";
                 echo "</table>";
