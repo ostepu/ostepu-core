@@ -622,6 +622,19 @@ class LTutor
                 $namesOfExercises[$exercises[$count]['id']] = 'Aufgabe_'.$exercises[$count]['link'].$alphabet[0];
             }
         }
+        
+        // Hilfe einfügen
+        $rows[] = array();
+        $tmpHelp = Language::Get('main','csvDescription', self::$langTemplate);
+        $tmpHelp = explode("\n",$tmpHelp);
+        foreach($tmpHelp as $line){
+            if (!empty($line)){
+                $rows[] = array('--'.$line);
+            } else {
+                $rows[] = array($line);
+            }
+        }
+        $rows[] = array();
 
         //formating, create the layout of the CSV-file for the tutor
         //first two rows of an exercise are the heads of the table
