@@ -26,7 +26,7 @@ Sie können eine zusätzliche Auswahl im Korrekturassistenten treffen.
 
 #### Korrigieren ####
 
-> Jedes Korrekturarchiv ist ab dessen Erstellung 30 Tage gültig, danach kann es nicht mehr hochgeladen werden.
+**Jedes Korrekturarchiv ist ab dessen Erstellung 30 Tage gültig, danach kann es nicht mehr hochgeladen werden.**
 
 > ##### 1. Entpacken #####
 
@@ -50,11 +50,11 @@ Sie können die **Bewertung**, die **Korrekturdatei**, den **Korrekturstatus** u
 ![](libreB.png)
 
 1. Korrekturnummer (der Ordnername im zip-Archiv)
-2. die erhaltenen Punkte (dürfen **MAXPOINTS** nicht überschreiten)
+2. die erhaltenen Punkte (**dürfen MAXPOINTS überschreiten**)
 3. die maximale Punktzahl
 4. die Einsendung war "besonders gut" (0=nein, 1=ja)(wird nicht verwendet)
 5. der Status der Korrektur (0=nicht eingesendet, 1=unkorrigiert, 2=vorläufig, 3=korrigiert)(wird dem Studenten so angezeigt)
-6. ein Kommentar zur Einsendung (wird dem Studenten und im Korrekturassistenten angezeigt)(kein HTML verwenden)
+6. ein Kommentar zur Einsendung (wird dem Studenten und im Korrekturassistenten angezeigt)(kein HTML verwenden, **maximal 255 Zeichen**)
 7. der Kommentar des Studenten zu seiner Einsendung (Sie können diesen Kommentar nicht verändern)
 8. diese Datei (Pfad bezieht sich auf das zip-Archiv) wird als Korrektur dem Studenten angezeigt (Sie können das Feld auch leer lassen, dann wird ihm keine Datei angezeigt)
 9. die Nummer des Korrekturarchivs, diese darf nicht entfernt werden und muss in der ersten Zeile stehen
