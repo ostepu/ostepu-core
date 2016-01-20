@@ -70,13 +70,13 @@ class Komponenten
             // counts installed links
             $installedLinks = 0;
 
-            foreach($content as $componentName => &$component)
+            foreach($content as $componentName => $component)
             {
                 if (isset($component['init']))
-                    $component['init'] = Component::decodeComponent(json_encode($component['init']));
+                    $content[$componentName]['init'] = Component::decodeComponent(json_encode($component['init']));
 
                 if (isset($component['links']))
-                    $component['links'] = Link::decodeLink(json_encode($component['links']));
+                    $content[$componentName]['links'] = Link::decodeLink(json_encode($component['links']));
 
                 if (isset($component['commands'])){
                     if (in_array("Slim\\Slim", get_declared_classes())){
@@ -86,13 +86,13 @@ class Komponenten
                             $route->via((isset($command['method']) ? strtoupper($command['method']) : 'GET'));
                             $router->map($route);
                         }
-                        $component['router'] = $router;
+                        $content[$componentName]['router'] = $router;
                     } else {
                         Installation::log(array('text'=>'Slim existiert nicht'));
                     }
                 }
             }
-
+        
             foreach($content as $componentName => $component)
             {
                 $linkNames = array();
@@ -107,7 +107,6 @@ class Komponenten
                     $linkNamesUnique[$link->getName()] = $link->getName();
                 }
 
-
                 $calls=null;
                 if (isset($component['call']))
                     $calls = $component['call'];
@@ -118,10 +117,9 @@ class Komponenten
                     }
                 }
 
-                $countLinks = 1;
                 if (isset($component['init']) && $component['init']!==null && $component['init']->getStatus() === 201){
-                    $countLinks+=count($linkNames) + count(array_diff($callNames,$linkNamesUnique)) + count($linkNamesUnique) - count(array_diff($linkNamesUnique,$callNames));
-                    $countLinks++;
+                //    $countLinks+=count($linkNames) + count(array_diff($callNames,$linkNamesUnique)) + count($linkNamesUnique) - count(array_diff($linkNamesUnique,$callNames));
+                //    $countLinks++;
                 } else {
                     if (!isset($component['init']) || $component['init']===null){
                         $fail = true;
@@ -130,25 +128,23 @@ class Komponenten
                 }
 
                 $countCommands = count(isset($component['commands']) ? $component['commands'] : array());
-                if (isset($component['init']) && isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate){
-                    $defs = explode(";",$component['init']->getDef());
-                    $baseComponent = (count($defs)>2 ? "<br><span class='info-color tiny'>(".$defs[0].")</span>" : '');
-                    $text .= "<tr><td class='e' rowspan='{$countLinks}'>{$componentName}{$baseComponent}</td><td class='v'>{$component['init']->getAddress()}</td><td class='e'><div align ='center'>".($component['init']->getStatus() === 201 ? Language::Get('main','ok') : "<font color='red'>".Language::Get('main','fail')." ({$component['init']->getStatus()})</font>")."</align></td></tr>";
-                }
-
+                $tempText = '';
+                $countLinks = 1;
+                $tempTextList = array();
+                
                 if (isset($component['init']) && $component['init']!==null && $component['init']->getStatus() === 201){
                     $installedComponents++;
                     $installedLinks+=count(isset($component['links']) ? $component['links'] : array());
                     $installedCommands+=$countCommands;
 
-                    if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate)
-                        $text .= "<tr><td class='v' colspan='2'>".Language::Get('components','installedCalls',self::$langTemplate).": {$countCommands}</td></tr>";
-
+                    if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate){
+                        $tempTextList[] = "<tr><td class='v' colspan='2'>".Language::Get('components','installedCalls',self::$langTemplate).": {$countCommands}</td></tr>";
+                    }
+                    
                     $links = array();
                     if (isset($component['links']))
                         $links = $component['links'];
                     $lastLink = null;
-
 
                     foreach($links as $link){
                         $calls = null;
@@ -199,14 +195,23 @@ class Komponenten
                                     if ($notRoutable) {$fail = true; break;}
                                 }
 
-                                if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate)
-                                    $text .= "<tr><td class='v'>{$link->getName()}</td><td class='e'><div align ='center'>".(!$notRoutable ? Language::Get('main','ok') : '<font color="red">'.$errorMessage.'</font>')."</align></td></tr>";
+                                if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate){
+                                    if ($notRoutable){
+                                        $tempTextList[] = "<tr><td class='v'>{$link->getName()}</td><td class='e'><div align ='center'>".(!$notRoutable ? Language::Get('main','ok') : '<font color="red">'.$errorMessage.'</font>')."</align></td></tr>";
+                                    }
+                                }
                             }
                         }
 
-                        if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate)
-                            $text .= "<tr><td class='v'>{$link->getName()}".(!$linkFound ? " (<font color='red'>".Language::Get('components','unknown',self::$langTemplate)."</font>)" : '')."</td><td class='v'>{$link->getTargetName()}</td></tr>";
-
+                        if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate){
+                            if (!$linkFound){
+                                $tempTextList[] = "<tr><td class='v'>{$link->getName()}"." (<font color='red'>".Language::Get('components','unknown',self::$langTemplate)."</font>)"."</td><td class='v'>{$link->getTargetName()}</td></tr>";
+                            } else {
+                                //"<tr><td class='v'>{$link->getName()}</td><td class='v'>{$link->getTargetName()}</td></tr>";
+                                $tempTextList[] = array(array($link->getName()),array($link->getTargetName()),1);
+                            }
+                        }
+                        
                         $lastLink = $link->getName();
                     }
 
@@ -224,11 +229,57 @@ class Komponenten
                                 }
                             }
                             if (!$found){
-                                if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate)
-                                    $text .= "<tr><td class='v'>{$callList['name']}</td><td class='e'><font color='red'>".Language::Get('components','unallocated',self::$langTemplate)."</font></td></tr>";
+                                if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate){
+                                    $tempTextList[] = "<tr><td class='v'>{$callList['name']}</td><td class='e'><font color='red'>".Language::Get('components','unallocated',self::$langTemplate)."</font></td></tr>";
+                                }
                             }
                         }
                     }
+                }
+                
+                if (isset($component['init']) && isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate){
+                    $max = count($tempTextList);
+                    for ($b=0;$b<$max;$b++){
+                        if (!isset($tempTextList[$b])) continue;
+                        $part = $tempTextList[$b];
+                        if (is_array($part)){
+                            // eine Zeile mit einer Kante, diese soll eventuell mit anderen zusammegefasst werden
+                            for ($i=$b+1;$i<$max;$i++){
+                                if (!isset($tempTextList[$i])) continue;
+                                // ermittelt doppelte Zeilen und fasst diese zusammen
+                                $elem = $tempTextList[$i];
+                                if (!is_array($elem)) break;
+                                if ($elem[0] === $part[0] && $elem[1] === $part[1]){
+                                    $part[2]++;
+                                    unset($tempTextList[$i]);
+                                }
+                            }
+                            
+                            for ($i=$b+1;$i<$max;$i++){
+                                if (!isset($tempTextList[$i])) continue;
+                                // ermittelt doppelte Ziele in den Zeilen und fasst die Quellen zusammen
+                                $elem = $tempTextList[$i];
+                                if (!is_array($elem)) break;
+                                if ($elem[1] === $part[1] && $elem[2] === 1 && $part[2] === 1){
+                                    $part[0] = array_merge($part[0], $elem[0]);
+                                    unset($tempTextList[$i]);
+                                }
+                            }
+                            
+                            $tempText .= "<tr><td class='v'>".implode(', ',$part[0]).($part[2]<=1 ? '' : ' ('.$part[2].')')."</td><td class='v'>".implode(', ',$part[1])."</td></tr>";
+                            $countLinks++;
+                        } else {
+                            // fertige Meldung
+                            $tempText .= $part;
+                            $countLinks++;
+                        }
+                    }
+                    
+                    $defs = explode(";",$component['init']->getDef());
+                    $baseComponent = (count($defs)>2 ? "<br><span class='info-color tiny'>(".$defs[0].")</span>" : '');
+                    $text .= "<col width='20%'><col width='60%'><col width='20%'>";
+                    $text .= "<tr><td class='e' rowspan='{$countLinks}'>{$componentName}{$baseComponent}</td><td class='v'>{$component['init']->getAddress()}</td><td class='e'><div align ='center'>".($component['init']->getStatus() === 201 ? Language::Get('main','ok') : "<font color='red'>".Language::Get('main','fail')." ({$component['init']->getStatus()})</font>")."</align></td></tr>";
+                    $text .= $tempText;
                 }
             }
 
@@ -275,9 +326,9 @@ class Komponenten
             // component routers
             $router = array();
 
-            $results = Component::decodeComponent($result['content']);
-            $results = Installation::orderBy(json_decode(Component::encodeComponent($results),true),'name',SORT_ASC);
+            $results = Installation::orderBy(json_decode($result['content'],true),'name',SORT_ASC);
             $results = Component::decodeComponent(json_encode($results));
+
             if (!is_array($results)) $results = array($results);
 
             if (count($results)==0){
