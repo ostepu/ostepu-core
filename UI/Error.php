@@ -10,6 +10,8 @@ include_once 'include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Language.php';
 include_once dirname(__FILE__) . '/../Assistants/vendor/Validation/Validation.php';
 
+$langTemplate='Error_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
+
 $getValidation = Validation::open($_GET, array('preRules'=>array('sanitize')))
   ->addSet('msg',
            array('set_default'=>null,
