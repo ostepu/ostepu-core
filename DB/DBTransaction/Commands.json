@@ -6,5 +6,8 @@
     {    "method":"get", "path":"(/:name)/clean/clean/course/:courseid" },
     {    "method":"delete", "path":"(/:name)/clean/clean/course/:courseid" },
     {    "method":"delete", "path":"(/:name)/course" },
-    {    "method":"post", "path":"(/:name)/course/:courseid" }
+    {    "method":"post", "path":"(/:name)/course/:courseid" },
+    {    "method":"post", "path":"(/:name)/transaction/exercisesheet/:esid" },
+    {    "method":"post", "path":"(/:name)/transaction/course/:courseid" },
+    {    "method":"post", "path":"(/:name)/transaction/exercise/:eid" }
 ]
