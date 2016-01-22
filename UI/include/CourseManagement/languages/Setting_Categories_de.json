@@ -2,5 +2,7 @@
     "userManagement": "Nutzerverwaltung",
     "submissions": "Einsendungen",
     "markings": "Korrekturen",
-    "unknown": "Sonstige"
+    "unknown": "Sonstige",
+    "conditions": "Zulassungsbedingungen",
+    "tutorAssignment": "Kontrolleurszuweisung"
 }}
