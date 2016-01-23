@@ -11,25 +11,34 @@ class Sandbox
     /**
      * @var string $profiles the profiles, the class loads
      */
-    private static $profile = "";
+    private $profile = "";
 
     /**
      * @var string $workingDir the directory, where the class is working
      */
-    private static $workingDir = "";
+    private $workingDir = "";
 
     /**
      * the $workingDir setter
      *
      * @param string $path the new value for working directory
      */
-    public static function setWorkingDir($path)
+    public function setWorkingDir($path)
     {
         if(!preg_match("/\/$/", $path))
         {
+            // path darf kein / hinten haben in Whitelist
+            $this->addWhitelistDir($path);
+            // speichern tun wir es aber mit /
             $path = $path . "/";
         }
-        Sandbox::$workingDir = $path;
+        else
+        {
+            // entferen / am schluss für Whitelisteintrag
+            $whitepath = preg_replace("/\/$/", "", $path);
+            $this->addWhitelistDir($whitepath);
+        }
+        $this->workingDir = $path;
 
         $parentdir = dirname($path);
         if(!preg_match("/\/$/", $parentdir))
@@ -37,9 +46,8 @@ class Sandbox
             $parentdir = $parentdir . "/";
         }
 
-        Sandbox::addBlacklistDir($parentdir . "*");
-        Sandbox::addWhitelistDir($parentdir);
-        Sandbox::addWhitelistDir($path);
+        $this->addBlacklistDir($parentdir . "*");
+        
     }
 
      /**
@@ -47,9 +55,9 @@ class Sandbox
      *
      * @return the value of $workingDir
      */
-    public static function getWorkingDir()
+    public function getWorkingDir()
     {
-        return Sandbox::$workingDir;
+        return $this->workingDir;
     }
 
     /**
@@ -57,45 +65,41 @@ class Sandbox
      *
      * @param string $filename the complete path to the profile file
      */
-    public static function loadProfileFromFile($filename)
+    public function loadProfileFromFile($filename)
     {
-        Sandbox::$profile = Sandbox::$profile . PHP_EOL . file_get_contents($filename);
+        $this->profile = file_get_contents($filename) . PHP_EOL . $this->profile . PHP_EOL;
     }
 
     /**
      * adds folder to whitelist
-     * NOTE: first add parent folder with /path/to/parent/* to the blacklist
-     * and /path/to/parent/ have to be in whitelist before adding
-     * children to whitelist
+     * NOTE: for hiding whole parent and showing only specific children, add /path/to/parent/
+     * and /path/to/whitelistpath/ in Whitelist, then add /path/to/parent/* in Blacklist to hide all others
      *
      * @param string $dir the complete path to the folder
      */
-    public static function addWhitelistDir($dir)
+    public function addWhitelistDir($dir)
     {
         
-        Sandbox::$profile =  "noblacklist " . $dir . PHP_EOL . Sandbox::$profile;
+        $this->profile =  $this->profile . PHP_EOL . "noblacklist " . $dir . PHP_EOL;
     }
 
     /**
      * adds folder to whitelist
-     * NOTE: first add parent folder with /path/to/parent/* to the blacklist
-     * and /path/to/parent/ have to be in whitelist before adding
-     * children to whitelist
      *
      * @param string $dir the complete path to the folder
      */
-    public static function addBlacklistDir($dir)
+    public function addBlacklistDir($dir)
     {
         
-        Sandbox::$profile =  "blacklist " . $dir . PHP_EOL . Sandbox::$profile;
+        $this->profile =  $this->profile . PHP_EOL . "blacklist " . $dir . PHP_EOL;
     }
 
     /**
      * resets all profile files
      */
-    public static function resetProfile()
+    public function resetProfile()
     {
-        unset(Sandbox::$profile);
+        unset($this->profile);
     }
 
 
@@ -123,7 +127,7 @@ class Sandbox
     private static function where_is_command($cmd)
     {
         $returnVal = shell_exec("readlink -f $(which ".$cmd.")");
-        return $returnVal;
+        return preg_replace("/".PHP_EOL."/", "", $returnVal);
     }
 
     /**
@@ -136,10 +140,14 @@ class Sandbox
      *
      * @return the status of executed command
      */
-    public static function sandbox_exec($command,$params,&$output = null)
+    public function sandbox_exec($command,$params,&$output = null)
     {
+        $pathOld = getcwd();
+        chdir($this->workingDir);
+
         //check if command exists
-        if (Sandbox::command_exist($cmd) == false)
+
+        if (Sandbox::command_exist($command) == false)
         {
             return 1; //error status of "which" that means not available
         }
@@ -147,10 +155,6 @@ class Sandbox
         // the path to the command (fixes some issues with javac in sandbox firejail)
         $realcmd = Sandbox::where_is_command($command);
 
-        $pathOld = getcwd();
-        chdir(Sandbox::$workingDir);                             
-        exec('(firejail '.$command.' '.$params.') 2>&1', $output, $return);
-        chdir($pathOld);
 
         // $_SERVER['DOCUMENT_ROOT']
 
@@ -161,33 +165,73 @@ class Sandbox
         ) ;
 
         // define current working directory where files would be stored
-        $pathOld = getcwd();
-        chdir(Sandbox::$workingDir);
-        // open process /bin/sh
-        $process = proc_open('firejail --quiet --profile='.$_SERVER['DOCUMENT_ROOT'].'/test.profile ', $descriptorspec, $pipes, Sandbox::$workingDir) ;
+        $newprofile = $this->workingDir."myprofil.profile";
+        $profileerror = file_put_contents($newprofile, $this->profile);
+        $treffer = array();
 
-        if (is_resource($process)) {
+        file_put_contents('php://stderr', print_r("wrwr", TRUE));
 
-          // anatomy of $pipes: 0 => stdin, 1 => stdout, 2 => error log
-          fwrite($pipes[0], $realcmd.' '.$params) ;
+        if ($profileerror != false)
+        {
+            // open process /bin/sh
+            $process = proc_open('firejail --quiet --profile='.$newprofile.' ', $descriptorspec, $pipes, $this->workingDir) ;
 
-          fclose($pipes[0]) ;
+            if (is_resource($process)) {
 
-          // print pipe output
-          $output = stream_get_contents($pipes[1]);
-          $error = stream_get_contents($pipes[2]);
+              // anatomy of $pipes: 0 => stdin, 1 => stdout, 2 => error log
+              fwrite($pipes[0], 'umask 000;'.$realcmd.' '.$params.';echo "STATUS=("$?")";');
 
-          // close pipe
-          fclose($pipes[1]) ;
-          fclose($pipes[2]) ;
-         
-          // all pipes must be closed before calling proc_close. 
-          // proc_close() to avoid deadlock
-          proc_close($process) ;
+              fclose($pipes[0]) ;
+
+              // print pipe output
+              $output = stream_get_contents($pipes[1]);
+
+              $error = stream_get_contents($pipes[2]);
+
+              // close pipe
+              fclose($pipes[1]) ;
+              fclose($pipes[2]) ;
+             
+              // all pipes must be closed before calling proc_close. 
+              // proc_close() to avoid deadlock
+              proc_close($process) ;
+
+              // pregmatches erst nachdem stream geschlossen
+              preg_match("/STATUS=\([0-9]+\)/", $output, $treffer);
+              $output = preg_replace("/STATUS=\([0-9]+\)/", "", $output);
+            }
+            chdir($pathOld);
+
+            $status = -1;
+
+            // check if Status existiert
+            if(isset($treffer[0]) && $treffer[0] != "")
+            {
+                // lese Status
+                preg_match("/[0-9]+/", $treffer[0], $statustreffer);
+                if(isset($statustreffer[0]) && $statustreffer[0] != "")
+                {
+                    $status = (int) $statustreffer[0];
+
+                    // wenn status ungleich 0 dann gebe error aus
+                    if($status != 0)
+                    {
+                        $output = $error.PHP_EOL.$output;
+                    }
+                }
+            }
+            else
+            {
+                $status = 1;
+            }
+            
+
+            return (int) $status;
         }
-        chdir($pathOld);
-
-        return $return;
+        else
+        {
+            return 1;
+        }
     }
 }
 ?>
