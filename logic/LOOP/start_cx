@@ -8,16 +8,14 @@
 ### Analysieren der Parameter ###
 if [ $# == 0 ] 
 then
-   echo "keine Eingabedatei"
-   echo "412";
-   exit
+   echo "FEHLER: keine Eingabedatei" 1>&2;
+   exit 412
 fi
 
 if [ $# -gt 1 ] 
 then
-  echo "nur eine Eingabedatei moeglich"
-  echo "412";
-  exit
+  echo "FEHLER: nur eine Eingabedatei moeglich" 1>&2;
+  exit 412
 fi
 
 ### Dateinamen analysieren ###
@@ -26,33 +24,40 @@ compiler=$endung
 
 if ([ "$endung" != "c0" ] && [ "$endung" != "c1" ] && [ "$endung" != "c2" ] && [ "$endung" != "c3" ] && [ "$endung" != "c4" ]);
 then
-   echo "Falsche Dateiendung"
-   echo "412";
-   exit
+   echo "FEHLER: Falsche Dateiendung" 1>&2;
+   exit 412
 fi
 
 if [ ! -f $1 ]
 then
-   echo "Datei $1 existiert nicht"
-   echo "404";
-   exit
+   echo "FEHLER: Datei $1 existiert nicht" 1>&2;
+   exit 404;
 fi
 
 ### Ausführen des Compilers
 akt_PATH=`pwd`;
-dat_o_end=`echo $1 | cut -d. -f1`
+#dat_o_end=`echo $1 | cut -d. -f1`
+error=false;
 
 cd `dirname $1`
+
 if "${akt_PATH}/compiler/$compiler" "$1"
 then
-   if `gcc -o $dat_o_end $dat_o_end.c`
-   then
-      echo "201";
-   else
-      echo "409";
-   fi
+  find . -type f -iname "*.c" -print0 | while IFS= read -r -d $'\0' line; do
+      s="$line";
+      s=${s##*/};
+      dat_o_end=${s%.*};
+      if `gcc -o $dat_o_end $dat_o_end.c`
+       then
+          error=false;
+       else
+          error=true;
+          exit $?;
+          break;
+       fi
+  done
 else
-echo "408";
+exit $?;
 fi
 
 cd $akt_PATH

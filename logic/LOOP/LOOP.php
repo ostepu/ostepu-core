@@ -11,6 +11,7 @@ include_once dirname(__FILE__) . '/../../Assistants/Request.php';
 include_once dirname(__FILE__) . '/../../Assistants/CConfig.php';
 include_once dirname(__FILE__) . '/../../Assistants/DBJson.php';
 include_once dirname(__FILE__) . '/../../Assistants/Structures.php';
+include_once dirname(__FILE__) . '/../../Assistants/Sandbox.php';
 
 \Slim\Slim::registerAutoloader();
 
@@ -468,8 +469,9 @@ class LOOP
                     
                     // eindeutigen temporären Ordner für diesen Vorgang erstellen und den Inhalt dort platzieren
                     $fileHash = sha1($file);
-                    $filePath = $this->tempdir('/tmp/', $fileHash);
-                    file_put_contents($filePath . '/' . $fileName, $file);  
+                    $filePath = $this->tempdir('/tmp/', $fileHash,0777);
+                    file_put_contents($filePath . '/' . $fileName, $file);
+                    chmod($filePath . '/' . $fileName, 0777);  
 
                     // der $pro->getParameter() wurden beim Erstellen der Verarbeitung festgelegt und enthält
                     // sowohl den aufzurufenden Compiler als auch weitere Aufrufparameter
@@ -479,9 +481,12 @@ class LOOP
                         $type = array_shift($parameter);
                         
                         if ($type == 'cx'){
+                            $this->xcopy(dirname(__FILE__) . '/start_cx', $filePath . '/start_cx',0777);
+                            $this->xcopy(dirname(__FILE__) . '/compiler', $filePath . '/compiler',0777);
+
                             // behandelt Einsendungen für den cx Compiler
-                            $output = array();
-                            $return = '';
+                            $output = "";
+                            $return = -1;
                             
                             // ersetzt $file durch den Dateinamen der Einsendung und generiert
                             // die zusätzlichen Aufrufparameter für den Compiler
@@ -493,12 +498,19 @@ class LOOP
                              
                             // passt das Arbeitsverzeichnis an und führt das Skript für den
                             // cx Compiler aus
-                            $pathOld = getcwd();
+                            /*$pathOld = getcwd();
                             chdir($filePath);                             
                             exec('(./start_cx '.$param.') 2>&1', $output, $return);
-                            chdir($pathOld);
+                            chdir($pathOld);*/
+
+                            $compileSandbox = new Sandbox();
+                            $compileSandbox->setWorkingDir($filePath);
+                            $compileSandbox->loadProfileFromFile(dirname(__FILE__) . '/../../Assistants/mysandbox.profile');
+
+                            $return = $compileSandbox->sandbox_exec('./start_cx',$param,$output);
+
                            
-                            if (count($output)>0 && $output[count($output)-1] === '201'){
+                            if ($return == 0){
                                 // wenn wir als Antwort eine 201 vom Skript erhalten, konnte alles problemlos 
                                 // kompiliert werden
                                 $pro->setStatus(201);
@@ -509,12 +521,30 @@ class LOOP
                                 
                                 // die Antwort des Compilers wird nun noch für die Ausgabe der Fehlermeldung angepasst
                                 if (count($output)>0){
-                                $text = '';
-                                    unset($output[count($output)-1]);
+                                    $text = '';
+                                    $outputList = array();
+                                    $output = explode(PHP_EOL, $output);
+
+                                    // entfernt störende Zeichen
                                     foreach($output as $out){
-                                        $pos = strpos($out, ',');
+                                        $out = trim(trim($out),'^');
+                                        if ($out=='') continue;
+                                        $outputList[] = $out;
+                                    }
+
+                                    // nur die ersten 7 Fehler und die Zusammenfassung am Ende (2 Zeilen) behalten
+                                    if (count($outputList)>10){
+                                        $outputList[7] = '...';
+                                        for ($i=8;$i<count($outputList)-2;$i++)
+                                            $outputList[$i]='';
+                                    }
+
+                                    // nur nichtleere Ausgabezeilen werden zur Aufgabe zusammengefasst
+                                    foreach($outputList as $out){
+                                        if ($out=='') continue;
                                         $text.=$out."\n";
                                     }
+
                                     if (!is_null($showErrorsEnabled) && $showErrorsEnabled == "1")
                                     {
                                         $pro->addMessage($text);
@@ -527,8 +557,8 @@ class LOOP
                         } elseif ($type == 'java'){
                             // behandelt Einsendungen für den Java Compiler
                             
-                            $output = array();
-                            $return = '';
+                            $output = "";
+                            $return = -1;
                             
                             // ersetzt $file durch den Dateinamen der Einsendung und generiert
                             // die zusätzlichen Aufrufparameter für den Compiler
@@ -539,11 +569,17 @@ class LOOP
                                 $param = $fileName;
                                
                             // passt das Arbeitsverzeichnis an und führt das Skript für den
-                            // java Compiler (javac) aus. Die Ausgabe erfolgt dabei in $return                       
-                            $pathOld = getcwd();
-                            chdir($filePath);
-                            exec('(javac '.$param.') 2>&1', $output, $return);
-                            chdir($pathOld);
+                            // java Compiler (javac) aus. Die Ausgabe erfolgt dabei in $return
+                            $compileSandbox = new Sandbox();
+                            $compileSandbox->setWorkingDir($filePath);
+                            $compileSandbox->loadProfileFromFile(dirname(__FILE__) . '/../../Assistants/mysandbox.profile');
+
+
+                            //$pathOld = getcwd();
+                            //chdir($filePath);
+                            $return = $compileSandbox->sandbox_exec('javac',$param,$output);
+                            //exec('(javac '.$param.') 2>&1', $output, $return);
+                            //chdir($pathOld);
                             
                             if ($return == 0){
                                 // wenn wir als Antwort eine 0 erhalten, konnte alles problemlos 
@@ -559,7 +595,8 @@ class LOOP
                                 if (count($output)>0){
                                     $text = '';
                                     $outputList = array();
-                                    
+                                    $output = explode(PHP_EOL, $output);
+
                                     // entfernt störende Zeichen
                                     foreach($output as $out){
                                         $out = trim(trim($out),'^');
@@ -642,7 +679,7 @@ class LOOP
                     
                     // nachdem die Einsendung bearbeitet wurde, kann das temporäre
                     // Verzeichnis mit Inhalt entfernt werden
-                    $this->deleteDir($filePath);
+                    //$this->deleteDir($filePath);
                     
                     // das Prozessobjekt kann nun zur Ausgabe hinzugefügt werden
                     $res[] = $pro;          
@@ -671,6 +708,52 @@ class LOOP
         // erzeugt einen Ordner
         if (!is_dir($path))          
             mkdir( $path , 0775, true);
+    }
+
+    /**
+     * Copy a file, or recursively copy a folder and its contents
+     * @author      Aidan Lister <aidan@php.net>
+     * @version     1.0.1
+     * @link        http://aidanlister.com/2004/04/recursively-copying-directories-in-php/
+     * @param       string   $source    Source path
+     * @param       string   $dest      Destination path
+     * @param       string   $permissions New folder creation permissions
+     * @return      bool     Returns true on success, false on failure
+     */
+    public function xcopy($source, $dest, $permissions = 0755)
+    {
+        // Check for symlinks
+        if (is_link($source)) {
+            return symlink(readlink($source), $dest);
+        }
+
+        // Simple copy for a file
+        if (is_file($source)) {
+            $copyfile = copy($source, $dest);
+            chmod($dest, $permissions);
+            return $copyfile;
+        }
+
+        // Make destination directory
+        if (!is_dir($dest)) {
+            mkdir($dest, $permissions);
+        }
+
+        // Loop through the folder
+        $dir = dir($source);
+        while (false !== $entry = $dir->read()) {
+            // Skip pointers
+            if ($entry == '.' || $entry == '..') {
+                continue;
+            }
+
+            // Deep copy directories
+            $this->xcopy("$source/$entry", "$dest/$entry", $permissions);
+        }
+
+        // Clean up
+        $dir->close();
+        return true;
     }
     
     public function deleteDir($path)
@@ -701,6 +784,11 @@ class LOOP
         {
             $path = $dir.$prefix.mt_rand(0, 9999999);
         } while (!mkdir($path, $mode));
+
+        if($mode == 0777)
+        {
+            chmod($path, 0777);
+        }
 
         return $path;
     }
