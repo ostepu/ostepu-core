@@ -1674,6 +1674,8 @@ class LGetSite
             $leaderID = $marking['submission']['leaderId'];
             if (!isset($studentMarkings[$studentID]))
                 $studentMarkings[$studentID] = array();
+            if (!isset($studentMarkings[$leaderID]))
+                $studentMarkings[$leaderID] = array();
             if (!isset($marking['submission']['accepted']) || $marking['submission']['accepted']==0)
                 continue;
 
@@ -1683,6 +1685,8 @@ class LGetSite
 
             if (!isset($studentMarkings[$studentID][$exerciseType]))
                 $studentMarkings[$studentID][$exerciseType] = 0;
+            if (!isset($studentMarkings[$leaderID][$exerciseType]))
+                $studentMarkings[$leaderID][$exerciseType] = 0;
 
             $studentMarkings[$leaderID][$exerciseType] += isset($marking['points']) ? $marking['points'] : 0;
 
