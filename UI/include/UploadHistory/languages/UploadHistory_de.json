@@ -5,6 +5,7 @@
         "uncorrected": "unkorrigiert",
         "removed": "gel&ouml;scht",
         "noSubmissions": "Keine Einsendungen vorhanden.",
-        "invalidSubmission": "fehlerhafte Einsendung"
+        "invalidSubmission": "fehlerhafte Einsendung",
+        "noSelectedSubmissionWarning":"Es existieren Einsendungen zu dieser Aufgabe, es wurde jedoch keine für die Korrektur ausgewählt."
     }
 }

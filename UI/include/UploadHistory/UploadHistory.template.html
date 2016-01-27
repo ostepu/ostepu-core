@@ -59,6 +59,19 @@ if (isset($UploadHistoryNotificationElements)) {
     if (isset($submissionHistory))
     foreach ($exercises as $ex):
     $key = $ex['id'];
+    
+    $noSelectedSubmission = false;
+    if (!empty($submissionHistory[$key])) {
+        $noSelectedSubmission = true;
+        foreach ($submissionHistory[$key] as $submission) {
+            $selected = (isset($submission['selectedForGroup']) && $submission['selectedForGroup']==1) ? true : false;
+            if ($selected){
+                $noSelectedSubmission = false;
+                break;
+            }
+        }
+    }
+    
 ?>
 <div class="content-element">
     <div class="content-header">
@@ -68,6 +81,10 @@ if (isset($UploadHistoryNotificationElements)) {
 
     <div class="content-body-wrapper">
         <div class="content-body left">
+            <?php if ($noSelectedSubmission){
+                echo MakeNotification('warning',Language::Get('main','noSelectedSubmissionWarning', $langTemplate));
+                } ?>
+
             <?php
                 $noSubmission = true;
                 if (!empty($submissionHistory[$key])) {
