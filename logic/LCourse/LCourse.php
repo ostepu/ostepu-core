@@ -171,7 +171,7 @@ class LCourse
             } else {
 
                 if ($course->getId()!==null){
-                    $this->deleteCourse($course->getId());
+                    //$this->deleteCourse($course->getId());
                 }
 
                 Logger::Log(
