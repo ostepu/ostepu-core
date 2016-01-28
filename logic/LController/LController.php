@@ -116,7 +116,7 @@ class LController
             $arrayOfLinks = $this->query;
             // search for the correct component URL and set it
             foreach ($arrayOfLinks as $linkObj){
-                if ($linkObj->getPrefix() == $string[0]){
+                if (in_array($string[0],explode(',',$linkObj->getPrefix()))){
                     $URI = $linkObj->getAddress();
                     $this->sendNewRequest($string, $method, $URI, $header, $body);
                     $this->app->stop();
@@ -124,7 +124,7 @@ class LController
             }
 
             $this->app->response->setStatus(412);
-            $this->app->response->stop();
+            $this->app->stop();
         }
     }
 
