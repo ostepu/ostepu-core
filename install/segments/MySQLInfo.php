@@ -11,21 +11,21 @@ class MySQLInfo // der Name der Klasse muss mit dem Dateinamen uebereinstimmen
 
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
-        Installation::log(array('text'=>Language::Get('main','languageInstantiated')));
-        Installation::log(array('text'=>Language::Get('main','functionEnd')));
+        Installation::log(array('text'=>Installation::Get('main','languageInstantiated')));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
    
     public static function show($console, $result, $data)
     {
         if (!Einstellungen::$accessAllowed) return;
            
-        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $text='';
-        $text .= Design::erstelleBeschreibung($console,Language::Get('mySQLInfo','description',self::$langTemplate));
-        echo Design::erstelleBlock($console, Language::Get('mySQLInfo','title',self::$langTemplate), $text);
-        Installation::log(array('text'=>Language::Get('main','functionEnd')));
+        $text .= Design::erstelleBeschreibung($console,Installation::Get('mySQLInfo','description',self::$langTemplate));
+        echo Design::erstelleBlock($console, Installation::Get('mySQLInfo','title',self::$langTemplate), $text);
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
 }
 #endregion MySQLInfo

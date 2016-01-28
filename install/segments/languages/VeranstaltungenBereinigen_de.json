@@ -5,5 +5,13 @@
     "description": "Hier werden überfüssige Datenbankeinträge ermittelt und bereinigt.",
     "cleanCourses": "Plattform bereinigen",
     "clean": "Bereinigen",
-    "rounded":"~"
+    "rounded":"~",
+    "createGetCoursesQuery": "erstelle Anfrage: $url",
+    "GetCoursesQueryResult": "Resultat: $res",
+    "createCollectQuery": "erstelle Anfrage: $url",
+    "CollectQueryResult": "Resultat: $res",
+    "failureCollect": "Fehler: $message",
+    "createCleanQuery": "erstelle Anfrage: $url",
+    "CleanResult": "Resultat: $res",
+    "failureClean": "Fehler: $message"
 }}

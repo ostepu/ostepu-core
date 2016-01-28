@@ -16,5 +16,18 @@
     "noCommands": "Es wurden keine Befehle installiert",
     "noDefinitions": "Es wurden keine Definitionen gefunden",
     "operationFailed": "Initialisierung fehlgeschlagen",
-    "componentCrashed": "Mindestens eine Installation schlug fehl"
+    "componentCrashed": "Mindestens eine Installation schlug fehl",
+    "noSlim": "Slim existiert nicht",
+    "unknownComponent": "Unbekannte Komponente: $component",
+    "callIsNotSupported": "$component: unterstützt den Aufruf $call nicht",
+    "createQueryInitComponents": "erstelle Anfrage: $url",
+    "queryInitComponentsResult": "Result: $res",
+    "createQueryGetDefinition": "erstelle Anfrage: $url",
+    "queryGetDefinitionResult": "Result: $res",
+    "createQueryGetCommands": "erstelle Anfrage: $url",
+    "createQueryGetLinks": "erstelle Anfrage: $url",
+    "queryGetCommandsResult": "Result-Commands: $res",
+    "queryGetLinksResult": "Result-Links: $res",
+    "failure": "Fehler: $message",
+    "failure2": "Fehler: $message $status"
 }}

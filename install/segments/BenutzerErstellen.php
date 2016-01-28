@@ -25,9 +25,9 @@ class BenutzerErstellen
 
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
-        Installation::log(array('text'=>Language::Get('main','languageInstantiated')));
+        Installation::log(array('text'=>Installation::Get('main','languageInstantiated')));
        
         $def = self::getDefaults();
 
@@ -39,23 +39,23 @@ class BenutzerErstellen
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_passwd_insert'], 'data[DB][db_passwd_insert]', $def['db_passwd_insert'][1], true);
         echo $text;
         self::$initialized = true;
-        Installation::log(array('text'=>Language::Get('main','functionEnd')));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
 
     public static function show($console, $result, $data)
     {
         if (!Einstellungen::$accessAllowed) return;
            
-        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $text='';
-        $text .= Design::erstelleBeschreibung($console,Language::Get('createSuperAdmin','description',self::$langTemplate));
+        $text .= Design::erstelleBeschreibung($console,Installation::Get('createSuperAdmin','description',self::$langTemplate));
 
         if (!$console){
-            $text .= Design::erstelleZeile($console, Language::Get('createSuperAdmin','db_user_insert',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['DB']['db_user_insert'], 'data[DB][db_user_insert]', 'root'), 'v');
-            $text .= Design::erstelleZeile($console, Language::Get('createSuperAdmin','db_passwd_insert',self::$langTemplate), 'e', Design::erstellePasswortzeile($console, $data['DB']['db_passwd_insert'], 'data[DB][db_passwd_insert]', ''), 'v');
-            $text .= Design::erstelleZeile($console, Language::Get('createSuperAdmin','db_first_name_insert',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['DB']['db_first_name_insert'], 'data[DB][db_first_name_insert]', ''), 'v');
-            $text .= Design::erstelleZeile($console, Language::Get('createSuperAdmin','db_last_name_insert',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['DB']['db_last_name_insert'], 'data[DB][db_last_name_insert]', ''), 'v');
-            $text .= Design::erstelleZeile($console, Language::Get('createSuperAdmin','db_email_insert',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['DB']['db_email_insert'], 'data[DB][db_email_insert]', ''), 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0], Language::Get('main','create')), 'h');
+            $text .= Design::erstelleZeile($console, Installation::Get('createSuperAdmin','db_user_insert',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['DB']['db_user_insert'], 'data[DB][db_user_insert]', 'root'), 'v');
+            $text .= Design::erstelleZeile($console, Installation::Get('createSuperAdmin','db_passwd_insert',self::$langTemplate), 'e', Design::erstellePasswortzeile($console, $data['DB']['db_passwd_insert'], 'data[DB][db_passwd_insert]', ''), 'v');
+            $text .= Design::erstelleZeile($console, Installation::Get('createSuperAdmin','db_first_name_insert',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['DB']['db_first_name_insert'], 'data[DB][db_first_name_insert]', ''), 'v');
+            $text .= Design::erstelleZeile($console, Installation::Get('createSuperAdmin','db_last_name_insert',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['DB']['db_last_name_insert'], 'data[DB][db_last_name_insert]', ''), 'v');
+            $text .= Design::erstelleZeile($console, Installation::Get('createSuperAdmin','db_email_insert',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['DB']['db_email_insert'], 'data[DB][db_email_insert]', ''), 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0], Installation::Get('main','create')), 'h');
         }
 
         if (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']]!=null){
@@ -71,13 +71,13 @@ class BenutzerErstellen
         if (self::$installed)
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);
 
-        echo Design::erstelleBlock($console, Language::Get('createSuperAdmin','title',self::$langTemplate), $text);
-        Installation::log(array('text'=>Language::Get('main','functionEnd')));
+        echo Design::erstelleBlock($console, Installation::Get('createSuperAdmin','title',self::$langTemplate), $text);
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
 
     public static function install($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         if (!$fail){
            $auth = new Authentication();
            $salt = $auth->generateSalt();
@@ -85,15 +85,15 @@ class BenutzerErstellen
 
            $sql = "INSERT INTO `User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`, `U_salt`, `U_failed_logins`, `U_externalId`, `U_studentNumber`, `U_isSuperAdmin`, `U_comment`) VALUES (NULL, '{$data['DB']['db_user_insert']}', '{$data['DB']['db_email_insert']}', '{$data['DB']['db_last_name_insert']}', '{$data['DB']['db_first_name_insert']}', NULL, '$passwordHash', 1, '{$salt}', 0, NULL, NULL, 1, NULL);";
            $logSql = "INSERT INTO `User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`, `U_salt`, `U_failed_logins`, `U_externalId`, `U_studentNumber`, `U_isSuperAdmin`, `U_comment`) VALUES (NULL, '{$data['DB']['db_user_insert']}', '{$data['DB']['db_email_insert']}', '{$data['DB']['db_last_name_insert']}', '{$data['DB']['db_first_name_insert']}', NULL, '*****', 1, '*****', 0, NULL, NULL, 1, NULL);";
-           Installation::log(array('text'=>'sql = '.$logSql));
+           Installation::log(array('text'=>Installation::Get('createSuperAdmin','queryResult',self::$langTemplate,array('sql'=>$logSql))));
 
            $result = DBRequest::request($sql, false, $data);
-           Installation::log(array('text'=>'Resultat: '.json_encode($result)));
-           if ($result["errno"] !== 0){
-                $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
+           Installation::log(array('text'=>Installation::Get('createSuperAdmin','queryResult',self::$langTemplate,array('res'=>json_encode($result)))));
+           if ($result['errno'] !== 0){
+                $fail = true; $errno = $result['errno'];$error = isset($result["error"]) ? $result["error"] : '';
            }
         }
-        Installation::log(array('text'=>Language::Get('main','functionEnd')));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return null;
     }
 }

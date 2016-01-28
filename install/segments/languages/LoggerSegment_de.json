@@ -2,5 +2,6 @@
     "title": "Logger",
     "log_level_info": "INFO",
     "log_level_warning": "WARNUNG",
-    "log_level_error": "FEHLER"
+    "log_level_error": "FEHLER",
+    "setLogLevel": "LogLevel = $level"
 }}

@@ -42,6 +42,11 @@ class Language
      * @var string $default Die vom Sprachsystem vorgegebene Standardsprache
      */
     public static $default = 'de';
+    
+    /**
+     * @var string $errorValue Dieser Text wird ausgegeben, wenn kein Platzhalter gefunden werden kann
+     */
+    public static $errorValue = '???';
         
     /**
      * Setzt die bevorzugte Sprache
@@ -141,14 +146,14 @@ class Language
         } elseif (self::$selectedDefaultLanguage != null && isset(self::$defaultLanguage[$name]) && isset(self::$defaultLanguage[$name][$area]) && isset(self::$defaultLanguage[$name][$area][$cell])){
             $res = self::$defaultLanguage[$name][$area][$cell];
         } else
-            $res = '???';
+            $res = self::$errorValue;
         
         $matches = array();
         preg_match_all('/[^\\\\]\$\[([\w,]+)\]/', $res, $matches);
         foreach ($matches[1] as $match){
             $splitted = explode(',',$match);
             if (count($splitted<2)){
-                $elem = '???';
+                $elem = self::$errorValue;
             } else if (count($splitted)==2){
                 $elem = self::Get($splitted[0],$splitted[1]);
             } else if (count($splitted)==3){

@@ -1,4 +1,7 @@
 {"extensions": {
     "title": "PHP Erweiterungen",
-    "description": "Dieser Bereich prüft, ob von der Plattform benötigte, PHP Erweiterungen vorhanden sind."
+    "description": "Dieser Bereich prüft, ob von der Plattform benötigte, PHP Erweiterungen vorhanden sind.",
+    "checkResult": "Apache-Erweiterungen = $res",
+    "missingFunctionExtension_loaded": "Die Funktion extension_loaded() existiert nicht",
+    "checkExtension": "prüfe: $extension"
 }}

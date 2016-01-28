@@ -10,6 +10,13 @@
         "db_override": "Datenbank ueberschreiben",
         "db_ignore": "Existierende DB ignorieren",
         "databaseSql": "Datenbankdatei",
-        "description": "..."
+        "description": "...",
+        "dropSchemaSql": "sql = $sql",
+        "dropSchemaResult": "Resultat = $res",
+        "createSchemaSql": "sql = $sql",
+        "createSchemaResult": "Resultat = $res",
+        "initComponentsResult": "Resultat = $res",
+        "createQueryInitComponents": "erstelle Anfrage: $url Content: $content",
+        "failureInitComponents": "Fehler: status = $status"
     }
 }

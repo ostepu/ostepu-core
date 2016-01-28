@@ -231,4 +231,13 @@ class Installation
 
         Logger::Log($data['text'],$data['logLevel'],false,Installation::$logFile, LogLevel::$names[$data['logLevel']] . ','.$data['name'],false,Installation::$logLevel);
     }
+    
+    public static function Get($area, $cell, $name='default', $params=array())
+    {  
+        $value = Language::Get($area, $cell, $name, $params);
+        if ($value === Language::$errorValue){
+            Installation::log(array('text'=>Language::Get('main','unknownPlaceholder'),'logLevel'=>LogLevel::ERROR));
+        }
+        return $value;
+    }
 }

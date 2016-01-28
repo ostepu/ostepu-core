@@ -62,7 +62,7 @@ class Installer
      */
     public function __construct($_argv)
     {
-        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
 
         if ($_argv!=null){
             Installation::log(array('text'=>'Konsolenparameter gefunden'));
@@ -79,7 +79,7 @@ class Installer
             return;
         }
 
-        Installation::log(array('text'=>'initialisiere Slim'));
+        Installation::log(array('text'=>Installation::Get('main','intializeSlim')));
         if (in_array("Slim\\Slim", get_declared_classes())){
             // initialize slim
             $app = new \Slim\Slim(array( 'debug' => true ));
@@ -94,14 +94,14 @@ class Installer
                             array($this, 'checkModulesExtern'))->via('POST', 'GET','INFO' );
 
             // run Slim
-            Installation::log(array('text'=>'rufe Slim'));
+            Installation::log(array('text'=>Installation::Get('main','callSlim')));
             $app->run();
         } else {
-            Installation::log(array('text'=>'Slim existiert nicht'));
+            Installation::log(array('text'=>Installation::Get('main','noSlimFound')));
             $this->CallInstall();
         }
 
-        Installation::log(array('text'=>Language::Get('main','functionEnd')));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
 
     /**
@@ -115,12 +115,12 @@ class Installer
      */
     public static function callCheckModules($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         if (constant('ISCLI')){
-            Installation::log(array('text'=>'ISCLI ist gesetzt'));
+            Installation::log(array('text'=>Installation::Get('main','ISCLIEnabled')));
             return json_decode(Request::get($data['PL']['url'].'/install/install.php/checkModulesExtern',array(),'')['content'],true);
         } else {
-            Installation::log(array('text'=>'ISCLI ist nicht gesetzt'));
+            Installation::log(array('text'=>Installation::Get('main','ISCLIDisabled')));
             return ModulpruefungAusgeben::checkModules($data,$fail,$errno,$error);
         }
     }
@@ -130,11 +130,11 @@ class Installer
      */
     public function checkModulesExtern()
     {
-        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $this->loadSegments();
         $dat = null;
         echo json_encode(ModulpruefungAusgeben::install(null,$dat,$dat,$dat));
-        Installation::log(array('text'=>Language::Get('main','functionEnd')));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
 
     /**
@@ -144,7 +144,7 @@ class Installer
      */
     public function loadSegments()
     {
-        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $p = dirname(__FILE__) . '/segments';
         Einstellungen::generatepath($p);
         if ($handle = opendir($p)) {
@@ -187,10 +187,10 @@ class Installer
             return ($posA < $posB) ? -1 : 1;
         }
 
-        Installation::log(array('text'=>'sortiere'));
+        Installation::log(array('text'=>Installation::Get('main','sortSegments')));
         usort(Einstellungen::$segments, "cmp");
-        Installation::log(array('text'=>'geladene Segmente = '.implode(',',Einstellungen::$segments)));
-        Installation::log(array('text'=>Language::Get('main','functionEnd')));
+        Installation::log(array('text'=>Installation::Get('main','existingSegments','default',array('segments'=>implode(',',Einstellungen::$segments)))));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
 
     /**
@@ -200,7 +200,7 @@ class Installer
      */
     public function CallInstall($console = false)
     {
-        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
 
         $output = array();
         $installFail = false;
@@ -233,11 +233,11 @@ class Installer
             $data['PL']['init'] = 'DB/CControl';
 
         // URLs und Pfade sollen keinen / am Ende haben (damit es einheitlich ist)
-        if (isset($data['PL']['url'])) {Installation::log(array('text'=>'data[PL][url] angepasst'));$data['PL']['url'] = rtrim($data['PL']['url'], '/');}
-        if (isset($data['PL']['urlExtern'])) {Installation::log(array('text'=>'data[PL][urlExtern] angepasst'));$data['PL']['urlExtern'] = rtrim($data['PL']['urlExtern'], '/');}
-        if (isset($data['PL']['temp'])) {Installation::log(array('text'=>'data[PL][temp] angepasst'));$data['PL']['temp'] = rtrim($data['PL']['temp'], '/');}
-        if (isset($data['PL']['files'])) {Installation::log(array('text'=>'data[PL][files] angepasst'));$data['PL']['files'] = rtrim($data['PL']['files'], '/');}
-        if (isset($data['PL']['init'])) {Installation::log(array('text'=>'data[PL][init] angepasst'));$data['PL']['init'] = rtrim($data['PL']['init'], '/');}
+        if (isset($data['PL']['url'])) {Installation::log(array('text'=>Installation::Get('main','data_PL_url_Changed')));$data['PL']['url'] = rtrim($data['PL']['url'], '/');}
+        if (isset($data['PL']['urlExtern'])) {Installation::log(array('text'=>Installation::Get('main','data_PL_urlExtern_Changed')));$data['PL']['urlExtern'] = rtrim($data['PL']['urlExtern'], '/');}
+        if (isset($data['PL']['temp'])) {Installation::log(array('text'=>Installation::Get('main','data_PL_temp_Changed')));$data['PL']['temp'] = rtrim($data['PL']['temp'], '/');}
+        if (isset($data['PL']['files'])) {Installation::log(array('text'=>Installation::Get('main','data_PL_files_Changed')));$data['PL']['files'] = rtrim($data['PL']['files'], '/');}
+        if (isset($data['PL']['init'])) {Installation::log(array('text'=>Installation::Get('main','data_PL_init_Changed')));$data['PL']['init'] = rtrim($data['PL']['init'], '/');}
 
         // check which server is selected
         $server = isset($_POST['server']) ? $_POST['server'] : null;
@@ -275,7 +275,7 @@ class Installer
                 $newServerHash = md5(Einstellungen::$selected_server);
 
                 if (isset(Einstellungen::$masterPassword[$oldServerHash])){
-                    Installation::log(array('text'=>'übertrage Master-Passswort'));
+                    Installation::log(array('text'=>Installation::Get('main','moveMasterPassword')));
                     Einstellungen::$masterPassword[$newServerHash] = Einstellungen::$masterPassword[$oldServerHash];
                     unset(Einstellungen::$masterPassword[$oldServerHash]);
                 }
@@ -300,7 +300,7 @@ class Installer
         $addServer = false;
         $addServerResult = array();
         if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionAddServer']) || count(Einstellungen::$serverFiles)==0) && !$installFail){
-            Installation::log(array('text'=>'lege neuen Server an'));
+            Installation::log(array('text'=>Installation::Get('main','createConf')));
             $addServer = true;
             $server = Einstellungen::NeuenServerAnlegen();
             Einstellungen::$serverFiles[] = $server;
@@ -312,7 +312,7 @@ class Installer
         // save data on switching between server-confs
         if (Einstellungen::$selected_server!==null && $server!=null){
             if ($server!=Einstellungen::$selected_server){
-                Installation::log(array('text'=>'wechsle zu Konfiguration: '.Einstellungen::$selected_server));
+                Installation::log(array('text'=>Installation::Get('main','changeConf','default',array('newConf'=>Einstellungen::$selected_server))));
                 Einstellungen::ladeEinstellungen(Einstellungen::$selected_server,$data);
                 //Einstellungen::speichereEinstellungen(Einstellungen::$selected_server,$data);
                 Einstellungen::resetConf();
@@ -321,7 +321,7 @@ class Installer
 
         // select first if no server is selected
         if (Einstellungen::$selected_server==null && $server==null){
-            Installation::log(array('text'=>'wähle Konfiguration: '.pathinfo(Einstellungen::$serverFiles[0])['filename']));
+            Installation::log(array('text'=>Installation::Get('main','chooseConf','default',array('conf'=>pathinfo(Einstellungen::$serverFiles[0])['filename']))));
             Einstellungen::$selected_server = pathinfo(Einstellungen::$serverFiles[0])['filename'];
             $server = Einstellungen::$selected_server;
         }
@@ -335,7 +335,7 @@ class Installer
         $serverHash = md5(Einstellungen::$selected_server);
 
         if (!isset($tmp[$serverHash]['masterPassword'])){
-            Installation::log(array('text'=>'kein Master-Passwort gesetzt'));
+            Installation::log(array('text'=>Installation::Get('main','missingMasterPassword')));
             $tmp[$serverHash]['masterPassword'] = null;
         }
 
@@ -376,33 +376,33 @@ class Installer
         if (!$console && !$simple){
             // select language - german
             if (isset($_POST['actionSelectGerman']) || isset($_POST['actionSelectGerman_x'])){
-                Installation::log(array('text'=>'Deutsch als Sprache gewählt'));
+                Installation::log(array('text'=>Installation::Get('main','languageGermanSelected')));
                 $data['PL']['language'] = 'de';
             }
 
             // select language - english
             if (isset($_POST['actionSelectEnglish']) || isset($_POST['actionSelectEnglish_x'])){
-                Installation::log(array('text'=>'Englisch als Sprache gewählt'));
+                Installation::log(array('text'=>Installation::Get('main','languageEnglishSelected')));
                 $data['PL']['language'] = 'en';
             }
 
             echo "<html><head>";
             echo "<link rel='stylesheet' type='text/css' href='css/format.css'>";
-            $titleText=Language::Get('main','title'.$selected_menu);
+            $titleText=Installation::Get('main','title'.$selected_menu);
 
             if ($selected_menu==-1){
                 if (isset($_POST['action'])){
-                    $titleText=Language::Get('main','title'.$_POST['action']);
+                    $titleText=Installation::Get('main','title'.$_POST['action']);
                 }
             }
 
             echo "</head><body><div class='center'>";
 
             if (Einstellungen::$accessAllowed && $titleText!=='???'){
-                Installation::log(array('text'=>'Seitentitel = '.$titleText));
+                Installation::log(array('text'=>Installation::Get('main','pageTitle','default',array('titleText'=>$titleText))));
                 echo "<h1>".$titleText."</h1></br>";
             } elseif($titleText === '???') {
-                Installation::log(array('text'=>'unbekannter Titel', 'logLevel'=>LogLevel::ERROR));
+                Installation::log(array('text'=>Installation::Get('main','unknownTitle'), 'logLevel'=>LogLevel::ERROR));
             }
 
             echo "<form action='' method='post' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false'>";
@@ -411,33 +411,33 @@ class Installer
         if (Einstellungen::$accessAllowed){
 
             // führe die Initialisierungsfunktionen der Segmente aus
-            Installation::log(array('text'=>'starte die Initialisierung der Segmente', 'logLevel'=>LogLevel::INFO));
+            Installation::log(array('text'=>Installation::Get('main','startsSegmentInitization'), 'logLevel'=>LogLevel::INFO));
             foreach(Einstellungen::$segments as $segs){
                 if (!is_callable("{$segs}::init")) continue;
                 ///if (!isset($segs::$initialized)) continue;
                 ///if ($segs::$initialized) continue;
                 $segs::init($console, $data, $fail, $errno, $error);
             }
-            Installation::log(array('text'=>'beende die Initialisierung der Segmente', 'logLevel'=>LogLevel::INFO));
+            Installation::log(array('text'=>Installation::Get('main','endSegmentInitization'), 'logLevel'=>LogLevel::INFO));
 
             // installiere die Segmente
-            Installation::log(array('text'=>'starte die Installation der Segmente', 'logLevel'=>LogLevel::INFO));
+            Installation::log(array('text'=>Installation::Get('main','beginSegmentInstallation'), 'logLevel'=>LogLevel::INFO));
             $segmentResults = array();
             foreach(Einstellungen::$segments as $segs){
                 if (!isset($segs::$onEvents)) {
-                    Installation::log(array('text'=>'Segment besitzt keine Events ('.$segs.')'));
+                    Installation::log(array('text'=>Installation::Get('main','segmentHasNotEvents','default',array('segs'=>$segs))));
                     continue;
                 }
 
                 foreach ($segs::$onEvents as $event){
                     if (isset($event['enabledInstall']) && !$event['enabledInstall']){
-                        Installation::log(array('text'=>'Event in Segment deaktiviert ('.$segs.')'));
+                        Installation::log(array('text'=>Installation::Get('main','segmentEventDisabled','default',array('segs'=>$segs))));
                         continue;
                     }
 
                     $isSetEvent = false;
                     if (isset($_POST['action']) && in_array($_POST['action'],$event['event'] )){
-                        Installation::log(array('text'=>'passendes Event gefunden ('.$segs.'::'.$_POST['action'].')'));
+                        Installation::log(array('text'=>Installation::Get('main','segmentEventFound','default',array('segs'=>$segs,'action'=>$_POST['action']))));
                         $isSetEvent = true;
                     }
 
@@ -454,7 +454,7 @@ class Installer
                         $result = array();
                         $procedure = 'install';
                         if (isset($event['procedure'])){
-                            Installation::log(array('text'=>'Segment verlangt die Prozedur: '.$event['procedure'].' ('.$segs.')'));
+                            Installation::log(array('text'=>Installation::Get('main','segmentProcedureRequired','default',array('segs'=>$segs, 'procedure'=>$event['procedure']))));
                             $procedure = $event['procedure'];
                         }
 
@@ -466,7 +466,7 @@ class Installer
                         $result['errno'] = $errno;
                         $result['error'] = $error;
                         if ($console && !$simple){
-                            Installation::log(array('text'=>'Segment liefert Ausgabe ('.$segs.')'));
+                            Installation::log(array('text'=>Installation::Get('main','segmentResult','default',array('segs'=>$segs))));
                             $output[$segs::$name] = $result;
                         }
                         $fail = false;
@@ -480,7 +480,7 @@ class Installer
                     }
                 }
             }
-            Installation::log(array('text'=>'beende die Installation der Segmente', 'logLevel'=>LogLevel::INFO));
+            Installation::log(array('text'=>Installation::Get('main','endSegmentInstallation'), 'logLevel'=>LogLevel::INFO));
         }
 
 
@@ -493,14 +493,14 @@ class Installer
             echo "<table border='0'>";
 
             // ab hier wird die linke Infoleiste erzeugt
-            Installation::log(array('text'=>'starte Infoleiste'));
+            Installation::log(array('text'=>Installation::Get('main','beginInfoBar')));
             foreach(Einstellungen::$segments as $segs){
                 if (isset($segs::$enabledShow) && !$segs::$enabledShow) continue;
                 if (!is_callable("{$segs}::showInfoBar")) continue;
                 $segs::showInfoBar($data);
                 echo "<tr><th height='10'></th></tr>";
             }
-            Installation::log(array('text'=>'beende Infoleiste'));
+            Installation::log(array('text'=>Installation::Get('main','endInfoBar')));
 
             echo "</table>";
 
@@ -522,7 +522,7 @@ class Installer
                     if ($i%5==0 && $i>0) echo "</tr><tr>";
                     $item = self::$menuItems[$i];
                     $type = self::$menuTypes[$i];
-                    echo "<td class='".($type==0?'h':($type==1?'k':'g'))."'><div align='center'>".Design::erstelleSubmitButtonFlach('selected_menu',$item,($selected_menu == $item ? '<font color="maroon">'.Language::Get('main','title'.$item).'</font>' : Language::Get('main','title'.$item)))."</div></td>";
+                    echo "<td class='".($type==0?'h':($type==1?'k':'g'))."'><div align='center'>".Design::erstelleSubmitButtonFlach('selected_menu',$item,($selected_menu == $item ? '<font color="maroon">'.Installation::Get('main','title'.$item).'</font>' : Installation::Get('main','title'.$item)))."</div></td>";
                 }
                 echo "</tr>";
                 echo "</table>";
@@ -533,7 +533,7 @@ class Installer
 
         #region Sprachwahl
         if (!$console && !$simple){
-            Installation::log(array('text'=>'zeichne Sprachwahl'));
+            Installation::log(array('text'=>Installation::Get('main','drawLanguageSelection')));
             echo "<input type='hidden' name='data[PL][language]' value='{$data['PL']['language']}'>";
             echo "<div align='center'>".Design::erstelleSubmitButtonGrafisch('actionSelectGerman', './images/de.gif', 32 , 22).Design::erstelleSubmitButtonGrafisch('actionSelectEnglish', './images/en.gif', 32 , 22)."</div>";
         }
@@ -542,7 +542,7 @@ class Installer
 
         if (true){
             // show segments
-            Installation::log(array('text'=>'starte das Zeigen der Segmente'));
+            Installation::log(array('text'=>Installation::Get('main','beginShowSegments')));
             foreach(Einstellungen::$segments as $segs){
                 if (isset($segs::$enabledShow) && !$segs::$enabledShow) continue;
 
@@ -553,7 +553,7 @@ class Installer
                     $segs::show($console, $result, $data);
                 }
             }
-            Installation::log(array('text'=>'beende das Zeigen der Segmente'));
+            Installation::log(array('text'=>Installation::Get('main','endShowSegments')));
         }
 
         if (Einstellungen::$accessAllowed){
@@ -568,7 +568,7 @@ class Installer
             if (!$console && !$simple){
                 if (($selected_menu === 2 || $selected_menu === 3 || $selected_menu === 4) && false){
                     echo "<table border='0' cellpadding='3' width='600'>";
-                    echo "<tr><td class='h'><div align='center'><input type='submit' name='actionInstall' value=' ".Language::Get('main','installAll')." '></div></td></tr>";
+                    echo "<tr><td class='h'><div align='center'><input type='submit' name='actionInstall' value=' ".Installation::Get('main','installAll')." '></div></td></tr>";
                     echo "</table><br />";
                 }
 
@@ -576,12 +576,12 @@ class Installer
                 $a='';$b='';
                 if (array_search($selected_menu,self::$menuItems)>0){
                     $item = self::$menuItems[array_search($selected_menu,self::$menuItems)-1];
-                    $a = Design::erstelleSubmitButtonFlach('selected_menu',$item, Language::Get('main','back')).'<br><font size=1>('.Language::Get('main','title'.$item).')</font>';
+                    $a = Design::erstelleSubmitButtonFlach('selected_menu',$item, Installation::Get('main','back')).'<br><font size=1>('.Installation::Get('main','title'.$item).')</font>';
                 }
 
                 if ($selected_menu>=0 && array_search($selected_menu,self::$menuItems)<count(self::$menuItems)-1){
                     $item = self::$menuItems[array_search($selected_menu,self::$menuItems)+1];
-                    $b = Design::erstelleSubmitButtonFlach('selected_menu',$item, Language::Get('main','next')).'<br><font size=1>('.Language::Get('main','title'.$item).')</font>';
+                    $b = Design::erstelleSubmitButtonFlach('selected_menu',$item, Installation::Get('main','next')).'<br><font size=1>('.Installation::Get('main','title'.$item).')</font>';
                 }
 
                 echo "<table border='0' cellpadding='3' width='600'>";
@@ -625,11 +625,11 @@ class Installer
                                 // Standardwert soll geprüft werden
                                 if ($values[1] == $values[2]){
                                     $add = 'class="warning"';
-                                    $addText = '&lt;&lt;'.Language::Get('main','warnDefault')."&gt;&gt;<br/>";
+                                    $addText = '&lt;&lt;'.Installation::Get('main','warnDefault')."&gt;&gt;<br/>";
                                 }
                             } elseif (isset($values[3]) && $values[3] == true) {
                                 $add = 'class="error"';
-                                $addText = '&lt;&lt;'.Language::Get('main','errorValue')."&gt;&gt;<br/>";
+                                $addText = '&lt;&lt;'.Installation::Get('main','errorValue')."&gt;&gt;<br/>";
                             }
 
                             echo "<tr><td class='e'>".$values[0]."</td></tr>";
@@ -649,7 +649,7 @@ class Installer
             }
 
             if (isset($_POST['actionShowPhpInfo'])){
-                Installation::log(array('text'=>'starte ShowPhPInfo'));
+                Installation::log(array('text'=>Installation::Get('main','beginShowPhPInfo')));
 
                 ob_start();
                 phpinfo();
@@ -681,7 +681,7 @@ class Installer
                     echo "</table>\n";
                 }
                 echo "</div>";
-                Installation::log(array('text'=>'beende ShowPhPInfo'));
+                Installation::log(array('text'=>Installation::Get('main','endShowPhPInfo')));
             }
 
         }
@@ -698,7 +698,12 @@ class Installer
 if (isset($_POST['data']['LOGGER']['logLevel'])){
     Installation::$logLevel = $_POST['data']['LOGGER']['logLevel'];
 }
+if (isset($_POST['data']['PL']['language'])){
+    Language::loadLanguage($_POST['data']['PL']['language'], 'default', 'ini');
+} else {
+    Language::loadLanguage('de', 'default', 'ini');    
+}
 
-Installation::log(array('text'=>'erzeuge Instanz'));
+Installation::log(array('text'=>Installation::Get('main','beginInstance')));
 new Installer((isset($argv) ? $argv : null));
-Installation::log(array('text'=>'verlasse Instanz'));
+Installation::log(array('text'=>Installation::Get('main','endInstance')));

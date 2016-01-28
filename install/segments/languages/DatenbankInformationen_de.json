@@ -3,7 +3,8 @@
         "title": "Datenbankinformationen",
         "db_path": "Datenbankpfad",
         "db_name": "Datenbankname",
-        "description": "Tragen Sie hier die URL ein, unter welcher die Datenbankanwendung zu erreichen ist und vergeben Sie einen eindeutigen Namen, für die neue Datenbank. Möchten Sie eine bereits bestehende Datenbank nutzen, so tragen Sie deren Namen ein. "
+        "description": "Tragen Sie hier die URL ein, unter welcher die Datenbankanwendung zu erreichen ist und vergeben Sie einen eindeutigen Namen, für die neue Datenbank. Möchten Sie eine bereits bestehende Datenbank nutzen, so tragen Sie deren Namen ein.",
+        "barResult": "Resultat: $res"
     },
     "databasePlatformUser": {
         "title": "Plattform-Datenbanknutzer",

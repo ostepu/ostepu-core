@@ -12,5 +12,12 @@
     "errorGitLog": "git log konnte nicht aufgerufen werden!!!",
     "errorGitReset": "git reset konnte nicht aufgerufen werden!!!",
     "errorGitPull": "git pull konnte nicht aufgerufen werden!!!",
-    "executeGitUpdatesDesc": "Vorgang"
+    "executeGitUpdatesDesc": "Vorgang",
+    "execGitFetch": "exec git fetch",
+    "execGitDiff": "exec git diff --shortstat HEAD...FETCH_HEAD",
+    "execGitLog": "exec git log --pretty=format:'%s,%cr' --abbrev-commit --date=relative HEAD...FETCH_HEAD",
+    "noChangesFound": "keine Änderungen gefunden",
+    "changesFound": "Änderungen gefunden ($amount)",
+    "execGitReset": "exec git reset --hard",
+    "execGitPull": "exec git pull"
 }}

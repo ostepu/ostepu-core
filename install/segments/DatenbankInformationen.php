@@ -15,16 +15,16 @@ class DatenbankInformationen
 
     public static function getSettingsBar(&$data)
     {
-        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $defs = self::getDefaults();
         $res = array(
-                     'db_name' => array(Language::Get('database_informations','db_name',self::$langTemplate), $data['DB']['db_name'], $defs['db_name'][1]),
-                     'db_path' => array(Language::Get('database_informations','db_path',self::$langTemplate), $data['DB']['db_path'], $defs['db_path'][1]),
-                     'db_user' => array(Language::Get('databaseAdmin','db_user',self::$langTemplate), $data['DB']['db_user'], $defs['db_user'][1]),
-                     'db_user_operator' => array(Language::Get('databasePlatformUser','db_user_operator',self::$langTemplate), $data['DB']['db_user_operator'], $defs['db_user_operator'][1])
+                     'db_name' => array(Installation::Get('database_informations','db_name',self::$langTemplate), $data['DB']['db_name'], $defs['db_name'][1]),
+                     'db_path' => array(Installation::Get('database_informations','db_path',self::$langTemplate), $data['DB']['db_path'], $defs['db_path'][1]),
+                     'db_user' => array(Installation::Get('databaseAdmin','db_user',self::$langTemplate), $data['DB']['db_user'], $defs['db_user'][1]),
+                     'db_user_operator' => array(Installation::Get('databasePlatformUser','db_user_operator',self::$langTemplate), $data['DB']['db_user_operator'], $defs['db_user_operator'][1])
                      );
-        Installation::log(array('text'=>'Resultat: '.json_encode($res)));
-        Installation::log(array('text'=>Language::Get('main','functionEnd')));
+        Installation::log(array('text'=>Installation::Get('database_informations','barResult',self::$langTemplate,array('res'=>json_encode($res)))));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return $res;
     }
 
@@ -42,9 +42,9 @@ class DatenbankInformationen
 
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
-        Installation::log(array('text'=>Language::Get('main','languageInstantiated')));
+        Installation::log(array('text'=>Installation::Get('main','languageInstantiated')));
        
         $def = self::getDefaults();
 
@@ -57,49 +57,49 @@ class DatenbankInformationen
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_path'], 'data[DB][db_path]', $def['db_path'][1],true);
         echo $text;
         self::$initialized = true;
-        Installation::log(array('text'=>Language::Get('main','functionEnd')));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
 
     public static function show($console, $result, $data)
     {
         if (!Einstellungen::$accessAllowed) return;
            
-        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $text = '';
         if (!$console){
-            $text .= Design::erstelleBeschreibung($console,Language::Get('database_informations','description',self::$langTemplate));
-            $text .= Design::erstelleZeile($console, Language::Get('database_informations','db_path',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['DB']['db_path'], 'data[DB][db_path]', 'localhost', true), 'v');
-            $text .= Design::erstelleZeile($console, Language::Get('database_informations','db_name',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['DB']['db_name'], 'data[DB][db_name]', 'uebungsplattform', true), 'v');
+            $text .= Design::erstelleBeschreibung($console,Installation::Get('database_informations','description',self::$langTemplate));
+            $text .= Design::erstelleZeile($console, Installation::Get('database_informations','db_path',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['DB']['db_path'], 'data[DB][db_path]', 'localhost', true), 'v');
+            $text .= Design::erstelleZeile($console, Installation::Get('database_informations','db_name',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['DB']['db_name'], 'data[DB][db_name]', 'uebungsplattform', true), 'v');
 
-            echo Design::erstelleBlock($console, Language::Get('database_informations','title',self::$langTemplate), $text);
+            echo Design::erstelleBlock($console, Installation::Get('database_informations','title',self::$langTemplate), $text);
         }
 
         $text = '';
         if (!$console){
-            $text .= "<tr><td colspan='2'>".Language::Get('databaseAdmin','description',self::$langTemplate)."</td></tr>";
-            $text .= Design::erstelleZeile($console, Language::Get('databaseAdmin','db_user',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['DB']['db_user'], 'data[DB][db_user]', 'root', true), 'v');
-            $text .= Design::erstelleZeile($console, Language::Get('databaseAdmin','db_passwd',self::$langTemplate), 'e', Design::erstellePasswortzeile($console, $data['DB']['db_passwd'], 'data[DB][db_passwd]', '', true), 'v');
+            $text .= "<tr><td colspan='2'>".Installation::Get('databaseAdmin','description',self::$langTemplate)."</td></tr>";
+            $text .= Design::erstelleZeile($console, Installation::Get('databaseAdmin','db_user',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['DB']['db_user'], 'data[DB][db_user]', 'root', true), 'v');
+            $text .= Design::erstelleZeile($console, Installation::Get('databaseAdmin','db_passwd',self::$langTemplate), 'e', Design::erstellePasswortzeile($console, $data['DB']['db_passwd'], 'data[DB][db_passwd]', '', true), 'v');
 
-            echo Design::erstelleBlock($console, Language::Get('databaseAdmin','title',self::$langTemplate), $text);
+            echo Design::erstelleBlock($console, Installation::Get('databaseAdmin','title',self::$langTemplate), $text);
         }
 
         $text = '';
         if (!$console){
-            $text .= "<tr><td colspan='2'>".Language::Get('databasePlatformUser','description',self::$langTemplate)."</td></tr>";
-            $text .= Design::erstelleZeile($console, Language::Get('databasePlatformUser','db_user_operator',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['DB']['db_user_operator'], 'data[DB][db_user_operator]', 'DBOperator',true), 'v');
-            $text .= Design::erstelleZeile($console, Language::Get('databasePlatformUser','db_passwd_operator',self::$langTemplate), 'e', Design::erstellePasswortzeile($console, $data['DB']['db_passwd_operator'], 'data[DB][db_passwd_operator]', '', true), 'v');
+            $text .= "<tr><td colspan='2'>".Installation::Get('databasePlatformUser','description',self::$langTemplate)."</td></tr>";
+            $text .= Design::erstelleZeile($console, Installation::Get('databasePlatformUser','db_user_operator',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['DB']['db_user_operator'], 'data[DB][db_user_operator]', 'DBOperator',true), 'v');
+            $text .= Design::erstelleZeile($console, Installation::Get('databasePlatformUser','db_passwd_operator',self::$langTemplate), 'e', Design::erstellePasswortzeile($console, $data['DB']['db_passwd_operator'], 'data[DB][db_passwd_operator]', '', true), 'v');
 
-            echo Design::erstelleBlock($console, Language::Get('databasePlatformUser','title',self::$langTemplate), $text);
+            echo Design::erstelleBlock($console, Installation::Get('databasePlatformUser','title',self::$langTemplate), $text);
         }
 
-        Installation::log(array('text'=>Language::Get('main','functionEnd')));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return null;
     }
 
     public static function install($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>Language::Get('main','functionBegin')));
-        Installation::log(array('text'=>Language::Get('main','functionEnd')));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return null;
     }
 }

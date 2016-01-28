@@ -5,5 +5,13 @@
     "details": "Details anzeigen",
     "operationFailed": "konnte nicht aufgerufen werden oder es gibt keine Veranstaltungen.",
     "differentAnswers": "Anfrageergebnisse stimmen nicht überein",
-    "description": "Dieser Vorgang sendet, an alle existierenden Veranstaltungen, einen <span class='info-color'>POST /course<\/span> Aufruf über LCourse, um u.a. die Datenbanktabellen zu initialisieren/aktualisieren."
+    "description": "Dieser Vorgang sendet, an alle existierenden Veranstaltungen, einen <span class='info-color'>POST /course<\/span> Aufruf über LCourse, um u.a. die Datenbanktabellen zu initialisieren/aktualisieren.",
+    "createGetCourseQuery": "erstelle Anfrage: $url",
+    "getCourseResult": "Resultat: $res",
+    "createInitCourseQuery": "erstelle Anfrage: $url",
+    "initCourseResult": "Resultat: $res",
+    "failureInitCourses": "Fehler: $message",
+    "initCourseSuccess": "Erfolgreich ($name)",
+    "initCourseError": "Fehler: status = $status",
+    "failureGetCourses": "Fehler: $message"
 }}

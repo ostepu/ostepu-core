@@ -60,9 +60,9 @@ class PlugInsInstallieren
 
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
-        Installation::log(array('text'=>Language::Get('main','languageInstantiated')));
+        Installation::log(array('text'=>Installation::Get('main','languageInstantiated')));
        
         $def = self::getDefaults();
 
@@ -72,7 +72,7 @@ class PlugInsInstallieren
         }
         echo $text;
         self::$initialized = true;
-        Installation::log(array('text'=>Language::Get('main','functionEnd')));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
    
     private static $pluginFiles=null;
@@ -99,18 +99,18 @@ class PlugInsInstallieren
     {
         if (!Einstellungen::$accessAllowed) return;
            
-        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $pluginFiles = self::getPluginFiles();
         $text='';
-        $text .= Design::erstelleBeschreibung($console,Language::Get('packages','description',self::$langTemplate));
+        $text .= Design::erstelleBeschreibung($console,Installation::Get('packages','description',self::$langTemplate));
 
         if (self::$onEvents['install']['enabledInstall'])
-            $text .= Design::erstelleZeile($console, Language::Get('packages','installSelected',self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0],Language::Get('main','install')), 'h');
+            $text .= Design::erstelleZeile($console, Installation::Get('packages','installSelected',self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0],Installation::Get('main','install')), 'h');
         if (self::$onEvents['uninstall']['enabledInstall'])
-            $text .= Design::erstelleZeile($console, Language::Get('packages','uninstallSelected',self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['uninstall']['event'][0],Language::Get('main','uninstall')), 'h');
+            $text .= Design::erstelleZeile($console, Installation::Get('packages','uninstallSelected',self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['uninstall']['event'][0],Installation::Get('main','uninstall')), 'h');
 
         if (self::$onEvents['validateFiles']['enabledInstall'])
-            $text .= Design::erstelleZeile($console, Language::Get('packages','validateFilesDesc',self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['validateFiles']['event'][0],Language::Get('packages','validateFiles',self::$langTemplate)), 'h');
+            $text .= Design::erstelleZeile($console, Installation::Get('packages','validateFilesDesc',self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['validateFiles']['event'][0],Installation::Get('packages','validateFiles',self::$langTemplate)), 'h');
 
         $validateFiles=false;
         if (isset($result[self::$onEvents['validateFiles']['name']])){
@@ -141,7 +141,7 @@ class PlugInsInstallieren
                 foreach($installedPlugins as $instPlug){
                     if ($name == $instPlug['name']){
                         if (isset($instPlug['version'])){
-                            $text .= Design::erstelleZeile($console, Language::Get('packages','currentVersion',self::$langTemplate) , 'v', 'v'.$instPlug['version'] , 'v');
+                            $text .= Design::erstelleZeile($console, Installation::Get('packages','currentVersion',self::$langTemplate) , 'v', 'v'.$instPlug['version'] , 'v');
                         }
                         $isInstalled=true;
                         break;
@@ -150,7 +150,7 @@ class PlugInsInstallieren
             }
 
             if (!$isInstalled)
-                $text .= Design::erstelleZeile($console, Language::Get('packages','currentVersion',self::$langTemplate) , 'v', '---' , 'v');
+                $text .= Design::erstelleZeile($console, Installation::Get('packages','currentVersion',self::$langTemplate) , 'v', '---' , 'v');
 
             $vorText = '';
             foreach ($voraussetzungen as $vor){
@@ -160,7 +160,7 @@ class PlugInsInstallieren
                
             } else {
                 $vorText = substr($vorText,0,-2);
-                $text .= Design::erstelleZeile($console, Language::Get('packages','requirements',self::$langTemplate) , 'v', $vorText , 'v');
+                $text .= Design::erstelleZeile($console, Installation::Get('packages','requirements',self::$langTemplate) , 'v', $vorText , 'v');
             }
 
             $file = dirname(__FILE__) . '/../../Plugins/'.$plug;
@@ -189,7 +189,7 @@ class PlugInsInstallieren
                                 if (trim($cont) != ''){
                                     $val = @json_decode(file_get_contents($f));
                                     if ($val===null){
-                                        $text .= Design::erstelleZeileShort($console, realpath($f) , 'break v', Language::Get('packages','jsonInvalid',self::$langTemplate), 'v error_light break');
+                                        $text .= Design::erstelleZeileShort($console, realpath($f) , 'break v', Installation::Get('packages','jsonInvalid',self::$langTemplate), 'v error_light break');
                                     }
                                 }
                             }
@@ -209,7 +209,7 @@ class PlugInsInstallieren
                                 $cont = file_get_contents($f);
                                 $val = parse_ini_file($f);
                                 if ($val===false){
-                                    $text .= Design::erstelleZeileShort($console, realpath($f) , 'break v', Language::Get('packages','iniInvalid',self::$langTemplate), 'v error_light break');
+                                    $text .= Design::erstelleZeileShort($console, realpath($f) , 'break v', Installation::Get('packages','iniInvalid',self::$langTemplate), 'v error_light break');
                                 }
                             }
                         }
@@ -219,20 +219,20 @@ class PlugInsInstallieren
             }
 
             if ($componentCount>0){
-                $text .= Design::erstelleZeile($console, Language::Get('packages','numberComponents',self::$langTemplate) , 'v', $componentCount , 'v');
+                $text .= Design::erstelleZeile($console, Installation::Get('packages','numberComponents',self::$langTemplate) , 'v', $componentCount , 'v');
             }
             if ($fileCount>0){
-                $text .= Design::erstelleZeile($console, Language::Get('packages','numberFiles',self::$langTemplate) , 'v', $fileCount , 'v');
+                $text .= Design::erstelleZeile($console, Installation::Get('packages','numberFiles',self::$langTemplate) , 'v', $fileCount , 'v');
             }
             if ($fileSize>0){
-                $text .= Design::erstelleZeile($console, Language::Get('packages','size',self::$langTemplate) , 'v', Design::formatBytes($fileSize) , 'v');
+                $text .= Design::erstelleZeile($console, Installation::Get('packages','size',self::$langTemplate) , 'v', Design::formatBytes($fileSize) , 'v');
             }
         }
 
         /*if ($installPlugins){
             if ($installPluginsResult !=null)
                 foreach ($installPluginsResult as $component){
-                   // $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Language::Get('main','ok') : "<font color='red'>".Language::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
+                   // $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Installation::Get('main','ok') : "<font color='red'>".Installation::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
                 }
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);
         }
@@ -240,21 +240,21 @@ class PlugInsInstallieren
         if ($uninstallPlugins){
             if ($uninstallPluginsResult !=null)
                 foreach ($uninstallPluginsResult as $component){
-                   // $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Language::Get('main','ok') : "<font color='red'>".Language::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
+                   // $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Installation::Get('main','ok') : "<font color='red'>".Installation::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
                 }
 
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);
         }*/
 
-        echo Design::erstelleBlock($console, Language::Get('packages','title',self::$langTemplate), $text);
+        echo Design::erstelleBlock($console, Installation::Get('packages','title',self::$langTemplate), $text);
 
-        Installation::log(array('text'=>Language::Get('main','functionEnd')));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return null;
     }
 
     public static function installCheckPlugins($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $res = array();
 
         if (!$fail){
@@ -279,13 +279,13 @@ class PlugInsInstallieren
             }
         }
 
-        Installation::log(array('text'=>Language::Get('main','functionEnd')));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return $res;
     }
 
     public static function gibPluginDateien($input, &$fileList, &$fileListAddress, &$componentFiles)
     {
-        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $mainPath = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '../..');
         $mainPath = str_replace(array("\\","/"), array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR), $mainPath);
        
@@ -448,7 +448,7 @@ class PlugInsInstallieren
             $fileListAddress[] = $key;
             $fileList[] = $a;
         }
-        Installation::log(array('text'=>Language::Get('main','functionEnd')));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
 
     public static function installValidateFiles($data, &$fail, &$errno, &$error)
@@ -458,7 +458,7 @@ class PlugInsInstallieren
 
     public static function installInstallPlugins($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $pluginFiles = self::getPluginFiles();
         $res = array();
 
@@ -510,13 +510,13 @@ class PlugInsInstallieren
             //Zugang::SendeDateien($fileList,$fileListAddress,$data);
         }
 
-        Installation::log(array('text'=>Language::Get('main','functionEnd')));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return $res;
     }
 
     public static function installUninstallPlugins($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $res = array();
 
         if (!$fail){
@@ -546,7 +546,7 @@ class PlugInsInstallieren
             }
         }
 
-        Installation::log(array('text'=>Language::Get('main','functionEnd')));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return $res;
     }
 }

@@ -24,34 +24,34 @@ class MainInfo
 
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
-        Installation::log(array('text'=>Language::Get('main','languageInstantiated')));
-        Installation::log(array('text'=>Language::Get('main','functionEnd')));
+        Installation::log(array('text'=>Installation::Get('main','languageInstantiated')));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
    
     public static function show($console, $result, $data)
     {
         if (!Einstellungen::$accessAllowed) return;
            
-        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $text='';
         $failure=false;
         Einstellungen::$path = dirname(__FILE__) . '/../config';
-        Installation::log(array('text'=>'prüfe Pfad: '.Einstellungen::$path));
-        Installation::log(array('text'=>'prüfe Datei: '.__FILE__));
+        Installation::log(array('text'=>Installation::Get('mainInfo','checkPath',self::$langTemplate,array('path'=>Einstellungen::$path))));
+        Installation::log(array('text'=>Installation::Get('mainInfo','checkFile',self::$langTemplate,array('file'=>__FILE__))));
         if (!is_dir(Einstellungen::$path) || !is_writable(__FILE__)) {
-            $text .= Design::erstelleZeile($console, Language::Get('mainInfo','notWritable',self::$langTemplate), 'error');
+            $text .= Design::erstelleZeile($console, Installation::Get('mainInfo','notWritable',self::$langTemplate), 'error');
             $failure = true;
-            Installation::log(array('text'=>'keine Schreibrechte', 'logLevel'=>LogLevel::ERROR));
+            Installation::log(array('text'=>Installation::Get('mainInfo','noWritePermission',self::$langTemplate), 'logLevel'=>LogLevel::ERROR));
         } else {
-            Installation::log(array('text'=>'Prüfung erfolgreich'));
+            Installation::log(array('text'=>Installation::Get('mainInfo','possitiveResult',self::$langTemplate)));
         }
 
         if ($failure) {
-            echo Design::erstelleBlock($console, Language::Get('mainInfo','title',self::$langTemplate), $text);
+            echo Design::erstelleBlock($console, Installation::Get('mainInfo','title',self::$langTemplate), $text);
         }
-        Installation::log(array('text'=>Language::Get('main','functionEnd')));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
 }
 #endregion MainInfo

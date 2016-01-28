@@ -21,9 +21,9 @@ class PlattformEinrichten
 
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
-        Installation::log(array('text'=>Language::Get('main','languageInstantiated')));
+        Installation::log(array('text'=>Installation::Get('main','languageInstantiated')));
        
         $def = self::getDefaults();
 
@@ -31,22 +31,22 @@ class PlattformEinrichten
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['PL']['pl_details'], 'data[PL][pl_details]', $def['pl_details'][1],true);
         echo $text;
         self::$initialized = true;
-        Installation::log(array('text'=>Language::Get('main','functionEnd')));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
 
     public static function show($console, $result, $data)
     {
         if (!Einstellungen::$accessAllowed) return;
            
-        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $isUpdate = (isset($data['action']) && $data['action']=='update') ? true : false;
 
         $text='';
-        $text .= Design::erstelleBeschreibung($console,Language::Get('platform','description',self::$langTemplate));
+        $text .= Design::erstelleBeschreibung($console,Installation::Get('platform','description',self::$langTemplate));
 
         if (!$console){
-            $text .= Design::erstelleZeile($console, Language::Get('platform','createTables',self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0]), 'h');
-            $text .= Design::erstelleZeile($console, Language::Get('platform','details',self::$langTemplate), 'e', Design::erstelleAuswahl($console, $data['PL']['pl_details'], 'data[PL][pl_details]', 'details', null), 'v_c');
+            $text .= Design::erstelleZeile($console, Installation::Get('platform','createTables',self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0]), 'h');
+            $text .= Design::erstelleZeile($console, Installation::Get('platform','details',self::$langTemplate), 'e', Design::erstelleAuswahl($console, $data['PL']['pl_details'], 'data[PL][pl_details]', 'details', null), 'v_c');
         }
 
         if (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']]!=null){
@@ -60,26 +60,26 @@ class PlattformEinrichten
         $content = $result['content'];
 
         if (self::$installed){
-            Installation::log(array('text'=>'zeige Installationsergebnis'));
+            Installation::log(array('text'=>Installation::Get('platform','showResultInstall',self::$langTemplate)));
             if (!$console && isset($data['PL']['pl_details']) && $data['PL']['pl_details'] === 'details' && !$isUpdate){
                 foreach ($content as $component => $dat){
-                    $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Language::Get('main','ok') : "<font color='red'>".Language::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
+                    $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Installation::Get('main','ok') : "<font color='red'>".Installation::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
                 }
             } else {
-                $text .= Design::erstelleZeile($console, Language::Get('platform','countComponents',self::$langTemplate), 'e', count($content), 'v_c');
+                $text .= Design::erstelleZeile($console, Installation::Get('platform','countComponents',self::$langTemplate), 'e', count($content), 'v_c');
             }
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);
         }
 
-        echo Design::erstelleBlock($console, Language::Get('platform','title',self::$langTemplate), $text);
+        echo Design::erstelleBlock($console, Installation::Get('platform','title',self::$langTemplate), $text);
 
-        Installation::log(array('text'=>Language::Get('main','functionEnd')));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return null;
     }
 
     public static function install($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>Language::Get('main','functionBegin')));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $res = array();
 
         if (!$fail){
@@ -91,7 +91,7 @@ class PlattformEinrichten
 
             for ($i=0;$i<count($list);$i++){
                 // inits all components
-                Installation::log(array('text'=>'erstelle Anfrage für: '.$list[$i]->getAddress(). '/platform'));
+                Installation::log(array('text'=>Installation::Get('platform','createInitQuery',self::$langTemplate,array('url'=>$list[$i]->getAddress(). '/platform'))));
                 $handler = Request_CreateRequest::createPost($list[$i]->getAddress(). '/platform',array(),Platform::encodePlatform($platform));
                 $multiRequestHandle->addRequest($handler);
             }
@@ -99,13 +99,13 @@ class PlattformEinrichten
             $answer = $multiRequestHandle->run();
 
             for ($i=0;$i<count($list);$i++){
-                Installation::log(array('text'=>'verarbeite Komponente ('.$list[$i]->getTargetName().')'));
+                Installation::log(array('text'=>Installation::Get('platform','initComponent',self::$langTemplate,array('component'=>$list[$i]->getTargetName()))));
                 $url = $list[$i]->getTargetName();
                 $result = $answer[$i];
                 $res[$url] = array();
                 if (isset($result['content']) && isset($result['status']) && $result['status'] === 201){
                     $res[$url]['status'] = 201;
-                    Installation::log(array('text'=>'erfolgreich ('.$list[$i]->getTargetName().')'));
+                    Installation::log(array('text'=>Installation::Get('platform','initComponentSuccess',self::$langTemplate,array('component'=>$list[$i]->getTargetName()))));
                 } else {
                     $res[$url]['status'] = 409;
                     $fail = true;
@@ -118,12 +118,12 @@ class PlattformEinrichten
                     if (isset($res[$url]['content'])){
                         $content = $res[$url]['content'];
                     }
-                    Installation::log(array('text'=>'Fehler erkannt('.$list[$i]->getTargetName().'): '.json_encode($res[$url]).' content:'.json_encode($content), 'logLevel'=>LogLevel::ERROR));
+                    Installation::log(array('text'=>Installation::Get('platform','initComponentError',self::$langTemplate,array('component'=>$list[$i]->getTargetName(),'url'=>json_encode($res[$url]),'content'=>json_encode($content))), 'logLevel'=>LogLevel::ERROR));
                 }
             }
         }
 
-        Installation::log(array('text'=>Language::Get('main','functionEnd')));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return $res;
     }
 }
