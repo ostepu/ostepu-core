@@ -191,7 +191,9 @@ if ($postValidation->isValid() && $postResults['action'] === 'submit') {
                             global $globalUserData;
                             if (isset($globalUserData['courses'][0]['course'])){
                                 $obj = Course::decodeCourse(Course::encodeCourse($globalUserData['courses'][0]['course']));
-                                $maxFileSize = Course::containsSetting($obj,'MaxStudentUploadSize');
+                                if (Course::containsSetting($obj,'MaxStudentUploadSize') !== null){
+                                    $maxFileSize = Course::containsSetting($obj,'MaxStudentUploadSize');
+                                }
                             }
 
                             if ($file['size']>$maxFileSize){
