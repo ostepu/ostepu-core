@@ -207,6 +207,8 @@
                 {"path": "/help/:language/setting/MaxStudentUploadSize/maxStudentUploadSizeA.png"},
                 {"path": "/help/:language/setting/MaxStudentUploadSize/maxStudentUploadSizeB.png"},
                 {},
+                {"path": "/help/:language/setting/GenerateDummyCorrectionsForTutorArchives/GenerateDummyCorrectionsForTutorArchivesDesc.md"},
+                {},
                 {"path": "/help/:language/page/common/accountSettings/password.md"},
                 {"path": "/help/:language/page/common/accountSettings/passwordA.png"},
                 {"path": "/help/:language/page/common/accountSettings/passwordB.png"},
