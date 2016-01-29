@@ -388,12 +388,13 @@ class Installer
 
             echo "<html><head>";
             echo "<link rel='stylesheet' type='text/css' href='css/format.css'>";
-            $titleText=Installation::Get('main','title'.$selected_menu);
 
             if ($selected_menu==-1){
                 if (isset($_POST['action'])){
                     $titleText=Installation::Get('main','title'.$_POST['action']);
                 }
+            } else {
+                $titleText=Installation::Get('main','title'.$selected_menu);
             }
 
             echo "</head><body><div class='center'>";
