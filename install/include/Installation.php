@@ -236,7 +236,7 @@ class Installation
     {  
         $value = Language::Get($area, $cell, $name, $params);
         if ($value === Language::$errorValue){
-            Installation::log(array('text'=>Language::Get('main','unknownPlaceholder'),'logLevel'=>LogLevel::ERROR));
+            Installation::log(array('text'=>Language::Get('main','unknownPlaceholder','default', array('name'=>$area.'::'.$cell)),'logLevel'=>LogLevel::ERROR));
         }
         return $value;
     }
