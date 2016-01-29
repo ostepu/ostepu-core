@@ -29,11 +29,11 @@ class MainInfo
         Installation::log(array('text'=>Installation::Get('main','languageInstantiated')));
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
-   
+  
     public static function show($console, $result, $data)
     {
         if (!Einstellungen::$accessAllowed) return;
-           
+          
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $text='';
         $failure=false;

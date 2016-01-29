@@ -24,7 +24,7 @@ class PlattformEinrichten
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
         Installation::log(array('text'=>Installation::Get('main','languageInstantiated')));
-       
+      
         $def = self::getDefaults();
 
         $text = '';
@@ -37,7 +37,7 @@ class PlattformEinrichten
     public static function show($console, $result, $data)
     {
         if (!Einstellungen::$accessAllowed) return;
-           
+          
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $isUpdate = (isset($data['action']) && $data['action']=='update') ? true : false;
 

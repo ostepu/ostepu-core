@@ -16,7 +16,7 @@ class GitAktualisierung
     public static function show($console, $result, $data)
     {
         if (!Einstellungen::$accessAllowed) return;
-           
+          
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $text='';
         if (!$console)
@@ -95,7 +95,7 @@ class GitAktualisierung
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
         Installation::log(array('text'=>Installation::Get('main','languageInstantiated')));
-       
+      
         self::$initialized = true;
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }

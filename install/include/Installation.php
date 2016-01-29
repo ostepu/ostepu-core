@@ -154,16 +154,16 @@ class Installation
     */
     public static function read_all_files($root = '.', $exclude = array())
     {
-        
+      
       Installation::log(array('text'=>'starte Funktion'));
       $files  = array('files'=>array(), 'dirs'=>array());
       $directories  = array();
       $root = realpath($root);
-      
+    
       foreach($exclude as &$ex){
           $ex = realpath($ex);
       }
-      
+    
       $last_letter  = $root[strlen($root)-1];
       $root  = ($last_letter == DIRECTORY_SEPARATOR) ? $root : $root.DIRECTORY_SEPARATOR;
 
@@ -171,7 +171,7 @@ class Installation
 
       while (sizeof($directories)) {
         $dir  = array_pop($directories);
-        
+      
         if ($handle = opendir($dir)) {
           while (false !== ($file = readdir($handle))) {
             if ($file == '.' || $file == '..') {
@@ -231,9 +231,9 @@ class Installation
 
         Logger::Log($data['text'],$data['logLevel'],false,Installation::$logFile, LogLevel::$names[$data['logLevel']] . ','.$data['name'],false,Installation::$logLevel);
     }
-    
+  
     public static function Get($area, $cell, $name='default', $params=array())
-    {  
+    {
         $value = Language::Get($area, $cell, $name, $params);
         if ($value === Language::$errorValue){
             Installation::log(array('text'=>Language::Get('main','unknownPlaceholder','default', array('name'=>$area.'::'.$cell)),'logLevel'=>LogLevel::ERROR));

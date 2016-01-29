@@ -21,13 +21,13 @@ class Zugangspasswort
         }
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
-   
+  
     public static function showInfoBar(&$data)
     {
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
         Installation::log(array('text'=>Installation::Get('main','languageInstantiated')));
-       
+      
         // master-Passwort abfragen
         echo "<tr><td class='e'>".Installation::Get('access','masterPassword',self::$langTemplate)."</td></tr>";
         $serverHash = md5(Einstellungen::$selected_server);
@@ -49,7 +49,7 @@ class Zugangspasswort
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
         Installation::log(array('text'=>Installation::Get('main','languageInstantiated')));
-       
+      
         foreach (Einstellungen::$masterPassword as $key => $tm){
             if (trim($tm) != ''){
                 echo Design::erstelleVersteckteEingabezeile($console, $tm, 'tmp['.$key.'][oldMasterPassword]', '', false);

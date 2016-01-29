@@ -702,7 +702,7 @@ if (isset($_POST['data']['LOGGER']['logLevel'])){
 if (isset($_POST['data']['PL']['language'])){
     Language::loadLanguage($_POST['data']['PL']['language'], 'default', 'ini');
 } else {
-    Language::loadLanguage('de', 'default', 'ini');    
+    Language::loadLanguage('de', 'default', 'ini');  
 }
 
 Installation::log(array('text'=>Installation::Get('main','beginInstance')));

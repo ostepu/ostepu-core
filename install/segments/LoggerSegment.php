@@ -7,7 +7,7 @@ class LoggerSegment
     private static $initialized=false;
     public static $rank = 200;
     private static $langTemplate='LoggerSegment';
-   
+  
     private static $logLevel = array('info'=>LogLevel::INFO,'warning'=>LogLevel::WARNING,'error'=>LogLevel::ERROR);
 
     public static function getDefaults()
@@ -17,7 +17,7 @@ class LoggerSegment
             $res['log_level_'.$levelName] = array('data[LOGGER][log_level_'.$levelName.']', null);
         return $res;
     }
-   
+  
     public static function showInfoBar(&$data)
     {
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
@@ -35,13 +35,13 @@ class LoggerSegment
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
         Installation::log(array('text'=>Installation::Get('main','languageInstantiated')));
-       
+      
         Installation::$logLevel = LogLevel::NONE;
         foreach (self::$logLevel as $levelName => $level) {
             if (isset($data['LOGGER']['log_level_'.$levelName]) && $data['LOGGER']['log_level_'.$levelName] === 'selected') Installation::$logLevel |= $level;
         }
         Installation::log(array('text'=>Installation::Get('logger','setLogLevel',self::$langTemplate,array('level'=>Installation::$logLevel))));
-  
+ 
         $def = self::getDefaults();
         $text = '';
         foreach (self::$logLevel as $levelName => $level) {
