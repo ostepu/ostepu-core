@@ -3,7 +3,7 @@
 class SyntaxPruefen
 {
     private static $initialized=false;
-    public static $name = 'initPlugins';
+    public static $name = 'validateFiles';
     public static $installed = false;
     public static $page = 8;
     public static $rank = 100;
