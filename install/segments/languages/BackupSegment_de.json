@@ -1,0 +1,14 @@
+{
+    "main": {
+        "title": "Backup",
+        "description": ""
+    },
+    "createImage": {
+        "createImageDesc": "Erstellt ein Abbild der Datenbank",
+        "createImage": "Erzeugen",
+        "message": "Meldung",
+        "status": "Status",
+        "filePath": "Abbild",
+        "imagePath": "Speicherort"
+    }
+}
