@@ -134,7 +134,6 @@ class FSZip
                 }
                 $zip->close( );
             } else {
-                $zip->close( );
                 unlink( $filePath );
                 return Model::isProblem(new File());
             }
