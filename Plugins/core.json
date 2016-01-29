@@ -36,8 +36,7 @@
             "exclude": ["vendor"]
         },
         {"path": ".htaccess"},
-        {"path": "Plugins/.htaccess"},
-        {"path": "Plugins/core.json"}
+        {"path": "Plugins/.htaccess"}
     ],
     "components": [
         {"conf": "DB/DBApprovalCondition/Component.json"},

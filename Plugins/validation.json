@@ -10,7 +10,6 @@
                 "URL": "https://github.com/tilluhlig/Validation",
                 "path": "Assistants/vendor/Validation/"
             }
-        },
-        {"path": "Plugins/validation.json"}
+        }
     ]
 }

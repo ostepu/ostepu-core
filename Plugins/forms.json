@@ -19,8 +19,7 @@
                 ".gitignore",
                 "README.md"
             ]
-        },
-        {"path": "Plugins/forms.json"}
+        }
     ],
     "components": [
         {"conf": "vendor/forms/DBChoice/Component.json"},

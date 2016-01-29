@@ -8,8 +8,7 @@
   "requirements":[{"type":"plugin","name":"CORE","version":"0.3"}],
   "files":
     [
-      {"path":"logic/LSamples/"},
-      {"path":"Plugins/samples.json"}
+      {"path":"logic/LSamples/"}
     ],
   "components":
     [

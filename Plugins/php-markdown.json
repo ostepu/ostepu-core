@@ -10,7 +10,6 @@
                 "URL": "https://github.com/michelf/php-markdown",
                 "path": "Assistants/vendor/Markdown/"
             }
-        },
-        {"path": "Plugins/php-markdown.json"}
+        }
     ]
 }

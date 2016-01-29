@@ -10,7 +10,6 @@
                 "URL": "https://github.com/tilluhlig/Slim",
                 "path": "Assistants/vendor/Slim/"
             }
-        },
-        {"path": "Plugins/slim.json"}
+        }
     ]
 }
