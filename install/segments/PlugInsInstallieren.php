@@ -27,12 +27,6 @@ class PlugInsInstallieren
                                         'event'=>array('actionUninstallPlugins'),
                                         'procedure'=>'installUninstallPlugins',
                                         'enabledInstall'=>false
-                                        ),
-                                    'validateFiles'=>array(
-                                        'name'=>'validateFiles',
-                                        'event'=>array('actionValidateFiles'),
-                                        'procedure'=>'installValidateFiles',
-                                        'enabledInstall'=>true
                                         )
                                     );
 
@@ -109,14 +103,6 @@ class PlugInsInstallieren
         if (self::$onEvents['uninstall']['enabledInstall'])
             $text .= Design::erstelleZeile($console, Installation::Get('packages','uninstallSelected',self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['uninstall']['event'][0],Installation::Get('main','uninstall')), 'h');
 
-        if (self::$onEvents['validateFiles']['enabledInstall'])
-            $text .= Design::erstelleZeile($console, Installation::Get('packages','validateFilesDesc',self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['validateFiles']['event'][0],Installation::Get('packages','validateFiles',self::$langTemplate)), 'h');
-
-        $validateFiles=false;
-        if (isset($result[self::$onEvents['validateFiles']['name']])){
-            $validateFiles=true;
-        }
-
         if (isset($result[self::$onEvents['check']['name']]) && $result[self::$onEvents['check']['name']]!=null){
            $result =  $result[self::$onEvents['check']['name']];
         } else
@@ -182,37 +168,6 @@ class PlugInsInstallieren
                 foreach($fileList as $f){
                     if (is_readable($f)){
                         $fileSize += filesize($f);
-                        if ($validateFiles){
-                            if ($fileSize>0 && strtolower(substr($f,-5))==='.json'){
-                                // validiere die json Datei
-                                $cont = file_get_contents($f);
-                                if (trim($cont) != ''){
-                                    $val = @json_decode(file_get_contents($f));
-                                    if ($val===null){
-                                        $text .= Design::erstelleZeileShort($console, realpath($f) , 'break v', Installation::Get('packages','jsonInvalid',self::$langTemplate), 'v error_light break');
-                                    }
-                                }
-                            }
-
-                            if ($fileSize>0 && strtolower(substr($f,-4))==='.php'){
-                                // validiere die php Datei
-                                $output=null;
-                                $result=null;
-                                exec('(php -l -d error_reporting=E_ALL -d display_errors=on -d log_errors=off -f '.realpath($f).') 2>&1',$output,$result);
-                                if ($result!=0){
-                                    $text .= Design::erstelleZeileShort($console, realpath($f), 'break v', implode('<br>',$output), 'v error_light break');
-                                }
-                            }
-                           
-                            if ($fileSize>0 && strtolower(substr($f,-5))==='.ini'){
-                                // validiere die ini Datei
-                                $cont = file_get_contents($f);
-                                $val = parse_ini_file($f);
-                                if ($val===false){
-                                    $text .= Design::erstelleZeileShort($console, realpath($f) , 'break v', Installation::Get('packages','iniInvalid',self::$langTemplate), 'v error_light break');
-                                }
-                            }
-                        }
                     }
                 }
                 $componentCount = count($componentFiles);
