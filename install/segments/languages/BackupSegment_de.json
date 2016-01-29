@@ -4,11 +4,28 @@
         "description": ""
     },
     "createImage": {
-        "createImageDesc": "Erstellt ein Abbild der Datenbank",
+        "createImageDesc": "Erstellt ein Abbild der Plattform",
         "createImage": "Erzeugen",
-        "message": "Meldung",
-        "status": "Status",
+        "databaseMessage": "Datenbank-Meldung",
+        "databaseStatus": "Datenbank-Status",
+        "databaseSize": "Datenbank-Größe",
+        "filesSize": "Dateien-Größe",
+        "filesAmount": "Dateien-Anzahl",
         "filePath": "Abbild",
-        "imagePath": "Speicherort"
+        "fileSize": "Abbildgröße",
+        "imagePath": "Speicherort",
+        "packDatabase": "Datenbank sichern",
+        "packFiles": "Dateiverzeichnis sichern",
+        "packSystem": "Systemdateien sichern"
+    },
+    "listImage": {
+        "listImageDesc": "Ermittelt die vorhandenen Abbilder",
+        "listImage": "Auflisten",
+        "noImages": "keine Abbilder",
+        "date": "Erstellung",
+        "file": "Abbilddatei",
+        "databaseSize": "Datenbank",
+        "filesSize": "Dateiverzeichnis",
+        "imageSize": "Abbild"
     }
 }
