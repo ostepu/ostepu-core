@@ -84,17 +84,26 @@ class BackupSegment
         Einstellungen::generatepath($location);
         $location = realpath($location);
         
-        $fileName = $data['DB']['db_name'].'_'.date('Ymd_His').'.sql';
-        $filePath = $location. DIRECTORY_SEPARATOR .$fileName;
+        $fileName = $data['DB']['db_name'].'_'.date('Ymd_His');
+        $filePath = $location. DIRECTORY_SEPARATOR .$fileName.'.sql';
+        $displayName = $filePath;
         
         $output = null;
         $return = null;
         $pathOld = getcwd();
         chdir($location);                            
         exec('(mysqldump --user '.$data['DB']['db_user_operator'].' --password="'.$data['DB']['db_passwd_operator'].'" --opt --result-file '.$filePath.' --skip-triggers --no-create-db '.$data['DB']['db_name'].') 2>&1', $output, $return);  
-        chdir($pathOld);
+        chdir($pathOld);    
         
-        $res['file'] = $filePath;
+        $zip = new ZipArchive( );
+        if ( $zip->open($location. DIRECTORY_SEPARATOR .$fileName.'.zip',ZIPARCHIVE::CREATE) === TRUE ){
+            $zip->addFile($filePath,$fileName.'.sql');
+            $zip->close( );
+            @unlink( $filePath );
+            $displayName = $location. DIRECTORY_SEPARATOR .$fileName.'.zip';
+        }
+            
+        $res['file'] = $displayName;
         $res['output'] = $output;
         $res['outputStatus'] = $return;
         
