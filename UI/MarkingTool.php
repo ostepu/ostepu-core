@@ -30,10 +30,9 @@ if (isset($_POST['action']) && $_POST['action'] == 'ShowMarkingTool') {
         if ($_POST['tutorID'] != 'all') {
             $tutorID = cleanInput($_POST['tutorID']);
         }
-    if (isset($_POST['statusID']))
-        if ($_POST['statusID'] != 'all') {
-            $statusID = cleanInput($_POST['statusID']);
-        }
+    if (isset($_POST['statusID'])){
+        $statusID = cleanInput($_POST['statusID']);
+    }
     //}
 }
 
@@ -45,10 +44,13 @@ if (isset($_GET['tutorID'])){
         $tutorID = cleanInput($_GET['tutorID']);
     }
 }
-if (isset($_GET['statusID']))
-    if ($_GET['statusID'] != 'all') {
-        $statusID = cleanInput($_GET['statusID']);
-    }
+if (isset($_GET['statusID'])){
+    $statusID = cleanInput($_GET['statusID']);
+}
+
+if (!isset($statusID)){
+    $statusID = 'all';
+}
 
 // saves marking changes of a groups
 $GroupNotificationElements=array();
@@ -207,7 +209,7 @@ if (isset($tutorID)) {
     $URI .= "/tutor/{$tutorID}";
 }
 
-if (isset($statusID)) {
+if (isset($statusID) && $statusID != 'all' && $statusID != 'notAccepted') {
     $URI .= "/status/{$statusID}";
 }
 
@@ -239,7 +241,10 @@ if (isset($_GET['downloadCSV'])) {
             foreach ($group['exercises'] as $key2 => $exercise){
                 if (!isset($exercise['submission']['marking']) && (isset($tutorID) && $tutorID!='all') && (!isset($statusID) || ($statusID!=-1 && $statusID!=0))) continue;
                 if (!isset($exercise['submission']) && ((isset($statusID) && $statusID!=0) || (isset($tutorID) && $tutorID!='all'))) continue;
-
+                if ((!isset($exercise['submission']) || (isset($exercise['submission']) && isset($exercise['submission']['accepted']) && $exercise['submission']['accepted'] == 1)) && ((isset($statusID) && $statusID=='notAccepted'))){
+                    continue;
+                }
+            
                 if (isset($exercise['submission'])){
                     if (isset($exercise['submission']['marking'])){
                         // submission + marking
@@ -331,6 +336,11 @@ if (!empty($markingTool_data['groups'])) {
             $eid = $exercise['id'];
             if (!isset($exercise['submission']['marking']) && (isset($tutorID) && $tutorID!='all') && (!isset($statusID) || ($statusID!=-1 && $statusID!=0))) continue;
             if (!isset($exercise['submission']) && ((isset($statusID) && $statusID!=0) || (isset($tutorID) && $tutorID!='all'))) continue;
+            
+            if ((!isset($exercise['submission']) || (isset($exercise['submission']) && isset($exercise['submission']['accepted']) && $exercise['submission']['accepted'] == 1)) && ((isset($statusID) && $statusID=='notAccepted'))){
+                unset($group['exercises'][$key]);
+                continue;
+            }
             $anz++;
             $allOutputs++;
         }
