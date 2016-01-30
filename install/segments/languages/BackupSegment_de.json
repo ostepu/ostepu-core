@@ -26,6 +26,11 @@
         "file": "Abbilddatei",
         "databaseSize": "Datenbank",
         "filesSize": "Dateiverzeichnis",
-        "imageSize": "Abbild"
+        "imageSize": "Abbildgröße"
+    },
+    "installImage": {
+        "execute": "Einspielen",
+        "installImage": "Abbild einspielen",
+        "notSupported": "Diese Aktion wird noch nicht unterstützt!!!"
     }
 }

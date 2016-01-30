@@ -22,6 +22,12 @@ class BackupSegment
                                         'event'=>array('actionListImage'),
                                         'procedure'=>'installListImage',
                                         'enabledInstall'=>true
+                                        ),
+                                    'installImage'=>array(
+                                        'name'=>'installImage',
+                                        'event'=>array('actionInstallImage'),
+                                        'procedure'=>'installInstallImage',
+                                        'enabledInstall'=>true
                                         )
                                     );
 
@@ -101,15 +107,18 @@ class BackupSegment
             $text .= Design::erstelleZeile($console, Installation::Get('listImage','listImageDesc',self::$langTemplate), 'e',  Design::erstelleSubmitButton(self::$onEvents['listImage']['event'][0],Installation::Get('listImage','listImage',self::$langTemplate)), 'h');
         }
       
-      
         if (isset($result[self::$onEvents['listImage']['name']])){
             $content = $result[self::$onEvents['listImage']['name']]['content'];
+            $content['backups'] = array_reverse($content['backups']);
             foreach($content['backups'] as $key => $backup){
                 if ($key == 0){
                     $text .= Design::erstelleZeile($console, '','','','' );
                 }
               
                 $text .= Design::erstelleZeile($console, Installation::Get('listImage','file',self::$langTemplate) , 'e', $backup['file'], 'v');
+                if (isset($backup['size'])){
+                    $text .= Design::erstelleZeile($console, Installation::Get('listImage','imageSize',self::$langTemplate) , 'e', Design::formatBytes($backup['size']), 'v');
+                }
                 if (isset($backup['conf']['date'])){
                     $text .= Design::erstelleZeile($console, Installation::Get('listImage','date',self::$langTemplate) , 'e', date('d.m.Y - H:i:s',$backup['conf']['date']), 'v');
                 }
@@ -119,10 +128,11 @@ class BackupSegment
                 if (isset($backup['conf']['files']['size'])){
                     $text .= Design::erstelleZeile($console, Installation::Get('listImage','filesSize',self::$langTemplate) , 'e', Design::formatBytes($backup['conf']['files']['size']), 'v');
                 }
-                if (isset($backup['size'])){
-                    $text .= Design::erstelleZeile($console, Installation::Get('listImage','imageSize',self::$langTemplate) , 'e', Design::formatBytes($backup['size']), 'v');
+                
+                if (self::$onEvents['installImage']['enabledInstall']){
+                    $text .= Design::erstelleZeile($console, Installation::Get('installImage','installImage',self::$langTemplate), 'e',  Design::erstelleSubmitButton(self::$onEvents['installImage']['event'][0],Installation::Get('installImage','execute',self::$langTemplate)), 'h');
                 }
-              
+        
                 if ($key != count($content['backups'])-1){
                     $text .= Design::erstelleZeile($console, '','','','' );
                 }
@@ -132,6 +142,10 @@ class BackupSegment
                 $text .= Design::erstelleZeile($console, '','e',Installation::Get('listImage','noImages',self::$langTemplate),'v_c' );
             }
         }
+        
+        if (isset($result[self::$onEvents['installImage']['name']])){
+            $text .= Design::erstelleZeile($console, '','e',Installation::Get('installImage','notSupported',self::$langTemplate),'v_c error_light' );
+        }
 
         echo Design::erstelleBlock($console, Installation::Get('main','title',self::$langTemplate), $text);
 
@@ -139,6 +153,13 @@ class BackupSegment
         return null;
     }
 
+    public static function installInstallImage($data, &$fail, &$errno, &$error)
+    {
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
+        /// ausfüllen
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
+    }
+    
     public static function installListImage($data, &$fail, &$errno, &$error)
     {
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
