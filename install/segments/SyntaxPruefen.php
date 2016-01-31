@@ -104,7 +104,7 @@ class SyntaxPruefen
                     if ($file[1] === 'json'){
                         $text .= Design::erstelleZeile($console, $file[0] , 'break v', Installation::Get('validation','jsonInvalid',self::$langTemplate), 'v error_light break');
                     } elseif ($file[1] === 'php'){
-                        $text .= Design::erstelleZeile($console, $file[0], 'break v', implode('<br>',$output), 'v error_light break');
+                        $text .= Design::erstelleZeile($console, $file[0], 'break v', implode('<br>',$file[2]), 'v error_light break');
                     } elseif ($file[1] === 'ini'){
                         $text .= Design::erstelleZeile($console, $file[0] , 'break v', Installation::Get('validation','iniInvalid',self::$langTemplate), 'v error_light break');
                     }
@@ -337,7 +337,7 @@ class SyntaxPruefen
                             $result=null;
                             exec('(php -l -d error_reporting=E_ALL -d display_errors=on -d log_errors=off -f '.realpath($f).') 2>&1',$output,$result);
                             if ($result!=0){
-                                    $res['plugins'][$plug]['results'][] = array(realpath($f),'php');
+                                    $res['plugins'][$plug]['results'][] = array(realpath($f),'php',$output);
                             }
                         }
                       
