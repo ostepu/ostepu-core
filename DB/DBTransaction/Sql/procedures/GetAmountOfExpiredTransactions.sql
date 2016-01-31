@@ -8,7 +8,9 @@
  */
 ?>
 
-SELECT count(T.T_id) AS 'amount',
+SELECT 
+  'rows' as 'type',
+  count(T.T_id) AS 'amount',
   round((SELECT (data_length+index_length)/table_rows
    FROM information_schema.TABLES
    WHERE table_schema = DATABASE()
