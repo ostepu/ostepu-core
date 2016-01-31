@@ -471,7 +471,12 @@ class LOOP
                     $fileHash = sha1($file);
                     $filePath = $this->tempdir('/tmp/', $fileHash,0777);
                     file_put_contents($filePath . '/' . $fileName, $file);
-                    chmod($filePath . '/' . $fileName, 0777);  
+                    chmod($filePath . '/' . $fileName, 0777);
+
+                    // Arbeitsverzeichnis in parameter abspeichern
+                    $configTestcases = Testcase::decodeTestcase($pro->getParameter());
+                    $configTestcases[0]->setWorkDir($filePath);
+                    $pro->setParameter(Testcase::encodeTestcase($configTestcases));
 
                     // der $pro->getParameter() wurden beim Erstellen der Verarbeitung festgelegt und enthält
                     // sowohl den aufzurufenden Compiler als auch weitere Aufrufparameter
