@@ -1,5 +1,6 @@
 <?php
 set_time_limit(0);
+header("Content-Type: text/html; charset=utf-8");
 
 /**
  * @file install.php contains the Installer class
