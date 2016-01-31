@@ -1,6 +1,6 @@
 {"packages": {
     "title": "Pakete",
-    "installSelected": "ausgewaehlte installieren",
+    "installSelected": "ausgewaehlte Aktualisieren",
     "uninstallSelected": "ausgewaehlte deinstallieren",
     "currentVersion": "vorhandene Version",
     "requirements": "Voraussetzungen",
@@ -8,5 +8,6 @@
     "numberFiles": "Dateien",
     "size": "Größe",
     "description": "",
-    "packageDetails": "Packetdetails anzeigen"
+    "packageDetails": "Packetdetails anzeigen",
+    "install": "Aktualisieren"
 }}

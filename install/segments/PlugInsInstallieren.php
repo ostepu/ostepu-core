@@ -103,7 +103,7 @@ class PlugInsInstallieren
         $text .= Design::erstelleZeile($console, Installation::Get('packages','packageDetails',self::$langTemplate), 'e', Design::erstelleAuswahl($console, $data['PLUG']['details'], 'data[PLUG][details]', 'details', null, true), 'v_c');
 
         if (self::$onEvents['install']['enabledInstall'])
-            $text .= Design::erstelleZeile($console, Installation::Get('packages','installSelected',self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0],Installation::Get('main','install')), 'h');
+            $text .= Design::erstelleZeile($console, Installation::Get('packages','installSelected',self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0],Installation::Get('packages','install',self::$langTemplate)), 'h');
         if (self::$onEvents['uninstall']['enabledInstall'])
             $text .= Design::erstelleZeile($console, Installation::Get('packages','uninstallSelected',self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['uninstall']['event'][0],Installation::Get('main','uninstall')), 'h');
 
