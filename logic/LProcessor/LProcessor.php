@@ -606,6 +606,7 @@ class LProcessor
                     $process->setAttachment($pro->getAttachment());
                     $process->setTarget($pro->getTarget());
                     $process->setWorkFiles($pro->getWorkFiles());
+                    $process->setProcessId($pro->getProcessId());
                         
 //echo Process::encodeProcess($process)."_______";// return;
 
@@ -691,6 +692,53 @@ class LProcessor
                    $res[] = $uploadSubmission;
                    $this->app->response->setStatus( 409 );
                    continue;
+                }
+            }
+
+            // postprocess submission
+            if ($processors !== null){
+                if (!is_array($processors)) $processors = array($processors);
+                
+                foreach($processors as $pro){
+                    $component = $pro->getTarget();
+                    
+                    if ($process->getExercise()===null)
+                        $process->setExercise($pro->getExercise());
+                     
+                    $process->setParameter($pro->getParameter());
+                    $process->setAttachment($pro->getAttachment());
+                    $process->setTarget($pro->getTarget());
+                    $process->setWorkFiles($pro->getWorkFiles());
+                        
+//echo Process::encodeProcess($process)."_______";// return;
+
+                    $result = Request::post($component->getAddress().'/postprocess', array(),  Process::encodeProcess($process));
+//echo $result['content'].'_______';
+                    if ( $result['status'] >= 200 && 
+                         $result['status'] <= 299 ){
+                         $process = Process::decodeProcess( $result['content'] );
+
+                         if (isset($result['content'])){
+                            $content = Process::decodeProcess($result['content']); 
+                            //$submission->setStatus($content->getStatus());
+                            $submission = $process->getSubmission();
+                            if ($submission===null)$submission = $process->getRawSubmission();
+                            $submission->addMessages($content->getMessages());
+                        } 
+
+                    } elseif ($result['status'] == 404) {
+                        // skip if no postprocess command is found
+                        continue;
+                    } /*else {
+                        $submission->addMessage("Beim Nachbearbeiten der Einsendung ist ein Fehler aufgetreten");
+
+                        if (isset($result['content'])){
+                            $content = Process::decodeProcess($result['content']); 
+                            $submission->setStatus($content->getStatus());  
+                            $submission->addMessages($content->getMessages());
+                        }
+                       break;
+                    }*/
                 }
             }
           

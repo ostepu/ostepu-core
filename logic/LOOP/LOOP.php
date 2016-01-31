@@ -108,6 +108,16 @@ class LOOP
         // POST PostProcess
         $this->app->map('/'.$this->getPrefix().'(/)',
                         array($this, 'postProcess'))->via('POST');
+
+         // POST saveTestcases
+        // erstellt Testcases (Daten kommen im Anfragekörper)
+        $this->app->post( 
+                         '/postprocess(/)',
+                         array( 
+                               $this,
+                               'saveTestcases'
+                               )
+                         );
                         
         // POST AddCourse
         // fügt die Komponente der Veranstaltung hinzu (Daten kommen im Anfragekörper)
@@ -701,6 +711,38 @@ class LOOP
             
         } else 
             $this->app->response->setBody( Process::encodeProcess( $res ) );
+    }
+
+    /**
+     * PostProcesses a process
+     *
+     * Called when this component receives an HTTP POST request to
+     * /postprocess(/).
+     */
+    public function saveTestcases()
+    {
+        // hier werden Einsendungen verarbeitet
+        
+        $this->app->response->setStatus( 201 );
+           
+        $body = $this->app->request->getBody();
+        $process = Process::decodeProcess($body);
+        
+        // always been an array
+        // es ist einfacher, wenn man sicherstellt, dass die Eingabedaten als Liste für foreach verarbeitet
+        // werden können, um Abstürze bei übergebenen Einzelobjekten zu vermeiden
+        $arr = true;
+        if ( !is_array( $process ) ){
+            $process = array( $process );
+            $arr = false;
+        }
+
+        $res = array( );
+
+        // behandelt jede eingehende Einsendung
+        foreach ( $process as $pro ){
+            
+        }
     }
     
     /**

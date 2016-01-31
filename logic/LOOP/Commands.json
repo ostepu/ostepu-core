@@ -1,5 +1,6 @@
 [
     {    "method":"post", "path":"/process" },
+    {    "method":"post", "path":"/postprocess" },
     {    "method":"post", "path":"/course" },
     {    "method":"delete", "path":"/course/:courseid" },
     {    "method":"get", "path":"/link/exists/course/:courseid" }
