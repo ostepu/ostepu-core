@@ -80,14 +80,15 @@ class Model
         // Ein Router stellt einen erlaubten Aufruf dar (mit Methode und URI), sodass geprüft werden kann,
         // welcher für die Beantwortung zuständig ist
         $router = new \Slim\Router();
-        foreach ($commands as &$command){
+        foreach ($commands as $key => $command){
             if (!isset($command['name'])) continue;
-            if (!isset($command['method'])) $command['method'] = 'GET';
-            if (!isset($command['callback'])) $command['callback'] = $command['name'];
-            if (!isset($command['seqInput'])) $command['seqInput'] = 'TRUE';
-            if (!isset($command['singleOutput'])) $command['singleOutput'] = 'FALSE';
-            if (!isset($command['placeholder'])) $command['placeholder'] = array();
-
+            if (!isset($command['method'])) $commands[$key]['method'] = 'GET';
+            if (!isset($command['callback'])) $commands[$key]['callback'] = $command['name'];
+            if (!isset($command['seqInput'])) $commands[$key]['seqInput'] = 'TRUE';
+            if (!isset($command['singleOutput']))$commands[$key]['singleOutput'] = 'FALSE';
+            if (!isset($command['placeholder'])) $commands[$key]['placeholder'] = array();
+            $command = $commands[$key];
+            
             // Methoden können durch Komma getrennt aufgelistet sein
             $methods = explode(',',$command['method']);
 
