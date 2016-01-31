@@ -111,6 +111,19 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
     }
 
      /**
+     * @var workDir $workDir  Die auszuführende Datei, entspricht der kompilierten Datei in Submission.
+     */
+    private $workDir = null;
+    public function getWorkDir( )
+    {
+        return $this->workDir;
+    }
+    public function setWorkDir( $value = null )
+    {
+        $this->workDir = $value;
+    }
+
+    /**
      * @var file $file  Die auszuführende Datei, entspricht der kompilierten Datei in Submission.
      */
     private $file = null;
@@ -122,6 +135,7 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
     {
         $this->file = $value;
     }
+
 
     /**
      * @var Submission $submission Die Einsendung zum jeweiligen Testcase.
@@ -147,7 +161,7 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
                                          $status = null,
                                          $process = null,
                                          $runOutput = null,
-                                         $fileId = null,
+                                         $workDir = null,
                                          $submissionId = null
                                          )
     {
@@ -159,7 +173,7 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
                                     'status' => $status,
                                     'process' => $process,
                                     'runOutput' => $runOutput,
-                                    'file' => new File( array( 'fileId' => $fileId ) ),
+                                    'workDir' => $workDir,
                                     'submission' => new Submission( array( 'id' => $submissionId ) )
                                   ) );
     }
@@ -175,7 +189,7 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
                      'OOP_status' => 'status',
                      'PRO_id' => 'process',
                      'OOP_runOutput' => 'runOutput',
-                     'OOP_file' => 'file',
+                     'OOP_workDir' => 'workDir',
                      'OOP_submission' => 'submission'
                      );
     }
@@ -235,12 +249,11 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
                                  DBJson::mysql_real_escape_string( $this->runOutput )
                                  );
 
-        if ( $this->file != null && 
-             $this->file->getFileId( ) !== null )
+        if ( $this->workDir != null )
             $this->addInsertData( 
                                  $values,
-                                 'F_id_file',
-                                 DBJson::mysql_real_escape_string( $this->file->getFileId( ) )
+                                 'OOP_workDir',
+                                 DBJson::mysql_real_escape_string( $this->workDir )
                                  );
 
         if ( $this->submission !== null && 
@@ -341,6 +354,8 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
             $list['process'] = $this->process;
         if ( $this->runOutput !== null )
             $list['runOutput'] = $this->runOutput;
+        if ( $this->workDir !== null )
+            $list['workDir'] = $this->workDir;
         if ( $this->file !== null )
             $list['file'] = $this->file;
         if ( $this->submission !== null && $this->submission !== array())
@@ -357,7 +372,6 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
     public static function ExtractTestcase( 
                                            $data,
                                            $singleResult = false,
-                                           $FileExtension = '',
                                            $TestcaseExtension = '',
                                            $SubmissionExtension = '',
                                            $isResult = true
@@ -365,12 +379,6 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
     {
         // generates an assoc array of files by using a defined list of
         // its attributes
-        $files = DBJson::getObjectsByAttributes( 
-                                                $data,
-                                                File::getDBPrimaryKey( ),
-                                                File::getDBConvert( ),
-                                                $FileExtension
-                                                );
 
         $testcases = DBJson::getResultObjectsByAttributes( 
                                                     $data,
@@ -388,19 +396,7 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
                                                       $SubmissionExtension
                                                       );
 
-        // concatenates the markings and the associated files
-        $res = DBJson::concatObjectListsSingleResult( 
-                                                     $data,
-                                                     $testcases,
-                                                     Testcase::getDBPrimaryKey( ),
-                                                     Testcase::getDBConvert( )['OOP_file'],
-                                                     $files,
-                                                     File::getDBPrimaryKey( ),
-                                                     $FileExtension,
-                                                     $TestcaseExtension       
-                                                     );
-
-        // concatenates the markings and the associated submissions
+        // concatenates the testcases and the associated submissions
         $res = DBJson::concatObjectListsSingleResult( 
                                                      $data,
                                                      $res,

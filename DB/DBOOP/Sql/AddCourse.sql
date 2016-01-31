@@ -13,16 +13,11 @@ CREATE TABLE IF NOT EXISTS `Testcase<?php echo $pre; ?>_<?php echo $object->getI
   `OOP_status` SMALLINT NULL DEFAULT 0,
   `PRO_id` INT NOT NULL,
   `OOP_runOutput` TEXT NULL,
-  `F_id_file` INT NULL,
+  `OOP_workDir` TEXT NULL,
   `OOP_submission` INT NOT NULL,
   PRIMARY KEY (`OOP_id`),
   UNIQUE INDEX `OOP_id_UNIQUE` (`OOP_id` ASC),
-  INDEX `redundanzProcess<?php echo $pre; ?>_<?php echo $object->getId(); ?>` (`PRO_id` ASC, `OOP_submission` ASC),
-  CONSTRAINT `fk_Testcase_File1<?php echo $pre; ?>_<?php echo $object->getId(); ?>`
-    FOREIGN KEY (`F_id_file`)
-    REFERENCES `File` (`F_id`)
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE,
+  INDEX `redundanzProcess<?php echo $pre; ?>_<?php echo $object->getId(); ?>` (`OOP_status` ASC, `OOP_submission` ASC),
   CONSTRAINT `fk_Testcase_Submission1<?php echo $pre; ?>_<?php echo $object->getId(); ?>`
     FOREIGN KEY (`OOP_submission`)
     REFERENCES `Submission` (`S_id`)
@@ -49,12 +44,6 @@ if (NEW.PRO_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = 'no corresponding process';
 END if;
 
-if (NEW.F_id_file is not null) then
-SET NEW.F_id_file = (select F.F_id from `File` F where F.F_id = NEW.F_id_file limit 1);
-if (NEW.F_id_file is NULL) then
-SIGNAL sqlstate '45001' set message_text = 'no corresponding file';
-END if;END if;
-
 SET NEW.OOP_submission = (select S.S_id from `Submission` S where S.S_id = NEW.OOP_submission limit 1);
 if (NEW.OOP_submission is NULL) then
 SIGNAL sqlstate '45001' set message_text = 'no corresponding submission';
@@ -68,12 +57,6 @@ SET NEW.PRO_id = (select PRO.PRO_id from `Process<?php echo $pre; ?>_<?php echo 
 if (NEW.PRO_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = 'no corresponding process';
 END if;
-
-if (NEW.F_id_file is not null) then
-SET NEW.F_id_file = (select F.F_id from `File` F where F.F_id = NEW.F_id_file limit 1);
-if (NEW.F_id_file is NULL) then
-SIGNAL sqlstate '45001' set message_text = 'no corresponding file';
-END if;END if;
 
 SET NEW.OOP_submission = (select S.S_id from `Submission` S where S.S_id = NEW.OOP_submission limit 1);
 if (NEW.OOP_submission is NULL) then
