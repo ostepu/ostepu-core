@@ -13,6 +13,17 @@ begin
      END IF;
 end;
 
+DROP PROCEDURE IF EXISTS `execute_if_index_not_exists`;
+CREATE PROCEDURE `execute_if_index_not_exists` (in theTable varchar(128), in theIndexName varchar(128), in theStatement varchar(255))
+begin
+    IF((SELECT COUNT(*) AS index_exists FROM information_schema.statistics WHERE TABLE_SCHEMA = DATABASE() and table_name =
+    theTable AND index_name = theIndexName) = 0) THEN
+       SET @s = theStatement;
+       PREPARE stmt FROM @s;
+       EXECUTE stmt;
+     END IF;
+end;
+
 DROP PROCEDURE IF EXISTS `execute_if_table_exists`;
 CREATE PROCEDURE `execute_if_table_exists` (in theTable varchar(128), in theStatement varchar(255))
 begin
@@ -117,7 +128,41 @@ ENGINE = InnoDB
 AUTO_INCREMENT = 1;
 
 call drop_index_if_exists('Component','CO_address_UNIQUE');
-ALTER TABLE `Component` ADD UNIQUE(`CO_name` ASC);
+call drop_index_if_exists('Component','CO_name_35');
+call drop_index_if_exists('Component','CO_name_34');
+call drop_index_if_exists('Component','CO_name_33');
+call drop_index_if_exists('Component','CO_name_32');
+call drop_index_if_exists('Component','CO_name_31');
+call drop_index_if_exists('Component','CO_name_30');
+call drop_index_if_exists('Component','CO_name_29');
+call drop_index_if_exists('Component','CO_name_28');
+call drop_index_if_exists('Component','CO_name_27');
+call drop_index_if_exists('Component','CO_name_26');
+call drop_index_if_exists('Component','CO_name_25');
+call drop_index_if_exists('Component','CO_name_24');
+call drop_index_if_exists('Component','CO_name_23');
+call drop_index_if_exists('Component','CO_name_22');
+call drop_index_if_exists('Component','CO_name_21');
+call drop_index_if_exists('Component','CO_name_20');
+call drop_index_if_exists('Component','CO_name_19');
+call drop_index_if_exists('Component','CO_name_18');
+call drop_index_if_exists('Component','CO_name_17');
+call drop_index_if_exists('Component','CO_name_16');
+call drop_index_if_exists('Component','CO_name_15');
+call drop_index_if_exists('Component','CO_name_14');
+call drop_index_if_exists('Component','CO_name_13');
+call drop_index_if_exists('Component','CO_name_12');
+call drop_index_if_exists('Component','CO_name_11');
+call drop_index_if_exists('Component','CO_name_10');
+call drop_index_if_exists('Component','CO_name_9');
+call drop_index_if_exists('Component','CO_name_8');
+call drop_index_if_exists('Component','CO_name_7');
+call drop_index_if_exists('Component','CO_name_6');
+call drop_index_if_exists('Component','CO_name_5');
+call drop_index_if_exists('Component','CO_name_4');
+call drop_index_if_exists('Component','CO_name_3');
+call drop_index_if_exists('Component','CO_name_2');
+call execute_if_index_not_exists('Component','CO_name','ALTER TABLE `Component` ADD UNIQUE(`CO_name` ASC);');
 call execute_if_column_not_exists('Component','CO_def','ALTER TABLE `Component` ADD COLUMN CO_def VARCHAR(255) NOT NULL DEFAULT \'\';');
 call execute_if_column_not_exists('Component','CO_status','ALTER TABLE `Component` ADD COLUMN CO_status int NOT NULL DEFAULT 1;');
 

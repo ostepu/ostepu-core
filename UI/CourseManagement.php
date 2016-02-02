@@ -9,16 +9,16 @@
  * @author Ralf Busch
  *
  * @todo PUT Request to logic not to DB
- * @todo check Rights for whole page
  * @todo use logic Controller instead of database
  * @todo you have to confirm your action before deleting coursestatus
  */
+ob_start();
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
 include_once dirname(__FILE__) . '/../Assistants/LArraySorter.php';
 include_once dirname(__FILE__) . '/include/FormEvaluator.php';
-include_once dirname(__FILE__) . '/../Assistants/Validation/Validation.php';
+include_once dirname(__FILE__) . '/../Assistants/vendor/Validation/Validation.php';
 
 global $globalUserData;
 Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $globalUserData);
@@ -43,7 +43,7 @@ foreach ($plugins_data['plugins'] as &$plugin){
             $plugin['isInstalled'] = 1;
             break;
         }
-    } 
+    }
 }
 
 $postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
@@ -142,7 +142,7 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
         $addExternalIdNotifications = array_merge($addExternalIdNotifications,$postAddExternalIdValidation->getPrintableNotifications('MakeNotification'));
         $postAddExternalIdValidation->resetNotifications()->resetErrors();
 
-        if ($postAddExternalIdValidation->isValid()){           
+        if ($postAddExternalIdValidation->isValid()){          
             if ($foundValues['externalType'] === 1){
                 $foundValues['externalTypeName'] = 'S';
             }
@@ -167,8 +167,10 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
           ->addSet('plugins',
                    ['set_default'=>array(),
                     'is_array',
-                    'perform_this_array'=>[['key_all'],
-                                      ['valid_identifier']],
+                    'perform_this_foreach'=>[['key',
+                                             ['valid_integer']],
+                                            ['elem',
+                                             ['valid_identifier']]],
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidExtensionId', $langTemplate)]]);
 
@@ -241,7 +243,7 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
                         $plugin['isInstalled'] = 1;
                         break;
                     }
-                } 
+                }
             }
 
             // show notification
@@ -287,21 +289,23 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
           ->addSet('setting',
                    ['is_array',
                     'set_default'=>array(),
-                    'perform_this_array'=>[[['key_all'],
-                                            ['is_array',
-                                             'satisfy_not_empty',
-                                             'perform_this_array'=>[['type',
-                                                                     ['satisfy_exists',
-                                                                      'satisfy_not_empty',
-                                                                      'to_upper',
-                                                                      'satisfy_in_list'=>array('INT','BOOL','STRING','DATE'),
-                                                                      'on_error'=>['type'=>'error',
-                                                                                   'text'=>Language::Get('main','invalidType', $langTemplate)]]],
-                                                                    ['value',
-                                                                     ['satisfy_exists',
-                                                                      '',
-                                                                      'on_error'=>['type'=>'error',
-                                                                                   'text'=>Language::Get('main','faultyTransmission', $langTemplate)]]]]]]],
+                    'perform_this_foreach'=>[['key',
+                                              ['valid_identifier']],
+                                             ['elem',
+                                              ['is_array',
+                                               'satisfy_not_empty',
+                                               'perform_this_array'=>[['type',
+                                                                       ['satisfy_exists',
+                                                                        'satisfy_not_empty',
+                                                                        'to_upper',
+                                                                        'satisfy_in_list'=>array('INT','BOOL','STRING','DATE'),
+                                                                        'on_error'=>['type'=>'error',
+                                                                                     'text'=>Language::Get('main','invalidType', $langTemplate)]]],
+                                                                      ['value',
+                                                                       ['satisfy_exists',
+                                                                        '',
+                                                                        'on_error'=>['type'=>'error',
+                                                                                     'text'=>Language::Get('main','faultyTransmission', $langTemplate)]]]]]]],
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidSettings', $langTemplate)]]);
 
@@ -341,7 +345,7 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
                     } elseif ($type === 'DATE'){
                         if (trim($value) == '')
                             $value = 0;
-                        $value = strtotime(str_replace(" - ", " ", $value));                       
+                        $value = strtotime(str_replace(" - ", " ", $value));                      
                     }
 
                     // create new setting and edit existing one
@@ -421,7 +425,7 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
 
                         if ($message !== 201) {
                             $RequestError = true;
-                            $courseSettingsNotifications[] = MakeNotification('error', Language::Get('main','errorDeleteApprovalCondition', $langTemplate)); 
+                            $courseSettingsNotifications[] = MakeNotification('error', Language::Get('main','errorDeleteApprovalCondition', $langTemplate));
                             break;
                         }
                     }
@@ -441,7 +445,7 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
 
                     if ($message !== 201) {
                         $RequestError = true;
-                        $courseSettingsNotifications[] = MakeNotification('error', Language::Get('main','errorAddApprovalCondition', $langTemplate)); 
+                        $courseSettingsNotifications[] = MakeNotification('error', Language::Get('main','errorAddApprovalCondition', $langTemplate));
                         break;
                     }
                 }
@@ -458,7 +462,7 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
                     $courseSettingsNotifications[] = MakeNotification('success', Language::Get('main','successEditCourse', $langTemplate));
                 }
                 else {
-                    $courseSettingsNotifications[] = MakeNotification('error', Language::Get('main','errorEditCourse', $langTemplate));  
+                    $courseSettingsNotifications[] = MakeNotification('error', Language::Get('main','errorEditCourse', $langTemplate)); 
                     $RequestError = true;
                 }
             }
@@ -469,7 +473,7 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
             #endregion course_settings
 
         }
-    } 
+    }
 
     if ($postResults['action'] === 'AddExerciseType') {
         $addExerciseTypeNotifications = array();
@@ -540,7 +544,7 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
                 $editExerciseTypeNotifications[] = MakeNotification('error', Language::Get('main','errorSaveSettings', $langTemplate));
             }
         }
-    } 
+    }
 
     if ($postResults['action'] === 'GrantRights') {
         $grantRightsNotifications = array();
@@ -580,7 +584,7 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
                $grantRightsNotifications[] = MakeNotification('error', Language::Get('main','errorSetCourseStatus', $langTemplate));
             }
         }
-    } 
+    }
 
     if ($postResults['action'] === 'RevokeRights') {
         $revokeRightsNotifications = array();
@@ -610,7 +614,7 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
                 $revokeRightsNotifications[] = MakeNotification('error', Language::Get('main','errorRemoveUser', $langTemplate));
             }
         }
-    } 
+    }
 
     if ($postResults['action'] === 'AddUser') {
         $addUserNotifications = array();
@@ -657,7 +661,7 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
             } else {
                 $addUserNotifications[] = MakeNotification('error',
                                                     Language::Get('main','invalidUserId', $langTemplate));
-            }                                       
+            }                                      
         }
     }
 }
@@ -681,6 +685,7 @@ $tempData = array();
 foreach($dataList as $data)
     $tempData[] = $courseManagement_data['users'][$data['pos']];
 $courseManagement_data['users'] = $tempData;
+unset($tempData);
 
 $courseManagement_data['sortUsers'] = $sortUsersValue;
 
@@ -752,14 +757,21 @@ $addUser = Template::WithTemplateFile('include/CourseManagement/AddUser.template
 if (isset($addUserNotifications))
     $addUser->bind(array('AddUserNotificationElements' => $addUserNotifications));
 
+// construct a content element for course notifications
+$courseNotifications = Template::WithTemplateFile('include/CourseManagement/CourseNotifications.template.html');
+$courseNotifications->bind($courseManagement_data);
+if (isset($courseNotificationsNotifications))
+    $courseNotifications->bind(array('GrantRightsNotificationElements' => $courseNotificationsNotifications));
+
 /**
  * @todo combine the templates into a single file
  */
 
 // wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, $courseSettings, $plugins, $addExerciseType, $editExerciseType, $grantRights, $revokeRights, $addUser, $editExternalId, $addExternalId);
+$w = new HTMLWrapper($h, $courseSettings, $plugins, $courseNotifications, $addExerciseType, $editExerciseType, $grantRights, $revokeRights, $addUser, $editExternalId, $addExternalId);
 $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $courseSettings);
 $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $plugins);
+$w->defineForm(basename(__FILE__).'?cid='.$cid, false, $courseNotifications);
 $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $addExerciseType);
 $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $editExerciseType);
 $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $grantRights);
@@ -770,3 +782,4 @@ $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $addExternalId);
 $w->set_config_file('include/configs/config_course_management.json');
 $w->show();
 
+ob_end_flush();

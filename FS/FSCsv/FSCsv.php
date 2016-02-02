@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -34,7 +34,7 @@ class FSCsv
                                            TRUE
                                            );
         }
-        
+       
         $component = new Model('csv', dirname(__FILE__), $this);
         $this->_component=$component;
         $component->run();
@@ -59,19 +59,19 @@ class FSCsv
                 $name.=implode(',',$row);
             }
         }
-        
+       
         $name = sha1( $name );
-        
+       
         // generate Csv
-        $filePath = FSCsv::generateFilePath( 
+        $filePath = FSCsv::generateFilePath(
                                             $params['folder'],
                                             $name
                                             );
         unset($name);
-        
+       
         if (!file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
             FSCsv::generatepath( $this->config['DIR']['files'].'/'.dirname( $filePath ) );
-            
+           
             $result = $this->createCsv($input);
 
             // writes the file to filesystem
@@ -81,48 +81,47 @@ class FSCsv
                           );
 
             if ($file){
-                fwrite( 
+                fwrite(
                        $file,
                        $result
                        );
                 fclose( $file );
-              
+             
             }else{
                 $fileObject = new File( );
                 $fileObject->addMessage("Datei konnte nicht im Dateisystem angelegt werden.");
                 $fileObject->setStatus(409);
-                Logger::Log( 
+                Logger::Log(
                         'POST postCsv failed',
                         LogLevel::ERROR
                         );
                 return Model::isProblem($fileObject);
             }
-        }        
-                               
+        }       
+                              
         if (isset($params['filename'])){
-            
+           
             Model::header('Content-Type','text/csv');
             Model::header('Content-Disposition',"filename=\"".$params['filename']."\"");
             Model::header('Accept-Ranges','none');
-            
+           
             if (isset($result)){
             	Model::header('Content-Length',strlen($result));
                 return isCreated($result);
             } else {
-                readfile($this->config['DIR']['files'].'/'.$filePath);
            		Model::header('Content-Length',filesize($this->config['DIR']['files'].'/'.$filePath));
-                return isCreated();
+                return isCreated(file_get_contents($this->config['DIR']['files'].'/'.$filePath));
             }
-            
+           
         } else {
             $CsvFile = new File( );
             $CsvFile->setStatus(201);
             $CsvFile->setAddress( $filePath );
             $CsvFile->setMimeType("application/Csv");
-            
+           
             if (file_exists($this->config['DIR']['files'].'/'.$filePath)){
                 $CsvFile->setFileSize( filesize( $this->config['DIR']['files'].'/'.$filePath ) );
-                $hash = sha1(file_get_contents($this->config['DIR']['files'].'/'.$filePath));   
+                $hash = sha1(file_get_contents($this->config['DIR']['files'].'/'.$filePath));  
                 $CsvFile->setHash( $hash );
             }
             return Model::isCreated($CsvFile);
@@ -142,26 +141,25 @@ class FSCsv
     {
         $path = array($params['folder'],$params['a'],$params['b'],$params['c'], $params['file']);
 
-        $filePath = implode( 
+        $filePath = implode(
                             '/',
-                            array_slice( 
+                            array_slice(
                                         $path,
                                         0
                                         )
                             );
 
-        if ( strlen( $this->config['DIR']['files'].'/'.$filePath ) > 1 && 
+        if ( strlen( $this->config['DIR']['files'].'/'.$filePath ) > 1 &&
              file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
 
             // the file was found
             Model::header('Content-Type','text/csv');
-            Model::header('Content-Disposition',"filename=\"".$params['filename']."\"");   
-            Model::header('Content-Length',filesize($this->config['DIR']['files'].'/'.$filePath));  
-            Model::header('Accept-Ranges','none'); 
-                                            
-            readfile( $this->config['DIR']['files'].'/'.$filePath );
-            return Model::isOk();
-            
+            Model::header('Content-Disposition',"filename=\"".$params['filename']."\"");  
+            Model::header('Content-Length',filesize($this->config['DIR']['files'].'/'.$filePath)); 
+            Model::header('Accept-Ranges','none');
+                                           
+            return Model::isOk(file_get_contents($this->config['DIR']['files'].'/'.$filePath));
+           
         }
         return Model::isProblem();
     }
@@ -178,15 +176,15 @@ class FSCsv
     {
         $path = array($params['folder'],$params['a'],$params['b'],$params['c'], $params['file']);
 
-        $filePath = implode( 
+        $filePath = implode(
                             '/',
-                            array_slice( 
+                            array_slice(
                                         $path,
                                         0
                                         )
                             );
 
-        if ( strlen( $this->config['DIR']['files'].'/'.$filePath ) > 0 && 
+        if ( strlen( $this->config['DIR']['files'].'/'.$filePath ) > 0 &&
              file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
 
             // the file was found
@@ -196,7 +194,7 @@ class FSCsv
             $file->setHash( sha1_file( $this->config['DIR']['files'].'/'.$filePath ) );
             $file->setMimeType("application/Csv");
             return Model::isOk($file);
-            
+           
         } else {
             return Model::isProblem(new File( ));
         }
@@ -214,15 +212,15 @@ class FSCsv
     {
         $path = array($params['folder'],$params['a'],$params['b'],$params['c'], $params['file']);
 
-        $filePath = implode( 
+        $filePath = implode(
                             '/',
-                            array_slice( 
+                            array_slice(
                                         $path,
                                         0
                                         )
                             );
 
-        if ( strlen( $filePath ) > 0 && 
+        if ( strlen( $filePath ) > 0 &&
              file_exists( $this->config['DIR']['files'] . '/' . $filePath ) ){
 
             // after the successful deletion, we want to return the file data
@@ -242,14 +240,14 @@ class FSCsv
 
             // the file is removed
             return Model::isCreated($file);
-            
+           
         } else {
 
             // file does not exist
             return Model::isProblem(new File( ));
         }
     }
-    
+   
     /**
      * Returns status code 200, if this component is correctly installed for the platform
      *
@@ -258,18 +256,18 @@ class FSCsv
      */
     public function getExistsPlatform( $callName, $input, $params = array() )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts GET GetExistsPlatform',
                     LogLevel::DEBUG
                     );
-                    
+                   
         if (!file_exists(dirname(__FILE__).'/config.ini')){
             return Model::isProblem();
         }
-       
-        return Model::isOk(); 
+      
+        return Model::isOk();
     }
-    
+   
     /**
      * Removes the component from the platform
      *
@@ -278,17 +276,17 @@ class FSCsv
      */
     public function deletePlatform( $callName, $input, $params = array() )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts DELETE DeletePlatform',
                     LogLevel::DEBUG
                     );
         if (file_exists(dirname(__FILE__).'/config.ini') && !unlink(dirname(__FILE__).'/config.ini')){
             return Model::isProblem();
         }
-        
+       
         return Model::isCreated();
     }
-    
+   
     /**
      * Adds the component to the platform
      *
@@ -297,49 +295,49 @@ class FSCsv
      */
     public function addPlatform( $callName, $input, $params = array() )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts POST AddPlatform',
                     LogLevel::DEBUG
                     );
-        
+       
         $file = dirname(__FILE__).'/config.ini';
         $text = "[DIR]\n".
                 "temp = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$input->getTempDirectory()))."\"\n".
                 "files = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$input->getFilesDirectory()))."\"\n";
-                
+               
         if (!@file_put_contents($file,$text)){
-            Logger::Log( 
+            Logger::Log(
                         'POST AddPlatform failed, config.ini no access',
                         LogLevel::ERROR
                         );
 
             return Model::isProblem();
-        }   
+        }  
 
         $platform = new Platform();
         $platform->setStatus(201);
-        
+       
         return Model::isCreated($platform);
     }
-    
+   
     /**
      * Creates a file path by splitting the hash.
      *
      * @param string $type The prefix of the file path.
      * @param string $hash The hash of the file.
      */
-    public static function generateFilePath( 
+    public static function generateFilePath(
                                             $type,
                                             $file
                                             )
     {
         if ( strlen( $file ) >= 4 ){
-            return $type . '/' . $file[0] . '/' . $file[1] . '/' . $file[2] . '/' . substr( 
+            return $type . '/' . $file[0] . '/' . $file[1] . '/' . $file[2] . '/' . substr(
                                                                                            $file,
                                                                                            3
                                                                                            );
-            
-        } else 
+           
+        } else
             return'';
     }
 
@@ -375,21 +373,21 @@ class FSCsv
      * possibly handle the file.
      * @param string $hash The hash of the file.
      */
-    public static function filterRelevantLinks( 
+    public static function filterRelevantLinks(
                                                $linkedComponents,
                                                $hash
                                                )
     {
         $result = array( );
         foreach ( $linkedComponents as $link ){
-            $in = explode( 
+            $in = explode(
                           '-',
                           $link->getRelevanz( )
                           );
             if ( count( $in ) < 2 ){
                 $result[] = $link;
-                
-            }elseif ( FSCsv::isRelevant( 
+               
+            }elseif ( FSCsv::isRelevant(
                                         $hash,
                                         $in[0],
                                         $in[1]
@@ -407,7 +405,7 @@ class FSCsv
      * @param string $_relevantBegin The minimum hash the component is responsible for.
      * @param string $_relevantEnd The maximum hash the component is responsible for.
      */
-    public static function isRelevant( 
+    public static function isRelevant(
                                       $hash,
                                       $relevant_begin,
                                       $relevant_end
@@ -415,36 +413,36 @@ class FSCsv
     {
 
         // to compare the begin and the end, we need an other form
-        $begin = hexdec( substr( 
+        $begin = hexdec( substr(
                                 $relevant_begin,
                                 0,
                                 strlen( $relevant_begin )
                                 ) );
-        $end = hexdec( substr( 
+        $end = hexdec( substr(
                               $relevant_end,
                               0,
                               strlen( $relevant_end )
                               ) );
 
         // the numeric form of the test hash
-        $current = hexdec( substr( 
+        $current = hexdec( substr(
                                   $hash,
                                   0,
                                   strlen( $relevant_end )
                                   ) );
 
-        if ( $current >= $begin && 
+        if ( $current >= $begin &&
              $current <= $end ){
             return true;
-            
-        } else 
+           
+        } else
             return false;
     }
-    
+   
     public function createCsv($data)
     {
         if ($data->getRows()==null) return null;
-        
+       
         $tempDir = $this->tempdir($this->config['DIR']['temp'], 'createCSV', $mode=0775);
         $path = $tempDir.'/maxmemory';
         $csv = fopen($path, 'w+');
@@ -452,7 +450,7 @@ class FSCsv
         foreach($data->getRows() as $row){
             fputcsv($csv, $row, ';','"');
         }
-        
+       
         rewind($csv);
 
         // put it all in a variable
@@ -462,7 +460,7 @@ class FSCsv
         $this->deleteDir(dirname($path));
         return $output;
     }
-    
+   
    /**
     * Delete hole directory inclusiv files and dirs
     *
@@ -486,7 +484,7 @@ class FSCsv
         }
         return false;
     }
-    
+   
     public function tempdir($dir, $prefix='', $mode=0775)
     {
         if (substr($dir, -1) != '/') $dir .= '/';
@@ -500,4 +498,4 @@ class FSCsv
     }
 }
 
- 
+

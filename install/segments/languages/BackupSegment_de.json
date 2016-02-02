@@ -1,0 +1,36 @@
+{
+    "main": {
+        "title": "Backup",
+        "description": ""
+    },
+    "createImage": {
+        "createImageDesc": "Erstellt ein Abbild der Plattform",
+        "createImage": "Erzeugen",
+        "databaseMessage": "Datenbank-Meldung",
+        "databaseStatus": "Datenbank-Status",
+        "databaseSize": "Datenbank-Größe",
+        "filesSize": "Dateien-Größe",
+        "filesAmount": "Dateien-Anzahl",
+        "filePath": "Abbild",
+        "fileSize": "Abbildgröße",
+        "imagePath": "Speicherort",
+        "packDatabase": "Datenbank sichern",
+        "packFiles": "Dateiverzeichnis sichern",
+        "packSystem": "Systemdateien sichern"
+    },
+    "listImage": {
+        "listImageDesc": "Ermittelt die vorhandenen Abbilder",
+        "listImage": "Auflisten",
+        "noImages": "keine Abbilder",
+        "date": "Erstellung",
+        "file": "Abbilddatei",
+        "databaseSize": "Datenbank",
+        "filesSize": "Dateiverzeichnis",
+        "imageSize": "Abbildgröße"
+    },
+    "installImage": {
+        "execute": "Einspielen",
+        "installImage": "Abbild einspielen",
+        "notSupported": "Diese Aktion wird noch nicht unterstützt!!!"
+    }
+}

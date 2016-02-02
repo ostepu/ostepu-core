@@ -90,7 +90,7 @@ class Setting extends Object implements JsonSerializable
     {
         $this->id = $value;
     }
-
+    
     public static function getCourseFromSettingId($Id)
     {
         $arr = explode('_',$Id);
@@ -148,6 +148,31 @@ class Setting extends Object implements JsonSerializable
     }
 
     /**
+     * @var string $id db category of the Setting
+     */
+    private $category = null;
+
+    /**
+     * the $category getter
+     *
+     * @return the value of $category
+     */
+    public function getCategory( )
+    {
+        return $this->category;
+    }
+
+    /**
+     * the $category setter
+     *
+     * @param string $value the new value for $category
+     */
+    public function setCategory( $value = null )
+    {
+        $this->category = $value;
+    }
+
+    /**
      * Creates an Setting object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
      *
@@ -160,14 +185,16 @@ class Setting extends Object implements JsonSerializable
                                             $settingId,
                                             $settingName,
                                             $state=null,
-                                            $type=null
+                                            $type=null,
+                                            $category=null
                                             )
     {
         return new Setting( array(
                                      'id' => $settingId,
                                      'name' => $settingName,
                                      'state' => $state,
-                                     'type' => $type
+                                     'type' => $type,
+                                     'category' => $category
                                      ) );
     }
 
@@ -182,7 +209,8 @@ class Setting extends Object implements JsonSerializable
                      'SET_id' => 'id',
                      'SET_name' => 'name',
                      'SET_state' => 'state',
-                     'SET_type' => 'type'
+                     'SET_type' => 'type',
+                     'SET_category' => 'category'
                      );
     }
 
@@ -217,7 +245,13 @@ class Setting extends Object implements JsonSerializable
             $this->addInsertData(
                                  $values,
                                  'SET_type',
-                                 DBJson::mysql_real_escape_string( $this->state )
+                                 DBJson::mysql_real_escape_string( $this->type )
+                                 );
+        if ( $this->category !== null )
+            $this->addInsertData(
+                                 $values,
+                                 'SET_category',
+                                 DBJson::mysql_real_escape_string( $this->category )
                                  );
 
         if ( $values != '' ){
@@ -345,6 +379,8 @@ class Setting extends Object implements JsonSerializable
             $list['state'] = $this->state;
         if ( $this->type !== null )
             $list['type'] = $this->type;
+        if ( $this->category !== null )
+            $list['category'] = $this->category;
         return array_merge($list,parent::jsonSerialize( ));
     }
 

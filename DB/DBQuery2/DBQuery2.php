@@ -51,6 +51,7 @@ class DBQuery2
         return "CALL `{$procedure}`(".implode(',',array_map(array($this,'generateParam'), $params)).");";
     }
 
+    private static $config = null;
     public function postMultiGetRequest( $callName, $input, $par = array() )
     {
         $params=array();
@@ -59,10 +60,13 @@ class DBQuery2
                 EXTR_OVERWRITE
         );
 
-        $config = parse_ini_file(
-                                dirname(__FILE__).'/config.ini',
-                                TRUE
-                                );
+        if (self::$config === null){
+            self::$config = parse_ini_file(
+                                            dirname(__FILE__).'/config.ini',
+                                            TRUE
+                                            );
+        }
+        
         $querys = $input;
         $sql='';
         $querys=explode("\n",$querys);
@@ -77,7 +81,7 @@ class DBQuery2
         $answer = DBRequest::request2(
                                            $sql,
                                            false,
-                                           $config
+                                           self::$config
                                      );
         $result = Model::isOK();
         $res = array();
@@ -162,17 +166,20 @@ class DBQuery2
                 $par,
                 EXTR_OVERWRITE
         );
-        $config = parse_ini_file(
-                                dirname(__FILE__).'/config.ini',
-                                TRUE
-                                );
+        
+        if (self::$config === null){
+            self::$config = parse_ini_file(
+                                            dirname(__FILE__).'/config.ini',
+                                            TRUE
+                                            );
+        }
 
         $result = Model::isOK();$result['content']=array();
         $sql = $this->generateQuery($procedure,$params);
         $answer = DBRequest::request2(
                                            $sql,
                                            false,
-                                           $config
+                                           self::$config
                                      );
 
         $res = array();
@@ -251,17 +258,20 @@ class DBQuery2
                 $par,
                 EXTR_OVERWRITE
         );
-        $config = parse_ini_file(
-                                dirname(__FILE__).'/config.ini',
-                                TRUE
-                                );
+
+        if (self::$config === null){
+            self::$config = parse_ini_file(
+                                            dirname(__FILE__).'/config.ini',
+                                            TRUE
+                                            );
+        }
 
         $obj = $input;
 
         $answer = DBRequest::request2(
                                            $obj->getRequest( ),
                                            $obj->getCheckSession( ),
-                                           $config
+                                           self::$config
                                      );
 
         $result = Model::isOK();$result['content']=array();

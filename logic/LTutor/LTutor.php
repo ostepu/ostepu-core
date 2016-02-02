@@ -8,12 +8,13 @@ set_time_limit(180);
  * @author Martin Daute
  * @date 2013-2014
  */
-require_once dirname(__FILE__) . '/../../Assistants/Slim/Slim.php';
+require_once dirname(__FILE__) . '/../../Assistants/vendor/Slim/Slim/Slim.php';
 include_once dirname(__FILE__) . '/../../Assistants/Request.php';
 include_once dirname(__FILE__) . '/../../Assistants/CConfig.php';
 include_once dirname(__FILE__) . '/../../Assistants/Structures/Transaction.php';
 include_once dirname(__FILE__) . '/../../Assistants/Structures/Platform.php';
 include_once dirname(__FILE__) . '/../../Assistants/Structures/File.php';
+include_once dirname(__FILE__) . '/../../Assistants/Structures/Course.php';
 include_once dirname(__FILE__) . '/../../Assistants/Language.php';
 include_once dirname(__FILE__) . '/../../Assistants/LArraySorter.php';
 
@@ -75,6 +76,8 @@ class LTutor
     private $_getGroup = array();
     private $_getSubmission = array();
     private $_postSubmission = array();
+    private $_out = array();
+    private $_getCourse = array();
 
     /**
      * REST actions
@@ -87,7 +90,7 @@ class LTutor
     public function __construct()
     {
         // runs the CConfig
-        $com = new CConfig( LTutor::getPrefix( ), dirname(__FILE__) );
+        $com = new CConfig( LTutor::getPrefix( ).',course', dirname(__FILE__) );
 
         // runs the LTutor
         if ( $com->used( ) ) return;
@@ -154,6 +157,14 @@ class LTutor
                                                         $this->_conf->getLinks( ),
                                                         'postSubmission'
                                                         ) );
+        $this->_out = array( CConfig::getLink(
+                                                        $this->_conf->getLinks( ),
+                                                        'out2'
+                                                        ) );
+        $this->_getCourse = array( CConfig::getLink(
+                                                        $this->_conf->getLinks( ),
+                                                        'getCourse'
+                                                        ) );
 
         // initialize lURL
         $this->lURL = $this->query->getAddress();
@@ -219,6 +230,15 @@ class LTutor
         //uploadZip
         $this->app->post('/'.$this->getPrefix().'/user/:userid/course/:courseid(/)', array($this, 'uploadZip'));
 
+        // POST AddCourse
+        $this->app->post( 
+                          '/course(/)',
+                          array( 
+                                $this,
+                                'addCourse'
+                                )
+                          );
+                          
         //run Slim
         $this->app->run();
     }
@@ -574,7 +594,9 @@ class LTutor
         }
         $exercises = json_decode($answer[0]['content'], true);
         $groups = json_decode($answer[1]['content'], true);
-
+        unset($answer);
+        unset($multiRequestHandle);
+        
         $count = 0;
         //an array to descripe the subtasks
         $alphabet = range('a', 'z');
@@ -622,6 +644,30 @@ class LTutor
                 $namesOfExercises[$exercises[$count]['id']] = 'Aufgabe_'.$exercises[$count]['link'].$alphabet[0];
             }
         }
+        
+        $multiRequestHandle = new Request_MultiRequest();
+        $handler = Request_CreateRequest::createCustom('GET', $this->_getCourse[0]->getAddress().'/course/'.$courseid, array(),"");
+        $multiRequestHandle->addRequest($handler);
+        $answer = $multiRequestHandle->run();
+        if (count($answer)< 1 || !isset($answer[0]['status']) || $answer[0]['status']!=200 || !isset($answer[0]['content'])){
+            return array('status'=>404,'content'=>'');
+        }
+        $course = Course::decodeCourse($answer[0]['content'], true);
+        unset($answer);
+        unset($multiRequestHandle);
+        
+        // Hilfe einfügen
+        $rows[] = array();
+        $tmpHelp = Language::Get('main','csvDescription', self::$langTemplate);
+        $tmpHelp = explode("\n",$tmpHelp);
+        foreach($tmpHelp as $line){
+            if (!empty($line)){
+                $rows[] = array('--'.$line);
+            } else {
+                $rows[] = array($line);
+            }
+        }
+        $rows[] = array();
 
         //formating, create the layout of the CSV-file for the tutor
         //first two rows of an exercise are the heads of the table
@@ -712,8 +758,11 @@ class LTutor
                         $selectedFile='marking';
                     }
 
+                    $generateDummyForAllMimeTypes = Course::containsSetting($course,'GenerateDummyCorrectionsForTutorArchives');
+                    if (!isset($generateDummyForAllMimeTypes)) $generateDummyForAllMimeTypes = 0;
+                    
                     if ($selectedFile == 'submission')
-                    if (!isset($newFile['mimeType']) || strpos($newFile['mimeType'],'text/')!==false){
+                    if (!isset($newFile['mimeType']) || strpos($newFile['mimeType'],'text/')!==false || $generateDummyForAllMimeTypes){
 
                         // convert file to pdf
                         $newFileSend = array();
@@ -751,7 +800,9 @@ class LTutor
                         $newFileSend[] = $newFileData;
 
                         if (isset($newFile)){
-                            $newFileSend[] = $newFile;
+                            if (strpos($newFile['mimeType'],'text/')!==false){
+                                $newFileSend[] = $newFile;
+                            }
                             $newFileData = new File();
                             $newFileData->setBody("</pre>", true);
                             $newFileSend[] = $newFileData;
@@ -1308,6 +1359,58 @@ class LTutor
 
         } else
             $this->app->response->setBody( Platform::encodePlatform( $res ) );
+    }
+    
+    public function addCourse( )
+    {
+        Logger::Log( 
+                    'starts POST AddCourse',
+                    LogLevel::DEBUG
+                    );
+        // decode the received course data, as an object
+        $insert = Course::decodeCourse( $this->app->request->getBody( ) );
+        // always been an array
+        $arr = true;
+        if ( !is_array( $insert ) ){
+            $insert = array( $insert );
+            $arr = false;
+        }
+        // this array contains the indices of the inserted objects
+        $res = array( );
+        foreach ( $insert as $in ){           
+            // starts a query, by using a given file
+            $result = DBRequest::getRoutedSqlFile( 
+                                                  $this->_out,
+                                                  dirname(__FILE__) . '/Sql/AddCourse.sql',
+                                                  array( 'in' => $in )
+                                                  );
+            // checks the correctness of the query
+            if ( $result['status'] >= 200 && 
+                 $result['status'] <= 299 ){
+                $res[] = $in;
+                $this->app->response->setStatus( 201 );
+                if ( isset( $result['headers']['Content-Type'] ) )
+                    $this->app->response->headers->set( 
+                                                        'Content-Type',
+                                                        $result['headers']['Content-Type']
+                                                        );
+                
+            } else {
+                Logger::Log( 
+                            'POST AddCourse failed',
+                            LogLevel::ERROR
+                            );
+                $this->app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+                $this->app->response->setBody( Course::encodeCourse( $insert ) );
+                $this->app->stop( );
+            }
+        }
+        if ( !$arr && 
+             count( $res ) == 1 ){
+            $this->app->response->setBody( Course::encodeCourse( $res[0] ) );
+            
+        } else 
+            $this->app->response->setBody( Course::encodeCourse( $res ) );
     }
 
     /**

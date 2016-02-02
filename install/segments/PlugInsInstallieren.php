@@ -8,6 +8,7 @@ class PlugInsInstallieren
     public static $page = 6;
     public static $rank = 100;
     public static $enabledShow = true;
+    private static $langTemplate='PlugInsInstallieren';
 
     public static $onEvents = array(
                                     'check'=>array(
@@ -17,80 +18,94 @@ class PlugInsInstallieren
                                         ),
                                     'install'=>array(
                                         'name'=>'installPlugins',
-                                        'event'=>array('actionInstallPlugins'),
+                                        'event'=>array('actionInstallPlugins','update'),
                                         'procedure'=>'installInstallPlugins',
-                                        'enabledInstall'=>false
+                                        'enabledInstall'=>true
                                         ),
                                     'uninstall'=>array(
                                         'name'=>'uninstallPlugins',
                                         'event'=>array('actionUninstallPlugins'),
                                         'procedure'=>'installUninstallPlugins',
                                         'enabledInstall'=>false
-                                        ),
-                                    'validateFiles'=>array(
-                                        'name'=>'validateFiles',
-                                        'event'=>array('actionValidateFiles'),
-                                        'procedure'=>'installValidateFiles',
-                                        'enabledInstall'=>true
                                         )
                                     );
 
     public static function getDefaults()
     {
-        return array(
-                     'plug_install_CORE' => array('data[PLUG][plug_install_CORE]', '_'),
-                     'plug_install_OSTEPU-UI' => array('data[PLUG][plug_install_OSTEPU-UI]', '_'),
-                     'plug_install_OSTEPU-DB' => array('data[PLUG][plug_install_OSTEPU-DB]', '_'),
-                     'plug_install_OSTEPU-FS' => array('data[PLUG][plug_install_OSTEPU-FS]', '_'),
-                     'plug_install_OSTEPU-LOGIC' => array('data[PLUG][plug_install_OSTEPU-LOGIC]', '_'),
-                     'plug_install_INSTALL' => array('data[PLUG][plug_install_INSTALL]', '_')
-                     );
+        $res = array();
+        $pluginFiles = self::getPluginFiles();
+        foreach($pluginFiles as $plug){
+            $filePath = dirname(__FILE__) . '/../../Plugins/'.$plug;
+            if (is_readable($filePath)){
+                $input = file_get_contents($filePath);
+                $input = json_decode($input,true);
+                if ($input == null){
+                    // Fehler beim dekodieren
+                } else  {
+                    if (isset($input['name'])){
+                        $name = $input['name'];
+                        $res['plug_install_'.$name] = array('data[PLUG][plug_install_'.$name.']', $name);
+                    }
+                }
+            }
+        }
+        $res['details'] = array('data[PLUG][details]', null);
+        return $res;
     }
 
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
+        Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
+        Installation::log(array('text'=>Installation::Get('main','languageInstantiated')));
+     
         $def = self::getDefaults();
 
         $text = '';
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PLUG']['plug_install_CORE'], 'data[PLUG][plug_install_CORE]', $def['plug_install_CORE'][1], true);
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PLUG']['plug_install_OSTEPU-UI'], 'data[PLUG][plug_install_OSTEPU-UI]', $def['plug_install_OSTEPU-UI'][1], true);
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PLUG']['plug_install_OSTEPU-DB'], 'data[PLUG][plug_install_OSTEPU-DB]', $def['plug_install_OSTEPU-DB'][1], true);
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PLUG']['plug_install_OSTEPU-FS'], 'data[PLUG][plug_install_OSTEPU-FS]', $def['plug_install_OSTEPU-FS'][1], true);
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PLUG']['plug_install_OSTEPU-LOGIC'], 'data[PLUG][plug_install_OSTEPU-LOGIC]', $def['plug_install_OSTEPU-LOGIC'][1], true);
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PLUG']['plug_install_INSTALL'], 'data[PLUG][plug_install_INSTALL]', $def['plug_install_INSTALL'][1], true);
+        foreach($def as $defName => $defVar){
+            $text .= Design::erstelleVersteckteEingabezeile($console, $data['PLUG'][$defName], $defVar[0], $defVar[1], true);
+        }
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PLUG']['details'], 'data[PLUG][details]', $def['details'][1], true);
         echo $text;
         self::$initialized = true;
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
-
-    public static function show($console, $result, $data)
+ 
+    private static $pluginFiles=null;
+    private static function getPluginFiles()
     {
-        Installation::log(array('text'=>'starte Funktion'));
-        $pluginFiles = array();
+        if(self::$pluginFiles !== null){
+            return self::$pluginFiles;
+        }
+     
+        self::$pluginFiles = array();
         if ($handle = @opendir(dirname(__FILE__) . '/../../Plugins')) {
             while (false !== ($file = readdir($handle))) {
                 if (substr($file,-5)!='.json' || $file=='.' || $file=='..') continue;
                 if (is_dir(dirname(__FILE__) . '/../../Plugins/'.$file)) continue;
-                $pluginFiles[] = $file;
+                self::$pluginFiles[] = $file;
             }
             closedir($handle);
         }
+     
+        return self::$pluginFiles;
+    }
+
+    public static function show($console, $result, $data)
+    {
+        if (!Einstellungen::$accessAllowed) return;
+         
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
+        $isUpdate = (isset($data['action']) && $data['action']=='update') ? true : false;
+        $pluginFiles = self::getPluginFiles();
         $text='';
-        $text .= Design::erstelleBeschreibung($console,Language::Get('packages','description'));
+        $text .= Design::erstelleBeschreibung($console,Installation::Get('packages','description',self::$langTemplate));
+        $text .= Design::erstelleZeile($console, Installation::Get('packages','packageDetails',self::$langTemplate), 'e', Design::erstelleAuswahl($console, $data['PLUG']['details'], 'data[PLUG][details]', 'details', null, true), 'v_c');
 
         if (self::$onEvents['install']['enabledInstall'])
-            $text .= Design::erstelleZeile($console, Language::Get('packages','installSelected'), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0],Language::Get('main','install')), 'h');
+            $text .= Design::erstelleZeile($console, Installation::Get('packages','installSelected',self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0],Installation::Get('packages','install',self::$langTemplate)), 'h');
         if (self::$onEvents['uninstall']['enabledInstall'])
-            $text .= Design::erstelleZeile($console, Language::Get('packages','uninstallSelected'), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['uninstall']['event'][0],Language::Get('main','uninstall')), 'h');
-
-        if (self::$onEvents['validateFiles']['enabledInstall'])
-            $text .= Design::erstelleZeile($console, Language::Get('packages','validateFilesDesc'), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['validateFiles']['event'][0],Language::Get('packages','validateFiles')), 'h');
-
-        $validateFiles=false;
-        if (isset($result[self::$onEvents['validateFiles']['name']])){
-            $validateFiles=true;
-        }
+            $text .= Design::erstelleZeile($console, Installation::Get('packages','uninstallSelected',self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['uninstall']['event'][0],Installation::Get('main','uninstall')), 'h');
 
         if (isset($result[self::$onEvents['check']['name']]) && $result[self::$onEvents['check']['name']]!=null){
            $result =  $result[self::$onEvents['check']['name']];
@@ -103,21 +118,21 @@ class PlugInsInstallieren
         foreach ($pluginFiles as $plug){
             $dat = file_get_contents(dirname(__FILE__) . '/../../Plugins/'.$plug);
             $dat = json_decode($dat,true);
-            $name = $dat['name'];
-            $version = $dat['version'];
-            $voraussetzungen = $dat['requirements'];
+            $name = isset($dat['name']) ? $dat['name'] : '???';
+            $version = isset($dat['version']) ? $dat['version'] : null;
+            $voraussetzungen = isset($dat['requirements']) ? $dat['requirements'] : array();
             if (!is_array($voraussetzungen)) $voraussetzungen = array($voraussetzungen);
 
-            $text .= Design::erstelleZeile($console, "{$name} v{$dat['version']}", 'e', ((self::$onEvents['install']['enabledInstall'] || self::$onEvents['uninstall']['enabledInstall']) ? Design::erstelleAuswahl($console, $data['PLUG']['plug_install_'.$name], 'data[PLUG][plug_install_'.$name.']', $plug, null, true) : ''), 'v_c');
+            $versionText = isset($dat['version']) ? ' v'.$dat['version'] : '';
+            $text .= Design::erstelleZeile($console, $name.$versionText, 'e', ((self::$onEvents['install']['enabledInstall'] || self::$onEvents['uninstall']['enabledInstall']) ? Design::erstelleAuswahl($console, $data['PLUG']['plug_install_'.$name], 'data[PLUG][plug_install_'.$name.']', $name, null, true) : ''), 'v_c');
 
             $isInstalled=false;
             if (isset($installedPlugins)){
                 foreach($installedPlugins as $instPlug){
                     if ($name == $instPlug['name']){
                         if (isset($instPlug['version'])){
-                            $text .= Design::erstelleZeile($console, Language::Get('packages','currentVersion') , 'v', 'v'.$instPlug['version'] , 'v');
-                        } else
-                            $text .= Design::erstelleZeile($console, Language::Get('packages','currentVersion') , 'v', '???' , 'v');
+                            $text .= Design::erstelleZeile($console, Installation::Get('packages','currentVersion',self::$langTemplate) , 'v', 'v'.$instPlug['version'] , 'v');
+                        }
                         $isInstalled=true;
                         break;
                     }
@@ -125,74 +140,61 @@ class PlugInsInstallieren
             }
 
             if (!$isInstalled)
-                $text .= Design::erstelleZeile($console, Language::Get('packages','currentVersion') , 'v', '---' , 'v');
+                $text .= Design::erstelleZeile($console, Installation::Get('packages','currentVersion',self::$langTemplate) , 'v', '---' , 'v');
 
             $vorText = '';
             foreach ($voraussetzungen as $vor){
                 $vorText .= "{$vor['name']} v{$vor['version']}, ";
             }
             if ($vorText==''){
-                $vorText = '---';
-            } else
+             
+            } else {
                 $vorText = substr($vorText,0,-2);
-
-            $text .= Design::erstelleZeile($console, Language::Get('packages','requirements') , 'v', $vorText , 'v');
-
-            $file = dirname(__FILE__) . '/../../Plugins/'.$plug;
-            $fileCount=0;
-            $fileSize=0;
-            $componentCount=0;
-            if (file_exists($file) && is_readable($file)){
-                $input = file_get_contents($file);
-                $input = json_decode($input,true);
-                if ($input == null){
-                    $fail = true;
-                    break;
-                }
-                $fileList = array();
-                $fileListAddress = array();
-                $componentFiles = array();
-                self::gibPluginDateien($input, $fileList, $fileListAddress, $componentFiles);
-                $fileCount=count($fileList);
-                foreach($fileList as $f){
-                    if (is_readable($f)){
-                        $fileSize += filesize($f);
-                        if ($validateFiles){
-                            if ($fileSize>0 && strtolower(substr($f,-5))==='.json'){
-                                // validiere die json Datei
-                                $cont = file_get_contents($f);
-                                if (trim($cont) != ''){
-                                    $val = @json_decode(file_get_contents($f));
-                                    if ($val===null){
-                                        $text .= Design::erstelleZeileShort($console, realpath($f) , 'break v', Language::Get('packages','jsonInvalid'), 'v error_light break');
-                                    }
-                                }
-                            }
-
-                            if ($fileSize>0 && strtolower(substr($f,-4))==='.php'){
-                                // validiere die php Datei
-                                $output=null;
-                                $result=null;
-                                exec('(php -l -d error_reporting=E_ALL -d display_errors=on -d log_errors=off -f '.realpath($f).') 2>&1',$output,$result);
-                                if ($result!=0){
-                                    $text .= Design::erstelleZeileShort($console, realpath($f), 'break v', implode('<br>',$output), 'v error_light break');
-                                }
-                            }
-                        }
-                    }
-                }
-                $componentCount = count($componentFiles);
+                $text .= Design::erstelleZeile($console, Installation::Get('packages','requirements',self::$langTemplate) , 'v', $vorText , 'v');
             }
 
-            $text .= Design::erstelleZeile($console, Language::Get('packages','numberComponents') , 'v', $componentCount , 'v');
-            $text .= Design::erstelleZeile($console, Language::Get('packages','numberFiles') , 'v', $fileCount , 'v');
-            $text .= Design::erstelleZeile($console, Language::Get('packages','size') , 'v', Design::formatBytes($fileSize) , 'v');
+          
+            if (!$isUpdate && isset($data['PLUG']['details']) && $data['PLUG']['details'] === 'details'){
+                $file = dirname(__FILE__) . '/../../Plugins/'.$plug;
+                $fileCount=0;
+                $fileSize=0;
+                $componentCount=0;
+                if (file_exists($file) && is_readable($file)){
+                    $input = file_get_contents($file);
+                    $input = json_decode($input,true);
+                    if ($input == null){
+                        $fail = true;
+                        break;
+                    }
+                    $fileList = array();
+                    $fileListAddress = array();
+                    $componentFiles = array();
+                    self::gibPluginDateien($input, $fileList, $fileListAddress, $componentFiles);
+                    $fileCount=count($fileList);
+                    foreach($fileList as $f){
+                        if (is_readable($f)){
+                            $fileSize += filesize($f);
+                        }
+                    }
+                    $componentCount = count($componentFiles);
+                }
+
+                if ($componentCount>0){
+                    $text .= Design::erstelleZeile($console, Installation::Get('packages','numberComponents',self::$langTemplate) , 'v', $componentCount , 'v');
+                }
+                if ($fileCount>0){
+                    $text .= Design::erstelleZeile($console, Installation::Get('packages','numberFiles',self::$langTemplate) , 'v', $fileCount , 'v');
+                }
+                if ($fileSize>0){
+                    $text .= Design::erstelleZeile($console, Installation::Get('packages','size',self::$langTemplate) , 'v', Design::formatBytes($fileSize) , 'v');
+                }
+            }
         }
 
         /*if ($installPlugins){
             if ($installPluginsResult !=null)
                 foreach ($installPluginsResult as $component){
-                   // $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Language::Get('main','ok') : "<font color='red'>".Language::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
+                   // $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Installation::Get('main','ok') : "<font color='red'>".Installation::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
                 }
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);
         }
@@ -200,21 +202,21 @@ class PlugInsInstallieren
         if ($uninstallPlugins){
             if ($uninstallPluginsResult !=null)
                 foreach ($uninstallPluginsResult as $component){
-                   // $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Language::Get('main','ok') : "<font color='red'>".Language::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
+                   // $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Installation::Get('main','ok') : "<font color='red'>".Installation::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
                 }
 
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);
         }*/
 
-        echo Design::erstelleBlock($console, Language::Get('packages','title'), $text);
+        echo Design::erstelleBlock($console, Installation::Get('packages','title',self::$langTemplate), $text);
 
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return null;
     }
 
-    public static function installCheckPlugins($data, &$fail, &$errno, &$error)
+    public static function installCheckPlugins($data, &$fail, &$errno, &$error, $checkPluginIsSelected = true)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $res = array();
 
         if (!$fail){
@@ -232,36 +234,136 @@ class PlugInsInstallieren
                             //$fail = true;
                             //break;
                         }
-                        $res[] = $input;
+                        if (isset($input['name']) && isset($data['PLUG']['plug_install_'.$input['name']]) && $data['PLUG']['plug_install_'.$input['name']] == $input['name']){
+                            $res[] = $input;
+                        } else {
+                            // Name ist nicht gesetzt
+                        }
                     }
                 }
                 closedir($handle);
             }
         }
 
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return $res;
     }
 
     public static function gibPluginDateien($input, &$fileList, &$fileListAddress, &$componentFiles)
     {
-        Installation::log(array('text'=>'starte Funktion'));
-        $mainPath = dirname(__FILE__) . '/../..';
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
+        $mainPath = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '../..');
+        $mainPath = str_replace(array("\\","/"), array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR), $mainPath);
+     
         if (isset($input['files'])){
             $files = $input['files'];
             if (!is_array($files)) $files = array($files);
 
             foreach ($files as $file){
+                $type = 'local';
+                $params = array();
+                $exclude = array();
+                $path = null;
+                $sizePath = null;
+             
                 if (isset($file['path'])){
-                    if (is_dir($mainPath . '/' . $file['path'])){
-                        $found = Installation::read_all_files($mainPath . '/' . $file['path']);
-                        foreach ($found['files'] as $temp){
-                            $fileList[] = $temp;
-                            $fileListAddress[] = substr($temp,strlen($mainPath)+1);
+                    $path = realpath($mainPath . DIRECTORY_SEPARATOR . $file['path']);
+                    $sizePath = $path;
+                }
+             
+                if (isset($file['type'])){
+                    $type = $file['type'];
+                }
+             
+                if (isset($file['params'])){
+                    $params = $file['params'];
+                }
+             
+                if ($type === 'git'){             
+                    $params['path'] = rtrim($params['path'],"\\/");
+                    $location = $mainPath . DIRECTORY_SEPARATOR . $params['path'];
+                    Einstellungen::generatepath($location);
+                    $location = realpath($location);
+                    //$sizePath = $location;
+                    $repo = $params['URL'];
+                    $branch = $params['branch'];
+                    $exclude[] = $location . DIRECTORY_SEPARATOR . '.git';
+                 
+             
+                    if (isset($file['exclude'])){
+                        $tempExclude = $file['exclude'];
+                        if (!is_array($exclude)) $exclude = array($exclude);
+                        foreach($tempExclude as &$ex){
+                            $ex = str_replace(array("\\","/"), array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR), $ex);
+                            $ex = $location . DIRECTORY_SEPARATOR . $ex;
                         }
+                        $exclude = array_merge($exclude, $tempExclude);
+                    }
+                 
+                    if (!file_exists($location."/.git")){
+                        // initialisieren
+                        $pathOld = getcwd();
+                        chdir($location);                          
+                        exec('(git clone --single-branch --depth 1 --branch '.$branch.' '.$repo.' .) 2>&1', $output, $return);
+                        chdir($pathOld);       
+                    }
+                 
+                    $pathOld = getcwd();
+                    chdir($location);  
+                    exec('(git fetch) 2>&1', $output, $return);
+                    exec('(git pull) 2>&1', $output, $return);
+                    chdir($pathOld);    
+                 
+                    $found = Installation::read_all_files($location, $exclude);
+                    if ($location . DIRECTORY_SEPARATOR === $path){
+                        // kein Verschieben notwendig
                     } else {
-                        $fileList[] = $mainPath . '/' . $file['path'];
-                        $fileListAddress[] = $file['path'];
+                        // verschiebe die Dateien von $location nach $path
+                        foreach ($found['files'] as $temp){
+                            $file = substr($temp,strlen($location)+1);
+                            $file = $path . DIRECTORY_SEPARATOR . $file;
+                            Einstellungen::generatepath(dirname($file));
+                            $res = @copy($temp, $file);
+                        }
+                    }
+                 
+                    foreach($found['files'] as $temp){
+                        $file = substr($temp,strlen($location)+1);
+                        $file = $path . DIRECTORY_SEPARATOR . $file;
+                        $fileList[] = $file;
+                        $fileListAddress[] = substr($file,strlen($mainPath)+1);
+                    }
+                 
+                } elseif ($type === 'local'){                  
+                    if (isset($path) && isset($params['relLocalResource'])){
+                        file_put_contents($sizePath, file_get_contents($mainPath . DIRECTORY_SEPARATOR . $params['relLocalResource']));
+                    }
+                  
+                    if (isset($path) && isset($params['urlResource'])){
+                        file_put_contents($sizePath, file_get_contents($params['urlResource']));
+                    }
+                  
+                    if (isset($path) && isset($file['exclude'])){
+                        $exclude = $file['exclude'];
+                        if (!is_array($exclude)) $exclude = array($exclude);
+                        foreach($exclude as &$ex){
+                            $ex = str_replace(array("\\","/"), array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR), $ex);
+                            $ex = $path . DIRECTORY_SEPARATOR . $ex;
+                        }
+                    }
+             
+             
+                    if (isset($sizePath)){
+                        if (is_dir($sizePath)){
+                            $found = Installation::read_all_files($sizePath, $exclude);
+                            foreach ($found['files'] as $temp){
+                                $fileList[] = $temp;
+                                $fileListAddress[] = substr($temp,strlen($mainPath)+1);
+                            }
+                        } else {
+                            $fileList[] = $sizePath;
+                            $fileListAddress[] = substr($sizePath,strlen($mainPath)+1);
+                        }
                     }
                 }
             }
@@ -273,13 +375,15 @@ class PlugInsInstallieren
 
             foreach ($files as $file){
                 if (isset($file['conf'])){
-                    if (!file_exists($mainPath . '/' . $file['conf']) || !is_readable($mainPath . '/' . $file['conf'])) continue;
-                    $componentFiles[] = $mainPath . '/' . $file['conf'];
-                    $definition = file_get_contents($mainPath . '/' . $file['conf']);
+                    $file['conf'] = str_replace(array("\\","/"), array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR), $file['conf']);
+                 
+                    if (!file_exists($mainPath . DIRECTORY_SEPARATOR . $file['conf']) || !is_readable($mainPath . DIRECTORY_SEPARATOR . $file['conf'])) continue;
+                    $componentFiles[] = $mainPath . DIRECTORY_SEPARATOR . $file['conf'];
+                    $definition = file_get_contents($mainPath . DIRECTORY_SEPARATOR . $file['conf']);
                     $definition = json_decode($definition,true);
-                    $comPath = dirname($mainPath . '/' . $file['conf']);
+                    $comPath = dirname($mainPath . DIRECTORY_SEPARATOR . $file['conf']);
 
-                    $fileList[] = $mainPath . '/' . $file['conf'];
+                    $fileList[] = $mainPath . DIRECTORY_SEPARATOR . $file['conf'];
                     $fileListAddress[] = $file['conf'];
 
                     if (isset($definition['files'])){
@@ -288,15 +392,16 @@ class PlugInsInstallieren
                         foreach ($definition['files'] as $paths){
                             if (!isset($paths['path'])) continue;
 
-                            if (is_dir($comPath . '/' . $paths['path'])){
-                                $found = Installation::read_all_files($comPath . '/' . $paths['path']);
+                            $paths['path'] = str_replace(array("\\","/"), array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR), $paths['path']);
+                            if (is_dir($comPath . DIRECTORY_SEPARATOR . $paths['path'])){
+                                $found = Installation::read_all_files($comPath . DIRECTORY_SEPARATOR . $paths['path']);
                                 foreach ($found['files'] as $temp){
                                     $fileList[] = $temp;
                                     $fileListAddress[] = substr($temp,strlen($mainPath)+1);
                                 }
                             } else {
-                                $fileList[] = $comPath . '/' . $paths['path'];
-                                $fileListAddress[] = dirname($file['conf']) . '/' . $paths['path'];
+                                $fileList[] = $comPath . DIRECTORY_SEPARATOR . $paths['path'];
+                                $fileListAddress[] = dirname($file['conf']) . DIRECTORY_SEPARATOR . $paths['path'];
                             }
                         }
                     }
@@ -304,7 +409,20 @@ class PlugInsInstallieren
             }
         }
 
-        Installation::log(array('text'=>'beende Funktion'));
+        $newFileListAddress = array();
+        foreach ($fileListAddress as $key => $a){
+            if (!isset($newFileListAddress[$a])){
+                $newFileListAddress[$a] = $fileList[$key];
+            }
+        }
+     
+        $fileListAddress = array();
+        $fileList = array();
+        foreach ($newFileListAddress as $key => $a){
+            $fileListAddress[] = $key;
+            $fileList[] = $a;
+        }
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
 
     public static function installValidateFiles($data, &$fail, &$errno, &$error)
@@ -314,16 +432,37 @@ class PlugInsInstallieren
 
     public static function installInstallPlugins($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
+        $pluginFiles = self::getPluginFiles();
         $res = array();
 
         if (!$fail){
-            $mainPath = dirname(__FILE__) . '/../..';
+            $mainPath = dirname(__FILE__) . DIRECTORY_SEPARATOR .'..'. DIRECTORY_SEPARATOR .'..';
             $fileList = array();
             $fileListAddress = array();
             $componentFiles = array();
+            $selectedPackages = array();
+         
+            if (isset($data['PLUG'])){
+                foreach ($data['PLUG'] as $plugs => $value){
+                    if ($value !== null && $value !== '_'){
+                        $selectedPackages[] = $plugs;
+                    }
+                }
+            }
 
-            foreach ($data['PLUG'] as $plugs){
+            foreach ($pluginFiles as $plug){
+                $file = dirname(__FILE__) . '/../../Plugins/'.$plug;             
+                if (substr($file,-5)=='.json' && file_exists($file) && is_readable($file)){
+                    $dat = file_get_contents($file);
+                    $dat = json_decode($dat,true);
+                    if (!isset($dat['name'])) continue;
+                    if (!in_array('plug_install_'.$dat['name'],$selectedPackages)) continue;
+                    self::gibPluginDateien($dat, $fileList, $fileListAddress, $componentFiles);
+                }
+            }
+         
+            /*foreach ($pluginFiles as $plug){
                 $file = dirname(__FILE__) . '/../../Plugins/'.$plugs;
 
                 if (substr($file,-5)=='.json' && file_exists($file) && is_readable($file)){
@@ -339,19 +478,19 @@ class PlugInsInstallieren
                     $fileList[] = $mainPath.'/install/config/'.$data['SV']['name'].'.ini';
                     $fileListAddress[] = 'install/config/'.$data['SV']['name'].'.ini';
                 }
-            }
+            }*/
 
             // Dateien übertragen
-            Zugang::SendeDateien($fileList,$fileListAddress,$data);
+            //Zugang::SendeDateien($fileList,$fileListAddress,$data);
         }
 
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return $res;
     }
 
     public static function installUninstallPlugins($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $res = array();
 
         if (!$fail){
@@ -371,7 +510,7 @@ class PlugInsInstallieren
                     $fileList = array();
                     $fileListAddress = array();
                     $componentFiles = array();
-                    Installation::gibPluginDateien($input, $fileList, $fileListAddress, $componentFiles);
+                    self::gibPluginDateien($input, $fileList, $fileListAddress, $componentFiles);
                     $fileList[] = $mainPath.'/install/config/'.$data['SV']['name'].'.ini';
                     $fileListAddress[] = 'install/config/'.$data['SV']['name'].'.ini';
 
@@ -381,7 +520,7 @@ class PlugInsInstallieren
             }
         }
 
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return $res;
     }
 }

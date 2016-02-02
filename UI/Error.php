@@ -4,10 +4,13 @@
  *
  * @author Ralf Busch
  */
+ob_start();
 
 include_once 'include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Language.php';
-include_once dirname(__FILE__) . '/../Assistants/Validation/Validation.php';
+include_once dirname(__FILE__) . '/../Assistants/vendor/Validation/Validation.php';
+
+$langTemplate='Error_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 $getValidation = Validation::open($_GET, array('preRules'=>array('sanitize')))
   ->addSet('msg',
@@ -47,3 +50,5 @@ $h->bind(array('name' => 'Übungsplattform',
 $w = new HTMLWrapper($h);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
+
+ob_end_flush();

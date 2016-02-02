@@ -1,17 +1,56 @@
 <?php
-require_once ( dirname(__FILE__) . '/Slim/Route.php' );
-require_once ( dirname(__FILE__) . '/Slim/Router.php' );
-require_once ( dirname(__FILE__) . '/Slim/Environment.php' );
-require_once ( dirname(__FILE__) . '/Structures.php' );
-require_once ( dirname(__FILE__) . '/Request.php' );
-require_once ( dirname(__FILE__) . '/Logger.php' );
-require_once ( dirname(__FILE__) . '/CConfig.php' );
-require_once ( dirname(__FILE__) . '/DBRequest.php' );
-require_once ( dirname(__FILE__) . '/DBJson.php' );
-require_once ( dirname(__FILE__) . '/CacheManager/SID.php' );
-require_once ( dirname(__FILE__) . '/CacheManager/structures/DataObject.php' );
-require_once ( dirname(__FILE__) . '/CacheManager/cacheAccess.php' );
-require_once ( dirname(__FILE__) . '/CacheManager/cacheTree.php' );
+if (file_exists(dirname(__FILE__) . '/vendor/Slim/Slim/Slim.php')){
+    include_once ( dirname(__FILE__) . '/vendor/Slim/Slim/Route.php' );
+    include_once ( dirname(__FILE__) . '/vendor/Slim/Slim/Router.php' );
+    include_once ( dirname(__FILE__) . '/vendor/Slim/Slim/Environment.php' );
+}
+
+include_once ( dirname(__FILE__) . '/Structures.php' );
+include_once ( dirname(__FILE__) . '/Request.php' );
+include_once ( dirname(__FILE__) . '/Logger.php' );
+include_once ( dirname(__FILE__) . '/CConfig.php' );
+include_once ( dirname(__FILE__) . '/DBRequest.php' );
+include_once ( dirname(__FILE__) . '/DBJson.php' );
+
+if (file_exists(dirname(__FILE__) . '/vendor/phpfastcache/phpfastcache.php')){
+    include_once( dirname(__FILE__) . '/vendor/phpfastcache/phpfastcache.php');
+}
+
+class PathObject
+{
+    public function __construct( $_fromSid, $_toSid,$_toName, $_toURL, $_toMethod, $_toStatus)
+    {
+        $this->fromSid = $_fromSid;
+        $this->toSid = $_toSid;
+        $this->toName = $_toName;
+        $this->toURL = $_toURL;
+        $this->toMethod = $_toMethod;
+        $this->toStatus = $_toStatus;
+    }
+
+    public $fromSid = null;
+    public $toSid = null;
+    public $toName = null;
+    public $toURL = null;
+    public $toMethod = null;
+    public $toStatus = null;
+    public $eTag = null;
+
+}
+
+class DataObject
+{
+    public function __construct( $_content, $_status, $_eTag=null)
+    {
+        $this->content = $_content;
+        $this->status = $_status;
+        $this->eTag = $_eTag;
+    }
+
+    public $content = null;
+    public $status = null;
+    public $eTag = null;
+}
 
 class CacheManager
 {
@@ -139,7 +178,7 @@ class CacheManager
     public static function savePath($URL,$method)
     {
         asort(self::$cachedPath);
-        
+
         if (self::$makeTree){
             foreach (self::$beginTimestamps as $key=>$value){
                 if (isset(self::$endTimestamps[$key])){
@@ -150,20 +189,20 @@ class CacheManager
         }
         
         if (self::$makeTree){
-                        
+                       
             $text="digraph G {rankdir=TB;edge [splines=\"polyline\"];\n";
             $graphName="graph";
-            
+
             $graphName = $_SERVER['SCRIPT_NAME'];
             $graphName = basename(explode('?',$graphName)[0]);
-            
+
             $dir = substr($graphName,0,strlen($graphName));
             if (!is_dir(dirname(__FILE__).'/../path/'.$dir))
                 mkdir(dirname(__FILE__).'/../path/'.$dir, 0755);
-            
+
             // kurze Variante
             $text="digraph G {rankdir=TB;edge [splines=\"polyline\"];\n";
-            
+
             $beginDone=false;
             $Nodes = array();
             $edgeText = '';
@@ -174,19 +213,19 @@ class CacheManager
                     $fromName = 'BEGIN';
                 } else
                     $fromName = $fromName->toName;
-                
+
                 if (!isset($Nodes[$path->toName.'_'.$path->toSid]))
                     $Nodes[$path->toName.'_'.$path->toSid] = array();
-                
+
                 if (!isset($Nodes[$fromName.'_'.$path->fromSid]))
                     $Nodes[$fromName.'_'.$path->fromSid] = array();
-                
+
                 if (!isset($Nodes[$fromName.'_'.$path->fromSid]['name']))
                     $Nodes[$fromName.'_'.$path->fromSid]['name'] = $fromName;
-                
+
                 if (!isset($Nodes[$path->toName.'_'.$path->toSid]['name']))
                     $Nodes[$path->toName.'_'.$path->toSid]['name'] = $path->toName;
-                
+
                 if (!isset($Nodes[$path->toName.'_'.$path->toSid]['status']))
                     $Nodes[$path->toName.'_'.$path->toSid]['status'] = $path->toStatus;
                 
@@ -196,7 +235,7 @@ class CacheManager
                 
                 $edgeText.="\"".$fromName.'_'.$path->fromSid.'"->"'.$path->toName.'_'.$path->toSid."\"[ label = \"".$path->toMethod."\" ];\n";
             }
-                        
+
             $nodeText = '';
             foreach ($Nodes as $key=>$node){
                 $add = "";
@@ -212,19 +251,19 @@ class CacheManager
                     $add = "color = \"red\" fontcolor=\"red\" ";
                 $text.="\"".$key."\" [ ".$add."label=\"".$node['name'].$time."\" id=\"$key\" ]; \n";
             }
-            
+
             $text.= "{".$nodeText."}";
             $text.= $edgeText;
 
             $text.="\n}";
-            
+
             if (trim($dir)!='')
                 file_put_contents(dirname(__FILE__).'/../path/'.$dir.'/'.$dir.'.short.gv',$text);
         }
-        
+
         if (self::$changedTree) return;
         if (!self::$enabled) return;
-        
+
         $tree = array();
         foreach (self::$cachedPath as $key => $path){
             if ($path->toMethod!='GET') continue;
@@ -315,7 +354,7 @@ class CacheManager
     public static function finishRequest($sid, $path, $Name, $inURL, $outContent, $outStatus, $inMethod, $inContent)
     {
         if (!self::$makeTree) return;
-        
+
         // speichere Knotendaten
         $data = array();
         $data['inURL'] = $inURL;
@@ -326,19 +365,19 @@ class CacheManager
         $data['name'] = $Name;
         $dir = self::$rootNode->toName;
         $dir = substr($dir,0,strlen($dir));
-        
+
         // es gab einen Fehler
         if (trim($dir)=='') return;
-        
+
         if (!is_dir(dirname(__FILE__).'/../path'))
             mkdir(dirname(__FILE__).'/../path', 0755);
-        
+
         if (!is_dir(dirname(__FILE__).'/../path/'.$dir))
             mkdir(dirname(__FILE__).'/../path/'.$dir, 0755);
-        
+
         if (trim($dir)!='')
             file_put_contents(dirname(__FILE__).'/../path/'.$dir.'/'.$Name.'_'.$sid.'.json',json_encode($data));
-        
+
         // speichere die Beschreibungsdatei
         $path = dirname(__FILE__).'/../..'.$path;
         if (isset($path)){
@@ -417,16 +456,17 @@ class CacheManager
     {
         return null;return;return;
         ///if (!self::$enabled) return;
+        if (!in_array('phpFastCache', get_declared_classes())) return null;
         if (self::$activeTree) return;
         if (self::$tree!=null) return;
         if (strtoupper($method)!='GET' && !self::$makeTree) return;
-        
+
         $uTag = md5($URL);
         self::$activeTree=true;
         self::$changedTree=true;
-        
+
         self::setRoot();
-        
+
         $uriTag = self::generateETag($URL);
         $list = cacheAccess::loadData('tree_'.$uTag);
         
@@ -437,7 +477,7 @@ class CacheManager
         } else {
             ///Logger::Log('tree found', LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
         }
-        
+
         $list = json_decode($list,true);
         $result = cacheAccess::loadData('data_'.$list[self::getFirstIndex($list)]['eTag']);
         if ($result===null) {
@@ -445,17 +485,17 @@ class CacheManager
             ///Logger::Log('no result', LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
             return;
         }
-        
+
         self::$tree = json_decode(json_encode($list));
         $sources = array();
         $allOK = true;
-                    
+
         foreach ($list as $key=>$elem){
             if ($elem['toSid']===null)
                 $sources[$key] = $elem;
         }
-        
-        // call sources            
+
+        // call sources
         if ($allOK){
             foreach ($sources as $key => $source){
                 $answ = Request::get($source['toURL'], array(),  '', true);
@@ -467,7 +507,7 @@ class CacheManager
                 }
             }
         }
-        
+
         if ($allOK){
             self::$changedTree=true;
             if (isset($list[self::getFirstIndex($list)])){

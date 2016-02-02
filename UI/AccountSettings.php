@@ -7,10 +7,11 @@
  * @author Florian Lücke
  * @author Ralf Busch
  */
+ob_start();
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
-include_once dirname(__FILE__) . '/../Assistants/Validation/Validation.php';
+include_once dirname(__FILE__) . '/../Assistants/vendor/Validation/Validation.php';
 
 $langTemplate='AccountSettings_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
@@ -149,3 +150,4 @@ $w->defineForm(basename(__FILE__), false, $accountInfo);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 
+ob_end_flush();

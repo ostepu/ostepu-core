@@ -7,9 +7,11 @@
  * @author Florian Lücke
  * @author Ralf Busch
  */
+ob_start();
+
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
-include_once dirname(__FILE__) . '/../Assistants/Validation/Validation.php';
+include_once dirname(__FILE__) . '/../Assistants/vendor/Validation/Validation.php';
 
 global $globalUserData;
 Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $globalUserData);
@@ -120,11 +122,23 @@ $menu = MakeNavigationElement($user_course_data,
 
 $userNavigation = null;
 if (isset($_SESSION['selectedUser'])){
+    $courseStatus = null;
+    if (isset($globalUserData['courses'][0]) && isset($globalUserData['courses'][0]['status']))
+        $courseStatus = $globalUserData['courses'][0]['status'];
+    
     $URI = $serverURI . "/DB/DBUser/user/course/{$cid}/status/0";
     $courseUser = http_get($URI, true);
     $courseUser = User::decodeUser($courseUser);
-    $userNavigation = MakeUserNavigationElement($globalUserData,$courseUser,$privileged,
-                                                PRIVILEGE_LEVEL::LECTURER);
+    $userNavigation = MakeUserNavigationElement($globalUserData,
+                                                $courseUser,
+                                                $privileged,
+                                                PRIVILEGE_LEVEL::LECTURER,
+                                                null,
+                                                null,
+                                                false,
+                                                false,
+                                                array('page/admin/studentMode','studentMode.md'),
+                                                array(array('title'=>Language::Get('main','leaveStudent', $langTemplate),'target'=>PRIVILEGE_LEVEL::$SITES[$courseStatus].'?cid='.$cid)));
 }
 
 // construct a new header
@@ -147,3 +161,4 @@ $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $t);
 $w->set_config_file('include/configs/config_student_tutor.json');
 $w->show();
 
+ob_end_flush();

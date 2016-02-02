@@ -12,10 +12,11 @@
  * @todo create a navigation bar for super admins
  * @todo unset $_POST on success
  */
+ob_start();
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
-include_once dirname(__FILE__) . '/../Assistants/Validation/Validation.php';
+include_once dirname(__FILE__) . '/../Assistants/vendor/Validation/Validation.php';
 
 global $globalUserData;
 Authentication::checkRights(PRIVILEGE_LEVEL::SUPER_ADMIN, null, $uid, $globalUserData);
@@ -381,3 +382,4 @@ $w->defineForm(basename(__FILE__), false, $deleteUser);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 
+ob_end_flush();

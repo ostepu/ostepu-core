@@ -9,7 +9,7 @@
  */
 
 include_once ( dirname( __FILE__ ) . '/../../Assistants/Structures.php' );
-require_once( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
+include_once( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
 
 class Einstellungen
 {

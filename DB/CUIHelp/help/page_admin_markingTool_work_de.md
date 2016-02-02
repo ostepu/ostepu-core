@@ -13,7 +13,7 @@ Wenn die Maximalpunktzahl überschritten wird, sieht man beim Speichern folgende
 ![](workE.png)
 
 6. Der Korrekturstatus (diesen bekommt der Student nach dem Ablauf der Übungsserie angezeigt)
-7. Der Kommentar des Kontrolleurs (diesen bekommt der Student in seiner Übersicht angezeigt)
+7. Der Kommentar des Kontrolleurs (diesen bekommt der Student in seiner Übersicht angezeigt, **maximal 255 Zeichen**)
 
 ![](workC.png)
 

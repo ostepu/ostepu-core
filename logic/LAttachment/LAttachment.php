@@ -8,7 +8,7 @@
  * @date 2013-2014
  */
 
-require '../../Assistants/Slim/Slim.php';
+require '../../Assistants/vendor/Slim/Slim/Slim.php';
 include '../../Assistants/Request.php';
 include_once '../../Assistants/CConfig.php';
 include '../Include/LFileHandler.php';

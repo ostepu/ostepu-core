@@ -5,6 +5,7 @@
  *
  * @todo support downloads of csv files
  */
+ob_start();
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Request.php';
@@ -182,3 +183,5 @@ if (isset($_GET['downloadMarkings'])) {
     echo $zipfile;
     exit(0);
 }
+
+ob_end_flush();

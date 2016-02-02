@@ -8,16 +8,19 @@ class GitAktualisierung
     public static $rank = 25;
     public static $page = 0;
     private static $initialized=false;
+    private static $langTemplate='GitAktualisierung';
 
     public static $onEvents = array('collect'=>array('procedure'=>'collect','name'=>'collectGitUpdates','event'=>array('actionCollectGitUpdates')),
                                     'install'=>array('procedure'=>'install','name'=>'installGitUpdates','event'=>array('actionInstallGitUpdates')));
 
     public static function show($console, $result, $data)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        if (!Einstellungen::$accessAllowed) return;
+          
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $text='';
         if (!$console)
-            $text .= Design::erstelleBeschreibung($console,Language::Get('gitUpdate','description'));
+            $text .= Design::erstelleBeschreibung($console,Installation::Get('gitUpdate','description',self::$langTemplate));
 
         $collected = array();
         if (isset($result[self::$onEvents['collect']['name']]) && $result[self::$onEvents['collect']['name']]!=null){
@@ -34,7 +37,7 @@ class GitAktualisierung
         if (Einstellungen::$accessAllowed){
             //if ($collected['content'] === null){
                 if (!$console){
-                    $text .= Design::erstelleZeileShort($console, Language::Get('gitUpdate','collectGitUpdatesDesc'), 'e', Design::erstelleSubmitButton(self::$onEvents['collect']['event'][0], Language::Get('gitUpdate','collectGitUpdates')), 'h');
+                    $text .= Design::erstelleZeileShort($console, Installation::Get('gitUpdate','collectGitUpdatesDesc',self::$langTemplate), 'e', Design::erstelleSubmitButton(self::$onEvents['collect']['event'][0], Installation::Get('gitUpdate','collectGitUpdates',self::$langTemplate)), 'h');
                 }
             //}
 
@@ -44,7 +47,7 @@ class GitAktualisierung
                 if (isset($collected['content']['modified'][0])){
                     $t = $collected['content']['modified'][0];
                 } else {
-                    $t = Language::Get('gitUpdate','noUpdates');
+                    $t = Installation::Get('gitUpdate','noUpdates',self::$langTemplate);
                 }
 
                 if (!$console){
@@ -64,7 +67,7 @@ class GitAktualisierung
                 }
                 if (count($collected['content']['commits'])>20){
                     if (!$console){
-                        $text .= Design::erstelleZeile($console, Language::Get('gitUpdate','additionalCommits','default', array('additionalCommits'=>count($collected['content']['commits'])-20)), 'v');
+                        $text .= Design::erstelleZeile($console, Installation::Get('gitUpdate','additionalCommits',self::$langTemplate, array('additionalCommits'=>count($collected['content']['commits'])-20)), 'v');
                     } else  {
 
                     }
@@ -72,36 +75,39 @@ class GitAktualisierung
 
                 if (count($collected['content']['commits'])>0){
                     if (!$console){
-                        $text .= Design::erstelleZeileShort($console, Language::Get('gitUpdate','installGitUpdatesDesc'), 'e', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0], Language::Get('gitUpdate','installGitUpdates')), 'h');
+                        $text .= Design::erstelleZeileShort($console, Installation::Get('gitUpdate','installGitUpdatesDesc',self::$langTemplate), 'e', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0], Installation::Get('gitUpdate','installGitUpdates',self::$langTemplate)), 'h');
                     }
                 }
             }
 
             if (self::$installed){
-                $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error, Language::Get('gitUpdate','executeGitUpdatesDesc'));
+                $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error, Installation::Get('gitUpdate','executeGitUpdatesDesc',self::$langTemplate));
             }
         }
 
-        echo Design::erstelleBlock($console, Language::Get('gitUpdate','title'), $text);
-        Installation::log(array('text'=>'beende Funktion'));
+        echo Design::erstelleBlock($console, Installation::Get('gitUpdate','title',self::$langTemplate), $text);
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return null;
     }
 
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
+        Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
+        Installation::log(array('text'=>Installation::Get('main','languageInstantiated')));
+      
         self::$initialized = true;
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
 
     public static function collect($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $result = array('commits'=>null, 'modified'=>null);
         $pathOld = getcwd();
         $output=null;
 
-        Installation::log(array('text'=>'exec git fetch'));
+        Installation::log(array('text'=>Installation::Get('gitUpdate','execGitFetch',self::$langTemplate)));
         chdir(dirname(__FILE__).'/../../');
         exec('(git fetch) 2>&1', $output, $return);
         chdir($pathOld);
@@ -110,7 +116,7 @@ class GitAktualisierung
             $pathOld = getcwd();
             $output=null;
 
-            Installation::log(array('text'=>'exec git diff --shortstat HEAD...FETCH_HEAD'));
+            Installation::log(array('text'=>Installation::Get('gitUpdate','execGitDiff',self::$langTemplate)));
             chdir(dirname(__FILE__).'/../../');
             exec('(git diff --shortstat HEAD...FETCH_HEAD) 2>&1', $output, $return);
             chdir($pathOld);
@@ -121,7 +127,7 @@ class GitAktualisierung
                 $pathOld = getcwd();
                 $output=null;
 
-                Installation::log(array('text'=>'exec git log --pretty=format:\'%s,%cr\' --abbrev-commit --date=relative HEAD...FETCH_HEAD'));
+                Installation::log(array('text'=>Installation::Get('gitUpdate','execGitLog',self::$langTemplate)));
                 chdir(dirname(__FILE__).'/../../');
                 exec('(git log --pretty=format:\'%s,%cr\' --abbrev-commit --date=relative HEAD...FETCH_HEAD) 2>&1', $output, $return);
                 chdir($pathOld);
@@ -138,39 +144,39 @@ class GitAktualisierung
                     }
 
                     if (empty($result['commits'])){
-                        Installation::log(array('text'=>'keine Änderungen gefunden'));
+                        Installation::log(array('text'=>Installation::Get('gitUpdate','noChangesFound',self::$langTemplate)));
                     } else {
-                        Installation::log(array('text'=>'Änderungen gefunden ('.count($result['commits']).')'));
+                        Installation::log(array('text'=>Installation::Get('gitUpdate','changesFound',self::$langTemplate,array('amount'=>count($result['commits'])))));
                     }
                 } else {
                     $fail = true;
-                    $error = Language::Get('gitUpdate','errorGitLog');
+                    $error = Installation::Get('gitUpdate','errorGitLog',self::$langTemplate);
                     Installation::log(array('text'=>$error, 'logLevel'=>LogLevel::ERRROR));
                 }
             } else {
                 $fail = true;
-                $error = Language::Get('gitUpdate','errorGitDiff');
+                $error = Installation::Get('gitUpdate','errorGitDiff',self::$langTemplate);
                 Installation::log(array('text'=>$error, 'logLevel'=>LogLevel::ERRROR));
             }
 
         } else {
             $fail = true;
-            $error = Language::Get('gitUpdate','errorGitFetch');
+            $error = Installation::Get('gitUpdate','errorGitFetch',self::$langTemplate);
             Installation::log(array('text'=>$error, 'logLevel'=>LogLevel::ERRROR));
         }
 
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return $result;
     }
 
     public static function install($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $result = array();
         $pathOld = getcwd();
         $output=null;
 
-        Installation::log(array('text'=>'exec git reset --hard'));
+        Installation::log(array('text'=>Installation::Get('gitUpdate','execGitReset',self::$langTemplate)));
         chdir(dirname(__FILE__).'/../../');
         exec('(git reset --hard) 2>&1', $output, $return);
         chdir($pathOld);
@@ -179,7 +185,7 @@ class GitAktualisierung
             $pathOld = getcwd();
             $output=null;
 
-            Installation::log(array('text'=>'exec git pull'));
+            Installation::log(array('text'=>Installation::Get('gitUpdate','execGitPull',self::$langTemplate)));
             chdir(dirname(__FILE__).'/../../');
             exec('(git pull) 2>&1', $output, $return);
             chdir($pathOld);
@@ -188,17 +194,17 @@ class GitAktualisierung
                 // OK
             } else {
                 $fail = true;
-                $error = Language::Get('gitUpdate','errorGitPull');
+                $error = Installation::Get('gitUpdate','errorGitPull',self::$langTemplate);
                 Installation::log(array('text'=>$error, 'logLevel'=>LogLevel::ERRROR));
             }
 
         } else {
             $fail = true;
-            $error = Language::Get('gitUpdate','errorGitReset');
+            $error = Installation::Get('gitUpdate','errorGitReset',self::$langTemplate);
             Installation::log(array('text'=>$error, 'logLevel'=>LogLevel::ERRROR));
         }
 
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return $result;
     }
 }

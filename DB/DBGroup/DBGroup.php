@@ -131,6 +131,32 @@ class DBGroup
     {
         return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
+    
+    public function getSamplesInfo( $callName, $input, $params = array() )
+    {
+        $positive = function($input) {
+            $result = Model::isEmpty();$result['content']=array();
+            foreach ($input as $inp){
+                if ( $inp->getNumRows( ) > 0 ){
+                    foreach($inp->getResponse( ) as $key => $value)
+                        foreach($value as $key2 => $value2){
+                            $result['content'][] = $value2;
+                        }
+                    $result['status'] = 200;
+                }
+            }
+            return $result;
+        };
+
+        $params = DBJson::mysql_real_escape_string( $params );
+        return $this->_component->call($callName, $params, '', 200, $positive,  array(), 'Model::isProblem', array(), 'Query');
+    }
+
+    public function postSamples( $callName, $input, $params = array() )
+    {
+        set_time_limit(0);
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));
+    }
 }
 
 

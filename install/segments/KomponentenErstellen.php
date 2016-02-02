@@ -2,22 +2,36 @@
 #region KomponentenErstellen
 class KomponentenErstellen
 {
+    private static $initialized=false;
     public static $name = 'componentDefs';
     public static $installed = false;
     public static $page = 3;
     public static $rank = 50;
     public static $enabledShow = true;
     public static $enabledInstall = true;
+    private static $langTemplate='KomponentenErstellen';
 
     public static $onEvents = array('install'=>array('name'=>'componentDefs','event'=>array('actionInstallComponentDefs','install', 'update')));
 
+
+    public static function init($console, &$data, &$fail, &$errno, &$error)
+    {
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
+        Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
+        Installation::log(array('text'=>Installation::Get('main','languageInstantiated')));
+        self::$initialized = true;
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
+    }
+ 
     public static function show($console, $result, $data)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        if (!Einstellungen::$accessAllowed) return;
+         
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $text='';
 
         if (!$console)
-            $text .= Design::erstelleBeschreibung($console,Language::Get('generateComponents','description'));
+            $text .= Design::erstelleBeschreibung($console,Installation::Get('generateComponents','description',self::$langTemplate));
 
         if (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']]!=null){
            $result =  $result[self::$onEvents['install']['name']];
@@ -30,25 +44,25 @@ class KomponentenErstellen
         $content = $result['content'];
 
         if (!$console)
-            $text .= Design::erstelleZeile($console, Language::Get('generateComponents','generateComponents'), 'e', '','v',Design::erstelleSubmitButton(self::$onEvents['install']['event'][0]), 'h');
+            $text .= Design::erstelleZeile($console, Installation::Get('generateComponents','generateComponents',self::$langTemplate), 'e', '','v',Design::erstelleSubmitButton(self::$onEvents['install']['event'][0]), 'h');
 
         if (self::$installed){
             if (isset($content['components'])){
-                $text .= Design::erstelleZeile($console, Language::Get('generateComponents','numberComponents'), 'v', $content['componentsCount'],'v');
-                $text .= Design::erstelleZeile($console, Language::Get('generateComponents','numberLinks'), 'v', $content['linksCount'],'v');
+                $text .= Design::erstelleZeile($console, Installation::Get('generateComponents','numberComponents',self::$langTemplate), 'v', $content['componentsCount'],'v');
+                $text .= Design::erstelleZeile($console, Installation::Get('generateComponents','numberLinks',self::$langTemplate), 'v', $content['linksCount'],'v');
             }
 
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);
         }
 
-        echo Design::erstelleBlock($console, Language::Get('generateComponents','title'), $text);
-        Installation::log(array('text'=>'beende Funktion'));
+        echo Design::erstelleBlock($console, Installation::Get('generateComponents','title',self::$langTemplate), $text);
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return null;
     }
 
     public static function install($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $serverFiles = Installation::GibServerDateien();
 
         $installComponentDefsResult['components']=array();
@@ -57,7 +71,7 @@ class KomponentenErstellen
             $tempData = Einstellungen::ladeEinstellungenDirekt($sf,$data);
             if ($tempData === null){
                 $fail = true;
-                $error = Language::Get('generateComponents','noAccess');
+                $error = Installation::Get('generateComponents','noAccess',self::$langTemplate);
                 return;
             }
 
@@ -91,6 +105,7 @@ class KomponentenErstellen
 
                     if (!isset($input['registered'])){
                         $comList[] = "('{$input['name']}', '{$input['urlExtern']}/{$input['path']}', '".(isset($input['option']) ? $input['option'] : '')."', '".implode(';',(isset($input['def']) ? $input['def'] : array()))."')";
+
                         // Verknüpfungen erstellen
                         $setDBNames[] = " SET @{$key}_{$input['name']} = (select CO_id from Component where CO_address='{$input['urlExtern']}/{$input['path']}' limit 1); ";
                         $input['dbName'] = $key.'_'.$input['name'];
@@ -148,23 +163,23 @@ class KomponentenErstellen
         }
 
         $sql = "START TRANSACTION;SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;TRUNCATE TABLE `ComponentLinkage`;SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;COMMIT;";//TRUNCATE TABLE `Component`;
-        Installation::log(array('text'=>'sql = '.$sql));
+        Installation::log(array('text'=>Installation::Get('generateComponents','createTruncateQuery',self::$langTemplate,array('sql'=>$sql))));
         $res = DBRequest::request2($sql, false, $data, true);
-        Installation::log(array('text'=>'Resultat: '.json_encode($res)));
+        Installation::log(array('text'=>Installation::Get('generateComponents','truncateQueryResult',self::$langTemplate,array('res'=>json_encode($res)))));
 
         $sql = "UPDATE `Component` SET `CO_status` = '0';";
-        Installation::log(array('text'=>'sql = '.$sql));
+        Installation::log(array('text'=>Installation::Get('generateComponents','createResetStatusQuery',self::$langTemplate,array('sql'=>$sql))));
         $res = DBRequest::request2($sql, false, $data, true);
-        Installation::log(array('text'=>'Resultat: '.json_encode($res)));
+        Installation::log(array('text'=>Installation::Get('generateComponents','resetStatusQueryResult',self::$langTemplate,array('res'=>json_encode($res)))));
 
         $sql = "START TRANSACTION;SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;INSERT INTO `Component` (`CO_name`, `CO_address`, `CO_option`, `CO_def`) VALUES ";
         $installComponentDefsResult['componentsCount'] = count($comList);
         $sql.=implode(',',$comList);
         unset($comList);
         $sql .= " ON DUPLICATE KEY UPDATE CO_status='1', CO_address=VALUES(CO_address), CO_option=VALUES(CO_option), CO_def=VALUES(CO_def);SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;COMMIT;";
-        Installation::log(array('text'=>'sql = '.$sql));
+        Installation::log(array('text'=>Installation::Get('generateComponents','createInsertQuery',self::$langTemplate,array('sql'=>$sql))));
         $res = DBRequest::request2($sql, false, $data, true);
-        Installation::log(array('text'=>'Resultat: '.json_encode($res)));
+        Installation::log(array('text'=>Installation::Get('generateComponents','insertQueryResult',self::$langTemplate,array('res'=>json_encode($res)))));
 
         $sql = "START TRANSACTION;SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;";
         $sql .=implode('',$setDBNames);
@@ -251,22 +266,22 @@ class KomponentenErstellen
 
         $installComponentDefsResult['linksCount'] = count($links);
         $sql .= " SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;COMMIT;";
-        Installation::log(array('text'=>'sql = '.$sql));
+        Installation::log(array('text'=>Installation::Get('generateComponents','createInsertLinksQuery',self::$langTemplate,array('sql'=>$sql))));
         $res = DBRequest::request2($sql, false, $data, true);
-        Installation::log(array('text'=>'Resultat: '.json_encode($res)));
+        Installation::log(array('text'=>Installation::Get('generateComponents','insertLinksQueryResult',self::$langTemplate,array('res'=>json_encode($res)))));
         $installComponentDefsResult['components'] = $ComponentListInput;
 
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return $installComponentDefsResult;
     }
 
     public static function installiereKomponentenDefinitionen($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $res = array();
 
         if (!$fail){
-            $mainPath = dirname(__FILE__) . '/../..';
+            $mainPath = realpath(dirname(__FILE__) . '/../..');
             $components = array();
 
             $componentFiles = array();
@@ -294,6 +309,7 @@ class KomponentenErstellen
                 if (isset($data['PL']['urlExtern'])) $input['urlExtern'] = $data['PL']['urlExtern'];
                 if (isset($data['PL']['url'])) $input['url'] = $data['PL']['url'];
                 $input['path'] = substr(dirname($comFile),strlen($mainPath)+1);
+                $input['path'] = str_replace(array("\\"), array('/'), $input['path']);
                 $input['def'] = array($input['name'],str_replace("\\","/",realpath($comFile)));
                 if (isset($data['CO']['co_link_type'])) $input['link_type'] = $data['CO']['co_link_type'];
                 if (isset($data['CO']['co_link_availability'])) $input['link_availability'] = $data['CO']['co_link_availability'];
@@ -304,7 +320,7 @@ class KomponentenErstellen
             }
         }
 
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return $res;
     }
 }

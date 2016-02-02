@@ -13,7 +13,7 @@
         <div class="content-element form" style="outline:2px solid #b9b8b8;border-radius: 0px;margin: 0px;">
                         
             <div class="content-header">
-                <?php echo MakeInfoButton('extension','LForm.md'); ?>
+                <?php echo MakeInfoButton('extension/LForm','LForm.md'); ?>
                 <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
                 <div class="critical-color right">
                     <a href="javascript:void(0);" class="delete-form"><?php echo Language::Get('main','execute', $langTemplate); ?><?php if (isset($forms[0]['formId'])){ ?><span class="right warning-simple"></span><?php } ?></a>

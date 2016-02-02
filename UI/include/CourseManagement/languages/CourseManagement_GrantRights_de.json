@@ -19,7 +19,8 @@
         "rights": "Rechte",
         "student": "Student",
         "tutor": "Tutor",
-        "dozent": "Dozent",
-        "admin": "Administrator"
+        "lecturer": "Dozent",
+        "administrator": "Administrator",
+        "super-administrator": "Super-Admin"
     }
 }

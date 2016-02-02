@@ -10,7 +10,7 @@
  * @date 2013-2014
  */
 
-require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
+require_once ( dirname(__FILE__) . '/../../Assistants/vendor/Slim/Slim/Slim.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Request.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/DBJson.php' );

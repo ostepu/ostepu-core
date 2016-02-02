@@ -7,9 +7,10 @@
  * @author Florian Lücke
  * @author Ralf Busch
  */
+ob_start();
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
-include_once dirname(__FILE__) . '/../Assistants/Validation/Validation.php';
+include_once dirname(__FILE__) . '/../Assistants/vendor/Validation/Validation.php';
 
 global $globalUserData;
 Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $globalUserData);
@@ -43,7 +44,11 @@ $postValidation = Validation::open($_POST, array('preRules'=>array()))
             'set_default'=>'noAction',
             'satisfy_in_list'=>['noAction', 'sort'],
             'on_error'=>['type'=>'error',
-                         'text'=>Language::Get('main','errorActionSortUsers', $langTemplate)]]);
+                         'text'=>Language::Get('main','errorActionSortUsers', $langTemplate)]])
+  ->addSet('userID',
+           ['valid_identifier',
+            'on_error'=>['type'=>'error',
+                         'text'=>Language::Get('main','invalidUserID', $langTemplate)]]);
 
 $getValidation = Validation::open($_GET, array('preRules'=>array('sanitize')))
   ->addSet('action',
@@ -163,8 +168,7 @@ foreach($dataList as $data)
     $tempData[] = $uploadHistoryOptions_data['users'][$data['pos']];
 $uploadHistoryOptions_data['users'] = $tempData;
 
-// adds the selected uploadUserID and sheetID
-$uploadHistoryOptions_data['uploadUserID'] = isset($uploadUserID) ? $uploadUserID : '';
+// adds the selected sheetID
 $uploadHistoryOptions_data['sheetID'] = isset($sheetID) ? $sheetID : '';
 
 $uploadHistoryOptions_data['sortUsers'] = $sortUsersValue;
@@ -176,12 +180,25 @@ if (isset($user_course_data['courses'][0]['status'])){
 } else
     $courseStatus =  -1;
 
+if ($postValidation->isValid()){
+    if ($courseStatus==0){
+        $postResults['userID'] = $selectedUser;
+    }
+    $uploadUserID = $postResults['userID'];
+}
+// adds the uploadUserID sheetID
+$uploadHistoryOptions_data['uploadUserID'] = isset($uploadUserID) ? $uploadUserID : null;
+
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::STUDENT,
                               true);
 
 $userNavigation = null;
 if (isset($_SESSION['selectedUser'])){
+    $courseStatus = null;
+    if (isset($globalUserData['courses'][0]) && isset($globalUserData['courses'][0]['status']))
+        $courseStatus = $globalUserData['courses'][0]['status'];
+    
     $URI = $serverURI . "/DB/DBUser/user/course/{$cid}/status/0";
     $courseUser = http_get($URI, true);
     $courseUser = User::decodeUser($courseUser);
@@ -207,8 +224,16 @@ if (isset($_SESSION['selectedUser'])){
         }
     }
 
-    $userNavigation = MakeUserNavigationElement($globalUserData,$courseUser,$privileged,
-                                                PRIVILEGE_LEVEL::LECTURER,$sid,$courseSheets);
+    $userNavigation = MakeUserNavigationElement($globalUserData,
+                                                $courseUser,
+                                                $privileged,
+                                                PRIVILEGE_LEVEL::LECTURER,
+                                                $sid,
+                                                $courseSheets,
+                                                false,
+                                                false,
+                                                array('page/admin/studentMode','studentMode.md'),
+                                                array(array('title'=>Language::Get('main','leaveStudent', $langTemplate),'target'=>PRIVILEGE_LEVEL::$SITES[$courseStatus].'?cid='.$cid)));
 }
 
 $isExpired=null;
@@ -250,21 +275,12 @@ $h->bind(array('name' => $user_course_data['courses'][0]['course']['name'],
 
 if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction' && $postResults['action'] !== 'noAction') {
     if ($postResults['action'] === 'ShowUploadHistory') {
-        $postShowUploadHistoryValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
-          ->addSet('userID',
-                   ['valid_identifier',
-                    'on_error'=>['type'=>'error',
-                                 'text'=>Language::Get('main','invalidUserID', $langTemplate)]]);
+        $postShowUploadHistoryValidation = Validation::open($_POST, array('preRules'=>array('sanitize')));
         $foundValues = $postShowUploadHistoryValidation->validate();
         $notifications = array_merge($notifications,$postShowUploadHistoryValidation->getPrintableNotifications('MakeNotification'));
         $postShowUploadHistoryValidation->resetNotifications()->resetErrors();
 
-        if ($postShowUploadHistoryValidation->isValid() && isset($postResults['sheetID'])) {
-            if ($courseStatus==0){
-                $foundValues['userID'] = $selectedUser;
-            }
-            $uploadUserID = $foundValues['userID'];
-
+        if ($postShowUploadHistoryValidation->isValid() && isset($postResults['sheetID']) && isset($uploadUserID)) {
             if (isset($postResults['sheetID']))
                 $sheetID = $postResults['sheetID'];
 
@@ -311,3 +327,4 @@ if (isset($uploadHistory))$w->defineForm(basename(__FILE__).'?cid='.$cid, false,
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 
+ob_end_flush();

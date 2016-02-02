@@ -41,6 +41,7 @@
                             if (!isset($tutor['id'])) continue;
                             if (!isset($tutor['firstName'])) $tutor['firstName'] = '???';
                             if (!isset($tutor['lastName'])) $tutor['lastName'] = '???';
+                            if (!isset($tutor['userName'])) $tutor['userName'] = '???';
                             
                             print '<option value="';
                             print $tutor['id'] . '"';
@@ -48,7 +49,7 @@
                                 print $tutor['id'] == $tutorID ? ' selected="selected"' : NULL;
                             }
                             print '>';
-                            print $tutor['firstName'] . ' ' . $tutor['lastName'];
+                            print $tutor['firstName'] . ' ' . $tutor['lastName'] . ' ('.$tutor['userName'].')';
                             print '</option>';
                         }
                     ?>
@@ -61,7 +62,8 @@
             <div>
                 <label class="form-field label bold" for="statusID"><?php echo Language::Get('main','status', $langTemplate); ?>:</label> 
                 <select class="form-field text-input" name="statusID" id="statusID">
-                    <option value="all"><?php echo Language::Get('main','all', $langTemplate); ?></option>
+                    <option value="all" <?php echo (isset($statusID) && $statusID=='all'?' selected="selected"':'');?>><?php echo Language::Get('main','all', $langTemplate); ?></option>
+                    <option value="notAccepted" <?php echo (isset($statusID) && $statusID=='notAccepted'?' selected="selected"':'');?>><?php echo Language::Get('main','notAccepted', $langTemplate); ?></option>
                     <?php
                         foreach ($markingStatus as $status) {
                             if (!isset($status['id'])) continue;
@@ -70,7 +72,7 @@
                             print '<option value="';
                             print $status['id'] . '"';
                             if (isset($statusID)) {
-                                print $status['id'] == $statusID ? ' selected="selected"' : NULL;
+                                print (strval($status['id']) === $statusID ? ' selected="selected"' : NULL);
                             }
                             print '>';
                             print $status['longName'];

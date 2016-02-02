@@ -215,6 +215,7 @@
     ],
     "connector": [
         {"name": "request","target": "CLocalObjectRequest"},
-        {"name": "postPlatform","target": "CInstall"}
+        {"name": "postPlatform","target": "CInstall"},
+        {"name": "postSamples","target": "CInstall", "priority":140}
     ]
 }

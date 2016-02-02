@@ -7,10 +7,11 @@
  * @author Florian Lücke
  * @author Ralf Busch
  */
+ob_start();
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
-include_once dirname(__FILE__) . '/../Assistants/Validation/Validation.php';
+include_once dirname(__FILE__) . '/../Assistants/vendor/Validation/Validation.php';
 
 global $globalUserData;
 Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $globalUserData);
@@ -190,7 +191,9 @@ if ($postValidation->isValid() && $postResults['action'] === 'submit') {
                             global $globalUserData;
                             if (isset($globalUserData['courses'][0]['course'])){
                                 $obj = Course::decodeCourse(Course::encodeCourse($globalUserData['courses'][0]['course']));
-                                $maxFileSize = Course::containsSetting($obj,'MaxStudentUploadSize');
+                                if (Course::containsSetting($obj,'MaxStudentUploadSize') !== null){
+                                    $maxFileSize = Course::containsSetting($obj,'MaxStudentUploadSize');
+                                }
                             }
 
                             if ($file['size']>$maxFileSize){
@@ -266,26 +269,26 @@ if ($postValidation->isValid() && $postResults['action'] === 'submit') {
                                             $choice->setSubmissionId($result->getId());
                                         }
 
-                                        $URL = $serverURI.'/DB/DBChoice/formResult/choice';
+                                        /*$URL = $serverURI.'/vendor/forms/DBChoice/formResult/choice';
                                         $result2 = http_post_data($URL, Choice::encodeChoice($choices), true, $message);
 
-                                            if ($message !== 201) {
-                                                $result2 = Choice::decodeChoice($result2);
-                                                $exercise = $key + 1;
-                                                $errormsg = Language::Get('main','errorUploadSubmission', $langTemplate, array('status'=>$message,'exerciseName'=>$exercise['name']));
+                                        if ($message !== 201) {
+                                            $result2 = Choice::decodeChoice($result2);
+                                            $exercise = $key + 1;
+                                            $errormsg = Language::Get('main','errorUploadSubmission', $langTemplate, array('status'=>$message,'exerciseName'=>$exercise['name']));
 
-                                                if ($result2!==null){
-                                                    $errormsg .= '<br><br>';
-                                                    $messages2 = $result2->getMessages();
-                                                    foreach ($messages2 as $message){
-                                                        $errormsg.=str_replace("\n",'<br>',$message).'<br>';
-                                                    }
+                                            if ($result2!==null){
+                                                $errormsg .= '<br><br>';
+                                                $messages2 = $result2->getMessages();
+                                                foreach ($messages2 as $message){
+                                                    $errormsg.=str_replace("\n",'<br>',$message).'<br>';
                                                 }
-
-                                                $notifications[] = MakeNotification('error',
-                                                                                    $errormsg);
-                                                continue;
                                             }
+
+                                            $notifications[] = MakeNotification('error',
+                                                                                $errormsg);
+                                            continue;
+                                        }*/
                                         $i++;
                                     }
 
@@ -390,7 +393,7 @@ if (isset($upload_data['exerciseSheet']['endDate']) && isset($upload_data['exerc
     set_error(Language::Get('main','noExercisePeriod', $langTemplate));
 
 //$formdata = file_get_contents('FormSample.json');
-$URL = $serverURI."/DB/DBForm/form/exercisesheet/{$sid}";
+$URL = $serverURI."/vendor/forms/DBForm/form/exercisesheet/{$sid}";
 $formdata = http_get($URL, true);
 
 $formdata = Form::decodeForm($formdata);
@@ -412,6 +415,10 @@ $menu = MakeNavigationElement($user_course_data,
 
 $userNavigation = null;
 if (isset($_SESSION['selectedUser'])){
+    $courseStatus = null;
+    if (isset($globalUserData['courses'][0]) && isset($globalUserData['courses'][0]['status']))
+        $courseStatus = $globalUserData['courses'][0]['status'];
+    
     $URI = $serverURI . "/DB/DBUser/user/course/{$cid}/status/0";
     $courseUser = http_get($URI, true);
     $courseUser = User::decodeUser($courseUser);
@@ -451,8 +458,16 @@ if (isset($_SESSION['selectedUser'])){
         }
     }
 
-    $userNavigation = MakeUserNavigationElement($globalUserData,$courseUser,$privileged,
-                                                PRIVILEGE_LEVEL::LECTURER,$sid,$courseSheets);
+    $userNavigation = MakeUserNavigationElement($globalUserData,
+                                                $courseUser,
+                                                $privileged,
+                                                PRIVILEGE_LEVEL::LECTURER,
+                                                $sid,
+                                                $courseSheets,
+                                                false,
+                                                false,
+                                                array('page/admin/studentMode','studentMode.md'),
+                                                array(array('title'=>Language::Get('main','leaveStudent', $langTemplate),'target'=>PRIVILEGE_LEVEL::$SITES[$courseStatus].'?cid='.$cid)));
 }
 
 // construct a new header
@@ -485,3 +500,5 @@ $t->bind(array('privileged' => $privileged));
 $w = new HTMLWrapper($h, $t);
 $w->set_config_file('include/configs/config_upload_exercise.json');
 $w->show();
+
+ob_end_flush();

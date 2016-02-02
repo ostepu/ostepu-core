@@ -29,6 +29,8 @@ Hier können Sie die Datei auswählen, welche Sie hochladen möchten. Dabei kön
 
 Wenn Sie dem Kontrolleur einen Hinweis zu Ihrer Einsendugn zukommen lassen möchten, können Sie diesen hier eintragen.
 
+> maximal 255 Zeichen
+
 > vermeiden Sie unnötige Kommentare
 
 ![](uploadG.png)

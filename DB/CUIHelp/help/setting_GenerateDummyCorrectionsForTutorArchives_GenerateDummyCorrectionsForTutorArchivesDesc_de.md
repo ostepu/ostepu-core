@@ -1,0 +1,1 @@
+Erzeugt leere PDFs in den Korrekturarchiven, für alle Einsendungen. Wenn Sie diese Option nicht wählen, werden dennoch PDFs für Textdateien (Einsendungen) erstellt.

@@ -8,6 +8,7 @@ class GrundeinstellungenAusgeben
     public static $page = 2;
     public static $rank = 75;
     public static $enabledShow = true;
+    private static $langTemplate='GrundeinstellungenAusgeben';
 
     public static $onEvents = array('install'=>array('name'=>'installInit','event'=>array('actionInstallInit','install','update')));
 
@@ -22,7 +23,10 @@ class GrundeinstellungenAusgeben
 
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
+        Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
+        Installation::log(array('text'=>Installation::Get('main','languageInstantiated')));
+     
         $def = self::getDefaults();
 
         $text = '';
@@ -31,21 +35,23 @@ class GrundeinstellungenAusgeben
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['PL']['pl_main_details'], 'data[PL][pl_main_details]', $def['pl_main_details'][1], true);
         echo $text;
         self::$initialized = true;
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
 
     public static function show($console, $result, $data)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        if (!Einstellungen::$accessAllowed) return;
+         
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $text = '';
         if (!$console){
-            $text .= Design::erstelleBeschreibung($console,Language::Get('general_settings','description'));
+            $text .= Design::erstelleBeschreibung($console,Installation::Get('general_settings','description',self::$langTemplate));
 
-            $text .= Design::erstelleZeile($console, Language::Get('general_settings','init'), 'e', '', 'v', Design::erstelleSubmitButton('actionInstallInit'), 'h');
-            $text .= Design::erstelleZeile($console, Language::Get('database','db_override'), 'e', Design::erstelleAuswahl($console, $data['DB']['db_override'], 'data[DB][db_override]', 'override', null, true), 'v_c');
-            $text .= Design::erstelleZeile($console, Language::Get('database','db_ignore'), 'e', Design::erstelleAuswahl($console, $data['DB']['db_ignore'], 'data[DB][db_ignore]', 'ignore', null, true), 'v_c');
+            $text .= Design::erstelleZeile($console, Installation::Get('general_settings','init',self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton('actionInstallInit'), 'h');
+            $text .= Design::erstelleZeile($console, Installation::Get('database','db_override',self::$langTemplate), 'e', Design::erstelleAuswahl($console, $data['DB']['db_override'], 'data[DB][db_override]', 'override', null, true), 'v_c');
+            $text .= Design::erstelleZeile($console, Installation::Get('database','db_ignore',self::$langTemplate), 'e', Design::erstelleAuswahl($console, $data['DB']['db_ignore'], 'data[DB][db_ignore]', 'ignore', null, true), 'v_c');
 
-            $text .= Design::erstelleZeile($console, Language::Get('general_settings','details'), 'e', Design::erstelleAuswahl($console, $data['PL']['pl_main_details'], 'data[PL][pl_main_details]', 'details', null, true), 'v_c');
+            $text .= Design::erstelleZeile($console, Installation::Get('general_settings','details',self::$langTemplate), 'e', Design::erstelleAuswahl($console, $data['PL']['pl_main_details'], 'data[PL][pl_main_details]', 'details', null, true), 'v_c');
         }
 
         if (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']]!=null){
@@ -62,34 +68,34 @@ class GrundeinstellungenAusgeben
             if ($data['PL']['pl_main_details'] == 'details'){
                 foreach ($content as $component => $dat){
                     if (!$console){
-                        $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Language::Get('main','ok') : "<font color='red'>".Language::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
+                        $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Installation::Get('main','ok') : "<font color='red'>".Installation::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
                     } else
-                        $text .= "{$component}: ".((isset($dat['status']) && $dat['status']===201) ? Language::Get('main','ok')."\n" : Language::Get('main','fail')." ({$dat['status']})\n");
+                        $text .= "{$component}: ".((isset($dat['status']) && $dat['status']===201) ? Installation::Get('main','ok')."\n" : Installation::Get('main','fail')." ({$dat['status']})\n");
                 }
             }
 
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);
         }
 
-        echo Design::erstelleBlock($console, Language::Get('general_settings','title'), $text);
-        Installation::log(array('text'=>'beende Funktion'));
+        echo Design::erstelleBlock($console, Installation::Get('general_settings','title',self::$langTemplate), $text);
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return null;
     }
 
     public static function install($data, &$fail, &$errno, &$error)
     {
-        Installation::log(array('text'=>'starte Funktion'));
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         // Datenbank einrichten
         if (!isset($data['action']) || $data['action']!='update'){
             if (!$fail && (isset($data['DB']['db_override']) && $data['DB']['db_override'] === 'override')){
-               $sql = "DROP SCHEMA IF EXISTS `".$data['DB']['db_name']."`;";
-               Installation::log(array('text'=>'sql = '.$sql));
+               $sql = 'DROP SCHEMA IF EXISTS `'.$data['DB']['db_name'].'`;';
+               Installation::log(array('text'=>Installation::Get('database','dropSchemaSql',self::$langTemplate,array('sql'=>$sql))));
                $oldName = $data['DB']['db_name'];
                $data['DB']['db_name'] = null;
                $result = DBRequest::request($sql, false, $data);
-               Installation::log(array('text'=>'Resultat = '.json_encode($result)));
-               if ($result["errno"] !== 0){
-                    $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
+               Installation::log(array('text'=>Installation::Get('database','dropSchemaResult',self::$langTemplate,array('res'=>json_encode($result)))));
+               if ($result['errno'] !== 0){
+                    $fail = true; $errno = $result['errno'];$error = isset($result["error"]) ? $result["error"] : '';
                }
                $data['DB']['db_name'] = $oldName;
             }
@@ -98,11 +104,11 @@ class GrundeinstellungenAusgeben
         if (!$fail){
             $add = (((isset($data['DB']['db_ignore']) && $data['DB']['db_ignore'] === 'ignore') || (isset($data['action']) && $data['action']=='update')) ? 'IF NOT EXISTS ' : '');
             $sql = "CREATE SCHEMA {$add}`".$data['DB']['db_name']."` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;";
-            Installation::log(array('text'=>'sql = '.$sql));
+            Installation::log(array('text'=>Installation::Get('database','createSchemaSql',self::$langTemplate,array('sql'=>$sql))));
             $oldName = $data['DB']['db_name'];
             $data['DB']['db_name'] = null;
             $result = DBRequest::request($sql, false, $data);
-            Installation::log(array('text'=>'Resultat = '.json_encode($result)));
+            Installation::log(array('text'=>Installation::Get('database','dropSchemaResult',self::$langTemplate,array('res'=>json_encode($result)))));
             if ($result["errno"] !== 0){
                 $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
             }
@@ -119,9 +125,9 @@ class GrundeinstellungenAusgeben
             for ($i=0;$i<count($list);$i++){
                 $url = $list[$i];//$data['PL']['init'];
                 // inits all components
-                Installation::log(array('text'=>'erstelle Anfrage: POST '.$data['PL']['url'].'/'.$url. '/platform'.' Content: '.Platform::encodePlatform($platform)));
+                Installation::log(array('text'=>Installation::Get('database','createQueryInitComponents',self::$langTemplate,array('url'=>'POST '.$data['PL']['url'].'/'.$url. '/platform', 'content'=>Platform::encodePlatform($platform)))));
                 $result = Request::post($data['PL']['url'].'/'.$url. '/platform',array(),Platform::encodePlatform($platform));
-                Installation::log(array('text'=>'Resultat = '.json_encode($result)));
+                Installation::log(array('text'=>Installation::Get('database','initComponentsResult',self::$langTemplate,array('res'=>json_encode($result)))));
 
                 $res[$url] = array();
                 if (isset($result['content']) && isset($result['status']) && $result['status'] === 201){
@@ -134,12 +140,12 @@ class GrundeinstellungenAusgeben
                         $res[$url]['status'] = $result['status'];
                     };
                     ///if (isset($result['content'])) echo $result['content'];
-                    Installation::log(array('text'=>'Fehler: status = '.$res[$url]['status'], 'logLevel'=>LogLevel::ERROR));
+                    Installation::log(array('text'=>Installation::Get('database','failureInitComponents',self::$langTemplate,array('status'=>$res[$url]['status'])), 'logLevel'=>LogLevel::ERROR));
                 }
             }
         }
 
-        Installation::log(array('text'=>'beende Funktion'));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return $res;
     }
 }

@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -8,7 +8,7 @@
  * @date 2014
  */
 
-require_once ( dirname( __FILE__ ) . '/Slim/Slim.php' );
+require_once ( dirname( __FILE__ ) . '/vendor/Slim/Slim/Slim.php' );
 include_once ( dirname( __FILE__ ) . '/Structures.php' );
 include_once ( dirname( __FILE__ ) . '/Request.php' );
 
@@ -23,7 +23,7 @@ class Controller2
     public static function UrlAnd($textA, $textB){
         $textASplitted = explode('/',$textA);
         $textBSplitted = explode('/',$textB);
-        
+
         if (count($textBSplitted) > 0 && $textBSplitted[0] == ''){
             unset($textBSplitted[0]);
             $textBSplitted = array_values($textBSplitted);
@@ -35,7 +35,7 @@ class Controller2
         $i = count($textASplitted)-count($textBSplitted);
         if ($i<0)
             $i=0;
-        
+
         for (; $i<count($textASplitted); $i++)
             for ($c=$i,$textLength=0;$c<count($textASplitted) && $textBSplitted[$c-$i] === $textASplitted[$c];$c++){
                 $textLength+=strlen($textBSplitted[$c-$i])+1;
@@ -93,13 +93,13 @@ class Controller2
 
         // initialize slim
         $this->_app = new \Slim\Slim( );
-        $this->_app->map( 
+        $this->_app->map(
                          '/:data+',
-                         array( 
+                         array(
                                $this,
                                'getl'
                                )
-                         )->via( 
+                         )->via(
                                 'GET',
                                 'POST',
                                 'DELETE',
@@ -119,33 +119,33 @@ class Controller2
      */
     public function getl( $data )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts Controller routing',
                     LogLevel::DEBUG
                     );
 
         // if no URI is received, abort process
         if ( count( $data ) == 0 ){
-            Logger::Log( 
+            Logger::Log(
                         'Controller nothing to route',
                         LogLevel::DEBUG
                         );
-                        
+
             $this->_app->response->setStatus( 409 );
             $this->_app->stop( );
             return;
         }
-        
+
         $URI = '/'.implode('/',$data);
 
         // get possible links
         $list = CConfig::getLinks($this->_conf->getLinks( ),'out');
-        
+
         foreach ( $list as $links ){
 
             $componentURL = $links->getAddress( );
             $similar = Controller2::UrlAnd($componentURL,$URI );
-            
+
             if ($similar != null){
                 $URI2 = substr($URI,Controller2::UrlAnd($componentURL,$URI ));
                 $relevanz = explode(' ',$links->getRelevanz());
@@ -155,12 +155,12 @@ class Controller2
                         $found = true;
                         break;
                     }
-                    
+
                     $sub = strpos($rel, '_');
                     if ($sub !== false){
                         $method = substr($rel, 0, $sub);
                         $path = substr($rel, $sub+1);
-                        
+
                         if (strtoupper($method) == strtoupper($this->_app->request->getMethod())){
                             $router = new \Slim\Router();
                             $route = new \Slim\Route($path,'is_array');
@@ -171,18 +171,18 @@ class Controller2
                             if ($routes===0){
                                 continue;
                             }
-                            
+
                             $found = true;
                             break;
                         }
                     }
                 }
-                
+
                 if (!$found) continue;
-                
-                
+
+
                 // create a custom request
-                $ch = Request::custom( 
+                $ch = Request::custom(
                                       $this->_app->request->getMethod( ),
                                       $componentURL.substr($URI,$similar),
                                       array(), //$this->_app->request->headers->all( )
@@ -190,7 +190,7 @@ class Controller2
                                       );
 
                 // checks the answered status code
-                if ( $ch['status'] >= 200 && 
+                if ( $ch['status'] >= 200 &&
                      $ch['status'] <= 299 ){
 
                     // finished
@@ -198,22 +198,22 @@ class Controller2
                     $this->_app->response->setBody( $ch['content'] );
 
                     if ( isset( $ch['headers']['Content-Type'] ) )
-                        $this->_app->response->headers->set( 
+                        $this->_app->response->headers->set(
                                                             'Content-Type',
                                                             $ch['headers']['Content-Type']
                                                             );
 
                     if ( isset( $ch['headers']['Content-Disposition'] ) )
-                        $this->_app->response->headers->set( 
+                        $this->_app->response->headers->set(
                                                             'Content-Disposition',
                                                             $ch['headers']['Content-Disposition']
                                                             );
 
-                    Logger::Log( 
+                    Logger::Log(
                                 'Controller2 search done',
                                 LogLevel::DEBUG
                                 );
-                                
+
                     $this->_app->stop( );
                 }
             }

@@ -1,0 +1,15 @@
+{
+    "name": "SLIM",
+    "version": "2.6.3",
+    "files": [
+        {
+            "path": "Assistants/vendor/Slim/",
+            "type": "git",
+            "params": {
+                "branch": "master",
+                "URL": "https://github.com/tilluhlig/Slim",
+                "path": "Assistants/vendor/Slim/"
+            }
+        }
+    ]
+}

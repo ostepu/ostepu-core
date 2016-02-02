@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -34,7 +34,7 @@ class FSPdf
                                            TRUE
                                            );
         }
-        
+       
         $component = new Model('pdf', dirname(__FILE__), $this);
         $this->_component=$component;
         $component->run();
@@ -54,16 +54,16 @@ class FSPdf
     public function addPdfPermanent( $callName, $input, $params = array() )
     {
         $name = sha1( $input->getText() );
-        
+       
         // generate pdf
-        $filePath = FSPdf::generateFilePath( 
+        $filePath = FSPdf::generateFilePath(
                                             $params['folder'],
                                             $name
                                             );
-                                           
+                                          
         if (!file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
             FSPdf::generatepath( $this->config['DIR']['files'].'/'.dirname( $filePath ) );
-            
+           
             $result = FSPdf::createPdf($input);
 
             // writes the file to filesystem
@@ -73,70 +73,74 @@ class FSPdf
                           );
 
             if ($file){
-                fwrite( 
+                fwrite(
                        $file,
                        $result
                        );
                 fclose( $file );
-              
+             
             }else{
                 $fileObject = new File( );
                 $fileObject->addMessage("Datei konnte nicht im Dateisystem angelegt werden.");
                 $fileObject->setStatus(409);
-                Logger::Log( 
+                Logger::Log(
                         'POST postPdf failed',
                         LogLevel::ERROR
                         );
                 return Model::isProblem($fileObject);
             }
-        }        
-                               
+        }       
+                              
         if (isset($params['filename'])){
             if (isset($result)){
                 $this->_app->response->setBody($result);
            	    Model::header('Content-Length',strlen($result));
+                Model::header('Content-Type','application/pdf');
+                Model::header('Content-Disposition',"filename=\"".$params['filename']."\"");
+                Model::header('Accept-Ranges','none');
+                return Model::isCreated();
             } else {
                 readfile($this->config['DIR']['files'].'/'.$filePath);
            	    Model::header('Content-Length',filesize($this->config['DIR']['files'].'/'.$filePath));
+                Model::header('Content-Type','application/pdf');
+                Model::header('Content-Disposition',"filename=\"".$params['filename']."\"");
+                Model::header('Accept-Ranges','none');
+                return Model::isCreated(file_get_contents($this->config['DIR']['files'].'/'.$filePath));
             }
-            
-            Model::header('Content-Type','application/pdf');
-            Model::header('Content-Disposition',"filename=\"".$params['filename']."\"");
-            Model::header('Accept-Ranges','none');
-            return Model::isCreated();
+           
         } else {
             $pdfFile = new File( );
             $pdfFile->setStatus(201);
             $pdfFile->setAddress( $filePath );
-            $pdfFile->setMimeType("application/pdf");
-            
+            $pdfFile->setMimeType('application/pdf');
+           
             if (file_exists($this->config['DIR']['files'].'/'.$filePath)){
                 $pdfFile->setFileSize( filesize( $this->config['DIR']['files'].'/'.$filePath ) );
-                $hash = sha1(file_get_contents($this->config['DIR']['files'].'/'.$filePath));   
+                $hash = sha1(file_get_contents($this->config['DIR']['files'].'/'.$filePath));  
                 $pdfFile->setHash( $hash );
             }
             return Model::isCreated($pdfFile);
         }
     }
-    
+   
     public function addPdfFromFile( $callName, $input, $params = array() )
     {
         $name = sha1($params['type'].'/'.$params['a'].'/'.$params['b'].'/'.$params['c'].'/'.$params['file']);
-        $targetPath = FSPdf::generateFilePath( 
+        $targetPath = FSPdf::generateFilePath(
                                             $params['folder'],
                                             $name
                                             );
-                                            
+                                           
         if (!file_exists( $this->config['DIR']['files'].'/'.$targetPath ) ){
             $sourcePath = implode( '/',array_slice(array($params['type'],$params['a'],$params['b'],$params['c'],$params['file']),0));
-            
+           
             FSPdf::generatepath( $this->config['DIR']['files'].'/'.dirname( $targetPath ) );
             $body = file_get_contents($this->config['DIR']['files'].'/'.$sourcePath);
-            
+           
             $data = new Pdf();
             $data->setText($body);
             $result = FSPdf::createPdf($data);
-            
+           
             // writes the file to filesystem
             $file = fopen(
                           $this->config['DIR']['files'].'/'.$targetPath,
@@ -144,68 +148,68 @@ class FSPdf
                           );
 
             if ($file){
-                fwrite( 
+                fwrite(
                        $file,
                        $result
                        );
                 fclose( $file );
-              
+             
             }else{
                 $fileObject = new File( );
                 $fileObject->addMessage("Datei konnte nicht im Dateisystem angelegt werden.");
                 $fileObject->setStatus(409);
-                Logger::Log( 
+                Logger::Log(
                         'POST postPdf failed',
                         LogLevel::ERROR
                         );
                 return Model::isProblem($fileObject);
             }
         }
-        
+       
         $pdfFile = new File( );
         $pdfFile->setStatus(201);
         $pdfFile->setAddress( $targetPath );
-        $pdfFile->setMimeType("application/pdf");
-        
+        $pdfFile->setMimeType('application/pdf');
+       
         if (file_exists($this->config['DIR']['files'].'/'.$targetPath)){
             $pdfFile->setFileSize( filesize( $this->config['DIR']['files'].'/'.$targetPath ) );
-            $hash = sha1(file_get_contents($this->config['DIR']['files'].'/'.$targetPath));   
+            $hash = sha1(file_get_contents($this->config['DIR']['files'].'/'.$targetPath));  
             $pdfFile->setHash( $hash );
         }
-        
+       
         return Model::isCreated($pdfFile);
     }
-    
+   
     public function addPdfFromFile2( $callName, $input, $params = array() )
     {
         // convert all file objects to pdf's
     }
-    
+   
     public function addPdfFromFile3( $callName, $files, $params = array() )
     {
         // merge all file objects to one pdf
- 
+
         $hashArray = array( );
         foreach ( $files as $part ){
             if ( $part->getBody( ) !== null ){
                 $hashArray[] = $part->getBody( );
-                
-            } else 
+               
+            } else
                 $hashArray[] = $part->getAddress( ) . $part->getDisplayName( );
         }
-      
-        $name = sha1( implode( 
+     
+        $name = sha1( implode(
                               "\n",
                               $hashArray
                               ) );
 
-        $targetPath = FSPdf::generateFilePath( 
+        $targetPath = FSPdf::generateFilePath(
                                             $params['folder'],
                                             $name
                                             );
 
         if (!file_exists( $this->config['DIR']['files'].'/'.$targetPath ) ){
-        
+       
             $body="";
             foreach($files as $part){
                 if ( $part->getBody( ) !== null ){
@@ -215,8 +219,8 @@ class FSPdf
                     $file = $this->config['DIR']['files']. '/' . $part->getAddress( );
                     if (file_exists($file)){
                         $text = file_get_contents($file);
-                        if (mb_detect_encoding($text, 'UTF-8', true) === false) { 
-                            $text = utf8_encode($text); 
+                        if (mb_detect_encoding($text, 'UTF-8', true) === false) {
+                            $text = utf8_encode($text);
                         }
                         $text = htmlentities(htmlentities($text));
                         $body.= $text.'<br>';
@@ -227,11 +231,11 @@ class FSPdf
             }
         ///echo $body;
             FSPdf::generatepath( $this->config['DIR']['files'].'/'.dirname( $targetPath ) );
-            
+           
             $data = new Pdf();
             $data->setText($body);
             $result = FSPdf::createPdf($data);
-            
+           
             // writes the file to filesystem
             $file = fopen(
                           $this->config['DIR']['files'].'/'.$targetPath,
@@ -239,32 +243,32 @@ class FSPdf
                           );
 
             if ($file){
-                fwrite( 
+                fwrite(
                        $file,
                        $result
                        );
                 fclose( $file );
-              
+             
             }else{
                 $fileObject = new File( );
-                $fileObject->addMessage("Datei konnte nicht im Dateisystem angelegt werden.");
+                $fileObject->addMessage('Datei konnte nicht im Dateisystem angelegt werden.');
                 $fileObject->setStatus(409);
-                Logger::Log( 
+                Logger::Log(
                         'POST postPdf failed',
                         LogLevel::ERROR
                         );
                 return Model::isProblem($fileObject);
             }
         }
-        
+       
         $pdfFile = new File( );
         $pdfFile->setStatus(201);
         $pdfFile->setAddress( $targetPath );
-        $pdfFile->setMimeType("application/pdf");
-        
+        $pdfFile->setMimeType('application/pdf');
+       
         if (file_exists($this->config['DIR']['files'].'/'.$targetPath)){
             $pdfFile->setFileSize( filesize( $this->config['DIR']['files'].'/'.$targetPath ) );
-            $hash = sha1(file_get_contents($this->config['DIR']['files'].'/'.$targetPath));   
+            $hash = sha1(file_get_contents($this->config['DIR']['files'].'/'.$targetPath));  
             $pdfFile->setHash( $hash );
         }
         return Model::isCreated($pdfFile);
@@ -282,25 +286,24 @@ class FSPdf
     {
         $path = array($params['folder'],$params['a'],$params['b'],$params['c'], $params['file']);
 
-        $filePath = implode( 
+        $filePath = implode(
                             '/',
-                            array_slice( 
+                            array_slice(
                                         $path,
                                         0
                                         )
                             );
 
-        if ( strlen( $this->config['DIR']['files'].'/'.$filePath ) > 1 && 
+        if ( strlen( $this->config['DIR']['files'].'/'.$filePath ) > 1 &&
              file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
 
             // the file was found
             Model::header('Content-Type','application/pdf');
-            Model::header('Content-Disposition',"filename=\"".$params['filename']."\"");   
+            Model::header('Content-Disposition',"filename=\"".$params['filename']."\"");  
             Model::header('Content-Length',filesize($this->config['DIR']['files'].'/'.$filePath));
             Model::header('Accept-Ranges','none');
-            readfile( $this->config['DIR']['files'].'/'.$filePath );
-            return Model::isOk();
-            
+            return Model::isOk(file_get_contents($this->config['DIR']['files'].'/'.$filePath));
+           
         }
         return Model::isProblem();
     }
@@ -317,15 +320,15 @@ class FSPdf
     {
         $path = array($params['folder'],$params['a'],$params['b'],$params['c'], $params['file']);
 
-        $filePath = implode( 
+        $filePath = implode(
                             '/',
-                            array_slice( 
+                            array_slice(
                                         $path,
                                         0
                                         )
                             );
 
-        if ( strlen( $this->config['DIR']['files'].'/'.$filePath ) > 0 && 
+        if ( strlen( $this->config['DIR']['files'].'/'.$filePath ) > 0 &&
              file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
 
             // the file was found
@@ -333,9 +336,9 @@ class FSPdf
             $file->setAddress( $filePath );
             $file->setFileSize( filesize( $this->config['DIR']['files'].'/'.$filePath ) );
             $file->setHash( sha1_file( $this->config['DIR']['files'].'/'.$filePath ) );
-            $file->setMimeType("application/pdf");
+            $file->setMimeType('application/pdf');
             return Model::isOk($file);
-            
+           
         }
         return Model::isProblem(new File( ));
     }
@@ -352,15 +355,15 @@ class FSPdf
     {
         $path = array($params['folder'],$params['a'],$params['b'],$params['c'], $params['file']);
 
-        $filePath = implode( 
+        $filePath = implode(
                             '/',
-                            array_slice( 
+                            array_slice(
                                         $path,
                                         0
                                         )
                             );
 
-        if ( strlen( $filePath ) > 0 && 
+        if ( strlen( $filePath ) > 0 &&
              file_exists( $this->config['DIR']['files'] . '/' . $filePath ) ){
 
             // after the successful deletion, we want to return the file data
@@ -368,7 +371,7 @@ class FSPdf
             $file->setAddress( $filePath );
             $file->setFileSize( filesize( $this->config['DIR']['files'] . '/' . $filePath ) );
             $file->setHash( sha1_file( $this->config['DIR']['files'] . '/' . $filePath ) );
-            $file->setMimeType("application/pdf");
+            $file->setMimeType('application/pdf');
 
             // removes the file
             unlink( $this->config['DIR']['files'] . '/' . $filePath );
@@ -380,14 +383,14 @@ class FSPdf
 
             // the file is removed
             return Model::isCreated($file);
-            
+           
         } else {
 
             // file does not exist
             return Model::isProblem(new File( ));
         }
     }
-    
+   
     /**
      * Returns status code 200, if this component is correctly installed for the platform
      *
@@ -396,18 +399,18 @@ class FSPdf
      */
     public function getExistsPlatform( $callName, $input, $params = array() )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts GET GetExistsPlatform',
                     LogLevel::DEBUG
                     );
-                    
+                   
         if (!file_exists(dirname(__FILE__).'/config.ini')){
             return Model::isProblem();
         }
-       
-        return Model::isOk(); 
+      
+        return Model::isOk();
     }
-    
+   
     /**
      * Removes the component from the platform
      *
@@ -416,17 +419,17 @@ class FSPdf
      */
     public function deletePlatform( $callName, $input, $params = array() )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts DELETE DeletePlatform',
                     LogLevel::DEBUG
                     );
         if (file_exists(dirname(__FILE__).'/config.ini') && !unlink(dirname(__FILE__).'/config.ini')){
             return Model::isProblem();
         }
-        
+       
         return Model::isCreated();
     }
-    
+   
     /**
      * Adds the component to the platform
      *
@@ -435,49 +438,49 @@ class FSPdf
      */
     public function addPlatform( $callName, $input, $params = array() )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts POST AddPlatform',
                     LogLevel::DEBUG
                     );
-        
+       
         $file = dirname(__FILE__).'/config.ini';
         $text = "[DIR]\n".
                 "temp = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$input->getTempDirectory()))."\"\n".
                 "files = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$input->getFilesDirectory()))."\"\n";
-                
+               
         if (!@file_put_contents($file,$text)){
-            Logger::Log( 
+            Logger::Log(
                         'POST AddPlatform failed, config.ini no access',
                         LogLevel::ERROR
                         );
 
             return Model::isProblem();
-        }   
+        }  
 
         $platform = new Platform();
         $platform->setStatus(201);
-        
+       
         return Model::isCreated($platform);
     }
-    
+   
     /**
      * Creates a file path by splitting the hash.
      *
      * @param string $type The prefix of the file path.
      * @param string $hash The hash of the file.
      */
-    public static function generateFilePath( 
+    public static function generateFilePath(
                                             $type,
                                             $file
                                             )
     {
         if ( strlen( $file ) >= 4 ){
-            return $type . '/' . $file[0] . '/' . $file[1] . '/' . $file[2] . '/' . substr( 
+            return $type . '/' . $file[0] . '/' . $file[1] . '/' . $file[2] . '/' . substr(
                                                                                            $file,
                                                                                            3
                                                                                            );
-            
-        } else 
+           
+        } else
             return'';
     }
 
@@ -513,21 +516,21 @@ class FSPdf
      * possibly handle the file.
      * @param string $hash The hash of the file.
      */
-    public static function filterRelevantLinks( 
+    public static function filterRelevantLinks(
                                                $linkedComponents,
                                                $hash
                                                )
     {
         $result = array( );
         foreach ( $linkedComponents as $link ){
-            $in = explode( 
+            $in = explode(
                           '-',
                           $link->getRelevanz( )
                           );
             if ( count( $in ) < 2 ){
                 $result[] = $link;
-                
-            }elseif ( FSPdf::isRelevant( 
+               
+            }elseif ( FSPdf::isRelevant(
                                         $hash,
                                         $in[0],
                                         $in[1]
@@ -545,7 +548,7 @@ class FSPdf
      * @param string $_relevantBegin The minimum hash the component is responsible for.
      * @param string $_relevantEnd The maximum hash the component is responsible for.
      */
-    public static function isRelevant( 
+    public static function isRelevant(
                                       $hash,
                                       $relevant_begin,
                                       $relevant_end
@@ -553,43 +556,43 @@ class FSPdf
     {
 
         // to compare the begin and the end, we need an other form
-        $begin = hexdec( substr( 
+        $begin = hexdec( substr(
                                 $relevant_begin,
                                 0,
                                 strlen( $relevant_begin )
                                 ) );
-        $end = hexdec( substr( 
+        $end = hexdec( substr(
                               $relevant_end,
                               0,
                               strlen( $relevant_end )
                               ) );
 
         // the numeric form of the test hash
-        $current = hexdec( substr( 
+        $current = hexdec( substr(
                                   $hash,
                                   0,
                                   strlen( $relevant_end )
                                   ) );
 
-        if ( $current >= $begin && 
+        if ( $current >= $begin &&
              $current <= $end ){
             return true;
-            
-        } else 
+           
+        } else
             return false;
     }
-    
+   
     public static function createPdf($data)
     {
         require_once(dirname(__FILE__).'/_tcpdf_6.0.095/tcpdf_autoconfig.php');
         require_once(dirname(__FILE__).'/_tcpdf_6.0.095/tcpdf.php');
 
-        $pdf = new TCPDF( 
+        $pdf = new TCPDF(
                        ($data->getOrientation()!==null ? $data->getOrientation() : 'P'),
                        'mm',
                        ($data->getFormat()!==null ? $data->getFormat() : 'A4')
                        );
-                       
+                      
         $pdf->SetAutoPageBreak( true );
 
         $pdf->SetTitle($data->getTitle()!==null ? $data->getTitle() : '');
@@ -606,12 +609,12 @@ class FSPdf
         $pdf->WriteHTML($text);
 
         // stores the pdf binary data to $result
-        $result = $pdf->Output( 
+        $result = $pdf->Output(
                                '',
                                'S'
-                               ); 
+                               );
         return $result;
     }
 }
 
- 
+

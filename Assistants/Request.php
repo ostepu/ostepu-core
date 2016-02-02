@@ -7,7 +7,7 @@
  */ 
 
 include_once ( dirname( __FILE__ ) . '/Structures.php' );
-require_once( dirname(__FILE__) . '/CConfig.php' );
+include_once( dirname(__FILE__) . '/CConfig.php' );
 include_once( dirname(__FILE__) . '/Request/CreateRequest.php' );   
 include_once( dirname(__FILE__) . '/Request/MultiRequest.php' );   
 include_once( dirname(__FILE__) . '/Logger.php' );

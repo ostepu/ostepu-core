@@ -207,6 +207,8 @@
                 {"path": "/help/:language/setting/MaxStudentUploadSize/maxStudentUploadSizeA.png"},
                 {"path": "/help/:language/setting/MaxStudentUploadSize/maxStudentUploadSizeB.png"},
                 {},
+                {"path": "/help/:language/setting/GenerateDummyCorrectionsForTutorArchives/GenerateDummyCorrectionsForTutorArchivesDesc.md"},
+                {},
                 {"path": "/help/:language/page/common/accountSettings/password.md"},
                 {"path": "/help/:language/page/common/accountSettings/passwordA.png"},
                 {"path": "/help/:language/page/common/accountSettings/passwordB.png"},
@@ -284,7 +286,12 @@
                 {"path": "/help/:language/page/student/student/navigationD.png"},
                 {"path": "/help/:language/page/student/student/navigationE.png"},
                 {"path": "/help/:language/page/student/student/navigationF.png"},
-                {"path": "/help/:language/page/student/student/navigationG.png"}
+                {"path": "/help/:language/page/student/student/navigationG.png"},
+                {},
+                {"path": "/help/:language/page/common/courseSelect/courseSelect.md"},
+                {"path": "/help/:language/page/common/courseSelect/courseSelectA.png"},
+                {"path": "/help/:language/page/common/courseSelect/courseSelectB.png"},
+                {"path": "/help/:language/page/common/courseSelect/courseSelectC.png"}
             ]
         }
     ]
