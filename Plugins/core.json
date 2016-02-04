@@ -86,6 +86,7 @@
         {"conf": "logic/LTutor/Component.json"},
         {"conf": "DB/CUIHelp/Component.json"},
         {"conf": "DB/CControl/Component.json"},
+        {"conf":"DB/CSystem/Component.json"},
         {"conf": "---DB/CGate/Component.json"},
         {"conf": "DB/CAbstract/Component.json"},
         {"conf": "DB/CHelp/Component.json"},

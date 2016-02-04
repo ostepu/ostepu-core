@@ -551,4 +551,23 @@ class Einstellungen
         }
         return @mkdir($path, $mode);
     }
+    
+    public static function deleteDir($path)
+    {
+        // entfernt einen Ordner und zuvor alle enthaltenen Dateien
+        if (is_dir($path) === true) {
+            $files = array_diff(scandir($path), array('.', '..'));
+
+            foreach ($files as $file) {
+                self::deleteDir(realpath($path) . '/' . $file);
+            }
+            return rmdir($path);
+        }
+
+        // Datei entfernen
+        else if (is_file($path) === true) {
+            return unlink($path);
+        }
+        return false;
+    }
 }
