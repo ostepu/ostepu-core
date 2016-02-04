@@ -663,14 +663,14 @@ class LGetSite
         if ($courseid === null){
             $URL = $this->_getUser->getAddress().'/user/user/' . $userid;
             $answer = Request::custom('GET', $URL, array(), '');
-            $user = json_decode($answer['content'], true);
+            //$user = json_decode($answer['content'], true);
         } else {
             $URL = $this->_getCourseStatus->getAddress().'/coursestatus/course/'.$courseid.'/user/'.$userid;
             $answer = Request::custom('GET', $URL, array(), '');
-            $user = json_decode($answer['content'], true);
+            //$user = json_decode($answer['content'], true);
         }
 
-        $this->app->response->setBody(json_encode($user));
+        $this->app->response->setBody($answer['content']);
     }
 
     public function userWithCourseAndHash($userid, $courseid)
