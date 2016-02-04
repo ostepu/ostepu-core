@@ -1,85 +1,100 @@
 <?php
 
-class node extends Object implements JsonSerializable
+class node implements JsonSerializable
 {
-    
+
     /**
      * @var $id int Die eindeutige ID des Knotens.
      */
     public $id=null;
-    
+
     /**
      * @var $name string Der Name des Knotens.
      */
     public $name=null;
-    
+
     /**
      * @var $childs int[] Die IDs der Kinder dieses Knotens.
      */
     public $childs=array();
-    
+
     /**
      * @var $parent int Die ID des Vaters.
      */
-    public $parent=null;  
-    
-    
+    public $parent=null;
+
+
     /**
      * @var $executionTime int Die Ausführungszeit im Knoten in ms
      * Dieser Wert muss aus $beginTime und $endTime berechnet werden
      */
     public $executionTime=null;
-    
+
     /**
-     * @var $beginTime int Der Zeitstempel, bei dem der Knoten betreten wurde (in ms).
+     * @var $beginTime int Der Zeitstempel,
+     * bei dem der Knoten betreten wurde (in ms).
      */
     public $beginTime=null;
-    
+
     /**
-     * @var $endTime int Der Zeitstempel, bei dem der Knoten verlassen wurde (in ms).
+     * @var $endTime int Der Zeitstempel,
+     * bei dem der Knoten verlassen wurde (in ms).
      */
     public $endTime=null;
-    
-    
+
+
     /**
      * @var $result string Das Berechnungsergebnis des Knotens.
      */
     public $result=null;
-    
+
+    /**
+     * @var $input string Die Eingabe für den Knoten
+     */
+    public $input=null;
+
     /**
      * @var $resultHash string Der Hash von $result.
      */
     public $resultHash=null;
-    
+
     /**
-     * @var $nodeType string Der bestimmte Typ des Knotens (Arbeiter, Quelle, ...)
+     * @var $nodeType string Der bestimmte Typ des Knotens
+     * (Arbeiter, Quelle, ...)
      */
     public $nodeType=null;
-    
-    
-    
+
+
     /**
      * @var $parallelGroup int Die ID der Gruppe, zu welcher der Knoten gehört
-     * sofern er mit anderen Knoten in einer parallelen Anfrage ausgeführt wurde
+     * sofern er mit anderen Knoten in einer parallelen Anfrage
+     * ausgeführt wurde
      */
     public $parallelGroup=null;
-    
+
     /**
      * @var $method string Die HTTP Aufrufmethode des Knotens (GET, POST, ...)
      */
     public $method=null;
-    
+
     /**
      * @var $URI string Die aufgerufene URI
      * Bsp.: /user
      */
-    public $URI=null;    
-    
+    public $URI=null;
+    public $path=null;
+    public $mimeType=null;
+
+    /**
+     * @var $status Der HTTP-Status
+     */
+    public $status=null;
+
     /**
      * @var $label Hier kann für Berechnungen etwas vermerkt werden
      */
     public $label=null;
-    
+
     /**
      * Prüft, ob der Knoten ein Blatt/Quelle ist
      *
@@ -97,29 +112,57 @@ class node extends Object implements JsonSerializable
      */
     public function isRoot()
     {
-       return $this->parent === null ? true : false; 
+        return $this->parent === null ? true : false;
     }
-    
+
+    /**
+     * Fügt eine Kante an einen Knoten an
+     */
+    public function addEdge($newChildId)
+    {
+        if ($newChildId !== null) {
+            if (!in_array($newChildId, $this->childs)){
+                $this->childs[] = $newChildId;
+            }
+        }
+    }
+
+    public function generateUTag()
+    {
+        return md5($this->method.'_'.$this->URL);;
+    }
+
+    public function generateETag()
+    {
+        if (!is_string($this->content)) {
+            $this->content = json_encode($this->content);
+        }
+        return md5($this->content);
+    }
+
     /**
      * the constructor
      *
      * @param $data an assoc array with the object informations
      */
-    public function __construct( $data = array( ) )
+    public function __construct($data = array( ))
     {
-        if ( $data === null )
+        if ($data === null) {
             $data = array( );
+        }
 
-        foreach ( $data AS $key => $value ){
-            if ( isset( $key ) ){
-                $func = 'set' . strtoupper($key[0]).substr($key,1);
+        foreach ($data as $key => $value) {
+            if (isset($key)) {
+                $func = 'set' . strtoupper($key[0]).substr($key, 1);
                 $methodVariable = array($this, $func);
-                if (is_callable($methodVariable)){
+                if (is_callable($methodVariable)) {
                     $this->$func($value);
-                } else
+                } else {
                     $this->{$key} = $value;
+                }
             }
         }
+        return $this;
     }
 
     /**
@@ -129,17 +172,9 @@ class node extends Object implements JsonSerializable
      *
      * @return the json encoded object
      */
-    public static function encodeNode( $data, $extended=false )
+    public static function encodeNode($data, $extended = false)
     {
-        if (gettype($data) !== 'object'){
-            error_log('no object, '.gettype($data).' given');
-            return null;
-        }
-        if (get_class($data) !== 'Node'){
-            error_log('wrong type, '.get_class($data).' given, Node expected');
-            return null;
-        }
-        return json_encode( $data );
+        return json_encode($data);
     }
 
     /**
@@ -151,57 +186,85 @@ class node extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeNode( 
-                                      $data,
-                                      $decode = true
-                                      )
+    public static function decodeNode($data, $decode = true)
     {
-        if ( $decode && 
-             $data === null )
+        if ($decode && $data === null) {
             $data = '{}';
+        }
 
-        if ( $decode )
-            $data = json_decode( $data );
+        if ($decode) {
+            $data = json_decode($data);
+        }
 
-        if ( is_array( $data ) ){
+        if (is_array($data)) {
             $result = array( );
-            foreach ( $data AS $key => $value ){
-                $result[] = new Node( $value );
+            foreach ($data as $key => $value) {
+                $result[] = new node($value);
             }
             return $result;
-            
-        } else 
-            return new Node( $data );
+
+        } else {
+            return new node($data);
+        }
     }
-    
+
     /**
      * ???
      */
-    public function jsonSerialize( )
+    public function jsonSerialize()
     {
         $list = array( );
-        if ( $this->id !== null)
+        if ($this->id !== null) {
             $list['id'] = $this->id;
-        if ( $this->name !== null)
+        }
+        if ($this->name !== null) {
             $list['name'] = $this->name;
-        if ( $this->childs !== null && $this->childs !== array())
+        }
+        if ($this->childs !== null && $this->childs !== array()) {
             $list['childs'] = $this->childs;
-        if ( $this->parent !== null)
+        }
+        if ($this->parent !== null) {
             $list['parent'] = $this->parent;
-        if ( $this->executionTime !== null)
+        }
+        if ($this->executionTime !== null) {
             $list['executionTime'] = $this->executionTime;
-        if ( $this->result !== null)
+        }
+        if ($this->result !== null && !empty($this->result)) {
             $list['result'] = $this->result;
-        if ( $this->resultHash !== null)
+        }
+        if ($this->resultHash !== null) {
             $list['resultHash'] = $this->resultHash;
-        if ( $this->nodeType !== null)
+        }
+        if ($this->nodeType !== null) {
             $list['nodeType'] = $this->nodeType;
-        if ( $this->parallelGroup !== null)
+        }
+        if ($this->parallelGroup !== null) {
             $list['parallelGroup'] = $this->parallelGroup;
-        if ( $this->method !== null)
+        }
+        if ($this->method !== null) {
             $list['method'] = $this->method;
-        if ( $this->URI !== null)
+        }
+        if ($this->URI !== null) {
             $list['URI'] = $this->URI;
-        return array_merge($list,parent::jsonSerialize( ));
+        }
+        if ($this->status !== null) {
+            $list['status'] = $this->status;
+        }
+        if ($this->input !== null && !empty($this->input)) {
+            $list['input'] = $this->input;
+        }
+        if ($this->path !== null && !empty($this->path)) {
+            $list['path'] = $this->path;
+        }
+        if ($this->mimeType !== null && !empty($this->mimeType)) {
+            $list['mimeType'] = $this->mimeType;
+        }
+        if ($this->beginTime !== null && !empty($this->beginTime)) {
+            $list['beginTime'] = $this->beginTime;
+        }
+        if ($this->endTime !== null && !empty($this->endTime)) {
+            $list['endTime'] = $this->endTime;
+        }
+        return $list;
     }
 }

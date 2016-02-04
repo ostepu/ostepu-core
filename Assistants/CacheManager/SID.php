@@ -3,15 +3,29 @@
 class SID
 {
     /**
-     * @var int $currentBaseSID Die Anfangsadresse
+     * @var int $_currentBaseSID Die Anfangsadresse
      */
-    private static $currentBaseSID = 0;
-    
+    private static $_currentBaseSID = 0;
+
     /**
-     * @var int $maxSid Die letzte vergebene SID
+     * @var int $_maxSid Die letzte vergebene SID
      */
-    private static $maxSid = -1;
-    
+    private static $_maxSid = -1;
+
+    public static function isRoot()
+    {
+        $id = self::getSid();
+        if ($id === null || $id !== self::$_currentBaseSID) {
+            return false;
+        }
+        return true;
+    }
+
+    public static function getRoot()
+    {
+        return self::$_currentBaseSID;
+    }
+
     /**
      * Liefert die nächste eindeutige ID
      *
@@ -19,26 +33,47 @@ class SID
      */
     public static function getNextSid()
     {
-        $header = array_merge(array(),Request::http_parse_headers_short(headers_list()));
-        
+        $header = array_merge(
+            array(),
+            Request::http_parse_headers_short(headers_list())
+        );
+
         $id=null;
-        if (isset($header['Cachesid'])){
+        if (isset($header['Cachesid'])) {
             $id = intval($header['Cachesid']);
-           
-            if (self::$currentBaseSID !== $id)
+
+            if (self::$_currentBaseSID !== $id) {
                 return $id;
+            }
         }
-            
-        if ($id === self::$currentBaseSID) self::$currentBaseSID = self::$maxSid+1;
-        self::$maxSid=self::$maxSid+1;
-        return self::$maxSid;
+
+        if ($id === self::$_currentBaseSID) {
+            self::$_currentBaseSID = self::$_maxSid+1;
+        }
+        self::$_maxSid=self::$_maxSid+1;
+        return self::$_maxSid;
     }
-    
+
+    public static function getSid()
+    {
+        $header = array_merge(
+            array(),
+            Request::http_parse_headers_short(headers_list())
+        );
+
+        if (isset($header['Cachesid'])) {
+            $id = intval($header['Cachesid']);
+            return $id;
+        }
+
+        return null;
+    }
+
     /**
      * Setzt alle Daten auf den Standartwert zurück.
      */
     public static function reset()
     {
-        self::$maxSid = -1;
+        self::$_maxSid = -1;
     }
 }
