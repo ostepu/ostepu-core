@@ -208,6 +208,7 @@ class Installer
         $simple = false;
         $data = array();
         $tmp = array();
+        $eventFound = null;
 
         if (isset($_POST['data']))
             $data = $_POST['data'];
@@ -398,7 +399,7 @@ class Installer
                 $titleText=Installation::Get('main','title'.$selected_menu);
             }
 
-            echo "</head><body><div class='center'>";
+            echo "</head><body onload='load()'><div class='center'>";
 
             if (Einstellungen::$accessAllowed && $titleText!=='???'){
                 Installation::log(array('text'=>Installation::Get('main','pageTitle','default',array('titleText'=>$titleText))));
@@ -441,11 +442,13 @@ class Installer
                     if (isset($_POST['action']) && in_array($_POST['action'],$event['event'] )){
                         Installation::log(array('text'=>Installation::Get('main','segmentEventFound','default',array('segs'=>$segs,'action'=>$_POST['action']))));
                         $isSetEvent = true;
+                        $eventFound = $_POST['action'];
                     }
 
                     foreach ($event['event'] as $ev){
                         if (isset($_POST[$ev])){
                             $isSetEvent = true;
+                            $eventFound = $ev;
                             break;
                         }
                     }
@@ -551,11 +554,33 @@ class Installer
                 if (!isset($segs::$page) || $segs::$page===$selected_menu || (isset($segs::$installed) && $segs::$installed)){
                     if (!is_callable("{$segs}::show")) continue;
 
+                    if (!$console && !$simple){
+                        if (isset($segs::$onEvents) && $eventFound !== null) {
+                            foreach ($segs::$onEvents as $event){
+                                if (!isset($event['enabledInstall']) || $event['enabledInstall']) {
+                                    foreach($event['event'] as $ev){
+                                        if ($ev === $eventFound) {
+                                            echo '<a name="'.$ev.'" style="position:relative; top:-75px;">&nbsp;</a>';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     $result = (isset($segmentResults[$segs::$name]) ? $segmentResults[$segs::$name] : array());
                     $segs::show($console, $result, $data);
                 }
             }
             Installation::log(array('text'=>Installation::Get('main','endShowSegments')));
+        }
+
+        if (!$console && !$simple){
+            if ($eventFound !== null){
+                echo '<script type="text/javascript">function load(){window.location.hash="'.$eventFound.'";}</script>';
+            } else {
+
+            }
         }
 
         if (Einstellungen::$accessAllowed){
@@ -703,7 +728,7 @@ if (isset($_POST['data']['LOGGER']['logLevel'])){
 if (isset($_POST['data']['PL']['language'])){
     Language::loadLanguage($_POST['data']['PL']['language'], 'default', 'ini');
 } else {
-    Language::loadLanguage('de', 'default', 'ini');  
+    Language::loadLanguage('de', 'default', 'ini');
 }
 
 Installation::log(array('text'=>Installation::Get('main','beginInstance')));
