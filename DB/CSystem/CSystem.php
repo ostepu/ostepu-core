@@ -45,6 +45,6 @@ class CSystem
     public function getTimestamp( $callName, $input, $params = array())
     {
         // returns the currect timestamp
-        return Model::isOk(array('timestamp'=>time()));
+        return Model::isOk(array('timestamp'=>microtime(true)));
     }
 }
