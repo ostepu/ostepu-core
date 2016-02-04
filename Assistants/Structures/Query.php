@@ -315,7 +315,7 @@ class Query extends Object implements JsonSerializable
                     unset($value['request']);
                 }
                 if ( isset( $value['response'] ) ){
-                    $obj->setResponse( json_decode($value['response'],true) );
+                    $obj->setResponse( $value['response'] );
                     unset($value['response']);
                 }
                 if ( isset( $value['affectedRows'] ) ){
@@ -347,7 +347,7 @@ class Query extends Object implements JsonSerializable
             if ( isset( $data['request'] ) )
                 $obj->setRequest( $data['request'] );
             if ( isset( $data['response'] ) ){
-                $obj->setResponse( json_decode($data['response'],true) );
+                $obj->setResponse($data['response'] );
                     unset($data['response']);
             }
             if ( isset( $data['affectedRows'] ) )
@@ -375,7 +375,7 @@ class Query extends Object implements JsonSerializable
         if ( $this->request !== null )
             $list['request'] = $this->request;
         if ( $this->response !== array( ) )
-            $list['response'] = json_encode($this->response);
+            $list['response'] = $this->response;
         if ( $this->affectedRows !== null )
             $list['affectedRows'] = $this->affectedRows;
         if ( $this->insertId !== null )
