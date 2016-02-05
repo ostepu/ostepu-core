@@ -194,7 +194,7 @@ class CacheManager
 
             $mySID = SID::getSid();
             if ($mySID !== null && $mySID !== $targetSid) {
-                Logger::Log('addEdge: '.$mySID.'->'.$targetSid, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', false, LogLevel::DEBUG);
+                ////Logger::Log('addEdge: '.$mySID.'->'.$targetSid, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', false, LogLevel::DEBUG);
                 self::$tree->addEdge($mySID, $targetSid);
             }
         }
@@ -370,13 +370,13 @@ class CacheManager
                 $elem = self::$tree->getElementById(SID::getRoot());
                 @Einstellungen::deleteDir(dirname(__FILE__).'/../path/'.$elem->name);
                 @unlink(dirname(__FILE__).'/../path/'.$elem->name.'.html');
-                Logger::Log('deleteDir: '.dirname(__FILE__).'/../path/'.$elem->name, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', false, LogLevel::DEBUG);
+                ////Logger::Log('deleteDir: '.dirname(__FILE__).'/../path/'.$elem->name, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', false, LogLevel::DEBUG);
             }
 
-            Logger::Log('no tree', LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', false, LogLevel::DEBUG);
+            ////Logger::Log('no tree', LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', false, LogLevel::DEBUG);
             return;
         } else {
-            Logger::Log('tree found', LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', false, LogLevel::DEBUG);
+            ////Logger::Log('tree found', LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', false, LogLevel::DEBUG);
         }
 
         self::$tree = tree::decodeTree(self::$tree);

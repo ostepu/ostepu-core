@@ -112,7 +112,7 @@ class Request
 
                 foreach ($coms as $com){
                     if ($com->getPrefix() === null || $com->getLocalPath()==null || $com->getClassFile()==null || $com->getClassName()==null) {
-                        Logger::Log('nodata: '.$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+                        ////Logger::Log('nodata: '.$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
                         continue;
                     }
 
@@ -286,7 +286,7 @@ class Request
         if (!$done){
             // creates a custom request
 
-            Logger::Log("--".$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', true, LogLevel::DEBUG);
+            ////Logger::Log("--".$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', true, LogLevel::DEBUG);
 
             $ch = Request_CreateRequest::createCustom($method,$target,$header,$content, $authbool, $sessiondelete)->get();
             $content = curl_exec($ch);
@@ -307,7 +307,7 @@ class Request
             curl_close($ch);
         }
 
-        Logger::Log($target . ' ' . (round((microtime(true) - $begin),2)). 's', LogLevel::DEBUG, false, dirname(__FILE__) . '/../executionTime.log');
+        ////Logger::Log($target . ' ' . (round((microtime(true) - $begin),2)). 's', LogLevel::DEBUG, false, dirname(__FILE__) . '/../executionTime.log');
         return $result;
     }
 
