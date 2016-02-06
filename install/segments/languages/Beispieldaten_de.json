@@ -1,7 +1,7 @@
 {
     "samples": {
         "title": "Beispieldaten",
-        "description": "",
+        "description": "Hier werden die Befehle für Beispieldaten aufgerufen. Diese sollen hauptsächlich die Datenbank befüllen und für eine Belastung sorgen.",
         "createSamples": "Erzeugen",
         "createSamplesDesc": "Erstellt die Beispieldaten",
         "courses": "Wieviele Veranstaltungen?",

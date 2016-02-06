@@ -7,7 +7,7 @@
     "numberComponents": "Komponenten",
     "numberFiles": "Dateien",
     "size": "Größe",
-    "description": "",
+    "description": "Hier können die benötigten Pakete gewählt und der Dateien auf den aktuellen Stand gebracht werden. Dabei werden mitunter externe Projekte nachgeladen.",
     "packageDetails": "Packetdetails anzeigen",
     "install": "Aktualisieren"
 }}

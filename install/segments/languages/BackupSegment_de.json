@@ -1,7 +1,7 @@
 {
     "main": {
         "title": "Backup",
-        "description": ""
+        "description": "Es wird ein komprimiertes Archiv mit der Datenbank und dem Dateiverzeichnis (Einsendungen etc.) befüllt.<br>Achtung: die erstellten Abbilder können noch nicht direkt über den Installationsassistenten eingespielt werden."
     },
     "createImage": {
         "createImageDesc": "Erstellt ein Abbild der Plattform",

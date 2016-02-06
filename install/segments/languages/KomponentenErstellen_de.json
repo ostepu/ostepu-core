@@ -4,7 +4,7 @@
     "numberComponents": "Komponenten",
     "numberLinks": "Verknüpfungen",
     "noAccess": "Die Konfigurationsdatei konnte nicht geladen werden",
-    "description": "",
+    "description": "Dieser Breich sammelt die Komponentendaten der Pakete und trägt diese in die Datenbank ein, sodass sie im nachfolgenden Schritt initialisiert werden können.",
     "createTruncateQuery": "sql = $sql",
     "truncateQueryResult": "Resultat: $res",
     "createResetStatusQuery": "sql = $sql",
