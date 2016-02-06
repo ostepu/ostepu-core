@@ -108,7 +108,7 @@ class CHelp
                 $input = $this->umlaute($input);
                 $my_html = $parser->transform($input);
                 $contact = isset($this->config['HELP']['contactUrl']) ? $this->config['HELP']['contactUrl'] : null;
-                if (isset($contact)){
+                if (isset($contact) && trim($contact) !== ''){
                     $contact = '<a href="'.$contact.'">Kontakt</a>';
                 }
                 
