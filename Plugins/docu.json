@@ -1,0 +1,15 @@
+{
+    "name": "DOCU",
+    "version": "0.1",
+    "files": [
+        {
+            "path": "vendor/Docu/",
+            "type": "git",
+            "params": {
+                "branch": "master",
+                "URL": "https://github.com/ostepu/system-docu",
+                "path": "vendor/Docu/"
+            }
+        }
+    ]
+}
