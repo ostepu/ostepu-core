@@ -169,8 +169,6 @@ class Sandbox
         $profileerror = file_put_contents($newprofile, $this->profile);
         $treffer = array();
 
-        file_put_contents('php://stderr', print_r("wrwr", TRUE));
-
         if ($profileerror != false)
         {
             // open process /bin/sh
