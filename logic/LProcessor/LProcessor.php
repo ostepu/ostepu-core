@@ -705,10 +705,10 @@ class LProcessor
                     if ($process->getExercise()===null)
                         $process->setExercise($pro->getExercise());
                      
-                    $process->setParameter($pro->getParameter());
+                    /*$process->setParameter($pro->getParameter());
                     $process->setAttachment($pro->getAttachment());
                     $process->setTarget($pro->getTarget());
-                    $process->setWorkFiles($pro->getWorkFiles());
+                    $process->setWorkFiles($pro->getWorkFiles());*/
                         
 //echo Process::encodeProcess($process)."_______";// return;
 
@@ -716,16 +716,9 @@ class LProcessor
 //echo $result['content'].'_______';
                     if ( $result['status'] >= 200 && 
                          $result['status'] <= 299 ){
-                         $process = Process::decodeProcess( $result['content'] );
-
-                         if (isset($result['content'])){
-                            $content = Process::decodeProcess($result['content']); 
-                            //$submission->setStatus($content->getStatus());
-                            $submission = $process->getSubmission();
-                            if ($submission===null)$submission = $process->getRawSubmission();
-                            $submission->addMessages($content->getMessages());
-                        } 
-
+                         /*
+                          *  evaluating for response of postprocess is possible here
+                          */
                     } elseif ($result['status'] == 404) {
                         // skip if no postprocess command is found
                         continue;

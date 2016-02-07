@@ -68,6 +68,7 @@ class LOOP
     private $_deleteProcess = array( );
     private $_deleteCourse = array( );
     private $_getProcess = array( );
+    private $_postTestcase = array( );
 
     
     
@@ -102,6 +103,7 @@ class LOOP
         $this->_deleteCourse = CConfig::getLinks($conf->getLinks(),"deleteCourse");
         $this->_getProcess = CConfig::getLinks($conf->getLinks(),"getProcess"); // GET /link/exists/course/:courseid
         $this->_pdf = CConfig::getLinks($conf->getLinks(),"pdf");
+        $this->_postTestcase = CConfig::getLinks($conf->getLinks(),"postTestcase");
 
         
 
@@ -741,7 +743,33 @@ class LOOP
 
         // behandelt jede eingehende Einsendung
         foreach ( $process as $pro ){
-            
+
+            $configTestcases = Testcase::decodeTestcase($pro->getParameter());
+            $workingDir = $configTestcases[0]->getWorkDir();
+            $testcases  = array_slice($configTestcases, 1);
+
+            if (!empty($testcases)) {
+                foreach ($testcases as $test) {
+                    $test->setWorkDir($workingDir);
+                    $test->setStatus(0);
+                    $test->setProcess($pro);
+
+                    //file_put_contents('php://stderr', print_r(Testcase::encodeTestcase($test), TRUE));
+                }
+
+                $result = Request::routeRequest( 
+                                                'POST',
+                                                '/insert',
+                                                array(),
+                                                Testcase::encodeTestcase($testcases),
+                                                $this->_postTestcase
+                                               );
+
+                // checks the correctness of the query
+                if ( $result['status'] >= 200 && $result['status'] <= 299 ){
+                        
+                }
+            }
         }
     }
     
@@ -759,9 +787,6 @@ class LOOP
 
     /**
      * Copy a file, or recursively copy a folder and its contents
-     * @author      Aidan Lister <aidan@php.net>
-     * @version     1.0.1
-     * @link        http://aidanlister.com/2004/04/recursively-copying-directories-in-php/
      * @param       string   $source    Source path
      * @param       string   $dest      Destination path
      * @param       string   $permissions New folder creation permissions
