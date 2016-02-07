@@ -130,6 +130,16 @@ class LOOP
                                'addCourse'
                                )
                          );
+
+        // POST AddPlatform
+        // fügt die Komponente der Plattform hinzu (Daten kommen im Anfragekörper)
+        $this->app->post( 
+                         '/platform(/)',
+                         array( 
+                               $this,
+                               'addPlatform'
+                               )
+                         );
                          
         // DELETE DeleteCourse
         // entfernt die Komponente aus der Veranstaltung
@@ -138,6 +148,16 @@ class LOOP
                          array( 
                                $this,
                                'deleteCourse'
+                               )
+                         );
+
+        // DELETE DeleteCourse
+        // entfernt die Komponente aus der Veranstaltung
+        $this->app->delete( 
+                         '/platform(/)',
+                         array( 
+                               $this,
+                               'deletePlatform'
                                )
                          );
                          
@@ -150,6 +170,15 @@ class LOOP
                                'getExistsCourse'
                                )
                         );
+
+        // GET GetExistsPlatform
+        $this->app->get( 
+                         '/link/exists/platform',
+                         array( 
+                               $this,
+                               'getExistsPlatform'
+                               )
+                         );
 
         // run Slim
         $this->app->run();
@@ -289,6 +318,73 @@ class LOOP
         }
                                         
         $this->app->response->setStatus( 404 );
+    }
+
+    /**
+     * Returns status code 200, if this component is correctly installed for the platform
+     *
+     * Called when this component receives an HTTP GET request to
+     * /link/exists/platform.
+     */
+    public function getExistsPlatform( )
+    {
+        Logger::Log( 
+                    'starts GET GetExistsPlatform',
+                    LogLevel::DEBUG
+                    );
+                    
+        if (!file_exists(dirname(__FILE__).'/config.ini')){
+            $this->app->response->setStatus( 409 );
+            $this->app->stop();
+        }
+       
+        $this->app->response->setStatus( 200 );
+    }
+
+    /**
+     * Removes the component from the platform
+     *
+     * Called when this component receives an HTTP DELETE request to
+     * /platform.
+     */
+    public function deletePlatform( )
+    {
+        Logger::Log( 
+                    'starts DELETE DeletePlatform',
+                    LogLevel::DEBUG
+                    );
+        if (file_exists(dirname(__FILE__).'/config.ini') && !unlink(dirname(__FILE__).'/config.ini')){
+            $this->app->response->setStatus( 409 );
+            $this->app->stop();
+        }
+        
+        $this->app->response->setStatus( 201 );
+    }
+
+    /**
+     * Adds the component to the platform
+     *
+     * Called when this component receives an HTTP POST request to
+     * /platform.
+     */
+    public function addPlatform( )
+    {
+        $body = $this->app->request->getBody();
+        
+        $platform = Platform::decodePlatform($body);
+
+        $file = dirname(__FILE__).'/config.ini';
+        $text = "[DIR]\n".
+                "temp = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$platform->getTempDirectory()))."\"\n".
+                "files = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$platform->getFilesDirectory()))."\"\n";
+                
+        if (!@file_put_contents($file,$text)){
+
+            $this->app->response->setStatus( 409 );
+            $this->app->stop();
+        }  
+
+        $this->app->response->setStatus( 201 );
     }
    
     /**
@@ -729,6 +825,8 @@ class LOOP
            
         $body = $this->app->request->getBody();
         $process = Process::decodeProcess($body);
+
+        file_put_contents('php://stderr', print_r($process, TRUE));
         
         // always been an array
         // es ist einfacher, wenn man sicherstellt, dass die Eingabedaten als Liste für foreach verarbeitet

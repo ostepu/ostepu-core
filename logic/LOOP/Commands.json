@@ -1,7 +1,43 @@
 [
-    {    "method":"post", "path":"/process" },
-    {    "method":"post", "path":"/postprocess" },
-    {    "method":"post", "path":"/course" },
-    {    "method":"delete", "path":"/course/:courseid" },
-    {    "method":"get", "path":"/link/exists/course/:courseid" }
+    {    
+        "method":"post",
+        "path":"/process"
+    },
+    {    
+        "method":"post",
+        "path":"/postprocess"
+    },
+    {    
+        "method":"post",
+        "path":"/course"
+    },
+    {    
+        "method":"delete",
+        "path":"/course/:courseid" 
+    },
+    {    
+        "method":"get",
+        "path":"/link/exists/course/:courseid"
+    },
+    {
+        "name": "addPlatform",
+        "outputType": "Platform",
+        "inputType": "Platform",
+        "method": "POST",
+        "path": "/platform"
+    },
+    {
+        "name": "deletePlatform",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/platform"
+    },
+    {
+        "name": "getExistsPlatform",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "GET",
+        "path": "/link/exists/platform"
+    }
 ]
