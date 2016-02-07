@@ -87,6 +87,15 @@ class DBOOP
                                )
                          );
 
+        // POST insert
+        $this->_app->post( 
+                         '(/:pre)/insert(/)',
+                         array( 
+                               $this,
+                               'insertTestcase'
+                               )
+                         );
+
         // run Slim
         $this->_app->run( );
     }
@@ -178,14 +187,105 @@ class DBOOP
     }
 
     /**
+     * Adds a Testcase to the 
+     *
+     * Called when this component receives an HTTP POST request to
+     * (/:pre)/course/:courseid(/).
+     *
+     * @param int $pre A optional prefix for the Exercise table.
+     */
+    public function insertTestcase( $pre='' )
+    {
+        //file_put_contents('php://stderr', print_r("------TTTTTTEEEEEEESSSSSSTTTTTT---------", TRUE));
+        $this->loadConfig($pre);
+        $pre = ($pre === '' ? '' : '_') . $pre;
+        
+        Logger::Log( 
+                    'starts POST insertTestcase',
+                    LogLevel::DEBUG
+                    );
+
+        // decode the received course data, as an object
+        $insert = Testcase::decodeTestcase( $this->_app->request->getBody( ) );
+        $pre = DBJson::mysql_real_escape_string( $pre );
+        
+        // always been an array
+        $arr = true;
+        if ( !is_array( $insert ) ){
+            $insert = array( $insert );
+            $arr = false;
+        }
+
+        // this array contains the indices of the inserted objects
+        $res = array( );
+        foreach ( $insert as $in ){
+            // starts a query, by using a given file
+
+            //cast process
+            $in->setProcess(Process::decodeProcess($in->getProcess(),false));
+
+            //set submission
+            if ($in->getSubmission() === null){
+                if ($in->getProcess()->getSubmission() !== null){
+                    $mysubmission = clone $in->getProcess()->getSubmission();
+                    $in->getProcess()->setSubmission(null);
+                    $in->setSubmission($mysubmission);
+                } elseif ($in->getProcess()->getRawSubmission() !== null){
+                    $mysubmission = clone $in->getProcess()->getRawSubmission();
+                    $in->getProcess()->setSubmission(null);
+                    $in->setSubmission($mysubmission);
+                } else {
+                    //Testcases können nicht ohne Submission erstellt werden, eine Fehler-Ausgabe ist nicht nötig 
+                    continue;
+                } 
+            }
+            
+            $result = DBRequest::getRoutedSqlFile( 
+                                                  $this->query,
+                                                  dirname(__FILE__) . '/Sql/AddTestcase.sql',
+                                                  array( 'object' => $in,
+                                                         'pre' => $pre)
+                                                  );
+
+            // checks the correctness of the query
+            if ( $result['status'] >= 200 && 
+                 $result['status'] <= 299 ){
+                $queryResult = Query::decodeQuery( $result['content'] );
+
+                $res[] = $in;
+                $this->_app->response->setStatus( 201 );
+                if ( isset( $result['headers']['Content-Type'] ) )
+                    $this->_app->response->headers->set( 
+                                                        'Content-Type',
+                                                        $result['headers']['Content-Type']
+                                                        );
+                
+            } else {
+                Logger::Log( 
+                            'POST AddCourse failed',
+                            LogLevel::ERROR
+                            );
+                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+                $this->_app->response->setBody( Testcase::encodeTestcase( $res ) );
+                $this->_app->stop( );
+            }
+        }
+
+        if ( !$arr && 
+             count( $res ) == 1 ){
+            $this->_app->response->setBody( Testcase::encodeTestcase( $res[0] ) );
+            
+        } else 
+            $this->_app->response->setBody( Testcase::encodeTestcase( $res ) );
+    }
+
+    /**
      * Adds the component to a course
      *
      * Called when this component receives an HTTP POST request to
-     * (/:preChoice(/:preForm(/:preExercise)))/course(/).
+     * (/:pre)/course/:courseid(/).
      *
-     * @param int $preChoice A optional prefix for the Choice table.
-     * @param int $preForm A optional prefix for the Form table.
-     * @param int $preExercise A optional prefix for the Exercise table.
+     * @param int $pre A optional prefix for the Exercise table.
      */
     public function addCourse( $pre='' )
     {

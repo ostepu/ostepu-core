@@ -218,14 +218,14 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
             $this->addInsertData( 
                                  $values,
                                  'OOP_input',
-                                 DBJson::mysql_real_escape_string( $this->input )
+                                 DBJson::mysql_real_escape_string( json_encode( $this->input ) )
                                  );
 
         if ( $this->output !== null )
             $this->addInsertData( 
                                  $values,
                                  'OOP_output',
-                                 DBJson::mysql_real_escape_string( $this->output )
+                                 DBJson::mysql_real_escape_string( json_encode( $this->output ) )
                                  );
 
         if ( $this->status !== null )
@@ -239,14 +239,14 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
             $this->addInsertData( 
                                  $values,
                                  'PRO_id',
-                                 DBJson::mysql_real_escape_string( $this->process )
+                                 DBJson::mysql_real_escape_string( $this->process->getObjectIdFromProcessId() )
                                  );
 
         if ( $this->runOutput !== null )
             $this->addInsertData( 
                                  $values,
                                  'OOP_runOutput',
-                                 DBJson::mysql_real_escape_string( $this->runOutput )
+                                 DBJson::mysql_real_escape_string( json_encode( $this->runOutput ) )
                                  );
 
         if ( $this->workDir != null )
@@ -260,7 +260,7 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
              $this->submission->getId( ) !== null )
             $this->addInsertData( 
                                  $values,
-                                 'S_id',
+                                 'OOP_submission',
                                  DBJson::mysql_real_escape_string( $this->submission->getId( ) )
                                  );
 
