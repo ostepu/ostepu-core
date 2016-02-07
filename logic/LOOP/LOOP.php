@@ -743,31 +743,33 @@ class LOOP
 
         // behandelt jede eingehende Einsendung
         foreach ( $process as $pro ){
+            if ($pro->getStatus() != 409){
 
-            $configTestcases = Testcase::decodeTestcase($pro->getParameter());
-            $workingDir = $configTestcases[0]->getWorkDir();
-            $testcases  = array_slice($configTestcases, 1);
+                $configTestcases = Testcase::decodeTestcase($pro->getParameter());
+                $workingDir = $configTestcases[0]->getWorkDir();
+                $testcases  = array_slice($configTestcases, 1);
 
-            if (!empty($testcases)) {
-                foreach ($testcases as $test) {
-                    $test->setWorkDir($workingDir);
-                    $test->setStatus(0);
-                    $test->setProcess($pro);
+                if (!empty($testcases)) {
+                    foreach ($testcases as $test) {
+                        $test->setWorkDir($workingDir);
+                        $test->setStatus(0);
+                        $test->setProcess($pro);
 
-                    //file_put_contents('php://stderr', print_r(Testcase::encodeTestcase($test), TRUE));
-                }
+                        //file_put_contents('php://stderr', print_r(Testcase::encodeTestcase($test), TRUE));
+                    }
 
-                $result = Request::routeRequest( 
-                                                'POST',
-                                                '/insert',
-                                                array(),
-                                                Testcase::encodeTestcase($testcases),
-                                                $this->_postTestcase
-                                               );
+                    $result = Request::routeRequest( 
+                                                    'POST',
+                                                    '/insert',
+                                                    array(),
+                                                    Testcase::encodeTestcase($testcases),
+                                                    $this->_postTestcase
+                                                   );
 
-                // checks the correctness of the query
-                if ( $result['status'] >= 200 && $result['status'] <= 299 ){
-                        
+                    // checks the correctness of the query
+                    if ( $result['status'] >= 200 && $result['status'] <= 299 ){
+                            
+                    }
                 }
             }
         }
