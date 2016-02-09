@@ -31,6 +31,11 @@ class LOOP
     private $_conf=null;
 
     /**
+     * @var ini $iniconfig the ini config data which stores temp and file dirs
+     */
+    private $iniconfig=null;
+
+    /**
      * @var string $_prefix the prefix, the class works with
      */
     private static $_prefix = "process";
@@ -80,6 +85,13 @@ class LOOP
      */
     public function __construct()
     {
+        if (file_exists(dirname(__FILE__).'/config.ini')){
+            $this->iniconfig = parse_ini_file(
+                                           dirname(__FILE__).'/config.ini',
+                                           TRUE
+                                           );
+        }
+
         // runs the CConfig
         $com = new CConfig( LOOP::getPrefix( ) . ',course,link', dirname(__FILE__) );
 
@@ -111,7 +123,7 @@ class LOOP
         $this->app->map('/'.$this->getPrefix().'(/)',
                         array($this, 'postProcess'))->via('POST');
 
-         // POST saveTestcases
+        // POST saveTestcases
         // erstellt Testcases (Daten kommen im Anfragekörper)
         $this->app->post( 
                          '/postprocess(/)',
@@ -797,6 +809,8 @@ class LOOP
                     // nachdem die Einsendung bearbeitet wurde, kann das temporäre
                     // Verzeichnis mit Inhalt entfernt werden
                     //$this->deleteDir($filePath);
+                    $newfolder = basename($filePath);
+                    $this->xcopy($filePath, $this->iniconfig['DIR']['temp'].'/'.$newfolder,0777);
                     
                     // das Prozessobjekt kann nun zur Ausgabe hinzugefügt werden
                     $res[] = $pro;          
@@ -804,6 +818,8 @@ class LOOP
                 }
             }                             
         }
+
+
 
         // wenn nur ein einzelnes Objekt als Eingabe kam, wir auch nur ein Einzelobjekt
         // zurückgegeben, ansonsten eine Liste
@@ -913,6 +929,7 @@ class LOOP
         // Make destination directory
         if (!is_dir($dest)) {
             mkdir($dest, $permissions);
+            chmod($dest, $permissions);
         }
 
         // Loop through the folder
