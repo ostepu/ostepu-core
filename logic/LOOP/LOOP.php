@@ -658,6 +658,8 @@ class LOOP
                                         $text.=$out."\n";
                                     }
 
+                                    $text = trim($text);
+
                                     if (!is_null($showErrorsEnabled) && $showErrorsEnabled == "1")
                                     {
                                         $pro->addMessage($text);
@@ -730,6 +732,8 @@ class LOOP
                                         $text.=$out."\n";
                                     }
                                     
+                                    $text = trim($text);
+
                                     // die fertige Fehlermeldung dem Prozessobjekt übergeben    
                                     if (!is_null($showErrorsEnabled) && $showErrorsEnabled == "1")
                                     {
