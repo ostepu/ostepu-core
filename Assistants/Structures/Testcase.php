@@ -190,7 +190,7 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
                      'PRO_id' => 'process',
                      'OOP_runOutput' => 'runOutput',
                      'OOP_workDir' => 'workDir',
-                     'OOP_submission' => 'submission'
+                     'OOP_submission' => 'submissionId'
                      );
     }
 
@@ -291,7 +291,9 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
                     $this->{$key} = File::decodeFile($value,false);
                 } else if ( $key == 'submission' ){
                     $this->{$key} = Submission::decodeSubmission($value,false);   
-                } else {
+                } else if ( $key == 'process' ){
+                    $this->{$key} = Process::decodeProcess($value,false);   
+                }else {
                     $func = 'set' . strtoupper($key[0]).substr($key,1);
                     $methodVariable = array($this, $func);
                     if (is_callable($methodVariable)){
@@ -324,7 +326,20 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
 
         if ( $decode )
             $data = json_decode( $data );
-        if ( is_array( $data ) ){
+
+        $isArray = true;
+        if ( !$decode ){
+            if ($data !== null){
+                reset($data);
+                if (current($data)!==false && !is_int(key($data))) {
+                    $isArray = false;
+                }
+            } else {
+               $isArray = false; 
+            }
+        }
+
+        if ( $isArray && is_array( $data ) ){
             $result = array( ); // erzeugt eine Liste von Objekten
             foreach ( $data AS $key => $value ){
                 $result[] = new Testcase( $value );
@@ -360,6 +375,8 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
             $list['file'] = $this->file;
         if ( $this->submission !== null && $this->submission !== array())
             $list['submission'] = $this->submission;
+        if ( isset($this->submissionId) && $this->submissionId !== null && $this->submissionId !== array())
+            $list['submissionId'] = $this->submissionId;
         if ( $this->errorsEnabled !== null )
             $list['errorsEnabled'] = $this->errorsEnabled;
         
@@ -374,43 +391,88 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
                                            $singleResult = false,
                                            $TestcaseExtension = '',
                                            $SubmissionExtension = '',
+                                           $ProcessExtension = '',
                                            $isResult = true
                                           )
     {
         // generates an assoc array of files by using a defined list of
         // its attributes
 
-        $testcases = DBJson::getResultObjectsByAttributes( 
+        $testcases = DBJson::getObjectsByAttributes( 
                                                     $data,
                                                     Testcase::getDBPrimaryKey( ),
                                                     Testcase::getDBConvert( ),
                                                     $TestcaseExtension
                                                     );
 
-        // generates an assoc array of a submission by using a defined
-        // list of its attributes
-        $submissions = DBJson::getObjectsByAttributes( 
-                                                      $data,
-                                                      Submission::getDBPrimaryKey( ),
-                                                      Submission::getDBConvert( ),
-                                                      $SubmissionExtension
-                                                      );
+        $processes = DBJson::getObjectsByAttributes( 
+                                                    $data,
+                                                    Process::getDBPrimaryKey( ),
+                                                    Process::getDBConvert( ),
+                                                    $ProcessExtension.'2'
+                                                    );
+
+        foreach ($processes as $key2 => $process) {
+            foreach ($process as $key => $value) {
+                   if ($key == Process::getDBConvert( )['E_exercise']) {
+                        //file_put_contents('php://stderr', print_r("FFFFFFFFFFFFFFFFFFFFFFFFFFFFF\n".Process::getDBConvert( )['E_exercise'].'Id', TRUE));
+                        $processes[$key2][Process::getDBConvert( )['E_exercise'].'Id'] = $value;
+                        unset($processes[$key2][Process::getDBConvert( )['E_exercise']]);
+                   }
+                   if ($key == Process::getDBConvert( )['CO_target']) {
+                        $processes[$key2][Process::getDBConvert( )['CO_target'].'Id'] = $value;
+                        unset($processes[$key2][Process::getDBConvert( )['CO_target']]);
+                   }
+               }   
+        }
+        
 
         // concatenates the testcases and the associated submissions
-        $res = DBJson::concatObjectListsSingleResult( 
+        $res = DBJson::concatObjectListResult( 
                                                      $data,
-                                                     $res,
+                                                     $testcases,
                                                      Testcase::getDBPrimaryKey( ),
-                                                     Testcase::getDBConvert( )['OOP_submission'],
-                                                     $submissions,
-                                                     Submission::getDBPrimaryKey( ),
-                                                     $SubmissionExtension,
+                                                     Testcase::getDBConvert( )['PRO_id'],
+                                                     $processes,
+                                                     Process::getDBPrimaryKey( ),
+                                                     $ProcessExtension.'2',
                                                      $TestcaseExtension                                                     
                                                      );
 
+        // concatenates the testcases and the associated submissions
+        $res = DBJson::concatObjectListResult( 
+                                                     $data,
+                                                     $res,
+                                                     Testcase::getDBPrimaryKey( ),
+                                                     Testcase::getDBConvert( )['PRO_id'],
+                                                     $processes,
+                                                     Process::getDBPrimaryKey( ),
+                                                     $ProcessExtension.'2',
+                                                     $TestcaseExtension                                                     
+                                                     );
+        //file_put_contents('php://stderr', print_r($res, TRUE));
         if ($isResult){ 
             // to reindex
             $res = array_values( $res );
+            $res = Testcase::decodeTestcase($res,false);
+
+
+            /*file_put_contents('php://stderr', print_r(Testcase::decodeTestcase('[{
+    "testcaseId": "22",
+    "testcaseType": "java",
+    "input": "[[\"Text\",\"pups\"]]",
+    "output": "[\"Data\",{\"fileId\":\"158\",\"displayName\":\"Hallo.class\",\"address\":\"file\/2\/4\/9\/1a0ce36e5ed8c79802a0450d3a74e3584be12\",\"timeStamp\":\"1453042709\",\"fileSize\":\"412\",\"hash\":\"2491a0ce36e5ed8c79802a0450d3a74e3584be12\",\"mimeType\":\"application\/x-java-applet\"}]",
+    "status": "0",
+    "process": {
+        "processId": "2_3",
+        "exerciseId": "1",
+        "targetId": "50",
+        "parameter": "[{\"testcaseType\":\"compile\",\"input\":[\"java $file\"],\"file\":[{\"fileId\":\"158\",\"displayName\":\"Hallo.class\",\"address\":\"file\\\/2\\\/4\\\/9\\\/1a0ce36e5ed8c79802a0450d3a74e3584be12\",\"timeStamp\":\"1453042709\",\"fileSize\":\"412\",\"hash\":\"2491a0ce36e5ed8c79802a0450d3a74e3584be12\",\"mimeType\":\"application\\\/x-java-applet\"}],\"submission\":{\"file\":[]},\"errorsEnabled\":\"1\"},{\"testcaseType\":\"java\",\"input\":[[\"Text\",\"pups\"]],\"output\":[\"Data\",{\"fileId\":\"158\",\"displayName\":\"Hallo.class\",\"address\":\"file\\\/2\\\/4\\\/9\\\/1a0ce36e5ed8c79802a0450d3a74e3584be12\",\"timeStamp\":\"1453042709\",\"fileSize\":\"412\",\"hash\":\"2491a0ce36e5ed8c79802a0450d3a74e3584be12\",\"mimeType\":\"application\\\/x-java-applet\"}],\"submission\":{\"file\":[]}},{\"testcaseType\":\"java\",\"input\":[[\"Text\",\"ete\"]],\"output\":[\"Data\",\"\"],\"submission\":{\"file\":[]}},{\"testcaseType\":\"java\",\"input\":[[\"Text\",\"sserser\"]],\"output\":[\"Data\",\"\"],\"submission\":{\"file\":[]}}]"
+    },
+    "workDir": "\/tmp\/30a0c47a0e1196e80239a8f06819a3884ef50a0e9324972",
+    "submissionId": "143"
+}]'), TRUE));*/
+            //$res = Testcase::decodeTestcase($res,false);
 
             if ( $singleResult == true ){
 
