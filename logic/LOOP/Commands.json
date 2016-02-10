@@ -39,5 +39,13 @@
         "inputType": "",
         "method": "GET",
         "path": "/link/exists/platform"
+    },
+    {    
+        "method":"get",
+        "path":"/start/:count"
+    },
+    {    
+        "method":"get",
+        "path":"/compute/:count"
     }
 ]

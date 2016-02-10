@@ -74,7 +74,8 @@ class LOOP
     private $_deleteCourse = array( );
     private $_getProcess = array( );
     private $_postTestcase = array( );
-
+    private $_selfLink = array( );
+    private $_popTestcase = array( );
     
     
     /**
@@ -116,7 +117,8 @@ class LOOP
         $this->_getProcess = CConfig::getLinks($conf->getLinks(),"getProcess"); // GET /link/exists/course/:courseid
         $this->_pdf = CConfig::getLinks($conf->getLinks(),"pdf");
         $this->_postTestcase = CConfig::getLinks($conf->getLinks(),"postTestcase");
-
+        $this->_selfLink = CConfig::getLinks($conf->getLinks(),"selfLink");
+        $this->_popTestcase = CConfig::getLinks($conf->getLinks(),"popTestcase");
         
 
         // POST PostProcess
@@ -180,6 +182,26 @@ class LOOP
                          array( 
                                $this,
                                'getExistsCourse'
+                               )
+                        );
+
+        // GET startCompute
+        // zum n-maligen Starten der Compute Funktion 
+        $this->app->get( 
+                         '/start/:count(/)',
+                         array( 
+                               $this,
+                               'startCompute'
+                               )
+                        );
+
+        // GET startCompute
+        // zum n-maligen Starten der Compute Funktion 
+        $this->app->get( 
+                         '/compute/:count(/)',
+                         array( 
+                               $this,
+                               'compute'
                                )
                         );
 
@@ -505,6 +527,103 @@ class LOOP
         
         // die bearbeiteten Veranstaltungen können nun zur Ausgabe hinzugefügt werden
         $this->app->response->setBody( Course::encodeCourse( $courses ) );
+    }
+
+    /**
+     * gives count of processes containing the string $name 
+     *
+     *@param string $name the searchstring 
+     *
+     * @return int count of processes
+     */
+    private static function countProcessesContaining($string)
+    {
+        $returnVal = shell_exec("ps aux|grep '".$string."'|grep -v grep|wc -l");
+        return $returnVal;
+    }
+
+    /**
+     * open website in background
+     *
+     *@param string $adress the url
+     *
+     */
+    private static function runInBackground($adress)
+    {
+        $proc_command = "wget ".$adress." -q -O - -b";
+        $proc = popen($proc_command, "r");
+        pclose($proc);
+    }
+
+    /**
+     * Starts the compute function.
+     *
+     * @param int $count Amount of Compute calls.
+     */
+    public function startCompute($count)
+    {
+        $adress = $this->_selfLink[0]->getAddress()."/compute/".$count;
+
+        for ($i=0; $i < $count; $i++) { 
+            $amountOfProcesses = LOOP::countProcessesContaining("wget ".$adress);
+
+            if ($amountOfProcesses < $count) {
+                LOOP::runInBackground($adress);
+            } else {
+                break;
+            }
+        }
+
+        $this->app->response->setStatus( 200 );
+    }
+
+    /**
+     * the compute function for testing testcases
+     *
+     * @param int $count Amount of Compute calls.
+     */
+    public function compute($count)
+    {
+        $adress = $this->_selfLink[0]->getAddress()."/start/".$count;
+
+        $result = Request::routeRequest( 
+                                        'GET',
+                                        '/pop',
+                                        array(),
+                                        '',
+                                        $this->_popTestcase
+                                        );
+
+        // checks the correctness of the query
+        if ( $result['status'] >= 200 && $result['status'] <= 299 ){
+            $testcase = Testcase::decodeTestcase($result['content']);
+
+            // check if workdir is available, if not copy it from portal temp directory
+            $myWorkDir = $testcase->getWorkDir();
+            $foldername = basename($myWorkDir);
+            $backupPath = $this->iniconfig['DIR']['temp'].'/'.$foldername;
+
+            if(!is_dir($myWorkDir)){
+                if(is_dir($backupPath)){
+                    $this->xcopy($backupPath, $myWorkDir,0777);
+                } else {
+                    $this->app->response->setStatus( 409 );
+                    $this->app->stop();
+                }
+            }
+
+            $myInputs = json_decode($testcase->getInput());
+            $myOutput = json_decode($testcase->getOutput());
+
+            
+
+            file_put_contents('php://stderr', print_r($myInputs, TRUE));
+            file_put_contents('php://stderr', print_r($myOutput, TRUE));
+        }
+
+
+
+        $this->app->response->setStatus( 200 );
     }
    
     /**

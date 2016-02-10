@@ -20,7 +20,9 @@
     {"name":"getProcess", "target":"DBProcessList", "links":[{"method":"GET", "path":"/process/course/:courseid/component/:componentid" }] },
     {"name":"postCourse", "target":"DBOOP", "links":[{"method":"POST", "path":"/course" }] },
     {"name":"deleteCourse", "target":"DBOOP", "links":[{"method":"DELETE", "path":"/course/:courseid" }] },
-    {"name":"postTestcase", "target":"DBOOP", "links":[{"method":"POST", "path":"/insert" }] }
+    {"name":"postTestcase", "target":"DBOOP", "links":[{"method":"POST", "path":"/insert" }] },
+    {"name":"selfLink", "target":"LOOP", "links":[] },
+    {"name":"popTestcase", "target":"DBOOP", "links":[{"method":"GET", "path":"/pop" }] }
   ],
   "connector":[
     {"name":"extension", "target":"LExtension"},
