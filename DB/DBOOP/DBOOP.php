@@ -96,6 +96,15 @@ class DBOOP
                                )
                          );
 
+        // GET pop
+        $this->_app->get( 
+                         '(/:pre)/pop(/)',
+                         array( 
+                               $this,
+                               'popTestcase'
+                               )
+                         );
+
         // run Slim
         $this->_app->run( );
     }
@@ -207,6 +216,7 @@ class DBOOP
 
         // decode the received course data, as an object
         $insert = Testcase::decodeTestcase( $this->_app->request->getBody( ) );
+
         $pre = DBJson::mysql_real_escape_string( $pre );
         
         // always been an array
@@ -225,12 +235,13 @@ class DBOOP
             $in->setProcess(Process::decodeProcess($in->getProcess(),false));
 
             //set submission
+
             if ($in->getSubmission() === null){
-                if ($in->getProcess()->getSubmission() !== null){
+                if ($in->getProcess()->getSubmission()->getId() !== null){
                     $mysubmission = clone $in->getProcess()->getSubmission();
                     $in->getProcess()->setSubmission(null);
                     $in->setSubmission($mysubmission);
-                } elseif ($in->getProcess()->getRawSubmission() !== null){
+                } elseif ($in->getProcess()->getRawSubmission()->getId() !== null){
                     $mysubmission = clone $in->getProcess()->getRawSubmission();
                     $in->getProcess()->setSubmission(null);
                     $in->setSubmission($mysubmission);
@@ -239,6 +250,7 @@ class DBOOP
                     continue;
                 } 
             }
+            //file_put_contents('php://stderr', print_r($in, TRUE));
             
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
@@ -246,7 +258,7 @@ class DBOOP
                                                   array( 'object' => $in,
                                                          'pre' => $pre)
                                                   );
-
+            
             // checks the correctness of the query
             if ( $result['status'] >= 200 && 
                  $result['status'] <= 299 ){
@@ -277,6 +289,69 @@ class DBOOP
             
         } else 
             $this->_app->response->setBody( Testcase::encodeTestcase( $res ) );
+    }
+
+    /**
+     * Adds a Testcase to the 
+     *
+     * Called when this component receives an HTTP POST request to
+     * (/:pre)/course/:courseid(/).
+     *
+     * @param int $pre A optional prefix for the Exercise table.
+     */
+    public function popTestcase( $pre='' )
+    {
+        file_put_contents('php://stderr', print_r("TEST", TRUE));
+        $this->loadConfig($pre);
+        $pre = ($pre === '' ? '' : '_') . $pre;
+        
+        Logger::Log( 
+                    'starts GET popTestcase',
+                    LogLevel::DEBUG
+                    );
+
+        $pre = DBJson::mysql_real_escape_string( $pre );
+        
+        $result = DBRequest::getRoutedSqlFile( 
+                                                  $this->query,
+                                                  dirname(__FILE__) . '/Sql/CallPopTestcase.sql',
+                                                  array()
+                                                  );
+        
+
+        // checks the correctness of the query
+        if ( $result['status'] >= 200 && 
+             $result['status'] <= 299 ){
+
+            $query = Query::decodeQuery( $result['content'] );
+            
+            if (is_array($query)){
+                $query = $query[0];
+            }
+
+
+            if ( $query->getNumRows( ) > 0 ){
+                
+                $res = Testcase::ExtractTestcase( 
+                                         $query->getResponse( ),
+                                         true
+                                         );
+
+                $this->_app->response->setBody( Testcase::encodeTestcase( $res ) );
+
+                $this->_app->response->setStatus( 200 );
+                if ( isset( $result['headers']['Content-Type'] ) )
+                    $this->_app->response->headers->set( 
+                                                        'Content-Type',
+                                                        $result['headers']['Content-Type']
+                                                        );
+
+                $this->_app->stop( );
+            } else {
+                $result['status'] = 404;
+            }
+        }
+
     }
 
     /**

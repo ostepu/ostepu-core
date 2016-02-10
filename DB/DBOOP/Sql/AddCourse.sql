@@ -63,3 +63,5 @@ if (NEW.OOP_submission is NULL) then
 SIGNAL sqlstate '45001' set message_text = 'no corresponding submission';
 END if;
 END;
+
+<?php if (is_dir($sqlPath.'/procedures')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/procedures/'.$inp);}},scandir($sqlPath.'/procedures'),array_pad(array(),count(scandir($sqlPath.'/procedures')),$sqlPath));?>
