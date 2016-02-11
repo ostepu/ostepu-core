@@ -90,7 +90,13 @@ class ModulpruefungAusgeben
     {
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         Installation::log(array('text'=>Installation::Get('modules','checkModule',self::$langTemplate,array('module'=>$module))));
-        $res = in_array($module, apache_get_modules());
+        if (function_exists('apache_get_modules')){
+            $res = in_array($module, apache_get_modules());
+        } else {
+            $res = getenv('HTTP_'.strtoupper($module))=='On'?TRUE:
+                   getenv('REDIRECT_HTTP_'.strtoupper($module))=='On'?true:FALSE;
+            //$res = false;
+        }        
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return $res;
     }
