@@ -151,18 +151,18 @@ class GitAktualisierung
                 } else {
                     $fail = true;
                     $error = Installation::Get('gitUpdate','errorGitLog',self::$langTemplate);
-                    Installation::log(array('text'=>$error, 'logLevel'=>LogLevel::ERRROR));
+                    Installation::log(array('text'=>$error, 'logLevel'=>LogLevel::ERROR));
                 }
             } else {
                 $fail = true;
                 $error = Installation::Get('gitUpdate','errorGitDiff',self::$langTemplate);
-                Installation::log(array('text'=>$error, 'logLevel'=>LogLevel::ERRROR));
+                Installation::log(array('text'=>$error, 'logLevel'=>LogLevel::ERROR));
             }
 
         } else {
             $fail = true;
             $error = Installation::Get('gitUpdate','errorGitFetch',self::$langTemplate);
-            Installation::log(array('text'=>$error, 'logLevel'=>LogLevel::ERRROR));
+            Installation::log(array('text'=>$error, 'logLevel'=>LogLevel::ERROR));
         }
 
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
@@ -195,13 +195,13 @@ class GitAktualisierung
             } else {
                 $fail = true;
                 $error = Installation::Get('gitUpdate','errorGitPull',self::$langTemplate);
-                Installation::log(array('text'=>$error, 'logLevel'=>LogLevel::ERRROR));
+                Installation::log(array('text'=>$error, 'logLevel'=>LogLevel::ERROR));
             }
 
         } else {
             $fail = true;
             $error = Installation::Get('gitUpdate','errorGitReset',self::$langTemplate);
-            Installation::log(array('text'=>$error, 'logLevel'=>LogLevel::ERRROR));
+            Installation::log(array('text'=>$error, 'logLevel'=>LogLevel::ERROR));
         }
 
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
