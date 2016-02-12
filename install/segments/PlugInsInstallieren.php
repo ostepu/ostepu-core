@@ -254,6 +254,7 @@ class PlugInsInstallieren
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $mainPath = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '../..');
         $mainPath = str_replace(array("\\","/"), array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR), $mainPath);
+        Installation::log(array('text'=>Installation::Get('packages','mainPath',self::$langTemplate,array('path'=>$mainPath)))); 
      
         if (isset($input['files'])){
             $files = $input['files'];
@@ -265,12 +266,14 @@ class PlugInsInstallieren
                 $exclude = array();
                 $path = null;
                 $sizePath = null;
-             
+
                 if (isset($file['path'])){
-                    $path = realpath($mainPath . DIRECTORY_SEPARATOR . $file['path']);
+                    $path = $mainPath . DIRECTORY_SEPARATOR . $file['path'];
+                    $path = rtrim($path,"\\/");
+                    Installation::log(array('text'=>Installation::Get('packages','path',self::$langTemplate,array('path'=>$path))));
                     $sizePath = $path;
                 }
-             
+                            
                 if (isset($file['type'])){
                     $type = $file['type'];
                 }
@@ -279,11 +282,18 @@ class PlugInsInstallieren
                     $params = $file['params'];
                 }
              
-                if ($type === 'git'){             
+                if ($type === 'git'){     
+                    Installation::log(array('text'=>Installation::Get('packages','typeGit',self::$langTemplate)));                
                     $params['path'] = rtrim($params['path'],"\\/");
-                    $location = $mainPath . DIRECTORY_SEPARATOR . $params['path'];
+                    $location = $mainPath . DIRECTORY_SEPARATOR . $params['path']; 
                     Einstellungen::generatepath($location);
                     $location = realpath($location);
+                    Installation::log(array('text'=>Installation::Get('packages','location',self::$langTemplate,array('path'=>$location))));
+                    
+                    if (!file_exists($location)){
+                        Installation::log(array('text'=>Installation::Get('packages','noDirLocation',self::$langTemplate), 'logLevel'=>LogLevel::ERROR));
+                    }
+                    
                     //$sizePath = $location;
                     $repo = $params['URL'];
                     $branch = $params['branch'];
@@ -301,40 +311,65 @@ class PlugInsInstallieren
                     }
                  
                     if (!file_exists($location."/.git")){
+                        Installation::log(array('text'=>Installation::Get('packages','noLocalRepo',self::$langTemplate)));  
+                        
                         // initialisieren
                         $pathOld = getcwd();
+                        Installation::log(array('text'=>Installation::Get('packages','execClone',self::$langTemplate,array('cmd'=>'(git clone --single-branch --depth 1 --branch '.$branch.' '.$repo.' .) 2>&1'))));  
                         chdir($location);                          
                         exec('(git clone --single-branch --depth 1 --branch '.$branch.' '.$repo.' .) 2>&1', $output, $return);
-                        chdir($pathOld);       
+                        chdir($pathOld);
+                        if ($return !== 0){
+                            Installation::log(array('text'=>Installation::Get('packages','errorGitClone',self::$langTemplate, array('result'=>$output)), 'logLevel'=>LogLevel::ERROR));
+                        }
                     }
                  
                     $pathOld = getcwd();
                     chdir($location);  
                     exec('(git fetch) 2>&1', $output, $return);
-                    exec('(git pull) 2>&1', $output, $return);
+                    exec('(git pull) 2>&1', $output2, $return2);
                     chdir($pathOld);    
-                 
-                    $found = Installation::read_all_files($location, $exclude);
-                    if ($location . DIRECTORY_SEPARATOR === $path){
-                        // kein Verschieben notwendig
-                    } else {
-                        // verschiebe die Dateien von $location nach $path
-                        foreach ($found['files'] as $temp){
-                            $file = substr($temp,strlen($location)+1);
-                            $file = $path . DIRECTORY_SEPARATOR . $file;
-                            Einstellungen::generatepath(dirname($file));
-                            $res = @copy($temp, $file);
+                    
+                    if ($return === 0){
+                        if ($return2 === 0){
+                            $found = Installation::read_all_files($location, $exclude);
+                            if (realpath($location . DIRECTORY_SEPARATOR) === realpath($path)){
+                                // kein Verschieben notwendig
+                                Installation::log(array('text'=>Installation::Get('packages','noMovingRequired',self::$langTemplate)));  
+                            } else {
+                                // verschiebe die Dateien von $location nach $path
+                                Installation::log(array('text'=>Installation::Get('packages','copyFiles',self::$langTemplate)));  
+                                foreach ($found['files'] as $temp){
+                                    $file = substr($temp,strlen($location)+1);
+                                    $file = $path . DIRECTORY_SEPARATOR . $file;
+                                    Einstellungen::generatepath(dirname($file));
+                                    
+                                    if (!file_exists(dirname($file))){
+                                        Installation::log(array('text'=>Installation::Get('packages','noDirFile',self::$langTemplate,array('path'=>dirname($file))), 'logLevel'=>LogLevel::ERROR));
+                                    }
+                                    
+                                    Installation::log(array('text'=>Installation::Get('packages','copyFile',self::$langTemplate,array('from'=>$temp,'to'=>$file)))); 
+                                    $res = @copy($temp, $file);
+                                }
+                            }
+                         
+                            foreach($found['files'] as $temp){
+                                $file = substr($temp,strlen($location)+1);
+                                $file = $path . DIRECTORY_SEPARATOR . $file;
+                                $fileList[] = $file;
+                                $fileListAddress[] = substr($file,strlen($mainPath)+1);
+                            }
+                        } else {
+                            Installation::log(array('text'=>Installation::Get('packages','errorGitPull',self::$langTemplate, array('result'=>$output2)), 'logLevel'=>LogLevel::ERROR));
                         }
+                    } else {
+                        Installation::log(array('text'=>Installation::Get('packages','errorGitFetch',self::$langTemplate, array('result'=>$output)), 'logLevel'=>LogLevel::ERROR));
                     }
                  
-                    foreach($found['files'] as $temp){
-                        $file = substr($temp,strlen($location)+1);
-                        $file = $path . DIRECTORY_SEPARATOR . $file;
-                        $fileList[] = $file;
-                        $fileListAddress[] = substr($file,strlen($mainPath)+1);
-                    }
-                 
-                } elseif ($type === 'local'){                  
+                } elseif ($type === 'local'){   
+                    $sizePath = realpath($sizePath);
+                
+                    Installation::log(array('text'=>Installation::Get('packages','typeLocal',self::$langTemplate)));                 
                     if (isset($path) && isset($params['relLocalResource'])){
                         file_put_contents($sizePath, file_get_contents($mainPath . DIRECTORY_SEPARATOR . $params['relLocalResource']));
                     }
