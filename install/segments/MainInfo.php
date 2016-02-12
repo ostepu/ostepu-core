@@ -45,7 +45,7 @@ class MainInfo
             $failure = true;
             Installation::log(array('text'=>Installation::Get('mainInfo','noWritePermission',self::$langTemplate), 'logLevel'=>LogLevel::ERROR));
         } else {
-            Installation::log(array('text'=>Installation::Get('mainInfo','possitiveResult',self::$langTemplate)));
+            Installation::log(array('text'=>Installation::Get('mainInfo','positiveResult',self::$langTemplate)));
         }
 
         if ($failure) {

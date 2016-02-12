@@ -2,7 +2,7 @@
     "title": "",
     "notWritable": "keine Schreibrechte vorhanden",
     "noWritePermission": "keine Schreibrechte",
-    "possitiveResult": "Prüfung erfolgreich",
+    "positiveResult": "Prüfung erfolgreich",
     "checkPath": "prüfe Pfad: $path",
     "checkFile": "prüfe Datei: $file"
 }}
