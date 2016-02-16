@@ -1,5 +1,4 @@
 DROP PROCEDURE IF EXISTS `DBpopTestcase`;
-DELIMITER $$
 
 CREATE PROCEDURE `DBpopTestcase` ()
 
@@ -17,7 +16,7 @@ DECLARE exit handler for sqlwarning
  ROLLBACK;
 END;
 
-START TRANSACTION WITH CONSISTENT SNAPSHOT;
+START TRANSACTION;
 SET @groupAll = (SELECT concat("SELECT OOP_id, TableName INTO @SID, @Table FROM \(",group_concat(concat("SELECT OOP_id,OOP_status,'", table_name,"' as TableName FROM `", table_name,"` WHERE OOP_status = 0 FOR UPDATE") separator ' UNION ALL ')," LIMIT 1) A WHERE A.OOP_status = 0") 
 FROM information_schema.tables
 WHERE table_name LIKE 'Testcase_%');
@@ -62,4 +61,4 @@ EXECUTE stmt3;
 END IF;
 
 COMMIT;
-END
+END;
