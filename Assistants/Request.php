@@ -217,6 +217,9 @@ class Request
 
                             $name = $com->getClassName();
 
+                            // merkt sich das alte Arbeitsverzeichnis
+                            $pathOld = getcwd();
+                            
                             try {
                                 ob_start();
 
@@ -254,6 +257,10 @@ class Request
                                 $result['headers'] = array();
                             }
 
+                            // setzt das Arbeitsverzeichnis auf den Pfad zurück, den es vor
+                            // dem Aufruf hatte
+                            chdir($pathOld);
+        
                             $_SERVER['REQUEST_URI'] = $oldRequestURI;
                             $_SERVER['SCRIPT_NAME'] = $oldScriptName;
                             //$_SERVER['REDIRECT_URL'] = $oldRedirectURL;
