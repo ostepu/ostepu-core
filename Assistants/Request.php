@@ -216,9 +216,6 @@ class Request
                             http_response_code(0);
 
                             $name = $com->getClassName();
-
-                            // merkt sich das alte Arbeitsverzeichnis
-                            $pathOld = getcwd();
                             
                             try {
                                 ob_start();
@@ -228,10 +225,17 @@ class Request
                                 CacheManager::createNode($newSid, $com->getTargetName(), $method, $target, $content);
                                 ////Logger::Log('newSid: '.$newSid, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', true, LogLevel::DEBUG);
 
-
+                                // merkt sich das alte Arbeitsverzeichnis
+                                $pathOld = getcwd();
+                                chdir(dirname($tar));
                                 $obj = new $name();
                                 if (isset($obj))
                                     unset($obj);
+
+                                // setzt das Arbeitsverzeichnis auf den Pfad zurück, den es vor
+                                // dem Aufruf hatte
+                                chdir($pathOld);
+                            
                                 $result['content'] = ob_get_contents();
                                 CacheManager::setETag($result['content']);
                                 $result['headers'] = array_merge(array(),Request::http_parse_headers_short(headers_list()));
@@ -256,10 +260,6 @@ class Request
                                 $result['content'] = '';
                                 $result['headers'] = array();
                             }
-
-                            // setzt das Arbeitsverzeichnis auf den Pfad zurück, den es vor
-                            // dem Aufruf hatte
-                            chdir($pathOld);
         
                             $_SERVER['REQUEST_URI'] = $oldRequestURI;
                             $_SERVER['SCRIPT_NAME'] = $oldScriptName;
