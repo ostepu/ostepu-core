@@ -964,8 +964,6 @@ class LOOP
            
         $body = $this->app->request->getBody();
         $process = Process::decodeProcess($body);
-
-        file_put_contents('php://stderr', print_r($process, TRUE));
         
         // always been an array
         // es ist einfacher, wenn man sicherstellt, dass die Eingabedaten als Liste für foreach verarbeitet
