@@ -147,9 +147,6 @@ class Sandbox
      */
     public function sandbox_exec($command,$params,&$output = null)
     {
-        $pathOld = getcwd();
-        chdir($this->workingDir);
-
         //check if command exists
 
         if (Sandbox::command_exist($command) == false)
@@ -174,8 +171,12 @@ class Sandbox
         $profileerror = file_put_contents($newprofile, $this->profile);
         $treffer = array();
 
+        
         if ($profileerror != false)
         {
+            $pathOld = getcwd();
+            chdir($this->workingDir);
+
             // open process /bin/sh
             $process = proc_open('firejail --quiet --profile='.$newprofile.' ', $descriptorspec, $pipes, $this->workingDir) ;
 
@@ -224,7 +225,6 @@ class Sandbox
                 }
 
                 // print pipe output
-                /*$output = stream_get_contents($pipes[1]);*/
 
                 $error = stream_get_contents($pipes[2]);
 
