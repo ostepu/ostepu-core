@@ -301,7 +301,7 @@ class DBOOP
      */
     public function popTestcase( $pre='' )
     {
-        file_put_contents('php://stderr', print_r("TEST", TRUE));
+
         $this->loadConfig($pre);
         $pre = ($pre === '' ? '' : '_') . $pre;
         
@@ -318,7 +318,6 @@ class DBOOP
                                                   array()
                                                   );
         
-
         // checks the correctness of the query
         if ( $result['status'] >= 200 && 
              $result['status'] <= 299 ){
@@ -329,8 +328,7 @@ class DBOOP
                 $query = $query[0];
             }
 
-
-            if ( $query->getNumRows( ) > 0 ){
+            if ( $query->getNumRows( ) !== null && !empty($query->getNumRows( )) && $query->getNumRows( ) > 0 ){
                 
                 $res = Testcase::ExtractTestcase( 
                                          $query->getResponse( ),
@@ -348,7 +346,7 @@ class DBOOP
 
                 $this->_app->stop( );
             } else {
-                $result['status'] = 404;
+                $this->_app->response->setStatus( 404 );
             }
         }
 
