@@ -109,7 +109,7 @@ class GitAktualisierung
 
         Installation::log(array('text'=>Installation::Get('gitUpdate','execGitFetch',self::$langTemplate)));
         chdir(dirname(__FILE__).'/../../');
-        exec('(git fetch) 2>&1', $output, $return);
+        exec('(git fetch -p) 2>&1', $output, $return);
         chdir($pathOld);
 
         if ($return == 0){
