@@ -108,18 +108,26 @@ class GitAktualisierung
         $output=null;
 
         Installation::log(array('text'=>Installation::Get('gitUpdate','execGitFetch',self::$langTemplate)));
-        chdir(dirname(__FILE__).'/../../');
-        exec('(git fetch -p) 2>&1', $output, $return);
-        chdir($pathOld);
+        if (@chdir(dirname(__FILE__).'/../../')){
+            exec('(git fetch -p) 2>&1', $output, $return);
+            @chdir($pathOld);
+        } else {
+            $return = 1;
+            $output = '--';
+        }
 
         if ($return == 0){
             $pathOld = getcwd();
             $output=null;
 
             Installation::log(array('text'=>Installation::Get('gitUpdate','execGitDiff',self::$langTemplate)));
-            chdir(dirname(__FILE__).'/../../');
-            exec('(git diff --shortstat HEAD...FETCH_HEAD) 2>&1', $output, $return);
-            chdir($pathOld);
+            if (@chdir(dirname(__FILE__).'/../../')){
+                exec('(git diff --shortstat HEAD...FETCH_HEAD) 2>&1', $output, $return);
+                @chdir($pathOld);
+            } else {
+                $return = 1;
+                $output = '--';
+            }
 
             if ($return == 0){
                 $result['modified'] = $output;
@@ -128,9 +136,13 @@ class GitAktualisierung
                 $output=null;
 
                 Installation::log(array('text'=>Installation::Get('gitUpdate','execGitLog',self::$langTemplate)));
-                chdir(dirname(__FILE__).'/../../');
-                exec('(git log --pretty=format:\'%s,%cr\' --abbrev-commit --date=relative HEAD...FETCH_HEAD) 2>&1', $output, $return);
-                chdir($pathOld);
+                if (@chdir(dirname(__FILE__).'/../../')){
+                    exec('(git log --pretty=format:\'%s,%cr\' --abbrev-commit --date=relative HEAD...FETCH_HEAD) 2>&1', $output, $return);
+                    @chdir($pathOld);
+                } else {
+                    $return = 1;
+                    $output = '--';
+                }
 
                 if ($return == 0){
                     $result['commits'] = array();
@@ -177,18 +189,26 @@ class GitAktualisierung
         $output=null;
 
         Installation::log(array('text'=>Installation::Get('gitUpdate','execGitReset',self::$langTemplate)));
-        chdir(dirname(__FILE__).'/../../');
-        exec('(git reset --hard) 2>&1', $output, $return);
-        chdir($pathOld);
+        if (@chdir(dirname(__FILE__).'/../../')){
+            exec('(git reset --hard) 2>&1', $output, $return);
+            @chdir($pathOld);
+        } else {
+            $return = 1;
+            $output = '--';
+        }
 
         if ($return == 0){
             $pathOld = getcwd();
             $output=null;
 
             Installation::log(array('text'=>Installation::Get('gitUpdate','execGitPull',self::$langTemplate)));
-            chdir(dirname(__FILE__).'/../../');
-            exec('(git pull) 2>&1', $output, $return);
-            chdir($pathOld);
+            if (@chdir(dirname(__FILE__).'/../../')){
+                exec('(git pull) 2>&1', $output, $return);
+                @chdir($pathOld);
+            } else {
+                $return = 1;
+                $output = '--';
+            }
 
             if ($return == 0){
                 // OK

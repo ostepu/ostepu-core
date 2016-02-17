@@ -316,19 +316,28 @@ class PlugInsInstallieren
                         // initialisieren
                         $pathOld = getcwd();
                         Installation::log(array('text'=>Installation::Get('packages','execClone',self::$langTemplate,array('cmd'=>'(git clone --single-branch --depth 1 --branch '.$branch.' '.$repo.' .) 2>&1'))));  
-                        chdir($location);                          
-                        exec('(git clone --single-branch --depth 1 --branch '.$branch.' '.$repo.' .) 2>&1', $output, $return);
-                        chdir($pathOld);
+                        if (@chdir($location)){                         
+                            exec('(git clone --single-branch --depth 1 --branch '.$branch.' '.$repo.' .) 2>&1', $output, $return);
+                            @chdir($pathOld);
+                        } else {
+                            $return = 1;
+                            $output = '--';
+                        }
+                        
                         if ($return !== 0){
                             Installation::log(array('text'=>Installation::Get('packages','errorGitClone',self::$langTemplate, array('result'=>$output)), 'logLevel'=>LogLevel::ERROR));
                         }
                     }
                  
                     $pathOld = getcwd();
-                    chdir($location);  
-                    exec('(git fetch) 2>&1', $output, $return);
-                    exec('(git pull) 2>&1', $output2, $return2);
-                    chdir($pathOld);    
+                    if (@chdir($location)){
+                        exec('(git fetch) 2>&1', $output, $return);
+                        exec('(git pull) 2>&1', $output2, $return2);
+                        @chdir($pathOld);    
+                    } else {
+                        $return = 1;
+                        $output = '--';
+                    }
                     
                     if ($return === 0){
                         if ($return2 === 0){

@@ -227,14 +227,14 @@ class Request
 
                                 // merkt sich das alte Arbeitsverzeichnis
                                 $pathOld = getcwd();
-                                chdir(dirname($tar));
+                                @chdir(dirname($tar));
                                 $obj = new $name();
                                 if (isset($obj))
                                     unset($obj);
 
                                 // setzt das Arbeitsverzeichnis auf den Pfad zurück, den es vor
                                 // dem Aufruf hatte
-                                chdir($pathOld);
+                                @chdir($pathOld);
                             
                                 $result['content'] = ob_get_contents();
                                 CacheManager::setETag($result['content']);
