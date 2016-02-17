@@ -383,7 +383,7 @@ class LOOP
                                                  null,
                                                  null,
                                                  $status,
-                                                 0,
+                                                 (int)$myExercise->getMaxPoints(),
                                                  ($submission->getDate()!==null ? $submission->getDate() : time())
                                                  );
                 if (is_object($submission))
