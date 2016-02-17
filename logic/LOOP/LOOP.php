@@ -76,7 +76,11 @@ class LOOP
     private $_postTestcase = array( );
     private $_selfLink = array( );
     private $_popTestcase = array( );
-    
+    private $_submission = array( );
+    private $_editTestcase = array( );
+    private $_getTestcase = array( );
+    private $_getExercise = array( );
+    private $_marking = array( );
     
     /**
      * REST actions
@@ -119,6 +123,11 @@ class LOOP
         $this->_postTestcase = CConfig::getLinks($conf->getLinks(),"postTestcase");
         $this->_selfLink = CConfig::getLinks($conf->getLinks(),"selfLink");
         $this->_popTestcase = CConfig::getLinks($conf->getLinks(),"popTestcase");
+        $this->_submission = CConfig::getLinks($conf->getLinks(),"getSubmission");
+        $this->_editTestcase = CConfig::getLinks($conf->getLinks(),"editTestcase");
+        $this->_getTestcase = CConfig::getLinks($conf->getLinks(),"getTestcase");
+        $this->_getExercise = CConfig::getLinks($conf->getLinks(),"getExercise");
+        $this->_marking = CConfig::getLinks($conf->getLinks(),"marking");
         
 
         // POST PostProcess
@@ -236,7 +245,9 @@ class LOOP
                     "<h2>Fehler:</h2>".
                     "<span style=\"color: 'black'\">".
                     $text.
-                    "</span></p>";
+                    "</span></p><br /><br /><p>".
+                    "<span style=\"color: 'red'\">0 Punkte</span>".
+                    "</p>";
 
             
             $pdf = Pdf::createPdf($Text);
@@ -288,6 +299,117 @@ class LOOP
                 $this->app->response->setStatus( 409 );
             }
         }
+    }
+
+    public function createMarkingViaPost($testcases, $submission, $status)
+    {
+            $result = Request::routeRequest( 
+                                        'GET',
+                                        '/exercise/exercise/'.$submission->getExerciseId().'/nosubmission',
+                                        array(),
+                                        '',
+                                        $this->_getExercise
+                                        );
+            $myExercise = null;
+            if ( $result['status'] >= 200 && $result['status'] <= 299 ){
+                $myExercise = Exercise::decodeExercise($result['content']);
+            }
+
+            $timestamp = time();
+            
+        
+            $Text=  "<h1>AUSWERTUNG</h1>".
+                    "<hr>";
+                    
+            $Text.= "<p>".
+                    "<h2>Testcases:</h2>".
+                    "<span style=\"color: 'black'\">";
+
+            $counter = 1;
+            foreach ($testcases as $value) {
+                if (!empty($value->getRunOutput())) {
+                    $Text.= "Durchgang {$counter} Ausgabe: <br />".$value->getRunOutput()."<br />";
+                } else {
+                    $Text.= "Durchgang {$counter} Ausgabe: <br />leer<br />";
+                }
+                if ($value->getStatus() == 2) {$Text.= "ist Korrekt.<br /><br />";}
+                if ($value->getStatus() == 3) {$Text.= "ist Falsch.<br /><br />";}
+
+                $counter = $counter + 1;
+            }
+
+            $Text.= "</span></p>";
+
+            if ($status == 3) {
+                $Text.= "<br /><br /><p>".
+                    "<span style=\"color: 'red'\">0 Punkte</span>".
+                    "</p>";
+                } elseif ($status == 2) {
+                    $Text.= "<br /><br /><p>".
+                    "<span style=\"color: 'red'\">".$myExercise->getMaxPoints()." Punkte</span>".
+                    "</p>";
+                }
+            
+
+            
+            $pdf = Pdf::createPdf($Text);
+//echo Pdf::encodePdf($pdf);return;
+            $result = Request::routeRequest( 
+                                            'POST',
+                                            '/pdf',
+                                            array(),
+                                            Pdf::encodePdf($pdf),
+                                            $this->_pdf,
+                                            'pdf'
+                                            );
+            // checks the correctness of the query
+            if ( $result['status'] >= 200 && 
+                 $result['status'] <= 299 ){
+                 
+                $pdf = File::decodeFile($result['content']);
+                
+                $pdf->setDisplayName('Auswertung.pdf');
+                $pdf->setTimeStamp($timestamp);
+                $pdf->setBody(null);
+                
+                $studentId = ($submission->getStudentId()!==null ? $submission->getStudentId() : null);
+                
+                
+                $marking = Marking::createMarking( 
+                                                 null,
+                                                 $studentId,
+                                                 null,
+                                                 null,
+                                                 null,
+                                                 null,
+                                                 $status,
+                                                 0,
+                                                 ($submission->getDate()!==null ? $submission->getDate() : time())
+                                                 );
+                if (is_object($submission))
+                    $marking->setSubmission(clone $submission);
+                    
+                $marking->setFile($pdf);
+                
+                $result = Request::routeRequest( 
+                                            'POST',
+                                            '/marking',
+                                            array(),
+                                            Marking::encodeMarking($marking),
+                                            $this->_marking,
+                                            'marking'
+                                            );
+
+                if ( $result['status'] >= 200 && 
+                 $result['status'] <= 299 ){
+                    return true;
+                } else {
+                    return false;
+                }
+                
+            } else {
+                return false;
+            }
     }
    
     /**
@@ -578,6 +700,47 @@ class LOOP
     }
 
     /**
+     * scans Directory for executable Files
+     * @param       string   $source    Source path
+     *
+     * @return      string   Returns name of executable file
+     */
+    public function scanForExecutables($source)
+    {
+        // Loop through the folder
+        $dir = dir($source);
+        $execfilepath = "";
+
+        while (false !== $entry = $dir->read()) {
+            // Skip pointers
+            if ($entry == '.' || $entry == '..') {
+                continue;
+            }
+
+            // Deep copy directories
+            $returnVal = shell_exec("file --mime-type $source/$entry");
+            
+            $count = substr_count($returnVal, 'application/x-executable');
+
+            if ($count > 0) {
+                $execfilepath = $entry;
+                break;
+            }
+
+            $count = substr_count($returnVal, 'application/x-java-applet');
+
+            if ($count > 0) {
+                $execfilepath = basename($entry,".class");
+                break;
+            }
+        }
+
+        // Clean up
+        $dir->close();
+        return $execfilepath;
+    }
+
+    /**
      * the compute function for testing testcases
      *
      * @param int $count Amount of Compute calls.
@@ -594,35 +757,221 @@ class LOOP
                                         $this->_popTestcase
                                         );
 
+        //submission(/submission)/:suid
+
         // checks the correctness of the query
         if ( $result['status'] >= 200 && $result['status'] <= 299 ){
             $testcase = Testcase::decodeTestcase($result['content']);
+            $submission = null;
+
+            // GET Submission, if no submission attached then end compute
+            if (!empty($testcase) && $testcase->getSubmissionId() !== null){
+                // get selected submission
+                $resultSub = Request::routeRequest( 
+                                        'GET',
+                                        '/submission/submission/'.$testcase->getSubmissionId(),
+                                        array(),
+                                        '',
+                                        $this->_submission
+                                        );
+
+                if ( $resultSub['status'] >= 200 && $resultSub['status'] <= 299 ){
+                    $submission = Submission::decodeSubmission($resultSub['content']);
+
+                    if ($submission === null) {
+                        $this->app->response->setStatus( 409 );
+                        $this->app->stop();
+                    }
+                }
+            } else {
+                $this->app->response->setStatus( 409 );
+                $this->app->stop();
+            }
 
             // check if workdir is available, if not copy it from portal temp directory
             $myWorkDir = $testcase->getWorkDir();
             $foldername = basename($myWorkDir);
+            $myWorkDir = $myWorkDir . "_" . $testcase->getTestcaseId();
             $backupPath = $this->iniconfig['DIR']['temp'].'/'.$foldername;
 
-            if(!is_dir($myWorkDir)){
+            if(!empty($myWorkDir) && !is_dir($myWorkDir)){
                 if(is_dir($backupPath)){
                     $this->xcopy($backupPath, $myWorkDir,0777);
                 } else {
                     $this->app->response->setStatus( 409 );
                     $this->app->stop();
                 }
+            } elseif (empty($myWorkDir)) {
+                $this->app->response->setStatus( 409 );
+                $this->app->stop();
             }
 
+            // decode Input and Output Params
             $myInputs = json_decode($testcase->getInput());
             $myOutput = json_decode($testcase->getOutput());
 
-            
+            if (isset($myInputs) && !empty($myInputs) && isset($myOutput) && !empty($myOutput)) {
+                if ($testcase->getTestcaseType() == "java" || $testcase->getTestcaseType() == "cx") {
+                    $execFilename = $this->scanForExecutables($myWorkDir);
 
-            file_put_contents('php://stderr', print_r($myInputs, TRUE));
-            file_put_contents('php://stderr', print_r($myOutput, TRUE));
+                    $params = "";
+                    $inputfiles = array();
+
+                    // parse input parameters
+                    foreach ($myInputs as $input) {
+                        if (isset($input[0]) && $input[0] == "Text" && isset($input[1])) {
+                            // simple Text
+                            $params .= escapeshellarg($input[1])." ";
+                        } elseif (isset($input[0]) && $input[0] == "Data" && isset($input[1]) && !empty($input[1])) {
+                            // copy input files in workdir and set the path in params
+                            $inputfile = File::decodeFile($input[1],false);
+                            $inputfilePath = $inputfile->getAddress();
+
+                            if(!empty($inputfilePath) && !in_array($inputfilePath, $inputfiles)) {
+                                $this->xcopy($this->iniconfig['DIR']['files'].'/'.$inputfilePath, $myWorkDir.'/'.$inputfile->getDisplayName(),0777);
+                                $inputfiles[] = $inputfilePath;
+                            }
+
+                            if(!empty($inputfilePath)) {
+                                $params .= escapeshellarg($myWorkDir.'/'.$inputfile->getDisplayName())." ";
+                            }
+                        }
+                    }
+
+                    $params = trim($params);
+
+                    // execute program in sandbox
+                    $compileSandbox = new Sandbox();
+                    $compileSandbox->setWorkingDir($myWorkDir);
+                    $compileSandbox->loadProfileFromFile(dirname(__FILE__) . '/../../Assistants/mysandbox.profile');
+
+                    $return = 0;
+                    $output = "";
+                    $ValidationOK = false;
+
+                    if ($testcase->getTestcaseType() == "java") {
+                        $return = $compileSandbox->sandbox_exec('java',$execFilename." ".$params,$output);
+                    } elseif ($testcase->getTestcaseType() == "cx") {
+                        $return = $compileSandbox->sandbox_exec('./'.$execFilename,$params,$output);
+                    }
+
+                    $output = trim($output,"\t\n\r\0\x0B");
+
+                    // validate output
+                    $correctOutput = "";
+                    $mytype = "";
+
+                    if (isset($myOutput[0]) && $myOutput[0] == "Text" && isset($myOutput[1])) {
+                        $correctOutput = trim($myOutput[1],"\t\n\r\0\x0B");
+                        $mytype = "Text";
+                    } elseif (isset($myOutput[0]) && $myOutput[0] == "Data" && isset($myOutput[1]) && !empty($myOutput[1])) {
+
+                        $outputfile = File::decodeFile($myOutput[1],false);
+                        $outputfilePath = $outputfile->getAddress();
+
+                        $correctOutput = file_get_contents($this->iniconfig['DIR']['files'].'/'.$outputfilePath);
+                        if ($correctOutput !== false) {
+                            $correctOutput = trim($correctOutput,"\t\n\r\0\x0B");
+                        } else {
+                            $correctOutput = "";
+                        }
+                        $mytype = "Data";
+
+                    } elseif (isset($myOutput[0]) && $myOutput[0] == "Regex" && isset($myOutput[1])) {
+                        //$delimiterRegex = substr(stripslashes(trim($myOutput[1])), 0, 1);
+
+                        $correctOutput = preg_quote(stripcslashes(trim($myOutput[1])));
+                        $mytype = "Regex";
+                    }
+
+                    if ($mytype == "Text" || $mytype == "Data") {
+                        if (strcmp($output, $correctOutput) == 0) {
+                            $ValidationOK = true;
+                        }
+                    } elseif ($mytype == "Regex") {
+                        if ($correctOutput == "") {
+                            $correctOutput = "/.*/";
+                        }
+                        $rexexMatch = preg_match($correctOutput, $output);
+
+                        if ($rexexMatch === 1) {
+                            $ValidationOK = true;
+                        }
+                    }
+
+                    if (isset($submission) && !empty($submission)){
+                        $testcase->setSubmission($submission);
+
+                        if(is_array($testcase->getProcess())) {
+                            $testcase->setProcess($testcase->getProcess()[0]);
+                        }
+                        
+                        if ($ValidationOK == true) {
+                            $testcase->setStatus(2);
+                        } else {
+                            $testcase->setStatus(3);
+                        }
+
+                        $testcase->setRunOutput($output);
+
+                        // update Testcase
+                        $resultPut = Request::routeRequest( 
+                                                        'POST',
+                                                        '/testcase/testcase/'.$testcase->getTestcaseId(),
+                                                        array(),
+                                                        Testcase::encodeTestcase($testcase),
+                                                        $this->_editTestcase
+                                                       );
+
+                        // checks the correctness of the query
+                        if ( $resultPut['status'] >= 200 && $resultPut['status'] <= 299 ){
+                            // get Testcases
+                            $resultGet = Request::routeRequest( 
+                                                            'GET',
+                                                            '/testcase/submission/'.$testcase->getSubmissionId().'/course/'.$testcase->getProcess()->getObjectCourseFromProcessIdId(),
+                                                            array(),
+                                                            Testcase::encodeTestcase($testcase),
+                                                            $this->_getTestcase
+                                                           );
+
+                            // test all testcases if ok then create marking
+                            if ( $resultPut['status'] >= 200 && $resultPut['status'] <= 299 ){
+                                $allTestcases = Testcase::decodeTestcase($resultGet['content']);
+
+                                if(!empty($allTestcases)) {
+                                    $StatusForTestcases = 2;
+                                    foreach ($allTestcases as $singleTestcase) {
+                                        if ($singleTestcase->getStatus() == 2) {continue;}
+                                        if ($singleTestcase->getStatus() == 3) {$StatusForTestcases = 3; continue;}
+                                        if ($singleTestcase->getStatus() < 2) {$StatusForTestcases = $singleTestcase->getStatus(); break;}
+                                    }
+
+                                    // create Marking
+                                    if($StatusForTestcases >= 2) {
+                                        $createdResult = $this->createMarkingViaPost($allTestcases, $submission, $StatusForTestcases);
+
+                                        if($createdResult == true) {
+                                            //$this->deleteDir($backupPath);
+                                        }
+                                    }
+                                }
+                            }
+
+                        } else {
+                            $this->deleteDir($myWorkDir);
+                            $this->app->response->setStatus( $resultPut['status'] );
+                            $this->app->stop();
+                        }
+                    }
+                }
+            }
         }
+        
+        $adress = $this->_selfLink[0]->getAddress()."/start/".$count;
+        LOOP::runInBackground($adress);
 
-
-
+        
+        $this->deleteDir($myWorkDir);
         $this->app->response->setStatus( 200 );
     }
    
@@ -927,10 +1276,10 @@ class LOOP
                     
                     // nachdem die Einsendung bearbeitet wurde, kann das temporäre
                     // Verzeichnis mit Inhalt entfernt werden
-                    //$this->deleteDir($filePath);
+                    //
                     $newfolder = basename($filePath);
                     $this->xcopy($filePath, $this->iniconfig['DIR']['temp'].'/'.$newfolder,0777);
-                    
+                    $this->deleteDir($filePath);
                     // das Prozessobjekt kann nun zur Ausgabe hinzugefügt werden
                     $res[] = $pro;          
                     continue;

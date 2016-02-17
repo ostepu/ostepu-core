@@ -22,7 +22,12 @@
     {"name":"deleteCourse", "target":"DBOOP", "links":[{"method":"DELETE", "path":"/course/:courseid" }] },
     {"name":"postTestcase", "target":"DBOOP", "links":[{"method":"POST", "path":"/insert" }] },
     {"name":"selfLink", "target":"LOOP", "links":[] },
-    {"name":"popTestcase", "target":"DBOOP", "links":[{"method":"GET", "path":"/pop" }] }
+    {"name":"popTestcase", "target":"DBOOP", "links":[{"method":"GET", "path":"/pop" }] },
+    {"name":"getSubmission", "target":"DBSubmission","links":[]},
+    {"name":"editTestcase", "target":"DBOOP", "links":[{"method":"POST", "path":"/testcase/testcase/:testcaseid" }] },
+    {"name":"getTestcase", "target":"DBOOP", "links":[{"method":"GET", "path":"/testcase/submission/:sid/course/:cid" }] },
+    {"name":"getExercise", "target":"DBExercise", "links":[{"method":"GET", "path":"/exercise/exercise/:eid/nosubmission" }] },
+    {"name":"marking", "target":"LMarking", "links":[{"method":"POST", "path":"/marking" }] },
   ],
   "connector":[
     {"name":"extension", "target":"LExtension"},
