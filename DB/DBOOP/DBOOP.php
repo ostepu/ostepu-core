@@ -18,7 +18,7 @@ class DBOOP
     /**
      * @var string $_prefix the prefixes, the class works with (comma separated)
      */
-    private static $_prefix = 'course';
+    private static $_prefix = 'testcase,query';
 
     /**
      * the $_prefix getter
@@ -54,10 +54,12 @@ class DBOOP
         /* alte Variante */
 
         // runs the CConfig
+
         $com = new CConfig( DBOOP::getPrefix(), dirname(__FILE__) );
 
         // runs the DBProcess
         if ( $com->used( ) ) return;
+
             
         // initialize component
         $this->_conf = $com;
@@ -105,8 +107,209 @@ class DBOOP
                                )
                          );
 
+        // PUT EditProcess
+        $this->_app->get( 
+                         '(/:pre)/testcase/submission/:sid/course/:cid(/)',
+                         array( 
+                               $this,
+                               'getTestcase'
+                               )
+                         );
+
+        // PUT EditProcess
+        $this->_app->post( 
+                         '(/:pre)/testcase(/testcase)/:testcaseid(/)',
+                         array( 
+                               $this,
+                               'editTestcase'
+                               )
+                         );
+
         // run Slim
         $this->_app->run( );
+    }
+
+    /**
+     * Loads the configuration data for the component from CConfig.json file
+     *
+     * @param int $pre A optional prefix for the process table.
+     *
+     * @return an component object, which represents the configuration
+     */
+    public function loadConfig( $pre='' )
+    {
+        // initialize component
+        $this->_conf = $this->_conf->loadConfig(  );
+        
+
+        $this->query = array( CConfig::getLink( 
+                                               $this->_conf->getLinks( ),
+                                               'out'
+                                               ) );
+    }
+
+    public function getTestcase( $pre='' , $sid , $cid)
+    {
+        $this->loadConfig($pre);
+        $pre = ($pre === '' ? '' : '_') . $pre;
+        
+        Logger::Log( 
+                    'starts POST insertTestcase',
+                    LogLevel::DEBUG
+                    );
+
+
+        $pre = DBJson::mysql_real_escape_string( $pre );
+        
+        $result = DBRequest::getRoutedSqlFile( 
+                                                  $this->query,
+                                                  dirname(__FILE__) . '/Sql/GetTestcase.sql',
+                                                  array( 'submissionid' => $sid,
+                                                         'courseid' => $cid,
+                                                         'pre' => $pre)
+                                                  );
+
+        // checks the correctness of the query
+        if ( $result['status'] >= 200 && 
+             $result['status'] <= 299 ){
+
+            $query = Query::decodeQuery( $result['content'] );
+            
+            if (is_array($query)){
+                $query = $query[0];
+            }
+
+            if ( $query->getNumRows( ) !== null && !empty($query->getNumRows( )) && $query->getNumRows( ) > 0 ){
+                
+                $res = Testcase::ExtractTestcase( 
+                                         $query->getResponse( )
+                                         );
+
+                $this->_app->response->setBody( Testcase::encodeTestcase( $res ) );
+
+                $this->_app->response->setStatus( 200 );
+                if ( isset( $result['headers']['Content-Type'] ) )
+                    $this->_app->response->headers->set( 
+                                                        'Content-Type',
+                                                        $result['headers']['Content-Type']
+                                                        );
+
+                $this->_app->stop( );
+            } else {
+                $this->_app->response->setStatus( 404 );
+            }
+        }
+    }
+
+    /**
+     * Edits a process.
+     *
+     * Called when this component receives an HTTP PUT request to
+     * (/$pre)/process(/process)/$processid(/)
+     * The request body should contain a JSON object representing the
+     * process new attributes.
+     *
+     * @param string $processid The id of the process that is being updated.
+     * @param int $pre A optional prefix for the process table.
+     */
+    public function editTestcase( $pre='' , $testcaseid )
+    {
+        $this->loadConfig($pre);
+        $pre = ($pre === '' ? '' : '_') . $pre;
+        
+        Logger::Log( 
+                    'starts POST insertTestcase',
+                    LogLevel::DEBUG
+                    );
+
+        // decode the received course data, as an object
+        $insert = Testcase::decodeTestcase( $this->_app->request->getBody( ) );
+
+        $pre = DBJson::mysql_real_escape_string( $pre );
+        
+        // always been an array
+        $arr = true;
+        if ( !is_array( $insert ) ){
+            $insert = array( $insert );
+            $arr = false;
+        }
+
+        // this array contains the indices of the inserted objects
+        $res = array( );
+        foreach ( $insert as $in ){
+            // starts a query, by using a given file
+
+            //cast process
+            $in->setProcess(Process::decodeProcess($in->getProcess(),false));
+
+            //set submission
+
+            if ($in->getSubmission() === null){
+                if ($in->getProcess()->getSubmission()->getId() !== null){
+                    $mysubmission = clone $in->getProcess()->getSubmission();
+                    $in->getProcess()->setSubmission(null);
+                    $in->setSubmission($mysubmission);
+                } elseif ($in->getProcess()->getRawSubmission()->getId() !== null){
+                    $mysubmission = clone $in->getProcess()->getRawSubmission();
+                    $in->getProcess()->setSubmission(null);
+                    $in->setSubmission($mysubmission);
+                } else {
+                    //Testcases können nicht ohne Submission erstellt werden, eine Fehler-Ausgabe ist nicht nötig 
+                    continue;
+                } 
+            }
+            $in->setInput(null);
+            $in->setOutput(null);
+
+            //file_put_contents('php://stderr', print_r($in, TRUE));
+            //CConfig::getLink($this->_conf->getLinks( ),$linkName)
+
+
+            $result = DBRequest::getRoutedSqlFile( 
+                                                  $this->query,
+                                                  dirname(__FILE__) . '/Sql/EditTestcase.sql',
+                                                  array( 'object' => $in,
+                                                         'testcaseid' => $testcaseid,
+                                                         'pre' => $pre)
+                                                  );
+            
+            // checks the correctness of the query
+            if ( $result['status'] >= 200 && 
+                 $result['status'] <= 299 ){
+                $queryResult = Query::decodeQuery( $result['content'] );
+
+                //file_put_contents('php://stderr', print_r($queryResult, TRUE));
+                if (is_array($queryResult)){
+                    $queryResult = $queryResult[0];
+                }
+
+                if ( $queryResult->getAffectedRows( ) !== null && !empty($queryResult->getAffectedRows( )) && $queryResult->getAffectedRows( ) > 0 ){
+
+                    $res[] = $in;
+                    $this->_app->response->setStatus( 201 );
+                    if ( isset( $result['headers']['Content-Type'] ) )
+                        $this->_app->response->headers->set( 
+                                                            'Content-Type',
+                                                            $result['headers']['Content-Type']
+                                                            );
+                } else {
+                    $this->_app->response->setStatus( 404 );
+                    $this->_app->stop( );
+                }
+                
+            } else {
+                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+                $this->_app->response->setBody( Testcase::encodeTestcase( $res ) );
+                $this->_app->stop( );
+            }
+        }
+
+        if ( !$arr && 
+             count( $res ) == 1 ){
+            $this->_app->response->setBody( Testcase::encodeTestcase( $res[0] ) );
+            
+        } else 
+            $this->_app->response->setBody( Testcase::encodeTestcase( $res ) );
     }
 
     // ist aber nicht Aufrufbar
@@ -176,23 +379,6 @@ class DBOOP
         // soll GET Anfragen behandeln, welche eine mehrzahl von Ergebnissen erwarten
         // (Bsp.: getAllUsers als Array)
         return $this->get($callName,$callName,$params,true,false);
-    }
-
-    /**
-     * Loads the configuration data for the component from CConfig.json file
-     *
-     * @param int $pre A optional prefix for the process table.
-     *
-     * @return an component object, which represents the configuration
-     */
-    public function loadConfig( $pre='' )
-    {
-        // initialize component
-        $this->_conf = $this->_conf->loadConfig( $pre );
-        $this->query = array( CConfig::getLink( 
-                                               $this->_conf->getLinks( ),
-                                               'out'
-                                               ) );
     }
 
     /**
