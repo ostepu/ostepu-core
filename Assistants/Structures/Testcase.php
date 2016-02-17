@@ -150,6 +150,17 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
         $this->submission = $value;
     }
 
+    private $submissionId = null;
+
+     public function getSubmissionId( )
+    {
+        return $this->submissionId;
+    }
+    public function setSubmissionId( $value = null )
+    {
+        $this->submissionId = $value;
+    }
+
     // diese Funktionen sollen das Erstellen neuer Objekte erleichtern, vorallem wenn 
     // die Strukturen aus verschiedenen Strukturen zusammengesetzt wurden und 
     // einzelne Felder für einen Datenbankeintrag benötigt werden
@@ -246,7 +257,7 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
             $this->addInsertData( 
                                  $values,
                                  'OOP_runOutput',
-                                 DBJson::mysql_real_escape_string( json_encode( $this->runOutput ) )
+                                 DBJson::mysql_real_escape_string(  $this->runOutput  )
                                  );
 
         if ( $this->workDir != null )
