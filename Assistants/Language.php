@@ -163,6 +163,9 @@ class Language
         }
         
         foreach($params as $key => $value){
+            if (!is_string($value) && !is_int($value)){
+                $value = json_encode($value);
+            }
             $value = htmlspecialchars($value);
             $res = preg_replace('/([^\\\\])(\$'.$key.')/','${1}'.$value,$res);
         }
