@@ -748,6 +748,8 @@ class LOOP
     public function compute($count)
     {
         $adress = $this->_selfLink[0]->getAddress()."/start/".$count;
+        $testcase = null;
+        $myWorkDir = "";
 
         $result = Request::routeRequest( 
                                         'GET',
@@ -854,7 +856,7 @@ class LOOP
                     } elseif ($testcase->getTestcaseType() == "cx") {
                         $return = $compileSandbox->sandbox_exec('./'.$execFilename,$params,$output);
                     }
-
+                    
                     $output = trim($output,"\t\n\r\0\x0B");
 
                     // validate output
@@ -967,9 +969,10 @@ class LOOP
             }
         }
         
-        $adress = $this->_selfLink[0]->getAddress()."/start/".$count;
-        LOOP::runInBackground($adress);
-
+        if (!empty($testcase) && $testcase->getSubmissionId() !== null) {
+            $adress = $this->_selfLink[0]->getAddress()."/start/".$count;
+            LOOP::runInBackground($adress);
+        }
         
         $this->deleteDir($myWorkDir);
         $this->app->response->setStatus( 200 );
