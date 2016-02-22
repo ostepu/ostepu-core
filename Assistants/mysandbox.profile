@@ -1,6 +1,6 @@
 include /etc/firejail/generic.profile
 
-private-etc /alternatives
+private-etc alternatives
 
 private-bin bash,sed,ls,cat,gcc,cut,find,dirname,basename,as,ld
 
