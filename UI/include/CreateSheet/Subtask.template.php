@@ -120,7 +120,7 @@ include_once dirname(__FILE__) . '/../Helpers.php';
         $formsAllowed=false;
         if (!isset($forms)){
             $formsAllowed = false;
-            $result = Request::get($serverURI.'/DB/DBForm/link/exists/course/' . $cid,array(),'');
+            $result = Request::get((isset($serverURI)?$serverURI:"").'/DB/DBForm/link/exists/course/' . $cid,array(),'');
             if ( $result['status'] === 200 )
                 $formsAllowed = true;
         } else 
@@ -129,7 +129,7 @@ include_once dirname(__FILE__) . '/../Helpers.php';
         $processesAllowed=false;
         if (!isset($processors)){
             $processesAllowed = false;
-            $result = Request::get($serverURI.'/DB/DBProcess/link/exists/course/' . $cid,array(),'');
+            $result = Request::get((isset($serverURI)?$serverURI:"").'/DB/DBProcess/link/exists/course/' . $cid,array(),'');
             if ( $result['status'] === 200 )
                 $processesAllowed = true;
         } else 
