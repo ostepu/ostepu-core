@@ -8,11 +8,12 @@
  */
  header('Content-Type: text/html; charset=utf-8');
  ?>
-<div class="hiddenFiles" style="height: 0px;"><?php
+<div class="hiddenFiles" style="height: 0px;"><?php 
+if (isset($files) && is_array($files) && !empty($files)){
 foreach($files as $key => $file){ 
     $file = File::decodeFile(File::encodeFile($file));
     echo '<input class="hiddenFile" type="hidden" name="exercises[0][subexercises][0][fileParameter][0]['.$file->getHash().']" value=""/>';
- } ?>
+ }} ?>
 </div>
 <table border="0" style="width:100%;" class="testcase-table">
     <tr>
