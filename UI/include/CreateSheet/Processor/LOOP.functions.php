@@ -32,9 +32,10 @@ function LOOP_createParameters(&$subexercise, $key, $oldparameter = null, $filep
         if (isset($filepaths) && !empty($filepaths) && isset($filenames) && !empty($filenames) && isset($fileerrors) && !empty($fileerrors))
         {
             //print_r($fileerrors);
+
             foreach ($filenames[$key] as $key2 => $filename) {
                 $TempFile = File::createFile(NULL,$filename,NULL,$timestamp,NULL,NULL,NULL);
-                $TempFile->setBody( Reference::createReference($filepaths[$key][0]) );
+                $TempFile->setBody( Reference::createReference($filepaths[$key2][0]) );
 
                 $TempFileJSON = File::encodeFile($TempFile);
                 $output = http_post_data($filesystemURI."/file", $TempFileJSON, true, $message);
