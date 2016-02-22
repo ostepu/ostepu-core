@@ -400,7 +400,14 @@ if ($correctExercise == true) {
                                         // if Processor has such function then call it
                                         if (is_callable($functionname, false, $callable_name))
                                         {
-                                            $tempProcessors[$tempKey]->setParameter($callable_name($subexercise, $tempKey, $tempProcessors[$tempKey]->getParameter(), $_FILES['exercises']['tmp_name'][$key1]['subexercises'][$key2]['fileParameter'], $_FILES['exercises']['name'][$key1]['subexercises'][$key2]['fileParameter'],$_FILES['exercises']['error'][$key1]['subexercises'][$key2]['fileParameter'], $logicFileURI, $databaseURI));
+                                            $tempProcessors[$tempKey]->setParameter($callable_name($subexercise,
+                                                                                                   $tempKey,
+                                                                                                   $tempProcessors[$tempKey]->getParameter(),
+                                                                                                   isset($_FILES['exercises']['tmp_name'][$key1]['subexercises'][$key2]['fileParameter'])?$_FILES['exercises']['tmp_name'][$key1]['subexercises'][$key2]['fileParameter']:null,
+                                                                                                   isset($_FILES['exercises']['name'][$key1]['subexercises'][$key2]['fileParameter'])?$_FILES['exercises']['name'][$key1]['subexercises'][$key2]['fileParameter']:null,
+                                                                                                   isset($_FILES['exercises']['error'][$key1]['subexercises'][$key2]['fileParameter'])?$_FILES['exercises']['error'][$key1]['subexercises'][$key2]['fileParameter']:null,
+                                                                                                   $logicFileURI,
+                                                                                                   $databaseURI));
                                         }
                                     }
                                 }
