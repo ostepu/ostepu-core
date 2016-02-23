@@ -424,12 +424,17 @@ class CConfig
                 $links = array( $links );
 
             $changed = false;
-            foreach ( $links as & $link ){
+            $possibleLinks = array();
+            $failed=false;
+            foreach ( $links as &$link ){
 
                 // if a link has no prefix, we have to ask the link target
                 // for the prefix list
                 if ( $link->getPrefix( ) === null ){
-
+                    if ($failed === true){
+                        continue;
+                    }
+                    
                     $result = Request::get( 
                                            $link->getAddress( ) . '/control',
                                            array( ),
@@ -446,8 +451,13 @@ class CConfig
                         $link->setClassFile( $obj->getClassFile( ) );
                         $link->setClassName( $obj->getClassName( ) );
                         $link->setLocalPath( $obj->getLocalPath() );
+                    } else {
+                        $failed = true;
+                        continue;
                     }
                 }
+                
+                $possibleLinks[] = $link;
             }
 
             // if any new prefix was found, we have to store the link definitions
@@ -456,6 +466,8 @@ class CConfig
                 CConfig::saveConfigGlobal( $pre, Component::encodeComponent( $conf ), substr($path,0,-1),$file );
                 $com = $conf;
             }
+            
+            $com->setLinks( $possibleLinks );
             
             CConfig::$onload=false;
             return $com;
