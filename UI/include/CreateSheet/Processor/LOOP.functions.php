@@ -35,7 +35,7 @@ function LOOP_createParameters(&$subexercise, $key, $oldparameter = null, $filep
 
             foreach ($filenames[$key] as $key2 => $filename) {
                 $TempFile = File::createFile(NULL,$filename,NULL,$timestamp,NULL,NULL,NULL);
-                $TempFile->setBody( Reference::createReference($filepaths[$key2][0]) );
+                $TempFile->setBody( Reference::createReference($filepaths[$key][$key2]) );
 
                 $TempFileJSON = File::encodeFile($TempFile);
                 $output = http_post_data($filesystemURI."/file", $TempFileJSON, true, $message);
@@ -52,16 +52,17 @@ function LOOP_createParameters(&$subexercise, $key, $oldparameter = null, $filep
             foreach ($testcase as $key3 => $inputvalue) {
                 if($subexercise['inputDatatype'][$key][$key3] == "Data")
                 {
-                    if(preg_match("/[0-9]+[a-f]+/i", $inputvalue))
+                    if(preg_match("/ID_[0-9]+/i", $inputvalue))
                     {
-                        $response = http_get($databaseURI."/file/hash/".$inputvalue, true, $message);
+
+                        $response = http_get($databaseURI."/file/file/".preg_replace("/ID_/i", "", $inputvalue), true, $message);
 
                         if($message == 200)
                         {
                             $decodedFile = File::decodeFile($response);
                             $input[] = array($subexercise['inputDatatype'][$key][$key3],$decodedFile);
-                            if (!in_array($decodedFile->getHash(), $hashes)) {
-                                $hashes[] = $decodedFile->getHash();
+                            if (!in_array($decodedFile->getFileId(), $hashes)) {
+                                $hashes[] = $decodedFile->getFileId();
                                 $Files[] = $decodedFile;
                             }
                         }
@@ -88,16 +89,16 @@ function LOOP_createParameters(&$subexercise, $key, $oldparameter = null, $filep
             $output;
             if($subexercise['outputDatatype'][$key] == "Data")
             {
-                if(preg_match("/[0-9]+[a-f]+/i", $subexercise['outputParameter'][$key][$key2]))
+                if(preg_match("/ID_[0-9]+/i", $subexercise['outputParameter'][$key][$key2]))
                 {
-                    $response = http_get($databaseURI."/file/hash/".$subexercise['outputParameter'][$key][$key2], true, $message);
+                    $response = http_get($databaseURI."/file/file/".preg_replace("/ID_/i", "", $subexercise['outputParameter'][$key][$key2]), true, $message);
 
                     if($message == 200)
                     {
                         $decodedFile = File::decodeFile($response);
                         $output = array($subexercise['outputDatatype'][$key],$decodedFile);
-                        if (!in_array($decodedFile->getHash(), $hashes)) {
-                            $hashes[] = $decodedFile->getHash();
+                        if (!in_array($decodedFile->getFileId(), $hashes)) {
+                            $hashes[] = $decodedFile->getFileId();
                             $Files[] = $decodedFile;
                         }
 

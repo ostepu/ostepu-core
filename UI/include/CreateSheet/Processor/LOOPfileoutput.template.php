@@ -17,7 +17,7 @@
             <?php
             if(isset($files) && is_array($files) && !empty($files)) 
             foreach ($files as $key => $value) {?>
-                <option value="<?php echo (isset($value) && !empty($value) ? $value->getHash() : '') ;?>"<?php echo (isset($output[1]) && !empty($output[1]) && $output[1]->hash == $value->getHash() ? ' selected="selected"':'');?>><?php echo $value->getDisplayName(); ?></option>
+                <option value="<?php echo (isset($value) && !empty($value) ? 'ID_'.$value->getFileId() : '') ;?>"<?php echo (isset($output[1]) && !empty($output[1]) && $output[1]->fileId == $value->getFileId() ? ' selected="selected"':'');?>><?php echo $value->getDisplayName(); ?></option>
             <?php } ?>
             <option value="Add" <?php //echo (isset($output[0]) && $output[0] == 'Text' ? ' selected="selected"':'');?>><?php echo Language::Get('main','addData', $langTemplate); ?></option>
         </select>
