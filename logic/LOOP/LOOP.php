@@ -374,6 +374,9 @@ class LOOP
                 
                 $studentId = ($submission->getStudentId()!==null ? $submission->getStudentId() : null);
                 
+                $points = (int)$myExercise->getMaxPoints();
+
+                if ($status == 3) {$points = 0;}
                 
                 $marking = Marking::createMarking( 
                                                  null,
@@ -382,8 +385,8 @@ class LOOP
                                                  null,
                                                  null,
                                                  null,
-                                                 $status,
-                                                 (int)$myExercise->getMaxPoints(),
+                                                 4,
+                                                 $points,
                                                  ($submission->getDate()!==null ? $submission->getDate() : time())
                                                  );
                 if (is_object($submission))
