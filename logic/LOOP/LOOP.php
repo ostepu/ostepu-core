@@ -1233,15 +1233,38 @@ class LOOP
                         } elseif ($type == 'custom'){
                             // es können natürlich auch individuelle Programmaufrufe damit konfiguriert werden
                             // dabei liefern die Parameter auch das aufzurufende Programm mit (Gefahr???)
-                            $output = array();
-                            $return = '';
+                            $output = "";
+                            $return = -1;
+
                             $param = implode(' ',$parameter);
                             if ($param!=''){
-                                $param=str_replace('$file',$filePath . '/' . $fileName,$param);
+                                $param=str_replace('$file',escapeshellarg($filePath . '/' . $fileName),$param);
                             } else
-                                $param = $filePath . '/' . $fileName;
+                                $param = escapeshellarg($filePath . '/' . $fileName);
+
+                            $compileconfig = Testcase::decodeTestcase($pro->getParameter())[0]->getInput();
+
+                            if (isset($compileconfig[1]) && !empty($compileconfig[1])) {
+                                // copy compile script to workdir
+                                $compilefile = File::decodeFile($compileconfig[1],false);
+                                $compilefilePath = $compilefile->getAddress();
+
+                                if(!empty($compilefilePath)) {
+                                    $this->xcopy($this->iniconfig['DIR']['files'].'/'.$compilefilePath, $filePath.'/'.$compilefile->getDisplayName(),0777);
+                                    $param = str_replace('$script',$filePath.'/'.$compilefile->getDisplayName(),$param);
+                                }
+
+                            } else {
+                                $param = str_replace('$script','',$param);
+                            }
+
+                            $compileSandbox = new Sandbox();
+                            $compileSandbox->setWorkingDir($filePath);
+                            $compileSandbox->loadProfileFromFile(dirname(__FILE__) . '/../../Assistants/mysandbox.profile');
+
+                            $return = $compileSandbox->sandbox_exec('',$param,$output,true);
                                 
-                            exec('('.$param.') 2>&1', $output, $return);
+                            //exec('('.$param.') 2>&1', $output, $return);
                             
                             if ($return == 0){
                                 // nothing
@@ -1251,26 +1274,38 @@ class LOOP
                                 $pro->setStatus(409);
                                 if (count($output)>0){
                                     $text = '';
-                                    $outputList = $output;
+                                    $outputList = array();
+                                    $output = explode(PHP_EOL, $output);
+
+                                    // entfernt störende Zeichen
+                                    foreach($output as $out){
+                                        $out = trim(trim($out),'^');
+                                        if ($out=='') continue;
+                                        $outputList[] = $out;
+                                    }
                                     
+                                    // nur die ersten 7 Fehler und die Zusammenfassung am Ende (2 Zeilen) behalten
                                     if (count($outputList)>10){
-                                        $outputList[4] = '...';
-                                        for ($i=5;$i<count($outputList)-5;$i++)
+                                        $outputList[7] = '...';
+                                        for ($i=8;$i<count($outputList)-2;$i++)
                                             $outputList[$i]='';
                                     }
                                     
+                                    // nur nichtleere Ausgabezeilen werden zur Aufgabe zusammengefasst
                                     foreach($outputList as $out){
                                         if ($out=='') continue;
                                         $text.=$out."\n";
                                     }
-                                        
+                                    
+                                    $text = trim($text);
+
+                                    // die fertige Fehlermeldung dem Prozessobjekt übergeben    
                                     if (!is_null($showErrorsEnabled) && $showErrorsEnabled == "1")
                                     {
                                         $pro->addMessage($text);
                                     }
                                     $this->createMarking($pro, $text, null, 4);
                                 }
-                                //$this->app->response->setStatus( 409 );
                             }
                         }
                         

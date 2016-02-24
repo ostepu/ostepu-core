@@ -145,21 +145,25 @@ class Sandbox
      *
      * @return the status of executed command
      */
-    public function sandbox_exec($command,$params,&$output = null)
+    public function sandbox_exec($command,$params,&$output = null,$nocmd = false)
     {
         $pathOld = getcwd();
         chdir($this->workingDir);
 
         //check if command exists
 
-        if (Sandbox::command_exist($command) == false)
+        if (!$nocmd && Sandbox::command_exist($command) == false)
         {
             chdir($pathOld);
             return 1; //error status of "which" that means not available
         }
 
         // the path to the command (fixes some issues with javac in sandbox firejail)
-        $realcmd = Sandbox::where_is_command($command);
+        $realcmd = "";
+
+        if (!$nocmd) {
+            $realcmd = Sandbox::where_is_command($command);
+        }
 
 
         // $_SERVER['DOCUMENT_ROOT']
