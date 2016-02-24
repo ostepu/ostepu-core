@@ -6,9 +6,84 @@
 
 
 
-function LOOP_createParameters(&$subexercise, $key, $oldparameter = null, $filepaths, $filenames, $fileerrors, $filesystemURI, $databaseURI)
+function LOOP_createParameters(&$subexercise, $key, $exercisekey, $subexercisekey, $oldparameter = null, $filepaths, $filenames, $fileerrors, $filesystemURI, $databaseURI)
 {
-    $parameters = array(Testcase::createTestcase(null,"compile",array($oldparameter)));
+    $testcaseType = explode(' ',$oldparameter)[0];
+    $compileinput = array($oldparameter);
+
+    // custom Aufruf verarbeiten
+    if ($testcaseType == "custom") {
+        // compileFile verarbeiten
+        if (isset($_FILES['exercises']['tmp_name'][$exercisekey]['subexercises'][$subexercisekey]['compileFileParameter'][$key]) && !empty($_FILES['exercises']['tmp_name'][$exercisekey]['subexercises'][$subexercisekey]['compileFileParameter'][$key])) {
+            $timestamp = time();
+            $TempFile = File::createFile(NULL,$_FILES['exercises']['name'][$exercisekey]['subexercises'][$subexercisekey]['compileFileParameter'][$key],NULL,$timestamp,NULL,NULL,NULL);
+            $TempFile->setBody( Reference::createReference($_FILES['exercises']['tmp_name'][$exercisekey]['subexercises'][$subexercisekey]['compileFileParameter'][$key]) );
+
+            $TempFileJSON = File::encodeFile($TempFile);
+            $output = http_post_data($filesystemURI."/file", $TempFileJSON, true, $message);
+
+            if($message >= 200 && $message <= 299)
+            {
+                $compileinput[] = File::decodeFile($output);
+            }
+            else
+            {
+                $compileinput[] = "";
+            }
+        } elseif (isset($subexercise['compileFileParameter'][$key]) && $subexercise['compileFileParameter'][$key] != "" && is_numeric($subexercise['compileFileParameter'][$key])) {
+            $response = http_get($databaseURI."/file/file/".$subexercise['compileFileParameter'][$key], true, $message);
+
+            if($message == 200)
+            {
+                $compileinput[] = File::decodeFile($response);
+            }
+            else
+            {
+                $compileinput[] = "";
+            }
+        } else {
+            $compileinput[] = "";
+        }
+
+        // runParameter speichern
+        if (isset($subexercise['runParameter'][$key])) {
+            $compileinput[] = $subexercise['runParameter'][$key];
+        }
+
+        // runFile verarbeiten
+        if (isset($_FILES['exercises']['tmp_name'][$exercisekey]['subexercises'][$subexercisekey]['runFileParameter'][$key]) && !empty($_FILES['exercises']['tmp_name'][$exercisekey]['subexercises'][$subexercisekey]['runFileParameter'][$key])) {
+            $timestamp = time();
+            $TempFile = File::createFile(NULL,$_FILES['exercises']['name'][$exercisekey]['subexercises'][$subexercisekey]['runFileParameter'][$key],NULL,$timestamp,NULL,NULL,NULL);
+            $TempFile->setBody( Reference::createReference($_FILES['exercises']['tmp_name'][$exercisekey]['subexercises'][$subexercisekey]['runFileParameter'][$key]) );
+
+            $TempFileJSON = File::encodeFile($TempFile);
+            $output = http_post_data($filesystemURI."/file", $TempFileJSON, true, $message);
+
+            if($message >= 200 && $message <= 299)
+            {
+                $compileinput[] = File::decodeFile($output);
+            }
+            else
+            {
+                $compileinput[] = "";
+            }
+        } elseif (isset($subexercise['runFileParameter'][$key]) && $subexercise['runFileParameter'][$key] != "" && is_numeric($subexercise['runFileParameter'][$key])) {
+            $response = http_get($databaseURI."/file/file/".$subexercise['runFileParameter'][$key], true, $message);
+
+            if($message == 200)
+            {
+                $compileinput[] = File::decodeFile($response);
+            }
+            else
+            {
+                $compileinput[] = "";
+            }
+        } else {
+            $compileinput[] = "";
+        }
+    }
+
+    $parameters = array(Testcase::createTestcase(null,"compile",$compileinput));
 
     if (isset($subexercise['showErrorsParameter'][$key][0]) && $subexercise['showErrorsParameter'][$key][0] == "1")
     {
@@ -19,7 +94,7 @@ function LOOP_createParameters(&$subexercise, $key, $oldparameter = null, $filep
         $parameters[0]->setErrorsEnabled("0");
     }
     
-    $testcaseType = explode(' ',$oldparameter)[0];
+    
     $timestamp = time();
 
     if (isset($subexercise['inputDatatype'][$key]) && !empty($subexercise['inputDatatype'][$key]) && $subexercise['inputDatatype'][$key] !== array() 

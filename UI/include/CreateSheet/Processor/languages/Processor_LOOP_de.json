@@ -4,6 +4,7 @@
         "executable": "Anwendung",
         "parameters": "Eingabeparameter",
         "compileparameters": "Kompilierungsparameter",
+        "runparameters": "Ausführungsparameter",
         "testcount": "Testdurchgänge",
         "update": "aktualisieren",
         "output": "Ausgabe",
@@ -15,6 +16,7 @@
         "regex": "regulärer Ausdruck",
         "selectFile": "Datei auswählen",
         "noData": "keine Datei",
+        "noScript": "keine Skriptdatei",
         "addData": "Datei hinzufügen",
         "showErrors": "Rückmeldung anzeigen?"
     }

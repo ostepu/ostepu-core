@@ -12,6 +12,9 @@ function loop_ready() {
     $('a.deleteCol').unbind('click').on('click',deleteCol);
     $('td.input-parameter').find('select').unbind('change').on('change',changeFile);
     $('td.output-parameter').find('select').unbind('change').on('change',changeFile);
+    $('select.parameter-choice.exe-type').unbind('change').on('change',createCustomFields);
+    $('input.runFile.fileButton').unbind('change').on('change',changeCustomFiletext);
+    $('input.compileFile.fileButton').unbind('change').on('change',changeCustomFiletext);
 
     renameTestcases();
     //console.log($('.add-test'));
@@ -63,6 +66,57 @@ function deleteRow(event) {
     else
     {
         testcase_table.parent().find("a.delete-test").trigger("click");
+    }
+}
+
+function changeCustomFiletext(event) {
+    var trig = $(this);
+
+    var filepath = trig.val();
+    var filename = filepath.replace(/^.*?([^\\\/]*)$/, '$1');
+    
+    trig.parent().find("span").html(filename);
+}
+
+function createCustomFields(event) {
+    var trig = $(this);
+    var table = trig.closest("table");
+    var runParameterInput = table.find(".runParameter");
+    var runFileButton = table.find("input.runFile.fileButton");
+    var compileFileButton = table.find("input.compileFile.fileButton");
+    var compileFileText = table.find("span.compileFile");
+    var selecttr = runParameterInput.closest("tr");
+    var compileParameterInput = compileFileButton.parent().find("input.parameter-choice");
+
+    if (trig.val() == "custom") {
+        selecttr.fadeIn();
+        compileFileButton.fadeIn();
+        compileFileText.fadeIn();
+        runParameterInput.prop('disabled', false);
+        compileFileButton.prop('disabled', false);
+        runFileButton.prop('disabled', false);
+
+        // change value
+        var oldtext = compileParameterInput.val();
+        var newtext = "$script " + oldtext;
+        compileParameterInput.val(newtext);
+
+        // map events
+        compileFileButton.unbind('change').on('change',changeCustomFiletext);
+        runFileButton.unbind('change').on('change',changeCustomFiletext);
+    } else {
+        if (selecttr.css('display') != 'none') {
+            selecttr.fadeOut();
+            compileFileButton.fadeOut();
+            compileFileText.fadeOut();
+            runParameterInput.prop('disabled', true);
+            compileFileButton.prop('disabled', true);
+            runFileButton.prop('disabled', true);
+
+            var oldtext = compileParameterInput.val();
+            var newtext = oldtext.replace("$script ", "");
+            compileParameterInput.val(newtext);
+        }
     }
 }
 

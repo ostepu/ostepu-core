@@ -402,6 +402,8 @@ if ($correctExercise == true) {
                                         {
                                             $tempProcessors[$tempKey]->setParameter($callable_name($subexercise,
                                                                                                    $tempKey,
+                                                                                                   $key1,
+                                                                                                   $key2,
                                                                                                    $tempProcessors[$tempKey]->getParameter(),
                                                                                                    isset($_FILES['exercises']['tmp_name'][$key1]['subexercises'][$key2]['fileParameter'])?$_FILES['exercises']['tmp_name'][$key1]['subexercises'][$key2]['fileParameter']:null,
                                                                                                    isset($_FILES['exercises']['name'][$key1]['subexercises'][$key2]['fileParameter'])?$_FILES['exercises']['name'][$key1]['subexercises'][$key2]['fileParameter']:null,
