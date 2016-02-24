@@ -816,7 +816,7 @@ class LOOP
             $myOutput = json_decode($testcase->getOutput());
 
             if (isset($myInputs) && !empty($myInputs) && isset($myOutput) && !empty($myOutput)) {
-                if ($testcase->getTestcaseType() == "java" || $testcase->getTestcaseType() == "cx") {
+                if ($testcase->getTestcaseType() == "java" || $testcase->getTestcaseType() == "cx" || $testcase->getTestcaseType() == "custom") {
                     $execFilename = $this->scanForExecutables($myWorkDir);
 
                     $params = "";
@@ -845,6 +845,33 @@ class LOOP
 
                     $params = trim($params);
 
+                    if ($testcase->getTestcaseType() == "custom") {
+                        $compileconfig = Testcase::decodeTestcase($testcase->getProcess()[0]->getParameter())[0]->getInput();
+
+                        $param = "";
+
+                        // get aufruf von Process und füge Inputparameter ein
+                        if (isset($compileconfig[2]) && !empty($compileconfig[2])) {
+                            $param = $compileconfig[2];
+                            $param = str_replace('$parameters',$params,$param);
+                        }
+
+                        if (isset($compileconfig[3]) && !empty($compileconfig[3])) {
+                            // copy compile script to workdir
+                            $compilefile = File::decodeFile($compileconfig[3],false);
+                            $compilefilePath = $compilefile->getAddress();
+
+                            if(!empty($compilefilePath)) {
+                                $this->xcopy($this->iniconfig['DIR']['files'].'/'.$compilefilePath, $myWorkDir .'/'.$compilefile->getDisplayName(),0777);
+                                $param = str_replace('$script',$myWorkDir .'/'.$compilefile->getDisplayName(),$param);
+                            }
+
+                        } else {
+                            $param = str_replace('$script','',$param);
+                        }
+                        $params = $param;
+                    }
+
                     // execute program in sandbox
                     $compileSandbox = new Sandbox();
                     $compileSandbox->setWorkingDir($myWorkDir);
@@ -854,10 +881,14 @@ class LOOP
                     $output = "";
                     $ValidationOK = false;
 
+
+
                     if ($testcase->getTestcaseType() == "java") {
                         $return = $compileSandbox->sandbox_exec('java',$execFilename." ".$params,$output);
                     } elseif ($testcase->getTestcaseType() == "cx") {
                         $return = $compileSandbox->sandbox_exec('./'.$execFilename,$params,$output);
+                    } elseif ($testcase->getTestcaseType() == "custom") {
+                        $return = $compileSandbox->sandbox_exec('',$params,$output,true);
                     }
                     
                     $output = trim($output,"\t\n\r\0\x0B");
