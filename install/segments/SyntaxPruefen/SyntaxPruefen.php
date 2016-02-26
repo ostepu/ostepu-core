@@ -110,7 +110,7 @@ class SyntaxPruefen
             $fileList = array();
             $fileListAddress = array();
             $componentFiles = array();
-            PlugInsInstallieren::gibPluginDateien($dat, $fileList, $fileListAddress, $componentFiles);
+            PlugInsInstallieren::gibPluginDateien($data, $dat, $fileList, $fileListAddress, $componentFiles);
             unset($fileListAddress);
             unset($componentFiles);
             $res['plugins'][$plug]['filesAmount'] = count($fileList);

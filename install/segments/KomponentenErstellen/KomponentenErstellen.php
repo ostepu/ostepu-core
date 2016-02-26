@@ -292,7 +292,7 @@ class KomponentenErstellen
                 // Dateiliste zusammentragen
                 $fileList = array();
                 $fileListAddress = array();
-                PlugInsInstallieren::gibPluginDateien($input, $fileList, $fileListAddress, $componentFiles);
+                PlugInsInstallieren::gibPluginDateien($data, $input, $fileList, $fileListAddress, $componentFiles);
                 unset($fileList);
                 unset($fileListAddress);
             }

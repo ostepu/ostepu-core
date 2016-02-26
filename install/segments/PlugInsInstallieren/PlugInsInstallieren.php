@@ -195,7 +195,7 @@ class PlugInsInstallieren
                     $fileList = array();
                     $fileListAddress = array();
                     $componentFiles = array();
-                    self::gibPluginDateien($input, $fileList, $fileListAddress, $componentFiles);
+                    self::gibPluginDateien($data, $input, $fileList, $fileListAddress, $componentFiles);
                     $fileCount=count($fileList);
                     foreach($fileList as $f){
                         if (is_readable($f)){
@@ -275,7 +275,7 @@ class PlugInsInstallieren
         return $res;
     }
     
-    public static function evaluierePlugin($input)
+    public static function evaluierePlugin($data, $input)
     {
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $mainPath = $data['PL']['localPath'];
@@ -445,7 +445,7 @@ class PlugInsInstallieren
     }
 
     
-    public static function gibPluginDateien($input, &$fileList, &$fileListAddress, &$componentFiles)
+    public static function gibPluginDateien($data, $input, &$fileList, &$fileListAddress, &$componentFiles)
     {
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $mainPath = $data['PL']['localPath'];
@@ -626,8 +626,8 @@ class PlugInsInstallieren
                     $dat = file_get_contents($file);
                     $dat = json_decode($dat,true);
                     if (!isset($dat['name'])) continue;
-                    self::evaluierePlugin($dat);
-                    self::gibPluginDateien($dat, $fileList, $fileListAddress, $componentFiles);
+                    self::evaluierePlugin($data, $dat);
+                    self::gibPluginDateien($data, $dat, $fileList, $fileListAddress, $componentFiles);
                 }
             }
          
@@ -679,7 +679,7 @@ class PlugInsInstallieren
                     $fileList = array();
                     $fileListAddress = array();
                     $componentFiles = array();
-                    self::gibPluginDateien($input, $fileList, $fileListAddress, $componentFiles);
+                    self::gibPluginDateien($data, $input, $fileList, $fileListAddress, $componentFiles);
                     $fileList[] = $mainPath.'/install/config/'.$data['SV']['name'].'.ini';
                     $fileListAddress[] = 'install/config/'.$data['SV']['name'].'.ini';
 
