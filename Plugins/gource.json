@@ -1,0 +1,16 @@
+{
+    "name": "GOURCE",
+    "version": "1.0",
+    "files": [
+        {
+            "path": "install/segments/ext_Gource/",
+            "type": "git",
+            "params": {
+                "name": "gource",
+                "branch": "master",
+                "URL": "https://github.com/tilluhlig/Gource",
+                "path": "install/segments/ext_Gource/"
+            }
+        }
+    ]
+}
