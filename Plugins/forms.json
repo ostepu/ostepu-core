@@ -11,6 +11,7 @@
             "path": "/",
             "type": "git",
             "params": {
+                "name":"forms",
                 "branch": "master",
                 "URL": "https://github.com/tilluhlig/Forms",
                 "path": "install/vendor/Forms/"

@@ -6,6 +6,7 @@
             "path": "vendor/Docu/",
             "type": "git",
             "params": {
+                "name":"ostepu_docu",
                 "branch": "master",
                 "URL": "https://github.com/ostepu/system-docu",
                 "path": "vendor/Docu/"

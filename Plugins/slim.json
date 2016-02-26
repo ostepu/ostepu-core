@@ -6,6 +6,7 @@
             "path": "Assistants/vendor/Slim/",
             "type": "git",
             "params": {
+                "name": "slim",
                 "branch": "master",
                 "URL": "https://github.com/tilluhlig/Slim",
                 "path": "Assistants/vendor/Slim/"
