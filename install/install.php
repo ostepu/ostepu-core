@@ -155,9 +155,39 @@ class Installer
                 $segs[] = $file;
             }
             foreach($segs as $seg){
-                if (is_dir(dirname(__FILE__) . '/segments/'.$seg)) continue;
-                include_once dirname(__FILE__) . '/segments/'.$seg;
-                Einstellungen::$segments[] = substr($seg,0,count($seg)-5);
+                if (!is_dir(dirname(__FILE__) . '/segments/'.$seg)){
+                    continue;
+                }
+                $segConfFile = dirname(__FILE__) . '/segments/'.$seg.'/segment.json';
+                if (!file_exists($segConfFile)){
+                    continue;
+                }
+                $segConf = json_decode(file_get_contents($segConfFile),true);
+                foreach($segConf as $conf){
+                    if (!isset($conf['instructions']) || !isset($conf['name'])){
+                        continue;
+                    }
+                    
+                    $type = $conf['instructions']['type'];
+                    $params = (isset($conf['instructions']['params']) ? $conf['instructions']['params'] : array());
+                    
+                    if ($type === 'php'){
+                        if (isset($params['run']) && isset($params['file']) && isset($params['className'])){
+                            if ($params['run'] === 'include'){
+                                if (file_exists(dirname(__FILE__) . '/segments/'.$seg.'/'.$params['file'])){
+                                    include_once dirname(__FILE__) . '/segments/'.$seg.'/'.$params['file'];
+                                    Einstellungen::$segments[] = $params['className'];
+                                } else {
+                                    // die angegebene Datei existiert nicht
+                                }
+                            } else {
+                                // es wird kein anderer Typ unterstützt
+                            }
+                        }
+                    } else {
+                        // es wird kein anderer Typ unterstützt
+                    }
+                }
             }
             @closedir($handle);
         }
