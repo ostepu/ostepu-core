@@ -5,7 +5,7 @@ class PathPruefen
     public static $name = 'checkPath';
     public static $installed = false;
     public static $page = 0;
-    public static $rank = 10;
+    public static $rank = 150;
     public static $enabledShow = true;
     private static $langTemplate='PathPruefen';
 
@@ -18,14 +18,14 @@ class PathPruefen
         Installation::log(array('text'=>Installation::Get('main','languageInstantiated')));
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
-  
+
     public static function show($console, $result, $data)
     {
         if (!Einstellungen::$accessAllowed) return;
-          
+
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $text = '';
-        $text .= Design::erstelleBeschreibung($console,Installation::Get('modules','description',self::$langTemplate));
+        $text .= Design::erstelleBeschreibung($console,Installation::Get('applications','description',self::$langTemplate));
 
         if (isset($result[self::$onEvents['check']['name']]) && $result[self::$onEvents['check']['name']]!=null){
            $result =  $result[self::$onEvents['check']['name']];
@@ -40,16 +40,16 @@ class PathPruefen
         if ($content!=null){
             foreach ($content as $moduleName => $res){
                 $status = $res[0];
-                $command = $res[1];
+                $desc = $res[1];
                 if (!$console){
-                    $text .= Design::erstelleZeile($console, $command, 'e', ($status ? Installation::Get('main','ok') : "<font color='red'>".Installation::Get('main','fail')."</font>"), 'v');
+                    $text .= Design::erstelleZeile($console, $desc, 'e', ($status ? Installation::Get('main','ok') : "<font color='red'>".Installation::Get('main','fail')."</font>"), 'v');
                 } else
-                    $text .= $command.' '.($status ? Installation::Get('main','ok') : Installation::Get('main','fail'))."\n";
+                    $text .= $desc.' '.($status ? Installation::Get('main','ok') : Installation::Get('main','fail'))."\n";
             }
         } else
             $text .= Design::erstelleZeile($console, "<font color='red'>".Installation::Get('main','fail')."</font>", 'e');
 
-        echo Design::erstelleBlock($console, Installation::Get('modules','title',self::$langTemplate), $text);
+        echo Design::erstelleBlock($console, Installation::Get('applications','title',self::$langTemplate), $text);
 
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return null;
@@ -60,10 +60,10 @@ class PathPruefen
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $res=null;
         if (constant('ISCLI')){
-            Installation::log(array('text'=>Installation::Get('modules','ISCLIEnabled',self::$langTemplate)));
+            Installation::log(array('text'=>Installation::Get('applications','ISCLIEnabled',self::$langTemplate)));
             ///$res = json_decode(Request::get($data['PL']['url'].'/install/install.php/checkModulesExtern',array(),'')['content'],true);
         } else {
-            Installation::log(array('text'=>Installation::Get('modules','ISCLIDisabled',self::$langTemplate)));
+            Installation::log(array('text'=>Installation::Get('applications','ISCLIDisabled',self::$langTemplate)));
             $res = PathPruefen::checkModules($data,$fail,$errno,$error);
         }
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
@@ -75,24 +75,28 @@ class PathPruefen
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $result = array();
 
-        $result['git'] = array(self::element_exists('git --version'),'git --version');
-        $result['mysqldump'] = array(self::element_exists('mysqldump --version'),'mysqldump --version');
-        $result['php'] = array(self::element_exists('php -v'),'php -v');
+        // sammelt alle Aufrufe ein, welche geprüft werden sollen
+        $applications = Installation::collect('checkExecutability',$data);
 
-        ///Installation::log(array('text'=>Installation::Get('modules','checkResult',self::$langTemplate,array('res'=>json_encode($result)))));
+        // führt die Befehle aus und sammelt die Ergebnisse für die Darstellung
+        foreach($applications as $app){
+            $result[$app['name']] = array(self::element_exists($app['exec']),$app['desc']);
+        }
+
+        Installation::log(array('text'=>Installation::Get('applications','checkResult',self::$langTemplate,array('res'=>json_encode($result)))));
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return $result;
     }
 
-    public static function element_exists($module)
+    public static function element_exists($exec)
     {
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
-        //Installation::log(array('text'=>Installation::Get('modules','checkModule',self::$langTemplate,array('module'=>$module))));
-        exec('('.$module.') 2>&1', $output, $return);
+        Installation::log(array('text'=>Installation::Get('applications','checkExec',self::$langTemplate,array('exec'=>$exec))));
+        exec('('.$exec.') 2>&1', $output, $return);
         if ($return === 0){
             $res = true;
         } else {
-            $res = false;            
+            $res = false;
         }
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return $res;
