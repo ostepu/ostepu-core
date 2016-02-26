@@ -63,6 +63,18 @@ class Installation
         Installation::log(array('text'=>'beende Funktion'));
     }
 
+    public static function collect($name,$data)
+    {
+        Installation::log(array('text'=>'starte Funktion'));
+        $res = array();
+        foreach(Einstellungen::$segments as $segs){
+            if (!is_callable("{$segs}::".$name)) continue;
+            $res = array_merge($res,call_user_func("{$segs}::".$name,$data));
+        }
+        Installation::log(array('text'=>'beende Funktion'));
+        return $res;
+    }
+
     public static function collectPlatformSettings($data)
     {
         Installation::log(array('text'=>'starte Funktion'));
@@ -154,16 +166,16 @@ class Installation
     */
     public static function read_all_files($root = '.', $exclude = array())
     {
-      
+
       Installation::log(array('text'=>'starte Funktion'));
       $files  = array('files'=>array(), 'dirs'=>array());
       $directories  = array();
       $root = realpath($root);
-    
+
       foreach($exclude as &$ex){
           $ex = realpath($ex);
       }
-    
+
       $last_letter  = $root[strlen($root)-1];
       $root  = ($last_letter == DIRECTORY_SEPARATOR) ? $root : $root.DIRECTORY_SEPARATOR;
 
@@ -171,7 +183,7 @@ class Installation
 
       while (sizeof($directories)) {
         $dir  = array_pop($directories);
-      
+
         if ($handle = opendir($dir)) {
           while (false !== ($file = readdir($handle))) {
             if ($file == '.' || $file == '..') {
@@ -231,7 +243,7 @@ class Installation
 
         Logger::Log($data['text'],$data['logLevel'],false,Installation::$logFile, LogLevel::$names[$data['logLevel']] . ','.$data['name'],false,Installation::$logLevel);
     }
-  
+
     public static function Get($area, $cell, $name='default', $params=array())
     {
         $value = Language::Get($area, $cell, $name, $params);
@@ -239,5 +251,21 @@ class Installation
             Installation::log(array('text'=>Language::Get('main','unknownPlaceholder','default', array('name'=>$area.'::'.$cell)),'logLevel'=>LogLevel::ERROR));
         }
         return $value;
+    }
+
+    // @http://www.roemische-ziffern.de/Roemische-Zahlen-PHP-berechnen.html
+    public static function intToRoman($arabische_zahl)
+    {
+           $ar_r = array( "M","CM","D","CD","C","XC","L","XL","X","IX","V","IV","I");
+           $ar_a = array(1000, 900,500, 400,100, 90,  50, 40,  10,   9,  5,   4,  1);
+           $roemische_zahl = "";
+
+           for ($count=0; $count < count($ar_a); $count++) {
+              while ($arabische_zahl >= $ar_a[$count]) {
+                 $roemische_zahl .= $ar_r[$count];
+                 $arabische_zahl -= $ar_a[$count];
+              }
+           }
+        return $roemische_zahl;
     }
 }

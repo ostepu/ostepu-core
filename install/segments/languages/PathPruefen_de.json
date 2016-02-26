@@ -1,0 +1,8 @@
+{"applications": {
+    "title": "Externe Anwendungen",
+    "description": "Dieser Bereich prüft, ob von der Plattform benötigte Anwendungen vorhanden/zugreifbar sind.",
+    "ISCLIEnabled": "ISCLI aktiv",
+    "ISCLIDisabled": "ISCLI inaktiv",
+    "checkResult": "Resultat: $res",
+    "checkExec": "prüfe: $exec"
+}}

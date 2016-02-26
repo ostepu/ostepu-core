@@ -41,12 +41,20 @@ class SyntaxPruefen
         return $res;
     }
 
+    public static function checkExecutability($data)
+    {
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
+        $res = array(['name'=>'php','exec'=>'php -v','desc'=>'php -v']);
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
+        return $res;
+    }
+
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
         Installation::log(array('text'=>Installation::Get('main','languageInstantiated')));
-      
+
         $def = self::getDefaults();
 
         $text = '';
@@ -57,14 +65,14 @@ class SyntaxPruefen
         self::$initialized = true;
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
-  
+
     private static $pluginFiles=null;
     private static function getPluginFiles()
     {
         if(self::$pluginFiles !== null){
             return self::$pluginFiles;
         }
-      
+
         self::$pluginFiles = array();
         if ($handle = @opendir(dirname(__FILE__) . '/../../Plugins')) {
             while (false !== ($file = readdir($handle))) {
@@ -74,14 +82,14 @@ class SyntaxPruefen
             }
             closedir($handle);
         }
-      
+
         return self::$pluginFiles;
     }
 
     public static function show($console, $result, $data)
     {
         if (!Einstellungen::$accessAllowed) return;
-          
+
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $pluginFiles = self::getPluginFiles();
         $text='';
@@ -89,12 +97,12 @@ class SyntaxPruefen
 
         if (self::$onEvents['validateFiles']['enabledInstall'])
             $text .= Design::erstelleZeile($console, Installation::Get('validation','validateFilesDesc',self::$langTemplate), 'e',  Design::erstelleSubmitButton(self::$onEvents['validateFiles']['event'][0],Installation::Get('validation','validateFiles',self::$langTemplate)), 'h');
-       
+
         $validateFiles=false;
         if (isset($result[self::$onEvents['validateFiles']['name']])){
             $validateFiles=true;
         }
-       
+
         if ($validateFiles){
             $res = $result[self::$onEvents['validateFiles']['name']]['content'];
             foreach($res['plugins'] as $plug){
@@ -124,32 +132,32 @@ class SyntaxPruefen
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $mainPath = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '../..');
         $mainPath = str_replace(array("\\","/"), array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR), $mainPath);
-      
+
         if (isset($input['files'])){
             $files = $input['files'];
             if (!is_array($files)) $files = array($files);
-          
+
             foreach ($files as $file){
                 $type = 'local';
                 $params = array();
                 $exclude = array();
                 $path = null;
                 $sizePath = null;
-              
+
                 if (isset($file['path'])){
                     $path = realpath($mainPath . DIRECTORY_SEPARATOR . $file['path']);
                     $sizePath = $path;
                 }
-              
+
                 if (isset($file['type'])){
                     $type = $file['type'];
                 }
-              
+
                 if (isset($file['params'])){
                     $params = $file['params'];
                 }
-              
-                if ($type === 'git'){              
+
+                if ($type === 'git'){
                     $params['path'] = rtrim($params['path'],"\\/");
                     $location = $mainPath . DIRECTORY_SEPARATOR . $params['path'];
                     Einstellungen::generatepath($location);
@@ -158,8 +166,8 @@ class SyntaxPruefen
                     $repo = $params['URL'];
                     $branch = $params['branch'];
                     $exclude[] = $location . DIRECTORY_SEPARATOR . '.git';
-                  
-              
+
+
                     if (isset($file['exclude'])){
                         $tempExclude = $file['exclude'];
                         if (!is_array($exclude)) $exclude = array($exclude);
@@ -169,12 +177,12 @@ class SyntaxPruefen
                         }
                         $exclude = array_merge($exclude, $tempExclude);
                     }
-                  
+
                     if (!file_exists($location."/.git")){
                         // initialisieren
-                        continue;                       
-                    }   
-                  
+                        continue;
+                    }
+
                     $found = Installation::read_all_files($location, $exclude);
                     if ($location . DIRECTORY_SEPARATOR === $path){
                         // kein Verschieben notwendig
@@ -187,14 +195,14 @@ class SyntaxPruefen
                             $res = @copy($temp, $file);
                         }
                     }
-                  
+
                     foreach($found['files'] as $temp){
                         $file = substr($temp,strlen($location)+1);
                         $file = $path . DIRECTORY_SEPARATOR . $file;
                         $fileList[] = $file;
                         $fileListAddress[] = substr($file,strlen($mainPath)+1);
                     }
-                  
+
                 } elseif ($type === 'local'){
                     if (isset($path) && isset($file['exclude'])){
                         $exclude = $file['exclude'];
@@ -204,8 +212,8 @@ class SyntaxPruefen
                             $ex = $path . DIRECTORY_SEPARATOR . $ex;
                         }
                     }
-              
-              
+
+
                     if (isset($sizePath)){
                         if (is_dir($sizePath)){
                             $found = Installation::read_all_files($sizePath, $exclude);
@@ -229,7 +237,7 @@ class SyntaxPruefen
             foreach ($files as $file){
                 if (isset($file['conf'])){
                     $file['conf'] = str_replace(array("\\","/"), array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR), $file['conf']);
-                  
+
                     if (!file_exists($mainPath . DIRECTORY_SEPARATOR . $file['conf']) || !is_readable($mainPath . DIRECTORY_SEPARATOR . $file['conf'])) continue;
                     $componentFiles[] = $mainPath . DIRECTORY_SEPARATOR . $file['conf'];
                     $definition = file_get_contents($mainPath . DIRECTORY_SEPARATOR . $file['conf']);
@@ -268,7 +276,7 @@ class SyntaxPruefen
                 $newFileListAddress[$a] = $fileList[$key];
             }
         }
-      
+
         $fileListAddress = array();
         $fileList = array();
         foreach ($newFileListAddress as $key => $a){
@@ -284,12 +292,12 @@ class SyntaxPruefen
         $res = array();
         $pluginFiles = self::getPluginFiles();
         $res['plugins'] = array();
-       
+
         // hier die möglichen Erweiterungen ausgeben, zudem noch die Daten dieser Erweiterungen
         foreach ($pluginFiles as $plug){
             $res['plugins'][$plug] = array();
             $res['plugins'][$plug]['results'] = array();
-       
+
             $dat = file_get_contents(dirname(__FILE__) . '/../../Plugins/'.$plug);
             $dat = json_decode($dat,true);
             $name = isset($dat['name']) ? $dat['name'] : '???';
@@ -340,7 +348,7 @@ class SyntaxPruefen
                                     $res['plugins'][$plug]['results'][] = array(realpath($f),'php',$output);
                             }
                         }
-                      
+
                         if ($fileSize>0 && strtolower(substr($f,-4))==='.ini'){
                             // validiere die ini Datei
                             $cont = file_get_contents($f);
@@ -353,7 +361,7 @@ class SyntaxPruefen
                 }
             }
         }
-       
+
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return $res;
     }
