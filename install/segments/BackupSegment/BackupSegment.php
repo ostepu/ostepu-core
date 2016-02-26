@@ -200,7 +200,7 @@ class BackupSegment
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $res = array();
 
-        $mainPath = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '../..');
+        $mainPath = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '../../..');
         $mainPath = str_replace(array("\\","/"), array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR), $mainPath);
         $location = $data['BACK']['path'];
         Einstellungen::generatepath($location);

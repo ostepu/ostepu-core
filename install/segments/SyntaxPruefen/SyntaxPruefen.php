@@ -24,7 +24,7 @@ class SyntaxPruefen
         $res = array();
         $pluginFiles = self::getPluginFiles();
         foreach($pluginFiles as $plug){
-            $filePath = dirname(__FILE__) . '/../../Plugins/'.$plug;
+            $filePath = dirname(__FILE__) . '/../../../Plugins/'.$plug;
             if (is_readable($filePath)){
                 $input = file_get_contents($filePath);
                 $input = json_decode($input,true);
@@ -74,10 +74,10 @@ class SyntaxPruefen
         }
 
         self::$pluginFiles = array();
-        if ($handle = @opendir(dirname(__FILE__) . '/../../Plugins')) {
+        if ($handle = @opendir(dirname(__FILE__) . '/../../../Plugins')) {
             while (false !== ($file = readdir($handle))) {
                 if (substr($file,-5)!='.json' || $file=='.' || $file=='..') continue;
-                if (is_dir(dirname(__FILE__) . '/../../Plugins/'.$file)) continue;
+                if (is_dir(dirname(__FILE__) . '/../../../Plugins/'.$file)) continue;
                 self::$pluginFiles[] = $file;
             }
             closedir($handle);
@@ -130,7 +130,7 @@ class SyntaxPruefen
     public static function gibPluginDateien($input, &$fileList, &$fileListAddress, &$componentFiles)
     {
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
-        $mainPath = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '../..');
+        $mainPath = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '../../..');
         $mainPath = str_replace(array("\\","/"), array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR), $mainPath);
 
         if (isset($input['files'])){
@@ -298,7 +298,7 @@ class SyntaxPruefen
             $res['plugins'][$plug] = array();
             $res['plugins'][$plug]['results'] = array();
 
-            $dat = file_get_contents(dirname(__FILE__) . '/../../Plugins/'.$plug);
+            $dat = file_get_contents(dirname(__FILE__) . '/../../../Plugins/'.$plug);
             $dat = json_decode($dat,true);
             $name = isset($dat['name']) ? $dat['name'] : '???';
             $version = isset($dat['version']) ? $dat['version'] : null;
@@ -306,7 +306,7 @@ class SyntaxPruefen
             $versionText = isset($version) ? ' v'.$version : '';
             $res['plugins'][$plug]['nameText'] = $name.$versionText;
 
-            $file = dirname(__FILE__) . '/../../Plugins/'.$plug;
+            $file = dirname(__FILE__) . '/../../../Plugins/'.$plug;
             $fileCount=0;
             $fileSize=0;
             $componentCount=0;

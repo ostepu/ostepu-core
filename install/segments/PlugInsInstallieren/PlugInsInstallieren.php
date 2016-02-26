@@ -35,7 +35,7 @@ class PlugInsInstallieren
         $res = array();
         $pluginFiles = self::getPluginFiles();
         foreach($pluginFiles as $plug){
-            $filePath = dirname(__FILE__) . '/../../Plugins/'.$plug;
+            $filePath = dirname(__FILE__) . '/../../../Plugins/'.$plug;
             if (is_readable($filePath)){
                 $input = file_get_contents($filePath);
                 $input = json_decode($input,true);
@@ -79,10 +79,10 @@ class PlugInsInstallieren
         }
      
         self::$pluginFiles = array();
-        if ($handle = @opendir(dirname(__FILE__) . '/../../Plugins')) {
+        if ($handle = @opendir(dirname(__FILE__) . '/../../../Plugins')) {
             while (false !== ($file = readdir($handle))) {
                 if (substr($file,-5)!='.json' || $file=='.' || $file=='..') continue;
-                if (is_dir(dirname(__FILE__) . '/../../Plugins/'.$file)) continue;
+                if (is_dir(dirname(__FILE__) . '/../../../Plugins/'.$file)) continue;
                 self::$pluginFiles[] = $file;
             }
             closedir($handle);
@@ -116,7 +116,7 @@ class PlugInsInstallieren
 
         // hier die möglichen Erweiterungen ausgeben, zudem noch die Daten dieser Erweiterungen
         foreach ($pluginFiles as $plug){
-            $dat = file_get_contents(dirname(__FILE__) . '/../../Plugins/'.$plug);
+            $dat = file_get_contents(dirname(__FILE__) . '/../../../Plugins/'.$plug);
             $dat = json_decode($dat,true);
             $name = isset($dat['name']) ? $dat['name'] : '???';
             $version = isset($dat['version']) ? $dat['version'] : null;
@@ -155,7 +155,7 @@ class PlugInsInstallieren
 
           
             if (!$isUpdate && isset($data['PLUG']['details']) && $data['PLUG']['details'] === 'details'){
-                $file = dirname(__FILE__) . '/../../Plugins/'.$plug;
+                $file = dirname(__FILE__) . '/../../../Plugins/'.$plug;
                 $fileCount=0;
                 $fileSize=0;
                 $componentCount=0;
@@ -220,13 +220,13 @@ class PlugInsInstallieren
         $res = array();
 
         if (!$fail){
-            $mainPath = dirname(__FILE__) . '/../..';
+            $mainPath = dirname(__FILE__) . '/../../..';
             $pluginFiles = array();
-            if ($handle = @opendir(dirname(__FILE__) . '/../../Plugins')) {
+            if ($handle = @opendir(dirname(__FILE__) . '/../../../Plugins')) {
                 while (false !== ($file = readdir($handle))) {
                     if ($file=='.' || $file=='..') continue;
-                    if (is_dir(dirname(__FILE__) . '/../../Plugins/'.$file)) continue;
-                    $filePath = dirname(__FILE__) . '/../../Plugins/'.$file;
+                    if (is_dir(dirname(__FILE__) . '/../../../Plugins/'.$file)) continue;
+                    $filePath = dirname(__FILE__) . '/../../../Plugins/'.$file;
                     if (substr($filePath,-5)=='.json' && file_exists($filePath) && is_readable($filePath)){
                         $input = file_get_contents($filePath);
                         $input = json_decode($input,true);
@@ -252,7 +252,7 @@ class PlugInsInstallieren
     public static function gibPluginDateien($input, &$fileList, &$fileListAddress, &$componentFiles)
     {
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
-        $mainPath = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '../..');
+        $mainPath = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '../../..');
         $mainPath = str_replace(array("\\","/"), array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR), $mainPath);
         Installation::log(array('text'=>Installation::Get('packages','mainPath',self::$langTemplate,array('path'=>$mainPath)))); 
      
@@ -496,7 +496,7 @@ class PlugInsInstallieren
             }
 
             foreach ($pluginFiles as $plug){
-                $file = dirname(__FILE__) . '/../../Plugins/'.$plug;             
+                $file = dirname(__FILE__) . '/../../../Plugins/'.$plug;             
                 if (substr($file,-5)=='.json' && file_exists($file) && is_readable($file)){
                     $dat = file_get_contents($file);
                     $dat = json_decode($dat,true);
@@ -507,7 +507,7 @@ class PlugInsInstallieren
             }
          
             /*foreach ($pluginFiles as $plug){
-                $file = dirname(__FILE__) . '/../../Plugins/'.$plugs;
+                $file = dirname(__FILE__) . '/../../../Plugins/'.$plugs;
 
                 if (substr($file,-5)=='.json' && file_exists($file) && is_readable($file)){
                     $input = file_get_contents($file);
@@ -538,9 +538,9 @@ class PlugInsInstallieren
         $res = array();
 
         if (!$fail){
-            $mainPath = dirname(__FILE__) . '/../..';
+            $mainPath = dirname(__FILE__) . '/../../..';
             foreach ($data['PLUG'] as $plugs){
-                $file = dirname(__FILE__) . '/../../Plugins/'.$plugs;
+                $file = dirname(__FILE__) . '/../../../Plugins/'.$plugs;
 
                 if (substr($file,-5)=='.json' && file_exists($file) && is_readable($file)){
                     $input = file_get_contents($file);
