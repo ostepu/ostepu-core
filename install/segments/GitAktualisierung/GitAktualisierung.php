@@ -116,7 +116,7 @@ class GitAktualisierung
         $output=null;
 
         Installation::log(array('text'=>Installation::Get('gitUpdate','execGitFetch',self::$langTemplate)));
-        if (@chdir(dirname(__FILE__).'/../../../')){
+        if (@chdir($data['PL']['localPath'] . DIRECTORY_SEPARATOR)){
             exec('(git fetch -p) 2>&1', $output, $return);
             @chdir($pathOld);
         } else {
@@ -129,7 +129,7 @@ class GitAktualisierung
             $output=null;
 
             Installation::log(array('text'=>Installation::Get('gitUpdate','execGitDiff',self::$langTemplate)));
-            if (@chdir(dirname(__FILE__).'/../../../')){
+            if (@chdir($data['PL']['localPath'] . DIRECTORY_SEPARATOR)){
                 exec('(git diff --shortstat HEAD...FETCH_HEAD) 2>&1', $output, $return);
                 @chdir($pathOld);
             } else {
@@ -144,7 +144,7 @@ class GitAktualisierung
                 $output=null;
 
                 Installation::log(array('text'=>Installation::Get('gitUpdate','execGitLog',self::$langTemplate)));
-                if (@chdir(dirname(__FILE__).'/../../../')){
+                if (@chdir($data['PL']['localPath'] . DIRECTORY_SEPARATOR)){
                     exec('(git log --pretty=format:\'%s,%cr\' --abbrev-commit --date=relative HEAD...FETCH_HEAD) 2>&1', $output, $return);
                     @chdir($pathOld);
                 } else {
@@ -197,7 +197,7 @@ class GitAktualisierung
         $output=null;
 
         Installation::log(array('text'=>Installation::Get('gitUpdate','execGitReset',self::$langTemplate)));
-        if (@chdir(dirname(__FILE__).'/../../../')){
+        if (@chdir($data['PL']['localPath'] . DIRECTORY_SEPARATOR)){
             exec('(git reset --hard) 2>&1', $output, $return);
             @chdir($pathOld);
         } else {
@@ -210,7 +210,7 @@ class GitAktualisierung
             $output=null;
 
             Installation::log(array('text'=>Installation::Get('gitUpdate','execGitPull',self::$langTemplate)));
-            if (@chdir(dirname(__FILE__).'/../../../')){
+            if (@chdir($data['PL']['localPath'] . DIRECTORY_SEPARATOR)){
                 exec('(git pull) 2>&1', $output, $return);
                 @chdir($pathOld);
             } else {

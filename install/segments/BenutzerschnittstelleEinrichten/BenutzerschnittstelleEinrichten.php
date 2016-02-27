@@ -96,7 +96,7 @@ class BenutzerschnittstelleEinrichten
 
         $text = implode("\n",$text);
         Installation::log(array('text'=>Installation::Get('userInterface','confContent',self::$langTemplate,array('content'=>json_encode($text)))));
-        $resFile = dirname(__FILE__).'/../../'.$file;
+        $resFile = $data['PL']['localPath'] . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR . $file;
         Installation::log(array('text'=>Installation::Get('userInterface','contFile',self::$langTemplate,array('file'=>$resFile))));
 
         if (!@file_put_contents($resFile,$text)){

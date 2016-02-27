@@ -37,7 +37,7 @@ class MainInfo
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $text='';
         $failure=false;
-        Einstellungen::$path = dirname(__FILE__) . '/../../config';
+        Einstellungen::$path = $data['PL']['localPath'] . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR . 'config';
         Installation::log(array('text'=>Installation::Get('mainInfo','checkPath',self::$langTemplate,array('path'=>Einstellungen::$path))));
         Installation::log(array('text'=>Installation::Get('mainInfo','checkFile',self::$langTemplate,array('file'=>__FILE__))));
         if (!is_dir(Einstellungen::$path) || !is_writable(__FILE__)) {
