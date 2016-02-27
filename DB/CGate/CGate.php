@@ -27,7 +27,7 @@ class CGate extends Model
      */
     public function request( $callName, $input, $params = array() )
     {
-        $order = implode('/',$params['path'];
+        $order = implode('/',$params['path']);
         return $this->callByURI('request','/'.$order,array(),$input,201,'Model::isCreated',array(new User()),'Model::isProblem',array(new User()));
     }
 }
