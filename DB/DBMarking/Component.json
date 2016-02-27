@@ -8,6 +8,7 @@
         {"path": "DBMarking.php"},
         {"path": "index.php"},
         {"path": "Commands.json"},
+        {"path": "MarkingSample.json"},
         {"path": "Sql/"},
         {"path": "info/"}
     ],

@@ -8,6 +8,7 @@
     {"path":"DBAttachment.php"},
     {"path":"index.php"},
     {"path":"Commands.json"},
+    {"path":"AttachmentSample.json"},
     {"path":"Sql/"}
   ],
   "links":[

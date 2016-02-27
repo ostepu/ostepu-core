@@ -8,6 +8,7 @@
         {"path": "DBExerciseType.php"},
         {"path": "index.php"},
         {"path": "Commands.json"},
+        {"path": "ExerciseTypeSample.json"},
         {"path": "Sql/"},
         {"path": "info/"}
     ],
