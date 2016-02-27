@@ -26,10 +26,10 @@
     ],
     "files": [
         {
+            "virtual": true,
             "path": "/",
             "type": "git",
             "params": {
-                "executable": false,
                 "name": "ostepu_core",
                 "path": "/"
             },
