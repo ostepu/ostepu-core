@@ -351,8 +351,8 @@ class PlugInsInstallieren
                         // initialisieren
                         $pathOld = getcwd();
                         Installation::log(array('text'=>Installation::Get('packages','execClone',self::$langTemplate,array('cmd'=>'(git clone --single-branch --depth 1 --branch '.$branch.' '.$repo.' .) 2>&1'))));  
-                        if (@chdir($location)){                         
-                            exec('(git clone --single-branch --depth 1 --branch '.$branch.' '.$repo.' .) 2>&1', $output, $return);
+                        if (@chdir($location)){            // --depth 1             
+                            exec('(git clone --single-branch --branch '.$branch.' '.$repo.' .) 2>&1', $output, $return);
                             @chdir($pathOld);
                         } else {
                             $return = 1;
