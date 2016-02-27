@@ -1,17 +1,14 @@
-/**
- * @file LinkSample.json This file represents a valid JSON object of type Link for CControl.
- *
- * @author Till Uhlig
- */
-
-    [
-       {
-           "id": "4",
-           "name": "out",
-           "address": "localhost/uebungsplattform/FS/FSZip",
-           "owner": "3",
-           "target": "5",
-           "relevanz": "0-f"
-       }
-    ]
-
+[
+    {
+        "__commentFile": "@file LinkSample.json This file represents a valid JSON object of type Link for CControl.",
+        "__commentAuthor": "@author Till Uhlig"
+    },
+    {
+        "id": "4",
+        "name": "out",
+        "address": "localhost/uebungsplattform/FS/FSZip",
+        "owner": "3",
+        "target": "5",
+        "relevanz": "0-f"
+    }
+]

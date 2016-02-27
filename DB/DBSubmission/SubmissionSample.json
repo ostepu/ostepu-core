@@ -1,130 +1,121 @@
-/**
- * @file SubmissionSample.json This file represents a valid JSON object of type Submission for DBSubmission.
- *
- * @author Till Uhlig
- */
-
-    [
-       {
-           "id": "1",
-           "studentId": "1",
-           "exerciseId": "1",
-           "comment": "eins",
-           "accepted": "1",
-           "date": "1389643115",
-           "file":
-           {
-               "fileId": "1",
-               "displayName": "a.pdf",
-               "address": "file/abcdef",
-               "timeStamp": "1389643115",
-               "fileSize": "100",
-               "hash": "abcdef"
-           }
-       },
-       {
-           "id": "2",
-           "studentId": "1",
-           "exerciseId": "1",
-           "comment": "zwei",
-           "accepted": "1",
-           "date": "1389643115",
-           "selectedForGroup": "2",
-           "file":
-           {
-               "fileId": "2",
-               "displayName": "b.pdf",
-               "address": "file/abcde",
-               "timeStamp": "1389643115",
-               "fileSize": "200",
-               "hash": "abcde"
-           }
-       },
-       {
-           "id": "3",
-           "studentId": "2",
-           "exerciseId": "1",
-           "comment": "drei",
-           "accepted": "1",
-           "date": "1389643115",
-           "selectedForGroup": "3",
-           "file":
-           {
-               "fileId": "3",
-               "displayName": "c.pdf",
-               "address": "file/abcd",
-               "timeStamp": "1389643115",
-               "fileSize": "300",
-               "hash": "abcd"
-           }
-       },
-       {
-           "id": "4",
-           "studentId": "2",
-           "exerciseId": "2",
-           "comment": "vier",
-           "accepted": "1",
-           "date": "1389643115",
-           "file":
-           {
-               "fileId": "4",
-               "displayName": "d.pdf",
-               "address": "file/abc",
-               "timeStamp": "1389643115",
-               "fileSize": "400",
-               "hash": "abc"
-           }
-       },
-       {
-           "id": "5",
-           "studentId": "3",
-           "exerciseId": "2",
-           "comment": "fuenf",
-           "accepted": "1",
-           "date": "1389643115",
-           "file":
-           {
-               "fileId": "5",
-               "displayName": "e.pdf",
-               "address": "file/ab",
-               "timeStamp": "1389643115",
-               "fileSize": "500",
-               "hash": "ab"
-           }
-       },
-       {
-           "id": "6",
-           "studentId": "4",
-           "exerciseId": "2",
-           "comment": "sechs",
-           "accepted": "1",
-           "date": "1389643115",
-           "selectedForGroup": "6",
-           "file":
-           {
-               "fileId": "6",
-               "displayName": "f.pdf",
-               "address": "file/a",
-               "timeStamp": "1389643115",
-               "fileSize": "600",
-               "hash": "a"
-           }
-       },
-       {
-           "id": "7",
-           "studentId": "4",
-           "exerciseId": "2",
-           "comment": "sieben",
-           "accepted": "1",
-           "date": "1389643115",
-           "file":
-           {
-               "fileId": "9",
-               "displayName": "i.pdf",
-               "address": "file/delete",
-               "timeStamp": "1389643115",
-               "fileSize": "900",
-               "hash": "delete"
-           }
-       }
-    ]
+[
+    {
+        "__commentFile": "@file SubmissionSample.json This file represents a valid JSON object of type Submission for DBSubmission.",
+        "__commentAuthor": "@author Till Uhlig"
+    },
+    {
+        "id": "1",
+        "studentId": "1",
+        "exerciseId": "1",
+        "comment": "eins",
+        "accepted": "1",
+        "date": "1389643115",
+        "file": {
+            "fileId": "1",
+            "displayName": "a.pdf",
+            "address": "file/abcdef",
+            "timeStamp": "1389643115",
+            "fileSize": "100",
+            "hash": "abcdef"
+        }
+    },
+    {
+        "id": "2",
+        "studentId": "1",
+        "exerciseId": "1",
+        "comment": "zwei",
+        "accepted": "1",
+        "date": "1389643115",
+        "selectedForGroup": "2",
+        "file": {
+            "fileId": "2",
+            "displayName": "b.pdf",
+            "address": "file/abcde",
+            "timeStamp": "1389643115",
+            "fileSize": "200",
+            "hash": "abcde"
+        }
+    },
+    {
+        "id": "3",
+        "studentId": "2",
+        "exerciseId": "1",
+        "comment": "drei",
+        "accepted": "1",
+        "date": "1389643115",
+        "selectedForGroup": "3",
+        "file": {
+            "fileId": "3",
+            "displayName": "c.pdf",
+            "address": "file/abcd",
+            "timeStamp": "1389643115",
+            "fileSize": "300",
+            "hash": "abcd"
+        }
+    },
+    {
+        "id": "4",
+        "studentId": "2",
+        "exerciseId": "2",
+        "comment": "vier",
+        "accepted": "1",
+        "date": "1389643115",
+        "file": {
+            "fileId": "4",
+            "displayName": "d.pdf",
+            "address": "file/abc",
+            "timeStamp": "1389643115",
+            "fileSize": "400",
+            "hash": "abc"
+        }
+    },
+    {
+        "id": "5",
+        "studentId": "3",
+        "exerciseId": "2",
+        "comment": "fuenf",
+        "accepted": "1",
+        "date": "1389643115",
+        "file": {
+            "fileId": "5",
+            "displayName": "e.pdf",
+            "address": "file/ab",
+            "timeStamp": "1389643115",
+            "fileSize": "500",
+            "hash": "ab"
+        }
+    },
+    {
+        "id": "6",
+        "studentId": "4",
+        "exerciseId": "2",
+        "comment": "sechs",
+        "accepted": "1",
+        "date": "1389643115",
+        "selectedForGroup": "6",
+        "file": {
+            "fileId": "6",
+            "displayName": "f.pdf",
+            "address": "file/a",
+            "timeStamp": "1389643115",
+            "fileSize": "600",
+            "hash": "a"
+        }
+    },
+    {
+        "id": "7",
+        "studentId": "4",
+        "exerciseId": "2",
+        "comment": "sieben",
+        "accepted": "1",
+        "date": "1389643115",
+        "file": {
+            "fileId": "9",
+            "displayName": "i.pdf",
+            "address": "file/delete",
+            "timeStamp": "1389643115",
+            "fileSize": "900",
+            "hash": "delete"
+        }
+    }
+]

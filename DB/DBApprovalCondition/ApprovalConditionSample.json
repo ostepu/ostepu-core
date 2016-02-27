@@ -1,32 +1,30 @@
-/**
- * @file ApprovalConditionSample.json This file represents a valid JSON object of type ApprovalCondition for DBApprovalCondition.
- *
- * @author Till Uhlig
- */
-
-    [
-       {
-           "id": "1",
-           "courseId": "1",
-           "exerciseTypeId": "1",
-           "percentage": "0.5"
-       },
-       {
-           "id": "2",
-           "courseId": "2",
-           "exerciseTypeId": "2",
-           "percentage": "0.5"
-       },
-       {
-           "id": "3",
-           "courseId": "3",
-           "exerciseTypeId": "3",
-           "percentage": "0.6"
-       },
-       {
-           "id": "4",
-           "courseId": "4",
-           "exerciseTypeId": "1",
-           "percentage": "0.6"
-       }
-    ]
+[
+    {
+        "__commentFile": "@file ApprovalConditionSample.json This file represents a valid JSON object of type ApprovalCondition for DBApprovalCondition.",
+        "__commentAuthor": "@author Till Uhlig"
+    },
+    {
+        "id": "1",
+        "courseId": "1",
+        "exerciseTypeId": "1",
+        "percentage": "0.5"
+    },
+    {
+        "id": "2",
+        "courseId": "2",
+        "exerciseTypeId": "2",
+        "percentage": "0.5"
+    },
+    {
+        "id": "3",
+        "courseId": "3",
+        "exerciseTypeId": "3",
+        "percentage": "0.6"
+    },
+    {
+        "id": "4",
+        "courseId": "4",
+        "exerciseTypeId": "1",
+        "percentage": "0.6"
+    }
+]
