@@ -27,12 +27,42 @@ class CacheManager
     public static $tree = null;
     private static $activeTree = false;
     private static $changedTree = false;
-    private static $enabled = false;
     private static $rootNode = null;
+    
+    private static $conf = null;
+    private static function loadConfig()
+    {
+        if (self::$conf !== null){
+            return;
+        }
+        self::$conf = self::getDefaultConf();
+        
+        $confFile = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'CacheManager' . DIRECTORY_SEPARATOR . 'config.json';
+        if (file_exists($confFile)){
+            self::$conf = array_merge(json_decode(file_get_contents($confFile),true),self::$conf);
+        }
+    }
+    
+    public static function getDefaultConf()
+    {
+        return array('enabled'=>false,'makeTree'=>false);
+    }
+    
+    public static function getConf($field)
+    {
+        self::loadConfig();
+        if (isset(self::$conf[$field])){
+            return self::$conf[$field];
+        }
+        return null;
+    }
 
-    // true = die dot-Graphen werden erstellt, false = die grafische Ausgabe der Graphen erfolgt nicht
-    private static $makeTree = false;
-
+    public static function setConf($field, $value)
+    {
+        self::loadConfig();
+        self::$conf[$field] = $value;
+    }
+    
     /**
      * Liefert den Index des ersten Elements einer Liste
      *
@@ -62,7 +92,8 @@ class CacheManager
      */
     public static function enableMakeTree()
     {
-        self::$makeTree = true;
+        self::loadConfig();
+        self::setConf('makeTree',true);
     }
 
     /**
@@ -70,7 +101,8 @@ class CacheManager
      */
     public static function disableMakeTree()
     {
-        self::$makeTree = false;
+        self::loadConfig();
+        self::setConf('makeTree',false);
     }
 
     /**
@@ -89,7 +121,8 @@ class CacheManager
      */
     public static function enable()
     {
-        $enabled=true;
+        self::loadConfig();
+        self::setConf('enabled',true);
     }
 
     /**
@@ -97,7 +130,8 @@ class CacheManager
      */
     public static function disable()
     {
-        $enabled=false;
+        self::loadConfig();
+        self::setConf('enabled',false);
     }
 
     /**
@@ -155,8 +189,10 @@ class CacheManager
     }
 
     public static function createNode($sid, $name, $method, $URI, $input)
-    {
-        if (!self::$enabled && !self::$makeTree) {
+    {        
+        self::loadConfig();
+
+        if (!self::getConf('enabled') && !self::getConf('makeTree')) {
             return;
         }
         if (self::$tree === null) {
@@ -177,7 +213,9 @@ class CacheManager
 
     public static function releaseNode($targetSid, $targetContent, $targetStatus, $path, $mimeType)
     {
-        if (!self::$enabled && !self::$makeTree) {
+        self::loadConfig();
+        
+        if (!self::getConf('enabled') && !self::getConf('makeTree')) {
             return;
         }
         if (self::$tree === null) {
@@ -216,7 +254,9 @@ class CacheManager
 
     public static function saveTree($tree)
     {
-        if (self::$makeTree) {
+        self::loadConfig();
+        
+        if (self::getConf('makeTree')) {
             $root = self::$tree->getElementById(self::$tree->findRoot());
             if (!is_dir(dirname(__FILE__).'/../path/'.$root->name)) {
                 mkdir(dirname(__FILE__).'/../path/'.$root->name, 0755); 
@@ -229,7 +269,9 @@ class CacheManager
 
     public static function saveNode($elem, $path = null)
     {
-        if (self::$makeTree) {
+        self::loadConfig();
+        
+        if (self::getConf('makeTree')) {
             // speichere Knotendaten
             $Name = $elem->name;
             $dir = self::$tree->getElementById(self::$tree->findRoot())->name;
@@ -266,7 +308,9 @@ class CacheManager
 
     public static function cacheData($sid, $content)
     {
-        if (!self::$enabled) return;
+        self::loadConfig();
+        
+        if (!self::getConf('enabled')) return;
         $elem = self::$tree->getElementById($sid);
         if ($elem !== null){
             $uTag = $elem->generateUTag();
@@ -336,7 +380,9 @@ class CacheManager
      */
     public static function getTree($URL, $method)
     {
-        if (!self::$enabled) return;
+        self::loadConfig();
+        
+        if (!self::getConf('enabled')) return;
         if (!in_array('phpFastCache', get_declared_classes())) {
             return;
         }
@@ -347,7 +393,7 @@ class CacheManager
         if (self::$tree !== null) {
             return;
         }
-        if (strtoupper($method)!='GET' && !self::$makeTree) {
+        if (strtoupper($method)!='GET' && !self::getConf('makeTree')) {
             return;
         }
 
