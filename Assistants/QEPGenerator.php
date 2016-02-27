@@ -17,12 +17,12 @@ if (file_exists(dirname(__FILE__) . '/vendor/phpfastcache/phpfastcache.php')) {
     include_once(dirname(__FILE__) . '/vendor/phpfastcache/phpfastcache.php');
 }
 
-include_once (dirname(__FILE__) . '/CacheManager/cacheAccess.php');
-include_once (dirname(__FILE__) . '/CacheManager/SID.php');
-include_once (dirname(__FILE__) . '/CacheManager/cacheTree.php');
-include_once (dirname(__FILE__) . '/CacheManager/structures/DataObject.php');
+include_once (dirname(__FILE__) . '/QEPGenerator/cacheAccess.php');
+include_once (dirname(__FILE__) . '/QEPGenerator/SID.php');
+include_once (dirname(__FILE__) . '/QEPGenerator/cacheTree.php');
+include_once (dirname(__FILE__) . '/QEPGenerator/structures/DataObject.php');
 
-class CacheManager
+class QEPGenerator
 {
     public static $tree = null;
     private static $activeTree = false;
@@ -37,7 +37,7 @@ class CacheManager
         }
         self::$conf = self::getDefaultConf();
         
-        $confFile = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'CacheManager' . DIRECTORY_SEPARATOR . 'config.json';
+        $confFile = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'QEPGenerator' . DIRECTORY_SEPARATOR . 'config.json';
         if (file_exists($confFile)){
             self::$conf = array_merge(json_decode(file_get_contents($confFile),true),self::$conf);
         }
@@ -117,7 +117,7 @@ class CacheManager
 
 
     /**
-     * Aktiviert den CacheManager
+     * Aktiviert den QEPGenerator
      */
     public static function enable()
     {
@@ -126,7 +126,7 @@ class CacheManager
     }
 
     /**
-     * Deaktiviert den CacheManager
+     * Deaktiviert den QEPGenerator
      */
     public static function disable()
     {

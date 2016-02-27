@@ -11,7 +11,7 @@ include_once( dirname(__FILE__) . '/CConfig.php' );
 include_once( dirname(__FILE__) . '/Request/CreateRequest.php' );
 include_once( dirname(__FILE__) . '/Request/MultiRequest.php' );
 include_once( dirname(__FILE__) . '/Logger.php' );
-include_once( dirname(__FILE__) . '/CacheManager.php' );
+include_once( dirname(__FILE__) . '/QEPGenerator.php' );
 
 /**
  * the Request class offers functions to get results of POST,GET,PUT.DELETE and
@@ -140,13 +140,13 @@ class Request
                         if (!file_exists($tar)) continue;
                         $add = substr($target,strlen($url));
 
-                        $sid = CacheManager::getNextSid();
-                        CacheManager::setCacheSid($sid);
-                        CacheManager::getTree($target, $method);
+                        $sid = QEPGenerator::getNextSid();
+                        QEPGenerator::setCacheSid($sid);
+                        QEPGenerator::getTree($target, $method);
                         //Logger::Log("call me: $sid, $method $target", LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', true, LogLevel::DEBUG);
 
                         $targetBeginTime = microtime(true);
-                        //////$cachedData = CacheManager::getCachedDataByURL($target, $method);
+                        //////$cachedData = QEPGenerator::getCachedDataByURL($target, $method);
                         //Logger::Log("++".$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', true, LogLevel::DEBUG);
 
 
@@ -154,7 +154,7 @@ class Request
                             $result['content'] = $cachedData->content;
                             $result['status'] = $cachedData->status;
                             ///Logger::Log('out>> '.$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
-                            //////CacheManager::cacheData($sid, $com->getTargetName(), $target, $result['content'], $result['status'], $method);
+                            //////QEPGenerator::cacheData($sid, $com->getTargetName(), $target, $result['content'], $result['status'], $method);
                         } else {
                             $args = array(
                                           'REQUEST_METHOD' => $method,
@@ -220,9 +220,9 @@ class Request
                             try {
                                 ob_start();
 
-                                $newSid = CacheManager::getNextSid();
-                                CacheManager::setCacheSid($newSid);
-                                CacheManager::createNode($newSid, $com->getTargetName(), $method, $target, $content);
+                                $newSid = QEPGenerator::getNextSid();
+                                QEPGenerator::setCacheSid($newSid);
+                                QEPGenerator::createNode($newSid, $com->getTargetName(), $method, $target, $content);
                                 ////Logger::Log('newSid: '.$newSid, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', true, LogLevel::DEBUG);
 
                                 // merkt sich das alte Arbeitsverzeichnis
@@ -237,16 +237,16 @@ class Request
                                 @chdir($pathOld);
                             
                                 $result['content'] = ob_get_contents();
-                                CacheManager::setETag($result['content']);
+                                QEPGenerator::setETag($result['content']);
                                 $result['headers'] = array_merge(array(),Request::http_parse_headers_short(headers_list()));
                                 header_remove();
                                 
                                 //if (!isset($result['headers']['Cachesid'])){
-                                    //$newSid = CacheManager::getNextSid();
+                                    //$newSid = QEPGenerator::getNextSid();
                                     $result['headers']['Cachesid'] = $newSid;
                                    // Logger::Log('newSid: '.$newSid, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', true, LogLevel::DEBUG);
 
-                                    //CacheManager::setCacheSid($newSid);
+                                    //QEPGenerator::setCacheSid($newSid);
                                 //}
                                 //$result['headers']['Cachesid'] = $newSid;
                                 ob_end_clean();
@@ -275,10 +275,10 @@ class Request
                             }
 
                             $targetSid = (isset($result['headers']['Cachesid']) ? $result['headers']['Cachesid'] : null);
-                            CacheManager::releaseNode($targetSid, $result['content'], $result['status'], $h.'/'.$com->getLocalPath(), (isset($result['headers']['Content-Type']) ? $result['headers']['Content-Type'] : null));
-                            //////CacheManager::addPath($sid, $targetSid, $com->getTargetName(), $target, $method, $result['status']);
-                            //////CacheManager::finishRequest($targetSid, $h.'/'.$com->getLocalPath(), $com->getTargetName(), $target, $result['content'], $result['status'], $method, $content);
-                            //////CacheManager::cacheData($sid, $com->getTargetName(), $target, $result['content'], $result['status'], $method);
+                            QEPGenerator::releaseNode($targetSid, $result['content'], $result['status'], $h.'/'.$com->getLocalPath(), (isset($result['headers']['Content-Type']) ? $result['headers']['Content-Type'] : null));
+                            //////QEPGenerator::addPath($sid, $targetSid, $com->getTargetName(), $target, $method, $result['status']);
+                            //////QEPGenerator::finishRequest($targetSid, $h.'/'.$com->getLocalPath(), $com->getTargetName(), $target, $result['content'], $result['status'], $method, $content);
+                            //////QEPGenerator::cacheData($sid, $com->getTargetName(), $target, $result['content'], $result['status'], $method);
                             ///Logger::Log('in<< '.$method.' '.$com->getClassName().$add, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
 
                         }
