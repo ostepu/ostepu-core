@@ -43,7 +43,7 @@
             "params": {
                 "name": "phpfastcache",
                 "branch": "final",
-                "URL": "https://github.com/khoaofgod/phpfastcache",
+                "URL": "https://github.com/tilluhlig/phpfastcache",
                 "path": "Assistants/vendor/phpfastcache/"
             }
         },
