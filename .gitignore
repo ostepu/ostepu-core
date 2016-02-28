@@ -16,3 +16,4 @@ Assistants/vendor/
 install/vendor/
 vendor/
 install/segments/ext_*
+Assistants/QEPGenerator/config.json
