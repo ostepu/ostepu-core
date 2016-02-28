@@ -39,18 +39,17 @@ class QEPGenerator
         
         $confFile = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'QEPGenerator' . DIRECTORY_SEPARATOR . 'config.json';
         if (file_exists($confFile)){
-            self::$conf = array_merge(json_decode(file_get_contents($confFile),true),self::$conf);
+            self::$conf = array_merge(self::$conf, json_decode(file_get_contents($confFile),true));
         }
     }
     
     public static function getDefaultConf()
     {
-        return array('enabled'=>false,'makeTree'=>false);
+        return array('enabled'=>false,'makeTree'=>false, 'treePath'=>dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'path');
     }
     
     public static function getConf($field)
     {
-        self::loadConfig();
         if (isset(self::$conf[$field])){
             return self::$conf[$field];
         }
@@ -59,7 +58,6 @@ class QEPGenerator
 
     public static function setConf($field, $value)
     {
-        self::loadConfig();
         self::$conf[$field] = $value;
     }
     
@@ -192,7 +190,7 @@ class QEPGenerator
     {        
         self::loadConfig();
 
-        if (!self::getConf('enabled') && !self::getConf('makeTree')) {
+        if (self::getConf('enabled') !== true && self::getConf('makeTree') !== true) {
             return;
         }
         if (self::$tree === null) {
@@ -215,7 +213,7 @@ class QEPGenerator
     {
         self::loadConfig();
         
-        if (!self::getConf('enabled') && !self::getConf('makeTree')) {
+        if (self::getConf('enabled') !== true && self::getConf('makeTree') !== true) {
             return;
         }
         if (self::$tree === null) {
@@ -256,13 +254,13 @@ class QEPGenerator
     {
         self::loadConfig();
         
-        if (self::getConf('makeTree')) {
+        if (self::getConf('makeTree') === true) {
             $root = self::$tree->getElementById(self::$tree->findRoot());
-            if (!is_dir(dirname(__FILE__).'/../path/'.$root->name)) {
-                mkdir(dirname(__FILE__).'/../path/'.$root->name, 0755); 
+            if (!is_dir(self::getConf('treePath'). DIRECTORY_SEPARATOR .$root->name)) {
+                mkdir(self::getConf('treePath'). DIRECTORY_SEPARATOR .$root->name, 0755); 
             }
             
-            file_put_contents(dirname(__FILE__).'/../path/'.$root->name.'/'.$root->name.'_'.$root->id.'_tree.json',json_encode($tree));
+            file_put_contents(self::getConf('treePath'). DIRECTORY_SEPARATOR .$root->name. DIRECTORY_SEPARATOR .$root->name.'_'.$root->id.'_tree.json',json_encode($tree));
         }
 
     }
@@ -271,7 +269,7 @@ class QEPGenerator
     {
         self::loadConfig();
         
-        if (self::getConf('makeTree')) {
+        if (self::getConf('makeTree') === true) {
             // speichere Knotendaten
             $Name = $elem->name;
             $dir = self::$tree->getElementById(self::$tree->findRoot())->name;
@@ -280,16 +278,16 @@ class QEPGenerator
             // es gab einen Fehler
             if (trim($dir)=='') return;
 
-            if (!is_dir(dirname(__FILE__).'/../path')) {
-                mkdir(dirname(__FILE__).'/../path', 0755);
+            if (!is_dir(self::getConf('treePath'))) {
+                mkdir(self::getConf('treePath'), 0755);
             }
 
-            if (!is_dir(dirname(__FILE__).'/../path/'.$dir)) {
-                mkdir(dirname(__FILE__).'/../path/'.$dir, 0755);
+            if (!is_dir(self::getConf('treePath'). DIRECTORY_SEPARATOR .$dir)) {
+                mkdir(self::getConf('treePath'). DIRECTORY_SEPARATOR .$dir, 0755);
             }
 
             if (trim($dir)!='') {
-                file_put_contents(dirname(__FILE__).'/../path/'.$dir.'/'.$Name.'_'.$elem->id.'.json',node::encodeNode($elem));
+                file_put_contents(self::getConf('treePath') . DIRECTORY_SEPARATOR .$dir. DIRECTORY_SEPARATOR .$Name.'_'.$elem->id.'.json',node::encodeNode($elem));
             }
             
             $elem->result = null;
@@ -382,7 +380,7 @@ class QEPGenerator
     {
         self::loadConfig();
         
-        if (!self::getConf('enabled')) return;
+        if (self::getConf('enabled') !== true) return;
         if (!in_array('phpFastCache', get_declared_classes())) {
             return;
         }
@@ -393,7 +391,7 @@ class QEPGenerator
         if (self::$tree !== null) {
             return;
         }
-        if (strtoupper($method)!='GET' && !self::getConf('makeTree')) {
+        if (strtoupper($method)!='GET' && self::getConf('makeTree') !== true) {
             return;
         }
 
