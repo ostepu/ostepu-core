@@ -188,12 +188,12 @@ class Einstellungen
      *
      * @return string[] Die Standardwerte der Segmente
      */
-    public static function getAllDefaults()
+    public static function getAllDefaults($data)
     {
         $defaults = array();
         foreach(Einstellungen::$segments as $segs){
             if (!is_callable("{$segs}::getDefaults")) continue;
-            $def = $segs::getDefaults();
+            $def = $segs::getDefaults($data);
             if (count($def)>0){
                 foreach ($def as $key => $values){
                     if (!isset($values[0]) || !isset($values[1])) continue;
@@ -248,7 +248,7 @@ class Einstellungen
             $keys = array_reverse($keys,false);
         }
 
-        $default = self::getAllDefaults();
+        $default = self::getAllDefaults($data);
         $konfiguration = array();
         $data = array();
         if (file_exists($path.'/'.$serverName.".ini") && is_readable($path.'/'.$serverName.".ini")){
