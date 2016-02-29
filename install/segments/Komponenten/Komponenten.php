@@ -25,7 +25,7 @@ class Komponenten
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
         Installation::log(array('text'=>Installation::Get('main','languageInstantiated')));
-     
+
         $def = self::getDefaults();
 
         $text = '';
@@ -38,7 +38,7 @@ class Komponenten
     public static function show($console, $result, $data)
     {
         if (!Einstellungen::$accessAllowed) return;
-         
+
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $isUpdate = (isset($data['action']) && $data['action']=='update') ? true : false;
 
@@ -92,7 +92,7 @@ class Komponenten
                     }
                 }
             }
-      
+
             foreach($content as $componentName => $component)
             {
                 $linkNames = array();
@@ -131,7 +131,7 @@ class Komponenten
                 $tempText = '';
                 $countLinks = 1;
                 $tempTextList = array();
-              
+
                 if (isset($component['init']) && $component['init']!==null && $component['init']->getStatus() === 201){
                     $installedComponents++;
                     $installedLinks+=count(isset($component['links']) ? $component['links'] : array());
@@ -140,7 +140,7 @@ class Komponenten
                     if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate){
                         $tempTextList[] = "<tr><td class='v' colspan='2'>".Installation::Get('components','installedCalls',self::$langTemplate).": {$countCommands}</td></tr>";
                     }
-                  
+
                     $links = array();
                     if (isset($component['links']))
                         $links = $component['links'];
@@ -211,7 +211,7 @@ class Komponenten
                                 $tempTextList[] = array(array($link->getName()),array($link->getTargetName()),1);
                             }
                         }
-                      
+
                         $lastLink = $link->getName();
                     }
 
@@ -236,7 +236,7 @@ class Komponenten
                         }
                     }
                 }
-              
+
                 if (isset($component['init']) && isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate){
                     $max = count($tempTextList);
                     for ($b=0;$b<$max;$b++){
@@ -254,7 +254,7 @@ class Komponenten
                                     unset($tempTextList[$i]);
                                 }
                             }
-                          
+
                             for ($i=$b+1;$i<$max;$i++){
                                 if (!isset($tempTextList[$i])) continue;
                                 // ermittelt doppelte Ziele in den Zeilen und fasst die Quellen zusammen
@@ -265,7 +265,7 @@ class Komponenten
                                     unset($tempTextList[$i]);
                                 }
                             }
-                          
+
                             $tempText .= "<tr><td class='v'>".implode(', ',$part[0]).($part[2]<=1 ? '' : ' ('.$part[2].')')."</td><td class='v'>".implode(', ',$part[1])."</td></tr>";
                             $countLinks++;
                         } else {
@@ -274,7 +274,7 @@ class Komponenten
                             $countLinks++;
                         }
                     }
-                  
+
                     $defs = explode(";",$component['init']->getDef());
                     $baseComponent = (count($defs)>2 ? "<br><span class='info-color tiny'>(".$defs[0].")</span>" : '');
                     $text .= "<col width='20%'><col width='60%'><col width='20%'>";

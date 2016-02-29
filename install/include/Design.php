@@ -402,14 +402,14 @@ class Design
             $text = Language::Get('main','install');
         return "<button class='text-button info-color bold' name='{$varName}' value='{$value}'>{$text}</button>";
     }
-    
+
     public static function erstelleLink($varName, $value, $text = null)
     {
         if ($text === null)
             $text = Language::Get('main','install');
         return "<span class='text-button info-color bold'><a href='{$value}'>{$text}</a></span>";
     }
-    
+
     /**
      * Erzeugt einen grafischen Auslöser
      *

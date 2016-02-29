@@ -45,7 +45,7 @@ class Grundinformationen
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
         Installation::log(array('text'=>Installation::Get('main','languageInstantiated')));
-     
+
         $def = self::getDefaults();
 
         $text = '';
@@ -63,7 +63,7 @@ class Grundinformationen
     public static function show($console, $result, $data)
     {
         if (!Einstellungen::$accessAllowed) return;
-         
+
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $text = '';
         $text .= Design::erstelleBeschreibung($console,Installation::Get('general_informations','description',self::$langTemplate));

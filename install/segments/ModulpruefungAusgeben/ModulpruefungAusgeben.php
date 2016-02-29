@@ -18,11 +18,11 @@ class ModulpruefungAusgeben
         Installation::log(array('text'=>Installation::Get('main','languageInstantiated')));
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
-  
+
     public static function show($console, $result, $data)
     {
         if (!Einstellungen::$accessAllowed) return;
-          
+
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $text = '';
         $text .= Design::erstelleBeschreibung($console,Installation::Get('modules','description',self::$langTemplate));
@@ -96,7 +96,7 @@ class ModulpruefungAusgeben
             $res = getenv('HTTP_'.strtoupper($module))=='On'?TRUE:
                    getenv('REDIRECT_HTTP_'.strtoupper($module))=='On'?true:FALSE;
             //$res = false;
-        }        
+        }
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return $res;
     }

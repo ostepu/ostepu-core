@@ -167,10 +167,10 @@ class Installer
                     if (!isset($conf['instructions']) || !isset($conf['name'])){
                         continue;
                     }
-                    
+
                     $type = $conf['instructions']['type'];
                     $params = (isset($conf['instructions']['params']) ? $conf['instructions']['params'] : array());
-                    
+
                     if ($type === 'php'){
                         if (isset($params['run']) && isset($params['file']) && isset($params['className'])){
                             if ($params['run'] === 'include'){

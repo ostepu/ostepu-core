@@ -49,13 +49,13 @@ class Anfragegraph
 
         $text = '';
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['QUERYTREE']['treePath'], 'data[QUERYTREE][treePath]', $def['treePath'][1], true);
-        
+
         echo $text;
 
         self::$initialized = true;
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
-    
+
     private static function getConfContent($data)
     {
         $confFile = $data['PL']['localPath'] . DIRECTORY_SEPARATOR . 'Assistants' . DIRECTORY_SEPARATOR . 'QEPGenerator' . DIRECTORY_SEPARATOR . 'config.json';
@@ -64,7 +64,7 @@ class Anfragegraph
         }
         return false;
     }
-    
+
     private static function setConfContent($data, $confContent)
     {
         $confFile = $data['PL']['localPath'] . DIRECTORY_SEPARATOR . 'Assistants' . DIRECTORY_SEPARATOR . 'QEPGenerator' . DIRECTORY_SEPARATOR . 'config.json';
@@ -76,14 +76,14 @@ class Anfragegraph
         if (!Einstellungen::$accessAllowed) return;
 
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
-        
+
         $location = $data['QUERYTREE']['treePath'];
-        
+
         $text='';
         $text .= Design::erstelleBeschreibung($console,Installation::Get('main','description',self::$langTemplate));
 
         $text .= Design::erstelleZeile($console, Installation::Get('manage','path',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['QUERYTREE']['treePath'], 'data[QUERYTREE][treePath]', $data['QUERYTREE']['treePath'], true), 'v');
-        
+
         // den Status der aktuellen Konfiguration ermitteln
         $content = self::getConfContent($data);
         $status = null;
@@ -92,25 +92,25 @@ class Anfragegraph
                 $status = $content['makeTree'];
             }
         }
-        
+
         // zeichnet den aktuellen Status
         $statusText = ($status === null ? Installation::Get('manage','unkownState',self::$langTemplate) : ($status === true ? Installation::Get('manage','enabled',self::$langTemplate) : Installation::Get('manage','disabled',self::$langTemplate)));
         $text .= Design::erstelleZeile($console, Installation::Get('manage','state',self::$langTemplate), 'e', $statusText , 'v');
-        
+
         // zeichnet die Schaltfläche zum Einschalten
         if (self::$onEvents['enableQueryTree']['enabledInstall']){
             if ($status === null || $status === false){
                 $text .= Design::erstelleZeile($console, Installation::Get('manage','enableDesc',self::$langTemplate), 'e',  Design::erstelleSubmitButton(self::$onEvents['enableQueryTree']['event'][0],Installation::Get('manage','enable',self::$langTemplate)), 'h');
             }
         }
-        
+
         // zeichnet die Schaltfläche zum Ausschalten
         if (self::$onEvents['disableQueryTree']['enabledInstall']){
             if ($status === true){
                 $text .= Design::erstelleZeile($console, Installation::Get('manage','disableDesc',self::$langTemplate), 'e',  Design::erstelleSubmitButton(self::$onEvents['disableQueryTree']['event'][0],Installation::Get('manage','disable',self::$langTemplate)), 'h');
             }
         }
-        
+
         // ermittelt vorhandene Aufzeichnungen
         $recordBase = array();
         $recordAccess = array();
@@ -130,26 +130,26 @@ class Anfragegraph
             }
             closedir($handle);
         }
-        
+
         foreach($recordBase as $key => $base){
             if (isset($recordAccess[$key])){
                 $text .= Design::erstelleZeile($console, $base , 'v', $recordAccess[$key], 'v_c');
             } else {
-                $text .= Design::erstelleZeile($console, $base , 'v', Installation::Get('convertQueryTrees','notConverted',self::$langTemplate), 'v_c');                
+                $text .= Design::erstelleZeile($console, $base , 'v', Installation::Get('convertQueryTrees','notConverted',self::$langTemplate), 'v_c');
             }
         }
-        
+
         if (empty($recordBase)){
             $text .= Design::erstelleZeile($console, '','e',Installation::Get('convertQueryTrees','noRecords',self::$langTemplate),'v_c' );
         }
-        
+
         // zeichnet die Schaltfläche zum Rendern der Aufzeichnungen
         if (self::$onEvents['convertQueryTrees']['enabledInstall']){
             if (!empty($recordBase)){
                 $text .= Design::erstelleZeile($console, Installation::Get('convertQueryTrees','executeDesc',self::$langTemplate), 'e',  Design::erstelleSubmitButton(self::$onEvents['convertQueryTrees']['event'][0],Installation::Get('convertQueryTrees','execute',self::$langTemplate)), 'h');
             }
         }
-        
+
         echo Design::erstelleBlock($console, Installation::Get('main','title',self::$langTemplate), $text);
 
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
@@ -159,7 +159,7 @@ class Anfragegraph
     public static function enableQueryTree($data, &$fail, &$errno, &$error)
     {
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
-        
+
         $res = array();
         $content = self::getConfContent($data);
         if ($content !== false){
@@ -178,7 +178,7 @@ class Anfragegraph
             //$res['success'] = false;
             //$res['statusText'] = Installation::Get('manage','missingConfFile',self::$langTemplate);
         }
-        
+
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return $res;
     }
@@ -186,7 +186,7 @@ class Anfragegraph
     public static function disableQueryTree($data, &$fail, &$errno, &$error)
     {
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
-        
+
         $res = array();
         $content = self::getConfContent($data);
         if ($content !== false){
@@ -205,7 +205,7 @@ class Anfragegraph
             //$res['success'] = false;
             //$res['statusText'] = Installation::Get('manage','missingConfFile',self::$langTemplate, array('file'=>$confFile));
         }
-        
+
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return $res;
     }
@@ -215,17 +215,17 @@ class Anfragegraph
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $res = array();
         $mainPath = $data['PL']['localPath'];
-        
+
         include_once $mainPath . '/Assistants/QEPGenerator/cacheTree.php';
 
         if (file_exists($mainPath . '/Assistants/vendor/Markdown/Michelf/MarkdownInterface.php')){
             include_once $mainPath . '/Assistants/vendor/Markdown/Michelf/MarkdownInterface.php';
             include_once $mainPath . '/Assistants/vendor/Markdown/Michelf/Markdown.php';
             include_once $mainPath . '/Assistants/vendor/Markdown/Michelf/MarkdownExtra.php';
-            
+
             $location = $data['QUERYTREE']['treePath'];
             $elements = scandir($location);
-            
+
             foreach ($elements as $elem){
                 if ($elem=='.' || $elem=='..') continue;
                 if (!is_dir($location . '/'.$elem)) continue;
@@ -446,7 +446,7 @@ class Anfragegraph
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return $res;
     }
-    
+
     private static function umlaute($text){
         $search  = array('ä', 'Ä', 'ö', 'Ö', 'ü', 'Ü', 'ß');
         $replace = array('&auml;', '&Auml;', '&ouml;', '&Ouml;', '&uuml;', '&Uuml;', '&szlig;');

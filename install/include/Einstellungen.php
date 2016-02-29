@@ -551,7 +551,7 @@ class Einstellungen
         }
         return @mkdir($path, $mode);
     }
-    
+
     public static function deleteDir($path)
     {
         // entfernt einen Ordner und zuvor alle enthaltenen Dateien

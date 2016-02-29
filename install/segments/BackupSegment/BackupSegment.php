@@ -226,7 +226,7 @@ class BackupSegment
             $return = null;
             $pathOld = getcwd();
 
-            if (@chdir($location)){                      
+            if (@chdir($location)){
                 exec('(mysqldump --user '.$data['DB']['db_user_operator'].' --password="'.$data['DB']['db_passwd_operator'].'" --opt --result-file '.$sqlFilePath.' --skip-triggers --no-create-db '.$data['DB']['db_name'].') 2>&1', $output, $return);
                 @chdir($pathOld);
             } else {

@@ -33,14 +33,14 @@ class Beispieldaten
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
         Installation::log(array('text'=>Installation::Get('main','languageInstantiated')));
-     
+
         $def = self::getDefaults();
-      
+
         $text = '';
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['SAMPLE']['courses'], 'data[SAMPLE][courses]', $def['courses'][1], true);
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['SAMPLE']['user'], 'data[SAMPLE][user]', $def['user'][1], true);
         echo $text;
-      
+
         self::$initialized = true;
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
@@ -52,10 +52,10 @@ class Beispieldaten
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $text='';
         $text .= Design::erstelleBeschreibung($console,Installation::Get('samples','description',self::$langTemplate));
-      
+
         $text .= Design::erstelleZeile($console, Installation::Get('samples','courses',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['SAMPLE']['courses'], 'data[SAMPLE][courses]', $data['SAMPLE']['courses'], true), 'v');
         $text .= Design::erstelleZeile($console, Installation::Get('samples','user',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['SAMPLE']['user'], 'data[SAMPLE][user]', $data['SAMPLE']['user'], true), 'v');
-        
+
         $links = Einstellungen::getLinks('postSamples');
         $text .= Design::erstelleZeile($console, '','','','' );
         if (count($links)>0){
@@ -66,11 +66,11 @@ class Beispieldaten
         } else {
             $text .= Design::erstelleZeile($console, '' , 'e', Installation::Get('samples','noLinks',self::$langTemplate), 'v_c error_light');
         }
-        
+
         if (self::$onEvents['installSamples']['enabledInstall']){
             $text .= Design::erstelleZeile($console, Installation::Get('samples','createSamplesDesc',self::$langTemplate), 'e',  Design::erstelleSubmitButton(self::$onEvents['installSamples']['event'][0],Installation::Get('samples','createSamples',self::$langTemplate)), 'h');
         }
-      
+
         $createBackup=false;
         if (isset($result[self::$onEvents['installSamples']['name']])){
             $content = $result[self::$onEvents['installSamples']['name']]['content'];
@@ -102,7 +102,7 @@ class Beispieldaten
                 break;
             }
         }
-        
+
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return $res;
     }

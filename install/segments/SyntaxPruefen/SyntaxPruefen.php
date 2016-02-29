@@ -94,10 +94,10 @@ class SyntaxPruefen
         foreach ($pluginFiles as $plug){
             $dat = PlugInsInstallieren::gibPluginInhalt($data,$plug);
             $name = isset($dat['name']) ? $dat['name'] : '???';
-            
+
             $res['plugins'][$plug] = array();
             $res['plugins'][$plug]['results'] = array();
-            
+
             $version = isset($dat['version']) ? $dat['version'] : null;
 
             $versionText = isset($version) ? ' v'.$version : '';
@@ -106,7 +106,7 @@ class SyntaxPruefen
             $fileCount=0;
             $fileSize=0;
             $componentCount=0;
-            
+
             $fileList = array();
             $fileListAddress = array();
             $componentFiles = array();
