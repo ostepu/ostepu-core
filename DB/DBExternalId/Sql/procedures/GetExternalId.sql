@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file GetExternalId.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+?>
+
 DROP PROCEDURE IF EXISTS `DBExternalIdGetExternalId`;
 CREATE PROCEDURE `DBExternalIdGetExternalId` (IN exid VARCHAR(255))
 READS SQL DATA

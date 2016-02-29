@@ -1,4 +1,13 @@
 <?php
+/**
+ * @file KomponentenErstellen.php
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015-2016
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2015
+ */
+
 #region KomponentenErstellen
 class KomponentenErstellen
 {

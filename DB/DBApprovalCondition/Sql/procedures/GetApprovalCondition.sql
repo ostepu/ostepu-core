@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file GetApprovalCondition.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+?>
+
 DROP PROCEDURE IF EXISTS `DBApprovalConditionGetApprovalCondition`;
 CREATE PROCEDURE `DBApprovalConditionGetApprovalCondition` (IN apid INT)
 READS SQL DATA

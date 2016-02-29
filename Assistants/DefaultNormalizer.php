@@ -1,11 +1,9 @@
 <?php
-
-
 /**
  * @file DefaultNormalizer.php contains the DefaultNormalizer class
  *
- * @author Till Uhlig
- * @date 2014
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
  */
 
 /**

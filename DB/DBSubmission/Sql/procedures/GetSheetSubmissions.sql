@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file GetSheetSubmissions.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+?>
+
 DROP PROCEDURE IF EXISTS `DBSubmissionGetSheetSubmissions`;
 CREATE PROCEDURE `DBSubmissionGetSheetSubmissions` (IN esid INT)
 READS SQL DATA

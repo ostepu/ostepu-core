@@ -1,10 +1,8 @@
 <?php
-
-
 /**
  * @file index.php executes the CHelp component on calling via rest api
  *
- * @author Till Uhlig
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
  * @date 2015
  */
 

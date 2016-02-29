@@ -1,12 +1,11 @@
 <?php
-
-
 /**
  * @file FSZip.php contains the FSZip class
  *
- * @author Till Uhlig
- * @author Felix Schmidt
- * @date 2013-2014
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2013-2016
+ * @author Felix Schmidt <Fiduz@Live.de>
+ * @date 2014
  */
 
 include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );

@@ -1,11 +1,9 @@
 <?php
-
-
 /**
  * @file Design.php contains the Design class
  *
- * @author Till Uhlig
- * @date 2014
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2016
  */
 
  //require_once dirname(__FILE__) . '/Einstellungen.php';

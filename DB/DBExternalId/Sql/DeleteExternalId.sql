@@ -2,7 +2,8 @@
 /**
  * @file DeleteExternalId.sql
  * deletes an specified external id from %ExternalId table
- * @author  Till Uhlig
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
  * @param int \$aid a %ExternalId identifier
  * @result -
  */

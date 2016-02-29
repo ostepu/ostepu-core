@@ -1,17 +1,15 @@
 <?php
-
-
 /**
  * @file Pdf.php contains the Pdf class
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
  */
 
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
  * the pdf structure
- *
- * @author Till Uhlig
- * @date 2014
  */
 class Pdf extends Object implements JsonSerializable
 {

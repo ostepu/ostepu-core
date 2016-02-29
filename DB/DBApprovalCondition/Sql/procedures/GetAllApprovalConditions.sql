@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file GetAllApprovalConditions.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+?>
+
 DROP PROCEDURE IF EXISTS `DBApprovalConditionGetAllApprovalConditions`;
 CREATE PROCEDURE `DBApprovalConditionGetAllApprovalConditions` ()
 READS SQL DATA

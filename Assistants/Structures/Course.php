@@ -1,18 +1,15 @@
 <?php
-
-
 /**
  * @file Course.php contains the Course class
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2013-2015
  */
 
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
  * the course structure
- *
- * @author Till Uhlig
- * @author Florian Lücke
- * @date 2013-2014
  */
 class Course extends Object implements JsonSerializable
 {

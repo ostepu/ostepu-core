@@ -1,17 +1,15 @@
 <?php
-
-
 /**
  * @file Component.php contains the Component class
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2013-2015
  */
 
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
  * the component structure
- *
- * @author Till Uhlig
- * @date 2013-2014
  */
 class Component extends Object implements JsonSerializable
 {

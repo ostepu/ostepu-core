@@ -1,15 +1,16 @@
 <?php
 /**
  * @file MultiRequest.php contains the Request_MultiRequest class
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2013-2015
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2014
  */
 
 /**
  * the Request_MultiRequest class is used to work with parallel curl
  * requests.
- *
- * @author Till Uhlig
- * @author Ralf Busch
- * @date 2013-2014
  */
 class Request_MultiRequest
 {

@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file GetUser.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+?>
+
 DROP PROCEDURE IF EXISTS `DBUserGetUser`;
 CREATE PROCEDURE `DBUserGetUser` (IN userid varchar(120))
 READS SQL DATA

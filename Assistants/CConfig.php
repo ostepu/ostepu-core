@@ -1,11 +1,11 @@
 <?php
-
 /**
  * @file CConfig.php contains the CConfig class
  *
- * @author Till Uhlig
- * @date 2013-2014
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2013-2015
  */
+
 include_once ( dirname( __FILE__ ) . '/Structures.php' );
 
 if (file_exists(dirname(__FILE__) . '/vendor/Slim/Slim/Slim.php')){

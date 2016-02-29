@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file FILE_TYPE.php
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+
 
 /*
  * An enumeration of different mime-types.

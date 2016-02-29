@@ -1,13 +1,12 @@
 <?php
-
-
 /**
  * @file DBGroup.php contains the DBGroup class
  *
- * @author Till Uhlig
- * @author Felix Schmidt
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2016
+ * @author Felix Schmidt <Fiduz@Live.de>
+ * @date 2014
  * @example DB/DBGroup/GroupSample.json
- * @date 2013-2015
  */
 
 include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );

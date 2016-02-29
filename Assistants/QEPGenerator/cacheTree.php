@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file cacheTree.php
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2016
+ */
+
 
 include_once(dirname(__FILE__) . '/structures/tree.php');
 

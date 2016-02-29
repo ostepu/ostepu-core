@@ -2,7 +2,8 @@
 /**
  * @file GetTransaction.sql
  * gets an specified transaction from %Transaction table
- * @author Till Uhlig
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
  * @param string \$tid a %Transaction identifier
  * @result
  * - T, the transaction data

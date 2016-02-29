@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file GetMemberRights.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+?>
+
 DROP PROCEDURE IF EXISTS `DBCourseStatusGetMemberRights`;
 CREATE PROCEDURE `DBCourseStatusGetMemberRights` (IN userid INT)
 READS SQL DATA

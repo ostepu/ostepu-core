@@ -1,17 +1,15 @@
 <?php
-
-
 /**
  * @file Setting.php contains the Setting class
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
  */
 
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
  * the Setting structure
- *
- * @author Till Uhlig
- * @date 2013-2014
  */
 class Setting extends Object implements JsonSerializable
 {

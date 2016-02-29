@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file GetExerciseType.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+?>
+
 DROP PROCEDURE IF EXISTS `DBExerciseTypeGetExerciseType`;
 CREATE PROCEDURE `DBExerciseTypeGetExerciseType` (IN etid INT)
 READS SQL DATA

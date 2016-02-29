@@ -2,7 +2,10 @@
 /**
  * @file EditInvitation.sql
  * updates a specified entry in %Invitation table
- * @author  Till Uhlig
+ * @author Jörg Baumgarten <kuroi.tatsu@freenet.de>
+ * @date 2014
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014
  * @param int \$esid a %Invitation identifier
  * @param int \$userid a %Invitation identifier
  * @param int \$member a %Invitation identifier

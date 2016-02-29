@@ -1,18 +1,21 @@
 <?php
-
-
 /**
  * @file Marking.php contains the Marking class
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2013-2015
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2015
+ * @author Felix Schmidt <Fiduz@Live.de>
+ * @date 2014
+ * @author Florian Lücke <florian.luecke@gmail.com>
+ * @date 2014
  */
 
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
  * the marking structure
- *
- * @author Till Uhlig
- * @author Florian Lücke
- * @date 2013-2014
  */
 class Marking extends Object implements JsonSerializable
 {

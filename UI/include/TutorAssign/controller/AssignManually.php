@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file AssignManually.php
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+
 $postAssignManuallyTypeValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
   ->addSet('actionAssignAllProposals',
        ['set_default'=>null,

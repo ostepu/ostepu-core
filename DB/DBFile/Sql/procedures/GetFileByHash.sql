@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file GetFileByHash.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+?>
+
 DROP PROCEDURE IF EXISTS `DBFileGetFileByHash`;
 CREATE PROCEDURE `DBFileGetFileByHash` (IN hash varchar(40))
 READS SQL DATA

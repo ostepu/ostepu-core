@@ -4,14 +4,20 @@
  * Constructs the page that is used to grant and revoke a user's user-rights
  * and to change basic course settings.
  *
- * @author Felix Schmidt
- * @author Florian Lücke
- * @author Ralf Busch
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2014
+ * @author Felix Schmidt <Fiduz@Live.de>
+ * @date 2014
+ * @author Florian Lücke <florian.luecke@gmail.com>
+ * @date 2014
  *
  * @todo PUT Request to logic not to DB
  * @todo use logic Controller instead of database
  * @todo you have to confirm your action before deleting coursestatus
  */
+
 ob_start();
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';

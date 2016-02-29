@@ -2,9 +2,8 @@
 /**
  * @file LFileHandler2.php contains the LFileHandler2 class
  *
- * @author Martin Daute
- * @author Till Uhlig
- * @date 2014
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
  */
 
  include_once ( dirname(__FILE__). '/../../Assistants/Structures.php' );

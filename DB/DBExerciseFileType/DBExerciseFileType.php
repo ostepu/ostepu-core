@@ -1,12 +1,10 @@
 <?php
-
-
 /**
  * @file DBExerciseFileType.php contains the DBExerciseFileType class
  *
- * @author Till Uhlig
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
  * @example DB/DBExerciseFileType/ExerciseFileTypeSample.json
- * @date 2013-2015
  */
 
 include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );

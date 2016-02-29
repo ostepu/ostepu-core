@@ -2,7 +2,8 @@
 /**
  * @file DeleteExerciseFileType.sql
  * deletes a specified exercise file type from %ExerciseFileType table
- * @author  Till Uhlig
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
  * @param int \$eftid a %ExerciseFileType identifier
  * @result -
  */

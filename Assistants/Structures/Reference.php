@@ -1,17 +1,15 @@
 <?php
-
-
 /**
  * @file Reference.php contains the Reference class
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
  */
 
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
  * the reference structure
- *
- * @author Till Uhlig
- * @date 2015
  */
 class Reference extends Object implements JsonSerializable
 {

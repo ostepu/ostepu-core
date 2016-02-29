@@ -2,7 +2,10 @@
 /**
  * @file DeleteGroup.sql
  * deletes a specified group entry from %Group table
- * @author  Till Uhlig
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ * @author Jörg Baumgarten <kuroi.tatsu@freenet.de>
+ * @date 2014
  * @param int \$esid a %ExerciseSheet identifier
  * @param int \$userid a %User identifier
  * @result -

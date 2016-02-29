@@ -2,8 +2,12 @@
 /**
  * @file Error.php
  *
- * @author Ralf Busch
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2016
+ * @author Florian Lücke <florian.luecke@gmail.com>
+ * @date 2014
  */
+
 ob_start();
 
 include_once 'include/Boilerplate.php';

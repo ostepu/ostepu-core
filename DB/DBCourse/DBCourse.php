@@ -1,13 +1,12 @@
 <?php
-
-
 /**
  * @file DBCourse.php contains the DBCourse class
  *
- * @author Till Uhlig
- * @author Felix Schmidt
- * @example DB/DBCourse/CourseSample.json
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
  * @date 2013-2015
+ * @author Felix Schmidt <Fiduz@Live.de>
+ * @date 2014
+ * @example DB/DBCourse/CourseSample.json
  */
 
 include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );

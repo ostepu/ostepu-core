@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file GetIncreaseUserFailedLogin.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+?>
+
 DROP PROCEDURE IF EXISTS `DBUserGetIncreaseUserFailedLogin`;
 CREATE PROCEDURE `DBUserGetIncreaseUserFailedLogin` (IN userid varchar(120))
 READS SQL DATA

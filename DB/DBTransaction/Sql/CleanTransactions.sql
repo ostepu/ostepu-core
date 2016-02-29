@@ -2,7 +2,8 @@
 /**
  * @file CleanTransactions.sql
  * removes expired transactions from %Transaction table
- * @author  Till Uhlig
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
  * @result -
  */
 ?>

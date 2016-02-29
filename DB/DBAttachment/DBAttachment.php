@@ -1,13 +1,12 @@
 <?php
-
-
 /**
  * @file DBAttachment.php contains the DBAttachment class
  *
- * @author Till Uhlig
- * @author Felix Schmidt
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2013-2015
+ * @author Felix Schmidt <Fiduz@Live.de>
+ * @date 2014
  * @example DB/DBAttachment/AttachmentSample.json
- * @date 2013-2014
  */
 
 require_once ( dirname(__FILE__) . '/../../Assistants/vendor/Slim/Slim/Slim.php' );

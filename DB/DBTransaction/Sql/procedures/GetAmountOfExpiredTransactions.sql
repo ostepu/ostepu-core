@@ -2,7 +2,8 @@
 /**
  * @file GetAmountOfExpiredTransactions.sql
  * counts expired transactions from %Transaction table
- * @author Till Uhlig
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015-2016
  * @result
  * - int
  */

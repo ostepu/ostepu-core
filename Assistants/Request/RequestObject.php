@@ -1,4 +1,10 @@
 <?php
+/**
+ * @file RequestObject.php
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
 
 class Request_RequestObject
 {

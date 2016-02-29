@@ -2,7 +2,8 @@
 /**
  * @file GetCourseProcesses.sql
  * gets all processes of a course from %Process table
- * @author Till Uhlig
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
  * @param int \$courseid an %Course identifier
  * @result
  * - PRO, the process data

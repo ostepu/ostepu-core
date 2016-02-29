@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file Samples.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+?>
+
 SET @row = 0;
 SET @a = (SELECT count(*) FROM File)-1;
 

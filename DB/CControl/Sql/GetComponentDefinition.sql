@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file GetComponentDefinition.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2013-2015
+ */
+?>
+
 select
     CO.CO_id,
     CO.CO_name,

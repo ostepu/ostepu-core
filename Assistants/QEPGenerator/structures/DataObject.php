@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file DataObject.php
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2016
+ */
+
 
 class DataObject
 {

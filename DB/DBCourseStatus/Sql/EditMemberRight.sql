@@ -2,7 +2,8 @@
 /**
  * @file EditMemberRight.sql
  * updates an specified course status from %CourseStatus table
- * @author  Till Uhlig
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
  * @param int \$courseid a %Course identifier
  * @param int \$userid an %User identifier
  * @param string <?php echo $values; ?> the input data, e.g. 'a=1, b=2'

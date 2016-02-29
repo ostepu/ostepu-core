@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file GetSheetGroups.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+?>
+
 DROP PROCEDURE IF EXISTS `DBGroupGetSheetGroups`;
 CREATE PROCEDURE `DBGroupGetSheetGroups` (IN esid INT)
 READS SQL DATA

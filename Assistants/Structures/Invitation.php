@@ -1,18 +1,15 @@
 <?php
-
-
 /**
  * @file Invitation.php contains the Invitation class
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2013-2015
  */
 
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
  * the invitation structure
- *
- * @author Till Uhlig
- * @author Florian Lücke
- * @date 2013-2014
  */
 class Invitation extends Object implements JsonSerializable
 {

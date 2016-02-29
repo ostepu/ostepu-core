@@ -2,7 +2,8 @@
 /**
  * @file GetSettingByName.sql
  * gets a setting from %Setting table
- * @author Till Uhlig
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
  * @param int \$setname a %Setting name
  * @param int \$courseid a %Course identifier
  * @result

@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file Beispieldaten.php
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2016
+ */
+
 #region Beispieldaten
 class Beispieldaten
 {

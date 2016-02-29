@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file Samples.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+?>
+
 INSERT
 IGNORE INTO `SelectedSubmission`
 SELECT NULL,

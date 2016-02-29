@@ -1,11 +1,18 @@
+<?php
+/**
+ * @file Processor.template.php
+ *
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2015
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ */
+?>
+
 <?php include_once dirname(__FILE__) . '/../../../../Assistants/Language.php'; ?>
 <?php $langTemplate='Processor_Processor';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 
 <?php
-/**
- * @file Processor.template.php
- * @author  Till Uhlig
- */
 header('Content-Type: text/html; charset=utf-8');
 
 include_once dirname(__FILE__) . '/../../../../Assistants/Structures.php';

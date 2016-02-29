@@ -1,18 +1,15 @@
 <?php
-
-
 /**
  * @file User.php contains the User class
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2013-2015
  */
 
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
  * the user structure
- *
- * @author Till Uhlig
- * @author Florian Lücke
- * @date 2013-2014
  */
 class User extends Object implements JsonSerializable
 {

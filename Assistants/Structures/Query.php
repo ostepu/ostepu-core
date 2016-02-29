@@ -1,17 +1,15 @@
 <?php
-
-
 /**
  * @file Query.php contains the Query class
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2013-2016
  */
 
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
  * this class is for querying SQL statemets
- *
- * @author Till Uhlig
- * @date 2013-2014
  */
 class Query extends Object implements JsonSerializable
 {

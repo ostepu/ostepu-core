@@ -1,12 +1,17 @@
+<?php
+/**
+ * @file LFormProcessor.template.php
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ */
+?>
+
 <?php include_once dirname(__FILE__) . '/../../../../Assistants/Language.php'; ?>
 <?php include_once dirname(__FILE__) . '/../../Boilerplate.php'; ?>
 <?php $langTemplate='Processor_LFormProcessor';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 
 <?php
-/**
- * @file LFormProcessor.template.php
- * @author  Till Uhlig
- */
  header('Content-Type: text/html; charset=utf-8');
  ?>
 <div class="content-element ProcessorParameterArea" style="outline:2px solid #b9b8b8;border-radius: 0px;margin: 0px;">

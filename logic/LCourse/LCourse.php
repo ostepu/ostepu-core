@@ -2,10 +2,8 @@
 /**
  * @file LCourse.php contains the LCourse class
  *
- * @author Christian Elze
- * @author Peter König
- * @author Martin Daute
- * @date 2013-2014
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2016
  */
 
 require_once dirname(__FILE__) . '/../../Assistants/vendor/Slim/Slim/Slim.php';

@@ -1,3 +1,16 @@
+<?php
+/**
+ * @file Subtask.template.php
+ *
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2014,2016
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ * @author Florian Lücke <florian.luecke@gmail.com>
+ * @date 2013
+ */
+?>
+
 <?php include_once dirname(__FILE__) . '/../../../Assistants/Language.php'; ?>
 <?php $langTemplate='CreateSheet_Subtask';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 

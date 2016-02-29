@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file Samples.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+?>
+
 CREATE TEMPORARY TABLE `tutors`
 SELECT *
 FROM CourseStatus C

@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file BEISPIEL.php
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015-2016
+ */
+
 #region BEISPIEL
 class BEISPIEL // der Name der Klasse muss mit dem Dateinamen uebereinstimmen
 {

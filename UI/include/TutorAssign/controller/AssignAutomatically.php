@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file AssignAutomatically.php
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+
 
 // automatically assigns all unassigned submissions to the selected tutors
 set_time_limit(180);

@@ -2,7 +2,9 @@
 /**
  * @file DeleteNotification.sql
  * deletes an specified Notification from %Notification table
- * @author  Till Uhlig
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
  * @param int \$notid a %Notification identifier
  * @result -
  */

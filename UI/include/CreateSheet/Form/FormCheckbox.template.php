@@ -1,14 +1,18 @@
+<?php
+/**
+ * @file FormCheckbox.template.php
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ */
+?>
+ 
 <?php include_once dirname(__FILE__) . '/../../../../Assistants/Language.php'; ?>
 <?php include_once dirname(__FILE__) . '/../../Boilerplate.php'; ?>
 
 <?php $langTemplate='Form';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 
-<?php
-/**
- * @file FormCheckbox.template.php
- * @author  Till Uhlig
- */
- 
+<?php 
  header('Content-Type: text/html; charset=utf-8');
  ?>
 <span class="right">

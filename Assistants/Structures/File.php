@@ -1,18 +1,17 @@
 <?php
-
-
 /**
  * @file File.php contains the File class
+ *
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2015
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2013-2015
  */
 
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
  * the file structure
- *
- * @author Till Uhlig
- * @author Florian Lücke
- * @date 2013-2014
  */
 class File extends Object implements JsonSerializable
 {

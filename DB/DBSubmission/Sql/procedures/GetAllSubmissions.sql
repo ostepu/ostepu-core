@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file GetAllSubmissions.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+?>
+
 DROP PROCEDURE IF EXISTS `DBSubmissionGetAllSubmissions`;
 CREATE PROCEDURE `DBSubmissionGetAllSubmissions` (IN selected varchar(8),IN beginStamp INT,IN endStamp INT)
 READS SQL DATA

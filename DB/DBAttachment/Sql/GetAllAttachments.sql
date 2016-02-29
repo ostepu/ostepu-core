@@ -2,7 +2,8 @@
 /**
  * @file GetAllAttachments.sql
  * gets all attachments from %Attachment table
- * @author Till Uhlig
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
  * @result
  * - A, the attachment data
  * - F, the attachment file

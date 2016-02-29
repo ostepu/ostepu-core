@@ -1,11 +1,11 @@
 <?php 
-
-
 /**
  * @file Structures.php contains the Object class and includes a lot of existing api structures
  *
- * @author Till Uhlig
- * @date 2013-2014
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2015
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2013-2015
  */
  
 include_once ( dirname( __FILE__ ) . '/Structures/Object.php' );

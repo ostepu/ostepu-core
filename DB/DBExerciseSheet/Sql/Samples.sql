@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file Samples.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+?>
+
 CREATE OR REPLACE VIEW generator AS
 SELECT 0 n
 UNION ALL

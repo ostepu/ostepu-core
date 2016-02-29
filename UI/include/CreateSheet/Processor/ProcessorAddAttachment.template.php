@@ -1,10 +1,13 @@
+<?php
+?>
 <?php $langTemplate='Processor_AddAttachment';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
-
 <?php
 /**
  * @file ProcessorAddAttachment.template.php
- * @author  Till Uhlig
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
  */
+
  header('Content-Type: text/html; charset=utf-8');
  ?>
  <div class="processor-attachment new-line" style="margin:5px 0px; width:100%;">

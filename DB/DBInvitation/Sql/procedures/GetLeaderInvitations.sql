@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file GetLeaderInvitations.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+?>
+
 DROP PROCEDURE IF EXISTS `DBInvitationGetLeaderInvitations`;
 CREATE PROCEDURE `DBInvitationGetLeaderInvitations` (IN userid INT)
 READS SQL DATA

@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file VeranstaltungenEinrichten.php
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015-2016
+ */
+
 #region VeranstaltungenEinrichten
 class VeranstaltungenEinrichten
 {

@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file Zugang.php
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ */
+
 require_once dirname(__FILE__) . '/../../Assistants/SSH/Net/SCP.php';
 require_once dirname(__FILE__) . '/../../Assistants/SSH/Net/SSH2.php';
 require_once dirname(__FILE__) . '/../../Assistants/SSH/Crypt/RSA.php';

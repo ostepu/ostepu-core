@@ -2,7 +2,8 @@
 /**
  * @file GetCourseComponentProcesses.sql
  * gets all processes of a course and a component from %Process table
- * @author Till Uhlig
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
  * @param int \$courseid a %Course identifier
  * @param int \$comid a %Component identifier
  * @result

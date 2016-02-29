@@ -2,7 +2,9 @@
 /**
  * @file AddNotification.sql
  * inserts an Notification into %Notification table
- * @author  Till Uhlig
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
  * @result -
  */
 ?>

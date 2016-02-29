@@ -1,5 +1,16 @@
 <?php
 /**
+ * @file Download.php
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2014
+ * @author Florian Lücke <florian.luecke@gmail.com>
+ * @date 2014
+ */
+
+/**
  * @file Dowload.php
  * Contains code that handles download requests.
  *

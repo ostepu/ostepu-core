@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file GetCourseExternalIds.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+?>
+
 DROP PROCEDURE IF EXISTS `DBExternalIdGetCourseExternalIds`;
 CREATE PROCEDURE `DBExternalIdGetCourseExternalIds` (IN courseid INT)
 READS SQL DATA

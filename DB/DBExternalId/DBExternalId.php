@@ -1,13 +1,12 @@
 <?php
-
-
 /**
  * @file DBExternalId.php contains the DBExternalId class
  *
- * @author Till Uhlig
- * @author Felix Schmidt
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ * @author Felix Schmidt <Fiduz@Live.de>
+ * @date 2014
  * @example DB/DBExternalId/ExternalIdSample.json
- * @date 2013-2015
  */
 
 include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );

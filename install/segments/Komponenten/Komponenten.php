@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file Komponenten.php
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2016
+ */
+
 #region Komponenten
 class Komponenten
 {

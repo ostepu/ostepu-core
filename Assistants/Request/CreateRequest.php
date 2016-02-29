@@ -1,6 +1,11 @@
 <?php
 /**
  * @file CreateRequest.php contains the Request_CreateRequest class
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2013-2015
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2014
  */ 
 
 include_once( dirname( __FILE__ ) . '/RequestObject.php' );
@@ -8,9 +13,6 @@ include_once( dirname( __FILE__ ) . '/RequestObject.php' );
 /**
  * The Request_CreateRequest class is used to create and 
  * initialize an request objects
- *
- * @author Till Uhlig
- * @date 2013-2014
  */
 class Request_CreateRequest
 {

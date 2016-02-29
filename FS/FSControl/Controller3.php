@@ -1,11 +1,9 @@
 <?php
-
-
 /**
  * @file Controller.php contains the Controller class
  *
- * @author Till Uhlig
- * @date 2013-2014
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2013-2015
  */
 
 require_once ( dirname( __FILE__ ) . '/../../Assistants/vendor/Slim/Slim/Slim.php' );

@@ -1,4 +1,11 @@
 <?php    
+/**
+ * @file phplatex.php
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+
 # Written by scarfboy@gmail.com. Use at your own risk. See README for intro and usage.
 
 $imgfmt="png"; #literally used in all extensions, so either gif or png

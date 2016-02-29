@@ -1,12 +1,13 @@
 <?php 
-
-
 /**
  * @file DBRequest.php contains the DBRequest class
  *
- * @author Till Uhlig
- * @date 2013-2014
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2013-2015
+ * @author Sandro Wefel <sandro.wefel@informatik.uni-halle.de>
+ * @date 2015
  */
+
 include_once ( dirname( __FILE__ ) . '/Structures.php' );
 
 /**

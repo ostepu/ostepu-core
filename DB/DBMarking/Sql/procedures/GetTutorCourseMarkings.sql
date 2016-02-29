@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file GetTutorCourseMarkings.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+?>
+
 DROP PROCEDURE IF EXISTS `DBMarkingGetTutorCourseMarkings`;
 CREATE PROCEDURE `DBMarkingGetTutorCourseMarkings` (IN courseid INT,IN userid INT,IN sub varchar(12))
 READS SQL DATA

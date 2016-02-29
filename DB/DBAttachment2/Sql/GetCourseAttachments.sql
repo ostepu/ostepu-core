@@ -2,7 +2,8 @@
 /**
  * @file GetCourseAttachments.sql
  * gets all course attachments from %Attachment table
- * @author Till Uhlig
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
  * @param int \$courseid an %Course identifier
  * @result
  * - A, the attachment data

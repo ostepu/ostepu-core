@@ -1,17 +1,21 @@
 <?php
-
+/**
+ * @file Notification.php
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
 
 /**
  * @file Notification.php contains the Notification class
+ *
+
  */
 
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
  * the Notification structure
- *
- * @author Till Uhlig
- * @date 2013-2014
  */
 class Notification extends Object implements JsonSerializable
 {

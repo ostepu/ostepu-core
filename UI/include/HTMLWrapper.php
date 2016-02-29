@@ -3,8 +3,14 @@
  * @file HTMLWrapper.php
  * Contains the HTMLWrapper class
  *
- * @author Florian Lücke
- * @author Ralf Busch
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2013-2014
+ * @author Florian Lücke <florian.luecke@gmail.com>
+ * @date 2013-2014
+ * @author Felix Schmidt <Fiduz@Live.de>
+ * @date 2013
  *
  * @todo Replace the class by a template based solution
  */

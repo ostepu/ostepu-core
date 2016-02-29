@@ -1,17 +1,15 @@
 <?php
-
-
 /**
  * @file ExternalId.php contains the ExternalId class
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
  */
 
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
  * the external id structure
- *
- * @author Till Uhlig
- * @date 2013-2014
  */
 class ExternalId extends Object implements JsonSerializable
 {

@@ -1,4 +1,11 @@
 <?php   
+/**
+ * @file AssignMake.php
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+
 set_time_limit(180);
         
 $URI = $databaseURI . "/group/exercisesheet/{$sid}"; /// !!! gehört die SID zur CID ??? ///

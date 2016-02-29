@@ -2,7 +2,9 @@
 /**
  * @file LFileHandler.php contains the LFileHandler class
  *
- * @author Martin Daute
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ * @author Martin Daute <martin.daute@student.uni-halle.de>
  * @date 2014
  */
 

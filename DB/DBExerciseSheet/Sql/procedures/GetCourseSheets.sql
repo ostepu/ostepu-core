@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file GetCourseSheets.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+?>
+
 DROP PROCEDURE IF EXISTS `DBExerciseSheetGetCourseSheets`;
 CREATE PROCEDURE `DBExerciseSheetGetCourseSheets` (IN courseid INT)
 READS SQL DATA

@@ -1,16 +1,16 @@
 <?php
+/**
+ * @file Installation.php contains the Installation class
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2016
+ */
+ 
 require_once dirname(__FILE__) . '/../../UI/include/Authentication.php';
 require_once dirname(__FILE__) . '/../../Assistants/Structures.php';
 require_once dirname(__FILE__) . '/../../Assistants/Request.php';
 require_once dirname(__FILE__) . '/../../Assistants/DBRequest.php';
 require_once dirname(__FILE__) . '/../../Assistants/DBJson.php';
-
-/**
- * @file Installation.php contains the Installation class
- *
- * @author Till Uhlig
- * @date 2014
- */
 
 class Installation
 {

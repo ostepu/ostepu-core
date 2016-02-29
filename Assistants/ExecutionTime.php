@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file ExecutionTime.php
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ */
+
 header('Content-type: text');
 
 if (!isset($_GET['split'])){

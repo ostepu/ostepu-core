@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file GetUserCourses.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+?>
+
 DROP PROCEDURE IF EXISTS `DBCourseGetUserCourses`;
 CREATE PROCEDURE `DBCourseGetUserCourses` (IN userid INT)
 READS SQL DATA

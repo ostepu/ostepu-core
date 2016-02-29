@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file GetFile.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+?>
+
 DROP PROCEDURE IF EXISTS `DBFileGetFile`;
 CREATE PROCEDURE `DBFileGetFile` (IN fileid INT)
 READS SQL DATA

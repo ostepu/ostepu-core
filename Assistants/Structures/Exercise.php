@@ -1,18 +1,15 @@
 <?php
-
-
 /**
  * @file Exercise.php contains the Exercise class
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2013-2015
  */
 
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
  * the exercise structure
- *
- * @author Till Uhlig
- * @author Florian Lücke
- * @date 2013-2014
  */
 class Exercise extends Object implements JsonSerializable
 {

@@ -1,13 +1,14 @@
 <?php
-set_time_limit(0);
-header("Content-Type: text/html; charset=utf-8");
-
 /**
  * @file install.php contains the Installer class
  *
- * @author Till Uhlig
- * @date 2014
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2016
  */
+ 
+set_time_limit(0);
+header("Content-Type: text/html; charset=utf-8");
+
 define('ISCLI', PHP_SAPI === 'cli');
 
 if (file_exists(dirname(__FILE__) . '/../Assistants/vendor/Slim/Slim/Route.php') && file_exists(dirname(__FILE__) . '/../Assistants/vendor/Slim/Slim/Slim.php')){

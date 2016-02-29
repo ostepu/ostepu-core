@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file Model.php
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2016
+ */
+
 require_once ( dirname(__FILE__) . '/vendor/Slim/Slim/Route.php' );
 require_once ( dirname(__FILE__) . '/vendor/Slim/Slim/Router.php' );
 require_once ( dirname(__FILE__) . '/vendor/Slim/Slim/Environment.php' );

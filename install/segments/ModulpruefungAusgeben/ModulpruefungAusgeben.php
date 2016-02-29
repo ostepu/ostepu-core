@@ -1,4 +1,13 @@
 <?php
+/**
+ * @file ModulpruefungAusgeben.php
+ *
+ * @author Max Brauer <ma.brauer@live.de>
+ * @date 2016
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015-2016
+ */
+
 #region ModulpruefungAusgeben
 class ModulpruefungAusgeben
 {

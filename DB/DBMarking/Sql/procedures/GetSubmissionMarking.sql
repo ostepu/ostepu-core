@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file GetSubmissionMarking.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+?>
+
 DROP PROCEDURE IF EXISTS `DBMarkingGetSubmissionMarking`;
 CREATE PROCEDURE `DBMarkingGetSubmissionMarking` (IN suid INT,IN sub varchar(12))
 READS SQL DATA

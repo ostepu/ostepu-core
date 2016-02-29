@@ -1,17 +1,15 @@
 <?php
-
-
 /**
  * @file ApprovalCondition.php contains the ApprovalCondition class
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
  */
 
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
  * the ApprovalCondition structure
- *
- * @author Till Uhlig
- * @date 2013-2014
  */
 class ApprovalCondition extends Object implements JsonSerializable
 {

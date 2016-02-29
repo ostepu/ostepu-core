@@ -1,17 +1,15 @@
 <?php
-
-
 /**
  * @file Attachment.php contains the Attachment class
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
  */
 
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
  * the attachment structure
- *
- * @author Till Uhlig
- * @date 2013-2014
  */
 class Attachment extends Object implements JsonSerializable
 {

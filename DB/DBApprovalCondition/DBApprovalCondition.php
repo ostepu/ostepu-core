@@ -1,13 +1,12 @@
 <?php
-
-
 /**
  * @file DBApprovalCondition.php contains the DBApprovalCondition class
  *
- * @author Till Uhlig
- * @author Felix Schmidt
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ * @author Felix Schmidt <Fiduz@Live.de>
+ * @date 2014
  * @example DB/DBApprovalCondition/ApprovalConditionSample.json
- * @date 2013-2015
  */
 
 include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );

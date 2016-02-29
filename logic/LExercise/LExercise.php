@@ -2,11 +2,14 @@
 /**
  * @file LExercise.php Contains the LExercise class
  *
- * @author Martin Daute
- * @author Christian Elze
- * @author Peter Koenig
- * @author Ralf Busch
- * @date 2013-2014
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2014
+ * @author Peter König <upbkgs20@arcor.de>
+ * @date 2014
+ * @author Martin Daute <martin.daute@student.uni-halle.de>
+ * @date 2014
  */
 
 require_once dirname(__FILE__) . '/../../Assistants/vendor/Slim/Slim/Slim.php';

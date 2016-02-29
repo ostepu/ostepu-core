@@ -1,12 +1,11 @@
 <?php
-
-
 /**
  * @file FSControl.php contains the FSControl class
  *
- * @author Till Uhlig
- * @author Felix Schmidt
- * @date 2013-2014
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ * @author Felix Schmidt <Fiduz@Live.de>
+ * @date 2014
  */
 
 require_once ( dirname(__FILE__) . '/../../Assistants/vendor/Slim/Slim/Slim.php' );

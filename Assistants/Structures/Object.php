@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file Object.php
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ */
+
 
 /**
  * the Object class is the parent class of all api structures

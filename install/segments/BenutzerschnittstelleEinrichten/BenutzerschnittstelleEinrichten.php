@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file BenutzerschnittstelleEinrichten.php
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015-2016
+ */
+
 #region BenutzerschnittstelleEinrichten
 class BenutzerschnittstelleEinrichten
 {

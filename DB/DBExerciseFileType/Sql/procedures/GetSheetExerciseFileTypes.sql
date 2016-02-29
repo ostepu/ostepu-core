@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file GetSheetExerciseFileTypes.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+?>
+
 DROP PROCEDURE IF EXISTS `DBExerciseFileTypeGetSheetExerciseFileTypes`;
 CREATE PROCEDURE `DBExerciseFileTypeGetSheetExerciseFileTypes` (IN esid INT)
 READS SQL DATA

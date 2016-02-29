@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file GetLink.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2013-2015
+ */
+?>
+
 select
     CL.CL_id,
     CL.CL_name,

@@ -1,17 +1,15 @@
 <?php
-
-
 /**
  * @file Link.php contains the Link class
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2013-2015
  */
 
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
  * the link structure
- *
- * @author Till Uhlig
- * @date 2013-2014
  */
 class Link extends Object implements JsonSerializable
 {

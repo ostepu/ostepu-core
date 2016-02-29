@@ -2,8 +2,10 @@
 /**
  * @file LProcessor.php Contains the LProcessor class
  *
- * @author Till Uhlig
- * @date 2014
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2015-2016
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
  */
 
 require_once dirname(__FILE__) . '/../../Assistants/vendor/Slim/Slim/Slim.php';

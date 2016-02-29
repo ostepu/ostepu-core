@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file GetUserByStatus.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+?>
+
 DROP PROCEDURE IF EXISTS `DBUserGetUserByStatus`;
 CREATE PROCEDURE `DBUserGetUserByStatus` (IN statusid INT)
 READS SQL DATA

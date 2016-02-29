@@ -2,7 +2,8 @@
 /**
  * @file GetSetting.sql
  * gets a setting from %Setting table
- * @author Till Uhlig
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
  * @param int \$setid an %Setting identifier
  * @result
  * - S, the Setting data

@@ -2,7 +2,8 @@
 /**
  * @file GetSheetProcesses.sql
  * gets processes from %Process table
- * @author Till Uhlig
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
  * @param int \$esid an %Sheet identifier
  * @result
  * - PRO, the process data

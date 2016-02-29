@@ -2,7 +2,8 @@
 /**
  * @file DeleteFile.sql
  * deletes a specified file from %File table
- * @author  Till Uhlig
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
  * @param int \$fileid a %File identifier
  * @result -
  */

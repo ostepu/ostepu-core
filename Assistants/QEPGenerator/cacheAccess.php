@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file cacheAccess.php
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2016
+ */
+
 
 if (file_exists(dirname(__FILE__) . '/../vendor/phpfastcache/phpfastcache.php')) {
     include_once(dirname(__FILE__) . '/../vendor/phpfastcache/phpfastcache.php');

@@ -1,17 +1,15 @@
 <?php
-
-
 /**
  * @file Choice.php contains the Choice class
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
  */
 
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
  * the choice structure
- *
- * @author Till Uhlig
- * @date 2014
  */
 class Choice extends Object implements JsonSerializable
 {

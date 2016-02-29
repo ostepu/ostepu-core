@@ -1,11 +1,9 @@
 <?php
-
-
 /**
  * @file Einstellungen.php contains the Einstellungen class
  *
- * @author Till Uhlig
- * @date 2014
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2016
  */
 
 include_once ( dirname( __FILE__ ) . '/../../Assistants/Structures.php' );

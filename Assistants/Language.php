@@ -1,11 +1,9 @@
 <?php
-
-
 /**
  * @file Language.php contains the Language class
  *
- * @author Till Uhlig
- * @date 2014
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015-2016
  */
 
 class Language

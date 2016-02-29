@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file QEPGenerator.php
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2016
+ */
+
 if (file_exists(dirname(__FILE__) . '/vendor/Slim/Slim/Slim.php')) {
     include_once (dirname(__FILE__) . '/vendor/Slim/Slim/Route.php');
     include_once (dirname(__FILE__) . '/vendor/Slim/Slim/Router.php');

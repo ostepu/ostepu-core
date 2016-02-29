@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file MySQLInfo.php
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015-2016
+ */
+
 #region MySQLInfo
 class MySQLInfo // der Name der Klasse muss mit dem Dateinamen uebereinstimmen
 {

@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file GetSelectedExerciseSubmissions.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+?>
+
 DROP PROCEDURE IF EXISTS `DBSubmissionGetSelectedExerciseSubmissions`;
 CREATE PROCEDURE `DBSubmissionGetSelectedExerciseSubmissions` (IN eid INT)
 READS SQL DATA

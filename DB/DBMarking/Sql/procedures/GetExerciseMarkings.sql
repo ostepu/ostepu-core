@@ -1,3 +1,12 @@
+<?php
+/**
+ * @file GetExerciseMarkings.sql
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
+?>
+
 DROP PROCEDURE IF EXISTS `DBMarkingGetExerciseMarkings`;
 CREATE PROCEDURE `DBMarkingGetExerciseMarkings` (IN eid INT,IN sub varchar(12))
 READS SQL DATA

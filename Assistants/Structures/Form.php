@@ -1,17 +1,15 @@
 <?php
-
-
 /**
  * @file Form.php contains the Form class
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
  */
 
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
  * the form structure
- *
- * @author Till Uhlig
- * @date 2014
  */
 class Form extends Object implements JsonSerializable
 {

@@ -3,10 +3,16 @@
  * @file TutorAssign.php
  * Constructs the page for managing tutor assignments.
  *
- * @author Felix Schmidt
- * @author Florian Lücke
- * @author Ralf Busch
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2013-2014
+ * @author Felix Schmidt <Fiduz@Live.de>
+ * @date 2013-2014
+ * @author Florian Lücke <florian.luecke@gmail.com>
+ * @date 2013-2014
  */
+
 ob_start();
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';

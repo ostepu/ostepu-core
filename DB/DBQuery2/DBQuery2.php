@@ -1,11 +1,9 @@
 <?php
-
-
 /**
  * @file DBQuery2.php contains the DBQuery2 class
  *
- * @author Till Uhlig
- * @date 2014-2015
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2016
  */
 
 include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );

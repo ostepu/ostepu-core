@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file DatenbankEinrichten.php
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015-2016
+ */
+
 #region DatenbankEinrichten
 class DatenbankEinrichten
 {
