@@ -300,8 +300,8 @@ class Anfragegraph
                         if (!file_exists($mdFileResult)) {
                             if (isset($data['path']) && $data['path'] !== null) {
                                 // speichere die Beschreibungsdatei
-                                $path = $location.'/'.$data['path'];
-                                $mdFile2 = $path.'/info/de.md';
+                                $path = $mainPath.'/'.$data['path'];
+                                $mdFile2 = $path.'/info/de.md';echo $mdFile2;
                                 if (file_exists($mdFile2)) {
                                     file_put_contents($mdFile,file_get_contents($mdFile2));
                                 }
@@ -394,7 +394,7 @@ class Anfragegraph
                             $parser = new \Michelf\MarkdownExtra;
                             $input = self::umlaute(file_get_contents($mdFile));
                             $my_html = $parser->transform($input);
-                            file_put_contents($mdFileResult, '<link rel="stylesheet" href="github-markdown.css" type="text/css"><span class="markdown-body">'.$my_html.'</span>');
+                            file_put_contents($mdFileResult, '<link rel="stylesheet" href="github-markdown.css" type="text/css"><span class="markdown-body"><a style="font-size: 75%" href="javascript:history.back()">&lt; zur&uuml;ck</a><br>'.$my_html.'</span>');
                             @unlink($mdFile);
                         }elseif (file_exists($mdFile)) {
                             @unlink($mdFile);
