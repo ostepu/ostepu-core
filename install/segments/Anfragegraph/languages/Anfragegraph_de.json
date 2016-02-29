@@ -1,7 +1,7 @@
 {
     "main": {
         "title": "Anfragegraph",
-        "description": "Hier kann die Anfrageaufzeichnung aktiviert und deaktiviert werden. Zudem können vorhandene Aufzeichnungen gerendert und aufgerufen werden."
+        "description": "Hier kann die Anfrageaufzeichnung aktiviert und deaktiviert werden. Zudem können vorhandene Aufzeichnungen gerendert werden."
     },
     "manage": {
         "createDesc": "Erzeugt einen Gource-Datensatz für alle ausgewählten Git-Quellen",
