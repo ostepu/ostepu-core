@@ -401,7 +401,7 @@ class Anfragegraph
                         }
 
                         // entferne nun die bearbeitete Datei
-                        @unlink(dirname(__FILE__).'/path/'.$elem.'/'.$file);
+                        @unlink($location.'/'.$elem.'/'.$file);
                     }
                 }
 
