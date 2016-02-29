@@ -19,5 +19,6 @@
     "noChangesFound": "keine Änderungen gefunden",
     "changesFound": "Änderungen gefunden ($amount)",
     "execGitReset": "exec git reset --hard",
-    "execGitPull": "exec git pull"
+    "execGitPull": "exec git pull",
+    "errorOnChangeDir": "Verzeichnis konnte nicht gewechselt werden >> $path"
 }}

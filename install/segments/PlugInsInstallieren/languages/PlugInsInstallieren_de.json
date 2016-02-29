@@ -11,12 +11,14 @@
     "packageDetails": "Packetdetails anzeigen",
     "install": "Aktualisieren",
     "errorGitClone": "git clone konnte nicht aufgerufen werden!!! >> $result",
+    "errorGitRemote": "git remote konnte nicht aufgerufen werden!!! >> $result",
     "typeLocal": "Typ: Lokal",
     "typeGit": "Typ: Git",
     "noLocalRepo": "kein Repository gefunden",
     "errorGitFetch": "git fetch konnte nicht aufgerufen werden!!! >> $result",
     "errorGitPull": "git pull konnte nicht aufgerufen werden!!! >> $result",
     "execClone": "exec git clone >> $cmd",
+    "execRemote": "exec git remote >> $cmd",
     "noMovingRequired": "kein Verschieben des Repositories notwendig",
     "copyFiles": "Dateien des Repositories werden verschoben",
     "copyFile": "Kopiere Datei $from >> $to",
@@ -24,5 +26,6 @@
     "location": "Repo-Pfad: $path",
     "noDirLocation": "Repo-Pfad existiert nicht!!!",
     "noDirFile": "Dateipfad existiert nicht: $path",
-    "path": "Zielpfad des Repo: $path"
+    "path": "Zielpfad des Repo: $path",
+    "errorOnChangeDir": "Verzeichnis konnte nicht gewechselt werden >> $path"
 }}

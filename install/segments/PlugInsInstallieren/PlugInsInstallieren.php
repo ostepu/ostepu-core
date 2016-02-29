@@ -316,8 +316,9 @@ class PlugInsInstallieren
                 $virtual = (isset($file['virtual'])?$file['virtual']:false);
                 
                 if ($virtual){
-                    // soll nicht ausgeführt werden
-                }elseif ($type === 'git'){     
+                    // soll nicht ausgeführt werden, dieser Eintrag wird anderst verwendet
+                }elseif ($type === 'git'){   
+                    // es handelt sich um ein git-Repository
                     Installation::log(array('text'=>Installation::Get('packages','typeGit',self::$langTemplate)));                
                     $params['path'] = rtrim($params['path'],"\\/");
                     $location = $mainPath . DIRECTORY_SEPARATOR . $params['path']; 
@@ -346,32 +347,53 @@ class PlugInsInstallieren
                     }
                  
                     if (!file_exists($location."/.git")){
+                        // es wurde lokal kein Repository gefunden, also muss es 
+                        // heruntergeladen werden
                         Installation::log(array('text'=>Installation::Get('packages','noLocalRepo',self::$langTemplate)));  
                         
                         // initialisieren
                         $pathOld = getcwd();
-                        Installation::log(array('text'=>Installation::Get('packages','execClone',self::$langTemplate,array('cmd'=>'(git clone --single-branch --depth 1 --branch '.$branch.' '.$repo.' .) 2>&1'))));  
-                        if (@chdir($location)){            // --depth 1             
+                        Installation::log(array('text'=>Installation::Get('packages','execClone',self::$langTemplate,array('cmd'=>'(git clone --single-branch --branch '.$branch.' '.$repo.' .) 2>&1'))));  
+                        if (@chdir($location)){
+                            // klont das Repo
                             exec('(git clone --single-branch --branch '.$branch.' '.$repo.' .) 2>&1', $output, $return);
                             @chdir($pathOld);
                         } else {
                             $return = 1;
-                            $output = '--';
+                            $output = Installation::Get('packages','errorOnChangeDir',self::$langTemplate, array('path'=>$location));
                         }
                         
                         if ($return !== 0){
                             Installation::log(array('text'=>Installation::Get('packages','errorGitClone',self::$langTemplate, array('result'=>$output)), 'logLevel'=>LogLevel::ERROR));
                         }
+                    } else {
+                        // wenn das Repo bereits lokal existiert, soll sichergestellt werden,
+                        // dass die URL korrekt ist
+                        $pathOld = getcwd();
+                        Installation::log(array('text'=>Installation::Get('packages','execRemote',self::$langTemplate,array('cmd'=>'(git remote set-url origin '.$repo.' .) 2>&1'))));  
+                        if (@chdir($location)){
+                            // klont das Repo
+                            exec('git remote set-url origin '.$repo.' .) 2>&1', $output, $return);
+                            @chdir($pathOld);
+                        } else {
+                            $return = 1;
+                            $output = Installation::Get('packages','errorOnChangeDir',self::$langTemplate, array('path'=>$location));
+                        }
+                        
+                        if ($return !== 0){
+                            Installation::log(array('text'=>Installation::Get('packages','errorGitRemote',self::$langTemplate, array('result'=>$output)), 'logLevel'=>LogLevel::ERROR));
+                        }
                     }
                  
                     $pathOld = getcwd();
                     if (@chdir($location)){
+                        // aktualisiert das Repo
                         exec('(git fetch) 2>&1', $output, $return);
                         exec('(git pull) 2>&1', $output2, $return2);
                         @chdir($pathOld);    
                     } else {
                         $return = 1;
-                        $output = '--';
+                        $output = Installation::Get('packages','errorOnChangeDir',self::$langTemplate, array('path'=>$location));
                     }
                     
                     if ($return === 0){

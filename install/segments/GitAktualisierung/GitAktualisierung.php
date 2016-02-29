@@ -121,7 +121,7 @@ class GitAktualisierung
             @chdir($pathOld);
         } else {
             $return = 1;
-            $output = '--';
+            $output = Installation::Get('gitUpdate','errorOnChangeDir',self::$langTemplate, array('path'=>data['PL']['localPath'] . DIRECTORY_SEPARATOR));
         }
 
         if ($return == 0){
@@ -134,7 +134,7 @@ class GitAktualisierung
                 @chdir($pathOld);
             } else {
                 $return = 1;
-                $output = '--';
+                $output = Installation::Get('gitUpdate','errorOnChangeDir',self::$langTemplate, array('path'=>data['PL']['localPath'] . DIRECTORY_SEPARATOR));
             }
 
             if ($return == 0){
@@ -149,7 +149,7 @@ class GitAktualisierung
                     @chdir($pathOld);
                 } else {
                     $return = 1;
-                    $output = '--';
+                    $output = Installation::Get('gitUpdate','errorOnChangeDir',self::$langTemplate, array('path'=>data['PL']['localPath'] . DIRECTORY_SEPARATOR));
                 }
 
                 if ($return == 0){
@@ -202,7 +202,7 @@ class GitAktualisierung
             @chdir($pathOld);
         } else {
             $return = 1;
-            $output = '--';
+            $output = Installation::Get('gitUpdate','errorOnChangeDir',self::$langTemplate, array('path'=>data['PL']['localPath'] . DIRECTORY_SEPARATOR));
         }
 
         if ($return == 0){
@@ -215,7 +215,7 @@ class GitAktualisierung
                 @chdir($pathOld);
             } else {
                 $return = 1;
-                $output = '--';
+                $output = Installation::Get('gitUpdate','errorOnChangeDir',self::$langTemplate, array('path'=>data['PL']['localPath'] . DIRECTORY_SEPARATOR));
             }
 
             if ($return == 0){
