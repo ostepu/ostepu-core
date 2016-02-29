@@ -133,10 +133,10 @@ include_once dirname(__FILE__) . '/../Helpers.php';
         $formsAllowed=false;
         if (!isset($forms)){
             $formsAllowed = false;
-            $result = Request::get($serverURI.'/DB/DBForm/link/exists/course/' . $cid,array(),'');
+            $result = Request::get($serverURI.'/vendor/forms/DBForm/link/exists/course/' . $cid,array(),'');
             if ( $result['status'] === 200 )
                 $formsAllowed = true;
-        } else 
+        } else
             $formsAllowed=true;
         
         $processesAllowed=false;
