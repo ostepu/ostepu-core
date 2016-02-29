@@ -308,7 +308,7 @@ class Anfragegraph
                             if (isset($data['path']) && $data['path'] !== null) {
                                 // speichere die Beschreibungsdatei
                                 $path = $mainPath.'/'.$data['path'];
-                                $mdFile2 = $path.'/info/de.md';echo $mdFile2;
+                                $mdFile2 = $path.'/info/de.md';
                                 if (file_exists($mdFile2)) {
                                     file_put_contents($mdFile,file_get_contents($mdFile2));
                                 }
