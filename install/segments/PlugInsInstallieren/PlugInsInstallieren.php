@@ -370,10 +370,10 @@ class PlugInsInstallieren
                         // wenn das Repo bereits lokal existiert, soll sichergestellt werden,
                         // dass die URL korrekt ist
                         $pathOld = getcwd();
-                        Installation::log(array('text'=>Installation::Get('packages','execRemote',self::$langTemplate,array('cmd'=>'(git remote set-url origin '.$repo.' .) 2>&1'))));  
+                        Installation::log(array('text'=>Installation::Get('packages','execRemote',self::$langTemplate,array('cmd'=>'(git remote set-url origin '.$repo.' ) 2>&1'))));  
                         if (@chdir($location)){
                             // klont das Repo
-                            exec('git remote set-url origin '.$repo.' .) 2>&1', $output, $return);
+                            exec('git remote set-url origin '.$repo.' ) 2>&1', $output, $return);
                             @chdir($pathOld);
                         } else {
                             $return = 1;
