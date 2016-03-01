@@ -1,3 +1,10 @@
+<!--
+ * @file page_admin_courseManagement_plugins_de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 
 Sie können sowohl Erweiterungen installieren (Haken gesetzt) und deinstallieren (Haken nicht gesetzt).
 

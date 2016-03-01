@@ -1,3 +1,10 @@
+<!--
+ * @file page_common_courseSelect_courseSelect_de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 In dieser Übersicht sehen Sie alle Veranstaltungen, an denen Sie teilnehmen.
 
 ![](courseSelectA.png)

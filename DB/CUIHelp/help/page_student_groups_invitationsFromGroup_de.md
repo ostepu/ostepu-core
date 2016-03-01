@@ -1,3 +1,10 @@
+<!--
+ * @file page_student_groups_invitationsFromGroup_de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 #### Gruppe erstellen
 
 Sie müssen Ihre Gruppen in jeder Übungsserie erstellen/annehmen, denn Gruppenstrukturen werden zwischen den Übungsserien nicht automatisch übernommen.

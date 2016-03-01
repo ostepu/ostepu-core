@@ -1,3 +1,10 @@
+<!--
+ * @file de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 #### Datenbank
 Die DBApprovalCondition ermöglicht den Zugriff auf die `ApprovalCondition` Tabelle der Datenbank, dabei sollen
 Zulassungsbedingungen verwaltet werden.

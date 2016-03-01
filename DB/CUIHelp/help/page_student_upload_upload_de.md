@@ -1,3 +1,10 @@
+<!--
+ * @file page_student_upload_upload_de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015-2016
+-->
+
 
 ![](uploadA.png)
 

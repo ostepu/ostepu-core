@@ -1,3 +1,10 @@
+<!--
+ * @file de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 #### Datenbank
 Die DBSelectedSubmission ermöglicht den Zugriff auf die `SelectedSubmission` Tabelle der Datenbank, dabei sollen
 für einen Gruppeneintrag ausgewählte Einsendungen (für eine Aufgabe) verwaltet werden.

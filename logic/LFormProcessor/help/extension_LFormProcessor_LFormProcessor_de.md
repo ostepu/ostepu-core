@@ -1,3 +1,10 @@
+<!--
+ * @file extension_LFormProcessor_LFormProcessor_de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 #### LFormProcessor
 Dieses Modul nimmt die Bewertung der Nutzerantworten (bei der Verwendung von Formularen) vor. Dazu wird die Musterlösung mit der Eingabe des Nutzers verglichen und entsprechend Punkte vergeben.
 

@@ -1,3 +1,10 @@
+<!--
+ * @file page_admin_tutorAssign_automatically_de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 #### AUTOMATISCHE ZUWEISUNG
 Einsendungen (**unzugewiesene**) und Korrekturen können hier an Kontrolleure gleichmäßig zugewiesen werden. Dabei werden diese, entsprechend der Auswahl, Studentenweise auf die Kontrolleure verteilt.
 

@@ -1,3 +1,10 @@
+<!--
+ * @file extension_LForm_formCheckbox_de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 Der Nutzer kann hierbei mehrere Antworten als Lösung auswählen. Dabei gilt eine Frage nur bei vollständiger Übereinstimmung als Korrekt.
 
 ![](MehrfachauswahlVerwenden3.png "Mehrfachauswahl verwenden")

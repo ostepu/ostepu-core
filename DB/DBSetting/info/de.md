@@ -1,3 +1,10 @@
+<!--
+ * @file de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 #### Datenbank
 Die DBSetting ermöglicht den Zugriff auf die `SETTING_X` Tabellen der Datenbank, dabei sollen
 Veranstaltungseinstellungen verwaltet werden.

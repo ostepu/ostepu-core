@@ -1,3 +1,10 @@
+<!--
+ * @file setting_MaxStudentUploadSize_MaxStudentUploadSizeDesc_de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 Über diese Einstellung kann die maximale Einsendungsgröße einer Datei, für Studenten, reguliert werden.
 
 > Wurde kein Wert angegeben, wird die Größe über die Einstellungen des Systems geregelt. (php.ini)

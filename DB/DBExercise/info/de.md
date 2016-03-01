@@ -1,3 +1,10 @@
+<!--
+ * @file de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 #### Eingänge
 - eid = die ID einer Aufgabe (`Exercise`)
 - sub = bestimmt, ob keine Einsendungen mit zurückgegeben werden sollen ('nosubmission' = keine Einsendungen, sonst = mit Einsendungen)

@@ -1,3 +1,10 @@
+<!--
+ * @file de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 #### Datenbank
 Die DBMarking ermöglicht den Zugriff auf die `Marking` Tabelle der Datenbank, dabei sollen
 Korrekturen, zu Einsendungen, verwaltet werden.

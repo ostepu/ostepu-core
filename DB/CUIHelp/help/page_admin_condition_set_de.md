@@ -1,3 +1,10 @@
+<!--
+ * @file page_admin_condition_set_de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 #### Zulassungsbedingungen festlegen ####
 
 > ##### 1. Werte eingeben #####

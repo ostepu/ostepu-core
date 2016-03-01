@@ -1,3 +1,10 @@
+<!--
+ * @file de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 #### Datenbank
 Die DBCourseStatus ermöglicht den Zugriff auf die `CourseStatus` Tabelle der Datenbank, dabei soll
 der Status eines Nutzers in einer Veranstaltung verwaltet werden.

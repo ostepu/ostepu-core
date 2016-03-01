@@ -1,3 +1,10 @@
+<!--
+ * @file de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 Die LOOP Komponente wird beim Erstellen von Übungsserien als Verarbeitung verwendet,
 dabei bietet sie im wesentlichen die Möglichkeit Java Einsendungen zu compilieren und
 im Fehlerfall abzulehnen.

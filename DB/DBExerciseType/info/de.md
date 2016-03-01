@@ -1,3 +1,10 @@
+<!--
+ * @file de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 #### Datenbank
 Die DBExerciseType ermöglicht den Zugriff auf die `ExerciseType` Tabelle der Datenbank, dabei sollen
 Typen von Aufgaben (Punktearten) verwaltet werden.

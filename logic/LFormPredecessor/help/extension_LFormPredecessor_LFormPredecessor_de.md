@@ -1,3 +1,10 @@
+<!--
+ * @file extension_LFormPredecessor_LFormPredecessor_de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 #### LFormPredecessor
 **Dieses Modul wandelt die Eingaben der Nutzer, bei der Verwendung von Formularen, in eine PDF um.**
 

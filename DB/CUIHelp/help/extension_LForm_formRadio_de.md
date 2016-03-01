@@ -1,3 +1,10 @@
+<!--
+ * @file extension_LForm_formRadio_de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 Der Nutzer kann bei dieser Variante eine einzelne Antwort als Einsendung auswählen.
 
 ![](EinfachauswahlVerwenden3.png "Einfachauswahl verwenden")

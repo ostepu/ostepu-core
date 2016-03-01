@@ -1,3 +1,10 @@
+<!--
+ * @file page_admin_tutorUpload_upload_de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 #### Korrekturen hochladen
 Nachdem Sie die Liste.csv und alle Korrekturdateien in ein zip-Archiv verpackt haben, können Sie dieses zur Verarbeitung in die Plattform laden.
 

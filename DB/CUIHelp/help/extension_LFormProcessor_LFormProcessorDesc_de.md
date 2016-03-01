@@ -1,3 +1,10 @@
+<!--
+ * @file extension_LFormProcessor_LFormProcessorDesc_de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 #### LFormProcessor ####
 Diese **Verarbeitung** wird bei der Nutzung von Formulareingaben benötigt.
 

@@ -1,3 +1,10 @@
+<!--
+ * @file page_common_accountSettings_password_de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 > ##### 1. Passwort festlegen #####
 
 ![](passwordA.png)

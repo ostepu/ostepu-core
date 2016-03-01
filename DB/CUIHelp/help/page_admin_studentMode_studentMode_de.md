@@ -1,3 +1,10 @@
+<!--
+ * @file page_admin_studentMode_studentMode_de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 
 Die Studentenrolle ermöglicht Ihnen in die Sicht eines bestimmten Studenten Ihrer Veranstaltung zu wechseln und für diesen Aktionen vorzunehmen. Dabei haben Sie im Allgemeinen exakt die selben Berechtigungen wie dieser Student.
 

@@ -1,3 +1,10 @@
+<!--
+ * @file de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 #### Datenbank
 Die DBUser ermöglicht den Zugriff auf die `User` Tabelle der Datenbank, dabei sollen
 Nutzerdaten verwaltet werden.

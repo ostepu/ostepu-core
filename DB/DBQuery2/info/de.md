@@ -1,3 +1,10 @@
+<!--
+ * @file de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 #### Eingänge
 - procedure = der Name der `stored procedure`
 - params = Aufrufparameter einer `stored procedure`

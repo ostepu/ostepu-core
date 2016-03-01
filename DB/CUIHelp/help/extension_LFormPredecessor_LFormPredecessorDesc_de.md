@@ -1,3 +1,10 @@
+<!--
+ * @file extension_LFormPredecessor_LFormPredecessorDesc_de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 #### LFormPredecessor ####
 Diese **Verarbeitung** wird bei der Nutzung von Formulareingaben (**LForm**) benötigt.
 

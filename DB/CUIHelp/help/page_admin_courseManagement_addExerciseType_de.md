@@ -1,3 +1,10 @@
+<!--
+ * @file page_admin_courseManagement_addExerciseType_de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 
 #### 1. Name der neuen Punkteart
 

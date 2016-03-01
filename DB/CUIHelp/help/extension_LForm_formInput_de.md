@@ -1,3 +1,10 @@
+<!--
+ * @file extension_LForm_formInput_de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 Hier hat der Nutzer die Möglichkeit, auf eine Frage frei zu Antworten.
 
 ![](EingabezeileVerwenden3.png "Eingabezeile verwenden")

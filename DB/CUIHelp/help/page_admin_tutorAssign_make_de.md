@@ -1,3 +1,10 @@
+<!--
+ * @file page_admin_tutorAssign_make_de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 #### Einsendungen erzeugen ####
 Es kann vorkommen, dass Punkte auch für Aufgaben vergeben werden müssen zu denen die Studenten aber nichts einsenden können (Präsenzaufgaben). Dann können hier dummy-Einsendungen erzeugt werden, sodass sie einem Kontrolleur zugeordnet werden können.
 

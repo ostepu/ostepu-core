@@ -1,3 +1,10 @@
+<!--
+ * @file de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 #### Datenbank
 Die DBCourse ermöglicht den Zugriff auf die `Course` Tabelle der Datenbank, dabei sollen
 Veranstaltungen verwaltet werden.

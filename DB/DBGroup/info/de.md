@@ -1,3 +1,10 @@
+<!--
+ * @file de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 #### Datenbank
 Die DBGroup ermöglicht den Zugriff auf die `Group` Tabelle der Datenbank, dabei sollen
 Arbeitsgruppen verwaltet werden.

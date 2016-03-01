@@ -1,3 +1,10 @@
+<!--
+ * @file de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 #### Datenbank
 Die DBSession ermöglicht den Zugriff auf die `Session` Tabelle der Datenbank, dabei sollen
 Sitzungen verwaltet werden.

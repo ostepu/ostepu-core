@@ -1,3 +1,10 @@
+<!--
+ * @file de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 #### Datenbank
 Die DBFile ermöglicht den Zugriff auf die `File` Tabelle der Datenbank, dabei sollen
 Dateien (nicht der Dateiinhalt) verwaltet werden.

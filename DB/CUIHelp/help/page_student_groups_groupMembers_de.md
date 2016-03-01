@@ -1,3 +1,10 @@
+<!--
+ * @file page_student_groups_groupMembers_de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 #### Gruppenübersicht
 
 > ##### Gruppe verlassen #####

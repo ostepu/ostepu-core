@@ -1,3 +1,10 @@
+<!--
+ * @file setting_AllowLateSubmissions_AllowLateSubmissionsDesc_de.md
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+-->
+
 #### Verspätete Einsendungen
 Die Schaltfläche "Aufgaben hochladen" ist für Studenten nun jederzeit verfügbar. Verspätete Einsendungen müssen von einem Administrator im Korrekturassistenten akzeptiert werden, solange werden die vergebenen Punkte dem Studenten nicht gutgeschrieben (auch nicht akzeptierte Einsendungen werden normal kontrolliert, Student erhält Korrekturdatei).
 
