@@ -410,7 +410,7 @@ class QEPGenerator
 
         if (self::$tree===null) {
             if (SID::getRoot() === 0) {
-                file_put_contents(dirname(__FILE__) . '/../calls.log','');
+                ///file_put_contents(dirname(__FILE__) . '/../calls.log','');
             }
 
             self::$changedTree=false;
