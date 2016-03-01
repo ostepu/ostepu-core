@@ -3,7 +3,7 @@ CREATE PROCEDURE `DBExerciseFileTypeGetAllExerciseFileTypes` ()
 READS SQL DATA
 begin
 SET @s = concat("
-select SQL_CACHE 
+select SQL_CACHE
     EFT_id, EFT_text, E_id
 from
     ExerciseFileType;");

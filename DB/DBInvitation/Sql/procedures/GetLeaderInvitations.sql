@@ -3,7 +3,7 @@ CREATE PROCEDURE `DBInvitationGetLeaderInvitations` (IN userid INT)
 READS SQL DATA
 begin
 SET @s = concat("
-select SQL_CACHE 
+select SQL_CACHE
     U.U_id,
     U.U_username,
     U.U_firstName,

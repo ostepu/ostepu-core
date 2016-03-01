@@ -5,16 +5,14 @@
  * @author Till Uhlig
  * @param int \$setname a %Setting name
  * @param int \$courseid a %Course identifier
- * @result 
+ * @result
  * - S, the Setting data
  */
 ?>
- 
-select 
-    concat('<?php echo $courseid; ?>','_',S.SET_id) as SET_id,
-    S.SET_name,
-    S.SET_state,
-    S.SET_type
+
+select
+    S.*,
+    concat('<?php echo $courseid; ?>','_',S.SET_id) as SET_id
 from
     `Setting<?php echo $pre; ?>_<?php echo $courseid; ?>` S
 WHERE SET_name = '<?php echo $setname; ?>'

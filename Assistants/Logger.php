@@ -31,17 +31,12 @@
  */
 class Logger
 {
-    /*
-     * @TODO: Add the possibility to bail on errors using "die", optionally printing
-     * a call trace.
-     */
-    //static $shouldTrace = false;
-    //static $shouldBailOnError = false;
-
     /**
      * @var $logFile The path of the log file. Messages will be sent here.
      */
     static $logFile = 'php://stderr';
+    
+    static $defaultLogLevel = LogLevel::NONE;
 
     /**
      * Log a message to the log file.
@@ -54,12 +49,18 @@ class Logger
     public static function Log($message,
                                $logLevel = LogLevel::INFO,
                                $trace = true,
-                               $logFile = NULL)
+                               $logFile = NULL,
+                               $name = 'Logger',
+                               $timestamp = true,
+                               $currentLogLevel = null)
     {
-        return;
+        if (!isset($currentLogLevel)){
+            $currentLogLevel = self::$defaultLogLevel; //error_reporting();
+        }
+        
         // if the function is called with the no prority don't log anything
         if ($logLevel == LogLevel::NONE) {
-            return;
+            return false;
         }
 
         if (!isset($logFile)) {
@@ -67,10 +68,10 @@ class Logger
         }
 
         // get the current date and time
-        $infoString = "[Logger] " . date('M j G:i:s');
+        $infoString = '[' . $name . ']' .($timestamp ? ' '.date('M j G:i:s'): '');
 
         // test if the message should be logged
-        if ((error_reporting() & $logLevel) > 0) {
+        if (($currentLogLevel & $logLevel) === $logLevel) {
 
             if ($trace){
                 $info = debug_backtrace();
@@ -91,7 +92,7 @@ class Logger
 
                     // shwo calling function
                     if (isset($callerInfo['function'])) {
-                        $infoString .= " " . $callerInfo['function'] . "()";
+                        $infoString .= ' ' . $callerInfo['function'] . "()";
                     }
                 } else {
                     // the function was invoked from outside a class
@@ -100,31 +101,31 @@ class Logger
 
                     // show the file in which the function was called
                     if (isset($callerInfo['file'])) {
-                        $infoString .=  " " . $callerInfo['file'];
+                        $infoString .=  ' ' . $callerInfo['file'];
                     }
                 }
 
                 // show the line in which the function was called
                 if (isset($callerInfo['line'])) {
-                    $infoString .= " (" . $callerInfo['line'] . ")";
+                    $infoString .= ' (' . $callerInfo['line'] . ')';
                 }
             }
 
             // convert message to string if neccessary
-            if (is_string($message) == false) {
-                $message = implode("\n[Logger] ",explode("\n", print_r($message, true)));
+            if (is_array($message)) {
+                $message = implode("\n[".$name.'] ',explode("\n", print_r($message, true)));
             }
 
             if ($trace){
-                $infoString .=  " [" . LogLevel::$names[$logLevel] . "]: " . $message . "\n";
+                $infoString .=  ' [' . LogLevel::$names[$logLevel] . ']: ' . $message . "\n";
             } else
                 $infoString .=  ' ' . $message . "\n";
             
             // open the log file for appending
-            $fp = @fopen($logFile, "a");
+            $fp = @fopen($logFile, 'a');
 
             if (!$fp) {
-                return;
+                return false;
             }
 
             // try to lock the file to prevent messages from overlapping
@@ -143,7 +144,10 @@ class Logger
             }
 
             fclose($fp);
+            return true;
         }
+        
+        return false;
     }
 }
 
@@ -158,9 +162,9 @@ class Logger
  */
 abstract class LogLevel
 {
-   // const OFF = 0;          /**< enum OFF: tells the Logger to turn off logging. */
-    const NONE = 0; /**< enum NONE: same as above */
-    const DEBUG = 11;        /**< enum DEBUG: log debug info */
+   // const OFF = 0;        /**< enum OFF: tells the Logger to turn off logging. */
+    const NONE = 0;         /**< enum NONE: same as above */
+    const DEBUG = 11;       /**< enum DEBUG: log debug info */
     const INFO = 8;         /**< enum INFO: log general info */
     const WARNING = 2;      /**< enum WARNING: log warnings */
     const ERROR = 1;        /**< enum ERROR: log errors */

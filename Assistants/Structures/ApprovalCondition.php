@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -44,7 +44,7 @@ class ApprovalCondition extends Object implements JsonSerializable
     }
 
     /**
-     
+
      * The id of the course this condition belongs to.
      *
      * type: string
@@ -136,14 +136,14 @@ class ApprovalCondition extends Object implements JsonSerializable
      *
      * @return an approval condition object.
      */
-    public static function createApprovalCondition( 
+    public static function createApprovalCondition(
                                                    $approvalConditionId,
                                                    $courseId,
                                                    $exerciseTypeId,
                                                    $percentage
                                                    )
     {
-        return new ApprovalCondition( array( 
+        return new ApprovalCondition( array(
                                             'id' => $approvalConditionId,
                                             'courseId' => $courseId,
                                             'exerciseTypeId' => $exerciseTypeId,
@@ -158,7 +158,7 @@ class ApprovalCondition extends Object implements JsonSerializable
      */
     public static function getDbConvert( )
     {
-        return array( 
+        return array(
                      'AC_id' => 'id',
                      'C_id' => 'courseId',
                      'ET_id' => 'exerciseTypeId',
@@ -176,32 +176,32 @@ class ApprovalCondition extends Object implements JsonSerializable
         $values = '';
 
         if ( $this->id !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'AC_id',
                                  DBJson::mysql_real_escape_string( $this->id )
                                  );
         if ( $this->courseId !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'C_id',
                                  DBJson::mysql_real_escape_string( $this->courseId )
                                  );
         if ( $this->exerciseTypeId !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'ET_id',
                                  DBJson::mysql_real_escape_string( $this->exerciseTypeId )
                                  );
         if ( $this->percentage !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'AC_percentage',
                                  DBJson::mysql_real_escape_string( $this->percentage )
                                  );
 
         if ( $values != '' ){
-            $values = substr( 
+            $values = substr(
                              $values,
                              1
                              );
@@ -228,7 +228,7 @@ class ApprovalCondition extends Object implements JsonSerializable
     {
         if ( $data === null )
             $data = array( );
-        
+
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
                 $func = 'set' . strtoupper($key[0]).substr($key,1);
@@ -253,7 +253,7 @@ class ApprovalCondition extends Object implements JsonSerializable
         /*if (is_array($data))reset($data);
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
             $e = new Exception();
-            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());           
             ///return null;
         }
         if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
@@ -274,18 +274,18 @@ class ApprovalCondition extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeApprovalCondition( 
+    public static function decodeApprovalCondition(
                                                    $data,
                                                    $decode = true
                                                    )
     {
-        if ( $decode && 
+        if ( $decode &&
              $data == null )
             $data = '{}';
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -294,18 +294,18 @@ class ApprovalCondition extends Object implements JsonSerializable
                     $isArray = false;
                 }
             } else {
-               $isArray = false; 
+               $isArray = false;
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new ApprovalCondition( $value );
             }
             return $result;
-            
-        } else 
+
+        } else
             return new ApprovalCondition( $data );
     }
 
@@ -328,7 +328,7 @@ class ApprovalCondition extends Object implements JsonSerializable
         return array_merge($list,parent::jsonSerialize( ));
     }
 
-    public static function ExtractApprovalCondition( 
+    public static function ExtractApprovalCondition(
                                                     $data,
                                                     $singleResult = false,
                                                     $ApprovalExtension = '',
@@ -338,14 +338,14 @@ class ApprovalCondition extends Object implements JsonSerializable
 
         // generates an assoc array of an approval condition by using a
         // defined list of its attributes
-        $res = DBJson::getResultObjectsByAttributes( 
+        $res = DBJson::getResultObjectsByAttributes(
                                                     $data,
                                                     ApprovalCondition::getDBPrimaryKey( ),
                                                     ApprovalCondition::getDBConvert( ),
                                                     $ApprovalExtension
                                                     );
 
-        if ($isResult){ 
+        if ($isResult){
             // to reindex
             $res = array_merge( $res );
             $res = ApprovalCondition::decodeApprovalCondition($res,false);

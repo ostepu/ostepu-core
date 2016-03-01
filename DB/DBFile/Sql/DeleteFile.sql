@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * @file DeleteFile.sql
  * deletes a specified file from %File table
  * @author  Till Uhlig

@@ -1,8 +1,8 @@
 /**
  * @file UserSample.json This file represents a valid JSON object of type User for DBUser.
- * 
+ *
  * @author Till Uhlig
- */ 
+ */
 
     [
        {

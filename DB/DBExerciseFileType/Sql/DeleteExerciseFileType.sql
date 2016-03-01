@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * @file DeleteExerciseFileType.sql
  * deletes a specified exercise file type from %ExerciseFileType table
  * @author  Till Uhlig
@@ -7,7 +7,7 @@
  * @result -
  */
 ?>
- 
-DELETE FROM ExerciseFileType 
+
+DELETE FROM ExerciseFileType
 WHERE
     EFT_id = '<?php echo $eftid; ?>'

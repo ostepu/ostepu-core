@@ -1,9 +1,9 @@
 /**
  * @file GroupSample.json This file represents a valid JSON object of type Group for DBGroup.
- * 
+ *
  * @author Till Uhlig
  */
- 
+
     [
        {
            "sheetId": "1",

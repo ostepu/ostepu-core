@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * @file DeleteSetting.sql
  * deletes an specified Setting from %Setting table
  * @author  Till Uhlig
@@ -7,7 +7,7 @@
  * @result -
  */
 ?>
- 
+
 DELETE FROM `Setting<?php echo $pre; ?>_<?php echo Setting::getCourseFromSettingId($setid); ?>`
 WHERE
     SET_id = '<?php echo Setting::getIdFromSettingId($setid); ?>'

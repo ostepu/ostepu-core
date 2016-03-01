@@ -6,11 +6,15 @@
  * @author Florian Lücke
  * @author Ralf Busch
  */
+ob_start();
+
+$notifications = array();
 
 include_once dirname(__FILE__) . '/include/Authentication.php';
 include_once dirname(__FILE__) . '/include/HTMLWrapper.php';
 include_once dirname(__FILE__) . '/include/Template.php';
 include_once dirname(__FILE__) . '/../Assistants/Logger.php';
+include_once dirname(__FILE__) . '/../Assistants/vendor/Validation/Validation.php';
 include_once dirname(__FILE__) . '/include/Helpers.php';
 
 $langTemplate='Login_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
@@ -18,34 +22,73 @@ $langTemplate='Login_Controller';Language::loadLanguageFile('de', $langTemplate,
 $auth = new Authentication();
 Authentication::preventSessionFix();
 
-if (isset($_POST['action'])) {
-    // trim and stripslashes the input
-    $input['username'] = strtolower($_POST['username']);
-    $input['password'] = $_POST['password'];
+$postValidation = Validation::open($_POST, array('preRules'=>array('')))
+  ->addSet('back',
+           array('valid_url_query',
+                 'set_default'=>null,
+                 'on_error'=>array('type'=>'error',
+                                   'text'=>Language::Get('main',Language::Get('main','invalidBackURL', $langTemplate), $langTemplate))))
+  ->addSet('action',
+           array('sanitize',
+                 'set_default'=>'noAction',
+                 'satisfy_in_list'=>array('noAction', 'login'),
+                 'on_error'=>array('type'=>'error',
+                                   'text'=>Language::Get('main','invalidAction', $langTemplate))));
 
-    $input = cleanInput($input);
+$getValidation = Validation::open($_GET, array('preRules'=>array('')))
+  ->addSet('back',
+           array('valid_url_query',
+                 'set_default'=>null,
+                 'on_error'=>array('type'=>'error',
+                                   'text'=>Language::Get('main',Language::Get('main','invalidBackURL', $langTemplate), $langTemplate))));
 
-    // if a hidden Post named back and the php file exists set backurl
-    if (isset($_POST['back']) && file_exists(parse_url($_POST['back'], PHP_URL_PATH))) {
-        $input['back'] = $_POST['back'];
-    } else {
-        $input['back'] = "index.php";
+$postResults = $postValidation->validate();   
+$getResults = $getValidation->validate();
+$notifications = array_merge($notifications, $postValidation->getPrintableNotifications('MakeNotification'));
+$notifications = array_merge($notifications, $getValidation->getPrintableNotifications('MakeNotification'));
+$postValidation->resetNotifications()->resetErrors();
+$getValidation->resetNotifications()->resetErrors();
+
+if ($postValidation->isValid() && $getValidation->isValid() && $postResults['action'] !== 'noAction') {
+    if ($postResults['action'] === 'login') {
+        $postLoginValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+          ->addSet('username',
+                   array('satisfy_exists',
+                         'valid_userName',
+                         'to_lower',
+                         'on_error'=>array('type'=>'error',
+                                           'text'=>Language::Get('main','invalidUserName', $langTemplate))))
+          ->addSet('password',
+                   array('satisfy_exists',
+                         'on_error'=>array('type'=>'error',
+                                           'text'=>Language::Get('main','invalidPassword', $langTemplate))));
+
+        $foundValues = $postLoginValidation->validate();
+        $notifications = array_merge($notifications, $postLoginValidation->getPrintableNotifications('MakeNotification'));
+        $postLoginValidation->resetNotifications()->resetErrors();
+
+        if ($postLoginValidation->isValid()){
+            // if a hidden Post named back and the php file exists set backurl
+            if (isset($postResults['back']) && file_exists(parse_url($postResults['back'], PHP_URL_PATH))) {
+                /// --- ///
+            } else {
+                $postResults['back'] = 'index.php';
+            }
+
+            // log in user and return result
+            $signed = $auth->loginUser($foundValues['username'], $foundValues['password']);
+
+            if ($signed===true) {
+                header('Location: ' . $postResults['back']);
+                exit();
+            } else {
+                if ($signed!==false){
+                    $notifications[] = $signed;
+                } else
+                    $notifications[] = MakeNotification('error', Language::Get('main','errorLogin', $langTemplate));
+            }
+        }
     }
-
-    // log in user and return result
-    $signed = $auth->loginUser($input['username'], $input['password']);
-
-    if ($signed===true) {
-        header('Location: ' . $input['back']);
-        exit();
-    } else {
-        if ($signed!==false){
-            $notifications[] = $signed;
-        } else 
-            $notifications[] = MakeNotification("error", Language::Get('main','errorLogin', $langTemplate));
-    }
-} else {
-    $notifications = array();
 }
 
 // check if already logged in
@@ -56,18 +99,17 @@ if(Authentication::checkLogin()) {
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
-$h->bind(array("backTitle" => Language::Get('main','changeCourse', $langTemplate),
-               "name" => Language::Get('main','title', $langTemplate),
-               "hideBackLink" => "true",
-               "hideLogoutLink" => "true",
-               "notificationElements" => $notifications));
+$h->bind(array('backTitle' => Language::Get('main','changeCourse', $langTemplate),
+               'name' => Language::Get('main','title', $langTemplate),
+               'hideBackLink' => 'true',
+               'hideLogoutLink' => 'true',
+               'notificationElements' => $notifications));
 
 // construct a login element
 $userLogin = Template::WithTemplateFile('include/Login/Login.template.html');
 // if back Parameter is given bind it to the userLogin to create hidden input
-if (isset($_GET['back'])) {
-    $backparameter = cleanInput($_GET['back']);
-    $backdata = array("backURL" => $backparameter);
+if ($getValidation->isValid() && isset($getResults['back']) && file_exists(parse_url($getResults['back'], PHP_URL_PATH))) {
+    $backdata = array('backURL' => $getResults['back']);
 } else {
     $backdata = array();
 }
@@ -79,3 +121,4 @@ $w = new HTMLWrapper($h, $userLogin);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 
+ob_end_flush();

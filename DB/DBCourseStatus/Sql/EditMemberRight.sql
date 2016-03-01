@@ -9,7 +9,7 @@
  * @result -
  */
 ?>
- 
+
 UPDATE CourseStatus
 SET <?php echo $values; ?>
 WHERE C_id = '<?php echo $courseid; ?>' and U_id = '<?php echo $userid; ?>'

@@ -33,8 +33,8 @@ CREATE TRIGGER `CourseStatus_AINS` AFTER INSERT ON `CourseStatus` FOR EACH ROW
 ?>
 begin
 if NEW.CS_status = 0 then
-INSERT IGNORE INTO `Group` 
-SELECT NEW.U_id , NEW.U_id , null, E.ES_id 
+INSERT IGNORE INTO `Group`
+SELECT NEW.U_id , NEW.U_id , null, E.ES_id
 FROM ExerciseSheet E
 WHERE E.C_id = NEW.C_id;
 end if;
@@ -48,8 +48,8 @@ CREATE TRIGGER `CourseStatus_AUPD` AFTER UPDATE ON `CourseStatus` FOR EACH ROW
 ?>
 begin
 if NEW.CS_status = 0 then
-INSERT IGNORE INTO `Group` 
-SELECT NEW.U_id , NEW.U_id , null, E.ES_id 
+INSERT IGNORE INTO `Group`
+SELECT NEW.U_id , NEW.U_id , null, E.ES_id
 FROM ExerciseSheet E
 WHERE E.C_id = NEW.C_id;
 end if;

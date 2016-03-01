@@ -1,0 +1,17 @@
+{
+    "processId": "1_1",
+    "exercise": {
+        "id": "1",
+        "sheetId": "1",
+        "maxPoints": "2",
+        "type": "1",
+        "link": "1",
+        "bonus": "0",
+        "linkName": "1"
+    },
+    "target": {
+        "id": "44",
+        "name": "LForm",
+        "address": "http://localhost/uebungsplattform/logic/LForm"
+    }
+}

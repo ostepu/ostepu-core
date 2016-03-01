@@ -4,6 +4,13 @@
         "errorSelectSubmission": "Beim Speichern ist ein Fehler aufgetreten!",
         "expiredExercisePerion": "Der Übungszeitraum ist am $endDate abgelaufen!",
         "noStartedExercisePeriod": "Der Übungszeitraum beginnt am $startDate !",
-        "noExercisePeriod": "Kein Übungszeitraum gefunden!"
+        "noExercisePeriod": "Kein Übungszeitraum gefunden!",
+        "invalidAction": "Unbekannte Aktion.",
+        "errorSortUsers": "Ungültiges Sortierkriterium!",
+        "invalidSheetID": "Ungültige Übungsserie!",
+        "invalidUpdateSelectedSubmission": "Ungültige Auswahl!",
+        "errorActionSortUsers": "Ungültige Sortieraktion!",
+        "invalidUserID": "Ungültige Nutzerkennung!",
+        "leaveStudent": "Studentenrolle verlassen"
     }
 }

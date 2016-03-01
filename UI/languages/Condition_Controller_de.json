@@ -3,6 +3,12 @@
         "errorSetCondition": "Fehler beim Speichern!",
         "invalidInput": "Ungültige Eingabe!",
         "errorSetConditions": "Beim Speichern ist ein Fehler aufgetreten!",
-        "successSetConditions": "Die Zulassungsbedingungen wurden erfolgreich gespeichert!"
+        "successSetConditions": "Die Zulassungsbedingungen wurden erfolgreich gespeichert!",
+        "invalidAction": "Die Aktion konnte nicht ausgeführt werden.",
+        "errorDownloadConditionCsvValidation": "Ungültige Veranstaltungsnummer",
+        "errorDownloadConditionPdfValidation": "Ungültige Veranstaltungsnummer",
+        "errorSortbyValidation": "Ungültiges Sortierkriterium!",
+        "errorSortIdValidation": "Ungültige Punkteart!",
+        "errorApprovalConditionValidation": "Ungültige Zulassungsbedingung!"
     }
 }

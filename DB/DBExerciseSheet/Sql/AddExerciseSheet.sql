@@ -7,5 +7,5 @@
  * @result -
  */
 ?>
- 
+
 INSERT INTO ExerciseSheet SET <?php echo $values; ?>

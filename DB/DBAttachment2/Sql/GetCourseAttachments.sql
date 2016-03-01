@@ -4,13 +4,13 @@
  * gets all course attachments from %Attachment table
  * @author Till Uhlig
  * @param int \$courseid an %Course identifier
- * @result 
+ * @result
  * - A, the attachment data
  * - F, the attachment file
  */
 ?>
- 
-select 
+
+select
     concat('<?php echo $courseid; ?>','_',A.A_id) as A_id,
     concat('<?php echo $courseid; ?>','_',A.PRO_id) as PRO_id,
     A.E_id,

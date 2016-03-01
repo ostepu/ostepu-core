@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -8,7 +8,7 @@
  * @date 2014
  */
 
-require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
+require_once ( dirname(__FILE__) . '/../../Assistants/vendor/Slim/Slim/Slim.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Request.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/DBJson.php' );
@@ -77,101 +77,101 @@ class DBSetting
 
         // runs the DBSetting
         if ( $com->used( ) ) return;
-            
+
         $this->_conf = $com;
-        
+
         // initialize slim
         $this->_app = new \Slim\Slim(array('debug' => true));
-        $this->_app->response->headers->set( 
+        $this->_app->response->headers->set(
                                             'Content-Type',
                                             'application/json'
                                             );
-                                            
+
         // POST AddCourse
-        $this->_app->post( 
+        $this->_app->post(
                          '(/:pre)/course',
-                         array( 
+                         array(
                                $this,
                                'addCourse'
                                )
                          );
-                         
+
         // POST DeleteCourse
-        $this->_app->delete( 
+        $this->_app->delete(
                          '(/:pre)/course/:courseid',
-                         array( 
+                         array(
                                $this,
                                'deleteCourse'
                                )
                          );
 
         // PUT EditSetting
-        $this->_app->put( 
+        $this->_app->put(
                          '(/:pre)/' . $this->getPrefix( ) . '/setting/:setid',
-                         array( 
+                         array(
                                $this,
                                'editSetting'
                                )
                          );
 
         // DELETE DeleteSetting
-        $this->_app->delete( 
+        $this->_app->delete(
                             '(/:pre)/' . $this->getPrefix( ) . '/setting/:setid',
-                            array( 
+                            array(
                                   $this,
                                   'deleteSetting'
                                   )
                             );
 
         // POST AddSetting
-        $this->_app->post( 
+        $this->_app->post(
                           '(/:pre)/' . $this->getPrefix( ).'/course/:courseid',
-                          array( 
+                          array(
                                 $this,
                                 'addSetting'
                                 )
                           );
-                          
+
         // GET GetExistsCourseSettings
-        $this->_app->get( 
+        $this->_app->get(
                          '(/:pre)/link/exists/course/:courseid',
-                         array( 
+                         array(
                                $this,
                                'getExistsCourseSettings'
                                )
                         );
-                                             
+
         // GET GetCourseSettings
-        $this->_app->get( 
+        $this->_app->get(
                          '(/:pre)/' . $this->getPrefix( ) . '/course/:courseid',
-                         array( 
+                         array(
                                $this,
                                'getCourseSettings'
                                )
                          );
-                         
+
         // GET GetSetting
-        $this->_app->get( 
+        $this->_app->get(
                          '(/:pre)/' . $this->getPrefix( ) . '/setting/:setid',
-                         array( 
+                         array(
                                $this,
                                'getSetting'
                                )
-                         ); 
-                         
+                         );
+
         // GET GetSettingByName
-        $this->_app->get( 
+        $this->_app->get(
                          '(/:pre)/' . $this->getPrefix( ) . '/course/:courseid/name/:setname',
-                         array( 
+                         array(
                                $this,
                                'getSettingByName'
                                )
-                         );  
-                         
+                         );
+
         // run Slim
         $this->_app->run( );
     }
-    
+
     /**
      * Loads the configuration data for the component from CConfig.json file
      *
@@ -182,7 +182,7 @@ class DBSetting
     public function loadConfig( $pre='' ){
         // initialize component
         $this->_conf = $this->_conf->loadConfig( $pre );
-        $this->query = array( CConfig::getLink( 
+        $this->query = array( CConfig::getLink(
                                                $this->_conf->getLinks( ),
                                                'out'
                                                ) );
@@ -195,8 +195,8 @@ class DBSetting
     {
         $this->loadConfig($pre);
         $pre = ($pre === '' ? '' : '_') . $pre;
-        
-        Logger::Log( 
+
+        Logger::Log(
                     'starts PUT EditSetting',
                     LogLevel::DEBUG
                     );
@@ -217,10 +217,10 @@ class DBSetting
         foreach ( $insert as $in ){
 
             // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile( 
+            $result = DBRequest::getRoutedSqlFile(
                                                   $this->query,
                                                   dirname(__FILE__) . '/Sql/EditSetting.sql',
-                                                  array( 
+                                                  array(
                                                         'setid' => $setid,
                                                         'object' => $in,
                                                         'pre' => $pre
@@ -228,17 +228,17 @@ class DBSetting
                                                   );
 
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
                 $this->_app->response->setStatus( 201 );
                 if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
+                    $this->_app->response->headers->set(
                                                         'Content-Type',
                                                         $result['headers']['Content-Type']
                                                         );
-                
+
             } else {
-                Logger::Log( 
+                Logger::Log(
                             'PUT EditSetting failed',
                             LogLevel::ERROR
                             );
@@ -255,8 +255,8 @@ class DBSetting
     {
         $this->loadConfig($pre);
         $pre = ($pre === '' ? '' : '_') . $pre;
-        
-        Logger::Log( 
+
+        Logger::Log(
                     'starts DELETE DeleteSetting',
                     LogLevel::DEBUG
                     );
@@ -265,24 +265,24 @@ class DBSetting
         $pre = DBJson::mysql_real_escape_string( $pre );
 
         // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
+        $result = DBRequest::getRoutedSqlFile(
                                               $this->query,
                                               dirname(__FILE__) . '/Sql/DeleteSetting.sql',
                                               array( 'setid' => $setid,'pre' => $pre )
                                               );
 
         // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
+        if ( $result['status'] >= 200 &&
              $result['status'] <= 299 ){
             $this->_app->response->setStatus( 201 );
             if ( isset( $result['headers']['Content-Type'] ) )
-                $this->_app->response->headers->set( 
+                $this->_app->response->headers->set(
                                                     'Content-Type',
                                                     $result['headers']['Content-Type']
                                                     );
-            
+
         } else {
-            Logger::Log( 
+            Logger::Log(
                         'DELETE DeleteSetting failed',
                         LogLevel::ERROR
                         );
@@ -298,8 +298,8 @@ class DBSetting
     {
         $this->loadConfig($pre);
         $pre = ($pre === '' ? '' : '_') . $pre;
-        
-        Logger::Log( 
+
+        Logger::Log(
                     'starts POST AddSetting',
                     LogLevel::DEBUG
                     );
@@ -313,7 +313,7 @@ class DBSetting
             $insert = array( $insert );
             $arr = false;
         }
-        
+
         $courseid = DBJson::mysql_real_escape_string( $courseid );
         $pre = DBJson::mysql_real_escape_string( $pre );
 
@@ -325,14 +325,14 @@ class DBSetting
             $data = $in->getInsertData( );
 
             // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile( 
+            $result = DBRequest::getRoutedSqlFile(
                                                   $this->query,
                                                   dirname(__FILE__) . '/Sql/AddSetting.sql',
                                                   array( 'object' => $in,'pre' => $pre,'courseid' => $courseid )
                                                   );
 
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
                 $queryResult = Query::decodeQuery( $result['content'] );
 
@@ -343,20 +343,20 @@ class DBSetting
                 if ($insertId==0 && $in->getId()>0){
                     $insertId=Setting::getIdFromSettingId($in->getId());
                 }
-                
+
                 if ($insertId!=0)
                     $obj->setId( $course->getId() . '_' . $insertId );
 
                 $res[] = $obj;
                 $this->_app->response->setStatus( 201 );
                 if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
+                    $this->_app->response->headers->set(
                                                         'Content-Type',
                                                         $result['headers']['Content-Type']
                                                         );
-                
+
             } else {
-                Logger::Log( 
+                Logger::Log(
                             'POST AddSetting failed',
                             LogLevel::ERROR
                             );
@@ -366,15 +366,15 @@ class DBSetting
             }
         }
 
-        if ( !$arr && 
+        if ( !$arr &&
              count( $res ) == 1 ){
             $this->_app->response->setBody( Setting::encodeSetting( $res[0] ) );
-            
-        } else 
+
+        } else
             $this->_app->response->setBody( Setting::encodeSetting( $res ) );
     }
 
-    public function get( 
+    public function get(
                         $functionName,
                         $sqlFile,
                         $pre='' ,
@@ -386,8 +386,8 @@ class DBSetting
     {
         $this->loadConfig($pre);
         $pre = ($pre === '' ? '' : '_') . $pre;
-        
-        Logger::Log( 
+
+        Logger::Log(
                     'starts GET ' . $functionName,
                     LogLevel::DEBUG
                     );
@@ -398,10 +398,10 @@ class DBSetting
         $setname = DBJson::mysql_real_escape_string( $setname );
 
         // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
+        $result = DBRequest::getRoutedSqlFile(
                                               $this->query,
                                               $sqlFile,
-                                              array( 
+                                              array(
                                                     'pre' => $pre,
                                                     'setid' => $setid,
                                                     'courseid' => $courseid,
@@ -410,15 +410,15 @@ class DBSetting
                                               );
 
         // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
+        if ( $result['status'] >= 200 &&
              $result['status'] <= 299 ){
             $query = Query::decodeQuery( $result['content'] );
-            
+
             if (is_array($query))
             $query = $query[count($query)-1];
 
             if ( $query->getNumRows( ) > 0 ){
-                $res = Setting::ExtractSetting( 
+                $res = Setting::ExtractSetting(
                                                      $query->getResponse( ),
                                                      $singleResult
                                                      );
@@ -427,33 +427,33 @@ class DBSetting
 
                 $this->_app->response->setStatus( 200 );
                 if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
+                    $this->_app->response->headers->set(
                                                         'Content-Type',
                                                         $result['headers']['Content-Type']
                                                         );
 
                 $this->_app->stop( );
-                
+
             } else
                 $result['status'] = 404;
         }
 
-        Logger::Log( 
+        Logger::Log(
                     'GET ' . $functionName . ' failed',
                     LogLevel::ERROR
                     );
-                    
+
         $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
         $this->_app->response->setBody( Setting::encodeSetting( new Setting( ) ) );
         $this->_app->stop( );
     }
-    
+
     /**
      * Returns the Settings to a given course.
      */
     public function getCourseSettings($pre='' , $courseid )
     {
-        $this->get( 
+        $this->get(
                    'GetCourseSettings',
                    dirname(__FILE__) . '/Sql/GetCourseSettings.sql',
                    isset( $pre ) ? $pre : '',
@@ -462,13 +462,13 @@ class DBSetting
                    isset( $courseid ) ? $courseid : ''
                    );
     }
-    
+
     /**
      * Returns a Setting.
      */
     public function getSetting($pre='' , $setid )
     {
-        $this->get( 
+        $this->get(
                    'GetSetting',
                    dirname(__FILE__) . '/Sql/GetSetting.sql',
                    isset( $pre ) ? $pre : '',
@@ -478,13 +478,13 @@ class DBSetting
                    true
                    );
     }
-    
+
     /**
      * Returns a Setting.
      */
     public function getSettingByName($pre='' , $courseid, $setname )
     {
-        $this->get( 
+        $this->get(
                    'GetSettingByName',
                    dirname(__FILE__) . '/Sql/GetSettingByName.sql',
                    isset( $pre ) ? $pre : '',
@@ -494,13 +494,13 @@ class DBSetting
                    true
                    );
     }
-    
+
     /**
      * Returns status code 200, if this component is correctly installed for the given course
      */
     public function getExistsCourseSettings( $pre='' , $courseid )
     {
-        $this->get( 
+        $this->get(
                    'GetExistsCourseSettings',
                    dirname(__FILE__) . '/Sql/GetExistsCourseSettings.sql',
                    isset( $pre ) ? $pre : '',
@@ -509,7 +509,7 @@ class DBSetting
                    isset( $courseid ) ? $courseid : ''
                    );
     }
-    
+
     /**
      * Removes the component from a given course
     */
@@ -517,35 +517,35 @@ class DBSetting
     {
         $this->loadConfig($pre);
         $pre = ($pre === '' ? '' : '_') . $pre;
-        
-        Logger::Log( 
+
+        Logger::Log(
                     'starts DELETE DeleteCourse',
                     LogLevel::DEBUG
                     );
-                    
-        $courseid = DBJson::mysql_real_escape_string( $courseid ); 
-        
+
+        $courseid = DBJson::mysql_real_escape_string( $courseid );
+
         // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
+        $result = DBRequest::getRoutedSqlFile(
                                               $this->query,
                                               dirname(__FILE__) . '/Sql/DeleteCourse.sql',
                                               array( 'courseid' => $courseid,'pre' => $pre )
                                               );
 
         // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
+        if ( $result['status'] >= 200 &&
              $result['status'] <= 299 ){
 
             $this->_app->response->setStatus( 201 );
             $this->_app->response->setBody( '' );
             if ( isset( $result['headers']['Content-Type'] ) )
-                $this->_app->response->headers->set( 
+                $this->_app->response->headers->set(
                                                     'Content-Type',
                                                     $result['headers']['Content-Type']
                                                     );
-            
+
         } else {
-            Logger::Log( 
+            Logger::Log(
                         'DELETE DeleteCourse failed',
                         LogLevel::ERROR
                         );
@@ -554,7 +554,7 @@ class DBSetting
             $this->_app->stop( );
         }
     }
-    
+
     /**
      * Adds the component to a course
      */
@@ -562,8 +562,8 @@ class DBSetting
     {
         $this->loadConfig($pre);
         $pre = ($pre === '' ? '' : '_') . $pre;
-        
-        Logger::Log( 
+
+        Logger::Log(
                     'starts POST AddCourse',
                     LogLevel::DEBUG
                     );
@@ -581,29 +581,29 @@ class DBSetting
         // this array contains the indices of the inserted objects
         $res = array( );
         foreach ( $insert as $in ){
-        
+
             // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile( 
+            $result = DBRequest::getRoutedSqlFile(
                                                   $this->query,
                                                   dirname(__FILE__) . '/Sql/AddCourse.sql',
                                                   array( 'object' => $in,'pre' => $pre )
                                                   );
 
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
                 $queryResult = Query::decodeQuery( $result['content'] );
 
                 $res[] = $in;
                 $this->_app->response->setStatus( 201 );
                 if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
+                    $this->_app->response->headers->set(
                                                         'Content-Type',
                                                         $result['headers']['Content-Type']
                                                         );
-                
+
             } else {
-                Logger::Log( 
+                Logger::Log(
                             'POST AddCourse failed',
                             LogLevel::ERROR
                             );
@@ -613,11 +613,11 @@ class DBSetting
             }
         }
 
-        if ( !$arr && 
+        if ( !$arr &&
              count( $res ) == 1 ){
             $this->_app->response->setBody( Course::encodeCourse( $res[0] ) );
-            
-        } else 
+
+        } else
             $this->_app->response->setBody( Course::encodeCourse( $res ) );
     }
 }

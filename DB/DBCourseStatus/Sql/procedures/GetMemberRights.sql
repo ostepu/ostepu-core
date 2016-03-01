@@ -3,7 +3,7 @@ CREATE PROCEDURE `DBCourseStatusGetMemberRights` (IN userid INT)
 READS SQL DATA
 begin
 SET @s = concat("
-select SQL_CACHE 
+select SQL_CACHE
     U.U_id,
     U.U_username,
     U.U_firstName,
@@ -11,6 +11,7 @@ select SQL_CACHE
     U.U_email,
     U.U_title,
     U.U_flag,
+    U.U_lang,
     U.U_studentNumber,
     U.U_isSuperAdmin,
     U.U_comment,
@@ -21,7 +22,7 @@ select SQL_CACHE
     C.C_defaultGroupSize
 from
 
-    CourseStatus CS 
+    CourseStatus CS
         join
     Course C ON (CS.C_id = C.C_id)
  join

@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -72,7 +72,7 @@ class TutorAssignment extends Object implements JsonSerializable
      */
     public function jsonSerialize( )
     {
-        return array( 
+        return array(
                      'tutor' => $this->tutor,
                      'submissionIds' => $submissionIds
                      );

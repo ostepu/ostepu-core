@@ -6,7 +6,7 @@
  */
 
 include_once ( dirname( __FILE__ ) . '/Object.php' );
- 
+
 /**
  * the platform structure
  *
@@ -38,7 +38,7 @@ class Platform extends Object implements JsonSerializable
         $this->baseUrl = $value;
     }
 
-    
+   
     private $databaseUrl = null;
 
     /**
@@ -60,8 +60,8 @@ class Platform extends Object implements JsonSerializable
     {
         $this->databaseUrl = $value;
     }
- 
- 
+
+
     private $databaseName = null;
 
     /**
@@ -84,7 +84,7 @@ class Platform extends Object implements JsonSerializable
         $this->databaseName = $value;
     }
 
-    
+   
     private $databaseRootUser = null;
 
     /**
@@ -106,7 +106,7 @@ class Platform extends Object implements JsonSerializable
     {
         $this->databaseRootUser = $value;
     }
-    
+
 
     private $databaseRootPassword = null;
 
@@ -130,7 +130,7 @@ class Platform extends Object implements JsonSerializable
         $this->databaseRootPassword = $value;
     }
 
-    
+   
     private $databaseOperatorUser = null;
 
     /**
@@ -152,8 +152,8 @@ class Platform extends Object implements JsonSerializable
     {
         $this->databaseOperatorUser = $value;
     }
-    
-    
+
+   
     private $databaseOperatorPassword = null;
 
     /**
@@ -175,8 +175,8 @@ class Platform extends Object implements JsonSerializable
     {
         $this->databaseOperatorPassword = $value;
     }
-    
-    
+
+   
     private $tempDirectory = null;
 
     /**
@@ -198,8 +198,8 @@ class Platform extends Object implements JsonSerializable
     {
         $this->tempDirectory = $value;
     }
-    
-    
+
+   
     private $filesDirectory = null;
 
     /**
@@ -221,8 +221,8 @@ class Platform extends Object implements JsonSerializable
     {
         $this->filesDirectory = $value;
     }
-    
-    
+
+   
     private $externalUrl = null;
 
     /**
@@ -244,7 +244,30 @@ class Platform extends Object implements JsonSerializable
     {
         $this->externalUrl = $value;
     }
-    
+
+
+    private $settings = array();
+
+    /**
+     * the $settings getter
+     *
+     * @return the value of $settings
+     */
+    public function getSettings( )
+    {
+        return $this->settings;
+    }
+
+    /**
+     * the $settings setter
+     *
+     * @param string $value the new value for $settings
+     */
+    public function setSettings( $value = null )
+    {
+        $this->settings = $value;
+    }
+
     /**
      * Creates an patform object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -269,7 +292,8 @@ class Platform extends Object implements JsonSerializable
                                           $databaseOperatorPassword,
                                           $tempDirectory,
                                           $filesDirectory,
-                                          $externalUrl=''
+                                          $externalUrl='',
+                                          $settings=array()
                                           )
     {
         return new Platform( array(
@@ -283,6 +307,7 @@ class Platform extends Object implements JsonSerializable
                                    'tempDirectory' => $tempDirectory,
                                    'filesDirectory' => $filesDirectory,
                                    'externalUrl' => $externalUrl,
+                                   'settings' => $settings,
                                    ) );
     }
 
@@ -328,7 +353,7 @@ class Platform extends Object implements JsonSerializable
     {
         if ( $data === null )
             $data = array( );
-        
+
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
                 $func = 'set' . strtoupper($key[0]).substr($key,1);
@@ -353,7 +378,7 @@ class Platform extends Object implements JsonSerializable
         /*if (is_array($data))reset($data);
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
             $e = new Exception();
-            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());           
             ///return null;
         }
         if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
@@ -385,7 +410,7 @@ class Platform extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -394,10 +419,10 @@ class Platform extends Object implements JsonSerializable
                     $isArray = false;
                 }
             } else {
-               $isArray = false; 
+               $isArray = false;
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
@@ -437,7 +462,9 @@ class Platform extends Object implements JsonSerializable
              $list['filesDirectory'] = $this->filesDirectory;
         if ( $this->externalUrl !== null )
              $list['externalUrl'] = $this->externalUrl;
-             
+        if ( $this->settings !== null )
+             $list['settings'] = $this->settings;
+
         return array_merge($list,parent::jsonSerialize( ));
     }
 

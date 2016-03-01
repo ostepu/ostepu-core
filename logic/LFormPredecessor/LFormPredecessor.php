@@ -1,12 +1,12 @@
 <?php
 /**
  * @file LFormPredecessor.php Contains the LFormPredecessor class
- * 
+ *
  * @author Till Uhlig
  * @date 2014
  */
 
-require_once dirname(__FILE__) . '/../../Assistants/Slim/Slim.php';
+require_once dirname(__FILE__) . '/../../Assistants/vendor/Slim/Slim/Slim.php';
 include_once dirname(__FILE__) . '/../../Assistants/Request.php';
 include_once dirname(__FILE__) . '/../../Assistants/CConfig.php';
 include_once dirname(__FILE__) . '/../../Assistants/DBJson.php';
@@ -24,7 +24,7 @@ class LFormPredecessor
      * @var Slim $_app the slim object
      */
     private $app = null;
-    
+
     /**
      * @var Component $_conf the component data object
      */
@@ -59,7 +59,7 @@ class LFormPredecessor
      * @var Link[] $_pdf a list of links
      */
     private $_pdf = array( );
-    
+
     /**
      * @var Link[] $_formDb a list of links
      */
@@ -67,7 +67,7 @@ class LFormPredecessor
     private $_postProcess = array( );
     private $_deleteProcess = array( );
     private $_getProcess = array( );
-    
+
     /**
      * REST actions
      *
@@ -82,8 +82,8 @@ class LFormPredecessor
         // runs the LFormPredecessor
         if ( $com->used( ) ) return;
         $conf = $com->loadConfig( );
-            
-        // initialize slim    
+
+        // initialize slim
         $this->app = new \Slim\Slim(array('debug' => true));
         $this->app->response->headers->set('Content-Type', 'application/json');
 
@@ -98,29 +98,29 @@ class LFormPredecessor
         // POST PostProcess
         $this->app->map('/'.$this->getPrefix().'(/)',
                         array($this, 'postProcess'))->via('POST');
-                        
+
         // POST AddCourse
-        $this->app->post( 
+        $this->app->post(
                          '/course(/)',
-                         array( 
+                         array(
                                $this,
                                'addCourse'
                                )
                          );
-                         
+
         // POST DeleteCourse
-        $this->app->delete( 
+        $this->app->delete(
                          '/course/:courseid(/)',
-                         array( 
+                         array(
                                $this,
                                'deleteCourse'
                                )
                          );
-                         
+
         // GET GetExistsCourse
-        $this->app->get( 
+        $this->app->get(
                          '/link/exists/course/:courseid(/)',
-                         array( 
+                         array(
                                $this,
                                'getExistsCourse'
                                )
@@ -129,7 +129,7 @@ class LFormPredecessor
         // run Slim
         $this->app->run();
     }
-    
+
     /**
      * Removes the component from a given course
      *
@@ -140,7 +140,7 @@ class LFormPredecessor
      */
     public function deleteCourse( $courseid )
     {
-        $result = Request::routeRequest( 
+        $result = Request::routeRequest(
                                         'GET',
                                         '/process/course/'.$courseid.'/component/'.$this->_conf->getId(),
                                         $this->app->request->headers->all( ),
@@ -148,14 +148,14 @@ class LFormPredecessor
                                         $this->_getProcess,
                                         'process'
                                         );
-                                        
+
         if (isset($result['status']) && $result['status'] >= 200 && $result['status'] <= 299 && isset($result['content']) && $this->_conf !== null){
-        
+
             $process = Process::decodeProcess($result['content']);
             if (is_array($process)) $process = $process[0];
             $deleteId = $process->getProcessId();
-            
-            $result = Request::routeRequest( 
+
+            $result = Request::routeRequest(
                                             'DELETE',
                                             '/process/process/' . $deleteId,
                                             $this->app->request->headers->all( ),
@@ -163,19 +163,19 @@ class LFormPredecessor
                                             $this->_deleteProcess,
                                             'process'
                                             );
-                                            
+
             if (isset($result['status']) && $result['status'] === 201 && isset($result['content']) && $this->_conf !== null){
                 $this->app->response->setStatus( 201 );
                 $this->app->stop();
             }
-            
+
             $this->app->response->setStatus( 409 );
             $this->app->stop();
         }
-                                        
+
         $this->app->response->setStatus( 404 );
     }
-    
+
     /**
      * Adds the component to a course
      *
@@ -184,36 +184,36 @@ class LFormPredecessor
      */
     public function addCourse( )
     {
-         Logger::Log( 
+         Logger::Log(
                     'starts POST AddCourse',
                     LogLevel::DEBUG
                     );
-                    
+
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
-        
+
         $courses = Course::decodeCourse($body);
         $processes = array();
         if (!is_array($courses)) $courses = array($courses);
-        
+
         foreach ($courses as $course){
             $process = new Process();
-            
+
             $exercise = new Exercise();
             $exercise->setCourseId($course->getId());
-            
+
             $process->setExercise($exercise);
-            
+
             $component = new Component();
             $component->setId($this->_conf->getId());
-            
+
             $process->setTarget($component);
-            
+
             $processes[] = $process;
         }
-    
+
         foreach ( $this->_postProcess as $_link ){
-            $result = Request::routeRequest( 
+            $result = Request::routeRequest(
                                             'POST',
                                             '/process',
                                             $header,
@@ -223,23 +223,23 @@ class LFormPredecessor
                                             );
 
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
 
                 $this->app->response->setStatus( 201 );
                 if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->app->response->headers->set( 
+                    $this->app->response->headers->set(
                                                         'Content-Type',
                                                         $result['headers']['Content-Type']
                                                         );
-                
+
             } else {
-            
+
                /* if ($courses->getId()!==null){
                     $this->deleteCourse($courses->getId());
                 }*/
-            
-                Logger::Log( 
+
+                Logger::Log(
                             'POST AddCourse failed',
                             LogLevel::ERROR
                             );
@@ -248,10 +248,10 @@ class LFormPredecessor
                 $this->app->stop( );
             }
         }
-        
+
         $this->app->response->setBody( Course::encodeCourse( $courses ) );
     }
-    
+
     /**
      * Returns whether the component is installed for the given course
      *
@@ -262,7 +262,7 @@ class LFormPredecessor
      */
     public function getExistsCourse($courseid)
     {
-        $result = Request::routeRequest( 
+        $result = Request::routeRequest(
                                         'GET',
                                         '/process/course/'.$courseid.'/component/'.$this->_conf->getId(),
                                         $this->app->request->headers->all( ),
@@ -270,15 +270,15 @@ class LFormPredecessor
                                         $this->_getProcess,
                                         'process'
                                         );
-                       
+
         if (isset($result['status']) && $result['status'] >= 200 && $result['status'] <= 299 && isset($result['content']) && $this->_conf !== null && $this->_conf->getId() !== null){
             $this->app->response->setStatus( 200 );
             $this->app->stop();
         }
-                                        
+
         $this->app->response->setStatus( 409 );
     }
-   
+
     /**
      * Returns the text of a given choice id.
      *
@@ -293,10 +293,10 @@ class LFormPredecessor
             if ($choiceId === $choice->getChoiceId())
                 return $choice->getText();
         }
-        
+
         return null;
     }
-    
+
     /**
      * Processes a process
      *
@@ -306,7 +306,7 @@ class LFormPredecessor
     public function postProcess()
     {
         $this->app->response->setStatus( 201 );
-           
+
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $process = Process::decodeProcess($body);
@@ -321,9 +321,9 @@ class LFormPredecessor
         $res = array( );
         foreach ( $process as $pro ){
             $eid = $pro->getExercise()->getId();
-        
+
             // loads the form from database
-            $result = Request::routeRequest( 
+            $result = Request::routeRequest(
                                             'GET',
                                             '/form/exercise/'.$eid,
                                             $this->app->request->headers->all( ),
@@ -331,11 +331,11 @@ class LFormPredecessor
                                             $this->_formDb,
                                             'form'
                                             );
-                                
+
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
-                 
+
                 // only one form as result
                 $forms = Form::decodeForm($result['content']);
                 $forms = $forms[0];
@@ -343,9 +343,9 @@ class LFormPredecessor
                 $formdata = $pro->getRawSubmission()->getFile();
 
                 $timestamp = $formdata->getTimeStamp();
-                if ($timestamp === null) 
+                if ($timestamp === null)
                     $timestamp = time();
-                
+
                 if ($formdata !== null && $forms !== null){
                     $formdata = Form::decodeForm($formdata->getBody( true ));
                     if (is_array($formdata)) $formdata = $formdata[0];
@@ -356,14 +356,14 @@ class LFormPredecessor
                         $parameter = explode(' ',strtolower($pro->getParameter()));
 
                         $choices = $formdata->getChoices();
-                        
+
                         if ($forms->getType()==0){
                             foreach ($choices as &$choice){
                                 $i=0;
                                 for ($i<0;$i<count($parameter);$i++){
                                     $param = $parameter[$i];
                                     if ($param===null || $param==='') continue;
-                                    
+
                                     switch($param){
                                         case('isnumeric'):
                                             if (!@preg_match("%^-?([0-9])+([,]([0-9])+)?$%",DefaultNormalizer::normalizeText($choice->getText()))){
@@ -423,7 +423,7 @@ class LFormPredecessor
                                 }
                             }
                         }
-                        
+
                         if ($fail){
                             // received submission isn't correct
                             $pro->setStatus(409);
@@ -431,35 +431,35 @@ class LFormPredecessor
                             $this->app->response->setStatus( 409 );
                             continue;
                         }
- 
+
 
                         // save the submission
                         #region Form to PDF
                         if ($pro->getSubmission() === null){
                             $raw = $pro->getRawSubmission();
                             $exerciseName = '';
-                            
+
                             if ( $raw !== null )
                                 $exerciseName = $raw->getExerciseName();
-                            
+
                             $answer="";
-                            
+
                             if ($forms->getType()==0) $answer = $formdata->getChoices()[0]->getText();
                             if ($forms->getType()==1) $answer = $this->ChoiceIdToText($formdata->getChoices()[0]->getText(), $forms->getChoices());
                             if ($forms->getType()==2)
                                 foreach($formdata->getChoices() as $chosen)
                                     $answer.= $this->ChoiceIdToText($chosen->getText(), $forms->getChoices()).'<br>';
-                        
+
                             $Text =  "<h1>AUFGABE {$exerciseName}</h1>".
                                     "<hr>";
-                                    
+
                             if ($forms->getTask()!==null && trim($forms->getTask()) != ''){
                                 $Text.= "<p>".
                                         "<h2>Aufgabenstellung:</h2>".
                                         $forms->getTask().
                                         "</p>";
                             }
-                                    
+
                             $Text.= "<p>".
                                     "<h2>Antwort:</h2>".
                                     $answer.
@@ -468,7 +468,7 @@ class LFormPredecessor
                             $pdf = Pdf::createPdf($Text);
                             $pdf->setText($Text);
 //echo Pdf::encodePdf($pdf);return;
-                            $result = Request::routeRequest( 
+                            $result = Request::routeRequest(
                                                             'POST',
                                                             '/pdf',
                                                             array(),
@@ -476,22 +476,22 @@ class LFormPredecessor
                                                             $this->_pdf,
                                                             'pdf'
                                                             );
-                                                            
+
                             // checks the correctness of the query
-                            if ( $result['status'] >= 200 && 
+                            if ( $result['status'] >= 200 &&
                                  $result['status'] <= 299 ){
-                                 
+
                                 $pdf = File::decodeFile($result['content']);
-                                
+
                                 $pdf->setDisplayName($exerciseName.'.pdf');
                                 $pdf->setTimeStamp($timestamp);
                                 $pdf->setBody(null);
-                                
+
                                 if (is_object($pro->getRawSubmission())){
                                     $submission = clone $pro->getRawSubmission();
-                                } else 
+                                } else
                                     $submission = new Submission();
-                                
+
                                 $submission->setFile($pdf);
                                 $submission->setExerciseId($eid);
                                 $pro->setSubmission($submission);
@@ -503,31 +503,31 @@ class LFormPredecessor
                             }
                         }
                         #endregion
-                        
+
                         $rawSubmission = $pro->getRawSubmission();
                         $rawFile = $rawSubmission->getFile();
                         $rawFile->setBody(Form::encodeForm($formdata), true);
                         $rawSubmission->setFile($rawFile);
                         $rawSubmission->setExerciseId($eid);
                         $pro->setRawSubmission($rawSubmission);
-                        
+
                         $pro->setStatus(201);
-                        $res[] = $pro;          
+                        $res[] = $pro;
                         continue;
                     }
-                }                             
+                }
             }
             $this->app->response->setStatus( 409 );
             $pro->setStatus(409);
             $res[] = $pro;
         }
 
- 
-        if ( !$arr && 
+
+        if ( !$arr &&
              count( $res ) == 1 ){
             $this->app->response->setBody( Process::encodeProcess( $res[0] ) );
-            
-        } else 
+
+        } else
             $this->app->response->setBody( Process::encodeProcess( $res ) );
     }
 }

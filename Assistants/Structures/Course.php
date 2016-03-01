@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -166,25 +166,25 @@ class Course extends Object implements JsonSerializable
     {
         $this->settings = $value;
     }
-    
-    
-    public function containsSetting( $obj, $settingName )
+
+   
+    public static function containsSetting( $obj, $settingName )
     {
         if ($obj === null) return null;
         $settings = $obj->getSettings();
         if ($settings === null) return null;
-        
+
         $settingName = strtoupper($settingName);
-        
+
         foreach ($settings as $set){
-            
+
             if (strtoupper($set->getName()) == $settingName)
                 return $set->getState();
         }
-        
+
         return null;
     }
-    
+
     /**
      * Creates an Course object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -196,14 +196,14 @@ class Course extends Object implements JsonSerializable
      *
      * @return an course object
      */
-    public static function createCourse( 
+    public static function createCourse(
                                         $courseId,
                                         $name,
                                         $semester,
                                         $defaultGroupSize
                                         )
     {
-        return new Course( array( 
+        return new Course( array(
                                  'id' => $courseId,
                                  'name' => $name,
                                  'semester' => $semester,
@@ -218,7 +218,7 @@ class Course extends Object implements JsonSerializable
      */
     public static function getDbConvert( )
     {
-        return array( 
+        return array(
                      'C_id' => 'id',
                      'C_name' => 'name',
                      'C_semester' => 'semester',
@@ -238,32 +238,32 @@ class Course extends Object implements JsonSerializable
         $values = '';
 
         if ( $this->id !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'C_id',
                                  DBJson::mysql_real_escape_string( $this->id )
                                  );
         if ( $this->name !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'C_name',
                                  DBJson::mysql_real_escape_string( $this->name )
                                  );
         if ( $this->semester !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'C_semester',
                                  DBJson::mysql_real_escape_string( $this->semester )
                                  );
         if ( $this->defaultGroupSize !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'C_defaultGroupSize',
                                  DBJson::mysql_real_escape_string( $this->defaultGroupSize )
                                  );
 
         if ( $values != '' ){
-            $values = substr( 
+            $values = substr(
                              $values,
                              1
                              );
@@ -296,12 +296,12 @@ class Course extends Object implements JsonSerializable
                 if ( $key === 'settings' ){
                     $this->{
                         $key
-                        
-                    } = Setting::decodeSetting( 
+
+                    } = Setting::decodeSetting(
                                                  $value,
                                                  false
                                                  );
-                    
+
                 } else {
                     $func = 'set' . strtoupper($key[0]).substr($key,1);
                     $methodVariable = array($this, $func);
@@ -326,7 +326,7 @@ class Course extends Object implements JsonSerializable
         /*if (is_array($data))reset($data);
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
             $e = new Exception();
-            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());           
             ///return null;
         }
         if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
@@ -347,18 +347,18 @@ class Course extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeCourse( 
+    public static function decodeCourse(
                                         $data,
                                         $decode = true
                                         )
     {
-        if ( $decode && 
+        if ( $decode &&
              $data == null )
             $data = '{}';
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -367,18 +367,18 @@ class Course extends Object implements JsonSerializable
                     $isArray = false;
                 }
             } else {
-               $isArray = false; 
+               $isArray = false;
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new Course( $value );
             }
             return $result;
-            
-        } else 
+
+        } else
             return new Course( $data );
     }
 
@@ -400,11 +400,11 @@ class Course extends Object implements JsonSerializable
             $list['defaultGroupSize'] = $this->defaultGroupSize;
         if ( $this->settings !== null && $this->settings !== array() )
             $list['settings'] = $this->settings;
-            
+
         return array_merge($list,parent::jsonSerialize( ));
     }
 
-    public static function ExtractCourse( 
+    public static function ExtractCourse(
                                          $data,
                                          $singleResult = false,
                                          $CourseExtension = '',
@@ -415,16 +415,16 @@ class Course extends Object implements JsonSerializable
 
         // generates an assoc array of courses by using a defined list of
         // its attributes
-        $courses = DBJson::getObjectsByAttributes( 
+        $courses = DBJson::getObjectsByAttributes(
                                                   $data,
                                                   Course::getDBPrimaryKey( ),
                                                   Course::getDBConvert( ),
                                                   $CourseExtension
                                                   );
-                                                  
+
         // generates an assoc array of settings by using a defined list of
         // its attributes
-        $settings = DBJson::getObjectsByAttributes( 
+        $settings = DBJson::getObjectsByAttributes(
                                                   $data,
                                                   Setting::getDBPrimaryKey( ),
                                                   Setting::getDBConvert( )
@@ -432,15 +432,15 @@ class Course extends Object implements JsonSerializable
 
         // generates an assoc array of exercise sheets by using a defined list of
         // its attributes
-        $exerciseSheets = DBJson::getObjectsByAttributes( 
+        $exerciseSheets = DBJson::getObjectsByAttributes(
                                                          $data,
                                                          ExerciseSheet::getDBPrimaryKey( ),
                                                          array( ExerciseSheet::getDBPrimaryKey( ) => ExerciseSheet::getDBConvert( )[ExerciseSheet::getDBPrimaryKey( )] ),
                                                          $SheetExtension
                                                          );
-                                                         
+
         // concatenates the courses and the associated settings
-        $res = DBJson::concatObjectListResult( 
+        $res = DBJson::concatObjectListResult(
                                                      $data,
                                                      $courses,
                                                      Course::getDBPrimaryKey( ),
@@ -448,9 +448,9 @@ class Course extends Object implements JsonSerializable
                                                      $settings,
                                                      Setting::getDBPrimaryKey( )
                                                      );
-                                                     
+
         // concatenates the courses and the associated exercise sheet IDs
-        $res = DBJson::concatResultObjectListAsArray( 
+        $res = DBJson::concatResultObjectListAsArray(
                                                      $data,
                                                      $res,
                                                      Course::getDBPrimaryKey( ),
@@ -460,7 +460,7 @@ class Course extends Object implements JsonSerializable
                                                      $SheetExtension,
                                                      $CourseExtension
                                                      );
-        if ($isResult){ 
+        if ($isResult){
             $res = Course::decodeCourse($res,false);
             if ( $singleResult == true ){
 

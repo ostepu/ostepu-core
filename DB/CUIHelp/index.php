@@ -7,7 +7,7 @@
  * @author Till Uhlig
  * @date 2015
  */
- 
+
 require_once ( dirname( __FILE__ ) . '/CUIHelp.php' );
 
 new CUIHelp();

@@ -12,8 +12,8 @@ Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.
 
 Jeder Nutzer besitzt in jeder Übungsserie einen solchen Eintrag. Dabei steht `U_id_leader`
 für den Besitzer der Zeile und `U_id_member` für die ID des Nutzers, in
-dessen Gruppen der `U_id_leader` in dieser Übungsserie ist (beim Anlegen der 
-Übungsserie wird daher `U_id_leader`=`U_id_member` gelten, da jeder zunächst seiner eigenen 
+dessen Gruppen der `U_id_leader` in dieser Übungsserie ist (beim Anlegen der
+Übungsserie wird daher `U_id_leader`=`U_id_member` gelten, da jeder zunächst seiner eigenen
 Gruppe zugeordnet ist.
 
 #### Datenstruktur

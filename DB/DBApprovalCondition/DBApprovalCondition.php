@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -59,7 +59,7 @@ class DBApprovalCondition
      */
     public function deleteApprovalCondition( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/DeleteApprovalCondition.sql',$params,201,'Model::isCreated',array(new ApprovalCondition()),'Model::isProblem',array(new ApprovalCondition()));  
+        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/DeleteApprovalCondition.sql',$params,201,'Model::isCreated',array(new ApprovalCondition()),'Model::isProblem',array(new ApprovalCondition()));
     }
 
     /**
@@ -96,7 +96,7 @@ class DBApprovalCondition
             }
             return $result;
         };
-        
+
         $params = DBJson::mysql_real_escape_string( $params );
         return $this->_component->call($linkName, $params, '', 200, $positive, array(), 'Model::isProblem', array(), 'Query');
     }
@@ -105,7 +105,7 @@ class DBApprovalCondition
     {
         return $this->get($callName,$callName,$params);
     }
-    
+
     /**
      * Removes the component from the platform
      *
@@ -116,7 +116,7 @@ class DBApprovalCondition
     {
         return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
-    
+
     /**
      * Adds the component to the platform
      *
@@ -127,7 +127,7 @@ class DBApprovalCondition
     {
         return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
-    
+
     public function getSamplesInfo( $callName, $input, $params = array() )
     {
         $positive = function($input) {
@@ -143,11 +143,11 @@ class DBApprovalCondition
             }
             return $result;
         };
-        
+
         $params = DBJson::mysql_real_escape_string( $params );
         return $this->_component->call($callName, $params, '', 200, $positive,  array(), 'Model::isProblem', array(), 'Query');
     }
-    
+
     public function postSamples( $callName, $input, $params = array() )
     {
         set_time_limit(0);
@@ -163,9 +163,9 @@ class DBApprovalCondition
             }
         }
         $this->_component->callSql('out2',implode('',$sql),201,'Model::isCreated',array(),'Model::isProblem',array(new File()));
-        
+
         return Model::isCreated();
     }
 }
 
- 
+

@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * @file DeleteExerciseSheet.sql
  * deletes an specified exercise sheet from %ExerciseSheet table
  * @author  Till Uhlig
@@ -7,7 +7,7 @@
  * @result -
  */
 ?>
- 
-DELETE FROM ExerciseSheet 
+
+DELETE FROM ExerciseSheet
 WHERE
     ES_id = '<?php echo $esid; ?>'

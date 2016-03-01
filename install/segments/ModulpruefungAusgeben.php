@@ -7,19 +7,31 @@ class ModulpruefungAusgeben
     public static $page = 0;
     public static $rank = 50;
     public static $enabledShow = true;
-    
+    private static $langTemplate='ModulpruefungAusgeben';
+
     public static $onEvents = array('check'=>array('name'=>'checkModules','event'=>array('actionCheckModules','page','install', 'update')));
-    
+
+    public static function init($console, &$data, &$fail, &$errno, &$error)
+    {
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
+        Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
+        Installation::log(array('text'=>Installation::Get('main','languageInstantiated')));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
+    }
+  
     public static function show($console, $result, $data)
     {
+        if (!Einstellungen::$accessAllowed) return;
+          
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $text = '';
-        $text .= Design::erstelleBeschreibung($console,Language::Get('modules','description'));
-        
+        $text .= Design::erstelleBeschreibung($console,Installation::Get('modules','description',self::$langTemplate));
+
         if (isset($result[self::$onEvents['check']['name']]) && $result[self::$onEvents['check']['name']]!=null){
            $result =  $result[self::$onEvents['check']['name']];
-        } else 
+        } else
             $result = array('content'=>null,'fail'=>false,'errno'=>null,'error'=>null);
-        
+
         $fail = $result['fail'];
         $error = $result['error'];
         $errno = $result['errno'];
@@ -28,45 +40,59 @@ class ModulpruefungAusgeben
         if ($content!=null){
             foreach ($content as $moduleName => $status){
                 if (!$console){
-                    $text .= Design::erstelleZeile($console, $moduleName, 'e', ($status ? Language::Get('main','ok') : "<font color='red'>".Language::Get('main','fail')."</font>"), 'v');
-                } else 
-                    $text .= $moduleName.' '.($status ? Language::Get('main','ok') : Language::Get('main','fail'))."\n";
+                    $text .= Design::erstelleZeile($console, $moduleName, 'e', ($status ? Installation::Get('main','ok') : "<font color='red'>".Installation::Get('main','fail')."</font>"), 'v');
+                } else
+                    $text .= $moduleName.' '.($status ? Installation::Get('main','ok') : Installation::Get('main','fail'))."\n";
             }
         } else
-            $text .= Design::erstelleZeile($console, "<font color='red'>".Language::Get('main','fail')."</font>", 'e');
+            $text .= Design::erstelleZeile($console, "<font color='red'>".Installation::Get('main','fail')."</font>", 'e');
 
-        echo Design::erstelleBlock($console, Language::Get('modules','title'), $text);
+        echo Design::erstelleBlock($console, Installation::Get('modules','title',self::$langTemplate), $text);
+
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return null;
     }
-    
+
     public static function install($data, &$fail, &$errno, &$error)
     {
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
+        $res=null;
         if (constant('ISCLI')){
-            return json_decode(Request::get($data['PL']['url'].'/install/install.php/checkModulesExtern',array(),'')['content'],true);
+            Installation::log(array('text'=>Installation::Get('modules','ISCLIEnabled',self::$langTemplate)));
+            $res = json_decode(Request::get($data['PL']['url'].'/install/install.php/checkModulesExtern',array(),'')['content'],true);
         } else {
-            return ModulpruefungAusgeben::checkModules($data,$fail,$errno,$error);
+            Installation::log(array('text'=>Installation::Get('modules','ISCLIDisabled',self::$langTemplate)));
+            $res = ModulpruefungAusgeben::checkModules($data,$fail,$errno,$error);
         }
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
+        return $res;
     }
-    
+
     public static function checkModules($data, &$fail, &$errno, &$error)
     {
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $result = array();
-        
+
         // check if apache modules are existing
         $result['mod_php5'] = self::apache_module_exists('mod_php5');
         $result['mod_rewrite'] = self::apache_module_exists('mod_rewrite');
-        $result['mod_deflate'] = self::apache_module_exists('mod_deflate');  
-        $result['mod_headers(win)'] = self::apache_module_exists('mod_headers');  
-        $result['mod_filter(win)'] = self::apache_module_exists('mod_filter');  
-        $result['mod_expires(win)'] = self::apache_module_exists('mod_expires');  
-        
+        $result['mod_deflate'] = self::apache_module_exists('mod_deflate');
+        $result['mod_headers(win)'] = self::apache_module_exists('mod_headers');
+        $result['mod_filter(win)'] = self::apache_module_exists('mod_filter');
+        $result['mod_expires(win)'] = self::apache_module_exists('mod_expires');
+
+        Installation::log(array('text'=>Installation::Get('modules','checkResult',self::$langTemplate,array('res'=>json_encode($result)))));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return $result;
     }
-    
+
     public static function apache_module_exists($module)
     {
-        //if (!function_exists('apache_get_modules')) return false;
-        return in_array($module, apache_get_modules());
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
+        Installation::log(array('text'=>Installation::Get('modules','checkModule',self::$langTemplate,array('module'=>$module))));
+        $res = in_array($module, apache_get_modules());
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
+        return $res;
     }
 }
 #endregion ModulpruefungAusgeben

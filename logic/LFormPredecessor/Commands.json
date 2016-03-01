@@ -1,5 +1,18 @@
 [
-    {    "method":"post", "path":"/process" },
-    {    "method":"post", "path":"/course" },
-    {    "method":"delete", "path":"/course/:courseid" }
+    {
+        "method": "GET",
+        "path": "/link/exists/course/:courseid"
+    },
+    {
+        "method": "post",
+        "path": "/process"
+    },
+    {
+        "method": "post",
+        "path": "/course"
+    },
+    {
+        "method": "delete",
+        "path": "/course/:courseid"
+    }
 ]

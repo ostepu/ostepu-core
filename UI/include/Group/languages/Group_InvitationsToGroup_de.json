@@ -3,7 +3,7 @@
         "title": "Einladungen zu anderen Gruppen",
         "execute": "",
         "description": "Um eine Einladung von einer anderen Gruppe anzunehmen, m&uuml;ssen Sie zuerst die aktuelle Gruppe verlassen.",
-        "annehmen": "accept",
+        "accept": "annehmen",
         "deny": "ablehnen"
     }
 }

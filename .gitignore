@@ -11,3 +11,7 @@ Assistants/Test/
 .project
 DB/CHelp/cache/
 UI/include/Config.php
+UI/Images/head_logo_hover.jpg
+Assistants/vendor/
+install/vendor/
+vendor/

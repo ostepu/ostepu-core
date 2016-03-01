@@ -11,7 +11,7 @@ if (isset($GrantRightsNotificationElements)) {
 <input type="hidden" name="action" value="GrantRights">
 <div class="content-element">
     <div class="content-header">
-        <?php echo MakeInfoButton('courseManagement','grantRights.md'); ?>
+        <?php echo MakeInfoButton('page/admin/courseManagement','grantRights.md'); ?>
         <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
         <button class="text-button info-color bold right"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
     </div>
@@ -103,7 +103,7 @@ if (isset($GrantRightsNotificationElements)) {
             <div class="left">
             <?php foreach(CourseStatus::getStatusDefinition() as $statusType){
                 $count = (isset($rights[$statusType]) ? $rights[$statusType] : 0); ?>
-                <label><?php echo $statusType; ?>: <?php echo $count; ?></label><br>                     
+                <label><?php echo Language::Get('main',$statusType, $langTemplate); ?>: <?php echo $count; ?></label><br>                     
             <?php } ?>
             </div>
             
@@ -119,7 +119,7 @@ if (isset($GrantRightsNotificationElements)) {
                         }
                     ?>
             </select>
-            <button name="actionSortUsers" value="" class="left text-button-simple body-option-color">>></button>
+            <button name="actionSortUsers" value="sort" class="left text-button-simple body-option-color">>></button>
             </div>
 
             
@@ -130,7 +130,9 @@ if (isset($GrantRightsNotificationElements)) {
                 <input type="radio" name="Rights" id="grantTutorRights" value="1"/>
                 <label for="grantTutorRights"> <?php echo Language::Get('main','tutor', $langTemplate); ?></label>
                 <input type="radio" name="Rights" id="grantLecturerRights" value="2"/>
-                <label for="grantLecturerRights"> <?php echo Language::Get('main','dozent', $langTemplate); ?></label>
+                <label for="grantLecturerRights"> <?php echo Language::Get('main','lecturer', $langTemplate); ?></label>
+                <input type="radio" name="Rights" id="grantAdminRights" value="3"/>
+                <label for="grantAdminRights"> <?php echo Language::Get('main','administrator', $langTemplate); ?></label>
             </div>
         </div>
     </div> <!-- end: content-body -->

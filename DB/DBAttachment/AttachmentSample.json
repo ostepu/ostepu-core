@@ -1,9 +1,9 @@
 /**
  * @file AttachmentSample.json This file represents a valid JSON object of type Attachment for DBAttachment.
- * 
+ *
  * @author Till Uhlig
  */
- 
+
     [
        {
            "id": "1",

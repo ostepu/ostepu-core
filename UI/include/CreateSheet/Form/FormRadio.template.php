@@ -11,7 +11,7 @@
  header('Content-Type: text/html; charset=utf-8');
  ?>
 <span class="right">
-<?php echo MakeInfoButton('extension','formRadio.md'); ?>
+<?php echo MakeInfoButton('extension/LForm','formRadio.md'); ?>
 </span>
 
 <input type="hidden" class="input-choice" name="exercises[0][subexercises][0][type]" value="1">

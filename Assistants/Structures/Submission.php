@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -91,8 +91,8 @@ class Submission extends Object implements JsonSerializable
     {
         $this->exerciseId = $value;
     }
-    
-    
+
+   
     /**
      * @var string $exerciseSheetId a string that identifies the exercise this submission belongs to.
      */
@@ -118,7 +118,7 @@ class Submission extends Object implements JsonSerializable
         $this->exerciseSheetId = $value;
     }
 
-    
+   
     /**
      * @var string $comment A comment that a student made on his submission.
      */
@@ -343,7 +343,7 @@ class Submission extends Object implements JsonSerializable
     {
         $this->leaderId = $value;
     }
-    
+
     private $exerciseName = null;
     public function getExerciseName( )
     {
@@ -353,7 +353,7 @@ class Submission extends Object implements JsonSerializable
     {
         $this->exerciseName = $value;
     }
-    
+
     /**
      * Creates an Submission object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -370,7 +370,7 @@ class Submission extends Object implements JsonSerializable
      *
      * @return an submission object
      */
-    public static function createSubmission( 
+    public static function createSubmission(
                                             $submissionId,
                                             $studentId,
                                             $fileId,
@@ -383,7 +383,7 @@ class Submission extends Object implements JsonSerializable
                                             $hideFile = null
                                             )
     {
-        return new Submission( array( 
+        return new Submission( array(
                                      'id' => $submissionId,
                                      'studentId' => $studentId,
                                      'exerciseId' => $exerciseId,
@@ -404,7 +404,7 @@ class Submission extends Object implements JsonSerializable
      */
     public static function getDbConvert( )
     {
-        return array( 
+        return array(
                      'S_id' => 'id',
                      'U_id' => 'studentId',
                      'S_file' => 'file',
@@ -430,43 +430,43 @@ class Submission extends Object implements JsonSerializable
         $values = '';
 
         if ( $this->id !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'S_id',
                                  DBJson::mysql_real_escape_string( $this->id )
                                  );
         if ( $this->studentId !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'U_id',
                                  DBJson::mysql_real_escape_string( $this->studentId )
                                  );
         if ( $this->file!=array() && $this->file !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'F_id_file',
                                  DBJson::mysql_real_escape_string( $this->file->getFileId( ) )
                                  );
         if ( $this->exerciseId !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'E_id',
                                  DBJson::mysql_real_escape_string( $this->exerciseId )
                                  );
         if ( $this->comment !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'S_comment',
                                  DBJson::mysql_real_escape_string( $this->comment )
                                  );
         if ( $this->accepted !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'S_accepted',
                                  DBJson::mysql_real_escape_string( $this->accepted )
                                  );
         if ( $this->date !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'S_date',
                                  DBJson::mysql_real_escape_string( $this->date )
@@ -474,26 +474,26 @@ class Submission extends Object implements JsonSerializable
 
         // if ($this->selectedForGroup != null) $this->addInsertData($values, 'S_selected', DBJson::mysql_real_escape_string($this->selectedForGroup));
         if ( $this->flag !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'S_flag',
                                  DBJson::mysql_real_escape_string( $this->flag )
                                  );
         if ( $this->leaderId !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'S_leaderId',
                                  DBJson::mysql_real_escape_string( $this->leaderId )
                                  );
         if ( $this->hideFile !== null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'S_hideFile',
                                  DBJson::mysql_real_escape_string( $this->hideFile )
                                  );
 
         if ( $values != '' ){
-            $values = substr( 
+            $values = substr(
                              $values,
                              1
                              );
@@ -526,12 +526,12 @@ class Submission extends Object implements JsonSerializable
                 if ( $key == 'file' ){
                     $this->{
                         $key
-                        
-                    } = File::decodeFile( 
+
+                    } = File::decodeFile(
                                          $value,
                                          false
                                          );
-                    
+
                 } else {
                     $func = 'set' . strtoupper($key[0]).substr($key,1);
                     $methodVariable = array($this, $func);
@@ -556,7 +556,7 @@ class Submission extends Object implements JsonSerializable
         /*if (is_array($data))reset($data);
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
             $e = new Exception();
-            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());           
             ///return null;
         }
         if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
@@ -577,18 +577,18 @@ class Submission extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeSubmission( 
+    public static function decodeSubmission(
                                             $data,
                                             $decode = true
                                             )
     {
-        if ( $decode && 
+        if ( $decode &&
              $data == null )
             $data = '{}';
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -597,7 +597,7 @@ class Submission extends Object implements JsonSerializable
                     $isArray = false;
                 }
             } else {
-               $isArray = false; 
+               $isArray = false;
             }
         }
 
@@ -607,8 +607,8 @@ class Submission extends Object implements JsonSerializable
                 $result[] = new Submission( $value );
             }
             return $result;
-            
-        } else 
+
+        } else
             return new Submission( $data );
     }
 
@@ -649,7 +649,7 @@ class Submission extends Object implements JsonSerializable
         return array_merge($list,parent::jsonSerialize( ));
     }
 
-    public static function ExtractSubmission( 
+    public static function ExtractSubmission(
                                              $data,
                                              $singleResult = false,
                                              $FileExtension = '',
@@ -660,7 +660,7 @@ class Submission extends Object implements JsonSerializable
 
         // generates an assoc array of files by using a defined list of
         // its attributes
-        $files = DBJson::getObjectsByAttributes( 
+        $files = DBJson::getObjectsByAttributes(
                                                 $data,
                                                 File::getDBPrimaryKey( ),
                                                 File::getDBConvert( ),
@@ -669,7 +669,7 @@ class Submission extends Object implements JsonSerializable
 
         // generates an assoc array of submissions by using a defined list of
         // its attributes
-        $submissions = DBJson::getObjectsByAttributes( 
+        $submissions = DBJson::getObjectsByAttributes(
                                                       $data,
                                                       Submission::getDBPrimaryKey( ),
                                                       Submission::getDBConvert( ),
@@ -679,17 +679,17 @@ class Submission extends Object implements JsonSerializable
         // sets the selectedForGroup attribute
         foreach ( $submissions as & $submission ){
             if ( isset( $submission['selectedForGroup'] ) ){
-                if ( isset( $submission['id'] ) && 
+                if ( isset( $submission['id'] ) &&
                      $submission['id'] == $submission['selectedForGroup'] ){
                     $submission['selectedForGroup'] = ( string )1;
-                    
-                } else 
+
+                } else
                     unset( $submission['selectedForGroup'] );
             }
         }
 
         // concatenates the submissions and the associated files
-        $res = DBJson::concatObjectListsSingleResult( 
+        $res = DBJson::concatObjectListsSingleResult(
                                                      $data,
                                                      $submissions,
                                                      Submission::getDBPrimaryKey( ),
@@ -700,7 +700,7 @@ class Submission extends Object implements JsonSerializable
                                                      $SubmissionExtension
                                                      );
 
-        if ($isResult){ 
+        if ($isResult){
             // to reindex
             $res = array_values( $res );
             $res = Submission::decodeSubmission($res,false);

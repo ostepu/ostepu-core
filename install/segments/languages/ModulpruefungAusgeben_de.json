@@ -1,0 +1,8 @@
+{"modules": {
+    "title": "Apache Module",
+    "description": "Dieser Bereich prüft, ob von der Plattform benötigte, Apache Module vorhanden sind.",
+    "ISCLIEnabled": "ISCLI aktiv",
+    "ISCLIDisabled": "ISCLI inaktiv",
+    "checkResult": "Resultat: $res",
+    "checkModule": "prüfe: $module"
+}}

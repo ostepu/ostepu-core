@@ -7,17 +7,17 @@
  * @author Till Uhlig
  * @date 2015
  */
- 
+
 require_once ( dirname( __FILE__ ) . '/CHelp.php' );
 
-Logger::Log( 
+Logger::Log(
             'begin CHelp',
             LogLevel::DEBUG
             );
-            
+
 new CHelp();
 
-Logger::Log( 
+Logger::Log(
             'end CHelp',
             LogLevel::DEBUG
             );

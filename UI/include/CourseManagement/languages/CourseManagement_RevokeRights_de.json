@@ -15,6 +15,11 @@
         "lastName": "Nachname",
         "firstName": "Vorname",
         "userName": "Nutzername",
-        "sorting": "Sortierung"
+        "sorting": "Sortierung",
+        "student": "Student",
+        "tutor": "Tutor",
+        "lecturer": "Dozent",
+        "administrator": "Administrator",
+        "super-administrator": "Super-Admin"
     }
 }

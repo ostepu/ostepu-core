@@ -1,6 +1,0 @@
-[
-    {    "method":"post", "path":"/form" },
-    {    "method":"post", "path":"/course" },
-    {    "method":"delete", "path":"/course/:courseid" },
-    {    "method":"get", "path":"/link/exists/course/:courseid" }
-]

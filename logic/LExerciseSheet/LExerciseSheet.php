@@ -9,7 +9,7 @@
  * @date 2013-2014
  */
 
-require_once dirname(__FILE__) . '/../../Assistants/Slim/Slim.php';
+require_once dirname(__FILE__) . '/../../Assistants/vendor/Slim/Slim/Slim.php';
 include_once dirname(__FILE__) . '/../../Assistants/Request.php';
 include_once dirname(__FILE__) . '/../../Assistants/Structures.php';
 include_once dirname(__FILE__) . '/../../Assistants/CConfig.php';
@@ -56,13 +56,13 @@ class LExerciseSheet
      * @var string $lURL the URL of the logic-controller
      */
     private $lURL = ""; // readed out from config below
-    
+
     private $_postFile = array();
     private $_deleteFile = array();
     private $_postExerciseSheet = array();
     private $_getExerciseSheet = array();
     private $_deleteExerciseSheet = array();
-    
+
     /**
      * REST actions
      *
@@ -79,7 +79,7 @@ class LExerciseSheet
         // runs the LExerciseSheet
         if ( $com->used( ) ) return;
             $conf = $com->loadConfig( );
-            
+
         // initialize slim
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -145,17 +145,17 @@ class LExerciseSheet
      */
      public function addExerciseSheet(){
         $body = json_decode($this->app->request->getBody(), true);
-        
+
         // if sheetFile is given
         if (isset($body['sheetFile']) == true && empty($body['sheetFile']) == false) {
-            $sheetanswer = Request::routeRequest( 
+            $sheetanswer = Request::routeRequest(
                                                 'POST',
                                                 '/file',
                                                 array(),
                                                 json_encode($body['sheetFile']),
                                                 $this->_postFile,
                                                 'file'
-                                                );  
+                                                );
             if($sheetanswer['status'] == 201) {
                 $body['sheetFile'] = json_decode($sheetanswer['content'],true);
             } else {
@@ -165,14 +165,14 @@ class LExerciseSheet
 
         // if sampleSolution is given
         if (isset($body['sampleSolution']) == true && empty($body['sampleSolution']) == false) {
-            $sheetanswer = Request::routeRequest( 
+            $sheetanswer = Request::routeRequest(
                                                 'POST',
                                                 '/file',
                                                 array(),
                                                 json_encode($body['sampleSolution']),
                                                 $this->_postFile,
                                                 'file'
-                                                );  
+                                                );
             if($sheetanswer['status'] == 201) {
                 $body['sampleSolution'] = json_decode($sheetanswer['content'],true);
             } else {
@@ -184,7 +184,7 @@ class LExerciseSheet
         $URL = $this->lURL.'/DB/exercisesheet';
         $method='POST';
         if (isset($body['id']) && $body['id'] !== null){
-           $method='PUT'; 
+           $method='PUT';
            $URL = $this->lURL.'/DB/exercisesheet/'.$body['id'];
         }
 
@@ -315,15 +315,15 @@ class LExerciseSheet
      */
     public function getExerciseSheetCourse($courseid)
     {
-        $sheetanswer = Request::routeRequest( 
+        $sheetanswer = Request::routeRequest(
                                             'GET',
                                             '/exercisesheet/course/'.$courseid,
                                             array(),
                                             '',
                                             $this->_getExerciseSheet,
                                             'exercisesheet'
-                                            );  
-                                        
+                                            );
+
         if($sheetanswer['status'] == 200) {
             $body['sampleSolution'] = json_decode($sheetanswer['content'],true);
 
@@ -353,15 +353,15 @@ class LExerciseSheet
      */
     public function getExerciseSheetCourseExercise($courseid)
     {
-        $sheetanswer = Request::routeRequest( 
+        $sheetanswer = Request::routeRequest(
                                             'GET',
                                             '/exercisesheet/course/'.$courseid.'/exercise',
                                             array(),
                                             '',
                                             $this->_getExerciseSheet,
                                             'exercisesheet'
-                                            );  
-                                        
+                                            );
+
         if($sheetanswer['status'] == 200) {
             $body['sampleSolution'] = json_decode($sheetanswer['content'],true);
 
@@ -399,18 +399,18 @@ class LExerciseSheet
      * @param int $sheetid The id of the exercise sheet that is being deleted.
      */
     public function deleteExerciseSheet($sheetid){
-        
+
         $this->app->response->setStatus( 201 );
-        Logger::Log( 
+        Logger::Log(
                     'starts DELETE DeleteExerciseSheet',
                     LogLevel::DEBUG
                     );
-                    
+
         $body = $this->app->request->getBody();
         $res = null;
-        
+
         // getExerciseSheet
-        $result = Request::routeRequest( 
+        $result = Request::routeRequest(
                                         'GET',
                                         '/exercisesheet/'.$sheetid,
                                         array(),
@@ -418,17 +418,17 @@ class LExerciseSheet
                                         $this->_getExerciseSheet,
                                         'exercisesheet'
                                         );
-                                        
+
         // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
+        if ( $result['status'] >= 200 &&
              $result['status'] <= 299 && isset($result['content'])){
 
             $exerciseSheet = ExerciseSheet::decodeExerciseSheet($result['content']);
             $sampleFile = $exerciseSheet->getSampleSolution();
             $sheetFile = $exerciseSheet->getSheetFile();
-            
+
             // delete exerciseSheet
-            $result = Request::routeRequest( 
+            $result = Request::routeRequest(
                                             'DELETE',
                                             '/exercisesheet/'.$sheetid,
                                             array(),
@@ -436,14 +436,14 @@ class LExerciseSheet
                                             $this->_deleteExerciseSheet,
                                             'exercisesheet'
                                             );
-                                            
-            if ( $result['status'] >= 200 && 
+
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299){
                 // exerciseSheet is deleted
-                
+
                 // delete sampleSolution if exists
                 if ($sampleFile !== null){
-                    $result = Request::routeRequest( 
+                    $result = Request::routeRequest(
                                                     'DELETE',
                                                     '/file/'.$sampleFile->getFileId(),
                                                     array(),
@@ -452,10 +452,10 @@ class LExerciseSheet
                                                     'file'
                                                     );
                 }
-                
+
                 // delete sheetFile if exists
                 if ($sheetFile !== null){
-                    $result = Request::routeRequest( 
+                    $result = Request::routeRequest(
                                                     'DELETE',
                                                     '/file/'.$sheetFile->getFileId(),
                                                     array(),
@@ -464,9 +464,9 @@ class LExerciseSheet
                                                     'file'
                                                     );
                 }
-                
+
                 $res = new ExerciseSheet();
-    
+
             } else {
                 $res = null;
                 $this->app->response->setStatus( 409 );
@@ -475,13 +475,13 @@ class LExerciseSheet
             $res = null;
             $this->app->response->setStatus( 409 );
         }
-        
+
         if ($this->app->response->getStatus( ) != 201)
-            Logger::Log( 
+            Logger::Log(
                         'DELETE DeleteExerciseSheet failed',
                         LogLevel::ERROR
                         );
-                    
+
         $this->app->response->setBody( ExerciseSheet::encodeExerciseSheet( $res ) );
     }
 }

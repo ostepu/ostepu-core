@@ -3,6 +3,7 @@
 <input type="hidden" name="action" value="ShowMarkingTool">
 <div class="content-element">
     <div class="content-header">
+        <?php echo MakeInfoButton('page/admin/markingTool','filter.md'); ?>
         <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
         <div class="info-color bold right">
             <button class="text-button info-color bold right"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
@@ -40,6 +41,7 @@
                             if (!isset($tutor['id'])) continue;
                             if (!isset($tutor['firstName'])) $tutor['firstName'] = '???';
                             if (!isset($tutor['lastName'])) $tutor['lastName'] = '???';
+                            if (!isset($tutor['userName'])) $tutor['userName'] = '???';
                             
                             print '<option value="';
                             print $tutor['id'] . '"';
@@ -47,7 +49,7 @@
                                 print $tutor['id'] == $tutorID ? ' selected="selected"' : NULL;
                             }
                             print '>';
-                            print $tutor['firstName'] . ' ' . $tutor['lastName'];
+                            print $tutor['firstName'] . ' ' . $tutor['lastName'] . ' ('.$tutor['userName'].')';
                             print '</option>';
                         }
                     ?>
@@ -60,7 +62,8 @@
             <div>
                 <label class="form-field label bold" for="statusID"><?php echo Language::Get('main','status', $langTemplate); ?>:</label> 
                 <select class="form-field text-input" name="statusID" id="statusID">
-                    <option value="all"><?php echo Language::Get('main','all', $langTemplate); ?></option>
+                    <option value="all" <?php echo (isset($statusID) && $statusID=='all'?' selected="selected"':'');?>><?php echo Language::Get('main','all', $langTemplate); ?></option>
+                    <option value="notAccepted" <?php echo (isset($statusID) && $statusID=='notAccepted'?' selected="selected"':'');?>><?php echo Language::Get('main','notAccepted', $langTemplate); ?></option>
                     <?php
                         foreach ($markingStatus as $status) {
                             if (!isset($status['id'])) continue;
@@ -69,7 +72,7 @@
                             print '<option value="';
                             print $status['id'] . '"';
                             if (isset($statusID)) {
-                                print $status['id'] == $statusID ? ' selected="selected"' : NULL;
+                                print (strval($status['id']) === $statusID ? ' selected="selected"' : NULL);
                             }
                             print '>';
                             print $status['longName'];
@@ -97,7 +100,7 @@
             </div>
             
             <div class="right">
-                <?php echo MakeInfoButton('markingTool','createArchive.md'); ?>
+                <?php echo MakeInfoButton('page/admin/markingTool','createArchive.md'); ?>
                 <?php if ($allOutputs>0){ ?>
                 <a href="MarkingTool.php?cid=<?php echo $cid; ?>&downloadCSV=<?php echo $sheetID; ?>&statusID=<?php echo isset($statusID) ? $statusID : 'all'; ?>&tutorID=<?php echo isset($tutorID) ? $tutorID : 'all'; ?>" class="download text-button body-option-color footer-text" style="padding-left:0px">
                     <?php echo Language::Get('main','createArchive', $langTemplate); ?>

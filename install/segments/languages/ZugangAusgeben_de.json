@@ -1,0 +1,10 @@
+{"access": {
+    "title": "Zugang",
+    "local": "Lokal",
+    "ssh": "SSH",
+    "username": "Nutzername",
+    "address": "Adresse",
+    "password": "Passwort",
+    "keyFile": "Schlüsseldatei",
+    "description": ""
+}}

@@ -6,11 +6,16 @@
         "firstName": "Vorname",
         "userName": "Nutzername",
         "sorting": "Sortierung",
-        "unknownTutor": "unbekannter Kontrolleur",
+        "unknownTutor": "Unbekannter Kontrolleur",
         "notAssigned": "Unzugeordnet",
         "proposals": "Vorschl&auml;ge",
         "nothing": "Keine",
         "all": "Alle",
-        "assignAllProposals": "alle Vorschl&auml;ge zuweisen"
+        "assignAllProposals": "alle Vorschl&auml;ge zuweisen",
+        "errorValidateAssignAllProposals": "Aufgabe konnte nicht ermittelt werden.",
+        "errorValidateAssignManually": "Aufgabe konnte nicht bestimmt werden.",
+        "invalidTutor": "Ungültiger Tutor.",
+        "noAssignment": "Keine Einsendungen gewählt.",
+        "invalidAssignment": "Ungütige Einsendungswahl."
     }
 }

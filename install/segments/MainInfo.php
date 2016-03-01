@@ -8,7 +8,8 @@ class MainInfo
     public static $rank = 0; // bestimmt die Reihenfolge im Vergleich zu anderen Segmenten auf der selben Seite
                               // niedriger Rank = fruehe Ausfuehrung, hoher Rank = spaetere Ausfuehrung
     public static $enabledShow = true; // ob die show() Funktion aufrufbar ist
-    
+    private static $langTemplate='MainInfo';
+
     public static $onEvents = array(
                                     '0' =>array(
                                                      'name'=>'MainInfo',
@@ -20,19 +21,37 @@ class MainInfo
                                                      'procedure'=>'install' // die im Installationsfall aufzurufende Funktion
                                                      )
                                     );
-                                    
+
+    public static function init($console, &$data, &$fail, &$errno, &$error)
+    {
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
+        Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
+        Installation::log(array('text'=>Installation::Get('main','languageInstantiated')));
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
+    }
+  
     public static function show($console, $result, $data)
     {
+        if (!Einstellungen::$accessAllowed) return;
+          
+        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $text='';
         $failure=false;
         Einstellungen::$path = dirname(__FILE__) . '/../config';
+        Installation::log(array('text'=>Installation::Get('mainInfo','checkPath',self::$langTemplate,array('path'=>Einstellungen::$path))));
+        Installation::log(array('text'=>Installation::Get('mainInfo','checkFile',self::$langTemplate,array('file'=>__FILE__))));
         if (!is_dir(Einstellungen::$path) || !is_writable(__FILE__)) {
-            $text .= Design::erstelleZeile($console, Language::Get('mainInfo','notWritable'), 'error');
+            $text .= Design::erstelleZeile($console, Installation::Get('mainInfo','notWritable',self::$langTemplate), 'error');
             $failure = true;
-        }        
-        
-        if ($failure)
-            echo Design::erstelleBlock($console, Language::Get('mainInfo','title'), $text);
+            Installation::log(array('text'=>Installation::Get('mainInfo','noWritePermission',self::$langTemplate), 'logLevel'=>LogLevel::ERROR));
+        } else {
+            Installation::log(array('text'=>Installation::Get('mainInfo','possitiveResult',self::$langTemplate)));
+        }
+
+        if ($failure) {
+            echo Design::erstelleBlock($console, Installation::Get('mainInfo','title',self::$langTemplate), $text);
+        }
+        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
 }
 #endregion MainInfo

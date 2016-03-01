@@ -58,10 +58,10 @@ SIGNAL sqlstate '23000' set message_text = 'no corresponding group leader';
 END if;
 
 
-SET NEW.ES_id = (select E.ES_id from Exercise E, `Group` G, Submission S where 
+SET NEW.ES_id = (select E.ES_id from Exercise E, `Group` G, Submission S where
 E.E_id = NEW.E_id and
-S.S_id = NEW.S_id_selected and 
-G.U_id_leader = S.U_id and 
+S.S_id = NEW.S_id_selected and
+G.U_id_leader = S.U_id and
 NEW.U_id_leader = G.U_id_member and
 G.ES_id = E.ES_id
  limit 1);

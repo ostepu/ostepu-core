@@ -4,7 +4,7 @@
         "outputType": "ExerciseFileType",
         "inputType": "ExerciseFileType",
         "method": "PUT",
-        "placeholder":[{"name":"eftid","regex":"%^([0-9]+)$%"}],
+        "placeholder":[{"name":"eftid","regex":"%^([0-9_]+)$%"}],
         "path": "/exercisefiletype(/exercisefiletype)/:eftid"
     },
     {
@@ -12,7 +12,7 @@
         "outputType": "ExerciseFileType",
         "inputType": "",
         "method": "DELETE",
-        "placeholder":[{"name":"eftid","regex":"%^([0-9]+)$%"}],
+        "placeholder":[{"name":"eftid","regex":"%^([0-9_]+)$%"}],
         "path": "/exercisefiletype(/exercisefiletype)/:eftid"
     },
     {
@@ -20,7 +20,7 @@
         "outputType": "ExerciseFileType",
         "inputType": "",
         "method": "DELETE",
-        "placeholder":[{"name":"eid","regex":"%^([0-9]+)$%"}],
+        "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
         "path": "/exercisefiletype/exercise/:eid"
     },
     {
@@ -28,7 +28,7 @@
         "outputType": "ExerciseFileType",
         "inputType": "",
         "method": "DELETE",
-        "placeholder":[{"name":"eftid","regex":"%^([0-9]+)$%"}],
+        "placeholder":[{"name":"eftid","regex":"%^([0-9_]+)$%"}],
         "path": "/exercisefiletype/exercisesheet/:esid"
     },
     {
@@ -45,7 +45,7 @@
         "outputType": "ExerciseFileType",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"eftid","regex":"%^([0-9]+)$%"}],
+        "placeholder":[{"name":"eftid","regex":"%^([0-9_]+)$%"}],
         "path": "/exercisefiletype(/exercisefiletype)/:eftid"
     },
     {
@@ -54,7 +54,7 @@
         "outputType": "ExerciseFileType",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"eid","regex":"%^([0-9]+)$%"}],
+        "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
         "path": "/exercisefiletype(/exercisefiletype)/exercise/:eid"
     },
     {
@@ -63,7 +63,7 @@
         "outputType": "ExerciseFileType",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^([0-9]+)$%"}],
+        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
         "path": "/exercisefiletype(/exercisefiletype)/exercisesheet/:esid"
     },
     {

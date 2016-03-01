@@ -8,12 +8,13 @@ set_time_limit(180);
  * @author Martin Daute
  * @date 2013-2014
  */
-require_once dirname(__FILE__) . '/../../Assistants/Slim/Slim.php';
+require_once dirname(__FILE__) . '/../../Assistants/vendor/Slim/Slim/Slim.php';
 include_once dirname(__FILE__) . '/../../Assistants/Request.php';
 include_once dirname(__FILE__) . '/../../Assistants/CConfig.php';
 include_once dirname(__FILE__) . '/../../Assistants/Structures/Transaction.php';
 include_once dirname(__FILE__) . '/../../Assistants/Structures/Platform.php';
 include_once dirname(__FILE__) . '/../../Assistants/Structures/File.php';
+include_once dirname(__FILE__) . '/../../Assistants/Structures/Course.php';
 include_once dirname(__FILE__) . '/../../Assistants/Language.php';
 include_once dirname(__FILE__) . '/../../Assistants/LArraySorter.php';
 
@@ -31,8 +32,8 @@ class LTutor
      */
     private $_conf=null;
     private $config = array();
-    
-    
+
+
     private static $langTemplate='LTutor';
 
     /**
@@ -64,7 +65,7 @@ class LTutor
      * @var string $lURL the URL of the logic-controller
      */
     private $lURL = ""; //aus config lesen
-    
+
     private $_postTransaction = array();
     private $_getTransaction = array();
     private $_postZip = array();
@@ -75,6 +76,8 @@ class LTutor
     private $_getGroup = array();
     private $_getSubmission = array();
     private $_postSubmission = array();
+    private $_out = array();
+    private $_getCourse = array();
 
     /**
      * REST actions
@@ -87,23 +90,23 @@ class LTutor
     public function __construct()
     {
         // runs the CConfig
-        $com = new CConfig( LTutor::getPrefix( ), dirname(__FILE__) );
+        $com = new CConfig( LTutor::getPrefix( ).',course', dirname(__FILE__) );
 
         // runs the LTutor
         if ( $com->used( ) ) return;
             $conf = $com->loadConfig( );
-            
+
         /**
          *Initialise the Slim-Framework
          */
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
-        
+
         if (file_exists(dirname(__FILE__).'/config.ini'))
-            $this->config = parse_ini_file( 
+            $this->config = parse_ini_file(
                                            dirname(__FILE__).'/config.ini',
                                            TRUE
-                                           ); 
+                                           );
 
         Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
 
@@ -113,82 +116,90 @@ class LTutor
         $this->_conf = $conf;
         $this->query = array();
         $this->query = CConfig::getLink($conf->getLinks(),"controller");
-        
-        $this->_postTransaction = array( CConfig::getLink( 
+
+        $this->_postTransaction = array( CConfig::getLink(
                                                         $this->_conf->getLinks( ),
                                                         'postTransaction'
                                                         ) );
-        $this->_getTransaction = array( CConfig::getLink( 
+        $this->_getTransaction = array( CConfig::getLink(
                                                         $this->_conf->getLinks( ),
                                                         'getTransaction'
                                                         ) );
-        $this->_postZip = array( CConfig::getLink( 
+        $this->_postZip = array( CConfig::getLink(
                                                     $this->_conf->getLinks( ),
                                                     'postZip'
                                                     ) );
-        $this->_postPdf = array( CConfig::getLink( 
+        $this->_postPdf = array( CConfig::getLink(
                                                     $this->_conf->getLinks( ),
                                                     'postPdf'
                                                     ) );
-        $this->_postMarking = array( CConfig::getLink( 
+        $this->_postMarking = array( CConfig::getLink(
                                                     $this->_conf->getLinks( ),
                                                     'postMarking'
                                                     ) );
-        $this->_getMarking = array( CConfig::getLink( 
+        $this->_getMarking = array( CConfig::getLink(
                                                         $this->_conf->getLinks( ),
                                                         'getMarking'
                                                         ) );
-        $this->_getExercise = array( CConfig::getLink( 
+        $this->_getExercise = array( CConfig::getLink(
                                                         $this->_conf->getLinks( ),
                                                         'getExercise'
                                                         ) );
-        $this->_getGroup = array( CConfig::getLink( 
+        $this->_getGroup = array( CConfig::getLink(
                                                         $this->_conf->getLinks( ),
                                                         'getGroup'
                                                         ) );
-        $this->_getSubmission = array( CConfig::getLink( 
+        $this->_getSubmission = array( CConfig::getLink(
                                                         $this->_conf->getLinks( ),
                                                         'getSubmission'
                                                         ) );
-        $this->_postSubmission = array( CConfig::getLink( 
+        $this->_postSubmission = array( CConfig::getLink(
                                                         $this->_conf->getLinks( ),
                                                         'postSubmission'
                                                         ) );
-                                                        
+        $this->_out = array( CConfig::getLink(
+                                                        $this->_conf->getLinks( ),
+                                                        'out2'
+                                                        ) );
+        $this->_getCourse = array( CConfig::getLink(
+                                                        $this->_conf->getLinks( ),
+                                                        'getCourse'
+                                                        ) );
+
         // initialize lURL
         $this->lURL = $this->query->getAddress();
-        
+
         // POST AddPlatform
-        $this->app->post( 
+        $this->app->post(
                          '/platform',
-                         array( 
+                         array(
                                $this,
                                'addPlatform'
                                )
                          );
-                         
+
         // DELETE DeletePlatform
-        $this->app->delete( 
+        $this->app->delete(
                          '/platform',
-                         array( 
+                         array(
                                $this,
                                'deletePlatform'
                                )
                          );
-                         
+
         // GET GetExistsPlatform
-        $this->app->get( 
+        $this->app->get(
                          '/link/exists/platform',
-                         array( 
+                         array(
                                $this,
                                'getExistsPlatform'
                                )
                          );
-                         
+
         // POST PostSubmissionConvert
-        $this->app->post( 
+        $this->app->post(
                          '/submission/convert(/timestamp/begin/:begin/end/:end)',
-                         array( 
+                         array(
                                $this,
                                'postSubmissionConvert'
                                )
@@ -207,7 +218,7 @@ class LTutor
         //Get zip
         $this->app->get('/'.$this->getPrefix().'/user/:userid/exercisesheet/:sheetid(/status/:status)(/)',
                 array($this, 'getZip'));
-                
+
         //Post zip
         $this->app->post('/'.$this->getPrefix().'/archive/user/:userid/exercisesheet/:sheetid(/)',
                 array($this, 'postTutorArchive'));
@@ -215,10 +226,19 @@ class LTutor
         //Post zip
         $this->app->post('/'.$this->getPrefix().'/archive/user/:userid/exercisesheet/:sheetid/withnames(/)',
                 array($this, 'postTutorArchiveWithNames'));
-                
+
         //uploadZip
         $this->app->post('/'.$this->getPrefix().'/user/:userid/course/:courseid(/)', array($this, 'uploadZip'));
 
+        // POST AddCourse
+        $this->app->post( 
+                          '/course(/)',
+                          array( 
+                                $this,
+                                'addCourse'
+                                )
+                          );
+                          
         //run Slim
         $this->app->run();
     }
@@ -271,21 +291,13 @@ class LTutor
 
         //requests to database
         $URL = $this->lURL.'/DB/marking';
-        /*foreach($markings as $marking){
-            $answer = Request::custom('POST', $URL, $header,
-                    json_encode($marking));
-            if ($answer['status'] >= 300){
-                $error = true;
-                $errorstatus = $answer['status'];
-            }
-        }*/
         $answer = Request::custom('POST', $URL, array(),
             json_encode($markings));
         if ($answer['status'] >= 300){
             $error = true;
             $errorstatus = $answer['status'];
         }
-        
+
         // response
         if ($error == false){
             $this->app->response->setStatus(201);
@@ -294,11 +306,6 @@ class LTutor
             $this->app->response->setStatus($errorstatus);
             $this->app->response->setBody("Warning: At least one exercise was not being allocated!");
         }
-
-      //  $URL = $this->lURL.'/getSite/tutorassign/user/3/course/'
-      //                  .$courseid.'/exercisesheet/'.$sheetid;
-      //  $answer = Request::custom('GET', $URL, $header, "");
-      //  $this->app->response->setBody($answer['content']);
     }
 
     /**
@@ -316,29 +323,74 @@ class LTutor
 
         $error = false;
 
-        $tutors = $body['tutors'];
-        $submissions = array();
-        foreach($body['unassigned'] as $submission){
-            $leaderId = $submission['leaderId'];
-            $submissions[$leaderId][] = $submission;
+        // initialisiere die Eingabedaten
+        $body['unassigned'] = isset($body['unassigned']) ? $body['unassigned'] : array();
+        if (!is_array($body['unassigned'])){
+            $this->app->response->setStatus(500);
+            $this->app->response->setBody("Error: Invalid Input (var=unassigned)!");
+            $this->app->stop();
+        }
+        $body['assigned'] = isset($body['assigned']) ? $body['assigned'] : array();
+        if (!is_array($body['assigned'])){
+            $this->app->response->setStatus(500);
+            $this->app->response->setBody("Error: Invalid Input (var=assigned)!");
+            $this->app->stop();
+        }
+        $body['tutors'] = isset($body['tutors']) ? $body['tutors'] : array();
+        if (!is_array($body['tutors'])){
+            $this->app->response->setStatus(500);
+            $this->app->response->setBody("Error: Invalid Input (var=tutors)!");
+            $this->app->stop();
         }
 
-        //randomized allocation
-        shuffle($tutors);
+        // eine Liste von Tutoren, welchen die Einsendungen bzw. Korrekturen zugewiesen werden sollen
+        $targetTutors = $body['tutors'];
+
+        // die Einsendungen sollen entsprechend ihrer Gruppenführer gruppiert werden
+        $selectedMarkings = array();
+        foreach($body['unassigned'] as $submission){
+            if (!isset($submission['leaderId']) || !isset($submission['id'])){
+                // wenn das Feld nicht existiert, wird der Datensatz ignoriert, er ist beschädigt
+                // Todo: eventuell wird eine Fehlermeldung zurückgegeben
+                continue;
+            }
+            $leaderId = $submission['leaderId'];
+            $selectedMarkings[$leaderId][] = array('submission' => $submission);
+        }
+
+        // die bereits zugewiesenen Einsendungen sollen entsprechend ihrer Gruppenführer gruppiert werden
+        foreach($body['assigned'] as $marking){
+            if (!isset($marking['submission']['leaderId']) || !isset($marking['submission']['id']) || !isset($marking['id'])){
+                // wenn das Feld nicht existiert, wird der Datensatz ignoriert, er ist beschädigt
+                // Todo: eventuell wird eine Fehlermeldung zurückgegeben
+                continue;
+            }
+            $leaderId = $marking['submission']['leaderId'];
+            $selectedMarkings[$leaderId][] = $marking;
+        }
+
+        // randomized allocation
+        shuffle($targetTutors);
 
         $i = 0;
-        $numberOfTutors = count($tutors);
+        $numberOfTutors = count($targetTutors);
         $markings = array();
-        foreach ($submissions as $submissionsByGroup){
-            foreach($submissionsByGroup as $submission){
+        foreach ($selectedMarkings as $markingsByGroup){
+            foreach($markingsByGroup as $marking){
+
+                // erzeugt eine neue "unkorrigierte" Korrektur (oder behält den bisherigen Zustand)
+                // und weist sie dem Tutor zu
                 $newMarking = array(
-                    'submission' => $submission,
-                    'status' => 1,
-                    'tutorId' => $tutors[$i]['tutorId']
+                    'submission' => $marking['submission'],
+                    'id' => (isset($marking['id']) ? $marking['id'] : null),
+                    'status' => (isset($marking['id']) ? null : 1),
+                    'tutorId' => $targetTutors[$i]['tutorId']
                 );
                 //adds a submission to a tutor
                 $markings[] = $newMarking;
             }
+
+            // die Auswahl der Tutoren dreht sich im Kreis
             if ($i < $numberOfTutors - 1){
                 $i++;
             } else {
@@ -347,22 +399,15 @@ class LTutor
         }
 
         //requests to database
-        $URL = $this->lURL.'/DB/marking';
-        /*foreach($markings as $marking){
-            $answer = Request::custom('POST', $URL, array(),
-                    json_encode($marking));
-            if ($answer['status'] >= 300){
-                $error = true;
-                $errorstatus = $answer['status'];
-            }
-        }*/
+        $URL = $this->_postMarking[0]->getAddress().'/marking';
+
         $answer = Request::custom('POST', $URL, array(),
                     json_encode($markings));
         if ($answer['status'] >= 300){
             $error = true;
             $errorstatus = $answer['status'];
         }
-        
+
         // response
         if ($error == false){
             $this->app->response->setStatus(201);
@@ -371,23 +416,17 @@ class LTutor
             $this->app->response->setStatus($errorstatus);
             $this->app->response->setBody("Warning: At least one group was not being allocated!");
         }
-
-       // $URL = $this->lURL.'/getsite/tutorassignment/course/'
-       //             .$courseid.'/exercisesheet/'.$sheetid;
-       // $answer = Request::custom('GET', $URL, $header, "");
-       //
-       // $this->app->response->setBody($answer['content']);
     }
-    
-    
+
+
     public function postSubmissionConvert($begin=null, $end=null)
     {
         $multiRequestHandle = new Request_MultiRequest();
-        
+
         //request to database to get the markings
         $handler = Request_CreateRequest::createCustom('GET', $this->_getSubmission[0]->getAddress().'/submission/selected/date/begin/'.$begin.'/end/'.$end, array(),"");
         $multiRequestHandle->addRequest($handler);
-                
+
         $answer = $multiRequestHandle->run();
 
         $submissions = json_decode($answer[0]['content'], true);
@@ -399,22 +438,22 @@ class LTutor
                 $sortedExerciseSheets[$sheetid] = array();
             $sortedExerciseSheets[$sheetid][] = $submission;
         }
-        
+
         $createdFiles=array();
-        
+
         foreach ($sortedExerciseSheets as $sheetid => $list){
             $multiRequestHandle2 = new Request_MultiRequest();
             //request to database to get the exercise sheets
             $handler = Request_CreateRequest::createCustom('GET', $this->_getExercise[0]->getAddress().'/exercise/exercisesheet/'.$sheetid, array(),"");
             $multiRequestHandle2->addRequest($handler);
-            
+
             $handler = Request_CreateRequest::createCustom('GET', $this->_getGroup[0]->getAddress().'/group/exercisesheet/'.$sheetid, array(),"");
             $multiRequestHandle2->addRequest($handler);
             $answer2 = $multiRequestHandle2->run();
-            
+
             $exercises = json_decode($answer2[0]['content'], true);
             $groups = json_decode($answer2[1]['content'], true);
-            
+
             $count = 0;
             //an array to descripe the subtasks
             $alphabet = range('a', 'z');
@@ -426,7 +465,7 @@ class LTutor
            /* $ExerciseData = array();
             $ExerciseData['userId'] = $userid;
             $ExerciseData['markings'] = array();*/
-            
+
             $count=null;
             foreach ($exercises as $key => $exercise){
                 $exerciseId = $exercise['id'];
@@ -441,14 +480,14 @@ class LTutor
                     $namesOfExercises[$exercises[$count]['id']] = 'Aufgabe_'.$exercises[$count]['link'].$alphabet[0];
                 }
             }
-            
+
             // file
             foreach ($list as $submission){
                 $fileInfo = pathinfo($submission['file']['displayName']);
                 $newFile = array_merge(array(),$submission['file']);
                 $converted=false;
                 $exerciseId = $submission['exerciseId'];
-                
+
                 ///echo $submission['id'].'_'.$newFile['fileId'].'__'.(isset($newFile['mimeType'])?$newFile['mimeType']:'');
                 if (!isset($newFile['mimeType']) || strpos($newFile['mimeType'],'text/')!==false){
                 ///echo "_C";
@@ -456,10 +495,10 @@ class LTutor
                     $newFileSend = array();
                     $newFileData = new File();
                     $data="<h1>".str_replace('_',' ',strtoupper($namesOfExercises[$exerciseId]))."</h1><hr><p></p>";
-                    
+
                     if (isset($submission['id']))
                         $data.="Einsendungsnummer: {$submission['id']}\n";
-                    
+
                     foreach ($groups as $group){
                         $user = array_merge(array($group['leader']),isset($group['members']) ? $group['members'] : array());
                         $found=false;
@@ -470,17 +509,17 @@ class LTutor
                                     $namen[] = (isset($member['firstName']) ? $member['firstName'] : '-').' '.(isset($member['lastName']) ? $member['lastName'] : '' ).' ('.(isset($member['userName']) ? $member['userName'] : '').')';
                                 }
                                 $namen=implode(', ',$namen);
-                                $data.="Studenten: {$namen}\n"; 
+                                $data.="Studenten: {$namen}\n";
                                 $found=true;
                                 break;
                             }
                         }
                         if ($found) break;
                     }
-                    
+
                     if (isset($submission['comment']))
                         $data.="Kommentar: {$submission['comment']}\n";
-                        
+
                     $data.="<pre>";
                     $newFileData->setBody($data, true);
                     $newFileSend[] = $newFileData;
@@ -502,20 +541,20 @@ class LTutor
                         $createdFiles[] = File::decodeFile($answer['content']);
                         /*$a = json_decode($answer['content'],true);
                         $a['inp'] = htmlspecialchars($data);
-                        $a['submissionId'] = $submission['id']; 
+                        $a['submissionId'] = $submission['id'];
                         $createdFiles[] = $a;*/
-                    }  
+                    }
                 }
                 ///echo "\n";
             }
         }
-        
+
         $this->app->response->setBody(File::encodeFile($createdFiles));
         ///$this->app->response->setBody(json_encode($createdFiles));
         $this->app->response->setStatus(201);
-        
+
     }
-    
+
     /**
      * Function to get a zip with csv
      *
@@ -532,14 +571,14 @@ class LTutor
         $this->app->response->setStatus($answer['status']);
         $this->app->response->setBody($answer['content']);
     }
-    
+
     public function postTutorArchiveWithNames($userid, $sheetid)
     {
         $answer = $this->generateTutorArchive($userid, $sheetid, json_decode($this->app->request->getBody(), true), true);
         $this->app->response->setStatus($answer['status']);
         $this->app->response->setBody($answer['content']);
     }
-    
+
     public function generateTutorArchive($userid, $sheetid, $markings, $withNames=false)
     {
         $multiRequestHandle = new Request_MultiRequest();
@@ -548,13 +587,15 @@ class LTutor
         $multiRequestHandle->addRequest($handler);
         $handler = Request_CreateRequest::createCustom('GET', $this->_getGroup[0]->getAddress().'/group/exercisesheet/'.$sheetid, array(),"");
         $multiRequestHandle->addRequest($handler);
-        
+
         $answer = $multiRequestHandle->run();
         if (count($answer)< 2 || !isset($answer[0]['status']) || $answer[0]['status']!=200 || !isset($answer[0]['content']) || !isset($answer[1]['status']) || $answer[1]['status']!=200 || !isset($answer[1]['content'])){
             return array('status'=>404,'content'=>'');
         }
         $exercises = json_decode($answer[0]['content'], true);
         $groups = json_decode($answer[1]['content'], true);
+        unset($answer);
+        unset($multiRequestHandle);
         
         $count = 0;
         //an array to descripe the subtasks
@@ -573,7 +614,7 @@ class LTutor
         foreach( $markings as $marking){
             if (!isset($marking['submission']['selectedForGroup']) || !$marking['submission']['selectedForGroup'])
                 continue;
-                
+
             $submission = $marking['submission'];
             $id = $submission['exerciseId'];
             $sortedMarkings[$id][] = $marking;
@@ -581,7 +622,7 @@ class LTutor
                 $exerciseIdWithExistingMarkings[] = $id;
             }
         }
-        
+
         $defaultOrder = array('ID','NAME','USERNAME','POINTS','MAXPOINTS','OUTSTANDING','STATUS','TUTORCOMMENT','STUDENTCOMMENT','FILE');
 
         $courseid=null;
@@ -590,7 +631,7 @@ class LTutor
             if ($courseid===null){
                 $courseid = $exercise['courseId'];
             }
-            
+
             $exerciseId = $exercise['id'];
 
             if ($count===null || $exercises[$count]['link'] != $exercise['link']){
@@ -603,11 +644,35 @@ class LTutor
                 $namesOfExercises[$exercises[$count]['id']] = 'Aufgabe_'.$exercises[$count]['link'].$alphabet[0];
             }
         }
+        
+        $multiRequestHandle = new Request_MultiRequest();
+        $handler = Request_CreateRequest::createCustom('GET', $this->_getCourse[0]->getAddress().'/course/'.$courseid, array(),"");
+        $multiRequestHandle->addRequest($handler);
+        $answer = $multiRequestHandle->run();
+        if (count($answer)< 1 || !isset($answer[0]['status']) || $answer[0]['status']!=200 || !isset($answer[0]['content'])){
+            return array('status'=>404,'content'=>'');
+        }
+        $course = Course::decodeCourse($answer[0]['content'], true);
+        unset($answer);
+        unset($multiRequestHandle);
+        
+        // Hilfe einfügen
+        $rows[] = array();
+        $tmpHelp = Language::Get('main','csvDescription', self::$langTemplate);
+        $tmpHelp = explode("\n",$tmpHelp);
+        foreach($tmpHelp as $line){
+            if (!empty($line)){
+                $rows[] = array('--'.$line);
+            } else {
+                $rows[] = array($line);
+            }
+        }
+        $rows[] = array();
 
         //formating, create the layout of the CSV-file for the tutor
         //first two rows of an exercise are the heads of the table
         foreach ($exercises as $exercise){
-            
+
             if (!isset($exercise['id'])) continue;
             $exerciseId = $exercise['id'];
 
@@ -625,12 +690,12 @@ class LTutor
                     //MarkingId
                     if (!isset($marking['id'])) continue;
                     $row['ID'] = isset($marking['id']) ? $marking['id'] : null;
-                    
+
                     $ExerciseData['markings'][$marking['id']] = array();
                     $ExerciseData['markings'][$marking['id']]['sheetId'] = $exercise['sheetId'];
                     $ExerciseData['markings'][$marking['id']]['courseId'] = $exercise['courseId'];
-                    $ExerciseData['markings'][$marking['id']]['exerciseId'] = $exerciseId; 
-                    
+                    $ExerciseData['markings'][$marking['id']]['exerciseId'] = $exerciseId;
+
                     // Username + Name
                     if ($withNames && isset($marking['submission']['studentId'])){
                         foreach ($groups as $group){
@@ -652,32 +717,32 @@ class LTutor
                             }
                             if ($found) break;
                         }
-                    }                 
-                    
+                    }
+
                     //Points
                     $row['POINTS'] = (isset($marking['points']) ? $marking['points'] : '0');
 
                     //MaxPoints
                     $row['MAXPOINTS'] = (isset($exercise['maxPoints']) ? $exercise['maxPoints'] : '0');
                     $ExerciseData['markings'][$marking['id']]['maxPoints'] = (isset($exercise['maxPoints']) ? $exercise['maxPoints'] : '0');
-                    
+
                     $ExerciseData['markings'][$marking['id']]['submissionId'] = $marking['submission']['id'];
-                    
+
                     //Outstanding
                     $row['OUTSTANDING'] = (isset($marking['outstanding']) ? $marking['outstanding'] : '');
-                    
+
                     //Status
                     $row['STATUS'] = (isset($marking['status']) ? $marking['status'] : '0');
 
                     //TutorComment
                     $row['TUTORCOMMENT'] = (isset($marking['tutorComment']) ? $marking['tutorComment'] : '');
-                    
+
                     //StudentComment
                     if (isset($marking['submission'])){
                         $submission = $marking['submission'];
                         $row['STUDENTCOMMENT'] = (isset($submission['comment']) ? $submission['comment'] : '');
                     }
-                                        
+
                     // file
                     $newFile = null;
                     $selectedFile = null;
@@ -687,25 +752,28 @@ class LTutor
                         $selectedFile='submission';
                     }
                     $converted=false;
-                    
+
                     if (isset($marking['file']) && $marking['file']!==array()) {
                         $newFile = array_merge(array(),$marking['file']);
                         $selectedFile='marking';
                     }
 
+                    $generateDummyForAllMimeTypes = Course::containsSetting($course,'GenerateDummyCorrectionsForTutorArchives');
+                    if (!isset($generateDummyForAllMimeTypes)) $generateDummyForAllMimeTypes = 0;
+                    
                     if ($selectedFile == 'submission')
-                    if (!isset($newFile['mimeType']) || strpos($newFile['mimeType'],'text/')!==false){
-                   
+                    if (!isset($newFile['mimeType']) || strpos($newFile['mimeType'],'text/')!==false || $generateDummyForAllMimeTypes){
+
                         // convert file to pdf
                         $newFileSend = array();
                         $newFileData = new File();
                         $data="<h1>".str_replace('_',' ',strtoupper($namesOfExercises[$exerciseId]))."</h1><hr><p></p>";
-                        
+
                         if (isset($marking['submission']['id']))
                             $data.="Einsendungsnummer: {$marking['submission']['id']}\n";
                         /*if (isset($marking['id']))
                             $data.="Korrekturnummer: {$marking['id']}\n";*/
-                        
+
                         foreach ($groups as $group){
                             $user = array_merge(array($group['leader']),isset($group['members']) ? $group['members'] : array());
                             $found=false;
@@ -716,23 +784,25 @@ class LTutor
                                         $namen[] = (isset($member['firstName']) ? $member['firstName'] : '-').' '.(isset($member['lastName']) ? $member['lastName'] : '' ).' ('.(isset($member['userName']) ? $member['userName'] : '').')';
                                     }
                                     $namen=implode(', ',$namen);
-                                    $data.="Studenten: {$namen}\n"; 
+                                    $data.="Studenten: {$namen}\n";
                                     $found=true;
                                     break;
                                 }
                             }
                             if ($found) break;
                         }
-                        
+
                         if (isset($marking['submission']['comment']))
                             $data.="Kommentar: {$marking['submission']['comment']}\n";
-                            
+
                         $data.="<pre>";
                         $newFileData->setBody($data, true);
                         $newFileSend[] = $newFileData;
-                        
+
                         if (isset($newFile)){
-                            $newFileSend[] = $newFile;
+                            if (strpos($newFile['mimeType'],'text/')!==false){
+                                $newFileSend[] = $newFile;
+                            }
                             $newFileData = new File();
                             $newFileData->setBody("</pre>", true);
                             $newFileSend[] = $newFileData;
@@ -762,7 +832,7 @@ class LTutor
                             unset($answer);
                         }
                     }
-                    
+
                     //$row[] = $namesOfExercises[$exerciseId].'/'.($converted ? 'K_' :'').$marking['id'].($fileInfo['extension']!='' ? '.'.$fileInfo['extension']:'');
                     //if (!$converted)
                     if (isset($newFile['displayName'])){
@@ -770,18 +840,18 @@ class LTutor
                             ($selectedFile == 'marking' || $selectedFile == 'converted') &&
                               $newFile['displayName'] == $marking['submission']['file']['displayName']
                            ){
-                                  
+
                                 $newFile['displayName'] = 'K_'.$newFile['displayName'];
-                                
+
                             }
-                        
+
                         $row['FILE'] = $namesOfExercises[$exerciseId].'/'.$marking['id'].'/'.$newFile['displayName'];
                     }
                     unset($newFile);
 
                     $tempRows[] = $row;
                 }
-                
+
                 //an empty row after an exercise
                 $rows[] = $firstRow;
                 $secondRow=array();
@@ -792,7 +862,7 @@ class LTutor
                         $i++;
                     }
                 }
-                    
+
                 $rows[] = $secondRow;
                 foreach ($tempRows as $rr){
                     $row=array();
@@ -805,7 +875,7 @@ class LTutor
                     }
                     $rows[] = $row;
                 }
-                
+
                 $rows[] = array();
             }
 
@@ -813,7 +883,7 @@ class LTutor
 
         //request to database to get the user name of the tutor for the
         //name of the CSV-file
-        
+
         // create transaction ticket
         $transaction = Transaction::createTransaction(
                                                       null,
@@ -833,10 +903,10 @@ class LTutor
         // checks the correctness of the query
         if ( isset($result['status']) && isset($result['content']) && $result['status'] == 201){
             $transaction = Transaction::decodeTransaction($result['content']);
-             
+
             LTutor::generatepath($this->config['DIR']['temp']);
             $tempDir = $this->tempdir($this->config['DIR']['temp'], 'createCSV', $mode=0775);
-        
+
             ///$this->deleteDir($tempDir);
             $transactionRow = array($transaction->getTransactionId());
             array_unshift($rows,$transactionRow);
@@ -854,39 +924,39 @@ class LTutor
             //Push all SubmissionFiles to an array in order of exercises
             foreach( $exercises as $exercise){
                 $exerciseId = $exercise['id'];
-                
+
                 if(in_array($exerciseId, $exerciseIdWithExistingMarkings)){
                     $markings = $sortedMarkings[$exerciseId];
                     foreach($markings as $marking){
                         if (!isset($marking['submission']['selectedForGroup']) || !$marking['submission']['selectedForGroup'])
                             continue;
-                            
+
                         $submission = $marking['submission'];
 
                         $newfile = (isset($submission['file']) ? $submission['file'] : null);
-                        
+
                         if (isset($marking['file']['displayName'])){
                             $newfile3 = $marking['file'];
                             $fileInfo = pathinfo($newfile3['displayName']);
-                            
+
                             if (isset($newfile['displayName']) && $newfile['displayName'] == $newfile3['displayName'])
                                 $newfile3['displayName'] = 'K_'.$newfile3['displayName'];
-                            
+
                             //$newfile3['displayName'] = $namesOfExercises[$exerciseId].'/K_'.$marking['id'].($fileInfo['extension']!='' ? '.'.$fileInfo['extension']:'');
                             $newfile3['displayName'] = $namesOfExercises[$exerciseId].'/'.$marking['id'].'/'.$newfile3['displayName'];
                             $filesToZip[] = $newfile3;
                         } elseif (isset($newfile['conv']['displayName'])){
                             $newfile2 = $newfile['conv'];
                             $fileInfo = pathinfo($newfile2['displayName']);
-                            
+
                             if (isset($newfile['displayName']) && $newfile['displayName'] == $newfile2['displayName'])
                                 $newfile2['displayName'] = 'K_'.$newfile2['displayName'];
-                            
+
                             //$newfile2['displayName'] = $namesOfExercises[$exerciseId].'/K_'.$marking['id'].($fileInfo['extension']!='' ? '.'.$fileInfo['extension']:'');
                             $newfile2['displayName'] = $namesOfExercises[$exerciseId].'/'.$marking['id'].'/'.$newfile2['displayName'];
                             $filesToZip[] = $newfile2;
                         }
-                        
+
                         if (isset($newfile['displayName'])){
                             $fileInfo = pathinfo($newfile['displayName']);
                             //$newfile['displayName'] = $namesOfExercises[$exerciseId].'/'.$marking['id'].($fileInfo['extension']!='' ? '.'.$fileInfo['extension']:'');
@@ -903,12 +973,12 @@ class LTutor
             $csvFile->setDisplayName('Liste.csv');
             $csvFile->setBody( Reference::createReference($path) );
             $filesToZip[] = $csvFile;
-            
+
             ///unlink($path);
             ///$this->deleteDir(dirname($path));
 
             //request to filesystem to create the Zip-File
-            $result = Request::routeRequest( 
+            $result = Request::routeRequest(
                                             'POST',
                                             '/zip',
                                             array(),
@@ -922,22 +992,22 @@ class LTutor
                 $ff = File::decodeFile($result['content']);
                 $ff->setDisplayName($transaction->getTransactionId().'.zip');
                 return array('status'=>201,'content'=>File::encodeFile($ff));
-            } else 
+            } else
                 return array('status'=>409,'content'=>'');
-        } else 
+        } else
              return array('status'=>409,'content'=>'');
-        
+
     }
-    
+
     public function getZip($userid, $sheetid, $status=null)
     {
         $multiRequestHandle = new Request_MultiRequest();
         $filesList=array();
-        
+
         //request to database to get the markings
         $handler = Request_CreateRequest::createCustom('GET', $this->_getMarking[0]->getAddress().'/marking/exercisesheet/'.$sheetid.'/tutor/'.$userid, array(),"");
         $multiRequestHandle->addRequest($handler);
-        
+
         $answer = $multiRequestHandle->run();
         if (count($answer)< 1 || !isset($answer[0]['status']) || $answer[0]['status']!=200 || !isset($answer[0]['content'])){
             $this->app->response->setStatus(404);
@@ -953,7 +1023,7 @@ class LTutor
                     $marks[] = $marking;
             $markings=$marks;
         }
-        
+
         // sortiere die Korrekturen innerhalb dieser Liste
         $markings = LArraySorter::orderby($markings, 'id', SORT_ASC);
 
@@ -963,9 +1033,9 @@ class LTutor
     }
 
     public function uploadZip($userid, $courseid)
-    {           
+    {
         $csvFile = 'Liste.csv';
-    
+
         // error array of strings
         $errors = array();
         LTutor::generatepath($this->config['DIR']['temp']);
@@ -975,17 +1045,17 @@ class LTutor
         $filename = $tempDir.'/'.$courseid.'.zip';
         file_put_contents($filename, $body->getBody( true ));
         unset($body);
-        
+
         $zip = new ZipArchive();
         $zip->open($filename);
         $zip->extractTo($tempDir.'/files');
-        $zip->close();        
+        $zip->close();
         unlink($filename);
         ///$this->deleteDir(dirname($filename));
         unset($zip);
-        
+
         $files = $tempDir.'/files';
-        
+
         // check if csv file exists
         if (file_exists($files.'/'.$csvFile)){
             // UTF8 is required
@@ -997,9 +1067,9 @@ class LTutor
                 $this->app->response->setBody(json_encode($errors));
                 $this->app->stop();
             }
-            
+
             $csv = fopen($files.'/Liste.csv', "r");
-            
+
             if (($transactionId = fgetcsv($csv,0,';')) === false){
                 fclose($csv);
                 $this->deleteDir($tempDir);
@@ -1022,10 +1092,10 @@ class LTutor
                 $transaction = Transaction::decodeTransaction($result['content']);
                 $transaction = json_decode($transaction->getContent(),true);
                 unset($result);
-                
+
                 $defaultOrder = array('ID','NAME','USERNAME','POINTS','MAXPOINTS','OUTSTANDING','STATUS','TUTORCOMMENT','STUDENTCOMMENT','FILE');
                 $currectOrder = $defaultOrder;
-                
+
                 $markings = array();
                 while (($row = fgetcsv($csv,0,';')) !== false){
                     if (substr($row[0],0,2)=='--'){
@@ -1035,9 +1105,9 @@ class LTutor
                             foreach ($row as $ro){
                                 $currectOrder[strtoupper($ro)] = count($currectOrder);
                             }
-                        }                    
+                        }
                     } elseif(implode('',$row) != '' && substr($row[0],0,2)!='--'){
-                        
+
                         if ((isset($currectOrder['ID']) && !isset($row[$currectOrder['ID']])) ||
                             (isset($currectOrder['POINTS']) && !isset($row[$currectOrder['POINTS']])) ||
                             (isset($currectOrder['FILE']) && !isset($row[$currectOrder['FILE']])) ||
@@ -1051,12 +1121,12 @@ class LTutor
                             $this->app->response->setBody(json_encode($errors));
                             $this->app->stop();
                         }
-                        
+
                         $markingId = isset($currectOrder['ID']) ? $row[$currectOrder['ID']] : null;
-                        $points = isset($currectOrder['POINTS']) ? $row[$currectOrder['POINTS']] : null;       
+                        $points = isset($currectOrder['POINTS']) ? $row[$currectOrder['POINTS']] : null;
                         $points = str_replace(',','.',$points);
                         $markingFile = isset($currectOrder['FILE']) ? $row[$currectOrder['FILE']] : null;
-                            
+
                         // check if markingId exists in transaction
                         if (!isset($transaction['markings'][$markingId])){
                             // unknown markingId
@@ -1068,7 +1138,7 @@ class LTutor
                             $this->app->stop();
                         }
                         $markingData = $transaction['markings'][$markingId];
-                        
+
                         // checks whether the points are less or equal to the maximum points
                         if ($points > $markingData['maxPoints'] || $points<0){
                             // too much points
@@ -1079,10 +1149,10 @@ class LTutor
                             ///$this->app->response->setBody(json_encode($errors));
                             ///$this->app->stop();
                         }
-                        
+
                         // checks if file with this markingid exists
                         if ($markingFile == null || $markingFile == '' || file_exists($files.'/'.$markingFile)) {
-                        
+
                             if ($markingFile!='' && $markingFile!=null){
                                 $fileAddress = $files.'/'.$markingFile; ///file_get_contents($files.'/'.$markingFile);
                                 // file
@@ -1093,13 +1163,13 @@ class LTutor
                             } else {
                                 $file = null;
                             }
-                            
+
                             if (isset($transaction['markings'][$markingId]['submissionId']) && $transaction['markings'][$markingId]['submissionId']<0){
                                 // create new submission object
                                 $submissionId = $transaction['markings'][$markingId]['submissionId'];
                                 $studentId = $transaction['markings'][$markingId]['studentId'];
                                 $exerciseId = $transaction['markings'][$markingId]['exerciseId'];
-                                $submission = Submission::createSubmission( 
+                                $submission = Submission::createSubmission(
                                                                             null,
                                                                             $studentId,
                                                                             null,
@@ -1126,9 +1196,9 @@ class LTutor
                                     $transaction['markings'][$markingId]['submissionId'] = json_decode($result['content'],true)['id'];
                                 }
                             }
-                            
+
                             // create new marking object
-                            $marking = Marking::createMarking( 
+                            $marking = Marking::createMarking(
                                                              $markingId<0 ? null : $markingId,
                                                              $userid,
                                                              null,
@@ -1154,9 +1224,9 @@ class LTutor
                         }
                     }
                 }
-                
+
                 $mark = @json_encode($markings);
-                
+
                 if ($mark !== false){
                     //request to database to edit the markings
                     $result = Request::routeRequest(
@@ -1167,7 +1237,7 @@ class LTutor
                                                     $this->_postMarking,
                                                     'marking'
                                                     );
-                                                
+
                     /// TODO: prüfen ob jede hochgeladen wurde
                     if ($result['status'] != 201) {
                         $errors[] = Language::Get('main','errorSendMarkings', self::$langTemplate, array('csvFile'=>$csvFile));
@@ -1175,11 +1245,11 @@ class LTutor
                 } else {
                     $errors[] = Language::Get('main','encodeMarkingsError', self::$langTemplate, array('csvFile'=>$csvFile));
                 }
-                
+
             } else {
                 $errors[] = Language::Get('main','noTransactionData', self::$langTemplate, array('csvFile'=>$csvFile));
             }
-            
+
             fclose($csv);
         } else { // if csv file does not exist
             $errors[] = Language::Get('main','missingCSV', self::$langTemplate, array('csvFile'=>$csvFile));
@@ -1200,20 +1270,20 @@ class LTutor
      */
     public function getExistsPlatform( )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts GET GetExistsPlatform',
                     LogLevel::DEBUG
                     );
-                    
+
         if (!file_exists(dirname(__FILE__).'/config.ini')){
             $this->app->response->setStatus( 409 );
             $this->app->stop();
         }
-       
+
         $this->app->response->setStatus( 200 );
-        $this->app->response->setBody( '' );  
+        $this->app->response->setBody( '' );
     }
-    
+
     /**
      * Removes the component from the platform
      *
@@ -1222,7 +1292,7 @@ class LTutor
      */
     public function deletePlatform( )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts DELETE DeletePlatform',
                     LogLevel::DEBUG
                     );
@@ -1230,11 +1300,11 @@ class LTutor
             $this->app->response->setStatus( 409 );
             $this->app->stop();
         }
-        
+
         $this->app->response->setStatus( 201 );
         $this->app->response->setBody( '' );
     }
-    
+
     /**
      * Adds the component to the platform
      *
@@ -1243,7 +1313,7 @@ class LTutor
      */
     public function addPlatform( )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts POST AddPlatform',
                     LogLevel::DEBUG
                     );
@@ -1261,21 +1331,21 @@ class LTutor
         // this array contains the indices of the inserted objects
         $res = array( );
         foreach ( $insert as $in ){
-        
+
             $file = dirname(__FILE__).'/config.ini';
             $text = "[DIR]\n".
                     "temp = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$in->getTempDirectory()))."\"\n".
                     "files = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$in->getFilesDirectory()))."\"\n";
-                    
+
             if (!@file_put_contents($file,$text)){
-                Logger::Log( 
+                Logger::Log(
                             'POST AddPlatform failed, config.ini no access',
                             LogLevel::ERROR
                             );
 
                 $this->app->response->setStatus( 409 );
                 $this->app->stop();
-            }   
+            }
 
             $platform = new Platform();
             $platform->setStatus(201);
@@ -1283,14 +1353,66 @@ class LTutor
             $this->app->response->setStatus( 201 );
         }
 
-        if ( !$arr && 
+        if ( !$arr &&
              count( $res ) == 1 ){
             $this->app->response->setBody( Platform::encodePlatform( $res[0] ) );
-            
-        } else 
+
+        } else
             $this->app->response->setBody( Platform::encodePlatform( $res ) );
     }
     
+    public function addCourse( )
+    {
+        Logger::Log( 
+                    'starts POST AddCourse',
+                    LogLevel::DEBUG
+                    );
+        // decode the received course data, as an object
+        $insert = Course::decodeCourse( $this->app->request->getBody( ) );
+        // always been an array
+        $arr = true;
+        if ( !is_array( $insert ) ){
+            $insert = array( $insert );
+            $arr = false;
+        }
+        // this array contains the indices of the inserted objects
+        $res = array( );
+        foreach ( $insert as $in ){           
+            // starts a query, by using a given file
+            $result = DBRequest::getRoutedSqlFile( 
+                                                  $this->_out,
+                                                  dirname(__FILE__) . '/Sql/AddCourse.sql',
+                                                  array( 'in' => $in )
+                                                  );
+            // checks the correctness of the query
+            if ( $result['status'] >= 200 && 
+                 $result['status'] <= 299 ){
+                $res[] = $in;
+                $this->app->response->setStatus( 201 );
+                if ( isset( $result['headers']['Content-Type'] ) )
+                    $this->app->response->headers->set( 
+                                                        'Content-Type',
+                                                        $result['headers']['Content-Type']
+                                                        );
+                
+            } else {
+                Logger::Log( 
+                            'POST AddCourse failed',
+                            LogLevel::ERROR
+                            );
+                $this->app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+                $this->app->response->setBody( Course::encodeCourse( $insert ) );
+                $this->app->stop( );
+            }
+        }
+        if ( !$arr && 
+             count( $res ) == 1 ){
+            $this->app->response->setBody( Course::encodeCourse( $res[0] ) );
+            
+        } else 
+            $this->app->response->setBody( Course::encodeCourse( $res ) );
+    }
+
     /**
     * Delete hole directory inclusiv files and dirs
     *
@@ -1314,7 +1436,7 @@ class LTutor
         }
         return false;
     }
-    
+
     /**
      * Creates the path in the filesystem, if necessary.
      *
@@ -1338,7 +1460,7 @@ class LTutor
         }
         return @mkdir($path, $mode);
     }
-    
+
     public function tempdir($dir, $prefix='', $mode=0775)
     {
         if (substr($dir, -1) != '/') $dir .= '/';

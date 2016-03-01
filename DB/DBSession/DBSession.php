@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -59,7 +59,7 @@ class DBSession
      */
     public function deleteSession( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/DeleteSession.sql',$params,201,'Model::isCreated',array(new Session()),'Model::isProblem',array(new Session()));  
+        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/DeleteSession.sql',$params,201,'Model::isCreated',array(new Session()),'Model::isProblem',array(new Session()));
     }
 
     /**
@@ -87,7 +87,7 @@ class DBSession
      */
     public function deleteUserSession( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/DeleteUserSession.sql',$params,201,'Model::isCreated',array(new Session()),'Model::isProblem',array(new Session()));  
+        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/DeleteUserSession.sql',$params,201,'Model::isCreated',array(new Session()),'Model::isProblem',array(new Session()));
     }
 
     /**
@@ -105,12 +105,12 @@ class DBSession
             //$obj->setSession( $input[0]->getInsertId( ) );
             return array("status"=>201,"content"=>$obj);
         };
-        
+
         $userid = $input->getUser( );
         $sessionid = $input->getSession( );
         $sessionid = DBJson::mysql_real_escape_string( $sessionid );
-        $userid = DBJson::mysql_real_escape_string( $userid ); 
-         
+        $userid = DBJson::mysql_real_escape_string( $userid );
+
         return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddSession.sql',array('sessionid' => $sessionid,'userid' => $userid, 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new Session()));
     }
 
@@ -129,7 +129,7 @@ class DBSession
             }
             return $result;
         };
-        
+
         $params = DBJson::mysql_real_escape_string( $params );
         return $this->_component->call($linkName, $params, '', 200, $positive, array(), 'Model::isProblem', array(), 'Query');
     }
@@ -138,7 +138,7 @@ class DBSession
     {
         return $this->get($callName,$callName,$params);
     }
-    
+
     /**
      * Removes the component from the platform
      *
@@ -149,7 +149,7 @@ class DBSession
     {
         return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
-    
+
     /**
      * Adds the component to the platform
      *
@@ -160,7 +160,7 @@ class DBSession
     {
         return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
-    
+
     public function getSamplesInfo( $callName, $input, $params = array() )
     {
         $positive = function($input) {
@@ -176,13 +176,13 @@ class DBSession
             }
             return $result;
         };
-        
+
         $params = DBJson::mysql_real_escape_string( $params );
         return $this->_component->call($callName, $params, '', 200, $positive,  array(), 'Model::isProblem', array(), 'Query');
     }
-    
+
     public function postSamples( $callName, $input, $params = array() )
-    {   
+    {
         set_time_limit(0);
         $sql=array();
         for($i=1;$i<=$params['amount'];$i++){
@@ -195,9 +195,9 @@ class DBSession
             }
         }
         $this->_component->callSql('out2',implode('',$sql),201,'Model::isCreated',array(),'Model::isProblem',array(new File()));
-        
+
         return Model::isCreated();
     }
 }
 
- 
+

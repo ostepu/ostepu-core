@@ -28,7 +28,7 @@ from
     ExerciseFileType EFT ON E.E_id = EFT.E_id
         left join
     Attachment A ON E.E_id = A.E_id
-        left join 
+        left join
     File F on A.F_id = F.F_id
 where
     E.ES_id = '",esid,"';");
