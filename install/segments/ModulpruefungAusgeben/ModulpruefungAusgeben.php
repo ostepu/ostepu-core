@@ -2,6 +2,11 @@
 /**
  * @file ModulpruefungAusgeben.php
  *
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.3.3
+ *
  * @author Max Brauer <ma.brauer@live.de>
  * @date 2016
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
