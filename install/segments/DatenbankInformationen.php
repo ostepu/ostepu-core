@@ -14,11 +14,12 @@ class DatenbankInformationen
     
     public static function getSettingsBar(&$data)
     {
+        $defs = self::getDefaults();
         return array(
-                     'db_name' => array(Language::Get('database_informations','db_name'), $data['DB']['db_name']),
-                     'db_path' => array(Language::Get('database_informations','db_path'), $data['DB']['db_path']),
-                     'db_user' => array(Language::Get('databaseAdmin','db_user'), $data['DB']['db_user']),
-                     'db_user_operator' => array(Language::Get('databasePlatformUser','db_user_operator'), $data['DB']['db_user_operator'])
+                     'db_name' => array(Language::Get('database_informations','db_name'), $data['DB']['db_name'], $defs['db_name'][1]),
+                     'db_path' => array(Language::Get('database_informations','db_path'), $data['DB']['db_path'], $defs['db_path'][1]),
+                     'db_user' => array(Language::Get('databaseAdmin','db_user'), $data['DB']['db_user'], $defs['db_user'][1]),
+                     'db_user_operator' => array(Language::Get('databasePlatformUser','db_user_operator'), $data['DB']['db_user_operator'], $defs['db_user_operator'][1])
                      );
     }
     

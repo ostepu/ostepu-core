@@ -20,6 +20,7 @@ h2 {font-size: 125%;}
 .v_c {background-color: #cccccc; color: #000000;text-align: center;}
 .vr {background-color: #cccccc; text-align: right; color: #000000;}
 .error {color: #ff0000;text-align: center;font-weight: bold;}
+.warning {color: #DF7401;text-align: center;font-weight: bold;}
 .error_light {color: #ff0000;word-break: normal;}
 .tiny {font-size: 90%;}
 .bold {font-weight: bold;}

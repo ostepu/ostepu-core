@@ -81,7 +81,7 @@ echo '<span class="content-body-wrapper">';
                             // prints the submission date
                             $selected = (isset($submission['selectedForGroup']) && $submission['selectedForGroup']==1) ? true : false;
                             echo '<div class="form-field left bold new-line '. ($selected ? 'critical-color' : '') .'">';
-                            print date('d.m.Y  -  H:i', $submission['date']);
+                            print date('d.m.Y  -  H:i:s', $submission['date']);
                             if (!$selected){ 
                             $obj=array("id"=>$submission['id'], "leaderId"=>$submission['leaderId'], "exerciseId"=>$submission['exerciseId']);
                                 if (count($groupMember)==1 || $_POST['userID']==$group['leader']['id'] || $courseStatus>=1 /* PRIVILEGE_LEVEL::TUTOR */){
@@ -109,7 +109,7 @@ echo '<span class="content-body-wrapper">';
                             print '<span class="wider left '.($selected ? 'bold critical-color' : 'body-option-color').'">';
                             print '<div class="exercise-sheet-images">';
                             
-                            if (isset($submission['file']) && (!isset($submission['file']['hideFile']) || !$submission['file']['hideFile'])){
+                            if (isset($submission['file']) && (!isset($submission['hideFile']) || !$submission['hideFile'])){
                                 $displayName = (isset($submission['file']['displayName']) ? $submission['file']['displayName'] : '');
                                 $fileAddress = (isset($submission['file']['address']) ? $submission['file']['address'] : '');
                                 $fileSize = (isset($submission['file']['fileSize']) ? $submission['file']['fileSize'] : 0);
@@ -118,6 +118,11 @@ echo '<span class="content-body-wrapper">';
                                 print '        <img src="Images/Download.png" />';
                                 print ' (' . formatBytes($fileSize) . ') ';
                                 print '</a>';
+                            } elseif(!isset($submission['file'])) {
+                                print '<span class ="">';
+                                print '<img src="Images/Error.png" title="'.Language::Get('main','invalidSubmission', $langTemplate).'"/>';
+                                print ' (' . formatBytes(0) . ') ';
+                                print '</span>';
                             }
                             
                             if (isset($submission['marking']['id']) && ($courseStatus>=1 /* PRIVILEGE_LEVEL::TUTOR */ || (isset($isExpired) && $isExpired))){  

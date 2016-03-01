@@ -45,12 +45,22 @@
     color: #DE3838;
 }
 
+.error-symbol {
+    content:url("../Images/Error.png");
+    width: 17px;
+    height: 17px;
+}
+
 .error-color {
     color: #DE3838;
 }
 
 .warning-simple {
     border: 3px dashed #f4ad32;
+    color: #f4ad32;
+}
+
+.warning-color {
     color: #f4ad32;
 }
 

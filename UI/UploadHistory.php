@@ -15,14 +15,16 @@ Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $globalUserDat
 
 $langTemplate='UploadHistory_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
-if (isset($_POST['sheetID']))
-    $sid = $_POST['sheetID'];
+if (isset($_POST['sheetID'])){
+    $sid = cleanInput($_POST['sheetID']);
+}
 if (isset($sid)){
     $sheetID = $sid;
     $_POST['sheetID'] = $sid;
 }
-if (isset($_GET['action']) && !isset($_POST['action']))
-    $_POST['action'] = $_GET['action'];
+if (isset($_GET['action']) && !isset($_POST['action'])){
+    $_POST['action'] = cleanInput($_GET['action']);
+}
 
 // updates the selectedSubmissions for the group
 if (isset($_POST['updateSelectedSubmission'])) {
@@ -74,7 +76,7 @@ $uploadHistoryOptions_data['uploadUserID'] = isset($uploadUserID) ? $uploadUserI
 $uploadHistoryOptions_data['sheetID'] = isset($sheetID) ? $sheetID : '';
 
 if (isset($_POST['sortUsers']))
-    $uploadHistoryOptions_data['sortUsers'] = $_POST['sortUsers'];
+    $uploadHistoryOptions_data['sortUsers'] = cleanInput($_POST['sortUsers']);
 
 $user_course_data = $uploadHistoryOptions_data['user'];
 

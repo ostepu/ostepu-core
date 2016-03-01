@@ -53,7 +53,7 @@ from
     File F2 ON (F2.F_id = S.F_id_file)
 where
     M.E_id = '",eid,"'
-        and M.U_id_tutor = '",userid,"';");
+        and M.U_id_tutor = '",userid,"' order by M_id;");
 PREPARE stmt1 FROM @s;
 EXECUTE stmt1;
 DEALLOCATE PREPARE stmt1;
