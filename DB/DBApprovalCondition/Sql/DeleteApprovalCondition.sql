@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * @file DeleteApprovalCondition.sql
  * deletes an specified approval condition from %ApprovalCondition table
  * @author  Till Uhlig
@@ -8,6 +8,6 @@
  */
 ?>
 
-DELETE FROM ApprovalCondition 
+DELETE FROM ApprovalCondition
 WHERE
     AC_id = '<?php echo $apid; ?>'

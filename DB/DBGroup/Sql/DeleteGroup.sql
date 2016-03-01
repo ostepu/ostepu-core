@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * @file DeleteGroup.sql
  * deletes a specified group entry from %Group table
  * @author  Till Uhlig
@@ -8,7 +8,7 @@
  * @result -
  */
 ?>
- 
-DELETE FROM `Group` 
+
+DELETE FROM `Group`
 WHERE
     ES_id = '<?php echo $esid; ?>' and U_id_leader = '<?php echo $userid; ?>'

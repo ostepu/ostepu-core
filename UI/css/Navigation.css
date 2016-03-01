@@ -32,3 +32,30 @@ ul.navigation a {
 .navigation a:hover {
     color: #81AB2E;
 }
+
+ul.navigation2 {
+    margin-top: 5px;
+    overflow: auto;
+    padding: 7px 40px;
+    /* color 1, var 1 */
+    background-color: #FFF;
+    border: 3px solid #2b648f;
+    border-radius: 5px;
+}
+
+ul.navigation2 li {
+    float: left;
+    padding: 0;
+    padding-right: 30px;
+    font-size: 90%;
+}
+
+ul.navigation2 a {
+    float: left;
+    /* color 1, var 2*/
+    color: #1e4360;
+}
+
+.navigation2 a:hover {
+    color: #2b648f;
+}

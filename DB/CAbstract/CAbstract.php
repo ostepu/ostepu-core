@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -8,7 +8,7 @@
  * @date 2013-2014
  */
 
-require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
+require_once ( dirname(__FILE__) . '/../../Assistants/vendor/Slim/Slim/Slim.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Request.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/DBRequest.php' );
@@ -21,11 +21,11 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
 /**
  * A class, to abstract ...
  *
- 
+
  */
 class CAbstract
 {
-    
+
     /**
      * the component constructor
      */
@@ -48,7 +48,7 @@ class CAbstract
                 }
             }
         }
-            
+
         return;
     }
 } 

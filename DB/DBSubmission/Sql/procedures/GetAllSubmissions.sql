@@ -26,9 +26,9 @@ select SQL_CACHE
     S.ES_id
 from
     Submission S
-        left join 
+        left join
     File F on (S.F_id_file = F.F_id)
-        left join 
+        left join
     SelectedSubmission SS on (S.S_id = SS.S_id_selected)
 where ('",selected,"'<>'selected' or  S.S_id = SS.S_id_selected)
 and ('",beginStamp,"'='0' or S.S_date>='",beginStamp,"')

@@ -39,6 +39,7 @@
     ?>
         <div class="content-element">
             <div class="content-header">
+                <?php echo MakeInfoButton('page/student/upload','upload.md'); ?>
                 <div class="content-title left">
                     <?php echo Language::Get('submission','exercise', $langTemplate); ?> <?php echo $exercise['link']; ?><?php
                     $add="";
@@ -103,7 +104,7 @@
                                     print "(???)";
                             } ?>
 
-                            <?php if (isset($sub['comment']) && trim($sub['comment'])!=''): ?>
+                            <?php if (isset($sub['comment']) && trim($sub['comment'])!=''){  ?>
                                 <br><div class="form-field wider left bold new-line">
                                     <?php echo Language::Get('submission','currentStudentComment', $langTemplate); ?>:
                                 </div>                               
@@ -112,7 +113,7 @@
                                     echo '<span style="white-space: pre;">'.str_replace(array(' ', "\r\n", "\n"), array(' ','<br>','<br>'), htmlspecialchars_decode($sub['comment'])).'</span>';
                                     ?>
                                 </div>
-                            <?php endif; ?>
+                            <?php } ?>
                             <br><br>
                     <?php endif; ?>
                     

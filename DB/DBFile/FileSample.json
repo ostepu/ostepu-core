@@ -1,9 +1,9 @@
 /**
  * @file FileSample.json This file represents a valid JSON object of type File for DBFile.
- * 
+ *
  * @author Till Uhlig
- */ 
- 
+ */
+
     [
        {
            "fileId": "1",

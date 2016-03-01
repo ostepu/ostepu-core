@@ -10,7 +10,7 @@ $choiceId = 0; // obsolete???
         
 <div class="content-element collapsible">
     <div class="content-header">
-        <?php echo MakeInfoButton('createSheet','exercise.md'); ?>
+        <?php echo MakeInfoButton('page/admin/createSheet','exercise.md'); ?>
         <div class="content-title left uppercase"><?php echo Language::Get('main','exercise', $langTemplate); ?> <?php echo isset($exercises[0]['link']) ? $exercises[0]['link'] : '???' ?></div>
         <div class="critical-color bold right">
             <a href="javascript:void(0);" class="delete-exercise"><?php echo Language::Get('main','removeExercise', $langTemplate); ?><?php if (isset($exercises)){ ?><span class="right warning-simple"></span><?php } ?></a>

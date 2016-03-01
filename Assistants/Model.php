@@ -1,7 +1,7 @@
 <?php
-require_once ( dirname(__FILE__) . '/Slim/Route.php' );
-require_once ( dirname(__FILE__) . '/Slim/Router.php' );
-require_once ( dirname(__FILE__) . '/Slim/Environment.php' );
+require_once ( dirname(__FILE__) . '/vendor/Slim/Slim/Route.php' );
+require_once ( dirname(__FILE__) . '/vendor/Slim/Slim/Router.php' );
+require_once ( dirname(__FILE__) . '/vendor/Slim/Slim/Environment.php' );
 include_once ( dirname(__FILE__) . '/Structures.php' );
 include_once ( dirname(__FILE__) . '/Request.php' );
 include_once ( dirname(__FILE__) . '/Logger.php' );
@@ -11,12 +11,12 @@ include_once ( dirname(__FILE__) . '/DBJson.php' );
 
 class Model
 {
-    
+
     /**
      * @var string $_path Der lokale Pfad des Moduls
      */
     private $_path=null;
-    
+
     /**
      * @var string $_prefix Unterstützte Präfixe (veraltet)
      */
@@ -26,21 +26,21 @@ class Model
      * @var Component $_conf the component data object
      */
     public $_conf = null;
-    
+
     /**
      * @var string $_class Der Klassenname des Moduls
      */
     private $_class = null;
-    
+
     /**
      * @var Component $_com Die Definition der Ausgänge
      */
     private $_com = null;
-    
-    
+
+
     private $_noInfo = null;
     private $_noHelp = null;
-    
+
     /**
      * Der Konstruktor
      *
@@ -71,32 +71,33 @@ class Model
         $this->_conf=$conf;
         $this->_com=$com;
         $commands = $com->commands(array(),true,true);
-        
+
         // multi Requests werden noch nicht unterstützt, das Model soll automatisch die Möglichkeit bieten,
         // mehrere Anfragen mit einmal zu beantworten
         ////$commands[] = array('name' => 'postMultiGetRequest','method' => 'POST', 'path' => '/multiGetRequest', 'inputType' => 'Link', 'outputType' => '');
-        
+
         // Erstellt für jeden angebotenen Befehl einen Router
         // Ein Router stellt einen erlaubten Aufruf dar (mit Methode und URI), sodass geprüft werden kann,
         // welcher für die Beantwortung zuständig ist
         $router = new \Slim\Router();
-        foreach ($commands as &$command){
+        foreach ($commands as $key => $command){
             if (!isset($command['name'])) continue;
-            if (!isset($command['method'])) $command['method'] = 'GET';
-            if (!isset($command['callback'])) $command['callback'] = $command['name'];
-            if (!isset($command['seqInput'])) $command['seqInput'] = 'TRUE';
-            if (!isset($command['singleOutput'])) $command['singleOutput'] = 'FALSE';
-            if (!isset($command['placeholder'])) $command['placeholder'] = array();
+            if (!isset($command['method'])) $commands[$key]['method'] = 'GET';
+            if (!isset($command['callback'])) $commands[$key]['callback'] = $command['name'];
+            if (!isset($command['seqInput'])) $commands[$key]['seqInput'] = 'TRUE';
+            if (!isset($command['singleOutput']))$commands[$key]['singleOutput'] = 'FALSE';
+            if (!isset($command['placeholder'])) $commands[$key]['placeholder'] = array();
+            $command = $commands[$key];
             
             // Methoden können durch Komma getrennt aufgelistet sein
             $methods = explode(',',$command['method']);
-            
+
             foreach ($methods as $method){
                 $route = new \Slim\Route($command['path'],array($this->_class,$command['callback']),false);
                 $route->via(strtoupper($method));
                 $route->setName($command['name']);
                 $router->map($route);
-                
+
                 // wenn es ein GET Befehl ist, wird automatisch HEAD unterstützt
                 if (strtoupper($method)=='GET'){
                     // erzeugt einen HEAD Router
@@ -113,14 +114,14 @@ class Model
         $scriptName = $_SERVER['SCRIPT_NAME'];
         $requestUri = $_SERVER['REQUEST_URI'];
         $path = str_replace('?' . (isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : ''), '', substr_replace($requestUri, '', 0, strlen((strpos($requestUri, $scriptName) !== false ? $scriptName : str_replace('\\', '', dirname($scriptName))))));
-        
+
         // ermittelt den zuständigen Befehl
         $matches = $router->getMatchedRoutes(strtoupper($_SERVER['REQUEST_METHOD']), $path);
 
         if (count($matches)>0){
             // mindestens ein zutreffender Befehl wurde gefunden (nimm den Ersten)
             $matches = $matches[0];
-            
+
             // suche den zugehörigen $commands Eintrag
             $selectedCommand=null;
             foreach ($commands as $command){
@@ -129,12 +130,12 @@ class Model
                     break;
                 }
             }
-            
+
             if ($selectedCommand == null){
                 http_response_code(500);
                 return;
             }
-            
+
             // lies die eingehenden PHP Daten
             $rawInput = \Slim\Environment::getInstance()->offsetGet('slim.input');
             if (!$rawInput) {
@@ -143,19 +144,19 @@ class Model
 
             // wir wollen wissen, ob die Eingabedaten als Liste rein kommen
             $arr = true;
-            
+
             // wenn zu diesem Befehl ein inputType angegeben wurde, wird eine Type::decodeType() aufgerufen
             if (isset($selectedCommand['inputType']) && trim($selectedCommand['inputType'])!=''){
                 $inputType = $selectedCommand['inputType'];
                 $rawInput = call_user_func_array('\\'.$inputType.'::decode'.$inputType, array($rawInput));
-                        
+
                 if ( !is_array( $rawInput ) ){
                     // es ist keine Liste, also mach eine daraus (damit man sie einheitlich behandeln kann)
                     $rawInput = array( $rawInput );
                     $arr = false;
                 }
             }
-            
+
             if (strtoupper($selectedCommand['seqInput']) != 'TRUE') {
                 $arr = false;
             }
@@ -168,7 +169,7 @@ class Model
                 if (!isset($holder['regex'])) continue;
                 $placeholder[$holder['name']] = $holder['regex'];
             }
-            
+
             /*foreach ($params as $key => $value){
                 if (isset($placeholder[$key])){
                     if (is_array($value)){
@@ -201,25 +202,25 @@ class Model
                     }
                 }
             }*/
-            
+
             // nun soll die zugehörige Funktion im Modul aufgerufen werden
             if (isset($selectedCommand['inputType']) && trim($selectedCommand['inputType'])!='' && isset($rawInput)){
                 // initialisiert die Ausgabe positiv
                 $result=array("status"=>201,"content"=>array());
-                
+
                 if (strtoupper($selectedCommand['seqInput']) == 'TRUE'){
                     try {
                         // für jede Eingabe wird die Funktion ausgeführt
                         foreach($rawInput as $input){
-                            
+
                             // Aufruf der Modulfunktion
                             $res = call_user_func_array($matches->getCallable(), array($selectedCommand['name'],"input"=>$input,$params));
-                            
+
                             // wenn es ein Ausgabeobjekt gibt, wird versucht dort einen Status zu setzen
                             if (is_callable(array($res['content'],'setStatus'))){
                                 $res['content']->setStatus($res['status']);
                             }
-                            
+
                             // setze Status und Ausgabe
                             $result["content"][] = $res['content'];
                             if (isset($res['status'])){
@@ -232,7 +233,7 @@ class Model
                         $this->finishRequest(self::isError());
                         return;
                     }
-                    
+
                 } else {
                     try {
                         // Aufruf der Modulfunktion
@@ -242,7 +243,7 @@ class Model
                         if (is_callable(array($res['content'],'setStatus'))){
                             $res['content']->setStatus($res['status']);
                         }
-                        
+
                         // setze Status und Ausgabe
                         $result["content"] = $res['content'];
                         if (isset($res['status'])){
@@ -255,41 +256,41 @@ class Model
                         return;
                     }
                 }
-                
+
             } else {
                 // wenn keinen vorgegebenen Eingabetyp gibt, wird die Eingabe direkt an die Modulfunktion weitergegeben
                 $result = call_user_func_array($matches->getCallable(), array($selectedCommand['name'],"input"=>$rawInput,$params));
             }
-            
+
             if ($selectedCommand['method']=='HEAD'){
                 // Bei einer HEAD Funktion (die eventuell im Modul als GET bearbeitet wird),
                 // kann die Ausgabe verworfen werden
                 $result['content'] = '';
             } elseif (isset($selectedCommand['outputType']) && trim($selectedCommand['outputType'])!='' && trim($selectedCommand['outputType'])!='binary'){
-                // wenn ein Ausgabetyp angegeben ist, wird eine Typ::encodeTyp() ausgeführt                
+                // wenn ein Ausgabetyp angegeben ist, wird eine Typ::encodeTyp() ausgeführt
                 $outputType = $selectedCommand['outputType'];
-                
+
                 if (isset( $result['content']) ){
                     if ( !is_array( $result['content'] ) ){
                         $result['content'] = array( $result['content'] );
                     }
-                    
+
                     if ( $command['singleOutput']!=='FALSE' && count( $result['content'] ) >= 1 ){
-                        $result['content'] = $result['content'][0];                        
+                        $result['content'] = $result['content'][0];
                     } elseif ( !$arr && count( $result['content'] ) == 1 ){
                         $result['content'] = $result['content'][0];
                     }
 
                     $result['content'] = call_user_func_array('\\'.$outputType.'::encode'.$outputType, array($result['content']));
                 }
-                header('Content-Type: application/json');                                            
+                header('Content-Type: application/json');
             } elseif (isset($selectedCommand['outputType']) && trim($selectedCommand['outputType'])=='binary'){
                 // wenn der Ausgabetyp "binär" ist, erfolgt keine Anpassung
             } else {
                 // selbst wenn nichts zutrifft, wird json kodiert
                 if (isset( $result['content']) )
                     $result['content'] = json_encode($result['content']);
-                header('Content-Type: application/json');  
+                header('Content-Type: application/json');
             }
         } else {
             // es wurde kein zutreffender Befehl gefunden, also gibt es eine leere Antwort
@@ -300,28 +301,28 @@ class Model
         // ab hier werden die Ergebnisse ausgegeben
         $this->finishRequest($result);
     }
-    
+
     private function finishRequest($result = array('content'=>'', 'status'=>200, 'statusText'=>null))
     {
-                    
+
         $code = 0;
         if (isset( $result['status']) ){
             $code = $result['status'];
         } else {
             $code = 200;
         }
-        
+
         $statusText = null;
         if (isset($result['statusText']))
             $statusText = ' '.$result['statusText'];
 
         $protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
         header($protocol . ' ' . $code . (isset($statusText)?$statusText:''));
-        
+
         if (isset( $result['content'])  )
-            echo $result['content'];  
+            echo $result['content'];
     }
-    
+
     /**
      * Führt eine Anfrage über $linkName aus
      *
@@ -340,7 +341,7 @@ class Model
     {
         $link=CConfig::getLink($this->_conf->getLinks( ),$linkName);
         $instructions = $this->_com->instruction('',true);
-        
+
         // ermittle den zutreffenden Ausgang
         $selectedInstruction=null;
         foreach($instructions as $instruction){
@@ -366,21 +367,21 @@ class Model
                 $method = $selectedInstruction['links'][0]['method'];
             }
         }
-        
+
         // ersetzt die Platzer im Ausgang mit den eingegeben Parametern
         foreach ($params as $key=>$param)
             $order = str_replace( ':'.$key, $param, $order);
 
         // führe nun den Aufruf aus
-        $result = Request::routeRequest( 
+        $result = Request::routeRequest(
                                         $method,
                                         $order,
                                         array(),
                                         $body,
                                         $link,
                                         $link->getPrefix()
-                                        );    
-                      
+                                        );
+
         if ( $result['status'] == $positiveStatus ){
             // die Antwort war so, wie wir sie erwartet haben
             if ($returnType!==null){
@@ -393,11 +394,11 @@ class Model
             // rufe nun die positive Methode auf
             return call_user_func_array($positiveMethod, array_merge(array("input"=>$result['content']),$positiveParams));
         }
-        
+
         // ansonsten rufen wir die negative Methode auf
         return call_user_func_array($negativeMethod, $negativeParams);
     }
-    
+
     /**
      * Führt eine Anfrage über $linkName aus, wobei eine Verbindung mit der URI $order genutzt wird
      *
@@ -416,9 +417,9 @@ class Model
     {
         $links=CConfig::getLinks($this->_conf->getLinks( ),$linkName);
         $link=null;
-        
+
         $instructions = $this->_com->instruction('',true);
-        
+
         // ermittle den zutreffenden Ausgang
         $selectedInstruction=null;
         foreach($instructions as $instruction){
@@ -427,7 +428,7 @@ class Model
                 break;
             }
         }
-        
+
         if (isset($selectedInstruction['links'][0]['path']) && $selectedInstruction['links'][0]['path'] == $order){
             $link = $links[0];
         } else {
@@ -438,7 +439,7 @@ class Model
                     $testPath = substr($testPath,$met+1);
                     foreach ($params as $key=>$param)
                         $testPath = str_replace( ':'.$key, $param, $testPath);
-                    
+
                     if ($testPath == $order){
                         $link = $li;
                         break;
@@ -446,11 +447,11 @@ class Model
                 }
             }
         }
-        
+
         if ($link == null){
             return call_user_func_array($negativeMethod, $negativeParams);
         }
-        
+
         $method = 'GET';
         if ($link->getPath()!==null && $link->getPath()!==''){
             $order = $link->getPath();
@@ -467,13 +468,13 @@ class Model
                 $method = $selectedInstruction['links'][0]['method'];
             }
         }
-        
+
         // ersetzt die Platzer im Ausgang mit den eingegeben Parametern
         foreach ($params as $key=>$param)
             $order = str_replace( ':'.$key, $param, $order);
-            
+
         // führe nun den Aufruf aus
-        $result = Request::routeRequest( 
+        $result = Request::routeRequest(
                                         $method,
                                         $order,
                                         array(),
@@ -493,11 +494,11 @@ class Model
             // rufe nun die positive Methode auf
             return call_user_func_array($positiveMethod, array_merge(array("input"=>$result['content']),$positiveParams));
         }
-        
+
         // ansonsten rufen wir die negative Methode auf
         return call_user_func_array($negativeMethod, $negativeParams);
     }
-    
+
     /**
      * Sendet den Inhalt von $file an $linkName und behandelt die Antwort
      *
@@ -515,9 +516,9 @@ class Model
     public function callSqlTemplate($linkName, $file, $params, $positiveStatus, callable $positiveMethod, $positiveParams, callable $negativeMethod, $negativeParams, $checkSession=true)
     {
         $link=CConfig::getLink($this->_conf->getLinks( ),$linkName);
-        
+
         // führe nun den Aufruf mit der SQL $file aus
-        $result = DBRequest::getRoutedSqlFile( 
+        $result = DBRequest::getRoutedSqlFile(
                                               $link,
                                               $file,
                                               $params,
@@ -528,15 +529,15 @@ class Model
             // die Antwort war so, wie wir sie erwartet haben
             $queryResult = Query::decodeQuery( $result['content'] );
             if (!is_array($queryResult)) $queryResult = array($queryResult);
-            
+
             // rufe nun die positive Methode auf
             return call_user_func_array($positiveMethod, array_merge(array("input"=>$queryResult),$positiveParams));
         }
-        
+
         // ansonsten rufen wir die negative Methode auf
         return call_user_func_array($negativeMethod, $negativeParams);
     }
-    
+
     /**
      * Sendet $sql an $linkName und behandelt die Antwort
      *
@@ -554,7 +555,7 @@ class Model
     {
         $link=CConfig::getLink($this->_conf->getLinks( ),$linkName);
         // starts a query, by using given sql statements/statement
-        $result = DBRequest::getRoutedSql( 
+        $result = DBRequest::getRoutedSql(
                                               $link,
                                               $sql,
                                               $checkSession
@@ -565,15 +566,15 @@ class Model
             // die Antwort war so, wie wir sie erwartet haben
             $queryResult = Query::decodeQuery( $result['content'] );
             if (!is_array($queryResult)) $queryResult = array($queryResult);
-            
+
             // rufe nun die positive Methode auf
             return call_user_func_array($positiveMethod, array_merge(array("input"=>$queryResult),$positiveParams));
         }
-        
+
         // ansonsten rufen wir die negative Methode auf
         return call_user_func_array($negativeMethod, $negativeParams);
     }
-    
+
     /**
      * Liefert eine Rückgabe
      *
@@ -585,7 +586,7 @@ class Model
     {
         return array("status"=>$status,"content"=>$content);
     }
-    
+
     /**
      * Liefert eine Rückgabe (ein Problem ist aufgetreten)
      *
@@ -606,7 +607,7 @@ class Model
         }
         return self::createAnswer(409,$params);
     }
-    
+
     /**
      * Liefert eine Rückgabe (ein schwerwiegender Fehler ist aufgetreten)
      *
@@ -627,7 +628,7 @@ class Model
         }
         return self::createAnswer(500,$params);
     }
-    
+
     public static function isPreconditionError($content=null)
     {
         if (func_num_args()>1){
@@ -642,7 +643,7 @@ class Model
         }
         return self::createAnswer(412,$params);
     }
-    
+
     /**
      * Liefert eine Rückgabe (wurde erstellt)
      *
@@ -663,7 +664,7 @@ class Model
         }
         return self::createAnswer(201,$params);
     }
-    
+
     /**
      * Liefert eine Rückgabe (Anfrage war erfolgreich)
      *
@@ -685,7 +686,7 @@ class Model
         }
         return self::createAnswer(200,$params);
     }
-    
+
     /**
      * Liefert eine Rückgabe (Ressource wurde nicht gefunden)
      *
@@ -729,8 +730,8 @@ class Model
         }
         return self::createAnswer(401,$params);
     }
-    
+
     public static function header($name, $value){
-        header($name.': '.$value); 
+        header($name.': '.$value);
     }
 }

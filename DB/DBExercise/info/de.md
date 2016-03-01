@@ -1,9 +1,9 @@
 #### Eingänge
-- eid = die ID einer Aufgabe (`Exercise`) 
-- sub = bestimmt, ob keine Einsendungen mit zurückgegeben werden sollen ('nosubmission' = keine Einsendungen, sonst = mit Einsendungen) 
-- courseid = eine Veranstaltungs ID (`Course`) 
-- esid = die ID einer Übungsserie (`ExerciseSheet`) 
-- courseAmount = ??? 
+- eid = die ID einer Aufgabe (`Exercise`)
+- sub = bestimmt, ob keine Einsendungen mit zurückgegeben werden sollen ('nosubmission' = keine Einsendungen, sonst = mit Einsendungen)
+- courseid = eine Veranstaltungs ID (`Course`)
+- esid = die ID einer Übungsserie (`ExerciseSheet`)
+- courseAmount = ???
 
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
@@ -21,10 +21,10 @@
 |postSamples|-|Query|POST<br>/samples/course/:courseAmount/user/:userAmount| ??? |
 
 #### Ausgänge
-- eid = die ID einer Aufgabe (`Exercise`) 
-- sub = bestimmt, ob keine Einsendungen mit zurückgegeben werden sollen ('nosubmission' = keine Einsendungen, sonst = mit Einsendungen) 
-- courseid = eine Veranstaltungs ID (`Course`) 
-- esid = die ID einer Übungsserie (`ExerciseSheet`) 
+- eid = die ID einer Aufgabe (`Exercise`)
+- sub = bestimmt, ob keine Einsendungen mit zurückgegeben werden sollen ('nosubmission' = keine Einsendungen, sonst = mit Einsendungen)
+- courseid = eine Veranstaltungs ID (`Course`)
+- esid = die ID einer Übungsserie (`ExerciseSheet`)
 
 | Bezeichnung  | Ziel  | Verwendung | Beschreibung |
 | :----------- |:----- | :--------- | :----------- |

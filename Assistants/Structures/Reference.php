@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -40,7 +40,7 @@ class Reference extends Object implements JsonSerializable
     {
         $this->localRef = $value;
     }
-    
+
     /**
      * @var string $globalRef
      */
@@ -70,7 +70,7 @@ class Reference extends Object implements JsonSerializable
     {
         return file_get_contents($this->localRef);
     }
-    
+
     /**
      * Creates an reference object
      * Not needed attributes can be set to null.
@@ -80,17 +80,17 @@ class Reference extends Object implements JsonSerializable
      *
      * @return an reference object
      */
-    public static function createReference( 
+    public static function createReference(
                                          $localReference,
                                          $globalReference=null
                                          )
     {
-        return new Reference( array( 
+        return new Reference( array(
                                   'localRef' => $localReference,
                                   'globalRef' => $globalReference
                                   ) );
     }
-    
+
     /**
      * the constructor
      *
@@ -125,7 +125,7 @@ class Reference extends Object implements JsonSerializable
         /*if (is_array($data))reset($data);
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
             $e = new Exception();
-            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());           
             ///return null;
         }
         if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
@@ -146,18 +146,18 @@ class Reference extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeReference( 
+    public static function decodeReference(
                                          $data,
                                          $decode = true
                                          )
     {
-        if ( $decode && 
+        if ( $decode &&
              $data == null )
             $data = '{}';
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -166,18 +166,18 @@ class Reference extends Object implements JsonSerializable
                     $isArray = false;
                 }
             } else {
-               $isArray = false; 
+               $isArray = false;
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new Reference( $value );
             }
             return $result;
-            
-        } else 
+
+        } else
             return new Reference( $data );
     }
 

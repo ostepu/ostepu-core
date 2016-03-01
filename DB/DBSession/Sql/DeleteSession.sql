@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * @file DeleteSession.sql
  * deletes an specified session from %Session table
  * @author  Till Uhlig
@@ -7,7 +7,7 @@
  * @result -
  */
 ?>
- 
-DELETE FROM `Session` 
+
+DELETE FROM `Session`
 WHERE
     SE_sessionID = '<?php echo $seid; ?>'

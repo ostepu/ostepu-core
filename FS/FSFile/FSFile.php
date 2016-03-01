@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -8,7 +8,7 @@
  * @author Felix Schmidt
  * @example FS/FSFile/FileSample.json
  * @date 2013-2014
- */ 
+ */
 
 include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/MimeReader.php' );
@@ -62,7 +62,7 @@ class FSFile
                                            TRUE
                                            );
         }
-        
+       
         $component = new Model(self::getBaseDir(), dirname(__FILE__), $this);
         $this->_component=$component;
         $component->run();
@@ -80,10 +80,10 @@ class FSFile
     {
         $fileObject = $input;
         $fileContent = $fileObject->getBody( true );
-        $fileObject->setBody( null );        
-        
+        $fileObject->setBody( null );       
+       
         $fileObject->setHash( sha1( $fileContent ) );
-        $filePath = FSFile::generateFilePath( 
+        $filePath = FSFile::generateFilePath(
                                              FSFile::getBaseDir( ),
                                              $fileObject->getHash( )
                                              );
@@ -98,17 +98,17 @@ class FSFile
                           'w'
                           );
             if ($file){
-                fwrite( 
+                fwrite(
                        $file,
                        $fileContent
                        );
                 fclose( $file );
                 $fileObject->setStatus(201);
-             
+            
             }else{
                 $fileObject->addMessage("Datei konnte nicht im Dateisystem angelegt werden.");
                 $fileObject->setStatus(409);
-                Logger::Log( 
+                Logger::Log(
                         'POST postFile failed',
                         LogLevel::ERROR
                         );
@@ -125,7 +125,7 @@ class FSFile
         $fileObject->setFileSize( filesize( $this->config['DIR']['files'].'/'.$filePath ) );
         $fileObject->setHash( sha1_file( $this->config['DIR']['files'].'/'.$filePath ) );
         $fileObject->setMimeType(MimeReader::get_mime($this->config['DIR']['files'].'/'.$filePath));
-            
+           
         return Model::isCreated($fileObject);
     }
 
@@ -142,15 +142,15 @@ class FSFile
     {
         $path = array(self::getBaseDir(),$params['a'],$params['b'],$params['c'], $params['file']);
 
-        $filePath = implode( 
+        $filePath = implode(
                             '/',
-                            array_slice( 
+                            array_slice(
                                         $path,
                                         0
                                         )
                             );
 
-        if ( strlen( $this->config['DIR']['files'].'/'.$filePath ) > 1 && 
+        if ( strlen( $this->config['DIR']['files'].'/'.$filePath ) > 1 &&
              file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
 
             // the file was found
@@ -159,9 +159,8 @@ class FSFile
             Model::header('Content-Disposition',"filename=\"".$params['filename']."\"");
             Model::header('Content-Length',filesize($this->config['DIR']['files'].'/'.$filePath));
             Model::header('Accept-Ranges','none');
-            readfile( $this->config['DIR']['files'].'/'.$filePath );
-            return Model::isOk();
-            
+            return Model::isOk(file_get_contents($this->config['DIR']['files'].'/'.$filePath));
+           
         }
         return Model::isProblem();
     }
@@ -178,15 +177,15 @@ class FSFile
     {
         $path = array(self::getBaseDir(),$params['a'],$params['b'],$params['c'], $params['file']);
 
-        $filePath = implode( 
+        $filePath = implode(
                             '/',
-                            array_slice( 
+                            array_slice(
                                         $path,
                                         0
                                         )
                             );
 
-        if ( strlen( $this->config['DIR']['files'].'/'.$filePath ) > 0 && 
+        if ( strlen( $this->config['DIR']['files'].'/'.$filePath ) > 0 &&
              file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
 
             // the file was found
@@ -196,7 +195,7 @@ class FSFile
             $file->setHash( sha1_file( $this->config['DIR']['files'].'/'.$filePath ) );
             $file->setMimeType(MimeReader::get_mime($this->config['DIR']['files'].'/'.$filePath));
             return Model::isOk($file);
-            
+           
         }
         return Model::isProblem(new File( ));
     }
@@ -213,15 +212,15 @@ class FSFile
     {
         $path = array(self::getBaseDir(),$params['a'],$params['b'],$params['c'], $params['file']);
 
-        $filePath = implode( 
+        $filePath = implode(
                             '/',
-                            array_slice( 
+                            array_slice(
                                         $path,
                                         0
                                         )
                             );
 
-        if ( strlen( $filePath ) > 0 && 
+        if ( strlen( $filePath ) > 0 &&
              file_exists( $this->config['DIR']['files'] . '/' . $filePath ) ){
 
             // after the successful deletion, we want to return the file data
@@ -241,14 +240,14 @@ class FSFile
 
             // the file is removed
             return Model::isCreated($file);
-            
+           
         } else {
 
             // file does not exist
             return Model::isProblem(new File( ));
         }
     }
-    
+   
     /**
      * Returns status code 200, if this component is correctly installed for the platform
      *
@@ -257,18 +256,18 @@ class FSFile
      */
     public function getExistsPlatform( $callName, $input, $params = array() )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts GET GetExistsPlatform',
                     LogLevel::DEBUG
                     );
-                    
+                   
         if (!file_exists(dirname(__FILE__).'/config.ini')){
             return Model::isProblem();
         }
-       
-        return Model::isOk(); 
+      
+        return Model::isOk();
     }
-    
+   
     /**
      * Removes the component from the platform
      *
@@ -277,17 +276,17 @@ class FSFile
      */
     public function deletePlatform( $callName, $input, $params = array() )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts DELETE DeletePlatform',
                     LogLevel::DEBUG
                     );
         if (file_exists(dirname(__FILE__).'/config.ini') && !unlink(dirname(__FILE__).'/config.ini')){
             return Model::isProblem();
         }
-        
+       
         return Model::isCreated();
     }
-    
+   
     /**
      * Adds the component to the platform
      *
@@ -296,49 +295,49 @@ class FSFile
      */
     public function addPlatform( $callName, $input, $params = array() )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts POST AddPlatform',
                     LogLevel::DEBUG
                     );
-        
+       
         $file = dirname(__FILE__).'/config.ini';
         $text = "[DIR]\n".
                 "temp = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$input->getTempDirectory()))."\"\n".
                 "files = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$input->getFilesDirectory()))."\"\n";
-                
+               
         if (!@file_put_contents($file,$text)){
-            Logger::Log( 
+            Logger::Log(
                         'POST AddPlatform failed, config.ini no access',
                         LogLevel::ERROR
                         );
 
             return Model::isProblem();
-        }   
+        }  
 
         $platform = new Platform();
         $platform->setStatus(201);
-        
+       
         return Model::isCreated($platform);
     }
-    
+   
     /**
      * Creates a file path by splitting the hash.
      *
      * @param string $type The prefix of the file path.
      * @param string $hash The hash of the file.
      */
-    public static function generateFilePath( 
+    public static function generateFilePath(
                                             $type,
                                             $hash
                                             )
     {
         if ( strlen( $hash ) >= 4 ){
-            return $type . '/' . $hash[0] . '/' . $hash[1] . '/' . $hash[2] . '/' . substr( 
+            return $type . '/' . $hash[0] . '/' . $hash[1] . '/' . $hash[2] . '/' . substr(
                                                                                            $hash,
                                                                                            3
                                                                                            );
-            
-        } else 
+           
+        } else
             return'';
     }
 

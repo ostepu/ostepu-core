@@ -46,7 +46,7 @@
         "outputType": "ExternalId",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"courseid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],
         "path": "/externalid/course/:courseid"
     },
     {

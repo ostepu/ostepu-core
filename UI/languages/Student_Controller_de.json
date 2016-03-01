@@ -2,7 +2,11 @@
     "main": {
         "askDeleteSubmission": "Soll die Einsendung wirklich gelöscht werden?",
         "successDeleteSubmission": "Die Einsendung wurde gelöscht!",
+        "invalidDeleteSubmissionWarning": "Ungültige Löschanfrage!",
+        "invalidDeleteSubmission": "Ungültiger Löschversuch!",
         "errorDeleteSubmission": "Beim Löschen ist ein Fehler aufgetreten!",
-        "changeCourse": "Veranstaltung wechseln"
+        "changeCourse": "Veranstaltung wechseln",
+        "invalidSheetId": "Ungültige Übungsserie!",
+        "leaveStudent": "Studentenrolle verlassen"
     }
 }

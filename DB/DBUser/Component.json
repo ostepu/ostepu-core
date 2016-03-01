@@ -111,11 +111,13 @@
             "target": "CInstall"
         },
         {
+            "name": "postSamples",
+            "target": "CInstall"
+        },
+        {
             "name": "getAlive",
             "target": "CHelp",
-            "links": [{
-                "path": "/link/exists/platform"
-            }]
+            "links": [{"path": "/link/exists/platform"}]
         }
     ]
 }

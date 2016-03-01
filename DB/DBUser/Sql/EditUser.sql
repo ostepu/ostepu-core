@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * @file EditUser.sql
  * updates an specified user from %User table
  * @author  Till Uhlig
@@ -8,7 +8,7 @@
  * @result -
  */
 ?>
- 
+
 UPDATE User
 SET <?php echo $values; ?>
 WHERE U_id like '<?php echo $userid; ?>' or U_username = '<?php echo $userid; ?>' or U_externalId = '<?php echo $userid; ?>'

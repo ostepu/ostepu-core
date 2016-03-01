@@ -7,7 +7,7 @@
  * @author Till Uhlig
  * @date 2014
  */
- 
+
 require_once ( dirname( __FILE__ ) . '/DBExternalId.php' );
 
 new DBExternalId();

@@ -9,6 +9,7 @@ Dazu wird bei einem `POST /course` Aufruf die nachstehende Tabelle erzeugt (X = 
 |SET_name |VARCHAR(255) NOT NULL| ein Bezeichner, wird exakt so auch zur Bestimmung des Wertes benötigt |UNIQUE|
 |SET_state|VARCHAR(255) NOT NULL DEFAULT ''| der Zustand/Wert der Einstellung (Bsp.: 1) ' |-|
 |SET_type |VARCHAR(255) NOT NULL DEFAULT 'TEXT'| der erwartete Typ (wird in der Oberfläche benötigt, damit der Nutzer den Wert entsprechend eingeben kann). Erlaubt sind: TEXT (Text), INT (Zahl/Integer), BOOL (Wahrheitswert als 0/1), TIMESTAMP (Unix-Zeitstempel)  |-|
+|SET_category|VARCHAR(255) NOT NULL DEFAULT ''| Ein Bezeichner für die Kategorie (submissions, markings, userManagement...) ' |-|
 
 Möglicherweise tragen andere Komponenten selbstständig hier Einstellungen für sich ein.
 

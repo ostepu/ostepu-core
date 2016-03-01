@@ -11,7 +11,7 @@ if (isset($AddUserNotificationElements)) {
 <input type="hidden" name="action" value="AddUser">
 <div class="content-element">
     <div class="content-header">
-        <?php echo MakeInfoButton('courseManagement','addUser.md'); ?>
+        <?php echo MakeInfoButton('page/admin/courseManagement','addUser.md'); ?>
         <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
         <button class="text-button info-color bold right"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
     </div>
@@ -35,6 +35,8 @@ if (isset($AddUserNotificationElements)) {
                 <label for="grantTutorRights"> <?php echo Language::Get('main','tutor', $langTemplate); ?></label>
                 <input type="radio" name="rights" id="grantLecturerRights" value="2"/>
                 <label for="grantLecturerRights"> <?php echo Language::Get('main','dozent', $langTemplate); ?></label>
+                <input type="radio" name="rights" id="grantAdminRights" value="3"/>
+                <label for="grantAdminRights"> <?php echo Language::Get('main','admin', $langTemplate); ?></label>
             </div>
         </div>
     </div>

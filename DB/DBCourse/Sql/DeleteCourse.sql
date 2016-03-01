@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * @file DeleteCourse.sql
  * deletes a specified course from %Course table
  * @author  Till Uhlig
@@ -7,7 +7,7 @@
  * @result -
  */
 ?>
- 
-DELETE FROM Course 
+
+DELETE FROM Course
 WHERE
     C_id = '<?php echo $courseid; ?>'

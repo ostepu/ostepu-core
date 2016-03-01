@@ -11,6 +11,7 @@ select SQL_CACHE
     U.U_email,
     U.U_title,
     U.U_flag,
+    U.U_lang,
     U.U_studentNumber,
     U.U_isSuperAdmin,
     U.U_comment,
@@ -19,19 +20,17 @@ select SQL_CACHE
     C.C_name,
     C.C_semester,
     C.C_defaultGroupSize,
-    concat(",courseid,",'_',S.SET_id) as SET_id,
-    S.SET_name,
-    S.SET_state,
-    S.SET_type
+    S.*,
+    concat(",courseid,",'_',S.SET_id) as SET_id
 from
 
-    CourseStatus CS 
+    CourseStatus CS
         join
     Course C ON (CS.C_id = C.C_id)
  join
     User U
        ON (U.U_id = CS.U_id)
-        left join 
+        left join
     Setting_",courseid," S ON (1)
 WHERE
     CS.U_id = '",userid,"' and CS.C_id = '",courseid,"';");

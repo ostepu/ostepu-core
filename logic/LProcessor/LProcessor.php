@@ -1,12 +1,12 @@
 <?php
 /**
  * @file LProcessor.php Contains the LProcessor class
- * 
+ *
  * @author Till Uhlig
  * @date 2014
  */
 
-require_once dirname(__FILE__) . '/../../Assistants/Slim/Slim.php';
+require_once dirname(__FILE__) . '/../../Assistants/vendor/Slim/Slim/Slim.php';
 include_once dirname(__FILE__) . '/../../Assistants/Request.php';
 include_once dirname(__FILE__) . '/../../Assistants/CConfig.php';
 include_once dirname(__FILE__) . '/../../Assistants/Structures.php';
@@ -23,7 +23,7 @@ class LProcessor
      * @var Slim $_app the slim object
      */
     private $app = null;
-    
+
     /**
      * @var Component $_conf the component data object
      */
@@ -58,22 +58,22 @@ class LProcessor
      * @var Link[] $_submission a list of links
      */
     private $_submission = array( );
-    
+
     /**
      * @var Link[] $_marking a list of links
      */
     private $_marking = array( );
-    
+
     /**
      * @var Link[] $_processorDb a list of links
      */
     private $_processorDb = array( );
-    
+
     /**
      * @var Link[] $_attachment a list of links
      */
     private $_attachment = array( );
-    
+
     /**
      * @var Link[] $_workFiles a list of links
      */
@@ -81,7 +81,7 @@ class LProcessor
     private $_createCourse = array( );
     private $_file = array( );
     private $_getExerciseExerciseFileType = array( );
-    
+
     /**
      * REST actions
      *
@@ -96,8 +96,8 @@ class LProcessor
         // runs the LProcessor
         if ( $com->used( ) ) return;
             $conf = $com->loadConfig( );
-            
-        // initialize slim    
+
+        // initialize slim
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
 
@@ -111,37 +111,37 @@ class LProcessor
         $this->_file = CConfig::getLinks($conf->getLinks(),"file");
         $this->_createCourse = CConfig::getLinks($conf->getLinks(),"postCourse");
         $this->_getExerciseExerciseFileType = CConfig::getLinks($conf->getLinks(),"getExerciseExerciseFileType");
-        
+
         // POST PostSubmission
         $this->app->map('/submission(/)',
                         array($this, 'postSubmission'))->via('POST');
-                        
+
         // POST AddProcess
         $this->app->map('/'.$this->getPrefix().'(/)',
                         array($this, 'addProcess'))->via('POST');
-                        
+
         // POST AddCourse
-        $this->app->post( 
+        $this->app->post(
                          '/course(/)',
-                         array( 
+                         array(
                                $this,
                                'addCourse'
                                )
                          );
-                         
+
         // POST DeleteCourse
-        $this->app->delete( 
+        $this->app->delete(
                          '/course/:courseid(/)',
-                         array( 
+                         array(
                                $this,
                                'deleteCourse'
                                )
                          );
-                         
+
         // GET GetExistsCourse
-        $this->app->get( 
+        $this->app->get(
                          '/link/exists/course/:courseid(/)',
-                         array( 
+                         array(
                                $this,
                                'getExistsCourse'
                                )
@@ -150,7 +150,7 @@ class LProcessor
         // run Slim
         $this->app->run();
     }
-    
+
     /**
      * Returns whether the component is installed for the given course
      *
@@ -163,13 +163,13 @@ class LProcessor
      */
     public function getExistsCourse($courseid)
     {
-         Logger::Log( 
+         Logger::Log(
                     'starts GET GetExistsCourse',
                     LogLevel::DEBUG
                     );
 
         foreach ( $this->_createCourse as $_link ){
-            $result = Request::routeRequest( 
+            $result = Request::routeRequest(
                                             'GET',
                                             '/link/exists/course/'.$courseid,
                                             array(),
@@ -179,7 +179,7 @@ class LProcessor
                                             );
 
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
                 // nothing
             } else {
@@ -188,11 +188,11 @@ class LProcessor
                 $this->app->stop( );
             }
         }
-        
+
         $this->app->response->setStatus( 200 );
         $this->app->response->setBody( null );
     }
-    
+
     /**
      * Adds the component to a course
      *
@@ -201,17 +201,17 @@ class LProcessor
      */
     public function addCourse()
     {
-         Logger::Log( 
+         Logger::Log(
                     'starts POST AddCourse',
                     LogLevel::DEBUG
                     );
 
         $body = $this->app->request->getBody();
-        
+
         $course = Course::decodeCourse($body);
-    
+
         foreach ( $this->_createCourse as $_link ){
-            $result = Request::routeRequest( 
+            $result = Request::routeRequest(
                                             'POST',
                                             '/course',
                                             array(),
@@ -221,23 +221,23 @@ class LProcessor
                                             );
 
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
 
                 $this->app->response->setStatus( 201 );
                 if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->app->response->headers->set( 
+                    $this->app->response->headers->set(
                                                         'Content-Type',
                                                         $result['headers']['Content-Type']
                                                         );
-                
+
             } else {
-            
+
                /* if ($course->getId()!==null){
                     $this->deleteCourse($course->getId());
                 }*/
-            
-                Logger::Log( 
+
+                Logger::Log(
                             'POST AddCourse failed',
                             LogLevel::ERROR
                             );
@@ -246,10 +246,10 @@ class LProcessor
                 $this->app->stop( );
             }
         }
-        
+
         $this->app->response->setBody( Course::encodeCourse( $course ) );
     }
-    
+
     /**
      * Removes the component from a given course
      *
@@ -257,15 +257,15 @@ class LProcessor
      * /course/$courseid(/).
      */
     public function deleteCourse($courseid){
-        Logger::Log( 
+        Logger::Log(
                     'starts DELETE DeleteCourse',
                     LogLevel::DEBUG
                     );
 
-        $courseid = DBJson::mysql_real_escape_string( $courseid ); 
-        
+        $courseid = DBJson::mysql_real_escape_string( $courseid );
+
         foreach ( $this->_createCourse as $_link ){
-            $result = Request::routeRequest( 
+            $result = Request::routeRequest(
                                             'DELETE',
                                             '/course/'.$courseid,
                                             array(),
@@ -275,18 +275,18 @@ class LProcessor
                                             );
 
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
 
                 $this->app->response->setStatus( 201 );
                 if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->app->response->headers->set( 
+                    $this->app->response->headers->set(
                                                         'Content-Type',
                                                         $result['headers']['Content-Type']
                                                         );
-                
+
             } else {
-                Logger::Log( 
+                Logger::Log(
                             'POST DeleteCourse failed',
                             LogLevel::ERROR
                             );
@@ -295,7 +295,7 @@ class LProcessor
             }
         }
     }
-   
+
     /**
      * Adds a process.
      *
@@ -307,25 +307,25 @@ class LProcessor
         $this->app->response->setStatus( 201 );
         $body = $this->app->request->getBody();
         $processes = Process::decodeProcess($body);
-        
+
         // always been an array
         $arr = true;
         if ( !is_array( $processes ) ){
             $processes = array( $processes );
             $arr = false;
         }
-        
+
         $res = array( );
         foreach ( $processes as $process ){
             // create process
             $method='POST';
             $URL='/process';
             if ($process->getProcessId() !== null){
-               $method='PUT'; 
+               $method='PUT';
                $URL = '/process/'.$process->getProcessId();
             }
-        
-            $result = Request::routeRequest( 
+
+            $result = Request::routeRequest(
                                             $method,
                                             $URL,
                                             array(),
@@ -334,7 +334,7 @@ class LProcessor
                                             'process'
                                             );
 
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
 
                 $queryResult = Process::decodeProcess($result['content']);
@@ -347,7 +347,7 @@ class LProcessor
                 $this->app->response->setStatus( 409 );
                 continue;
             }
-            
+
             // create attachment
             $attachments = $process->getAttachment();
             $process->setAttachment(array());
@@ -355,9 +355,9 @@ class LProcessor
                 if ($attachment->getId() === null){
                     $attachment->setExerciseId($process->getExercise()->getId());
                     $attachment->setProcessId($process->getProcessId());
-                    
+
                     // upload file
-                    $result = Request::routeRequest( 
+                    $result = Request::routeRequest(
                                                 'POST',
                                                 '/file',
                                                 array(),
@@ -365,8 +365,8 @@ class LProcessor
                                                 $this->_file,
                                                 'file'
                                                 );
-                                                
-                    if ( $result['status'] >= 200 && 
+
+                    if ( $result['status'] >= 200 &&
                          $result['status'] <= 299 ){
                         $queryResult = File::decodeFile($result['content']);
                         $attachment->setFile($queryResult);
@@ -377,9 +377,9 @@ class LProcessor
                         continue;
                     }
 
-                    // upload attachment   
-                    $attachment->setProcessId($process->getProcessId());   
-                    $result = Request::routeRequest( 
+                    // upload attachment
+                    $attachment->setProcessId($process->getProcessId());
+                    $result = Request::routeRequest(
                                                 'POST',
                                                 '/attachment',
                                                 array(),
@@ -387,10 +387,10 @@ class LProcessor
                                                 $this->_attachment,
                                                 'attachment'
                                                 );
-                                                
-                    if ( $result['status'] >= 200 && 
+
+                    if ( $result['status'] >= 200 &&
                          $result['status'] <= 299 ){
-                         
+
                         $queryResult = Attachment::decodeAttachment($result['content']);
                         $attachment->setId($queryResult->getId());
                         $process->getAttachment()[] = $attachment;
@@ -402,7 +402,7 @@ class LProcessor
                     }
                 }
             }
-            
+
             // create workFiles
             $workFiles = $process->getWorkFiles();
             $process->setWorkFiles(array());
@@ -410,9 +410,9 @@ class LProcessor
                 if ($workFile->getId() === null){
                 $workFile->setExerciseId($process->getExercise()->getId());
                 $workFile->setProcessId($process->getProcessId());
-                
+
                     // upload file
-                    $result = Request::routeRequest( 
+                    $result = Request::routeRequest(
                                                 'POST',
                                                 '/file',
                                                 array(),
@@ -420,10 +420,10 @@ class LProcessor
                                                 $this->_file,
                                                 'file'
                                                 );
-                                                
-                    if ( $result['status'] >= 200 && 
+
+                    if ( $result['status'] >= 200 &&
                          $result['status'] <= 299 ){
-                         
+
                         $queryResult = File::decodeFile($result['content']);
                         $workFile->setFile($queryResult);
                     }
@@ -432,10 +432,10 @@ class LProcessor
                         $this->app->response->setStatus( 409 );
                         continue;
                     }
-                    
+
                     // upload attachment
-                    $workFile->setProcessId($process->getProcessId()); 
-                    $result = Request::routeRequest( 
+                    $workFile->setProcessId($process->getProcessId());
+                    $result = Request::routeRequest(
                                                 'POST',
                                                 '/attachment',
                                                 array(),
@@ -443,10 +443,10 @@ class LProcessor
                                                 $this->_workFiles,
                                                 'attachment'
                                                 );
-                                                
-                    if ( $result['status'] >= 200 && 
+
+                    if ( $result['status'] >= 200 &&
                          $result['status'] <= 299 ){
-                         
+
                         $queryResult = Attachment::decodeAttachment($result['content']);
                         $workFile->setId($queryResult->getId());
                         $process->getWorkFiles()[] = $workFile;
@@ -458,17 +458,17 @@ class LProcessor
                     }
                 }
             }
-            
+
         }
- 
-        if ( !$arr && 
+
+        if ( !$arr &&
              count( $res ) == 1 ){
             $this->app->response->setBody( Process::encodeProcess( $res[0] ) );
-            
-        } else 
+
+        } else
             $this->app->response->setBody( Process::encodeProcess( $res ) );
     }
-    
+
     /**
      * Processes a submissions
      *
@@ -479,9 +479,9 @@ class LProcessor
     {
         $this->app->response->setStatus( 201 );
         $body = $this->app->request->getBody();
-        
+
         $submissions = Submission::decodeSubmission($body);
-        
+
         // always been an array
         $arr = true;
         if ( !is_array( $submissions ) ){
@@ -493,13 +493,13 @@ class LProcessor
         $res = array( );
         foreach ( $submissions as $submission ){
             $fail = false;
-        
+
             $process = new Process();
             $process->setRawSubmission($submission);
 
             $eid = $submission->getExerciseId();
             // load processor data from database
-            $result = Request::routeRequest( 
+            $result = Request::routeRequest(
                                 'GET',
                                 '/process/exercise/'.$eid,
                                 array(),
@@ -507,9 +507,9 @@ class LProcessor
                                 $this->_processorDb,
                                 'process'
                                 );
-                                
+
             $processors = null;
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
                 $processors = Process::decodeProcess( $result['content'] );
             } else {
@@ -520,8 +520,8 @@ class LProcessor
                     continue;
                }
             }
-            
-            $result2 = Request::routeRequest( 
+
+            $result2 = Request::routeRequest(
                                 'GET',
                                 '/exercisefiletype/exercise/'.$eid,
                                 array(),
@@ -529,9 +529,9 @@ class LProcessor
                                 $this->_getExerciseExerciseFileType,
                                 'exercisefiletype'
                                 );
-                                
+
             $exerciseFileTypes = null;
-            if ( $result2['status'] >= 200 && 
+            if ( $result2['status'] >= 200 &&
                  $result2['status'] <= 299 ){
                 $exerciseFileTypes = ExerciseFileType::decodeExerciseFileType( $result2['content'] );
                 if (!is_array($exerciseFileTypes)) $exerciseFileTypes = array($exerciseFileTypes);
@@ -539,30 +539,30 @@ class LProcessor
                 $filePath = null;
                 if ($submission->getFile()!=null){
                     $file = $submission->getFile()->getBody( true );
-                  
+
                     if ($file !== null){
                         $fileHash = sha1($file);
-                    
+
                         $filePath = '/tmp/'.$fileHash;
                         if ($submission->getFile()->getDisplayName() != null){
                             LProcessor::generatepath($filePath);
-                            file_put_contents($filePath . '/' . $submission->getFile()->getDisplayName(), $file); 
-                            $filePath .= '/' . $submission->getFile()->getDisplayName();   
+                            file_put_contents($filePath . '/' . $submission->getFile()->getDisplayName(), $file);
+                            $filePath .= '/' . $submission->getFile()->getDisplayName();
                         } else {
                             LProcessor::generatepath($filePath);
                             file_put_contents($filePath . '/tmp', $file);
-                            $filePath .= '/tmp';   
-                        }                            
+                            $filePath .= '/tmp';
+                        }
                     }
                 }
-                
+
                 // check file type
                 if ($filePath!=null){
                     $found = false;
                     $types = array();
                     $mimeType = MimeReader::get_mime($filePath);
                     $foundExtension = (isset(pathinfo($filePath)['extension']) ? pathinfo($filePath)['extension'] : '-');
-                    
+
                     foreach ($exerciseFileTypes as $type){
                         $types[] = $type->getText();
                         $type = explode(' ',str_replace('*','',$type->getText()));
@@ -572,7 +572,7 @@ class LProcessor
                             break;
                         }
                     }
-                    
+
                     if (!$found && count($exerciseFileTypes)>0){
                         $submission->addMessage("falscher Dateityp \nGefunden: ".$mimeType." .".$foundExtension."\nErlaubt: ".implode(',',$types));
                         $res[] = $submission;
@@ -582,7 +582,7 @@ class LProcessor
                     }
                     unlink($filePath);
                 }
-                
+
             } else {
                if ($result2['status'] != 404){
                     $submission->addMessage("Interner Fehler");
@@ -591,17 +591,17 @@ class LProcessor
                     continue;
                }
             }
-                        
+
             // process submission
             if ($processors !== null){
                 if (!is_array($processors)) $processors = array($processors);
-                
+
                 foreach($processors as $pro){
                     $component = $pro->getTarget();
-                    
+
                     if ($process->getExercise()===null)
                         $process->setExercise($pro->getExercise());
-                     
+
                     $process->setParameter($pro->getParameter());
                     $process->setAttachment($pro->getAttachment());
                     $process->setTarget($pro->getTarget());
@@ -612,7 +612,7 @@ class LProcessor
 
                     $result = Request::post($component->getAddress().'/process', array(),  Process::encodeProcess($process));
 //echo $result['content'].'_______';
-                    if ( $result['status'] >= 200 && 
+                    if ( $result['status'] >= 200 &&
                          $result['status'] <= 299 ){
                          $process = Process::decodeProcess( $result['content'] );
 
@@ -629,15 +629,15 @@ class LProcessor
                         $submission->addMessage("Beim Verarbeiten der Einsendung ist ein Fehler aufgetreten");
 
                         if (isset($result['content'])){
-                            $content = Process::decodeProcess($result['content']); 
-                            $submission->setStatus($content->getStatus());  
+                            $content = Process::decodeProcess($result['content']);
+                            $submission->setStatus($content->getStatus());
                             $submission->addMessages($content->getMessages());
                         }
                        break;
                     }
                 }
             }
- 
+
             if ($fail){
                 if (isset($submission))
                     $submission->setFile(null);
@@ -645,7 +645,7 @@ class LProcessor
                 $res[] = $submission;
                 $this->app->response->setStatus( 409 );
                 continue;
-            } 
+            }
 
             // upload submission
             $uploadSubmission = $process->getSubmission();
@@ -660,7 +660,7 @@ class LProcessor
 
             if ($uploadSubmission!==null){
 ///echo Submission::encodeSubmission($uploadSubmission);return;
-                $result = Request::routeRequest( 
+                $result = Request::routeRequest(
                                                 'POST',
                                                 '/submission',
                                                 array(),
@@ -670,7 +670,7 @@ class LProcessor
                                                );
 //var_dump($result);return;
                 // checks the correctness of the query
-                if ( $result['status'] >= 200 && 
+                if ( $result['status'] >= 200 &&
                      $result['status'] <= 299 ){
                     $queryResult = Submission::decodeSubmission( $result['content'] );
                     $uploadSubmission->setId($queryResult->getId());
@@ -678,16 +678,16 @@ class LProcessor
                     if ($process->getMarking()!==null){
                         $process->getMarking()->setSubmission($queryResult);
                     }
-                   
+
                 } else {
                     $uploadSubmission->addMessage("Beim Speichern der Einsendung ist ein Fehler aufgetreten.");
 //var_dump($uploadSubmission); return;
                     if (isset($result['content'])){
                         $content = Submission::decodeSubmission($result['content']);
-                        $uploadSubmission->setStatus($content->getStatus());  
-                        $uploadSubmission->addMessages($content->getMessages()); 
+                        $uploadSubmission->setStatus($content->getStatus());
+                        $uploadSubmission->addMessages($content->getMessages());
                    }
-            
+
                     $uploadSubmission->setStatus(409);
                    $res[] = $uploadSubmission;
                    $this->app->response->setStatus( 409 );
@@ -738,7 +738,7 @@ class LProcessor
             // upload marking
             if ($process->getMarking()!==null){
 //echo Marking::encodeMarking($process->getMarking());
-                $result = Request::routeRequest( 
+                $result = Request::routeRequest(
                                                 'POST',
                                                 '/marking',
                                                 array(),
@@ -748,14 +748,14 @@ class LProcessor
                                                );
 
                 // checks the correctness of the query
-                if ( $result['status'] >= 200 && 
+                if ( $result['status'] >= 200 &&
                      $result['status'] <= 299 ){
                     $queryResult = Marking::decodeMarking( $result['content'] );
                 } else {
                     $uploadSubmission->addMessage("Beim Speichern der Korrektur ist ein Fehler aufgetreten");
                     if (isset($result['content'])){
-                        $content = Marking::decodeMarking($result['content']); 
-                        $uploadSubmission->addMessages($content->getMessages()); 
+                        $content = Marking::decodeMarking($result['content']);
+                        $uploadSubmission->addMessages($content->getMessages());
                    }
                    $res[] = $uploadSubmission;
                    $this->app->response->setStatus( 409 );
@@ -766,15 +766,15 @@ class LProcessor
             $rr = $process->getSubmission();
             if ($rr===null)$rr = $process->getRawSubmission();
             $res[] = $rr;
-            
+
         }
-        
+
         if ( !$arr && count( $res ) == 1 ){
             $this->app->response->setBody( Submission::encodeSubmission( $res[0] ) );
-        } else 
+        } else
             $this->app->response->setBody( Submission::encodeSubmission( $res ) );
     }
-    
+
     /**
      * Creates the path in the filesystem, if necessary.
      *
@@ -782,7 +782,7 @@ class LProcessor
      */
     public static function generatepath( $path )
     {
-        if (!is_dir($path))          
+        if (!is_dir($path))
             mkdir( $path , 0775, true);
     }
 }

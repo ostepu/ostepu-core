@@ -7,9 +7,9 @@
  */
 
 include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/php-markdown-lib/Michelf/MarkdownInterface.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/php-markdown-lib/Michelf/Markdown.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/php-markdown-lib/Michelf/MarkdownExtra.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/vendor/Markdown/Michelf/MarkdownInterface.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/vendor/Markdown/Michelf/Markdown.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/vendor/Markdown/Michelf/MarkdownExtra.php' );
 
 /**
  * ???
@@ -89,7 +89,7 @@ class CHelp
         }
         
         $cachePath = dirname(__FILE__).'/cache/'.implode('/',$params['path']).$cacheExtension;
-        if (false && file_exists($cachePath)){
+        if (file_exists($cachePath)){
             Model::header('Content-Length',filesize($cachePath));
             return Model::isOk(file_get_contents($cachePath));
         }
@@ -107,7 +107,12 @@ class CHelp
                 $parser = new \Michelf\MarkdownExtra;
                 $input = $this->umlaute($input);
                 $my_html = $parser->transform($input);
-                $input = '<html><head></head><body><link rel="stylesheet" href="'.$this->config['MAIN']['externalUrl'].'/UI/css/github-markdown.css" type="text/css"><span class="markdown-body">'.$my_html.'</span></body></html>';
+                $contact = isset($this->config['HELP']['contactUrl']) ? $this->config['HELP']['contactUrl'] : null;
+                if (isset($contact)){
+                    $contact = '<a href="'.$contact.'">Kontakt</a>';
+                }
+                
+                $input = '<html><head></head><body><link rel="stylesheet" href="'.$this->config['MAIN']['externalUrl'].'/UI/css/github-markdown.css" type="text/css"><span class="markdown-body">'.$my_html.$contact.'</span></body></html>';
             }
             
             
@@ -160,6 +165,12 @@ class CHelp
                 "files = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$input->getFilesDirectory()))."\"\n".
                 "[MAIN]\n".
                 "externalUrl = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$input->getExternalUrl()))."\"\n";
+                
+        $settings = $input->getSettings();
+        if (isset($settings->contactUrl)){
+            $text .= "[HELP]\n";
+            $text .= "contactUrl = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$settings->contactUrl))."\"\n";
+        }
                 
         if (!@file_put_contents($file,$text)){
             Logger::Log( 

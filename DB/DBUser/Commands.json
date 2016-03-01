@@ -64,7 +64,7 @@
         "outputType": "User",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"courseid","regex":"%^([0-9]+)$%"},{"name":"statusid","regex":"%^([0-9]+)$%"}],
+        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"},{"name":"statusid","regex":"%^([0-9_]+)$%"}],
         "path": "/user/course/:courseid/status/:statusid"
     },
     {
@@ -73,7 +73,7 @@
         "outputType": "User",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"courseid","regex":"%^([0-9]+)$%"}],
+        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],
         "path": "/user/course/:courseid"
     },
     {
@@ -82,7 +82,7 @@
         "outputType": "User",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^([0-9]+)$%"}],
+        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
         "path": "/user/group/user/:userid/exercisesheet/:esid"
     },
     {
@@ -91,7 +91,7 @@
         "outputType": "User",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"statusid","regex":"%^([0-9]+)$%"}],
+        "placeholder":[{"name":"statusid","regex":"%^([0-9_]+)$%"}],
         "path": "/user/status/:statusid"
     },
     {

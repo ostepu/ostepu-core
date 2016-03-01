@@ -4,7 +4,7 @@
         "outputType": "Invitation",
         "inputType": "Invitation",
         "method": "PUT",
-        "placeholder":[{"name":"userid","regex":"%^[0-9]+$%"},{"name":"esid","regex":"%^[0-9]+$%"},{"name":"memberid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"userid","regex":"%^([0-9_]+)$%"},{"name":"esid","regex":"%^([0-9_]+)$%"},{"name":"memberid","regex":"%^([0-9_]+)$%"}],
         "path": "/invitation/user/:userid/exercisesheet/:esid/user/:memberid"
     },
     {
@@ -12,7 +12,7 @@
         "outputType": "Invitation",
         "inputType": "",
         "method": "DELETE",
-        "placeholder":[{"name":"userid","regex":"%^[0-9]+$%"},{"name":"esid","regex":"%^[0-9]+$%"},{"name":"memberid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"userid","regex":"%^([0-9_]+)$%"},{"name":"esid","regex":"%^([0-9_]+)$%"},{"name":"memberid","regex":"%^([0-9_]+)$%"}],
         "path": "/invitation/user/:userid/exercisesheet/:esid/user/:memberid"
     },
     {
@@ -28,7 +28,7 @@
         "outputType": "Invitation",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"userid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"userid","regex":"%^([0-9_]+)$%"}],
         "path": "/invitation/leader/user/:userid"
     },
     {
@@ -37,7 +37,7 @@
         "outputType": "Invitation",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"userid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"userid","regex":"%^([0-9_]+)$%"}],
         "path": "/invitation/member/user/:userid"
     },
     {
@@ -54,7 +54,7 @@
         "outputType": "Invitation",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^[0-9]+$%"},{"name":"userid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"},{"name":"userid","regex":"%^([0-9_]+)$%"}],
         "path": "/invitation/leader/exercisesheet/:esid/user/:userid"
     },
     {
@@ -63,7 +63,7 @@
         "outputType": "Invitation",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^[0-9]+$%"},{"name":"userid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"},{"name":"userid","regex":"%^([0-9_]+)$%"}],
         "path": "/invitation/member/exercisesheet/:esid/user/:userid"
     },
     {
@@ -72,7 +72,7 @@
         "outputType": "Invitation",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
         "path": "/invitation/exercisesheet/:esid"
     },
     {

@@ -8,6 +8,7 @@
   "links":[
     {"name":"postPlatform","target":"","links":[]},
     {"name":"getCleanAmount","target":"","links":[]},
-    {"name":"deleteClean","target":"","links":[]}
+    {"name":"deleteClean","target":"","links":[]},
+    {"name":"postSamples","target":"","links":[]}
   ]
 }

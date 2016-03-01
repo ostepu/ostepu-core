@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -75,12 +75,12 @@ class Session extends Object implements JsonSerializable
      *
      * @return an session object
      */
-    public static function createSession( 
+    public static function createSession(
                                          $userId,
                                          $sessionId
                                          )
     {
-        return new Session( array( 
+        return new Session( array(
                                   'user' => $userId,
                                   'session' => $sessionId
                                   ) );
@@ -93,7 +93,7 @@ class Session extends Object implements JsonSerializable
      */
     public static function getDbConvert( )
     {
-        return array( 
+        return array(
                      'U_id' => 'user',
                      'SE_sessionID' => 'session'
                      );
@@ -109,20 +109,20 @@ class Session extends Object implements JsonSerializable
         $values = '';
 
         if ( $this->user != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'U_id',
                                  DBJson::mysql_real_escape_string( $this->user )
                                  );
         if ( $this->session != null )
-            $this->addInsertData( 
+            $this->addInsertData(
                                  $values,
                                  'SE_sessionID',
                                  DBJson::mysql_real_escape_string( $this->session )
                                  );
 
         if ( $values != '' ){
-            $values = substr( 
+            $values = substr(
                              $values,
                              1
                              );
@@ -179,7 +179,7 @@ class Session extends Object implements JsonSerializable
         /*if (is_array($data))reset($data);
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
             $e = new Exception();
-            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());           
             ///return null;
         }
         if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
@@ -200,18 +200,18 @@ class Session extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeSession( 
+    public static function decodeSession(
                                          $data,
                                          $decode = true
                                          )
     {
-        if ( $decode && 
+        if ( $decode &&
              $data == null )
             $data = '{}';
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -220,18 +220,18 @@ class Session extends Object implements JsonSerializable
                     $isArray = false;
                 }
             } else {
-               $isArray = false; 
+               $isArray = false;
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new Session( $value );
             }
             return $result;
-            
-        } else 
+
+        } else
             return new Session( $data );
     }
 
@@ -248,7 +248,7 @@ class Session extends Object implements JsonSerializable
         return array_merge($list,parent::jsonSerialize( ));
     }
 
-    public static function ExtractSession( 
+    public static function ExtractSession(
                                           $data,
                                           $singleResult = false,
                                           $SessionExtension = '',
@@ -258,15 +258,15 @@ class Session extends Object implements JsonSerializable
 
         // generates an assoc array of sessions by using a defined list
         // of its attributes
-        $res = DBJson::getResultObjectsByAttributes( 
+        $res = DBJson::getResultObjectsByAttributes(
                                                     $data,
                                                     Session::getDBPrimaryKey( ),
                                                     Session::getDBConvert( ),
                                                     $SessionExtension
                                                     );
-        if ($isResult){ 
+        if ($isResult){
             $res = Session::decodeSession($res,false);
-            
+
             if ( $singleResult == true ){
 
                 // only one object as result

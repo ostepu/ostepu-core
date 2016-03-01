@@ -1,7 +1,7 @@
 #### Eingänge
-- eftid = ??? 
-- eid = ??? 
-- esid = ??? 
+- eftid = ???
+- eid = ???
+- esid = ???
 
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
@@ -19,9 +19,9 @@
 |getExistsPlatform|-|Platform|GET<br>/link/exists/platform| ??? |
 
 #### Ausgänge
-- eftid = ??? 
-- eid = ??? 
-- esid = ??? 
+- eftid = ???
+- eid = ???
+- esid = ???
 
 | Bezeichnung  | Ziel  | Verwendung | Beschreibung |
 | :----------- |:----- | :--------- | :----------- |

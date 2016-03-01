@@ -1,0 +1,11 @@
+{"general_informations": {
+    "title": "Grundinformationen",
+    "server_name": "Servername",
+    "url": "interne URL",
+    "localPath": "lokaler Pfad",
+    "urlExtern": "externe URL",
+    "temp": "temporäres Verzeichnis",
+    "files": "Dateiverzeichnis",
+    "description": "Geben Sie jene URL in das Eingabefeld ein, unter welcher die Plattform lokal zu erreichen ist. Dieser Pfad wird von den Komponenten zum Aufruf untereinander verwendet.",
+    "barResult": "Resultat = $res"
+}}

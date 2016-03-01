@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * @file DeleteExternalId.sql
  * deletes an specified external id from %ExternalId table
  * @author  Till Uhlig
@@ -7,7 +7,7 @@
  * @result -
  */
 ?>
- 
-DELETE FROM ExternalId 
+
+DELETE FROM ExternalId
 WHERE
     EX_id = '<?php echo $exid; ?>'

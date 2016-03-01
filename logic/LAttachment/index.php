@@ -6,7 +6,7 @@
  * @author Till Uhlig
  * @date 2014
  */
- 
+
 require_once ( dirname( __FILE__ ) . '/LAttachment.php' );
 
 new LAttachment();

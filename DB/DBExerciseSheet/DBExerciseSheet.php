@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -62,7 +62,7 @@ class DBExerciseSheet
      */
     public function deleteExerciseSheet( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteExerciseSheet.sql',$params,201,'Model::isCreated',array(new ExerciseSheet()),'Model::isProblem',array(new ExerciseSheet()));  
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteExerciseSheet.sql',$params,201,'Model::isCreated',array(new ExerciseSheet()),'Model::isProblem',array(new ExerciseSheet()));
     }
 
     /**
@@ -98,7 +98,7 @@ class DBExerciseSheet
             }
             return $result;
         };
-        
+
         $params = DBJson::mysql_real_escape_string( $params );
         return $this->_component->call($linkName, $params, '', 200, $positive, array(), 'Model::isProblem', array(), 'Query');
     }
@@ -107,11 +107,11 @@ class DBExerciseSheet
     {
         return $this->getURL($callName,$callName,$params);
     }
-    
+
     public static function finalizeSheets( $result)
     {
         $result['content'] = LArraySorter::orderBy($result['content'], 'startDate', SORT_ASC, 'id',  SORT_ASC);
-        
+
         // sets the sheet names
         $id = 1;
         reset($result['content']);
@@ -119,7 +119,7 @@ class DBExerciseSheet
         if (gettype(current($result['content'])) == 'object') $isArray=false;
         foreach ( $result['content'] as &$sheet ){
             if ($isArray){
-                if ( !isset( $sheet['sheetName'] ) || 
+                if ( !isset( $sheet['sheetName'] ) ||
                      $sheet['sheetName'] == null ){
                     $sheet['sheetName'] = 'Serie ' . ( string )$id;
                     $id++;
@@ -128,10 +128,10 @@ class DBExerciseSheet
                 if ( $sheet->getSheetName() == null ){
                     $sheet->setSheetName( 'Serie ' . ( string )$id);
                     $id++;
-                }   
+                }
             }
         }
-        
+
         return $result;
     }
 
@@ -149,8 +149,8 @@ class DBExerciseSheet
                         $result['status'] = 200;
                     }
                 }
-                
-                $result['content'] = DBJson::concatResultObjectLists( 
+
+                $result['content'] = DBJson::concatResultObjectLists(
                                                                    $data,
                                                                    $sheet,
                                                                    ExerciseSheet::getDBPrimaryKey( ),
@@ -165,7 +165,7 @@ class DBExerciseSheet
                     $result['content']=$result['content'][0];
                 return $result;
             };
-        
+
             $result = Model::isEmpty();$result['content']=array();
             foreach ($input as $inp){
                 if ( $inp->getNumRows( ) > 0 ){
@@ -173,17 +173,17 @@ class DBExerciseSheet
                     $result['status'] = 200;
                 }
             }
-            
+
             if ($exercise===null){
                 return $result;
             }
             return $this->_component->call('getSheetExercises', array("esid"=>$esid), '', 200, $getExercises, array("sheet"=>$result['content']), 'Model::isProblem', array(), 'Query');;
         };
-                
+
         $params = DBJson::mysql_real_escape_string( $params );
         return $this->_component->call('getExerciseSheet', $params, '', 200, $getSheet, $params, 'Model::isProblem', array(), 'Query');
     }
-    
+
     public function getCourseSheets( $callName, $input, $params = array() )
     {
         $getSheets = function($input,$courseid, $exercise=null) {
@@ -198,8 +198,8 @@ class DBExerciseSheet
                         $result['status'] = 200;
                     }
                 }
-                
-                $result['content'] = DBJson::concatResultObjectLists( 
+
+                $result['content'] = DBJson::concatResultObjectLists(
                                                                    $data,
                                                                    $sheet,
                                                                    ExerciseSheet::getDBPrimaryKey( ),
@@ -211,7 +211,7 @@ class DBExerciseSheet
                 $result['content'] = array_merge( $result['content'] );
                 return self::finalizeSheets($result);
             };
-        
+
             $result = Model::isEmpty();$result['content']=array();
             foreach ($input as $inp){
                 if ( $inp->getNumRows( ) > 0 ){
@@ -229,7 +229,7 @@ class DBExerciseSheet
         $params = DBJson::mysql_real_escape_string( $params );
         return $this->_component->call('getCourseSheets', $params, '', 200, $getSheets, $params, 'Model::isProblem', array(), 'Query');
     }
-    
+
     /**
      * Removes the component from the platform
      *
@@ -240,7 +240,7 @@ class DBExerciseSheet
     {
         return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
-    
+
     /**
      * Adds the component to the platform
      *
@@ -251,7 +251,7 @@ class DBExerciseSheet
     {
         return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
-    
+
     public function getSamplesInfo( $callName, $input, $params = array() )
     {
         $positive = function($input) {
@@ -267,16 +267,16 @@ class DBExerciseSheet
             }
             return $result;
         };
-        
+
         $params = DBJson::mysql_real_escape_string( $params );
         return $this->_component->call($callName, $params, '', 200, $positive,  array(), 'Model::isProblem', array(), 'Query');
     }
-    
+
     public function postSamples( $callName, $input, $params = array() )
-    {   
+    {
         set_time_limit(0);
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));  
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));
     }
 }
 
- 
+

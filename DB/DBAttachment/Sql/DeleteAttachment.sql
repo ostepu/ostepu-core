@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * @file DeleteAttachment.sql
  * deletes an specified attachment from %Attachment table
  * @author  Till Uhlig
@@ -7,8 +7,8 @@
  * @result -
  */
 ?>
- 
-DELETE FROM Attachment 
+
+DELETE FROM Attachment
 WHERE
     A_id = '<?php echo $aid; ?>'
 

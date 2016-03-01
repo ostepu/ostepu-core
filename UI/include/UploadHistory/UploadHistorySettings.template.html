@@ -3,6 +3,7 @@
 <input type="hidden" name="action" value="ShowUploadHistory">
 <div class="content-element">
     <div class="content-header">
+        <?php echo MakeInfoButton('page/admin/uploadHistory','select.md'); ?>
         <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
         <div class="info-color bold right">
         <?php
@@ -48,7 +49,7 @@
                         }
                     ?>
             </select>
-            <button name="actionSortUsers" value="" class="left text-button-simple body-option-color">>></button>
+            <button name="actionSortUsers" value="sort" class="left text-button-simple body-option-color">>></button>
             </div>
 
             <?php

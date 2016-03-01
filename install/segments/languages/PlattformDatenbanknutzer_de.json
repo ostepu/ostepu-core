@@ -1,0 +1,18 @@
+{"createDatabasePlatformUser": {
+    "title": "Plattform-Datenbanknutzer",
+    "createUser": "Nutzer anlegen",
+    "db_user_override_operator": "Benutzer ueberschreiben",
+    "description": "Hier kann der Datenbanknutzer der Komponenten angelegt und zusätzlich ausgewählt werden, ob er, falls er bereits existiert, überschrieben werden soll. Beachten Sie dabei, das der hier gewählte Nutzer, nur für die Nutzung der Datenbank, dieser Plattform, berechtigt sein wird.",
+    "removeUser": "lösche Nutzer",
+    "dropGlobalUserSql": "sql = $sql",
+    "dropLocalUserSql": "sql = $sql",
+    "findExistingUser": "prüfe ob der Nutzer existiert ($user)",
+    "findExistingUserSql": "sql = $sql",
+    "failureFindExistingUser": "Fehler: $message",
+    "foundUser": "Der Nutzer existiert",
+    "foundNoUser": "Der Nutzer existiert nicht",
+    "creatingUser": "Erzeuge einen neuen Nutzer ($user)",
+    "createUserSql": "sql = $sql",
+    "failureRemoveUser": "Fehler: $message",
+    "failureCreateUser": "Fehler: $message"
+}}

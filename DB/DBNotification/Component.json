@@ -1,0 +1,22 @@
+{
+  "name":"DBNotification",
+  "version":"1.0",
+  "classFile":"DBNotification.php",
+  "className":"DBNotification",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"DBNotification.php"},
+    {"path":"index.php"},
+    {"path":"Commands.json"},
+    {"path":"Sql/"}
+  ],
+  "links":[
+    {"name":"out", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
+  ],
+  "connector":[
+    {"name":"request", "target":"CLocalObjectRequest"},
+    {"name":"postCourse", "target":"LCourse", "priority":150},
+    {"name":"deleteCourse", "target":"LCourse", "priority":150},
+    {"name":"postPlatform", "target":"CInstall", "priority":150}
+  ]
+}

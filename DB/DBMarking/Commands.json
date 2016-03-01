@@ -4,7 +4,7 @@
         "outputType": "Marking",
         "inputType": "Marking",
         "method": "PUT",
-        "placeholder":[{"name":"mid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"mid","regex":"%^([0-9_]+)$%"}],
         "path": "/marking(/marking)/:mid"
     },
     {
@@ -12,7 +12,7 @@
         "outputType": "Marking",
         "inputType": "",
         "method": "DELETE",
-        "placeholder":[{"name":"mid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"mid","regex":"%^([0-9_]+)$%"}],
         "path": "/marking(/marking)/:mid"
     },
     {
@@ -20,7 +20,7 @@
         "outputType": "Marking",
         "inputType": "",
         "method": "DELETE",
-        "placeholder":[{"name":"esid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
         "path": "/marking(/marking)/exercisesheet/:esid"
     },
     {
@@ -37,7 +37,7 @@
         "outputType": "Marking",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"suid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"suid","regex":"%^([0-9_]+)$%"}],
         "path": "/marking/submission/:suid(/:sub)"
     },
     {
@@ -46,7 +46,7 @@
         "outputType": "Marking",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"eid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
         "path": "/marking/exercise/:eid(/:sub)"
     },
     {
@@ -55,7 +55,7 @@
         "outputType": "Marking",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
         "path": "/marking/exercisesheet/:esid(/:sub)"
     },
     {
@@ -64,7 +64,7 @@
         "outputType": "Marking",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"courseid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],
         "path": "/marking/course/:courseid(/:sub)"
     },
     {
@@ -73,7 +73,7 @@
         "outputType": "Marking",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^[0-9]+$%"},{"name":"userid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"},{"name":"userid","regex":"%^([0-9_]+)$%"}],
         "path": "/marking/exercisesheet/:esid/user/:userid(/:sub)"
     },
     {
@@ -82,7 +82,7 @@
         "outputType": "Marking",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"courseid","regex":"%^[0-9]+$%"},{"name":"userid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"},{"name":"userid","regex":"%^([0-9_]+)$%"}],
         "path": "/marking/course/:courseid/user/:userid(/:sub)"
     },
     {
@@ -91,7 +91,7 @@
         "outputType": "Marking",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^[0-9]+$%"},{"name":"userid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"},{"name":"userid","regex":"%^([0-9_]+)$%"}],
         "path": "/marking/exercisesheet/:esid/tutor/:userid(/:sub)"
     },
     {
@@ -100,7 +100,7 @@
         "outputType": "Marking",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"eid","regex":"%^[0-9]+$%"},{"name":"userid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"},{"name":"userid","regex":"%^([0-9_]+)$%"}],
         "path": "/marking/exercise/:eid/tutor/:userid(/:sub)"
     },
     {
@@ -110,7 +110,7 @@
         "outputType": "Marking",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"mid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"mid","regex":"%^([0-9_]+)$%"}],
         "path": "/marking(/marking)/:mid(/:sub)"
     },
     {

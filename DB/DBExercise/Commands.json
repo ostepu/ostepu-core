@@ -4,7 +4,7 @@
         "outputType": "Exercise",
         "inputType": "Exercise",
         "method": "PUT",
-        "placeholder":[{"name":"eid","regex":"%^([0-9]+)$%"}],
+        "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
         "path": "/exercise(/exercise)/:eid"
     },
     {
@@ -12,7 +12,7 @@
         "outputType": "Exercise",
         "inputType": "",
         "method": "DELETE",
-        "placeholder":[{"name":"eid","regex":"%^([0-9]+)$%"}],
+        "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
         "path": "/exercise(/exercise)/:eid"
     },
     {
@@ -36,7 +36,7 @@
         "outputType": "Exercise",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^([0-9]+)$%"}],
+        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
         "path": "/exercise/exercisesheet/:esid(/:sub)"
     },
     {
@@ -45,7 +45,7 @@
         "outputType": "Exercise",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"courseid","regex":"%^([0-9]+)$%"}],
+        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],
         "path": "/exercise/course/:courseid(/:sub)"
     },
     {
@@ -55,7 +55,7 @@
         "outputType": "Exercise",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"eid","regex":"%^([0-9]+)$%"}],
+        "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
         "path": "/exercise(/exercise)/:eid(/:sub)"
     },
     {

@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -10,7 +10,7 @@
  * @date 2013-2014
  */
 
-require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
+require_once ( dirname(__FILE__) . '/../../Assistants/vendor/Slim/Slim/Slim.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Request.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/DBJson.php' );
@@ -83,14 +83,14 @@ class DBAttachment
         // runs the DBAttachment
         if ( $com->used( ) ) return;
             $conf = $com->loadConfig( );
-            
+
         // initialize component
         $this->_conf = $conf;
-        $this->query = array( CConfig::getLink( 
+        $this->query = array( CConfig::getLink(
                                                $conf->getLinks( ),
                                                'out'
                                                ) );
-        $this->query2 = array( CConfig::getLink( 
+        $this->query2 = array( CConfig::getLink(
                                                $conf->getLinks( ),
                                                'out2'
                                                ) );
@@ -98,113 +98,113 @@ class DBAttachment
         // initialize slim
         $this->_app = new \Slim\Slim( );
         $this->_app->response->setStatus( 409 );
-        $this->_app->response->headers->set( 
+        $this->_app->response->headers->set(
                                             'Content-Type',
                                             'application/json'
                                             );
         // POST AddPlatform
-        $this->_app->post( 
+        $this->_app->post(
                          '/platform',
-                         array( 
+                         array(
                                $this,
                                'addPlatform'
                                )
                          );
-                         
+
         // DELETE DeletePlatform
-        $this->_app->delete( 
+        $this->_app->delete(
                          '/platform',
-                         array( 
+                         array(
                                $this,
                                'deletePlatform'
                                )
                          );
-                         
+
         // GET GetExistsPlatform
-        $this->_app->get( 
+        $this->_app->get(
                          '/link/exists/platform',
-                         array( 
+                         array(
                                $this,
                                'getExistsPlatform'
                                )
                          );
-                         
+
         // PUT EditAttachment
-        $this->_app->put( 
+        $this->_app->put(
                          '/' . $this->getPrefix( ) . '(/attachment)/:aid(/)',
-                         array( 
+                         array(
                                $this,
                                'editAttachment'
                                )
                          );
 
         // DELETE DeleteAttachment
-        $this->_app->delete( 
+        $this->_app->delete(
                             '/' . $this->getPrefix( ) . '(/attachment)/:aid(/)',
-                            array( 
+                            array(
                                   $this,
                                   'deleteAttachment'
                                   )
                             );
-                            
+
         // DELETE DeleteExerciseAttachments
-        $this->_app->delete( 
+        $this->_app->delete(
                             '/' . $this->getPrefix( ) . '/exercise/:eid(/)',
-                            array( 
+                            array(
                                   $this,
                                   'deleteExerciseAttachment'
                                   )
                             );
-                            
+
         // DELETE DeleteExerciseFileAttachment
-        $this->_app->delete( 
+        $this->_app->delete(
                             '/' . $this->getPrefix( ) . '/exercise/:eid/file/:fileid(/)',
-                            array( 
+                            array(
                                   $this,
                                   'deleteExerciseFileAttachment'
                                   )
                             );
-                            
+
         // POST AddAttachment
-        $this->_app->post( 
+        $this->_app->post(
                           '/' . $this->getPrefix( ) . '(/)',
-                          array( 
+                          array(
                                 $this,
                                 'addAttachment'
                                 )
                           );
 
         // GET GetAttachment
-        $this->_app->get( 
+        $this->_app->get(
                          '/' . $this->getPrefix( ) . '(/attachment)/:aid(/)',
-                         array( 
+                         array(
                                $this,
                                'getAttachment'
                                )
                          );
 
         // GET GetAllAttachments
-        $this->_app->get( 
+        $this->_app->get(
                          '/' . $this->getPrefix( ) . '(/attachment)(/)',
-                         array( 
+                         array(
                                $this,
                                'getAllAttachments'
                                )
                          );
 
         // GET GetExerciseAttachments
-        $this->_app->get( 
+        $this->_app->get(
                          '/' . $this->getPrefix( ) . '/exercise/:eid(/)',
-                         array( 
+                         array(
                                $this,
                                'getExerciseAttachments'
                                )
                          );
 
         // GET GetSheetAttachments
-        $this->_app->get( 
+        $this->_app->get(
                          '/' . $this->getPrefix( ) . '/exercisesheet/:esid(/)',
-                         array( 
+                         array(
                                $this,
                                'getSheetAttachments'
                                )
@@ -226,13 +226,13 @@ class DBAttachment
      */
     public function editAttachment( $aid )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts PUT EditAttachment',
                     LogLevel::DEBUG
                     );
 
         // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
+        DBJson::checkInput(
                            $this->_app,
                            ctype_digit( $aid )
                            );
@@ -253,27 +253,27 @@ class DBAttachment
             $data = $in->getInsertData( );
 
             // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile( 
+            $result = DBRequest::getRoutedSqlFile(
                                                   $this->query,
                                                   dirname(__FILE__) . '/Sql/EditAttachment.sql',
-                                                  array( 
+                                                  array(
                                                         'aid' => $aid,
                                                         'values' => $data
                                                         )
                                                   );
 
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
                 $this->_app->response->setStatus( 201 );
                 if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
+                    $this->_app->response->headers->set(
                                                         'Content-Type',
                                                         $result['headers']['Content-Type']
                                                         );
-                
+
             } else {
-                Logger::Log( 
+                Logger::Log(
                             'PUT EditAttachment failed',
                             LogLevel::ERROR
                             );
@@ -293,36 +293,36 @@ class DBAttachment
      */
     public function deleteAttachment( $aid )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts DELETE DeleteAttachment',
                     LogLevel::DEBUG
                     );
 
         // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
+        DBJson::checkInput(
                            $this->_app,
                            ctype_digit( $aid )
                            );
 
         // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
+        $result = DBRequest::getRoutedSqlFile(
                                               $this->query,
                                               dirname(__FILE__) . '/Sql/DeleteAttachment.sql',
                                               array( 'aid' => $aid )
                                               );
 
         // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
+        if ( $result['status'] >= 200 &&
              $result['status'] <= 299 ){
             $this->_app->response->setStatus( 201 );
             if ( isset( $result['headers']['Content-Type'] ) )
-                $this->_app->response->headers->set( 
+                $this->_app->response->headers->set(
                                                     'Content-Type',
                                                     $result['headers']['Content-Type']
                                                     );
-            
+
         } else {
-            Logger::Log( 
+            Logger::Log(
                         'DELETE DeleteAttachment failed',
                         LogLevel::ERROR
                         );
@@ -330,60 +330,60 @@ class DBAttachment
             $this->_app->stop( );
         }
     }
-    
+
     public function deleteExerciseAttachment( $eid )
     {
         // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
+        DBJson::checkInput(
                            $this->_app,
                            ctype_digit( $eid )
                            );
 
         // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
+        $result = DBRequest::getRoutedSqlFile(
                                               $this->query,
                                               dirname(__FILE__) . '/Sql/DeleteExerciseAttachment.sql',
                                               array( 'eid' => $eid )
                                               );
 
         // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
+        if ( $result['status'] >= 200 &&
              $result['status'] <= 299 ){
             $this->_app->response->setStatus( 201 );
-            
+
         } else {
             $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
             $this->_app->stop( );
         }
     }
-    
+
     public function deleteExerciseFileAttachment( $eid, $fileid )
     {
         // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
+        DBJson::checkInput(
                            $this->_app,
                            ctype_digit( $eid ),
                            ctype_digit( $fileid )
                            );
 
         // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
+        $result = DBRequest::getRoutedSqlFile(
                                               $this->query,
                                               dirname(__FILE__) . '/Sql/DeleteExerciseFileAttachment.sql',
                                               array( 'eid' => $eid, 'fileid' => $fileid )
                                               );
 
         // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
+        if ( $result['status'] >= 200 &&
              $result['status'] <= 299 ){
             $this->_app->response->setStatus( 201 );
-            
+
         } else {
             $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
             $this->_app->stop( );
         }
     }
-    
+
     /**
      * Adds an attachment.
      *
@@ -394,7 +394,7 @@ class DBAttachment
      */
     public function addAttachment( )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts POST AddAttachment',
                     LogLevel::DEBUG
                     );
@@ -417,14 +417,14 @@ class DBAttachment
             $data = $in->getInsertData( );
 
             // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile( 
+            $result = DBRequest::getRoutedSqlFile(
                                                   $this->query,
                                                   dirname(__FILE__) . '/Sql/AddAttachment.sql',
                                                   array( 'values' => $data )
                                                   );
 
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
                 $queryResult = Query::decodeQuery( $result['content'] );
 
@@ -434,16 +434,16 @@ class DBAttachment
                 $obj->setStatus(201);
                 $res[] = $obj;
                 if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
+                    $this->_app->response->headers->set(
                                                         'Content-Type',
                                                         $result['headers']['Content-Type']
                                                         );
-                
+
             } else {
                 $obj = new Attachment( );
                 $obj->setStatus(409);
                 $res[] = $obj;
-              /*  Logger::Log( 
+              /*  Logger::Log(
                             'POST AddAttachment failed',
                             LogLevel::ERROR
                             );*/
@@ -453,17 +453,17 @@ class DBAttachment
             }
         }
 
-        if ( !$arr && 
+        if ( !$arr &&
              count( $res ) == 1 ){
             $this->_app->response->setBody( Attachment::encodeAttachment( $res[0] ) );
-            
-        } else 
+
+        } else
             $this->_app->response->setBody( Attachment::encodeAttachment( $res ) );
-         
+
         $this->_app->response->setStatus( 201 );
     }
 
-    public function get( 
+    public function get(
                         $functionName,
                         $sqlFile,
                         $userid,
@@ -476,13 +476,13 @@ class DBAttachment
                         $checkSession = true
                         )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts GET ' . $functionName,
                     LogLevel::DEBUG
                     );
 
         // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
+        DBJson::checkInput(
                            $this->_app,
                            $userid == '' ? true : ctype_digit( $userid ),
                            $courseid == '' ? true : ctype_digit( $courseid ),
@@ -493,10 +493,10 @@ class DBAttachment
                            );
 
         // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
+        $result = DBRequest::getRoutedSqlFile(
                                               $this->query,
                                               $sqlFile,
-                                              array( 
+                                              array(
                                                     'userid' => $userid,
                                                     'courseid' => $courseid,
                                                     'esid' => $esid,
@@ -508,12 +508,12 @@ class DBAttachment
                                               );
 
         // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
+        if ( $result['status'] >= 200 &&
              $result['status'] <= 299 ){
             $query = Query::decodeQuery( $result['content'] );
 
             if ( $query->getNumRows( ) > 0 ){
-                $res = Attachment::ExtractAttachment( 
+                $res = Attachment::ExtractAttachment(
                                                      $query->getResponse( ),
                                                      $singleResult
                                                      );
@@ -521,18 +521,18 @@ class DBAttachment
 
                 $this->_app->response->setStatus( 200 );
                 if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
+                    $this->_app->response->headers->set(
                                                         'Content-Type',
                                                         $result['headers']['Content-Type']
                                                         );
 
                 $this->_app->stop( );
-                
-            } else 
+
+            } else
                 $result['status'] = 404;
         }
 
-        Logger::Log( 
+        Logger::Log(
                     'GET ' . $functionName . ' failed',
                     LogLevel::ERROR
                     );
@@ -551,7 +551,7 @@ class DBAttachment
      */
     public function getAttachment( $aid )
     {
-        $this->get( 
+        $this->get(
                    'GetAttachment',
                    dirname(__FILE__) . '/Sql/GetAttachment.sql',
                    isset( $userid ) ? $userid : '',
@@ -572,7 +572,7 @@ class DBAttachment
      */
     public function getAllAttachments( )
     {
-        $this->get( 
+        $this->get(
                    'GetAllAttachments',
                    dirname(__FILE__) . '/Sql/GetAllAttachments.sql',
                    isset( $userid ) ? $userid : '',
@@ -594,7 +594,7 @@ class DBAttachment
      */
     public function getExerciseAttachments( $eid )
     {
-        $this->get( 
+        $this->get(
                    'GetExerciseAttachments',
                    dirname(__FILE__) . '/Sql/GetExerciseAttachments.sql',
                    isset( $userid ) ? $userid : '',
@@ -616,7 +616,7 @@ class DBAttachment
      */
     public function getSheetAttachments( $esid )
     {
-        $this->get( 
+        $this->get(
                    'GetSheetAttachments',
                    dirname(__FILE__) . '/Sql/GetSheetAttachments.sql',
                    isset( $userid ) ? $userid : '',
@@ -627,7 +627,7 @@ class DBAttachment
                    isset( $aid ) ? $aid : ''
                    );
     }
-    
+
     /**
      * Returns status code 200, if this component is correctly installed for the platform
      *
@@ -636,7 +636,7 @@ class DBAttachment
      */
     public function getExistsPlatform( )
     {
-        $this->get( 
+        $this->get(
                    'GetExistsPlatform',
                    dirname(__FILE__) . '/Sql/GetExistsPlatform.sql',
                    isset( $userid ) ? $userid : '',
@@ -649,7 +649,7 @@ class DBAttachment
                    false
                    );
     }
-    
+
     /**
      * Removes the component from the platform
      *
@@ -658,13 +658,13 @@ class DBAttachment
      */
     public function deletePlatform( )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts DELETE DeletePlatform',
                     LogLevel::DEBUG
                     );
 
         // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
+        $result = DBRequest::getRoutedSqlFile(
                                               $this->query2,
                                               dirname(__FILE__) . '/Sql/DeletePlatform.sql',
                                               array( ),
@@ -672,19 +672,19 @@ class DBAttachment
                                               );
 
         // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
+        if ( $result['status'] >= 200 &&
              $result['status'] <= 299 ){
 
             $this->_app->response->setStatus( 201 );
             $this->_app->response->setBody( '' );
             if ( isset( $result['headers']['Content-Type'] ) )
-                $this->_app->response->headers->set( 
+                $this->_app->response->headers->set(
                                                     'Content-Type',
                                                     $result['headers']['Content-Type']
                                                     );
-            
+
         } else {
-            Logger::Log( 
+            Logger::Log(
                         'DELETE DeletePlatform failed',
                         LogLevel::ERROR
                         );
@@ -693,7 +693,7 @@ class DBAttachment
             $this->_app->stop( );
         }
     }
-    
+
     /**
      * Adds the component to the platform
      *
@@ -702,7 +702,7 @@ class DBAttachment
      */
     public function addPlatform( )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts POST AddPlatform',
                     LogLevel::DEBUG
                     );
@@ -720,9 +720,9 @@ class DBAttachment
         // this array contains the indices of the inserted objects
         $res = array( );
         foreach ( $insert as $in ){
-        
+
             // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile( 
+            $result = DBRequest::getRoutedSqlFile(
                                                   $this->query2,
                                                   dirname(__FILE__) . '/Sql/AddPlatform.sql',
                                                   array( 'object' => $in ),
@@ -730,20 +730,20 @@ class DBAttachment
                                                   );
 
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
+            if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
                 $queryResult = Query::decodeQuery( $result['content'] );
 
                 $res[] = $in;
                 $this->_app->response->setStatus( 201 );
                 if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
+                    $this->_app->response->headers->set(
                                                         'Content-Type',
                                                         $result['headers']['Content-Type']
                                                         );
-                
+
             } else {
-                Logger::Log( 
+                Logger::Log(
                             'POST AddPlatform failed',
                             LogLevel::ERROR
                             );
@@ -753,11 +753,11 @@ class DBAttachment
             }
         }
 
-        if ( !$arr && 
+        if ( !$arr &&
              count( $res ) == 1 ){
             $this->_app->response->setBody( Platform::encodePlatform( $res[0] ) );
-            
-        } else 
+
+        } else
             $this->_app->response->setBody( Platform::encodePlatform( $res ) );
     }
 }

@@ -5,9 +5,9 @@
  */
 ?>
 
-select 
+select
     count(CO_id)
-from 
-    `Component` A, 
-    `ComponentLinkage` B 
+from
+    `Component` A,
+    `ComponentLinkage` B
 limit 1

@@ -1,9 +1,9 @@
 /**
  * @file ExternalIdSample.json This file represents a valid JSON object of type ExternalId for DBExternalId.
- * 
+ *
  * @author Till Uhlig
- */ 
- 
+ */
+
     [
        {
            "id": "Ver1",

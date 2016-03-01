@@ -7,5 +7,5 @@
  * @result -
  */
 ?>
- 
+
 INSERT INTO ExerciseType SET <?php echo $values; ?>

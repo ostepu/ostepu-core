@@ -8,7 +8,7 @@
  * @result -
  */
 ?>
- 
+
 UPDATE ExerciseFileType
 SET <?php echo $values; ?>
 WHERE EFT_id = '<?php echo $eftid; ?>'

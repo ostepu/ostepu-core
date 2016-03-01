@@ -1,0 +1,7 @@
+{"access": {
+    "masterPassword": "Zugangspasswort",
+    "insertMasterPassword": "Geben Sie das gültige <span class='info-color bold'>Zugangspasswort<\/span> für diese Konfigurationsdatei ein!!!",
+    "getAccess": "Betreten",
+    "changeMasterPassword": "Ändern",
+    "emptyMasterPassword": "Geben Sie ein Passwort für diese Konfiguration ein"
+}}

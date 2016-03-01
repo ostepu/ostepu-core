@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * @file DeleteSheetMarkings.sql
  * deletes all specified markings from %Marking table
  * @author  Till Uhlig
@@ -7,7 +7,7 @@
  * @result -
  */
 ?>
- 
-DELETE FROM Marking 
+
+DELETE FROM Marking
 WHERE
     ES_id = '<?php echo $esid; ?>'

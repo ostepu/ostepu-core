@@ -3,7 +3,7 @@ CREATE PROCEDURE `DBMarkingGetExerciseMarkings` (IN eid INT,IN sub varchar(12))
 READS SQL DATA
 begin
 SET @s = concat("
-select SQL_CACHE 
+select SQL_CACHE
     M.M_id,
     M.U_id_tutor,
     M.S_id,
@@ -49,7 +49,7 @@ from
     SelectedSubmission SS ON (M.S_id = SS.S_id_selected)
         left join
     File F ON (F.F_id = M.F_id_file)
-        left join 
+        left join
     File F2 ON (F2.F_id = S.F_id_file)
 where
     M.E_id = '",eid,"' order by M_id;");

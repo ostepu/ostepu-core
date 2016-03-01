@@ -22,7 +22,6 @@
     {"name":"postCourse", "target":"DBProcess", "links":[{"method":"GET", "path":"/link/exists/course/:courseid" },{"method":"POST", "path":"/course" },{"method":"DELETE", "path":"/course/:courseid" }] }
   ],
   "connector":[
-    {"name":"extension", "target":"LExtension"},
     {"name":"deleteCourse", "target":"LCourse", "priority":150},
     {"name":"postCourse", "target":"LCourse", "priority":150},
     {"name":"request", "target":"CLocalObjectRequest"}

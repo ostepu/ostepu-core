@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -8,7 +8,7 @@
  * @date 2013-2014
  */
 
-require_once ( dirname( __FILE__ ) . '/../../Assistants/Slim/Slim.php' );
+require_once ( dirname( __FILE__ ) . '/../../Assistants/vendor/Slim/Slim/Slim.php' );
 include_once ( dirname( __FILE__ ) . '/../../Assistants/Structures.php' );
 include_once ( dirname( __FILE__ ) . '/../../Assistants/Request.php' );
 
@@ -70,19 +70,19 @@ class Controller
         // runs the DBControl
         if ( $com->used( ) )  return;
             $conf = $com->loadConfig( );
-    
+
         // initialize component
         $this->_conf = $conf;
 
         // initialize slim
         $this->_app = new \Slim\Slim( );
-        $this->_app->map( 
+        $this->_app->map(
                          '/:data+',
-                         array( 
+                         array(
                                $this,
                                'getl'
                                )
-                         )->via( 
+                         )->via(
                                 'GET',
                                 'POST',
                                 'DELETE',
@@ -102,14 +102,14 @@ class Controller
      */
     public function getl( $data )
     {
-        Logger::Log( 
+        Logger::Log(
                     'starts Controller routing',
                     LogLevel::DEBUG
                     );
 
         // if no URI is received, abort process
         if ( count( $data ) == 0 ){
-            Logger::Log( 
+            Logger::Log(
                         'Controller nothing to route',
                         LogLevel::DEBUG
                         );
@@ -125,18 +125,18 @@ class Controller
         foreach ( $list as $links ){
 
             // determines all supported prefixes
-            $possible = explode( 
+            $possible = explode(
                                 ',',
                                 $links->getPrefix( )
                                 );
 
-            if ( in_array( 
+            if ( in_array(
                           $data[0],
                           $possible
                           ) ){
 
                 // create a custom request
-                $ch = Request::custom( 
+                $ch = Request::custom(
                                       $this->_app->request->getMethod( ),
                                       $links->getAddress( ) . $this->_app->request->getResourceUri( ),
                                       array(), //$this->_app->request->headers->all( )
@@ -144,7 +144,7 @@ class Controller
                                       );
 
                 // checks the answered status code
-                if ( $ch['status'] >= 200 && 
+                if ( $ch['status'] >= 200 &&
                      $ch['status'] <= 299 ){
 
                     // finished
@@ -152,46 +152,46 @@ class Controller
                     $this->_app->response->setBody( $ch['content'] );
 
                     if ( isset( $ch['headers']['Content-Type'] ) )
-                        $this->_app->response->headers->set( 
+                        $this->_app->response->headers->set(
                                                             'Content-Type',
                                                             $ch['headers']['Content-Type']
                                                             );
 
                     if ( isset( $ch['headers']['Content-Disposition'] ) )
-                        $this->_app->response->headers->set( 
+                        $this->_app->response->headers->set(
                                                             'Content-Disposition',
                                                             $ch['headers']['Content-Disposition']
                                                             );
 
-                    Logger::Log( 
+                    Logger::Log(
                                 'Controller prefix search done',
                                 LogLevel::DEBUG
                                 );
-                                
+
                     $this->_app->stop( );
                     return;
                 }
-                elseif ( $ch['status'] == 401 || 
-                         $ch['status'] == 404 || 
+                elseif ( $ch['status'] == 401 ||
+                         $ch['status'] == 404 ||
                          $ch['status'] == 406 ){
                     $this->_app->response->setStatus( $ch['status'] );
                     $this->_app->response->setBody( $ch['content'] );
                     if ( isset( $ch['headers']['Content-Type'] ) )
-                        $this->_app->response->headers->set( 
+                        $this->_app->response->headers->set(
                                                             'Content-Type',
                                                             $ch['headers']['Content-Type']
                                                             );
 
                     if ( isset( $ch['headers']['Content-Disposition'] ) )
-                        $this->_app->response->headers->set( 
+                        $this->_app->response->headers->set(
                                                             'Content-Disposition',
                                                             $ch['headers']['Content-Disposition']
                                                             );
                     $this->_app->stop( );
                     return;
                 }
-                
-            }elseif ( in_array( 
+
+            }elseif ( in_array(
                                '',
                                $possible
                                ) ){
@@ -208,7 +208,7 @@ class Controller
         foreach ( $else as $links ){
 
             // create a custom request
-            $ch = Request::custom( 
+            $ch = Request::custom(
                                   $this->_app->request->getMethod( ),
                                   $links->getAddress( ) . $this->_app->request->getResourceUri( ),
                                   array(), //$this->_app->request->headers->all( )
@@ -216,7 +216,7 @@ class Controller
                                   );
 
             // checks the answered status code
-            if ( $ch['status'] >= 200 && 
+            if ( $ch['status'] >= 200 &&
                  $ch['status'] <= 299 ){
 
                 // finished
@@ -224,38 +224,38 @@ class Controller
                 $this->_app->response->setBody( $ch['content'] );
 
                 if ( isset( $ch['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
+                    $this->_app->response->headers->set(
                                                         'Content-Type',
                                                         $ch['headers']['Content-Type']
                                                         );
 
                 if ( isset( $ch['headers']['Content-Disposition'] ) )
-                    $this->_app->response->headers->set( 
+                    $this->_app->response->headers->set(
                                                         'Content-Disposition',
                                                         $ch['headers']['Content-Disposition']
                                                         );
 
-                Logger::Log( 
+                Logger::Log(
                             'Controller blank search done',
                             LogLevel::DEBUG
                             );
-                            
+
                 $this->_app->stop( );
                 return;
             }
-            elseif ( $ch['status'] == 401 || 
-                     $ch['status'] == 404 || 
+            elseif ( $ch['status'] == 401 ||
+                     $ch['status'] == 404 ||
                      $ch['status'] == 406 ){
                 $this->_app->response->setStatus( $ch['status'] );
                 $this->_app->response->setBody( $ch['content'] );
                 if ( isset( $ch['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
+                    $this->_app->response->headers->set(
                                                         'Content-Type',
                                                         $ch['headers']['Content-Type']
                                                         );
 
                 if ( isset( $ch['headers']['Content-Disposition'] ) )
-                    $this->_app->response->headers->set( 
+                    $this->_app->response->headers->set(
                                                         'Content-Disposition',
                                                         $ch['headers']['Content-Disposition']
                                                         );

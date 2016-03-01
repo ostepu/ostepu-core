@@ -11,7 +11,7 @@ if (isset($RevokeRightsNotificationElements)) {
 <input type="hidden" name="action" value="RevokeRights">
 <div class="content-element">
     <div class="content-header">
-        <?php echo MakeInfoButton('courseManagement','revokeRights.md'); ?>
+        <?php echo MakeInfoButton('page/admin/courseManagement','revokeRights.md'); ?>
         <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
         <button class="text-button info-color bold right"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
     </div>
@@ -104,7 +104,7 @@ if (isset($RevokeRightsNotificationElements)) {
             <div class="left">
             <?php foreach(CourseStatus::getStatusDefinition() as $statusType){
                 $count = (isset($rights[$statusType]) ? $rights[$statusType] : 0); ?>
-                <label><?php echo $statusType; ?>: <?php echo $count; ?></label><br>                     
+                <label><?php echo Language::Get('main',$statusType, $langTemplate); ?>: <?php echo $count; ?></label><br>                     
             <?php } ?>
             </div>
             
@@ -120,7 +120,7 @@ if (isset($RevokeRightsNotificationElements)) {
                         }
                     ?>
             </select>
-            <button name="actionSortUsers" value="" class="left text-button-simple body-option-color">>></button>
+            <button name="actionSortUsers" value="sort" class="left text-button-simple body-option-color">>></button>
             </div>
 
         </div>

@@ -6,6 +6,7 @@
         "assignFrom": "Zuteilen von:",
         "unknownTutor": "Unbekannter Kontrolleur",
         "notAssigned": "Unzugeordnet",
-        "noPossibleAssignments": "Keine Zuweisungen möglich!"
+        "noPossibleAssignments": "Keine Zuweisungen möglich!",
+        "noTutorSelected": "Es wurden keine Tutoren ausgewählt."
     }
 }

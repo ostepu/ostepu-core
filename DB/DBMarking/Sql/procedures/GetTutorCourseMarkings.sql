@@ -36,7 +36,7 @@ select SQL_CACHE
     S.S_date as S_date2,
     SS.S_id_selected as S_selected2,
     S.S_accepted as S_accepted2,
-    S.S_flag as S_flag2,   
+    S.S_flag as S_flag2,
     S.S_leaderId as S_leaderId2,
     S.S_hideFile as S_hideFile2,
     S.E_id as E_id2,
@@ -51,7 +51,7 @@ from
     SelectedSubmission SS ON (S.S_id = SS.S_id_selected)
         left join
     File F ON (F.F_id = M.F_id_file)
-        left join 
+        left join
     File F2 ON (F2.F_id = S.F_id_file)
 where
     M.U_id_tutor = '",userid,"' order by M_id;");

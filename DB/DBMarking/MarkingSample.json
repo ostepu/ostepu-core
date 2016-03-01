@@ -1,9 +1,9 @@
 /**
  * @file MarkingSample.json This file represents a valid JSON object of type Marking for DBMarking.
- * 
+ *
  * @author Till Uhlig
  */
- 
+
     [
        {
            "id": "2",

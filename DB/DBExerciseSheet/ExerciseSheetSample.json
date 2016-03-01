@@ -1,9 +1,9 @@
 /**
  * @file ExerciseSheetSample.json This file represents a valid JSON object of type ExerciseSheet for DBExerciseSheet.
- * 
+ *
  * @author Till Uhlig
- */ 
- 
+ */
+
     [
        {
            "id": "1",

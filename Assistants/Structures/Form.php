@@ -40,7 +40,7 @@ class Form extends Object implements JsonSerializable
     {
         $this->formId = $value;
     }
-    
+
     public static function getCourseFromFormId($id)
     {
         $arr = explode('_',$id);
@@ -50,7 +50,7 @@ class Form extends Object implements JsonSerializable
         else
         return '';
     }
-    
+
     public static function getIdFromFormId($id)
     {
         $arr = explode('_',$id);
@@ -60,12 +60,12 @@ class Form extends Object implements JsonSerializable
         else
         return $id;
     }
-    
+
     public function getObjectCourseFromFormId()
     {
         return Form::getCourseFromFormId($this->formId);
     }
-    
+
     public function getObjectIdFromFormId()
     {
         return Form::getIdFromFormId($this->formId);
@@ -195,23 +195,23 @@ class Form extends Object implements JsonSerializable
     {
         $this->choices = $value;
     }
-    
+
     public static function getTypeDefinition( )
     {
-        return array( 
+        return array(
                      '0' => 'Eingabezeile',
 
                      '1' => 'Einfachauswahl',
 
                      '2' => 'Mehrfachauswahl'
-        
+
                      );
     }
 
     public static $INPUT = 0;
     public static $RADIO = 1;
     public static $CHECKBOX = 2;
-    
+
     /**
      * Creates an Form object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -326,7 +326,7 @@ class Form extends Object implements JsonSerializable
     {
         if ( $data === null )
             $data = array( );
-        
+
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
                 if ( $key == 'choices' ){
@@ -362,7 +362,7 @@ class Form extends Object implements JsonSerializable
         /*if (is_array($data))reset($data);
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
             $e = new Exception();
-            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());           
             ///return null;
         }
         if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
@@ -394,7 +394,7 @@ class Form extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        
+
         $isArray = true;
         if ( !$decode ){
             if ($data !== null){
@@ -403,10 +403,10 @@ class Form extends Object implements JsonSerializable
                     $isArray = false;
                 }
             } else {
-               $isArray = false; 
+               $isArray = false;
             }
         }
-        
+
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
@@ -482,7 +482,7 @@ class Form extends Object implements JsonSerializable
                                                    $ChoiceExtension,
                                                    $FormsExtension
                                                    );
-        if ($isResult){ 
+        if ($isResult){
             // to reindex
             $res = array_values( $res );
             $res = Form::decodeForm($res,false);

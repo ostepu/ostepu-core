@@ -7,5 +7,5 @@
  * @result -
  */
 ?>
- 
+
 INSERT INTO CourseStatus SET <?php echo $values; ?>

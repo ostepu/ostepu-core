@@ -1,0 +1,10 @@
+{"userInterface": {
+    "title": "Benutzerschnittstelle einrichten",
+    "conf": "Konfigurationsdatei<br>(mit Schreibrechten)",
+    "description": "Die Benutzerschnittstelle enthält eine Konfigurationsdatei, in welcher ihr mitgeteilt wird, unter welcher URL sie das übrige System erreichen kann. Dazu wird die Adresse aus den <span class='info-color'>Grundinformationen<\/span> verwendet. Beachten Sie, dass diese Datei bereits vorhanden sein könnte oder aber durch den Assistenten neu erstellt werden können muss.",
+    "siteKey": "Plattform-Schlüssel",
+    "barResult": "Resultat: $res",
+    "confContent": "Text = $content",
+    "contFile": "Datei = $file",
+    "failureAccessConfFile": "Fehler: $message"
+}}

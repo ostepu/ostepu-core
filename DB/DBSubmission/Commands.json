@@ -4,7 +4,7 @@
         "outputType": "Submission",
         "inputType": "Submission",
         "method": "PUT",
-        "placeholder":[{"name":"suid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"suid","regex":"%^([0-9_]+)$%"}],
         "path": "/submission(/submission)/:suid"
     },
     {
@@ -12,7 +12,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "DELETE",
-        "placeholder":[{"name":"suid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"suid","regex":"%^([0-9_]+)$%"}],
         "path": "/submission(/submission)/:suid"
     },
     {
@@ -28,7 +28,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"eid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
         "path": "/submission/exercise/:eid"
     },
     {
@@ -37,7 +37,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"eid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
         "path": "/submission/user/:userid/exercise/:eid"
     },
     {
@@ -46,7 +46,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
         "path": "/submission/user/:userid/exercisesheet/:esid"
     },
     {
@@ -55,7 +55,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
         "path": "/submission/group/user/:userid/exercisesheet/:esid"
     },
     {
@@ -64,7 +64,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
         "path": "/submission/group/user/:userid/exercisesheet/:esid/selected"
     },
     {
@@ -73,7 +73,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"eid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
         "path": "/submission/group/user/:userid/exercise/:eid"
     },
     {
@@ -82,7 +82,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"eid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
         "path": "/submission/group/user/:userid/exercise/:eid/selected"
     },
     {
@@ -91,7 +91,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"courseid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],
         "path": "/submission/group/user/:userid/course/:courseid/selected"
     },
     {
@@ -100,7 +100,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"userid","regex":"%^[0-9]+$%"},{"name":"courseid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"userid","regex":"%^([0-9_]+)$%"},{"name":"courseid","regex":"%^([0-9_]+)$%"}],
         "path": "/submission/group/user/:userid/course/:courseid"
     },
     {
@@ -109,7 +109,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
         "path": "/submission/exercisesheet/:esid/selected"
     },
     {
@@ -119,7 +119,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"suid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"suid","regex":"%^([0-9_]+)$%"}],
         "path": "/submission(/submission)/:suid"
     },
     {
@@ -136,7 +136,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"eid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
         "path": "/submission/exercise/:eid/selected"
     },
     {
@@ -145,7 +145,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
         "path": "/submission/exercisesheet/:esid"
     },
     {
@@ -154,7 +154,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"courseid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],
         "path": "/submission/course/:courseid"
     },
     {
@@ -163,7 +163,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"courseid","regex":"%^[0-9]+$%"},{"name":"userid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"},{"name":"userid","regex":"%^([0-9_]+)$%"}],
         "path": "/submission/course/:courseid/user/:userid"
     },
     {
@@ -172,7 +172,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"courseid","regex":"%^[0-9]+$%"},{"name":"userid","regex":"%^[0-9]+$%"}],
+        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"},{"name":"userid","regex":"%^([0-9_]+)$%"}],
         "path": "/submission/course/:courseid/user/:userid/selected"
     },
     {
