@@ -1,0 +1,13 @@
+{
+    "main": {
+        "utf8Required": " $csvFile: Die Daten m&uuml;ssen UTF-8 kodiert sein.",
+        "emptyCSV": " $csvFile: Die Datei ist leer.",
+        "invalidCSV": " $csvFile: Die Spalten passen nicht zum Inhalt (eventuell wurden die Spaltenbezeichner gel&ouml;scht oder verwechselt).",
+        "unknownMarkingID": " $csvFile: Es wurde eine unbekannte Korrekturnummer gefunden ($markingId).",
+        "unknownMarkingPath": " $csvFile: Die Korrekturdatei konnte nicht gefunden werden ($markingFile).",
+        "errorSendMarkings":" $csvFile: Die Korrekturdaten konnten nicht gespeichert werden.",
+        "encodeMarkingsError":" $csvFile: Die Korrekturdaten konnten nicht interpretiert werden.",
+        "noTransactionData":" $csvFile: Die ermittelte Transaktionsnummer konnte nicht zugeordnet werden.<br/><br/>Hinweise:<br/>1. Das Korrekturarchiv muss von Ihnen erstellt worden sein.<br/>2. Sie m&uuml;ssen das Korrekturarchiv in der richtigen Veranstaltung hochladen.<br/>3. Die erste Zeile der $csvFile muss die Transaktionsnummer enthalten.<br/>4. Die Transaktionsnummern sind 30 Tage g&uuml;ltig.",
+        "missingCSV":" $csvFile: Die CSV-Datei konnte nicht, im Archiv, gefunden werden."
+    }
+}

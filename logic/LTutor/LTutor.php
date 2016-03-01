@@ -14,6 +14,8 @@ include_once dirname(__FILE__) . '/../../Assistants/CConfig.php';
 include_once dirname(__FILE__) . '/../../Assistants/Structures/Transaction.php';
 include_once dirname(__FILE__) . '/../../Assistants/Structures/Platform.php';
 include_once dirname(__FILE__) . '/../../Assistants/Structures/File.php';
+include_once dirname(__FILE__) . '/../../Assistants/Language.php';
+include_once dirname(__FILE__) . '/../../Assistants/LArraySorter.php';
 
 \Slim\Slim::registerAutoloader();
 
@@ -29,6 +31,9 @@ class LTutor
      */
     private $_conf=null;
     private $config = array();
+    
+    
+    private static $langTemplate='LTutor';
 
     /**
      * @var string $_prefix the prefix, the class works with
@@ -99,6 +104,8 @@ class LTutor
                                            dirname(__FILE__).'/config.ini',
                                            TRUE
                                            ); 
+
+        Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
 
         /**
          *Set the Logiccontroller-URL
@@ -964,7 +971,10 @@ class LTutor
                 if (isset($marking['status']) && $marking['status'] == $status)
                     $marks[] = $marking;
             $markings=$marks;
-        }            
+        }
+        
+        // sortiere die Korrekturen innerhalb dieser Liste
+        $markings = LArraySorter::orderby($markings, 'id', SORT_ASC);
 
         $answer = $this->generateTutorArchive($userid, $sheetid, $markings);
         $this->app->response->setStatus($answer['status']);
@@ -972,7 +982,9 @@ class LTutor
     }
 
     public function uploadZip($userid, $courseid)
-    {                        
+    {           
+        $csvFile = 'Liste.csv';
+    
         // error array of strings
         $errors = array();
         LTutor::generatepath($this->config['DIR']['temp']);
@@ -994,14 +1006,24 @@ class LTutor
         $files = $tempDir.'/files';
         
         // check if csv file exists
-        if (file_exists($files.'/Liste.csv')){
+        if (file_exists($files.'/'.$csvFile)){
+            // UTF8 is required
+            $text = file_get_contents($files.'/'.$csvFile);
+            if (mb_detect_encoding($text, 'UTF-8', true)=== false){
+                $errors[] = Language::Get('main','utf8Required', self::$langTemplate, array('csvFile'=>$csvFile));
+                $this->deleteDir($tempDir);
+                $this->app->response->setStatus(409);
+                $this->app->response->setBody(json_encode($errors));
+                $this->app->stop();
+            }
+            
             $csv = fopen($files.'/Liste.csv', "r");
             
             if (($transactionId = fgetcsv($csv,0,';')) === false){
                 fclose($csv);
                 $this->deleteDir($tempDir);
                 $this->app->response->setStatus(409);
-                $errors[] = 'empty .csv file';
+                $errors[] = Language::Get('main','emptyCSV', self::$langTemplate, array('csvFile'=>$csvFile));
                 $this->app->response->setBody(json_encode($errors));
                 $this->app->stop();
             }
@@ -1041,7 +1063,7 @@ class LTutor
                             (isset($currectOrder['TUTORCOMMENT']) && !isset($row[$currectOrder['TUTORCOMMENT']])) ||
                             (isset($currectOrder['OUTSTANDING']) && !isset($row[$currectOrder['OUTSTANDING']])) ||
                             (isset($currectOrder['STATUS']) && !isset($row[$currectOrder['STATUS']]))){
-                            $errors[] = 'invalid Liste.csv';
+                            $errors[] = Language::Get('main','invalidCSV', self::$langTemplate, array('csvFile'=>$csvFile));
                             fclose($csv);
                             $this->deleteDir($tempDir);
                             $this->app->response->setStatus(409);
@@ -1060,11 +1082,10 @@ class LTutor
                             fclose($csv);
                             $this->deleteDir($tempDir);
                             $this->app->response->setStatus(409);
-                            $errors[] = "unknown ID: {$markingId}";
+                            $errors[] = Language::Get('main','unknownMarkingID', self::$langTemplate, array('csvFile'=>$csvFile,'markingId'=>htmlspecialchars(trim(($markingId)),ENT_QUOTES, 'UTF-8')));
                             $this->app->response->setBody(json_encode($errors));
                             $this->app->stop();
                         }
-                        ///var_dump($transaction['markings'][$markingId]);
                         $markingData = $transaction['markings'][$markingId];
                         
                         // checks whether the points are less or equal to the maximum points
@@ -1139,23 +1160,11 @@ class LTutor
                                                              $file==null ? 1 : 0
                                                              );
                             $marking->setFile($file);
-                            
-                            /*array(
-                                    'id' => ($markingId<0 ? null : $markingId),
-                                    'points' => $points,
-                                    'outstanding' => isset($currectOrder['OUTSTANDING']) ? $row[$currectOrder['OUTSTANDING']] : null,
-                                    'tutorId' => $userid,
-                                    'tutorComment' => isset($currectOrder['TUTORCOMMENT']) ? $row[$currectOrder['TUTORCOMMENT']] : null,
-                                    'file' => $file,
-                                    'status' => isset($currectOrder['STATUS']) ? $row[$currectOrder['STATUS']] : null,
-                                    'date' => time(),
-                                    'hideFile' => 
-                                    );*/
 
                             $markings[] = $marking;
 
                         } else { //if file with this markingid not exists
-                            $errors[] = 'File does not exist: '.$markingFile;
+                            $errors[] = Language::Get('main','unknownMarkingPath', self::$langTemplate, array('csvFile'=>$csvFile, 'markingFile'=>htmlspecialchars(trim(($markingFile)),ENT_QUOTES, 'UTF-8')));
                             fclose($csv);
                             $this->deleteDir($tempDir);
                             $this->app->response->setStatus(409);
@@ -1168,8 +1177,6 @@ class LTutor
                 $mark = @json_encode($markings);
                 
                 if ($mark !== false){
-                
-                    ///echo json_encode($markings); return;
                     //request to database to edit the markings
                     $result = Request::routeRequest(
                                                     'POST',
@@ -1182,19 +1189,19 @@ class LTutor
                                                 
                     /// TODO: prüfen ob jede hochgeladen wurde
                     if ($result['status'] != 201) {
-                        $errors[] = 'send markings failed';
+                        $errors[] = Language::Get('main','errorSendMarkings', self::$langTemplate, array('csvFile'=>$csvFile));
                     }
                 } else {
-                    $errors[] = 'invalid input';
+                    $errors[] = Language::Get('main','encodeMarkingsError', self::$langTemplate, array('csvFile'=>$csvFile));
                 }
                 
             } else {
-                $errors[] = 'no transaction data';
+                $errors[] = Language::Get('main','noTransactionData', self::$langTemplate, array('csvFile'=>$csvFile));
             }
             
             fclose($csv);
         } else { // if csv file does not exist
-            $errors[] = '.csv file does not exist in uploaded zip-Archiv';
+            $errors[] = Language::Get('main','missingCSV', self::$langTemplate, array('csvFile'=>$csvFile));
         }
         $this->deleteDir($tempDir);
 

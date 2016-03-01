@@ -12,6 +12,7 @@
         "points": "P",
         "totalSubmissions": "Einsendungen",
         "submissions": "Einsendungen",
+        "invalidSubmission": "fehlerhafte Einsendung",
         "allSubmissions": "alle Einsendungen",
         "totalStudents": "Studenten",
         "selectedSubmissions": "Einsendungen",

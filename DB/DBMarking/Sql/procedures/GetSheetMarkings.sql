@@ -52,7 +52,7 @@ from
         left join 
     File F2 ON (F2.F_id = S.F_id_file)
 where
-    M.ES_id = '",esid,"';");
+    M.ES_id = '",esid,"' order by M_id;");
 PREPARE stmt1 FROM @s;
 EXECUTE stmt1;
 DEALLOCATE PREPARE stmt1;

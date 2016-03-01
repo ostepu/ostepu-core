@@ -13,12 +13,13 @@ class Grundinformationen
     
     public static function getSettingsBar(&$data)
     {
+        $defs = self::getDefaults();
         return array(
-                     'url' => array(Language::Get('general_informations','url'), $data['PL']['url']),
-                     'localPath' => array(Language::Get('general_informations','localPath'), $data['PL']['localPath']),
-                     'urlExtern' => array(Language::Get('general_informations','urlExtern'), $data['PL']['urlExtern']),
-                     'temp' => array(Language::Get('general_informations','temp'), $data['PL']['temp']),
-                     'files' => array(Language::Get('general_informations','files'), $data['PL']['files'])                     
+                     'url' => array(Language::Get('general_informations','url'), $data['PL']['url'], $defs['url'][1]),
+                     'localPath' => array(Language::Get('general_informations','localPath'), $data['PL']['localPath'], $defs['localPath'][1]),
+                     'urlExtern' => array(Language::Get('general_informations','urlExtern'), $data['PL']['urlExtern'], $defs['urlExtern'][1]),
+                     'temp' => array(Language::Get('general_informations','temp'), $data['PL']['temp'], $defs['temp'][1]),
+                     'files' => array(Language::Get('general_informations','files'), $data['PL']['files'], $defs['files'][1])                     
                      );
     }
     

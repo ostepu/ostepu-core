@@ -247,7 +247,6 @@ class Komponenten
        
         // inits all components
         $result = Request::get($data['PL']['url'].'/'.$url. '/definition/send',array(),'');
-        //echo $result['content'];
         if (isset($result['content']) && isset($result['status'])){
 
             // component routers

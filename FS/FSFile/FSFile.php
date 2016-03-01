@@ -154,8 +154,9 @@ class FSFile
              file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
 
             // the file was found
-            Model::header('Content-Type','application/octet-stream');
-            Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");
+            $mime = MimeReader::get_mime($this->config['DIR']['files'].'/'.$filePath);
+            Model::header('Content-Type',$mime);
+            Model::header('Content-Disposition',"filename=\"".$params['filename']."\"");
             Model::header('Content-Length',filesize($this->config['DIR']['files'].'/'.$filePath));
             Model::header('Accept-Ranges','none');
             readfile( $this->config['DIR']['files'].'/'.$filePath );
