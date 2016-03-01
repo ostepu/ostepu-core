@@ -1,0 +1,13 @@
+[{
+    "name": "BEISPIEL",
+    "author": "Till Uhlig",
+    "version": "1.0",
+    "instructions": {
+        "type": "php",
+        "params": {
+            "run": "include",
+            "file": "BEISPIEL.php",
+            "className": "BEISPIEL"
+        }
+    }
+}]

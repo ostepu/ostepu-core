@@ -8,6 +8,7 @@
     {"path":"DBSetting.php"},
     {"path":"index.php"},
     {"path":"Commands.json"},
+    {"path":"SettingSample.json"},
     {"path":"Sql/"},
     {"path":"info/"}
   ],

@@ -8,6 +8,7 @@
         {"path": "DBCourse.php"},
         {"path": "index.php"},
         {"path": "Commands.json"},
+        {"path": "CourseSample.json"},
         {"path": "Sql/"},
         {"path": "info/"}
     ],

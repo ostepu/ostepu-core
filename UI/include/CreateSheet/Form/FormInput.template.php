@@ -1,14 +1,23 @@
+<?php
+/**
+ * @file FormInput.template.php
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.1
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ */
+?>
+
 <?php include_once dirname(__FILE__) . '/../../../../Assistants/Language.php'; ?>
 <?php include_once dirname(__FILE__) . '/../../Boilerplate.php'; ?>
 
 <?php $langTemplate='Form';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 
 <?php
-/**
- * @file FormInput.template.php
- * @author  Till Uhlig
- */
- 
  header('Content-Type: text/html; charset=utf-8');  
  ?>
 <span class="right">

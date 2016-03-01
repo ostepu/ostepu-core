@@ -1,13 +1,19 @@
 <?php
-set_time_limit(0);
-header("Content-Type: text/html; charset=utf-8");
-
 /**
  * @file install.php contains the Installer class
  *
- * @author Till Uhlig
- * @date 2014
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.1
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2016
  */
+ 
+set_time_limit(0);
+header("Content-Type: text/html; charset=utf-8");
+
 define('ISCLI', PHP_SAPI === 'cli');
 
 if (file_exists(dirname(__FILE__) . '/../Assistants/vendor/Slim/Slim/Route.php') && file_exists(dirname(__FILE__) . '/../Assistants/vendor/Slim/Slim/Slim.php')){
@@ -155,9 +161,39 @@ class Installer
                 $segs[] = $file;
             }
             foreach($segs as $seg){
-                if (is_dir(dirname(__FILE__) . '/segments/'.$seg)) continue;
-                include_once dirname(__FILE__) . '/segments/'.$seg;
-                Einstellungen::$segments[] = substr($seg,0,count($seg)-5);
+                if (!is_dir(dirname(__FILE__) . '/segments/'.$seg)){
+                    continue;
+                }
+                $segConfFile = dirname(__FILE__) . '/segments/'.$seg.'/segment.json';
+                if (!file_exists($segConfFile)){
+                    continue;
+                }
+                $segConf = json_decode(file_get_contents($segConfFile),true);
+                foreach($segConf as $conf){
+                    if (!isset($conf['instructions']) || !isset($conf['name'])){
+                        continue;
+                    }
+
+                    $type = $conf['instructions']['type'];
+                    $params = (isset($conf['instructions']['params']) ? $conf['instructions']['params'] : array());
+
+                    if ($type === 'php'){
+                        if (isset($params['run']) && isset($params['file']) && isset($params['className'])){
+                            if ($params['run'] === 'include'){
+                                if (file_exists(dirname(__FILE__) . '/segments/'.$seg.'/'.$params['file'])){
+                                    include_once dirname(__FILE__) . '/segments/'.$seg.'/'.$params['file'];
+                                    Einstellungen::$segments[] = $params['className'];
+                                } else {
+                                    // die angegebene Datei existiert nicht
+                                }
+                            } else {
+                                // es wird kein anderer Typ unterstützt
+                            }
+                        }
+                    } else {
+                        // es wird kein anderer Typ unterstützt
+                    }
+                }
             }
             @closedir($handle);
         }
@@ -208,6 +244,7 @@ class Installer
         $simple = false;
         $data = array();
         $tmp = array();
+        $eventFound = null;
 
         if (isset($_POST['data']))
             $data = $_POST['data'];
@@ -398,7 +435,7 @@ class Installer
                 $titleText=Installation::Get('main','title'.$selected_menu);
             }
 
-            echo "</head><body><div class='center'>";
+            echo "</head><body onload='load()'><div class='center'>";
 
             if (Einstellungen::$accessAllowed && $titleText!=='???'){
                 Installation::log(array('text'=>Installation::Get('main','pageTitle','default',array('titleText'=>$titleText))));
@@ -441,11 +478,13 @@ class Installer
                     if (isset($_POST['action']) && in_array($_POST['action'],$event['event'] )){
                         Installation::log(array('text'=>Installation::Get('main','segmentEventFound','default',array('segs'=>$segs,'action'=>$_POST['action']))));
                         $isSetEvent = true;
+                        $eventFound = $_POST['action'];
                     }
 
                     foreach ($event['event'] as $ev){
                         if (isset($_POST[$ev])){
                             $isSetEvent = true;
+                            $eventFound = $ev;
                             break;
                         }
                     }
@@ -551,11 +590,33 @@ class Installer
                 if (!isset($segs::$page) || $segs::$page===$selected_menu || (isset($segs::$installed) && $segs::$installed)){
                     if (!is_callable("{$segs}::show")) continue;
 
+                    if (!$console && !$simple){
+                        if (isset($segs::$onEvents) && $eventFound !== null) {
+                            foreach ($segs::$onEvents as $event){
+                                if (!isset($event['enabledInstall']) || $event['enabledInstall']) {
+                                    foreach($event['event'] as $ev){
+                                        if ($ev === $eventFound) {
+                                            echo '<a name="'.$ev.'" style="position:relative; top:-75px;">&nbsp;</a>';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     $result = (isset($segmentResults[$segs::$name]) ? $segmentResults[$segs::$name] : array());
                     $segs::show($console, $result, $data);
                 }
             }
             Installation::log(array('text'=>Installation::Get('main','endShowSegments')));
+        }
+
+        if (!$console && !$simple){
+            if ($eventFound !== null){
+                echo '<script type="text/javascript">function load(){window.location.hash="'.$eventFound.'";}</script>';
+            } else {
+
+            }
         }
 
         if (Einstellungen::$accessAllowed){
@@ -703,7 +764,7 @@ if (isset($_POST['data']['LOGGER']['logLevel'])){
 if (isset($_POST['data']['PL']['language'])){
     Language::loadLanguage($_POST['data']['PL']['language'], 'default', 'ini');
 } else {
-    Language::loadLanguage('de', 'default', 'ini');  
+    Language::loadLanguage('de', 'default', 'ini');
 }
 
 Installation::log(array('text'=>Installation::Get('main','beginInstance')));

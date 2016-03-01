@@ -1,10 +1,25 @@
 <?php
 /**
- * @file LGetSite.php
+ * @file LGetSite.php contains the LGetSite class.
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
  *
- * contains the LGetSite class.
- * @date 2013-2014
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.0
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2016
+ * @author Florian Lücke <florian.luecke@gmail.com>
+ * @date 2014
+ * @author Christian Elze <christian.elze@gmail.com>
+ * @date 2014
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2014
+ * @author Felix Schmidt <Fiduz@Live.de>
+ * @date 2014
+ * @author Peter König <upbkgs20@arcor.de>
+ * @date 2014
  */
+
 require_once dirname(__FILE__).'/../../Assistants/vendor/Slim/Slim/Slim.php';
 include_once dirname(__FILE__).'/../../Assistants/Request.php';
 include_once dirname(__FILE__).'/../../Assistants/CConfig.php';
@@ -663,14 +678,14 @@ class LGetSite
         if ($courseid === null){
             $URL = $this->_getUser->getAddress().'/user/user/' . $userid;
             $answer = Request::custom('GET', $URL, array(), '');
-            $user = json_decode($answer['content'], true);
+            //$user = json_decode($answer['content'], true);
         } else {
             $URL = $this->_getCourseStatus->getAddress().'/coursestatus/course/'.$courseid.'/user/'.$userid;
             $answer = Request::custom('GET', $URL, array(), '');
-            $user = json_decode($answer['content'], true);
+            //$user = json_decode($answer['content'], true);
         }
 
-        $this->app->response->setBody(json_encode($user));
+        $this->app->response->setBody($answer['content']);
     }
 
     public function userWithCourseAndHash($userid, $courseid)

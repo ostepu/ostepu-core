@@ -1,0 +1,10 @@
+{"validation": {
+    "title": "Syntaxprüfung",
+    "description": "Hier können einfache Syntaxprüfungen vorgenommen werden.<br>Achtung: für *.php Dateien werden keine 'veralteten' Funktionen geprüft.<br>Im Falle eines gefundenen Fehlers, werden diese unter dem entsprechenden Paket aufgelistet.",
+    "validateFilesDesc": "Prüfe *.json, *.ini und *.php Dateien auf syntaktische Korrektheit",
+    "validateFiles": "Prüfen",
+    "files": "Dateien",
+    "jsonInvalid": "Datei konnte nicht validiert werden",
+    "iniInvalid": "Datei konnte nicht validiert werden",
+    "phpInvalid": "Datei konnte nicht validiert werden"
+}}

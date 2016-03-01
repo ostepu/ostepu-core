@@ -8,6 +8,7 @@
         {"path": "DBUser.php"},
         {"path": "index.php"},
         {"path": "Commands.json"},
+        {"path": "UserSample.json"},
         {"path": "Sql/"},
         {"path": "info/"}
     ],

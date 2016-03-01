@@ -1,3 +1,19 @@
+<?php
+/**
+ * @file LOOP.template.php
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.1
+ *
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2015-2016
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ */
+?>
+
 <?php include_once dirname(__FILE__) . '/../../Template.php';
       include_once dirname(__FILE__) . '/../../../../Assistants/Language.php';
       include_once dirname(__FILE__) . '/../../../../Assistants/Structures/File.php';
@@ -8,11 +24,6 @@
 <?php $langTemplate='Processor_LOOP';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 
 <?php
-/**
- * @file LOOP.template.php
- * @author  Ralf Busch
- * @author  Till Uhlig
- */
  header('Content-Type: text/html; charset=utf-8');
  ?>
 <div class="content-element ProcessorParameterArea" style="outline:2px solid #b9b8b8;border-radius: 0px;margin: 0px;">

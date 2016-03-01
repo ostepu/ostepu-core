@@ -1,17 +1,20 @@
 <?php
-
-
 /**
  * @file Csv.php contains the csv class
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.3.2
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
  */
 
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
  * the csv structure
- *
- * @author Till Uhlig
- * @date 2014
  */
 class Csv extends Object implements JsonSerializable
 {

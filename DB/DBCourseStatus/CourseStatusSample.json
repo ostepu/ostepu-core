@@ -1,71 +1,57 @@
-/**
- * @file CourseStatusSample.json This file represents a valid JSON object of type CourseStatus for DBCourseStatus.
- *
- * @author Till Uhlig
- */
-
-    [
-       {
-           "id": "2",
-           "userName": "lisa",
-           "email": "lisa@email.de",
-           "firstName": "Lisa",
-           "lastName": "Dietrich",
-           "flag": "2",
-           "courses":
-           [
-               {
-                   "status": "3",
-                   "course":
-                   {
-                       "id": "1",
-                       "name": "﻿Bengalisch II",
-                       "semester": "SS 11",
-                       "defaultGroupSize": "1"
-                   }
-               }
-           ]
-       },
-       {
-           "id": "3",
-           "userName": "joerg",
-           "email": "joerg@email.de",
-           "firstName": "Joerg",
-           "lastName": "Baumgarten",
-           "flag": "1",
-           "courses":
-           [
-               {
-                   "status": "3",
-                   "course":
-                   {
-                       "id": "1",
-                       "name": "﻿Bengalisch II",
-                       "semester": "SS 11",
-                       "defaultGroupSize": "1"
-                   }
-               }
-           ]
-       },
-       {
-           "id": "4",
-           "userName": "till",
-           "email": "till@email.de",
-           "firstName": "Till",
-           "lastName": "Uhlig",
-           "flag": "1",
-           "courses":
-           [
-               {
-                   "status": "3",
-                   "course":
-                   {
-                       "id": "1",
-                       "name": "﻿Bengalisch II",
-                       "semester": "SS 11",
-                       "defaultGroupSize": "1"
-                   }
-               }
-           ]
-       }
-    ]
+[
+    {
+        "__commentFile": "@file LinkSample.json CourseStatusSample.json This file represents a valid JSON object of type CourseStatus for DBCourseStatus.",
+        "__commentAuthor": "@author Till Uhlig"
+    },
+    {
+        "id": "2",
+        "userName": "lisa",
+        "email": "lisa@email.de",
+        "firstName": "Lisa",
+        "lastName": "Dietrich",
+        "flag": "2",
+        "courses": [{
+            "status": "3",
+            "course": {
+                "id": "1",
+                "name": "﻿Bengalisch II",
+                "semester": "SS 11",
+                "defaultGroupSize": "1"
+            }
+        }]
+    },
+    {
+        "id": "3",
+        "userName": "joerg",
+        "email": "joerg@email.de",
+        "firstName": "Joerg",
+        "lastName": "Baumgarten",
+        "flag": "1",
+        "courses": [{
+            "status": "3",
+            "course": {
+                "id": "1",
+                "name": "﻿Bengalisch II",
+                "semester": "SS 11",
+                "defaultGroupSize": "1"
+            }
+        }]
+    },
+    {
+        "id": "4",
+        "userName": "till",
+        "email": "till@email.de",
+        "firstName": "Till",
+        "lastName": "Uhlig",
+        "flag": "1",
+        "courses": [{
+            "status": "3",
+            "course": {
+                "id": "1",
+                "name": "﻿Bengalisch II",
+                "semester": "SS 11",
+                "defaultGroupSize": "1"
+            }
+        }]
+    }
+]

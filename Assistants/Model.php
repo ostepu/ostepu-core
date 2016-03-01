@@ -1,4 +1,16 @@
 <?php
+/**
+ * @file Model.php
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.3.1
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2016
+ */
+
 require_once ( dirname(__FILE__) . '/vendor/Slim/Slim/Route.php' );
 require_once ( dirname(__FILE__) . '/vendor/Slim/Slim/Router.php' );
 require_once ( dirname(__FILE__) . '/vendor/Slim/Slim/Environment.php' );

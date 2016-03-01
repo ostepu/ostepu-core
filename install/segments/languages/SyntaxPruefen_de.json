@@ -1,9 +1,0 @@
-{"validation": {
-    "title": "Syntaxprüfung",
-    "description": "",
-    "validateFilesDesc": "Prüfe *.json, *.ini und *.php Dateien auf syntaktische Korrektheit",
-    "validateFiles": "Prüfen",
-    "files": "Dateien",
-    "jsonInvalid": "Datei konnte nicht validiert werden",
-    "iniInvalid": "Datei konnte nicht validiert werden"
-}}

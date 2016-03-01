@@ -1,158 +1,151 @@
-/**
- * @file GroupSample.json This file represents a valid JSON object of type Group for DBGroup.
- *
- * @author Till Uhlig
- */
-
-    [
-       {
-           "sheetId": "1",
-           "members":
-           [
-               {
-                   "id": "2",
-                   "userName": "lisa",
-                   "email": "lisa@email.de",
-                   "firstName": "Lisa",
-                   "lastName": "Dietrich",
-                   "flag": "2"
-               },
-               {
-                   "id": "3",
-                   "userName": "joerg",
-                   "email": "joerg@email.de",
-                   "firstName": "Joerg",
-                   "lastName": "Baumgarten",
-                   "flag": "1"
-               },
-               {
-                   "id": "4",
-                   "userName": "till",
-                   "email": "till@email.de",
-                   "firstName": "Till",
-                   "lastName": "Uhlig",
-                   "flag": "1"
-               }
-           ]
-       },
-       {
-           "sheetId": "2",
-           "members":
-           [
-               {
-                   "id": "2",
-                   "userName": "lisa",
-                   "email": "lisa@email.de",
-                   "firstName": "Lisa",
-                   "lastName": "Dietrich",
-                   "flag": "2"
-               },
-               {
-                   "id": "3",
-                   "userName": "joerg",
-                   "email": "joerg@email.de",
-                   "firstName": "Joerg",
-                   "lastName": "Baumgarten",
-                   "flag": "1"
-               },
-               {
-                   "id": "4",
-                   "userName": "till",
-                   "email": "till@email.de",
-                   "firstName": "Till",
-                   "lastName": "Uhlig",
-                   "flag": "1"
-               }
-           ]
-       },
-       {
-           "sheetId": "3",
-           "members":
-           [
-               {
-                   "id": "2",
-                   "userName": "lisa",
-                   "email": "lisa@email.de",
-                   "firstName": "Lisa",
-                   "lastName": "Dietrich",
-                   "flag": "2"
-               },
-               {
-                   "id": "3",
-                   "userName": "joerg",
-                   "email": "joerg@email.de",
-                   "firstName": "Joerg",
-                   "lastName": "Baumgarten",
-                   "flag": "1"
-               },
-               {
-                   "id": "4",
-                   "userName": "till",
-                   "email": "till@email.de",
-                   "firstName": "Till",
-                   "lastName": "Uhlig",
-                   "flag": "1"
-               }
-           ]
-       },
-       {
-           "sheetId": "4",
-           "members":
-           [
-               {
-                   "id": "2",
-                   "userName": "lisa",
-                   "email": "lisa@email.de",
-                   "firstName": "Lisa",
-                   "lastName": "Dietrich",
-                   "flag": "2"
-               },
-               {
-                   "id": "3",
-                   "userName": "joerg",
-                   "email": "joerg@email.de",
-                   "firstName": "Joerg",
-                   "lastName": "Baumgarten",
-                   "flag": "1"
-               },
-               {
-                   "id": "4",
-                   "userName": "till",
-                   "email": "till@email.de",
-                   "firstName": "Till",
-                   "lastName": "Uhlig",
-                   "flag": "1"
-               }
-           ]
-       },
-       {
-           "sheetId": "5",
-           "members":
-           [
-               {
-                   "id": "2",
-                   "userName": "lisa",
-                   "email": "lisa@email.de",
-                   "firstName": "Lisa",
-                   "lastName": "Dietrich",
-                   "flag": "2"
-               },
-               {
-                   "id": "3",
-                   "userName": "joerg",
-                   "email": "joerg@email.de",
-                   "firstName": "Joerg",
-                   "lastName": "Baumgarten",
-                   "flag": "1"
-               },
-               {
-                   "id": "4",
-                   "userName": "till",
-                   "email": "till@email.de",
-                   "firstName": "Till",
-                   "lastName": "Uhlig",
-                   "flag": "1"
-               }
-           ]
-       }
-    ]
+[
+    {
+        "__commentFile": "@file GroupSample.json This file represents a valid JSON object of type Group for DBGroup.",
+        "__commentAuthor": "@author Till Uhlig"
+    },
+    {
+        "sheetId": "1",
+        "members": [
+            {
+                "id": "2",
+                "userName": "lisa",
+                "email": "lisa@email.de",
+                "firstName": "Lisa",
+                "lastName": "Dietrich",
+                "flag": "2"
+            },
+            {
+                "id": "3",
+                "userName": "joerg",
+                "email": "joerg@email.de",
+                "firstName": "Joerg",
+                "lastName": "Baumgarten",
+                "flag": "1"
+            },
+            {
+                "id": "4",
+                "userName": "till",
+                "email": "till@email.de",
+                "firstName": "Till",
+                "lastName": "Uhlig",
+                "flag": "1"
+            }
+        ]
+    },
+    {
+        "sheetId": "2",
+        "members": [
+            {
+                "id": "2",
+                "userName": "lisa",
+                "email": "lisa@email.de",
+                "firstName": "Lisa",
+                "lastName": "Dietrich",
+                "flag": "2"
+            },
+            {
+                "id": "3",
+                "userName": "joerg",
+                "email": "joerg@email.de",
+                "firstName": "Joerg",
+                "lastName": "Baumgarten",
+                "flag": "1"
+            },
+            {
+                "id": "4",
+                "userName": "till",
+                "email": "till@email.de",
+                "firstName": "Till",
+                "lastName": "Uhlig",
+                "flag": "1"
+            }
+        ]
+    },
+    {
+        "sheetId": "3",
+        "members": [
+            {
+                "id": "2",
+                "userName": "lisa",
+                "email": "lisa@email.de",
+                "firstName": "Lisa",
+                "lastName": "Dietrich",
+                "flag": "2"
+            },
+            {
+                "id": "3",
+                "userName": "joerg",
+                "email": "joerg@email.de",
+                "firstName": "Joerg",
+                "lastName": "Baumgarten",
+                "flag": "1"
+            },
+            {
+                "id": "4",
+                "userName": "till",
+                "email": "till@email.de",
+                "firstName": "Till",
+                "lastName": "Uhlig",
+                "flag": "1"
+            }
+        ]
+    },
+    {
+        "sheetId": "4",
+        "members": [
+            {
+                "id": "2",
+                "userName": "lisa",
+                "email": "lisa@email.de",
+                "firstName": "Lisa",
+                "lastName": "Dietrich",
+                "flag": "2"
+            },
+            {
+                "id": "3",
+                "userName": "joerg",
+                "email": "joerg@email.de",
+                "firstName": "Joerg",
+                "lastName": "Baumgarten",
+                "flag": "1"
+            },
+            {
+                "id": "4",
+                "userName": "till",
+                "email": "till@email.de",
+                "firstName": "Till",
+                "lastName": "Uhlig",
+                "flag": "1"
+            }
+        ]
+    },
+    {
+        "sheetId": "5",
+        "members": [
+            {
+                "id": "2",
+                "userName": "lisa",
+                "email": "lisa@email.de",
+                "firstName": "Lisa",
+                "lastName": "Dietrich",
+                "flag": "2"
+            },
+            {
+                "id": "3",
+                "userName": "joerg",
+                "email": "joerg@email.de",
+                "firstName": "Joerg",
+                "lastName": "Baumgarten",
+                "flag": "1"
+            },
+            {
+                "id": "4",
+                "userName": "till",
+                "email": "till@email.de",
+                "firstName": "Till",
+                "lastName": "Uhlig",
+                "flag": "1"
+            }
+        ]
+    }
+]

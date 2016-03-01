@@ -1,0 +1,13 @@
+[{
+    "name": "Grundinformationen",
+    "author": "Till Uhlig",
+    "version": "1.0",
+    "instructions": {
+        "type": "php",
+        "params": {
+            "run": "include",
+            "file": "Grundinformationen.php",
+            "className": "Grundinformationen"
+        }
+    }
+}]

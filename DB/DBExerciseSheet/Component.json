@@ -4,117 +4,101 @@
     "classFile": "DBExerciseSheet.php",
     "className": "DBExerciseSheet",
     "files": [
-        {
-            "path": ".htaccess"
-        },
-        {
-            "path": "DBExerciseSheet.php"
-        },
-        {
-            "path": "index.php"
-        },
-        {
-            "path": "Commands.json"
-        },
-        {
-            "path": "Sql/"
-        }
+        {"path": ".htaccess"},
+        {"path": "DBExerciseSheet.php"},
+        {"path": "index.php"},
+        {"path": "Commands.json"},
+        {"path": "ExerciseSheetSample.json"},
+        {"path": "Sql/"},
+        {"path": "info/"}
     ],
     "links": [
         {
             "name": "out",
             "target": "DBQuery",
-            "links": [
-                {
-                    "method": "POST",
-                    "path": "/query"
-                }
-            ]
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
         },
         {
             "name": "out2",
             "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "POST",
-                    "path": "/query"
-                }
-            ]
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
         },
         {
             "name": "getCourseExercises",
             "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBExerciseSheetGetCourseExercises/:courseid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBExerciseSheetGetCourseExercises/:courseid"
+            }]
         },
         {
             "name": "getCourseSheets",
             "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBExerciseSheetGetCourseSheets/:courseid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBExerciseSheetGetCourseSheets/:courseid"
+            }]
         },
         {
             "name": "getCourseSheetURLS",
             "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBExerciseSheetGetCourseSheetURLs/:courseid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBExerciseSheetGetCourseSheetURLs/:courseid"
+            }]
         },
         {
             "name": "getExerciseSheet",
             "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBExerciseSheetGetExerciseSheet/:esid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBExerciseSheetGetExerciseSheet/:esid"
+            }]
         },
         {
             "name": "getExerciseSheetURL",
             "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBExerciseSheetGetExerciseSheetURL/:esid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBExerciseSheetGetExerciseSheetURL/:esid"
+            }]
         },
         {
             "name": "getSheetExercises",
             "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBExerciseSheetGetSheetExercises/:esid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBExerciseSheetGetSheetExercises/:esid"
+            }]
         },
         {
             "name": "getExistsPlatform",
             "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBExerciseSheetGetExistsPlatform"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBExerciseSheetGetExistsPlatform"
+            }]
         }
     ],
     "connector": [
-        {"name": "request","target": "CLocalObjectRequest"},
-        {"name": "postPlatform","target": "CInstall"},
-        {"name": "postSamples","target": "CInstall", "priority":120}
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        },
+        {
+            "name": "postPlatform",
+            "target": "CInstall"
+        },
+        {
+            "name": "postSamples",
+            "target": "CInstall",
+            "priority": 120
+        }
     ]
 }

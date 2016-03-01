@@ -1,3 +1,21 @@
+<?php
+/**
+ * @file Subtask.template.php
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.0
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2016
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2014,2016
+ * @author Florian Lücke <florian.luecke@gmail.com>
+ * @date 2013
+ */
+?>
+
 <?php include_once dirname(__FILE__) . '/../../../Assistants/Language.php'; ?>
 <?php $langTemplate='CreateSheet_Subtask';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 
@@ -120,10 +138,10 @@ include_once dirname(__FILE__) . '/../Helpers.php';
         $formsAllowed=false;
         if (!isset($forms)){
             $formsAllowed = false;
-            $result = Request::get((isset($serverURI)?$serverURI:"").'/DB/DBForm/link/exists/course/' . $cid,array(),'');
+            $result = Request::get($serverURI.'/vendor/forms/DBForm/link/exists/course/' . $cid,array(),'');
             if ( $result['status'] === 200 )
                 $formsAllowed = true;
-        } else 
+        } else
             $formsAllowed=true;
         
         $processesAllowed=false;

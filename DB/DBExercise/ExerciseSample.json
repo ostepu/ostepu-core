@@ -1,109 +1,94 @@
-/**
- * @file ExerciseSample.json This file represents a valid JSON object of type Exercise for DBExercise.
- *
- * @author Till Uhlig
- */
-
-    [
-       {
-           "id": "1",
-           "sheetId": "1",
-           "maxPoints": "5",
-           "type": "1",
-           "link": "1",
-           "bonus": "1",
-           "attachments":
-           [
-               {
-                   "fileId": "1",
-                   "displayName": "a.pdf",
-                   "address": "file/abcdef",
-                   "timeStamp": "1389643115",
-                   "fileSize": "100",
-                   "hash": "abcdef"
-               },
-               {
-                   "fileId": "5",
-                   "displayName": "e.pdf",
-                   "address": "file/ab",
-                   "timeStamp": "1389643115",
-                   "fileSize": "500",
-                   "hash": "ab"
-               }
-           ],
-           "submissions":
-           [
-               {
-                   "id": "2",
-                   "studentId": "1",
-                   "exerciseId": "1",
-                   "comment": "zwei",
-                   "accepted": "1",
-                   "date": "1389643115",
-                   "selectedForGroup": "1"
-               },
-               {
-                   "id": "3",
-                   "studentId": "2",
-                   "exerciseId": "1",
-                   "comment": "drei",
-                   "accepted": "1",
-                   "date": "1389643115",
-                   "selectedForGroup": "1"
-               }
-           ]
-       },
-       {
-           "id": "2",
-           "sheetId": "1",
-           "maxPoints": "10",
-           "type": "2",
-           "link": "1",
-           "bonus": "0",
-           "attachments":
-           [
-               {
-                   "fileId": "2",
-                   "displayName": "b.pdf",
-                   "address": "file/abcde",
-                   "timeStamp": "1389643115",
-                   "fileSize": "200",
-                   "hash": "abcde"
-               }
-           ],
-           "submissions":
-           [
-               {
-                   "id": "6",
-                   "studentId": "4",
-                   "exerciseId": "2",
-                   "comment": "sechs",
-                   "accepted": "1",
-                   "date": "1389643115",
-                   "selectedForGroup": "1"
-               }
-           ]
-       },
-       {
-           "id": "3",
-           "sheetId": "2",
-           "maxPoints": "12",
-           "type": "3",
-           "link": "3",
-           "bonus": "0",
-           "attachments":
-           [
-               {
-                   "fileId": "3",
-                   "displayName": "c.pdf",
-                   "address": "file/abcd",
-                   "timeStamp": "1389643115",
-                   "fileSize": "300",
-                   "hash": "abcd"
-               }
-           ],
-           "submissions":
-           [
-           ]
-       }
-    ]
+[
+    {
+        "__commentFile": "@file ExerciseSample.json This file represents a valid JSON object of type Exercise for DBExercise.",
+        "__commentAuthor": "@author Till Uhlig"
+    },
+    {
+        "id": "1",
+        "sheetId": "1",
+        "maxPoints": "5",
+        "type": "1",
+        "link": "1",
+        "bonus": "1",
+        "attachments": [
+            {
+                "fileId": "1",
+                "displayName": "a.pdf",
+                "address": "file/abcdef",
+                "timeStamp": "1389643115",
+                "fileSize": "100",
+                "hash": "abcdef"
+            },
+            {
+                "fileId": "5",
+                "displayName": "e.pdf",
+                "address": "file/ab",
+                "timeStamp": "1389643115",
+                "fileSize": "500",
+                "hash": "ab"
+            }
+        ],
+        "submissions": [
+            {
+                "id": "2",
+                "studentId": "1",
+                "exerciseId": "1",
+                "comment": "zwei",
+                "accepted": "1",
+                "date": "1389643115",
+                "selectedForGroup": "1"
+            },
+            {
+                "id": "3",
+                "studentId": "2",
+                "exerciseId": "1",
+                "comment": "drei",
+                "accepted": "1",
+                "date": "1389643115",
+                "selectedForGroup": "1"
+            }
+        ]
+    },
+    {
+        "id": "2",
+        "sheetId": "1",
+        "maxPoints": "10",
+        "type": "2",
+        "link": "1",
+        "bonus": "0",
+        "attachments": [{
+            "fileId": "2",
+            "displayName": "b.pdf",
+            "address": "file/abcde",
+            "timeStamp": "1389643115",
+            "fileSize": "200",
+            "hash": "abcde"
+        }],
+        "submissions": [{
+            "id": "6",
+            "studentId": "4",
+            "exerciseId": "2",
+            "comment": "sechs",
+            "accepted": "1",
+            "date": "1389643115",
+            "selectedForGroup": "1"
+        }]
+    },
+    {
+        "id": "3",
+        "sheetId": "2",
+        "maxPoints": "12",
+        "type": "3",
+        "link": "3",
+        "bonus": "0",
+        "attachments": [{
+            "fileId": "3",
+            "displayName": "c.pdf",
+            "address": "file/abcd",
+            "timeStamp": "1389643115",
+            "fileSize": "300",
+            "hash": "abcd"
+        }],
+        "submissions": []
+    }
+]

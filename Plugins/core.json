@@ -2,29 +2,61 @@
     "name": "CORE",
     "version": "0.4.3",
     "versionDate": "05.12.2015",
-    "requirements": [
-        {
-            "type": "plugin",
-            "name": "SLIM",
-            "version": "2.6.3"
-        },
-        {
-            "type": "plugin",
-            "name": "PHP-MARKDOWN",
-            "version": "1.6.0"
-        },
-        {
-            "type": "plugin",
-            "name": "PHPFASTCACHE",
-            "version": "3.0.0"
-        },
-        {
-            "type": "plugin",
-            "name": "VALIDATION",
-            "version": "1.0"
-        }
-    ],
+    "requirements": [],
     "files": [
+        {
+            "virtual": true,
+            "path": "/",
+            "type": "git",
+            "params": {
+                "name": "ostepu_core",
+                "path": "/"
+            },
+            "exclude": [
+                ".gitignore",
+                "README.md"
+            ]
+        },
+        {
+            "path": "Assistants/vendor/Validation/",
+            "type": "git",
+            "params": {
+                "name": "validation",
+                "branch": "master",
+                "URL": "https://github.com/tilluhlig/Validation",
+                "path": "Assistants/vendor/Validation/"
+            }
+        },
+        {
+            "path": "Assistants/vendor/Slim/",
+            "type": "git",
+            "params": {
+                "name": "slim",
+                "branch": "master",
+                "URL": "https://github.com/tilluhlig/Slim",
+                "path": "Assistants/vendor/Slim/"
+            }
+        },
+        {
+            "path": "Assistants/vendor/phpfastcache/",
+            "type": "git",
+            "params": {
+                "name": "phpfastcache",
+                "branch": "final",
+                "URL": "https://github.com/tilluhlig/phpfastcache",
+                "path": "Assistants/vendor/phpfastcache/"
+            }
+        },
+        {
+            "path": "Assistants/vendor/Markdown/",
+            "type": "git",
+            "params": {
+                "name": "php-markdown",
+                "branch": "lib",
+                "URL": "https://github.com/michelf/php-markdown",
+                "path": "Assistants/vendor/Markdown/"
+            }
+        },
         {"path": "DB/.htaccess"},
         {"path": "FS/.htaccess"},
         {"path": "logic/Include/"},
@@ -87,6 +119,7 @@
         {"conf": "logic/LTutor/Component.json"},
         {"conf": "DB/CUIHelp/Component.json"},
         {"conf": "DB/CControl/Component.json"},
+        {"conf": "DB/CSystem/Component.json"},
         {"conf": "---DB/CGate/Component.json"},
         {"conf": "DB/CAbstract/Component.json"},
         {"conf": "DB/CHelp/Component.json"},

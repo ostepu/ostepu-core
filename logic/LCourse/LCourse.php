@@ -2,10 +2,13 @@
 /**
  * @file LCourse.php contains the LCourse class
  *
- * @author Christian Elze
- * @author Peter König
- * @author Martin Daute
- * @date 2013-2014
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.1
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2016
  */
 
 require_once dirname(__FILE__) . '/../../Assistants/vendor/Slim/Slim/Slim.php';

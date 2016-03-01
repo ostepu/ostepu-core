@@ -1,0 +1,13 @@
+[{
+    "name": "Komponenten",
+    "author": "Till Uhlig",
+    "version": "1.0",
+    "instructions": {
+        "type": "php",
+        "params": {
+            "run": "include",
+            "file": "Komponenten.php",
+            "className": "Komponenten"
+        }
+    }
+}]

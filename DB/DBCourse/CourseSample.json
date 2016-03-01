@@ -1,49 +1,40 @@
-/**
- * @file CourseSample.json This file represents a valid JSON object of type Course for DBCourse.
- *
- * @author Till Uhlig
- */
-
-   [
-       {
-           "id": "1",
-           "name": "﻿Bengalisch II",
-           "semester": "SS 11",
-           "defaultGroupSize": "1",
-           "exerciseSheets":
-           [
-               "1",
-               "2"
-           ]
-       },
-       {
-           "id": "2",
-           "name": "Fachschaftsseminar fuer Mathematik",
-           "semester": "WS 11/12",
-           "defaultGroupSize": "2",
-           "exerciseSheets":
-           [
-               "3",
-               "4"
-           ]
-       },
-       {
-           "id": "3",
-           "name": "Kulturgeschichte durch den Magen: Essen in Italien",
-           "semester": "SS 12",
-           "defaultGroupSize": "3",
-           "exerciseSheets":
-           [
-           ]
-       },
-       {
-           "id": "4",
-           "name": "Maerkte im vor- und nachgelagerten Bereich der Landwirtschaft",
-           "semester": "WS 12/13",
-           "defaultGroupSize": "4",
-           "exerciseSheets":
-           [
-               "5"
-           ]
-       }
-    ]
+[
+    {
+        "__commentFile": "@file CourseSample.json This file represents a valid JSON object of type Course for DBCourse.",
+        "__commentAuthor": "@author Till Uhlig"
+    },
+    {
+        "id": "1",
+        "name": "﻿Bengalisch II",
+        "semester": "SS 11",
+        "defaultGroupSize": "1",
+        "exerciseSheets": [
+            "1",
+            "2"
+        ]
+    },
+    {
+        "id": "2",
+        "name": "Fachschaftsseminar fuer Mathematik",
+        "semester": "WS 11/12",
+        "defaultGroupSize": "2",
+        "exerciseSheets": [
+            "3",
+            "4"
+        ]
+    },
+    {
+        "id": "3",
+        "name": "Kulturgeschichte durch den Magen: Essen in Italien",
+        "semester": "SS 12",
+        "defaultGroupSize": "3",
+        "exerciseSheets": []
+    },
+    {
+        "id": "4",
+        "name": "Maerkte im vor- und nachgelagerten Bereich der Landwirtschaft",
+        "semester": "WS 12/13",
+        "defaultGroupSize": "4",
+        "exerciseSheets": ["5"]
+    }
+]

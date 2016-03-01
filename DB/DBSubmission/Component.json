@@ -8,6 +8,7 @@
         {"path": "DBSubmission.php"},
         {"path": "index.php"},
         {"path": "Commands.json"},
+        {"path": "SubmissionSample.json"},
         {"path": "Sql/"},
         {"path": "info/"}
     ],

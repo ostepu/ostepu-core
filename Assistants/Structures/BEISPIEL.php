@@ -1,12 +1,17 @@
 <?php
+/**
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.3.4
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ */
 
 // fügt die Objektklasse hinzu, hier sind noch allgemeine Eigenschaften enthalten (Statuscode, Antworttext etc.)
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
-/**
- * @author Till Uhlig
- * @date 2015
- */
 class BEISPIEL extends Object implements JsonSerializable // muss eingebunden werden, damit das Objekt serialisierbar wird
 {
 

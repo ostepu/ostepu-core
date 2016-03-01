@@ -3,10 +3,21 @@
  * @file Upload.php
  * Shows a form to upload solutions.
  *
- * @author Felix Schmidt
- * @author Florian Lücke
- * @author Ralf Busch
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.0
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2016
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2014-2015
+ * @author Felix Schmidt <Fiduz@Live.de>
+ * @date 2014
+ * @author Florian Lücke <florian.luecke@gmail.com>
+ * @date 2013-2014
  */
+
 ob_start();
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
