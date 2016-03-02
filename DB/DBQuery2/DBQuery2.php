@@ -8,7 +8,9 @@
  * @since 0.1.0
  *
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
- * @date 2014-2016
+ * @date 2013-2016
+ * @author Felix Schmidt <Fiduz@Live.de>
+ * @date 2014
  */
 
 include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );

@@ -7,8 +7,10 @@
  * @package OSTEPU (https://github.com/ostepu/system)
  * @since 0.1.0
  *
+ * @author Jörg Baumgarten <kuroi.tatsu@freenet.de>
+ * @date 2014
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
- * @date 2015
+ * @date 2014
  */
 ?>
 

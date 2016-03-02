@@ -14,9 +14,9 @@
  * @author Ralf Busch <ralfbusch92@gmail.com>
  * @date 2014
  * @author Felix Schmidt <Fiduz@Live.de>
- * @date 2014
+ * @date 2013-2014
  * @author Florian Lücke <florian.luecke@gmail.com>
- * @date 2014
+ * @date 2013-2014
  *
  * @todo PUT Request to logic not to DB
  * @todo use logic Controller instead of database

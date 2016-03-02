@@ -8,7 +8,7 @@
  * @since 0.3.0
  *
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
- * @date 2015
+ * @date 2014-2015
  */
 ?>
 

@@ -1,5 +1,3 @@
-<?php
-?>
 <?php $langTemplate='Processor_AddAttachment';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 <?php
 /**

@@ -11,7 +11,7 @@
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
  * @date 2014-2015
  * @author Florian Lücke <florian.luecke@gmail.com>
- * @date 2013
+ * @date 2013-2014
  *
  * This file contains two classes. This is an exception but it seemed neccessary
  * to keep them as close toghether as possible as LogLevel is only used to

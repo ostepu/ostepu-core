@@ -14,6 +14,8 @@
  * @date 2014
  * @author Felix Schmidt <Fiduz@Live.de>
  * @date 2014
+ * @author Florian Lücke <florian.luecke@gmail.com>
+ * @date 2013-2014
  */
 
 ob_start();
