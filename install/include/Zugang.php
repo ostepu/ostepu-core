@@ -11,9 +11,9 @@
  * @date 2014-2015
  */
 
-require_once dirname(__FILE__) . '/../../Assistants/SSH/Net/SCP.php';
-require_once dirname(__FILE__) . '/../../Assistants/SSH/Net/SSH2.php';
-require_once dirname(__FILE__) . '/../../Assistants/SSH/Crypt/RSA.php';
+require_once dirname(__FILE__) . '/SSH/SSH/Net/SCP.php';
+require_once dirname(__FILE__) . '/SSH/SSH/Net/SSH2.php';
+require_once dirname(__FILE__) . '/SSH/SSH/Crypt/RSA.php';
 
 class Zugang
 {
