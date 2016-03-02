@@ -1,10 +1,11 @@
 <?php
 /**
  * @file LOOP.functions.php
- * @author  Ralf Busch
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2015-2016
  */
-
-
 
 function LOOP_createParameters(&$subexercise, $key, $exercisekey, $subexercisekey, $oldparameter = null, $filepaths, $filenames, $fileerrors, $filesystemURI, $databaseURI)
 {

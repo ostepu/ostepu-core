@@ -2,8 +2,10 @@
 /**
  * @file Sandbox.php Contains the Sandbox class
  * 
- * @author Ralf Busch
- * @date 2015
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2016
  */
 
 class Sandbox

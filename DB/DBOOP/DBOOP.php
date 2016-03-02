@@ -1,10 +1,11 @@
-
 <?php
 /**
- * @file DBBeispiel.php
+ * @file DBOOP.php
  *
- * @author Till Uhlig
- * @date 2015
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2016
  */
 
 // bindet die Modellklasse und weitere wichtige ein (hier ist auch Slim enthalten)
