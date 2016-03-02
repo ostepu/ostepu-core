@@ -299,14 +299,14 @@ class KomponentenErstellen
             $components = array();
 
             $componentFiles = array();
-            $plugins = PlugInsInstallieren::installCheckPlugins($data, $fail, $errno, $error);
+            $plugins = Packetverwaltung::installCheckPackages($data, $fail, $errno, $error);
 
             foreach ($plugins as $input){
 
                 // Dateiliste zusammentragen
                 $fileList = array();
                 $fileListAddress = array();
-                PlugInsInstallieren::gibPluginDateien($data, $input, $fileList, $fileListAddress, $componentFiles);
+                Packetverwaltung::gibPacketDateien($data, $input, $fileList, $fileListAddress, $componentFiles);
                 unset($fileList);
                 unset($fileListAddress);
             }

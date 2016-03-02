@@ -1,6 +1,6 @@
 <?php
 /**
- * @file PlugInsInstallieren.php
+ * @file Packetverwaltung.php
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
  *
@@ -11,41 +11,41 @@
  * @date 2014-2016
  */
 
-#region PlugInsInstallieren
-class PlugInsInstallieren
+#region Packetverwaltung
+class Packetverwaltung
 {
     private static $initialized=false;
-    public static $name = 'initPlugins';
+    public static $name = 'initPackages';
     public static $installed = false;
     public static $page = 6;
     public static $rank = 100;
     public static $enabledShow = true;
-    private static $langTemplate='PlugInsInstallieren';
-    private static $packagePath = 'Plugins';
+    private static $langTemplate='Packetverwaltung';
+    private static $packagePath = 'packages';
 
     public static $onEvents = array(
                                     'check'=>array(
                                         'name'=>'checkPlugins',
                                         'event'=>array('page'),
-                                        'procedure'=>'installCheckPlugins'
+                                        'procedure'=>'installCheckPackages'
                                         ),
                                     'install'=>array(
                                         'name'=>'installPlugins',
                                         'event'=>array('actionInstallPlugins','update'),
-                                        'procedure'=>'installInstallPlugins',
+                                        'procedure'=>'installInstallPackages',
                                         'enabledInstall'=>true
                                         ),
                                     'uninstall'=>array(
                                         'name'=>'uninstallPlugins',
                                         'event'=>array('actionUninstallPlugins'),
-                                        'procedure'=>'installUninstallPlugins',
+                                        'procedure'=>'installUninstallPackages',
                                         'enabledInstall'=>false
                                         )
                                     );
 
     public static function getPackagePath($data)
     {
-        return $mainPath = $data['PL']['localPath'] . DIRECTORY_SEPARATOR . str_replace(array("\\","/"), array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR), self::$packagePath);
+        return $mainPath = $data['PL']['localPath'] . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR . str_replace(array("\\","/"), array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR), self::$packagePath);
     }
 
     public static function getDefaults($data)
@@ -53,7 +53,7 @@ class PlugInsInstallieren
         $defaultSelectedPlugins = array('CORE','INSTALL','PHP-MARKDOWN','PHPFASTCACHE','SLIM','VALIDATION','FORMS');
 
         $res = array();
-        $pluginFiles = self::getPluginFiles($data);
+        $pluginFiles = self::getPackageDefinitions($data);
         foreach($pluginFiles as $plug){
             $filePath = self::getPackagePath($data) . DIRECTORY_SEPARATOR .$plug;
             if (is_readable($filePath)){
@@ -92,7 +92,7 @@ class PlugInsInstallieren
     }
 
     private static $pluginFiles=null;
-    public static function getPluginFiles($data)
+    public static function getPackageDefinitions($data)
     {
         if(self::$pluginFiles !== null){
             return self::$pluginFiles;
@@ -112,7 +112,7 @@ class PlugInsInstallieren
     }
 
     private static $selectedPluginFiles=null;
-    public static function getSelectedPluginFiles($data)
+    public static function getSelectedPackageDefinitions($data)
     {
         if(self::$selectedPluginFiles !== null){
             return self::$selectedPluginFiles;
@@ -141,7 +141,7 @@ class PlugInsInstallieren
 
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $isUpdate = (isset($data['action']) && $data['action']=='update') ? true : false;
-        $pluginFiles = self::getPluginFiles($data);
+        $pluginFiles = self::getPackageDefinitions($data);
         $text='';
         $text .= Design::erstelleBeschreibung($console,Installation::Get('packages','description',self::$langTemplate));
         $text .= Design::erstelleZeile($console, Installation::Get('packages','packageDetails',self::$langTemplate), 'e', Design::erstelleAuswahl($console, $data['PLUG']['details'], 'data[PLUG][details]', 'details', null, true), 'v_c');
@@ -213,7 +213,7 @@ class PlugInsInstallieren
                     $fileList = array();
                     $fileListAddress = array();
                     $componentFiles = array();
-                    self::gibPluginDateien($data, $input, $fileList, $fileListAddress, $componentFiles);
+                    self::gibPacketDateien($data, $input, $fileList, $fileListAddress, $componentFiles);
                     $fileCount=count($fileList);
                     foreach($fileList as $f){
                         if (is_readable($f)){
@@ -258,7 +258,7 @@ class PlugInsInstallieren
         return null;
     }
 
-    public static function installCheckPlugins($data, &$fail, &$errno, &$error, $checkPluginIsSelected = true)
+    public static function installCheckPackages($data, &$fail, &$errno, &$error, $checkPluginIsSelected = true)
     {
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $res = array();
@@ -455,7 +455,7 @@ class PlugInsInstallieren
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
 
-    public static function gibPluginInhalt($data, $file)
+    public static function gibPacketInhalt($data, $file)
     {
         $file = self::getPackagePath($data) . DIRECTORY_SEPARATOR .$file;
         if (file_exists($file) && is_readable($file)){
@@ -466,7 +466,7 @@ class PlugInsInstallieren
         return null;
     }
 
-    public static function gibPluginEintraegeNachTyp($input, $type='local', &$list)
+    public static function gibPacketEintraegeNachTyp($input, $type='local', &$list)
     {
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $list = array();
@@ -484,7 +484,7 @@ class PlugInsInstallieren
     }
 
 
-    public static function gibPluginDateien($data, $input, &$fileList, &$fileListAddress, &$componentFiles)
+    public static function gibPacketDateien($data, $input, &$fileList, &$fileListAddress, &$componentFiles)
     {
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $mainPath = $data['PL']['localPath'];
@@ -650,10 +650,10 @@ class PlugInsInstallieren
         return array("content"=>'');
     }
 
-    public static function installInstallPlugins($data, &$fail, &$errno, &$error)
+    public static function installInstallPackages($data, &$fail, &$errno, &$error)
     {
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
-        $pluginFiles = self::getSelectedPluginFiles($data);
+        $pluginFiles = self::getSelectedPackageDefinitions($data);
         $res = array();
 
         if (!$fail){
@@ -668,7 +668,7 @@ class PlugInsInstallieren
                     $dat = json_decode($dat,true);
                     if (!isset($dat['name'])) continue;
                     self::evaluierePlugin($data, $dat);
-                    self::gibPluginDateien($data, $dat, $fileList, $fileListAddress, $componentFiles);
+                    self::gibPacketDateien($data, $dat, $fileList, $fileListAddress, $componentFiles);
                 }
             }
 
@@ -680,7 +680,7 @@ class PlugInsInstallieren
         return $res;
     }
 
-    public static function installUninstallPlugins($data, &$fail, &$errno, &$error)
+    public static function installUninstallPackages($data, &$fail, &$errno, &$error)
     {
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $res = array();
@@ -695,4 +695,4 @@ class PlugInsInstallieren
         return $res;
     }
 }
-#endregion PlugInsInstallieren
+#endregion Packetverwaltung

@@ -99,12 +99,12 @@ class SyntaxPruefen
     {
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $res = array();
-        $pluginFiles = PlugInsInstallieren::getSelectedPluginFiles($data);
+        $pluginFiles = Packetverwaltung::getSelectedPackageDefinitions($data);
         $res['plugins'] = array();
 
         // hier die möglichen Erweiterungen ausgeben, zudem noch die Daten dieser Erweiterungen
         foreach ($pluginFiles as $plug){
-            $dat = PlugInsInstallieren::gibPluginInhalt($data,$plug);
+            $dat = Packetverwaltung::gibPacketInhalt($data,$plug);
             $name = isset($dat['name']) ? $dat['name'] : '???';
 
             $res['plugins'][$plug] = array();
@@ -122,7 +122,7 @@ class SyntaxPruefen
             $fileList = array();
             $fileListAddress = array();
             $componentFiles = array();
-            PlugInsInstallieren::gibPluginDateien($data, $dat, $fileList, $fileListAddress, $componentFiles);
+            Packetverwaltung::gibPacketDateien($data, $dat, $fileList, $fileListAddress, $componentFiles);
             unset($fileListAddress);
             unset($componentFiles);
             $res['plugins'][$plug]['filesAmount'] = count($fileList);

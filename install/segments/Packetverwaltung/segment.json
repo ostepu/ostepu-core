@@ -1,13 +1,13 @@
 [{
-    "name": "PlugInsInstallieren",
+    "name": "Packetverwaltung",
     "author": "Till Uhlig",
     "version": "1.0",
     "instructions": {
         "type": "php",
         "params": {
             "run": "include",
-            "file": "PlugInsInstallieren.php",
-            "className": "PlugInsInstallieren"
+            "file": "Packetverwaltung.php",
+            "className": "Packetverwaltung"
         }
     }
 }]
