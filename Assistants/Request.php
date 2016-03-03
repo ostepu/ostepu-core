@@ -24,6 +24,8 @@ include_once( dirname(__FILE__) . '/QEPGenerator.php' );
  */
 class Request
 {
+    public static $enableLocalCalls = true;
+    
     /**
      * parse a header string
      * @see http://us3.php.net/manual/de/function.http-parse-headers.php
@@ -91,22 +93,24 @@ class Request
         //Logger::Log("$method $target", LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CALL', true, LogLevel::DEBUG);
         $begin = microtime(true);
 
-        $configData = null;
-        $confFile = dirname(__FILE__).'/config.ini';
-        if (file_exists($confFile)){
-            $configData =  parse_ini_file($confFile,TRUE);
-        }
+        if (self::$enableLocalCalls){
+            $configData = null;
+            $confFile = dirname(__FILE__).'/config.ini';
+            if (file_exists($confFile)){
+                $configData =  parse_ini_file($confFile,TRUE);
+            }
 
-        // nun soll eine globale URL erkannt werden und in eine lokale überführt werden (wenn möglich)
-        if (isset($configData['PL']['urlExtern']) && isset($configData['PL']['url'])){
-            if (strpos($target,$configData['PL']['urlExtern'].'/')===0){
-                // es wurde eine globale URL erkannt, welche zu einer lokalen umgewandelt werden kann
-                $target = $configData['PL']['url'].substr($target,strlen($configData['PL']['urlExtern']));
+            // nun soll eine globale URL erkannt werden und in eine lokale überführt werden (wenn möglich)
+            if (isset($configData['PL']['urlExtern']) && isset($configData['PL']['url'])){
+                if (strpos($target,$configData['PL']['urlExtern'].'/')===0){
+                    // es wurde eine globale URL erkannt, welche zu einer lokalen umgewandelt werden kann
+                    $target = $configData['PL']['url'].substr($target,strlen($configData['PL']['urlExtern']));
+                }
             }
         }
 
         $done = false;
-        if (!CConfig::$onload && isset($configData['PL']['url']) && strpos($target,$configData['PL']['url'].'/')===0 && file_exists(dirname(__FILE__) . '/request_cconfig.json')){
+        if (self::$enableLocalCalls && !CConfig::$onload && isset($configData['PL']['url']) && strpos($target,$configData['PL']['url'].'/')===0 && file_exists(dirname(__FILE__) . '/request_cconfig.json')){
             if (self::$components===null){
                 self::$components=CConfig::loadStaticConfig('','',dirname(__FILE__),'request_cconfig.json');
             }
@@ -294,7 +298,7 @@ class Request
                 }
             }
         }
-
+        
         if (!$done){
             // creates a custom request
 
