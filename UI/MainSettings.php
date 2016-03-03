@@ -104,19 +104,25 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
             $exerciseTypes = $foundValues['exerciseTypes'];
 
             // creates a new course
-            $newCourse = Course::createCourse(null, $courseName, $semester, $defaultGroupSize);
-            $newCourseSettings = Course::encodeCourse($newCourse);
-            $URI = $logicURI . '/course';
-            $newCourse = http_post_data($URI, $newCourseSettings, true, $messageNewCourse);
+            if ($RequestError === false){
+                $newCourse = Course::createCourse(null, $courseName, $semester, $defaultGroupSize);
+                $newCourseSettings = Course::encodeCourse($newCourse);
+                $URI = $serverURI . '/logic/LCourse/course';
+                $newCourse = http_post_data($URI, $newCourseSettings, true, $messageNewCourse);
 
-            if ($messageNewCourse !== 201){
-                $RequestError = true;
+                if ($messageNewCourse !== 201){
+                    $RequestError = true;
+                }
             }
 
             if ($RequestError === false){
                 // extracts the id of the new course
                 $newCourse = json_decode($newCourse, true);
-                $newCourseId = $newCourse['id'];
+                if (isset($newCourse['id'])){
+                    $newCourseId = $newCourse['id'];
+                } else {
+                    $RequestError = true;
+                }
             }
 
             // creates a new approvalCondition for every selected exerciseType
