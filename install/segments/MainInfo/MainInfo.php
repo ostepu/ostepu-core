@@ -52,7 +52,7 @@ class MainInfo
         Einstellungen::$path = $data['PL']['localPath'] . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR . 'config';
         Installation::log(array('text'=>Installation::Get('mainInfo','checkPath',self::$langTemplate,array('path'=>Einstellungen::$path))));
         Installation::log(array('text'=>Installation::Get('mainInfo','checkFile',self::$langTemplate,array('file'=>__FILE__))));
-        if (!is_dir(Einstellungen::$path) || !is_writable(__FILE__)) {
+        if ((is_dir(Einstellungen::$path) && !is_dir(Einstellungen::$path)) || !is_writable(__FILE__)) {
             $text .= Design::erstelleZeile($console, Installation::Get('mainInfo','notWritable',self::$langTemplate), 'error');
             $failure = true;
             Installation::log(array('text'=>Installation::Get('mainInfo','noWritePermission',self::$langTemplate), 'logLevel'=>LogLevel::ERROR));
