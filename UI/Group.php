@@ -273,7 +273,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
     if ($postResults['action'] === 'ManageGroup') {
         $postManageGroupValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
           ->addSet('exercises',
-                   ['default'=>array(),
+                   ['set_default'=>array(),
                     'perform_this_foreach'=>[['key',
                                          ['valid_identifier']],
                                         ['elem',
@@ -320,7 +320,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
     if ($postResults['action'] === 'InviteGroup') {
         $postInviteGroupValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
           ->addSet('applyGroup',
-                   ['default'=>false,
+                   ['set_default'=>false,
                     'to_boolean',
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidApplyGroup', $langTemplate)]]);
@@ -340,7 +340,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                    ['satisfy_exists',
                     'satisfy_not_empty',
                     'is_array',
-                    'perform_this_array'=>[['key_all',
+                    'perform_this_array'=>[[['key_all'],
                                        ['valid_identifier']]],
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidMemberIds', $langTemplate)]]);
@@ -411,7 +411,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                    ['satisfy_exists',
                     'satisfy_not_empty',
                     'is_array',
-                    'perform_this_array'=>[['key_all',
+                    'perform_this_array'=>[[['key_all'],
                                        ['satisfy_not_empty',
                                         'valid_userName']]],
                     'on_error'=>['type'=>'error',
