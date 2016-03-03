@@ -650,7 +650,7 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
         $addUserNotifications = array_merge($addUserNotifications,$postAddUserValidation->getPrintableNotifications('MakeNotification'));
         $postAddUserValidation->resetNotifications()->resetErrors();
 
-        if ($postAddUserValidation->Valid()) {
+        if ($postAddUserValidation->isValid()) {
             $URL = $databaseURI . '/user/user/' . $foundValues['userName'];
             $user = http_get($URL, true);
             $user = json_decode($user, true);
