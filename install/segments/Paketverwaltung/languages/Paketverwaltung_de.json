@@ -8,7 +8,7 @@
     "numberFiles": "Dateien",
     "size": "Größe",
     "description": "Hier können die benötigten Pakete gewählt und der Dateien auf den aktuellen Stand gebracht werden. Dabei werden mitunter externe Projekte nachgeladen.",
-    "packageDetails": "Packetdetails anzeigen",
+    "packageDetails": "Paketdetails anzeigen",
     "install": "Aktualisieren",
     "errorGitClone": "git clone konnte nicht aufgerufen werden!!! >> $result",
     "errorGitRemote": "git remote konnte nicht aufgerufen werden!!! >> $result",

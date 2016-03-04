@@ -1,6 +1,6 @@
 <?php
 /**
- * @file Packetverwaltung.php
+ * @file Paketverwaltung.php
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
  *
@@ -11,8 +11,8 @@
  * @date 2014-2016
  */
 
-#region Packetverwaltung
-class Packetverwaltung
+#region Paketverwaltung
+class Paketverwaltung
 {
     private static $initialized=false;
     public static $name = 'initPackages';
@@ -20,7 +20,7 @@ class Packetverwaltung
     public static $page = 6;
     public static $rank = 100;
     public static $enabledShow = true;
-    private static $langTemplate='Packetverwaltung';
+    private static $langTemplate='Paketverwaltung';
     private static $packagePath = 'packages';
 
     public static $onEvents = array(
@@ -213,7 +213,7 @@ class Packetverwaltung
                     $fileList = array();
                     $fileListAddress = array();
                     $componentFiles = array();
-                    self::gibPacketDateien($data, $input, $fileList, $fileListAddress, $componentFiles);
+                    self::gibPaketDateien($data, $input, $fileList, $fileListAddress, $componentFiles);
                     $fileCount=count($fileList);
                     foreach($fileList as $f){
                         if (is_readable($f)){
@@ -455,7 +455,7 @@ class Packetverwaltung
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
 
-    public static function gibPacketInhalt($data, $file)
+    public static function gibPaketInhalt($data, $file)
     {
         $file = self::getPackagePath($data) . DIRECTORY_SEPARATOR .$file;
         if (file_exists($file) && is_readable($file)){
@@ -466,7 +466,7 @@ class Packetverwaltung
         return null;
     }
 
-    public static function gibPacketEintraegeNachTyp($input, $type='local', &$list)
+    public static function gibPaketEintraegeNachTyp($input, $type='local', &$list)
     {
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $list = array();
@@ -484,7 +484,7 @@ class Packetverwaltung
     }
 
 
-    public static function gibPacketDateien($data, $input, &$fileList, &$fileListAddress, &$componentFiles)
+    public static function gibPaketDateien($data, $input, &$fileList, &$fileListAddress, &$componentFiles)
     {
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $mainPath = $data['PL']['localPath'];
@@ -668,7 +668,7 @@ class Packetverwaltung
                     $dat = json_decode($dat,true);
                     if (!isset($dat['name'])) continue;
                     self::evaluierePlugin($data, $dat);
-                    self::gibPacketDateien($data, $dat, $fileList, $fileListAddress, $componentFiles);
+                    self::gibPaketDateien($data, $dat, $fileList, $fileListAddress, $componentFiles);
                 }
             }
 
@@ -695,4 +695,4 @@ class Packetverwaltung
         return $res;
     }
 }
-#endregion Packetverwaltung
+#endregion Paketverwaltung

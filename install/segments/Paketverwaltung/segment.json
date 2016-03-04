@@ -1,13 +1,13 @@
 [{
-    "name": "Packetverwaltung",
+    "name": "Paketverwaltung",
     "author": "Till Uhlig",
     "version": "1.0",
     "instructions": {
         "type": "php",
         "params": {
             "run": "include",
-            "file": "Packetverwaltung.php",
-            "className": "Packetverwaltung"
+            "file": "Paketverwaltung.php",
+            "className": "Paketverwaltung"
         }
     }
 }]
