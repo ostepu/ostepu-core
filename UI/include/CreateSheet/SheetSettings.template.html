@@ -106,7 +106,7 @@
                 <?php } ?>
             </span>
             
-            <div class="content-body left">(<?php echo Language::Get('main','optionalFile', $langTemplate, array('maxFileSize'=>formatBytes(parse_size(ini_get('upload_max_filesize'))/4))); ?>)</div>
+            <div class="content-body left">(<?php echo Language::Get('main','optionalFile', $langTemplate, array('maxFileSize'=>formatBytes(parse_size(ini_get('upload_max_filesize'))))); ?>)</div>
 
             <label class="form-field left label bold new-line" for="sheetSolution"><?php echo Language::Get('main','sampleSolution', $langTemplate); ?>:</label>
             
