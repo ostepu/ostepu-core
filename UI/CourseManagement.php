@@ -563,7 +563,6 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
         $postGrantRightsValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
           ->addSet('Rights',
                    ['satisfy_exists',
-                    'satisfy_not_empty',
                     'satisfy_min_numeric'=>0,
                     'satisfy_max_numeric'=>3,
                     'to_integer',
