@@ -802,6 +802,14 @@ if (isset($_POST['action'])) {// && $_POST['action'] == "new"
     }
 }
 
+if (isset($_POST['action']) && $_POST['action'] == 'new'){
+    // wenn eine neue Serie angelegt wurde, müssen die Serien
+    // neu geladen werden
+    $URL = $getSiteURI . "/createsheet/user/{$uid}/course/{$cid}";
+    $createsheetData = http_get($URL, true);
+    $createsheetData = json_decode($createsheetData, true);
+}
+
 if (isset($sid)){
     $URL = $databaseURI . "/exercisesheet/exercisesheet/{$sid}/exercise";
     $sheet_data = http_get($URL, true);
