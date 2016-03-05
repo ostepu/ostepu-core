@@ -529,7 +529,7 @@ class LTutor
                         if ($found) break;
                     }
 
-                    if (isset($submission['comment']))
+                    if (isset($submission['comment']) && trim($submission['comment']) != '')
                         $data.="Kommentar: {$submission['comment']}\n";
 
                     $data.="<pre>";
@@ -804,7 +804,7 @@ class LTutor
                             if ($found) break;
                         }
 
-                        if (isset($marking['submission']['comment']))
+                        if (isset($marking['submission']['comment']) && trim($marking['submission']['comment']) != '')
                             $data.="Kommentar: {$marking['submission']['comment']}\n";
 
                         $data.="<pre>";
