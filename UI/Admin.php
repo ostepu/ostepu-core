@@ -66,7 +66,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
         $sheetNotifications[$foundValues['deleteSheetWarning']][] = MakeNotification('warning', Language::Get('main','askDeleteSheet', $langTemplate));
     } elseif ($postDeleteSheetValidation->isValid() && $postResults['action'] == 'ExerciseSheetLecturer' && isset($foundValues['deleteSheet'])) { /// !!! darf er das ??? ///
 
-        $URL = $logicURI . "/exercisesheet/exercisesheet/{$postResults['deleteSheet']}"; /// !!! darf er das ??? ///
+        $URL = $logicURI . "/exercisesheet/exercisesheet/{$foundValues['deleteSheet']}"; /// !!! darf er das ??? ///
         $result = http_delete($URL, true, $message);
 
         if ($message === 201){
