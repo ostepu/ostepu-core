@@ -581,7 +581,7 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
         $postGrantRightsValidation->resetNotifications()->resetErrors();
 
         // check if POST data is send
-        if($postGrantRightsValidation->Valid()) {
+        if($postGrantRightsValidation->isValid()) {
             // create new coursestatus and edit existing one
             $data = User::encodeUser(User::createCourseStatus($foundValues['userID'], $cid, $foundValues['Rights']));
 
