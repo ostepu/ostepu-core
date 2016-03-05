@@ -130,7 +130,9 @@ class FSZip
                                                 );
                         } else {
                             $zip->close( );
-                            unlink( $filePath );
+                            if (file_exists($filePath)){
+                                unlink( $filePath );
+                            }
                             return Model::isProblem(new File());
                         }
                     }
@@ -138,7 +140,9 @@ class FSZip
                 }
                 $zip->close( );
             } else {
-                unlink( $filePath );
+                if (file_exists( $filePath )){
+                    unlink( $filePath );
+                }
                 return Model::isProblem(new File());
             }
         }
@@ -263,11 +267,13 @@ class FSZip
             $file->setMimeType("application/zip");
 
             // removes the file
-            unlink( $this->config['DIR']['files'] . '/' . $filePath );
+            if (file_exists($this->config['DIR']['files'] . '/' . $filePath)){
+                unlink( $this->config['DIR']['files'] . '/' . $filePath );
+            }
 
             // the removing/unlink process failed, if the file still exists.
             if ( file_exists( $this->config['DIR']['files'] . '/' . $filePath ) ){
-            return Model::isProblem(new File( ));
+                return Model::isProblem(new File( ));
             }
 
             // the file is removed
