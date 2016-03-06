@@ -802,7 +802,7 @@ if (isset($_POST['action'])) {// && $_POST['action'] == "new"
     }
 }
 
-if (isset($_POST['action']) && $_POST['action'] == 'new'){
+if (isset($_POST['action']) && ($_POST['action'] == 'new' || $_POST['action'] == 'edit')){
     // wenn eine neue Serie angelegt wurde, müssen die Serien
     // neu geladen werden
     $URL = $getSiteURI . "/createsheet/user/{$uid}/course/{$cid}";
