@@ -242,6 +242,7 @@ class Installer
         $output = array();
         $installFail = false;
         $simple = false;
+        $jsonResult = false;
         $data = array();
         $tmp = array();
         $eventFound = null;
@@ -254,6 +255,9 @@ class Installer
 
         if (isset($_POST['simple']))
             $simple=true;
+        
+        if (isset($_POST['json']))
+            $jsonResult=true;
 
         if (isset($_POST['update']))
             $_POST['action'] = 'update';
@@ -749,7 +753,7 @@ class Installer
 
         }
 
-        if ($console && !$simple)
+        if ($console && $jsonResult)
             echo json_encode($output);
 
         if (!$console && !$simple)

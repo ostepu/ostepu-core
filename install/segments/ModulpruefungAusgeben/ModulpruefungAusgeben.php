@@ -58,8 +58,13 @@ class ModulpruefungAusgeben
                 } else
                     $text .= $moduleName.' '.($status ? Installation::Get('main','ok') : Installation::Get('main','fail'))."\n";
             }
-        } else
-            $text .= Design::erstelleZeile($console, "<font color='red'>".Installation::Get('main','fail')."</font>", 'e');
+        } else{
+            if (!$console){
+                $text .= Design::erstelleZeile($console, "<font color='red'>".Installation::Get('main','fail')."</font>", 'e');
+            } else {
+                $text .= Design::erstelleZeile($console, Installation::Get('main','fail'), 'e');
+            }
+        }
 
         echo Design::erstelleBlock($console, Installation::Get('modules','title',self::$langTemplate), $text);
 

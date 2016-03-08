@@ -55,8 +55,13 @@ class PathPruefen
                 } else
                     $text .= $desc.' '.($status ? Installation::Get('main','ok') : Installation::Get('main','fail'))."\n";
             }
-        } else
-            $text .= Design::erstelleZeile($console, "<font color='red'>".Installation::Get('main','fail')."</font>", 'e');
+        } else {
+            if (!$console){
+                $text .= Design::erstelleZeile($console, "<font color='red'>".Installation::Get('main','fail')."</font>", 'e');
+            } else {
+                $text .= Design::erstelleZeile($console, Installation::Get('main','fail'), 'e');
+            }
+        }
 
         echo Design::erstelleBlock($console, Installation::Get('applications','title',self::$langTemplate), $text);
 
@@ -70,7 +75,7 @@ class PathPruefen
         $res=null;
         if (constant('ISCLI')){
             Installation::log(array('text'=>Installation::Get('applications','ISCLIEnabled',self::$langTemplate)));
-            ///$res = json_decode(Request::get($data['PL']['url'].'/install/install.php/checkModulesExtern',array(),'')['content'],true);
+            $res = PathPruefen::checkModules($data,$fail,$errno,$error);
         } else {
             Installation::log(array('text'=>Installation::Get('applications','ISCLIDisabled',self::$langTemplate)));
             $res = PathPruefen::checkModules($data,$fail,$errno,$error);

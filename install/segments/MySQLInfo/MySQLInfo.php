@@ -35,8 +35,18 @@ class MySQLInfo // der Name der Klasse muss mit dem Dateinamen uebereinstimmen
 
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $text='';
-        $text .= Design::erstelleBeschreibung($console,Installation::Get('mySQLInfo','description',self::$langTemplate));
-        echo Design::erstelleBlock($console, Installation::Get('mySQLInfo','title',self::$langTemplate), $text);
+        if (!$console){
+            $text .= Design::erstelleBeschreibung($console,Installation::Get('mySQLInfo','description',self::$langTemplate));
+        }
+        
+        if (!$console){
+            echo Design::erstelleBlock($console, Installation::Get('mySQLInfo','title',self::$langTemplate), $text);
+        } else {
+            if ($text != ''){
+                echo Design::erstelleBlock($console, Installation::Get('mySQLInfo','title2',self::$langTemplate), $text);
+            }
+        }
+        
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
     }
 }

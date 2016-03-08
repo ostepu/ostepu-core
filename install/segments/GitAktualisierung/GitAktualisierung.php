@@ -97,7 +97,9 @@ class GitAktualisierung
             }
         }
 
-        echo Design::erstelleBlock($console, Installation::Get('gitUpdate','title',self::$langTemplate), $text);
+        if (!$console || $text !== ''){
+            echo Design::erstelleBlock($console, Installation::Get('gitUpdate','title',self::$langTemplate), $text);
+        }
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return null;
     }

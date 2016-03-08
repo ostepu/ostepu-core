@@ -49,13 +49,13 @@ class MainInfo
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $text='';
         $failure=false;
-        Einstellungen::$path = $data['PL']['localPath'] . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR . 'config';
-        Installation::log(array('text'=>Installation::Get('mainInfo','checkPath',self::$langTemplate,array('path'=>Einstellungen::$path))));
-        Installation::log(array('text'=>Installation::Get('mainInfo','checkFile',self::$langTemplate,array('file'=>__FILE__))));
-        if ((is_dir(Einstellungen::$path) && !is_dir(Einstellungen::$path)) || !is_writable(__FILE__)) {
+        $content = (isset($result[self::$onEvents['0']['name']]) ? $result[self::$onEvents['0']['name']] : null);
+
+        if (!isset($content)){
+            $failure = true;
+        }elseif (isset($content['status']) && $content['status'] == '412') {
             $text .= Design::erstelleZeile($console, Installation::Get('mainInfo','notWritable',self::$langTemplate), 'error');
             $failure = true;
-            Installation::log(array('text'=>Installation::Get('mainInfo','noWritePermission',self::$langTemplate), 'logLevel'=>LogLevel::ERROR));
         } else {
             Installation::log(array('text'=>Installation::Get('mainInfo','positiveResult',self::$langTemplate)));
         }
@@ -64,6 +64,23 @@ class MainInfo
             echo Design::erstelleBlock($console, Installation::Get('mainInfo','title',self::$langTemplate), $text);
         }
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
+    }
+
+    public static function install($data, &$fail, &$errno, &$error)
+    {
+        $res = array();
+        Einstellungen::$path = $data['PL']['localPath'] . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR . 'config';
+        Installation::log(array('text'=>Installation::Get('mainInfo','checkPath',self::$langTemplate,array('path'=>Einstellungen::$path))));
+        Installation::log(array('text'=>Installation::Get('mainInfo','checkFile',self::$langTemplate,array('file'=>__FILE__))));
+        if ((is_dir(Einstellungen::$path) && !is_dir(Einstellungen::$path)) || !is_writable(__FILE__)) {
+            $res['status'] = 412;
+            $fail = true;
+            Installation::log(array('text'=>Installation::Get('mainInfo','noWritePermission',self::$langTemplate), 'logLevel'=>LogLevel::ERROR));
+        } else {
+            Installation::log(array('text'=>Installation::Get('mainInfo','positiveResult',self::$langTemplate)));
+        }
+        
+        return $res;
     }
 }
 #endregion MainInfo
