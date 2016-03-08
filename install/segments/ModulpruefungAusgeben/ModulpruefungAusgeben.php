@@ -50,20 +50,30 @@ class ModulpruefungAusgeben
         $error = $result['error'];
         $errno = $result['errno'];
         $content = $result['content'];
-
-        if ($content!=null){
-            foreach ($content as $moduleName => $status){
+        
+        if (isset($content['status']) && $content['status'] == 200){
+            if ($content!=null){
+                foreach ($content as $moduleName => $status){
+                    if (!$console){
+                        $text .= Design::erstelleZeile($console, $moduleName, 'e', ($status ? Installation::Get('main','ok') : "<font color='red'>".Installation::Get('main','fail')."</font>"), 'v');
+                    } else
+                        $text .= $moduleName.' '.($status ? Installation::Get('main','ok') : Installation::Get('main','fail'))."\n";
+                }
+            } else{
                 if (!$console){
-                    $text .= Design::erstelleZeile($console, $moduleName, 'e', ($status ? Installation::Get('main','ok') : "<font color='red'>".Installation::Get('main','fail')."</font>"), 'v');
-                } else
-                    $text .= $moduleName.' '.($status ? Installation::Get('main','ok') : Installation::Get('main','fail'))."\n";
+                    $text .= Design::erstelleZeile($console, "<font color='red'>".Installation::Get('main','fail')."</font>", 'e');
+                } else {
+                    $text .= Design::erstelleZeile($console, Installation::Get('main','fail'), 'e');
+                }
             }
-        } else{
-            if (!$console){
-                $text .= Design::erstelleZeile($console, "<font color='red'>".Installation::Get('main','fail')."</font>", 'e');
-            } else {
-                $text .= Design::erstelleZeile($console, Installation::Get('main','fail'), 'e');
-            }
+        } else {
+            if (!isset($content['status']) || $content['status'] == 404){
+                if (!$console){
+                    $text .= Design::erstelleZeile($console, "<font color='red'>".Installation::Get('modules','failUrl',self::$langTemplate,array('url'=>$data['PL']['url'].'/install/install.php/checkModulesExtern'))."</font>", 'e');
+                } else {
+                    $text .= Design::erstelleZeile($console, Installation::Get('modules','failUrl',self::$langTemplate,array('url'=>$data['PL']['url'].'/install/install.php/checkModulesExtern')), 'e');
+                }   
+            }            
         }
 
         echo Design::erstelleBlock($console, Installation::Get('modules','title',self::$langTemplate), $text);
@@ -76,12 +86,19 @@ class ModulpruefungAusgeben
     {
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $res=null;
-        if (constant('ISCLI')){
+        if (constant('ISCLI') || constant('ISCGI')){
             Installation::log(array('text'=>Installation::Get('modules','ISCLIEnabled',self::$langTemplate)));
-            $res = json_decode(Request::get($data['PL']['url'].'/install/install.php/checkModulesExtern',array(),'')['content'],true);
+            $result = Request::get($data['PL']['url'].'/install/install.php/checkModulesExtern',array(),'');
+            if ($result['status'] == 200){
+                $res = json_decode($result['content'],true);
+                $res['status'] = 200;
+            } else {
+                $res['status'] = 404;
+            }
         } else {
             Installation::log(array('text'=>Installation::Get('modules','ISCLIDisabled',self::$langTemplate)));
             $res = ModulpruefungAusgeben::checkModules($data,$fail,$errno,$error);
+            $res['status'] = 200;
         }
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return $res;
@@ -112,9 +129,7 @@ class ModulpruefungAusgeben
         if (function_exists('apache_get_modules')){
             $res = in_array($module, apache_get_modules());
         } else {
-            $res = getenv('HTTP_'.strtoupper($module))=='On'?TRUE:
-                   getenv('REDIRECT_HTTP_'.strtoupper($module))=='On'?true:FALSE;
-            //$res = false;
+            $res = false;
         }
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return $res;

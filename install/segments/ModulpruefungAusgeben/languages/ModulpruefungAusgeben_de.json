@@ -4,5 +4,6 @@
     "ISCLIEnabled": "ISCLI aktiv",
     "ISCLIDisabled": "ISCLI inaktiv",
     "checkResult": "Resultat: $res",
-    "checkModule": "prüfe: $module"
+    "checkModule": "prüfe: $module",
+    "failUrl": " $url konnte nicht aufgerufen werden!"
 }}

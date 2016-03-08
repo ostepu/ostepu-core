@@ -15,6 +15,7 @@ set_time_limit(0);
 header("Content-Type: text/html; charset=utf-8");
 
 define('ISCLI', PHP_SAPI === 'cli');
+define('ISCGI', substr(PHP_SAPI, 0, 3) === 'cgi');
 
 if (file_exists(dirname(__FILE__) . '/../Assistants/vendor/Slim/Slim/Route.php') && file_exists(dirname(__FILE__) . '/../Assistants/vendor/Slim/Slim/Slim.php')){
     // wenn der Installationsassitent über die Konsole aufgerufen wird, dürfen wird
