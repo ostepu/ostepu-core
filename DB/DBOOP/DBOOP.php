@@ -18,7 +18,7 @@ class DBOOP
     /**
      * @var string $_prefix the prefixes, the class works with (comma separated)
      */
-    private static $_prefix = 'testcase,query';
+    private static $_prefix = 'testcase,query,course';
 
     /**
      * the $_prefix getter
