@@ -1,6 +1,6 @@
 {
     "name": "CORE",
-    "version": "0.4.3",
+    "version": "0.4.4",
     "versionDate": "05.12.2015",
     "requirements": [],
     "files": [
@@ -23,7 +23,7 @@
             "params": {
                 "name": "validation",
                 "branch": "master",
-                "URL": "https://github.com/tilluhlig/Validation",
+                "URL": "https://github.com/ostepu/Validation",
                 "path": "Assistants/vendor/Validation/"
             }
         },
@@ -33,7 +33,7 @@
             "params": {
                 "name": "slim",
                 "branch": "master",
-                "URL": "https://github.com/tilluhlig/Slim",
+                "URL": "https://github.com/ostepu/Slim",
                 "path": "Assistants/vendor/Slim/"
             }
         },
@@ -43,7 +43,7 @@
             "params": {
                 "name": "phpfastcache",
                 "branch": "final",
-                "URL": "https://github.com/tilluhlig/phpfastcache",
+                "URL": "https://github.com/ostepu/phpfastcache",
                 "path": "Assistants/vendor/phpfastcache/"
             }
         },
