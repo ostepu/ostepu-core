@@ -95,7 +95,7 @@ class ModulpruefungAusgeben
             } else {
                 $res['status'] = 404;
             }
-        } elseif (true || constant('ISCGI')){
+        } elseif (constant('ISCGI')){
             Installation::log(array('text'=>Installation::Get('modules','ISCGIEnabled',self::$langTemplate)));
             $result = Request::get($data['PL']['url'].'/install/segments/ModulpruefungAusgeben/external.php',array(),'');
             if ($result['status'] == 200){
