@@ -86,7 +86,7 @@ class ModulpruefungAusgeben
     {
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $res=null;
-        if (constant('ISCLI') || constant('ISCGI')){
+        if (constant('ISCLI')){
             Installation::log(array('text'=>Installation::Get('modules','ISCLIEnabled',self::$langTemplate)));
             $result = Request::get($data['PL']['url'].'/install/install.php/checkModulesExtern',array(),'');
             if ($result['status'] == 200){
@@ -95,8 +95,18 @@ class ModulpruefungAusgeben
             } else {
                 $res['status'] = 404;
             }
+        } elseif (true || constant('ISCGI')){
+            Installation::log(array('text'=>Installation::Get('modules','ISCGIEnabled',self::$langTemplate)));
+            $result = Request::get($data['PL']['url'].'/install/segments/ModulpruefungAusgeben/external.php',array(),'');
+            if ($result['status'] == 200){
+                $res = json_decode($result['content'],true);
+                $res['status'] = 200;
+            } else {
+                $res['status'] = 404;
+            }
         } else {
             Installation::log(array('text'=>Installation::Get('modules','ISCLIDisabled',self::$langTemplate)));
+            Installation::log(array('text'=>Installation::Get('modules','ISCGIDisabled',self::$langTemplate)));
             $res = ModulpruefungAusgeben::checkModules($data,$fail,$errno,$error);
             $res['status'] = 200;
         }
@@ -129,7 +139,8 @@ class ModulpruefungAusgeben
         if (function_exists('apache_get_modules')){
             $res = in_array($module, apache_get_modules());
         } else {
-            $res = false;
+            $res = getenv('HTTP_'.strtoupper($module))=='On'?TRUE:
+            getenv('REDIRECT_HTTP_'.strtoupper($module))=='On'?true:FALSE;
         }
         Installation::log(array('text'=>Installation::Get('main','functionEnd')));
         return $res;
