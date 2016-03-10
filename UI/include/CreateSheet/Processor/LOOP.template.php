@@ -14,13 +14,15 @@
  */
 ?>
 
-<?php include_once dirname(__FILE__) . '/../../Template.php';
-      include_once dirname(__FILE__) . '/../../../../Assistants/Language.php';
-      include_once dirname(__FILE__) . '/../../../../Assistants/Structures/File.php';
-      include_once dirname(__FILE__) . '/../../../../Assistants/Structures/Submission.php';
-      include_once dirname(__FILE__) . '/../../../../Assistants/Structures/Testcase.php';
-      include_once dirname(__FILE__) . '/../../../../Assistants/Structures/Process.php';
-      include_once dirname(__FILE__) . '/../../Boilerplate.php'; ?>
+<?php 
+    ob_start();
+    include_once dirname(__FILE__) . '/../../Template.php';
+    include_once dirname(__FILE__) . '/../../../../Assistants/Language.php';
+    include_once dirname(__FILE__) . '/../../../../Assistants/Structures/File.php';
+    include_once dirname(__FILE__) . '/../../../../Assistants/Structures/Submission.php';
+    include_once dirname(__FILE__) . '/../../../../Assistants/Structures/Testcase.php';
+    include_once dirname(__FILE__) . '/../../../../Assistants/Structures/Process.php';
+    include_once dirname(__FILE__) . '/../../Boilerplate.php'; ?>
 <?php $langTemplate='Processor_LOOP';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 
 <?php
@@ -190,3 +192,4 @@
 
     </div>
 </div>
+<?php ob_end_flush(); ?>
