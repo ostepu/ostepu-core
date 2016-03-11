@@ -664,20 +664,20 @@ class LOOP
     /**
      * gives count of processes containing the string $name 
      *
-     *@param string $name the searchstring 
+     * @param string $name the searchstring 
      *
      * @return int count of processes
      */
     private static function countProcessesContaining($string)
     {
         $returnVal = shell_exec("ps aux|grep '".$string."'|grep -v grep|wc -l");
-        return $returnVal;
+        return trim($returnVal);
     }
 
     /**
      * open website in background
      *
-     *@param string $adress the url
+     * @param string $adress the url
      *
      */
     private static function runInBackground($adress)
@@ -695,7 +695,8 @@ class LOOP
     public function startCompute($count)
     {
         $adress = $this->_selfLink[0]->getAddress()."/compute/".$count;
-
+        $adress = Request::normalizeURL($adress);
+        
         for ($i=0; $i < $count; $i++) { 
             $amountOfProcesses = LOOP::countProcessesContaining("wget ".$adress);
 
@@ -757,7 +758,6 @@ class LOOP
      */
     public function compute($count)
     {
-        $adress = $this->_selfLink[0]->getAddress()."/start/".$count;
         $testcase = null;
         $myWorkDir = "";
 
@@ -1012,6 +1012,7 @@ class LOOP
         
         if (!empty($testcase) && $testcase->getSubmissionId() !== null) {
             $adress = $this->_selfLink[0]->getAddress()."/start/".$count;
+            $adress = Request::normalizeURL($adress);
             LOOP::runInBackground($adress);
         }
         

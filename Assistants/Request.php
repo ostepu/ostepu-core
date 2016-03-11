@@ -74,6 +74,25 @@ class Request
     }
 
     public static $components = null;
+    public static $confData = null;
+    
+    public static function normalizeURL($target)
+    {
+        $confFile = dirname(__FILE__).'/config.ini';
+        if (self::$confData === null && file_exists($confFile)){
+            self::$confData = parse_ini_file($confFile,TRUE);
+        }
+        
+        if (self::$confData === null){
+            return $target;
+        } elseif (isset(self::$confData['PL']['urlExtern']) && isset(self::$confData['PL']['url'])){
+            if (strpos($target,self::$confData['PL']['urlExtern'].'/')===0){
+                // es wurde eine globale URL erkannt, welche zu einer lokalen umgewandelt werden kann
+                return self::$confData['PL']['url'].substr($target,strlen(self::$confData['PL']['urlExtern']));
+            }
+        }
+        return $target;
+    }
 
     /**
      * performs a custom request
@@ -93,24 +112,21 @@ class Request
         //Logger::Log("$method $target", LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CALL', true, LogLevel::DEBUG);
         $begin = microtime(true);
 
-        if (self::$enableLocalCalls){
-            $configData = null;
-            $confFile = dirname(__FILE__).'/config.ini';
-            if (file_exists($confFile)){
-                $configData =  parse_ini_file($confFile,TRUE);
-            }
+        $confFile = dirname(__FILE__).'/config.ini';
+        if (self::$confData === null && file_exists($confFile)){
+            self::$confData =  parse_ini_file($confFile,TRUE);
+        }
 
-            // nun soll eine globale URL erkannt werden und in eine lokale überführt werden (wenn möglich)
-            if (isset($configData['PL']['urlExtern']) && isset($configData['PL']['url'])){
-                if (strpos($target,$configData['PL']['urlExtern'].'/')===0){
-                    // es wurde eine globale URL erkannt, welche zu einer lokalen umgewandelt werden kann
-                    $target = $configData['PL']['url'].substr($target,strlen($configData['PL']['urlExtern']));
-                }
+        // nun soll eine globale URL erkannt werden und in eine lokale überführt werden (wenn möglich)
+        if (isset(self::$configData['PL']['urlExtern']) && isset(self::$configData['PL']['url'])){
+            if (strpos($target,self::$configData['PL']['urlExtern'].'/')===0){
+                // es wurde eine globale URL erkannt, welche zu einer lokalen umgewandelt werden kann
+                $target = self::$configData['PL']['url'].substr($target,strlen(self::$configData['PL']['urlExtern']));
             }
         }
 
         $done = false;
-        if (self::$enableLocalCalls && !CConfig::$onload && isset($configData['PL']['url']) && strpos($target,$configData['PL']['url'].'/')===0 && file_exists(dirname(__FILE__) . '/request_cconfig.json')){
+        if (self::$enableLocalCalls && !CConfig::$onload && isset(self::$configData['PL']['url']) && strpos($target,self::$configData['PL']['url'].'/')===0 && file_exists(dirname(__FILE__) . '/request_cconfig.json')){
             if (self::$components===null){
                 self::$components=CConfig::loadStaticConfig('','',dirname(__FILE__),'request_cconfig.json');
             }
@@ -138,9 +154,9 @@ class Request
                     $h = substr(str_replace("\\","/",$_SERVER['PHP_SELF']),0,$a-1);
 
                     // ermittelt den Anfang der lokalen URL (ohne Unterordner). Bsp.: http://localhost
-                    $basePath = substr($configData['PL']['url'], 0,strlen($configData['PL']['url'])-strlen($h));
+                    $basePath = substr(self::$confData['PL']['url'], 0,strlen(self::$confData['PL']['url'])-strlen($h));
 
-                    $url = $configData['PL']['url'].'/'.$com->getLocalPath();
+                    $url = self::$confData['PL']['url'].'/'.$com->getLocalPath();
 
                     if (strpos($target,$url.'/')===0){
                         $result = array();

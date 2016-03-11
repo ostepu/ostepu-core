@@ -57,6 +57,8 @@ SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
+ALTER IGNORE TABLE `Process<?php echo $pre; ?>_<?php echo $object->getId(); ?>` MODIFY COLUMN PRO_parameter TEXT NULL;
+
 DROP TRIGGER IF EXISTS `Process_BUPD<?php echo $pre; ?>_<?php echo $object->getId(); ?>`;
 CREATE TRIGGER `Process_BUPD<?php echo $pre; ?>_<?php echo $object->getId(); ?>` BEFORE UPDATE ON `Process<?php echo $pre; ?>_<?php echo $object->getId(); ?>` FOR EACH ROW
 BEGIN
