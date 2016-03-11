@@ -23,7 +23,7 @@
             "params": {
                 "name": "validation",
                 "branch": "master",
-                "URL": "https://github.com/ostepu/Validation.git",
+                "URL": "https://github.com/ostepu/ostepu-validation.git",
                 "path": "Assistants/vendor/Validation/"
             }
         },

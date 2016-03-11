@@ -13,7 +13,7 @@
             "params": {
                 "name":"forms",
                 "branch": "master",
-                "URL": "https://github.com/ostepu/Forms.git",
+                "URL": "https://github.com/ostepu/ostepu-forms.git",
                 "path": "install/vendor/Forms/"
             },
             "exclude": [
