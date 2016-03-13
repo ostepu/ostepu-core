@@ -449,7 +449,7 @@ class Marking extends Object implements JsonSerializable
                          'longName' => 'nicht zugewiesen'
                           ),
                      array(
-                           'id' => 0,
+                           'id' => '0',
                            'shortName' => 'ne',
                            'longName' => 'nicht eingesendet'
                            ),
