@@ -1,8 +1,10 @@
 {"modules": {
     "title": "Apache Module",
     "description": "Dieser Bereich prüft, ob von der Plattform benötigte, Apache Module vorhanden sind.",
-    "ISCLIEnabled": "ISCLI aktiv",
-    "ISCLIDisabled": "ISCLI inaktiv",
+    "ISCLIEnabled": "CLI aktiv",
+    "ISCLIDisabled": "CLI inaktiv",
+    "ISCGIEnabled": "CGI aktiv",
+    "ISCGIDisabled": "CGI inaktiv",
     "checkResult": "Resultat: $res",
     "checkModule": "prüfe: $module",
     "failUrl": " $url konnte nicht aufgerufen werden!"
