@@ -52,9 +52,13 @@
         <div class="info-color bold footer-text right" style="margin-left:10px">
                 <?php if (isset($sheet['status'])){
                             $types = Marking::getStatusDefinition();
-                            foreach ($sheet['status'] as $key => $value){ ?>
-                            <?php echo $value.' '.$types[LArraySorter::multidimensional_search($types, array('id'=>$key))]['longName'];?>
-                <?php }} ?>
+                            $types[] = ['id' => 'notAccepted','shortName' => 'na', 'longName' => 'nicht akzeptiert'];
+                            $statusText = array();
+                            foreach ($sheet['status'] as $key => $value){
+                                $statusText[] = $value.' '.$types[LArraySorter::multidimensional_search($types, array('id'=>$key))]['longName'];
+                            }
+                            echo implode(', ',$statusText);
+                      } ?>
         </div>
         
     </div>
@@ -125,6 +129,7 @@
                         <br>
                         <li class="footer-text bold"><?php echo Language::Get('sheet','tutorMarkings', $langTemplate); ?>:</li>
                         <?php $types = Marking::getStatusDefinition();
+                              $types[] = ['id' => 'notAccepted','shortName' => 'na', 'longName' => 'nicht akzeptiert'];
                         foreach ($sheet['status'] as $key => $value){ ?>
                             <li class="footer-text">
                             <!--<a href="Download.php?cid=--><?php /*echo $cid;*/ ?><!--&downloadCSV_--><?php /*echo $key;*/?><!--=--><?php /*echo $sheet['id'];*/ ?><!--" class="download text-button body-option-color footer-text" style="padding-left:0px">-->
@@ -144,6 +149,7 @@
                     <br>
                     <li class="footer-text bold"><?php echo Language::Get('sheet','allMarkings', $langTemplate); ?>:</li>
                     <?php $types = Marking::getStatusDefinition();
+                          $types[] = ['id' => 'notAccepted','shortName' => 'na', 'longName' => 'nicht akzeptiert'];
                     foreach ($sheet['allStatus'] as $key => $value){ ?>
                     <li class="footer-text">
                     <?php echo $value.' '.$types[LArraySorter::multidimensional_search($types, array('id'=>$key))]['longName'];?>
