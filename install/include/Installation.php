@@ -73,8 +73,17 @@ class Installation
         Installation::log(array('text'=>'starte Funktion'));
         $res = array();
         foreach(Einstellungen::$segments as $segs){
+            if (isset(Installer::$segmentStatus[$segs]) && Installer::$segmentStatus[$segs] != 200) continue;
             if (!is_callable("{$segs}::".$name)) continue;
-            $res = array_merge($res,call_user_func("{$segs}::".$name,$data));
+            
+            try{
+                $tmp = call_user_func("{$segs}::".$name,$data);
+                $res = array_merge($res,$tmp);
+            }catch(Exception $e){
+                $message="Absturz des Aufrufs {$segs}::".$name;
+                self::errorHandler($message,$e);
+                Installer::$segmentStatus[$segs] = 500;
+            }
         }
         Installation::log(array('text'=>'beende Funktion'));
         return $res;
@@ -85,6 +94,7 @@ class Installation
         Installation::log(array('text'=>'starte Funktion'));
         $settings = array();
         foreach(Einstellungen::$segments as $segs){
+            if (isset(Installer::$segmentStatus[$segs]) && Installer::$segmentStatus[$segs] != 200) continue;
             if (!is_callable("{$segs}::platformSetting")) continue;
             $settings = array_merge($settings,$segs::platformSetting($data));
         }
@@ -272,6 +282,29 @@ class Installation
               }
            }
         return $roemische_zahl;
+    }
+    
+    public static function errorHandler($text, Exception $e)
+    {
+        $info = debug_backtrace();
+        $infoString = '';
+        if (isset($info[1])) {
+            $callerInfo = $info[1];
+            if (isset($callerInfo['class']))$infoString .= $callerInfo['class'];
+            if (isset($callerInfo['type']))$infoString .= $callerInfo['type'];
+            if (isset($callerInfo['function']))$infoString .= $callerInfo['function'];
+        } else {
+            $callerInfo = $info[0];
+            if (isset($callerInfo['file']))$infoString .=  basename($callerInfo['file']);
+        }
+
+        if (isset($info[0]['line'])) {
+            $infoString .= ':' . $info[0]['line'] . ')';
+        } elseif (isset($info[1]['line'])) {
+            $infoString .= ' (' . $info[1]['line'] . ')';
+        }
+        $name = $infoString;
+        self::log(array('logLevel'=>LogLevel::ERROR,'text'=>$text."\n".$e->getMessage()."\n".$e->getTraceAsString(),'name'=>$name));
     }
 
     public static function execInBackground($cmd) {

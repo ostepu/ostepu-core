@@ -119,7 +119,9 @@ class Design
     {
         $result = '';
         if (!$console){
-            $result .= "<h2>{$name}</h2>";
+            if ($name!==null){
+                $result .= "<h2>{$name}</h2>";
+            }
             $result .= "<table border='0' cellpadding='3' width='600'>";
             $result .= "<colgroup><col width='200'><col width='300'><col width='100'></colgroup>";
             $result .= $data;

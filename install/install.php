@@ -52,13 +52,15 @@ class Installer
      * @var int[] $menuItems Enthält die Reihenfolge der Seiten (anhand der IDs),
      * diese stehen in den Segmente unter $page=Seitennummer
      */
-    public static $menuItems = array(0,1,6,2,3,4,8); // 5, // ausgeblendet
+    public static $menuItems = array(1,0,6,2,3,4,8); // 5, // ausgeblendet
 
     /**
      * @var int[] $menuTypes Die Art der Menüelemente
      * 0 = auf diesen Server angewendet, 1 = auf alle Server angewendet
      */
     public static $menuTypes = array(0,0,0,0,0,1,1);
+    
+    public static $segmentStatus = array();
 
     /**
      * REST actions
@@ -182,7 +184,7 @@ class Installer
                         if (isset($params['run']) && isset($params['file']) && isset($params['className'])){
                             if ($params['run'] === 'include'){
                                 if (file_exists(dirname(__FILE__) . '/segments/'.$seg.'/'.$params['file'])){
-                                    include_once dirname(__FILE__) . '/segments/'.$seg.'/'.$params['file'];
+                                    include(dirname(__FILE__) . '/segments/'.$seg.'/'.$params['file']);
                                     Einstellungen::$segments[] = $params['className'];
                                 } else {
                                     // die angegebene Datei existiert nicht
@@ -202,8 +204,8 @@ class Installer
         // sort segments by page and rank
         function cmp($a, $b)
         {
-            $posA = 0;
-            $posB = 0;
+            $posA = -1;
+            $posB = -1;
 
             if (isset($a::$page)) $posA = array_search($a::$page,Installer::$menuItems);
             if (isset($b::$page)) $posB = array_search($b::$page,Installer::$menuItems);
@@ -457,10 +459,21 @@ class Installer
             // führe die Initialisierungsfunktionen der Segmente aus
             Installation::log(array('text'=>Installation::Get('main','startsSegmentInitization'), 'logLevel'=>LogLevel::INFO));
             foreach(Einstellungen::$segments as $segs){
+                if (isset(self::$segmentStatus[$segs]) && self::$segmentStatus[$segs] != 200) continue;
                 if (!is_callable("{$segs}::init")) continue;
-                ///if (!isset($segs::$initialized)) continue;
-                ///if ($segs::$initialized) continue;
-                $segs::init($console, $data, $fail, $errno, $error);
+                
+                try{
+                    $segs::init($console, $data, $fail, $errno, $error);
+                }catch(Exception $e){
+                    // es ist ein Fehler aufgetreten
+                    $message=Installation::Get('main','crashedInit', 'default', array('segment'=>$segs));
+                    Installation::errorHandler($message,$e);
+                    self::$segmentStatus[$segs] = 500;
+                    
+                    // hier wird nun ein Ausgabeblock mit der Fehlermeldung erzeugt
+                    $text = Design::erstelleZeileShort($console, $message, 'error');
+                    echo Design::erstelleBlock($console, null, $text);
+                }
             }
             Installation::log(array('text'=>Installation::Get('main','endSegmentInitization'), 'logLevel'=>LogLevel::INFO));
 
@@ -474,6 +487,7 @@ class Installer
                 }
 
                 foreach ($segs::$onEvents as $event){
+                    if (isset(self::$segmentStatus[$segs]) && self::$segmentStatus[$segs] != 200) continue;
                     if (isset($event['enabledInstall']) && !$event['enabledInstall']){
                         Installation::log(array('text'=>Installation::Get('main','segmentEventDisabled','default',array('segs'=>$segs))));
                         continue;
@@ -504,7 +518,18 @@ class Installer
                             $procedure = $event['procedure'];
                         }
 
-                        $result['content'] = Zugang::Ermitteln($event['name'],$segs.'::'.$procedure,$data, $fail, $errno, $error);
+                        try{
+                            $result['content'] = Zugang::Ermitteln($event['name'],$segs.'::'.$procedure,$data, $fail, $errno, $error);
+                        }catch(Exception $e){
+                            $message=Installation::Get('main','crashedInstall', 'default', array('segment'=>$segs, 'procedure'=>$procedure));
+                            Installation::errorHandler($message,$e);
+                            self::$segmentStatus[$segs] = 500;
+                    
+                            // hier wird nun ein Ausgabeblock mit der Fehlermeldung erzeugt
+                            $text = Design::erstelleZeileShort($console, $message, 'error');
+                            echo Design::erstelleBlock($console, null, $text);
+                        }
+                
                         $segs::$installed=true;
 
                         $installFail = $fail;
@@ -541,9 +566,20 @@ class Installer
             // ab hier wird die linke Infoleiste erzeugt
             Installation::log(array('text'=>Installation::Get('main','beginInfoBar')));
             foreach(Einstellungen::$segments as $segs){
+                if (isset(self::$segmentStatus[$segs]) && self::$segmentStatus[$segs] != 200) continue;
                 if (isset($segs::$enabledShow) && !$segs::$enabledShow) continue;
                 if (!is_callable("{$segs}::showInfoBar")) continue;
-                $segs::showInfoBar($data);
+                
+                try{
+                    $segs::showInfoBar($data);
+                }catch(Exception $e){
+                    $message=Installation::Get('main','crashedShowInfoBar', 'default', array('segment'=>$segs));
+                    Installation::errorHandler($message,$e);
+                    self::$segmentStatus[$segs] = 500;
+                    
+                    echo "<tr><td class='error_light'>".$message."</td></tr>";
+                }
+                
                 echo "<tr><th height='10'></th></tr>";
             }
             Installation::log(array('text'=>Installation::Get('main','endInfoBar')));
@@ -590,6 +626,7 @@ class Installer
             // show segments
             Installation::log(array('text'=>Installation::Get('main','beginShowSegments')));
             foreach(Einstellungen::$segments as $segs){
+                if (isset(self::$segmentStatus[$segs]) && self::$segmentStatus[$segs] != 200) continue;
                 if (isset($segs::$enabledShow) && !$segs::$enabledShow) continue;
 
                 if (!isset($segs::$page) || $segs::$page===$selected_menu || (isset($segs::$installed) && $segs::$installed)){
@@ -610,7 +647,18 @@ class Installer
                     }
 
                     $result = (isset($segmentResults[$segs::$name]) ? $segmentResults[$segs::$name] : array());
-                    $segs::show($console, $result, $data);
+                    
+                    try{
+                        $segs::show($console, $result, $data);
+                    }catch(Exception $e){
+                        $message=Installation::Get('main','crashedShow', 'default', array('segment'=>$segs));
+                        Installation::errorHandler($message,$e);
+                        self::$segmentStatus[$segs] = 500;
+                        
+                        // hier wird nun ein Ausgabeblock mit der Fehlermeldung erzeugt
+                        $text = Design::erstelleZeileShort($console, $message, 'error');
+                        echo Design::erstelleBlock($console, null, $text);
+                    }
                 }
             }
             Installation::log(array('text'=>Installation::Get('main','endShowSegments')));
@@ -675,9 +723,17 @@ class Installer
                 echo "<div style='width:150px;word-break: break-all;'>";
                 echo "<table border='0'>";
                 foreach(Einstellungen::$segments as $segs){
+                    if (isset(self::$segmentStatus[$segs]) && self::$segmentStatus[$segs] != 200) continue;
                     if (!is_callable("{$segs}::getSettingsBar")) continue;
 
-                    $settings = $segs::getSettingsBar($data);
+                    try{
+                        $settings = $segs::getSettingsBar($data);
+                    }catch(Exception $e){
+                        $message=Installation::Get('main','crashedSettingsBar', 'default', array('segment'=>$segs));;
+                        Installation::errorHandler($message,$e);
+                        $settings = array([Installation::Get('main','errorValue'), $message, null, true]);
+                    }
+                    
                     if (count($settings)>0){
                         foreach ($settings as $key => $values){
                             // values entspricht
