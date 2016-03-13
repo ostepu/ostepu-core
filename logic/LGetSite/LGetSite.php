@@ -1324,6 +1324,14 @@ class LGetSite
                     } else {
                         $selectedSubmissionsCount[$key]['status'][$marking['status']]++;
                     }
+
+                    if (!isset($marking['submission']['accepted']) || $marking['submission']['accepted'] == 0){
+                        if (!isset($selectedSubmissionsCount[$key]['status']['notAccepted'])){
+                            $selectedSubmissionsCount[$key]['status']['notAccepted']=1;
+                        } else {
+                            $selectedSubmissionsCount[$key]['status']['notAccepted']++;
+                        }
+                    }
                 }
 
                 {
@@ -1337,6 +1345,14 @@ class LGetSite
                         $selectedSubmissionsCount[$key]['allStatus'][$marking['status']]=1;
                     } else {
                         $selectedSubmissionsCount[$key]['allStatus'][$marking['status']]++;
+                    }
+                    
+                    if (!isset($marking['submission']['accepted']) || $marking['submission']['accepted'] == 0){
+                        if (!isset($selectedSubmissionsCount[$key]['allStatus']['notAccepted'])){
+                            $selectedSubmissionsCount[$key]['allStatus']['notAccepted']=1;
+                        } else {
+                            $selectedSubmissionsCount[$key]['allStatus']['notAccepted']++;
+                        }
                     }
                 }
             }
