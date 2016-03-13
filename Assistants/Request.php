@@ -74,21 +74,21 @@ class Request
     }
 
     public static $components = null;
-    public static $confData = null;
+    public static $configData = null;
     
     public static function normalizeURL($target)
     {
         $confFile = dirname(__FILE__).'/config.ini';
-        if (self::$confData === null && file_exists($confFile)){
-            self::$confData = parse_ini_file($confFile,TRUE);
+        if (self::$configData === null && file_exists($confFile)){
+            self::$configData = parse_ini_file($confFile,TRUE);
         }
         
-        if (self::$confData === null){
+        if (self::$configData === null){
             return $target;
-        } elseif (isset(self::$confData['PL']['urlExtern']) && isset(self::$confData['PL']['url'])){
-            if (strpos($target,self::$confData['PL']['urlExtern'].'/')===0){
+        } elseif (isset(self::$configData['PL']['urlExtern']) && isset(self::$configData['PL']['url'])){
+            if (strpos($target,self::$configData['PL']['urlExtern'].'/')===0){
                 // es wurde eine globale URL erkannt, welche zu einer lokalen umgewandelt werden kann
-                return self::$confData['PL']['url'].substr($target,strlen(self::$confData['PL']['urlExtern']));
+                return self::$configData['PL']['url'].substr($target,strlen(self::$configData['PL']['urlExtern']));
             }
         }
         return $target;
@@ -113,8 +113,8 @@ class Request
         $begin = microtime(true);
 
         $confFile = dirname(__FILE__).'/config.ini';
-        if (self::$confData === null && file_exists($confFile)){
-            self::$confData =  parse_ini_file($confFile,TRUE);
+        if (self::$configData === null && file_exists($confFile)){
+            self::$configData =  parse_ini_file($confFile,TRUE);
         }
 
         // nun soll eine globale URL erkannt werden und in eine lokale überführt werden (wenn möglich)
@@ -154,9 +154,9 @@ class Request
                     $h = substr(str_replace("\\","/",$_SERVER['PHP_SELF']),0,$a-1);
 
                     // ermittelt den Anfang der lokalen URL (ohne Unterordner). Bsp.: http://localhost
-                    $basePath = substr(self::$confData['PL']['url'], 0,strlen(self::$confData['PL']['url'])-strlen($h));
+                    $basePath = substr(self::$configData['PL']['url'], 0,strlen(self::$configData['PL']['url'])-strlen($h));
 
-                    $url = self::$confData['PL']['url'].'/'.$com->getLocalPath();
+                    $url = self::$configData['PL']['url'].'/'.$com->getLocalPath();
 
                     if (strpos($target,$url.'/')===0){
                         $result = array();
