@@ -20,6 +20,21 @@
 
 <?php $langTemplate='ExerciseSheet';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 
+<?php
+if (isset($notifications)){
+    echo "<div align='center' class='notification-list'>";
+    foreach($notifications as $note){
+        if (isset($note['begin']) && trim($note['begin']) != '' && $note['begin'] !== '0'){
+            $date = date('d.m.Y - H:i', $note['begin'])."\n";
+        } else {
+            $date = '';
+        }
+        echo MakeNotification('info notification-box', $date.$note['text'], true, '1');
+    }
+    echo "</div>";
+}
+?>
+
 <?php 
     $anyoneStarted=false;
     if (!empty($sheets))

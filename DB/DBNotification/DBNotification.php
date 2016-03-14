@@ -152,6 +152,15 @@ class DBNotification
                                'getExistsCourseNotifications'
                                )
                         );
+                        
+        // GET GetAliveCourseNotifications
+        $this->_app->get(
+                         '(/:pre)/' . $this->getPrefix( ) . '/alive/course/:courseid',
+                         array(
+                               $this,
+                               'getAliveCourseNotifications'
+                               )
+                         );
 
         // GET GetCourseNotifications
         $this->_app->get(
@@ -459,6 +468,18 @@ class DBNotification
         $this->get(
                    'GetCourseNotifications',
                    dirname(__FILE__) . '/Sql/GetCourseNotifications.sql',
+                   isset( $pre ) ? $pre : '',
+                   isset( $notid ) ? $notid : '',
+                   isset( $setname ) ? $setname : '',
+                   isset( $courseid ) ? $courseid : ''
+                   );
+    }
+    
+    public function getAliveCourseNotifications($pre='' , $courseid )
+    {
+        $this->get(
+                   'GetAliveCourseNotifications',
+                   dirname(__FILE__) . '/Sql/GetAliveCourseNotifications.sql',
                    isset( $pre ) ? $pre : '',
                    isset( $notid ) ? $notid : '',
                    isset( $setname ) ? $setname : '',

@@ -26,9 +26,8 @@
         $tableName = 'Notification'.$pre.($courseId!==''?'_'.$courseId:''); ?>
 
 select
-    concat('<?php echo Notification::getCourseFromNotificationId($notid); ?>','_',N.NOT_id) as NOT_id,
     N.*
+    concat('<?php echo Notification::getCourseFromNotificationId($notid); ?>','_',N.NOT_id) as NOT_id
 from
     `<?php echo $tableName;?>` N
-WHERE NOT_id = '<?php echo Notification::getIdFromNotificationId($notid); ?>'
-and N.NOT_begin >= UNIX_TIMESTAMP() and N.NOT_end <= UNIX_TIMESTAMP();;
+WHERE NOT_id = '<?php echo Notification::getIdFromNotificationId($notid); ?>';

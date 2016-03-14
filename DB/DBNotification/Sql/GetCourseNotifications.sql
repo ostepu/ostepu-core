@@ -18,9 +18,7 @@
 ?>
 
 select
-    concat('<?php echo $courseid; ?>','_',N.NOT_id) as NOT_id,
-    N.*
+    N.*,
+    concat('<?php echo $courseid; ?>','_',N.NOT_id) as NOT_id
 from
     `Notification<?php echo $pre; ?>_<?php echo $courseid; ?>` N
-where
-    N.NOT_begin >= UNIX_TIMESTAMP() and N.NOT_end <= UNIX_TIMESTAMP();

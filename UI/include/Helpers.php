@@ -201,13 +201,14 @@ function curlSetAuthentication($curl, $sessiondelete = false)
  * notification.
  * @see Notifications.css
  */
-function MakeNotification($notificationType, $notificationText)
+function MakeNotification($notificationType, $notificationText, $collapsible=false, $rows=null)
 {
-    return <<<EOF
-<div class="notification-bar {$notificationType}">
-    $notificationText
-</div>
-EOF;
+    if (!$collapsible){
+        return "<div class='{$notificationType} notification-bar'>{$notificationText}</div>";
+    } else {
+        $addRows = (isset($rows) ? "rows='{$rows}'" : '');
+        return "<textarea readonly class='link-sim notification-bar {$notificationType}' {$addRows}>{$notificationText}</textarea>";
+    }
 }
 
 function MakeInfoButton($helpPath)

@@ -10,9 +10,28 @@
     margin-top: 10px;
     border-radius: 5px;
     font-weight: bold;
-    word-break: break-all;
+    word-break: break-all; 
+    border: none;
 }
 
+textarea.notification-bar{
+    outline: none;
+}
+
+.notification-box { 
+    padding: 7px 10px;    
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 150px;
+    margin-right: 10px;
+    resize:none;
+    display:inline-block;
+}
+
+.notification-list {
+    margin-bottom: 20px;
+    word-break: break-all;
+}
 .error {
     border: 3px solid #DE3838;
     color: #DE3838;
@@ -38,6 +57,11 @@
     background-repeat: no-repeat;
     background-position: 8px 6px;
     background-size: 18px 18px;
+}
+
+.info {
+    border: 3px solid #2b648f;
+    color: #2b648f;
 }
 
 .error-simple {

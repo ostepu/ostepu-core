@@ -3,7 +3,7 @@ Deny from all
 
 # allow access to ExerciseSettings and Subtask templates these are needed to
 # generate CreateSheet site.
-<FilesMatch "(ExerciseSettings.template.php|Subtask.template.php|FormSettings.template.php|FormInput.template.php|FormRadio.template.php|FormCheckbox.template.php|FormAddCheckbox.template.php|FormAddRadio.template.php|Processor.template.php|ProcessorAddAttachment.template.php|LFormProcessor.template.php|LFormPredecessor.template.php|LOOP.template.php|LOOPparamcount.template.php|LOOPtable.template.php|LOOPtestcount.template.php|LOOPfileinput.template.php|LOOPfileoutput.template.php|LOOPinput.template.php|LOOPoutput.template.php)">
+<FilesMatch "(Notification.template.php|ExerciseSettings.template.php|Subtask.template.php|FormSettings.template.php|FormInput.template.php|FormRadio.template.php|FormCheckbox.template.php|FormAddCheckbox.template.php|FormAddRadio.template.php|Processor.template.php|ProcessorAddAttachment.template.php|LFormProcessor.template.php|LFormPredecessor.template.php|LOOP.template.php|LOOPparamcount.template.php|LOOPtable.template.php|LOOPtestcount.template.php|LOOPfileinput.template.php|LOOPfileoutput.template.php|LOOPinput.template.php|LOOPoutput.template.php)">
     Order Allow,Deny
     Allow from all
 </FilesMatch>
