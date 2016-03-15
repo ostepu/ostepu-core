@@ -2,7 +2,7 @@
     "main": {
         "title": "Veranstaltungsmeldungen",
         "execute": "speichern",
-        "description": "Sie können hier Meldungen für Ihre Veranstaltung erstellen/entfernen und bearbeiten.",
+        "description": "Sie können hier Meldungen für Ihre Veranstaltung erstellen, entfernen und bearbeiten.",
         "addNotification": "Hinzufügen",
         "messages": "Meldungen"
     }
