@@ -8,6 +8,7 @@
         {"path": "DBSession.php"},
         {"path": "index.php"},
         {"path": "Commands.json"},
+        {"path": "SessionSample.json"},
         {"path": "Sql/"},
         {"path": "info/"}
     ],

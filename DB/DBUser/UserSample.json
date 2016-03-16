@@ -1,77 +1,63 @@
-/**
- * @file UserSample.json This file represents a valid JSON object of type User for DBUser.
- *
- * @author Till Uhlig
- */
-
-    [
-       {
-           "id": "2",
-           "userName": "lisa",
-           "email": "lisa@email.de",
-           "firstName": "Lisa",
-           "lastName": "Dietrich",
-           "flag": "2",
-           "password": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
-           "failedLogins": "100",
-           "courses":
-           [
-               {
-                   "status": "3",
-                   "course":
-                   {
-                       "id": "1",
-                       "name": "?Bengalisch II",
-                       "semester": "SS 11",
-                       "defaultGroupSize": "1"
-                   }
-               }
-           ]
-       },
-       {
-           "id": "3",
-           "userName": "joerg",
-           "email": "joerg@email.de",
-           "firstName": "Joerg",
-           "lastName": "Baumgarten",
-           "flag": "1",
-           "password": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
-           "failedLogins": "0",
-           "courses":
-           [
-               {
-                   "status": "3",
-                   "course":
-                   {
-                       "id": "1",
-                       "name": "?Bengalisch II",
-                       "semester": "SS 11",
-                       "defaultGroupSize": "1"
-                   }
-               }
-           ]
-       },
-       {
-           "id": "4",
-           "userName": "till",
-           "email": "till@email.de",
-           "firstName": "Till",
-           "lastName": "Uhlig",
-           "flag": "2",
-           "password": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
-           "failedLogins": "17",
-           "courses":
-           [
-               {
-                   "status": "3",
-                   "course":
-                   {
-                       "id": "1",
-                       "name": "?Bengalisch II",
-                       "semester": "SS 11",
-                       "defaultGroupSize": "1"
-                   }
-               }
-           ]
-       }
-    ]
+[
+    {
+        "__commentFile": "@file UserSample.json This file represents a valid JSON object of type User for DBUser.",
+        "__commentAuthor": "@author Till Uhlig"
+    },
+    {
+        "id": "2",
+        "userName": "lisa",
+        "email": "lisa@email.de",
+        "firstName": "Lisa",
+        "lastName": "Dietrich",
+        "flag": "2",
+        "password": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+        "failedLogins": "100",
+        "courses": [{
+            "status": "3",
+            "course": {
+                "id": "1",
+                "name": "?Bengalisch II",
+                "semester": "SS 11",
+                "defaultGroupSize": "1"
+            }
+        }]
+    },
+    {
+        "id": "3",
+        "userName": "joerg",
+        "email": "joerg@email.de",
+        "firstName": "Joerg",
+        "lastName": "Baumgarten",
+        "flag": "1",
+        "password": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+        "failedLogins": "0",
+        "courses": [{
+            "status": "3",
+            "course": {
+                "id": "1",
+                "name": "?Bengalisch II",
+                "semester": "SS 11",
+                "defaultGroupSize": "1"
+            }
+        }]
+    },
+    {
+        "id": "4",
+        "userName": "till",
+        "email": "till@email.de",
+        "firstName": "Till",
+        "lastName": "Uhlig",
+        "flag": "2",
+        "password": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+        "failedLogins": "17",
+        "courses": [{
+            "status": "3",
+            "course": {
+                "id": "1",
+                "name": "?Bengalisch II",
+                "semester": "SS 11",
+                "defaultGroupSize": "1"
+            }
+        }]
+    }
+]

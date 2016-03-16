@@ -3,10 +3,21 @@
  * @file Group.php
  * Constructs the page that is displayed to a student, when managing a group.
  *
- * @author Felix Schmidt
- * @author Florian Lücke
- * @author Ralf Busch
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.0
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2013-2014
+ * @author Felix Schmidt <Fiduz@Live.de>
+ * @date 2013-2014
+ * @author Florian Lücke <florian.luecke@gmail.com>
+ * @date 2013-2014
  */
+
 ob_start();
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
@@ -262,7 +273,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
     if ($postResults['action'] === 'ManageGroup') {
         $postManageGroupValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
           ->addSet('exercises',
-                   ['default'=>array(),
+                   ['set_default'=>array(),
                     'perform_this_foreach'=>[['key',
                                          ['valid_identifier']],
                                         ['elem',
@@ -309,7 +320,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
     if ($postResults['action'] === 'InviteGroup') {
         $postInviteGroupValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
           ->addSet('applyGroup',
-                   ['default'=>false,
+                   ['set_default'=>false,
                     'to_boolean',
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidApplyGroup', $langTemplate)]]);
@@ -329,7 +340,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                    ['satisfy_exists',
                     'satisfy_not_empty',
                     'is_array',
-                    'perform_this_array'=>[['key_all',
+                    'perform_this_array'=>[[['key_all'],
                                        ['valid_identifier']]],
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidMemberIds', $langTemplate)]]);
@@ -400,7 +411,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                    ['satisfy_exists',
                     'satisfy_not_empty',
                     'is_array',
-                    'perform_this_array'=>[['key_all',
+                    'perform_this_array'=>[[['key_all'],
                                        ['satisfy_not_empty',
                                         'valid_userName']]],
                     'on_error'=>['type'=>'error',

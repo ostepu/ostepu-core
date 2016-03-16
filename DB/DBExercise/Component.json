@@ -4,97 +4,85 @@
     "classFile": "DBExercise.php",
     "className": "DBExercise",
     "files": [
-        {
-            "path": ".htaccess"
-        },
-        {
-            "path": "DBExercise.php"
-        },
-        {
-            "path": "index.php"
-        },
-        {
-            "path": "Commands.json"
-        },
-        {
-            "path": "Sql/"
-        }
+        {"path": ".htaccess"},
+        {"path": "DBExercise.php"},
+        {"path": "index.php"},
+        {"path": "Commands.json"},
+        {"path": "ExerciseSample.json"},
+        {"path": "Sql/"},
+        {"path": "info/"}
     ],
     "links": [
         {
             "name": "out",
             "target": "DBQuery",
-            "links": [
-                {
-                    "method": "POST",
-                    "path": "/query"
-                }
-            ]
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
         },
         {
             "name": "out2",
             "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "POST",
-                    "path": "/query"
-                }
-            ]
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
         },
         {
             "name": "getExercise",
             "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBExerciseGetExercise/:eid/:sub"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBExerciseGetExercise/:eid/:sub"
+            }]
         },
         {
             "name": "getAllExercises",
             "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBExerciseGetAllExercises/:sub"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBExerciseGetAllExercises/:sub"
+            }]
         },
         {
             "name": "getCourseExercises",
             "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBExerciseGetCourseExercises/:courseid/:sub"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBExerciseGetCourseExercises/:courseid/:sub"
+            }]
         },
         {
             "name": "getSheetExercises",
             "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBExerciseGetSheetExercises/:esid/:sub"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBExerciseGetSheetExercises/:esid/:sub"
+            }]
         },
         {
             "name": "getExistsPlatform",
             "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBExerciseGetExistsPlatform"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBExerciseGetExistsPlatform"
+            }]
         }
     ],
     "connector": [
-        {"name": "request","target": "CLocalObjectRequest"},
-        {"name": "postPlatform","target": "CInstall"},
-        {"name": "postSamples","target": "CInstall", "priority":130}
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        },
+        {
+            "name": "postPlatform",
+            "target": "CInstall"
+        },
+        {
+            "name": "postSamples",
+            "target": "CInstall",
+            "priority": 130
+        }
     ]
 }

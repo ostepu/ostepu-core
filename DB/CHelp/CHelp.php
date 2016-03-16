@@ -2,8 +2,13 @@
 /**
  * @file CHelp.php Contains the CHelp class
  *
- * @author Till Uhlig
- * @date 2015
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.3.6
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015-2016
  */
 
 include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
@@ -108,7 +113,7 @@ class CHelp
                 $input = $this->umlaute($input);
                 $my_html = $parser->transform($input);
                 $contact = isset($this->config['HELP']['contactUrl']) ? $this->config['HELP']['contactUrl'] : null;
-                if (isset($contact)){
+                if (isset($contact) && trim($contact) !== ''){
                     $contact = '<a href="'.$contact.'">Kontakt</a>';
                 }
                 

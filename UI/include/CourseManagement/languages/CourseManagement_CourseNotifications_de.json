@@ -1,7 +1,9 @@
 {
     "main": {
         "title": "Veranstaltungsmeldungen",
-        "execute": "ver&auml;ndern",
-        "description": "Dieser Bereich ist noch in der Entstehung."
+        "execute": "speichern",
+        "description": "Sie können hier Meldungen für Ihre Veranstaltung erstellen, entfernen und bearbeiten.",
+        "addNotification": "Hinzufügen",
+        "messages": "Meldungen"
     }
 }

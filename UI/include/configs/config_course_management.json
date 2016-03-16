@@ -18,6 +18,7 @@
         "javascript/bootstrap.min.js",
         "javascript/bootstrap-datetimepicker.min.js",
         "javascript/interactive.js",
-        "javascript/course_management.js"
+        "javascript/course_management.js",
+        "javascript/course_management_notifications.js"
     ]
 }

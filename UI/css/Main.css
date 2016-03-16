@@ -46,7 +46,7 @@ a.button:after {
 .content-wrapper {
     display: block;
     overflow: auto;
-    margin-top: 30px;
+    margin-top: 10px;
 }
 
 .content-element {
@@ -180,6 +180,11 @@ table td {
 
 .tutor-name {
     margin-left: 10px;
+}
+
+.element-block {
+    margin-left: 10px;
+    display:inline-block;
 }
 
 .lower-alpha li:before {

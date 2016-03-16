@@ -15,6 +15,7 @@
         "javascript/retina.js",
         "javascript/jquery-2.0.3.min.js",
         "javascript/sheets.js",
-        "javascript/download.js"
+        "javascript/download.js",
+        "javascript/notification-box.js"
     ]
 }

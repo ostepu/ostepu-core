@@ -3,11 +3,23 @@ set_time_limit(180);
 /**
  * @file LTutor.php Contains the LTutor class
  *
- * @author Peter Koenig
- * @author Christian Elze
- * @author Martin Daute
- * @date 2013-2014
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.0
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2016
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2014
+ * @author Martin Daute <martin.daute@student.uni-halle.de>
+ * @date 2014
+ * @author Peter König <upbkgs20@arcor.de>
+ * @date 2014
+ * @author Christian Elze <christian.elze@gmail.com>
+ * @date 2014
  */
+
 require_once dirname(__FILE__) . '/../../Assistants/vendor/Slim/Slim/Slim.php';
 include_once dirname(__FILE__) . '/../../Assistants/Request.php';
 include_once dirname(__FILE__) . '/../../Assistants/CConfig.php';
@@ -517,7 +529,7 @@ class LTutor
                         if ($found) break;
                     }
 
-                    if (isset($submission['comment']))
+                    if (isset($submission['comment']) && trim($submission['comment']) != '')
                         $data.="Kommentar: {$submission['comment']}\n";
 
                     $data.="<pre>";
@@ -792,7 +804,7 @@ class LTutor
                             if ($found) break;
                         }
 
-                        if (isset($marking['submission']['comment']))
+                        if (isset($marking['submission']['comment']) && trim($marking['submission']['comment']) != '')
                             $data.="Kommentar: {$marking['submission']['comment']}\n";
 
                         $data.="<pre>";

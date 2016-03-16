@@ -4,14 +4,25 @@
  * Constructs the page that is used to create and delete users and
  * to create new courses.
  *
- * @author Felix Schmidt
- * @author Florian Lücke
- * @author Ralf Busch
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.0
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2014
+ * @author Felix Schmidt <Fiduz@Live.de>
+ * @date 2014
+ * @author Florian Lücke <florian.luecke@gmail.com>
+ * @date 2014
  *
  * @todo POST Request to logic instead of DB
  * @todo create a navigation bar for super admins
  * @todo unset $_POST on success
  */
+
 ob_start();
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
@@ -93,19 +104,25 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
             $exerciseTypes = $foundValues['exerciseTypes'];
 
             // creates a new course
-            $newCourse = Course::createCourse(null, $courseName, $semester, $defaultGroupSize);
-            $newCourseSettings = Course::encodeCourse($newCourse);
-            $URI = $logicURI . '/course';
-            $newCourse = http_post_data($URI, $newCourseSettings, true, $messageNewCourse);
+            if ($RequestError === false){
+                $newCourse = Course::createCourse(null, $courseName, $semester, $defaultGroupSize);
+                $newCourseSettings = Course::encodeCourse($newCourse);
+                $URI = $serverURI . '/logic/LCourse/course';
+                $newCourse = http_post_data($URI, $newCourseSettings, true, $messageNewCourse);
 
-            if ($messageNewCourse !== 201){
-                $RequestError = true;
+                if ($messageNewCourse !== 201){
+                    $RequestError = true;
+                }
             }
 
             if ($RequestError === false){
                 // extracts the id of the new course
                 $newCourse = json_decode($newCourse, true);
-                $newCourseId = $newCourse['id'];
+                if (isset($newCourse['id'])){
+                    $newCourseId = $newCourse['id'];
+                } else {
+                    $RequestError = true;
+                }
             }
 
             // creates a new approvalCondition for every selected exerciseType

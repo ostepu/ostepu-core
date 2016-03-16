@@ -1,0 +1,8 @@
+[
+    {   "method":"post", "path":"(/:pre)/course" },
+    {   "method":"delete", "path":"(/:pre)/course/:courseid" },
+    {   "method":"post", "path":"(/:pre)/insert" },
+    {   "method":"get", "path":"(/:pre)/pop" },
+    {   "method":"post", "path":"(/:pre)/testcase(/testcase)/:testcaseid" },
+    {   "method":"get", "path":"(/:pre)/testcase/submission/:sid/course/:cid" }
+]

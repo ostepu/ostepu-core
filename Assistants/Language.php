@@ -1,11 +1,14 @@
 <?php
-
-
 /**
  * @file Language.php contains the Language class
  *
- * @author Till Uhlig
- * @date 2014
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.3.4
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015-2016
  */
 
 class Language
@@ -163,6 +166,9 @@ class Language
         }
         
         foreach($params as $key => $value){
+            if (!is_string($value) && !is_int($value)){
+                $value = json_encode($value);
+            }
             $value = htmlspecialchars($value);
             $res = preg_replace('/([^\\\\])(\$'.$key.')/','${1}'.$value,$res);
         }

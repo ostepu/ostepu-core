@@ -1,10 +1,25 @@
 <?php
 /**
- * @file LGetSite.php
+ * @file LGetSite.php contains the LGetSite class.
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
  *
- * contains the LGetSite class.
- * @date 2013-2014
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.0
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2016
+ * @author Florian Lücke <florian.luecke@gmail.com>
+ * @date 2014
+ * @author Christian Elze <christian.elze@gmail.com>
+ * @date 2014
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2014
+ * @author Felix Schmidt <Fiduz@Live.de>
+ * @date 2014
+ * @author Peter König <upbkgs20@arcor.de>
+ * @date 2014
  */
+
 require_once dirname(__FILE__).'/../../Assistants/vendor/Slim/Slim/Slim.php';
 include_once dirname(__FILE__).'/../../Assistants/Request.php';
 include_once dirname(__FILE__).'/../../Assistants/CConfig.php';
@@ -448,6 +463,10 @@ class LGetSite
 
         $URL = $this->_getExerciseType->getAddress().'/exercisetype';
         $handler5 = Request_CreateRequest::createGet($URL, array(), '');
+        
+        // load course notifications
+        $URL = $this->_getNotification->getAddress().'/notification/alive/course/'.$courseid;
+        $handler6 = Request_CreateRequest::createGet($URL, array(), '');
 
         $multiRequestHandle = new Request_MultiRequest();
         $multiRequestHandle->addRequest($handler1);
@@ -455,6 +474,7 @@ class LGetSite
         $multiRequestHandle->addRequest($handler3);
         $multiRequestHandle->addRequest($handler4);
         $multiRequestHandle->addRequest($handler5);
+        $multiRequestHandle->addRequest($handler6);
 
         $answer = $multiRequestHandle->run();
 
@@ -474,6 +494,8 @@ class LGetSite
         $groups = json_decode($answer[3]['content'], true);
 
         $possibleExerciseTypes = json_decode($answer[4]['content'], true);
+        
+        $notifications = json_decode($answer[5]['content'], true);
 
         $markingStatus = Marking::getStatusDefinition();
 
@@ -604,6 +626,17 @@ class LGetSite
 
         $this->flag = 1;
         $response['user'] = $this->userWithCourse($userid, $courseid);
+        $coursestatus = CourseStatus::getStatusDefinition(true)['student'];
+        foreach($notifications as $key => $elem){
+            $expiredStatus = explode(',',$elem['requiredStatus']);
+            if (!in_array($coursestatus,$expiredStatus)){
+                unset($notifications[$key]);
+                continue;
+            }
+            $notifications[$key]['innerId'] = Notification::getIdFromNotificationId($elem['id']);
+        }
+        $notifications = LArraySorter::orderby($notifications,'begin',SORT_DESC,'innerId',SORT_DESC);
+        $response['notifications'] = $notifications;
 
         $this->app->response->setBody(json_encode($response));
     }
@@ -663,14 +696,14 @@ class LGetSite
         if ($courseid === null){
             $URL = $this->_getUser->getAddress().'/user/user/' . $userid;
             $answer = Request::custom('GET', $URL, array(), '');
-            $user = json_decode($answer['content'], true);
+            //$user = json_decode($answer['content'], true);
         } else {
             $URL = $this->_getCourseStatus->getAddress().'/coursestatus/course/'.$courseid.'/user/'.$userid;
             $answer = Request::custom('GET', $URL, array(), '');
-            $user = json_decode($answer['content'], true);
+            //$user = json_decode($answer['content'], true);
         }
 
-        $this->app->response->setBody(json_encode($user));
+        $this->app->response->setBody($answer['content']);
     }
 
     public function userWithCourseAndHash($userid, $courseid)
@@ -1240,10 +1273,15 @@ class LGetSite
         $URL = $this->_getMarking->getAddress().'/marking/course/'.$courseid;
         $handler4 = Request_CreateRequest::createGet($URL, array(), '');
 
+        // load course notifications
+        $URL = $this->_getNotification->getAddress().'/notification/alive/course/'.$courseid;
+        $handler5 = Request_CreateRequest::createGet($URL, array(), '');
+        
         $multiRequestHandle2->addRequest($handler1);
         $multiRequestHandle2->addRequest($handler2);
         $multiRequestHandle2->addRequest($handler3);
         $multiRequestHandle2->addRequest($handler4);
+        $multiRequestHandle2->addRequest($handler5);
 
         $answer2 = $multiRequestHandle2->run();
         unset($multiRequestHandle2);
@@ -1253,6 +1291,7 @@ class LGetSite
         $sheets = json_decode($answer2[1]['content'], true);
         $courseUser = json_decode($answer2[2]['content'], true);
         $markings = json_decode($answer2[3]['content'], true);
+        $notifications = json_decode($answer2[4]['content'], true);
         unset($answer2);
 
         $URL = "{$this->_getSelectedSubmission->getAddress()}/selectedsubmission/course/{$courseid}";
@@ -1309,6 +1348,14 @@ class LGetSite
                     } else {
                         $selectedSubmissionsCount[$key]['status'][$marking['status']]++;
                     }
+
+                    if (!isset($marking['submission']['accepted']) || $marking['submission']['accepted'] == 0){
+                        if (!isset($selectedSubmissionsCount[$key]['status']['notAccepted'])){
+                            $selectedSubmissionsCount[$key]['status']['notAccepted']=1;
+                        } else {
+                            $selectedSubmissionsCount[$key]['status']['notAccepted']++;
+                        }
+                    }
                 }
 
                 {
@@ -1322,6 +1369,14 @@ class LGetSite
                         $selectedSubmissionsCount[$key]['allStatus'][$marking['status']]=1;
                     } else {
                         $selectedSubmissionsCount[$key]['allStatus'][$marking['status']]++;
+                    }
+                    
+                    if (!isset($marking['submission']['accepted']) || $marking['submission']['accepted'] == 0){
+                        if (!isset($selectedSubmissionsCount[$key]['allStatus']['notAccepted'])){
+                            $selectedSubmissionsCount[$key]['allStatus']['notAccepted']=1;
+                        } else {
+                            $selectedSubmissionsCount[$key]['allStatus']['notAccepted']++;
+                        }
                     }
                 }
             }
@@ -1384,6 +1439,22 @@ class LGetSite
 
         $this->flag = 1;
         $response['user'] = $this->userWithCourse($userid, $courseid);
+        if (isset($response['user']['courses'][0]['status'])){
+            $courseStatus = $response['user']['courses'][0]['status'];
+            foreach($notifications as $key => $elem){
+                $expiredStatus = explode(',',$elem['requiredStatus']);
+                if (!in_array($courseStatus,$expiredStatus)){
+                    unset($notifications[$key]);
+                    continue;
+                }
+                $notifications[$key]['innerId'] = Notification::getIdFromNotificationId($elem['id']);
+            }
+
+            $notifications = LArraySorter::orderby($notifications,'begin',SORT_DESC,'innerId',SORT_DESC);
+            $response['notifications'] = $notifications;
+        } else {
+            $response['notifications'] = array();
+        }
 
         $this->app->response->setBody(json_encode($response));
     }
@@ -1831,7 +1902,12 @@ class LGetSite
         // returns all notifications of the given course
         $URL = $this->_getNotification->getAddress() . '/notification/course/'.$courseid;
         $answer = Request::custom('GET', $URL, array(), '');
-        $response['notifications'] = json_decode($answer['content'], true);
+        $notifications = json_decode($answer['content'], true);
+        foreach($notifications as $key => $elem){
+            $notifications[$key]['innerId'] = Notification::getIdFromNotificationId($elem['id']);
+        }
+        $notifications = LArraySorter::orderby($notifications,'innerId',SORT_DESC);
+        $response['notifications'] = $notifications;
         unset($answer);
         unset($URL);
 

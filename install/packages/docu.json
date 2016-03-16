@@ -1,0 +1,16 @@
+{
+    "name": "DOCU",
+    "version": "0.1",
+    "files": [
+        {
+            "path": "vendor/Docu/",
+            "type": "git",
+            "params": {
+                "name":"ostepu_docu",
+                "branch": "master",
+                "URL": "https://github.com/ostepu/ostepu-core-documentation",
+                "path": "vendor/Docu/"
+            }
+        }
+    ]
+}

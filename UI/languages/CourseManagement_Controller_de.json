@@ -43,6 +43,18 @@
         "errorEditCourse": "Beim Speichern ist ein Fehler aufgetreten!",
         "invalidSortUser": "Unbekanntes Sortierkriterium.",
         "invalidActionSortUsers": "Unbekannte Aktion.",
-        "invalidSettings": "Es wurden ungültige Einstellungen übermittelt!"
+        "invalidSettings": "Es wurden ungültige Einstellungen übermittelt!",
+        "successRemoveNotification": "Die Meldungen wurden entfernt.",
+        "errorRemoveNotification": "Beim Löschen ist ein Fehler aufgetreten!",
+        "successEditNotification": "Die Meldungen wurden bearbeitet.",
+        "errorEditNotification": "Beim Bearbeiten ist ein Fehler aufgetreten!",
+        "successCreateNotification": "Die Meldungen wurden erstellt.",
+        "errorCreateNotification": "Beim Erstellen ist ein Fehler aufgetreten!",
+        "invalidNotificationId": "Ungültige Meldungs-ID.",
+        "invalidNotificationMessage": "Ungültiger Meldungstext!",
+        "invalidNotificationStartDate": "Ungültiges Startdatum!",
+        "invalidNotificationEndDate": "Ungültiges Enddatum!",
+        "invalidNotificationRights": "Ungültige Nutzerwahl!",
+        "invalidNotificationRightsStructure": "Ungültige Struktur der Nutzerwahl!"
     }
 }

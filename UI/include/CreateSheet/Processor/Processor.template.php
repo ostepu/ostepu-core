@@ -1,11 +1,23 @@
+<?php
+/**
+ * @file Processor.template.php
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.1
+ *
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2015
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ */
+?>
+
 <?php include_once dirname(__FILE__) . '/../../../../Assistants/Language.php'; ?>
 <?php $langTemplate='Processor_Processor';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 
 <?php
-/**
- * @file Processor.template.php
- * @author  Till Uhlig
- */
 header('Content-Type: text/html; charset=utf-8');
 
 include_once dirname(__FILE__) . '/../../../../Assistants/Structures.php';
@@ -61,7 +73,7 @@ if (isset($processors)){
         </div>
         
 
-        <div class="content-body-wrapper">
+        <div class="content-body-wrapper" style="margin-top: 0px; padding: 10px;">
             <div class="content-body left"> </div>
             <label class="short left label bold" for="exerciseType"><?php echo Language::Get('main','selectProcessor', $langTemplate); ?>:</label>
             <?php if (isset($process['processId'])){?>
@@ -95,7 +107,7 @@ if (isset($processors)){
             $pro->show();
         }
     ?>
-              <div class="form-field processor-parameter-area" style="width:100%"></div>
+              <div class="form-field processor-parameter-area" style="width:100%; display: none;"></div>
             </div></div>
 </td></tr>
 
@@ -122,3 +134,4 @@ if (isset($processors)){
           </td></tr>
 <?php
 }
+?>

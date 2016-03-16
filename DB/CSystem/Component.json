@@ -1,0 +1,18 @@
+{
+    "name": "CSystem",
+    "version": "1.0",
+    "classFile": "CSystem.php",
+    "className": "CSystem",
+    "files": [
+        {"path": ".htaccess"},
+        {"path": "CSystem.php"},
+        {"path": "index.php"},
+        {"path": "Commands.json"}
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        }
+    ]
+}

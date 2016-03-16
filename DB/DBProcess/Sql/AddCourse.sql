@@ -1,3 +1,19 @@
+<?php
+/**
+ * @file AddCourse.sql
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.1
+ *
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2015
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014
+ */
+?>
+
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
@@ -9,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `Process<?php echo $pre; ?>_<?php echo $object->getId
   `PRO_id` INT NOT NULL AUTO_INCREMENT,
   `ES_id` INT NULL,
   `E_id` INT NULL,
-  `PRO_parameter` VARCHAR(255) NULL,
+  `PRO_parameter` TEXT NULL,
   `CO_id_target` INT NOT NULL,
   PRIMARY KEY (`PRO_id`),
   UNIQUE INDEX `EPRO_id_UNIQUE` (`PRO_id` ASC),
@@ -40,6 +56,8 @@ AUTO_INCREMENT = 1;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+ALTER IGNORE TABLE `Process<?php echo $pre; ?>_<?php echo $object->getId(); ?>` MODIFY COLUMN PRO_parameter TEXT NULL;
 
 DROP TRIGGER IF EXISTS `Process_BUPD<?php echo $pre; ?>_<?php echo $object->getId(); ?>`;
 CREATE TRIGGER `Process_BUPD<?php echo $pre; ?>_<?php echo $object->getId(); ?>` BEFORE UPDATE ON `Process<?php echo $pre; ?>_<?php echo $object->getId(); ?>` FOR EACH ROW

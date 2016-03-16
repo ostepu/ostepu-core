@@ -14,14 +14,25 @@
     {"path":"start_cx"}
   ],
   "links":[
-    {"name":"pdf", "target":"FSPdf", "links":[] },
+    {"name":"pdf", "target":"FSPdf", "links":[{"method":"POST", "path":"/pdf" }] },
     {"name":"postProcess", "target":"DBProcessList", "links":[{"method":"POST", "path":"/process" }] },
     {"name":"deleteProcess", "target":"DBProcessList", "links":[{"method":"DELETE", "path":"/process/process/:processid" }] },
-    {"name":"getProcess", "target":"DBProcessList", "links":[{"method":"GET", "path":"/process/course/:courseid/component/:componentid" }] }
+    {"name":"getProcess", "target":"DBProcessList", "links":[{"method":"GET", "path":"/process/course/:courseid/component/:componentid" }] },
+    {"name":"postCourse", "target":"DBOOP", "links":[{"method":"POST", "path":"/course" }] },
+    {"name":"deleteCourse", "target":"DBOOP", "links":[{"method":"DELETE", "path":"/course/:courseid" }] },
+    {"name":"postTestcase", "target":"DBOOP", "links":[{"method":"POST", "path":"/insert" }] },
+    {"name":"selfLink", "target":"LOOP", "links":[] },
+    {"name":"popTestcase", "target":"DBOOP", "links":[{"method":"GET", "path":"/pop" }] },
+    {"name":"getSubmission", "target":"DBSubmission","links":[]},
+    {"name":"editTestcase", "target":"DBOOP", "links":[{"method":"POST", "path":"/testcase/testcase/:testcaseid" }] },
+    {"name":"getTestcase", "target":"DBOOP", "links":[{"method":"GET", "path":"/testcase/submission/:sid/course/:cid" }] },
+    {"name":"getExercise", "target":"DBExercise", "links":[{"method":"GET", "path":"/exercise/exercise/:eid/nosubmission" }] },
+    {"name":"marking", "target":"LMarking", "links":[{"method":"POST", "path":"/marking" }] }
   ],
   "connector":[
     {"name":"extension", "target":"LExtension"},
     {"name":"request", "target":"CLocalObjectRequest"},
-    {"name":"request", "target":"CHelp", "links":[{"path":"/help/:language/extension/LOOP.md"}]}
+    {"name":"request", "target":"CHelp", "links":[{"path":"/help/:language/extension/LOOP.md"}]},
+    {"name": "postPlatform","target": "CInstall"}
   ]
 }

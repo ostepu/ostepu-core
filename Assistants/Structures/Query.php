@@ -1,17 +1,20 @@
 <?php
-
-
 /**
  * @file Query.php contains the Query class
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.0
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2013-2016
  */
 
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
  * this class is for querying SQL statemets
- *
- * @author Till Uhlig
- * @date 2013-2014
  */
 class Query extends Object implements JsonSerializable
 {
@@ -315,7 +318,7 @@ class Query extends Object implements JsonSerializable
                     unset($value['request']);
                 }
                 if ( isset( $value['response'] ) ){
-                    $obj->setResponse( json_decode($value['response'],true) );
+                    $obj->setResponse( $value['response'] );
                     unset($value['response']);
                 }
                 if ( isset( $value['affectedRows'] ) ){
@@ -347,7 +350,7 @@ class Query extends Object implements JsonSerializable
             if ( isset( $data['request'] ) )
                 $obj->setRequest( $data['request'] );
             if ( isset( $data['response'] ) ){
-                $obj->setResponse( json_decode($data['response'],true) );
+                $obj->setResponse($data['response'] );
                     unset($data['response']);
             }
             if ( isset( $data['affectedRows'] ) )
@@ -375,7 +378,7 @@ class Query extends Object implements JsonSerializable
         if ( $this->request !== null )
             $list['request'] = $this->request;
         if ( $this->response !== array( ) )
-            $list['response'] = json_encode($this->response);
+            $list['response'] = $this->response;
         if ( $this->affectedRows !== null )
             $list['affectedRows'] = $this->affectedRows;
         if ( $this->insertId !== null )

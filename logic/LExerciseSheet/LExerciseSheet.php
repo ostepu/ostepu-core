@@ -2,11 +2,19 @@
 /**
  * @file LExercisesheet.php Contains the LExercisesheet class
  *
- * @author Christian Elze
- * @author Martin Daute
- * @author Peter Koenig
- * @author Ralf Busch
- * @date 2013-2014
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.0
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2014
+ * @author Peter König <upbkgs20@arcor.de>
+ * @date 2014
+ * @author Martin Daute <martin.daute@student.uni-halle.de>
+ * @date 2014
  */
 
 require_once dirname(__FILE__) . '/../../Assistants/vendor/Slim/Slim/Slim.php';

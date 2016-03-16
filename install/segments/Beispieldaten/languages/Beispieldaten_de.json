@@ -1,0 +1,14 @@
+{
+    "samples": {
+        "title": "Beispieldaten",
+        "description": "Hier werden die Befehle für Beispieldaten aufgerufen. Diese sollen hauptsächlich die Datenbank befüllen und für eine Belastung sorgen.",
+        "createSamples": "Erzeugen",
+        "createSamplesDesc": "Erstellt die Beispieldaten",
+        "courses": "Wieviele Veranstaltungen?",
+        "user": "Wieviele Nutzer?",
+        "noLinks": "keine Verbindungen gefunden<br> Führen Sie die Komponenteninstallation aus!",
+        "targetName": "Komponente",
+        "priority": "Reihenfolge",
+        "message": "Status+Meldung"
+    }
+}

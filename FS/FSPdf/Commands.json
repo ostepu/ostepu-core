@@ -1,5 +1,12 @@
 [
     {
+        "name": "addPlatform",
+        "outputType": "Platform",
+        "inputType": "Platform",
+        "method": "POST",
+        "path": "/platform"
+    },
+    {
         "name": "addPdfPermanent",
         "outputType": "File",
         "inputType": "Pdf",
@@ -53,13 +60,6 @@
         "outputType": "binary",
         "method": "GET",
         "path": "/:folder/:a/:b/:c/:file/:filename"
-    },
-    {
-        "name": "addPlatform",
-        "outputType": "Platform",
-        "inputType": "Platform",
-        "method": "POST",
-        "path": "/platform"
     },
     {
         "name": "deletePlatform",

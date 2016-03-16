@@ -34,6 +34,7 @@
 
 .wider {
     width: 300px;
+    max-width: 300px;
 }
 
 .very-wide {
@@ -121,6 +122,13 @@ button:hover {
     cursor: pointer;
 }
 
+.link-sim{
+    /*outline: none;*/
+}
+
+.link-sim:hover {
+    cursor: pointer;
+}
 .text-button {
     font-family:'Lucida Sans Unicode', Helvetica, Arial, Verdana, sans-serif;
     border: 0;

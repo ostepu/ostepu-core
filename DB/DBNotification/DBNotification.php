@@ -1,11 +1,14 @@
 <?php
-
-
 /**
  * @file DBNotification.php contains the DBNotification class
  *
- * @author Till Uhlig
- * @date 2014
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.4.3
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
  */
 
 require_once ( dirname(__FILE__) . '/../../Assistants/vendor/Slim/Slim/Slim.php' );
@@ -149,6 +152,15 @@ class DBNotification
                                'getExistsCourseNotifications'
                                )
                         );
+                        
+        // GET GetAliveCourseNotifications
+        $this->_app->get(
+                         '(/:pre)/' . $this->getPrefix( ) . '/alive/course/:courseid',
+                         array(
+                               $this,
+                               'getAliveCourseNotifications'
+                               )
+                         );
 
         // GET GetCourseNotifications
         $this->_app->get(
@@ -456,6 +468,18 @@ class DBNotification
         $this->get(
                    'GetCourseNotifications',
                    dirname(__FILE__) . '/Sql/GetCourseNotifications.sql',
+                   isset( $pre ) ? $pre : '',
+                   isset( $notid ) ? $notid : '',
+                   isset( $setname ) ? $setname : '',
+                   isset( $courseid ) ? $courseid : ''
+                   );
+    }
+    
+    public function getAliveCourseNotifications($pre='' , $courseid )
+    {
+        $this->get(
+                   'GetAliveCourseNotifications',
+                   dirname(__FILE__) . '/Sql/GetAliveCourseNotifications.sql',
                    isset( $pre ) ? $pre : '',
                    isset( $notid ) ? $notid : '',
                    isset( $setname ) ? $setname : '',

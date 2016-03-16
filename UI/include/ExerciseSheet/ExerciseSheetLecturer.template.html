@@ -1,5 +1,41 @@
+<?php
+/**
+ * @file ExerciseSheetLecturer.template.html
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.0
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2013-2014
+ * @author Felix Schmidt <Fiduz@Live.de>
+ * @date 2013-2014
+ * @author Florian Lücke <florian.luecke@gmail.com>
+ * @date 2013-2014
+ */
+?>
+
 <?php $langTemplate='ExerciseSheet';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 
+<?php
+if (isset($notifications)){
+    echo "<div align='center' class='notification-list'>";
+    foreach($notifications as $note){
+        if (isset($note['begin']) && trim($note['begin']) != '' && $note['begin'] !== '0'){
+            $date = date('d.m.Y - H:i', $note['begin'])."\n";
+        } else {
+            $date = '';
+        }
+        echo MakeNotification('info notification-box', $date.$note['text'], true, '1');
+    }
+    echo "</div>";
+}
+?>
+
+<div class="new-line">
 <input type="hidden" name="action" value="ExerciseSheetLecturer">
 <div class="content-element interactive add">
     <div class="content-header">
@@ -9,7 +45,7 @@
         </div>
     </div>
 </div> <!-- end: content-element -->
-
+</div>
 <?php
 if (!empty($sheets)) {
 foreach ($sheets as $sheet):
@@ -52,9 +88,13 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
         <div class="info-color bold footer-text right" style="margin-left:10px">
                 <?php if (isset($sheet['status'])){
                             $types = Marking::getStatusDefinition();
-                            foreach ($sheet['status'] as $key => $value){ ?>
-                            <?php echo $value.' '.$types[LArraySorter::multidimensional_search($types, array('id'=>$key))]['longName'];?>
-                <?php }} ?>
+                            $types[] = ['id' => 'notAccepted','shortName' => 'na', 'longName' => 'nicht akzeptiert'];
+                            $statusText = array();
+                            foreach ($sheet['status'] as $key => $value){
+                                $statusText[] = $value.' '.$types[LArraySorter::multidimensional_search($types, array('id'=>$key))]['longName'];
+                            }
+                            echo implode(', ',$statusText);
+                      } ?>
         </div>
     </div>
 
@@ -136,6 +176,7 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                     <br>
                     <li class="footer-text bold"><?php echo Language::Get('sheet','tutorMarkings', $langTemplate); ?>:</li>
                     <?php $types = Marking::getStatusDefinition();
+                          $types[] = ['id' => 'notAccepted','shortName' => 'na', 'longName' => 'nicht akzeptiert'];
                     foreach ($sheet['status'] as $key => $value){ ?>
                         <li class="footer-text">
                         <!--<a href="Download.php?cid=--><?php /*echo $cid;*/ ?><!--&downloadCSV_--><?php /*echo $key;*/?><!--=--><?php /*echo $sheet['id'];*/ ?><!--" class="download text-button body-option-color footer-text" style="padding-left:0px">-->
@@ -155,6 +196,7 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                 <br>
                 <li class="footer-text bold"><?php echo Language::Get('sheet','allMarkings', $langTemplate); ?>:</li>
                 <?php $types = Marking::getStatusDefinition();
+                      $types[] = ['id' => 'notAccepted','shortName' => 'na', 'longName' => 'nicht akzeptiert'];
                 foreach ($sheet['allStatus'] as $key => $value){ ?>
                 <li class="footer-text">
                 <?php echo $value.' '.$types[LArraySorter::multidimensional_search($types, array('id'=>$key))]['longName'];?>

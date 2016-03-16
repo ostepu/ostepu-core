@@ -23,5 +23,15 @@ $(document).ready( function()
           pickSeconds: false,
           weekStart: 1
         });
+    } 
+    
+    var all3 = $('.dtpickerInit');
+    for (var i = 0; i < all3.length; i++) {
+        var target = $(all3[i]);
+        var picker = target.data('datetimepicker');
+        var localDate = picker.getLocalDate();
+        if (!target.find('.dtDate').val()) {
+            picker.setLocalDate(new Date(localDate.getYear()+1900, localDate.getMonth(), localDate.getDate(), 0, 0));
+        }
     }
 });

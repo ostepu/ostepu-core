@@ -1,0 +1,13 @@
+[{
+    "name": "BackupSegment",
+    "author": "Till Uhlig",
+    "version": "1.0",
+    "instructions": {
+        "type": "php",
+        "params": {
+            "run": "include",
+            "file": "BackupSegment.php",
+            "className": "BackupSegment"
+        }
+    }
+}]

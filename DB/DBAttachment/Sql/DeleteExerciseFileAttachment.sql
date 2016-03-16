@@ -2,7 +2,14 @@
 /**
  * @file DeleteExerciseFileAttachment.sql
  * deletes an specified attachment from %Attachment table
- * @author  Till Uhlig
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.2.6
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015
+ *
  * @param int \$eid a %Exercise identifier
  * @param int \$fileid a %File identifier
  * @result -

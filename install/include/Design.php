@@ -1,11 +1,14 @@
 <?php
-
-
 /**
  * @file Design.php contains the Design class
  *
- * @author Till Uhlig
- * @date 2014
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.1
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2016
  */
 
  //require_once dirname(__FILE__) . '/Einstellungen.php';
@@ -116,7 +119,9 @@ class Design
     {
         $result = '';
         if (!$console){
-            $result .= "<h2>{$name}</h2>";
+            if ($name!==null){
+                $result .= "<h2>{$name}</h2>";
+            }
             $result .= "<table border='0' cellpadding='3' width='600'>";
             $result .= "<colgroup><col width='200'><col width='300'><col width='100'></colgroup>";
             $result .= $data;
@@ -401,6 +406,13 @@ class Design
         if ($text === null)
             $text = Language::Get('main','install');
         return "<button class='text-button info-color bold' name='{$varName}' value='{$value}'>{$text}</button>";
+    }
+
+    public static function erstelleLink($varName, $value, $text = null)
+    {
+        if ($text === null)
+            $text = Language::Get('main','install');
+        return "<span class='text-button info-color bold'><a href='{$value}'>{$text}</a></span>";
     }
 
     /**

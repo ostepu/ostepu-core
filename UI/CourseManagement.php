@@ -4,14 +4,25 @@
  * Constructs the page that is used to grant and revoke a user's user-rights
  * and to change basic course settings.
  *
- * @author Felix Schmidt
- * @author Florian Lücke
- * @author Ralf Busch
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.0
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2014
+ * @author Felix Schmidt <Fiduz@Live.de>
+ * @date 2013-2014
+ * @author Florian Lücke <florian.luecke@gmail.com>
+ * @date 2013-2014
  *
  * @todo PUT Request to logic not to DB
  * @todo use logic Controller instead of database
  * @todo you have to confirm your action before deleting coursestatus
  */
+
 ob_start();
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
@@ -49,7 +60,7 @@ foreach ($plugins_data['plugins'] as &$plugin){
 $postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
   ->addSet('action',
            ['set_default'=>'noAction',
-            'satisfy_in_list'=>['noAction', 'EditExternalId', 'AddExternalId', 'Plugins', 'CourseSettings', 'AddExerciseType', 'EditExerciseType', 'GrantRights', 'RevokeRights', 'AddUser'],
+            'satisfy_in_list'=>['noAction', 'CourseNotification', 'EditExternalId', 'AddExternalId', 'Plugins', 'CourseSettings', 'AddExerciseType', 'EditExerciseType', 'GrantRights', 'RevokeRights', 'AddUser'],
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','invalidAction', $langTemplate)]])
   ->addSet('sortUsers',
@@ -109,6 +120,139 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
             }
         }
 
+    }
+    
+    if ($postResults['action'] === 'CourseNotification') {
+        $courseNotificationsNotifications = array();
+
+        $postCourseNotificationsValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+          ->addSet('data',
+                   ['set_default'=>array(),
+                    'is_array',
+                    'perform_this_foreach'=>[['key',
+                                              ['valid_integer']],
+                                             ['elem',
+                                              ['perform_this_array'=>[['id',
+                                                                       ['logic_or'=>[['satisfy_value'=>''],
+                                                                                     ['valid_identifier']],
+                                                                        'on_error'=>['type'=>'error',
+                                                                                     'text'=>Language::Get('main','invalidNotificationId', $langTemplate)]]],
+                                                                      ['message',
+                                                                       ['satisfy_exists',
+                                                                        'on_error'=>['type'=>'error',
+                                                                                     'text'=>Language::Get('main','invalidNotificationMessage', $langTemplate)]]],
+                                                                      ['startDate',
+                                                                       ['satisfy_exists',
+                                                                        'to_timestamp',
+                                                                        'on_error'=>['type'=>'error',
+                                                                                     'text'=>Language::Get('main','invalidNotificationStartDate', $langTemplate)]]],
+                                                                      ['endDate',
+                                                                       ['satisfy_exists',
+                                                                        'to_timestamp',
+                                                                        'on_error'=>['type'=>'error',
+                                                                                     'text'=>Language::Get('main','invalidNotificationEndDate', $langTemplate)]]],
+                                                                      ['rights',
+                                                                       ['set_default'=>array(),
+                                                                        'is_array',
+                                                                        'perform_this_foreach'=>[['key',
+                                                                                                  ['valid_integer']],
+                                                                                                 ['elem',
+                                                                                                  ['satisfy_in_list' => array_keys(CourseStatus::getStatusDefinition())],
+                                                                                                   'on_error'=>['type'=>'error',
+                                                                                                                'text'=>Language::Get('main','invalidNotificationRights', $langTemplate)]]],
+                                                                        'on_error'=>['type'=>'error',
+                                                                                     'text'=>Language::Get('main','invalidNotificationRightsStructure', $langTemplate)]]]
+                                                                                     ]]]]]);
+                                 
+                                 
+        $foundValues = $postCourseNotificationsValidation->validate();
+        $courseNotificationsNotifications = array_merge($courseNotificationsNotifications,$postCourseNotificationsValidation->getPrintableNotifications('MakeNotification'));
+        $postCourseNotificationsValidation->resetNotifications()->resetErrors();
+
+        if ($postCourseNotificationsValidation->isValid()){
+            //echo json_encode($foundValues);
+            $data = $foundValues['data'];
+            
+            $URI = $serverURI . '/DB/DBNotification/notification/course/'.$cid;
+            $currentNotifications = http_get($URI, true);
+            $currentNotifications = Notification::decodeNotification($currentNotifications);
+            $currentList = array(); // enthält die IDs der existierenden Mitteilungen
+            foreach($currentNotifications as $key => $elem){
+                $currentList[] = $elem->getId();
+            }
+            unset($currentNotifications);
+            
+            $foundList = array(); // enthält die IDs der übermittelten Mitteilungen
+            $foundExistingElements = array();
+            $foundNewElements = array();
+            foreach($data as $key => $elem){
+                if (isset($elem['id']) && trim($elem['id']) != ''){
+                    $foundList[] = $elem['id'];
+                    $foundExistingElements[$elem['id']] = Notification::createNotification($elem['id'],$elem['message'],$elem['startDate'],$elem['endDate'],implode(',',$elem['rights']));
+                } else {
+                    $foundNewElements[] = Notification::createNotification(null,$elem['message'],$elem['startDate'],$elem['endDate'],implode(',',$elem['rights']));
+                }
+            };
+
+            // finde die Elemente, welche gelöscht werden sollen
+            $removeElements = array_diff($currentList,$foundList);
+            $removeFailure = false;
+            foreach($removeElements as $key){
+                $URI = $serverURI . "/DB/DBNotification/notification/notification/".$key;
+                http_delete($URI, true, $messageNewAc);
+                if ($messageNewAc !== 201) {
+                    $removeFailure = true;
+                    break;
+                }
+            }
+            
+            if (count($removeElements)>0){
+                if ($removeFailure === true) {
+                    $courseNotificationsNotifications[] = MakeNotification('error', Language::Get('main','errorRemoveNotification', $langTemplate));
+                } else {
+                    $courseNotificationsNotifications[] = MakeNotification('success', Language::Get('main','successRemoveNotification', $langTemplate));
+                }
+            }
+            
+            // finde die Elemente, welche geändert werden sollen
+            $editElements = array_intersect($currentList,$foundList);
+            $editFailure = false;
+            foreach($editElements as $key){
+                $URI = $serverURI . "/DB/DBNotification/notification/notification/".$key;
+                $res = http_put_data($URI, Notification::encodeNotification($foundExistingElements[$key]), true, $messageNewAc);
+                if ($messageNewAc !== 201) {
+                    $editFailure = true;
+                    break;
+                }
+            }
+            
+            if (count($editElements)>0){
+                if ($editFailure === true) {
+                    $courseNotificationsNotifications[] = MakeNotification('error', Language::Get('main','errorEditNotification', $langTemplate));
+                } else {
+                    $courseNotificationsNotifications[] = MakeNotification('success', Language::Get('main','successEditNotification', $langTemplate));
+                }
+            }
+            
+            // erstelle die neuen Elemente
+            $createFailure = false;
+            foreach($foundNewElements as $key => $elem){
+                $URI = $serverURI . "/DB/DBNotification/notification/course/".$cid;
+                $res = http_post_data($URI, Notification::encodeNotification($elem), true, $messageNewAc);
+                if ($messageNewAc !== 201) {
+                    $createFailure = true;
+                    break;
+                }
+            }
+            
+            if (count($foundNewElements)>0){
+                if ($createFailure === true) {
+                    $courseNotificationsNotifications[] = MakeNotification('error', Language::Get('main','errorCreateNotification', $langTemplate));
+                } else {
+                    $courseNotificationsNotifications[] = MakeNotification('success', Language::Get('main','successCreateNotification', $langTemplate));
+                }
+            }
+        }
     }
 
     if ($postResults['action'] === 'AddExternalId') {
@@ -282,7 +426,7 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
           ->addSet('exerciseTypes',
                    ['is_array',
                     'perform_this_array'=>[[['key_all'],
-                                       ['valid_identifier']]],
+                                            ['valid_identifier']]],
                     'set_default'=>array(),
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidExerciseTypes', $langTemplate)]])
@@ -343,9 +487,11 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
                     } elseif ($type === 'STRING'){
                         // nothing
                     } elseif ($type === 'DATE'){
-                        if (trim($value) == '')
+                        if (trim($value) == ''){
                             $value = 0;
-                        $value = strtotime(str_replace(" - ", " ", $value));                      
+                        } else {
+                            $value = strtotime(str_replace(" - ", " ", $value));  
+                        }                        
                     }
 
                     // create new setting and edit existing one
@@ -552,7 +698,6 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
         $postGrantRightsValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
           ->addSet('Rights',
                    ['satisfy_exists',
-                    'satisfy_not_empty',
                     'satisfy_min_numeric'=>0,
                     'satisfy_max_numeric'=>3,
                     'to_integer',
@@ -570,7 +715,7 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
         $postGrantRightsValidation->resetNotifications()->resetErrors();
 
         // check if POST data is send
-        if($postGrantRightsValidation->Valid()) {
+        if($postGrantRightsValidation->isValid()) {
             // create new coursestatus and edit existing one
             $data = User::encodeUser(User::createCourseStatus($foundValues['userID'], $cid, $foundValues['Rights']));
 
@@ -639,7 +784,7 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
         $addUserNotifications = array_merge($addUserNotifications,$postAddUserValidation->getPrintableNotifications('MakeNotification'));
         $postAddUserValidation->resetNotifications()->resetErrors();
 
-        if ($postAddUserValidation->Valid()) {
+        if ($postAddUserValidation->isValid()) {
             $URL = $databaseURI . '/user/user/' . $foundValues['userName'];
             $user = http_get($URL, true);
             $user = json_decode($user, true);
@@ -761,7 +906,7 @@ if (isset($addUserNotifications))
 $courseNotifications = Template::WithTemplateFile('include/CourseManagement/CourseNotifications.template.html');
 $courseNotifications->bind($courseManagement_data);
 if (isset($courseNotificationsNotifications))
-    $courseNotifications->bind(array('GrantRightsNotificationElements' => $courseNotificationsNotifications));
+    $courseNotifications->bind(array('CourseNotificationsNotifications' => $courseNotificationsNotifications));
 
 /**
  * @todo combine the templates into a single file

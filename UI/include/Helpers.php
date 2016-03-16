@@ -3,8 +3,19 @@
  * @file Helpers.php
  * A collection of helper methods that can be used by classes
  *
- * @author Florian Lücke
- * @author Ralf Busch
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.0
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2014
+ * @author Felix Schmidt <Fiduz@Live.de>
+ * @date 2014
+ * @author Florian Lücke <florian.luecke@gmail.com>
+ * @date 2013-2014
  */
  
  
@@ -190,13 +201,14 @@ function curlSetAuthentication($curl, $sessiondelete = false)
  * notification.
  * @see Notifications.css
  */
-function MakeNotification($notificationType, $notificationText)
+function MakeNotification($notificationType, $notificationText, $collapsible=false, $rows=null)
 {
-    return <<<EOF
-<div class="notification-bar {$notificationType}">
-    $notificationText
-</div>
-EOF;
+    if (!$collapsible){
+        return "<div class='{$notificationType} notification-bar'>{$notificationText}</div>";
+    } else {
+        $addRows = (isset($rows) ? "rows='{$rows}'" : '');
+        return "<textarea readonly class='link-sim notification-bar {$notificationType}' {$addRows}>{$notificationText}</textarea>";
+    }
 }
 
 function MakeInfoButton($helpPath)
@@ -204,7 +216,7 @@ function MakeInfoButton($helpPath)
     global $externalURI;
     $helpPath = implode('/',func_get_args());
     $URL = "{$externalURI}/DB/CHelp/help/".Language::$selectedLanguage."/{$helpPath}";
-    return "<a href='{$URL}' class='plain image-button exercise-sheet-images' target='popup' onclick=\"window.open('', 'popup', 'width=700,height=600,scrollbars=yes,location=no,directories=no,menubar=no,toolbar=no,status=no,resizable=yes')\" title='info' target='_blank'><img src='Images/Info.png' /></a>";
+    return "<a href='{$URL}' class='plain image-button exercise-sheet-images' target='popup' onclick=\"window.open('{$URL}', 'popup', 'width=700,height=600,scrollbars=yes,location=no,directories=no,menubar=no,toolbar=no,status=no,resizable=yes')\" title='info' target='_blank'><img src='Images/Info.png' /></a>";
 }
 
 /**

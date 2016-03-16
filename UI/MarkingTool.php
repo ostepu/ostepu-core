@@ -2,14 +2,26 @@
 /**
  * @file MarkingTool.php
  *
- * @author Felix Schmidt
- * @author Florian Lücke
- * @author Ralf Busch
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.0
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2016
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2014
+ * @author Felix Schmidt <Fiduz@Live.de>
+ * @date 2014
+ * @author Florian Lücke <florian.luecke@gmail.com>
+ * @date 2014
  */
+
 ob_start();
 
 ///echo count($_REQUEST['exercises'],COUNT_RECURSIVE);
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
+include_once dirname(__FILE__) . '/../Assistants/LArraySorter.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
 include_once dirname(__FILE__) . '/include/FormEvaluator.php';
 

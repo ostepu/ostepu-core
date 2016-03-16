@@ -8,6 +8,7 @@
         {"path": "DBExternalId.php"},
         {"path": "index.php"},
         {"path": "Commands.json"},
+        {"path": "ExternalIdSample.json"},
         {"path": "Sql/"},
         {"path": "info/"}
     ],

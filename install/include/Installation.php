@@ -1,16 +1,21 @@
 <?php
+/**
+ * @file Installation.php contains the Installation class
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.1
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2016
+ */
+ 
 require_once dirname(__FILE__) . '/../../UI/include/Authentication.php';
 require_once dirname(__FILE__) . '/../../Assistants/Structures.php';
 require_once dirname(__FILE__) . '/../../Assistants/Request.php';
 require_once dirname(__FILE__) . '/../../Assistants/DBRequest.php';
 require_once dirname(__FILE__) . '/../../Assistants/DBJson.php';
-
-/**
- * @file Installation.php contains the Installation class
- *
- * @author Till Uhlig
- * @date 2014
- */
 
 class Installation
 {
@@ -63,11 +68,33 @@ class Installation
         Installation::log(array('text'=>'beende Funktion'));
     }
 
+    public static function collect($name,$data)
+    {
+        Installation::log(array('text'=>'starte Funktion'));
+        $res = array();
+        foreach(Einstellungen::$segments as $segs){
+            if (isset(Installer::$segmentStatus[$segs]) && Installer::$segmentStatus[$segs] != 200) continue;
+            if (!is_callable("{$segs}::".$name)) continue;
+            
+            try{
+                $tmp = call_user_func("{$segs}::".$name,$data);
+                $res = array_merge($res,$tmp);
+            }catch(Exception $e){
+                $message="Absturz des Aufrufs {$segs}::".$name;
+                self::errorHandler($message,$e);
+                Installer::$segmentStatus[$segs] = 500;
+            }
+        }
+        Installation::log(array('text'=>'beende Funktion'));
+        return $res;
+    }
+
     public static function collectPlatformSettings($data)
     {
         Installation::log(array('text'=>'starte Funktion'));
         $settings = array();
         foreach(Einstellungen::$segments as $segs){
+            if (isset(Installer::$segmentStatus[$segs]) && Installer::$segmentStatus[$segs] != 200) continue;
             if (!is_callable("{$segs}::platformSetting")) continue;
             $settings = array_merge($settings,$segs::platformSetting($data));
         }
@@ -154,16 +181,16 @@ class Installation
     */
     public static function read_all_files($root = '.', $exclude = array())
     {
-      
+
       Installation::log(array('text'=>'starte Funktion'));
       $files  = array('files'=>array(), 'dirs'=>array());
       $directories  = array();
       $root = realpath($root);
-    
+
       foreach($exclude as &$ex){
           $ex = realpath($ex);
       }
-    
+
       $last_letter  = $root[strlen($root)-1];
       $root  = ($last_letter == DIRECTORY_SEPARATOR) ? $root : $root.DIRECTORY_SEPARATOR;
 
@@ -171,7 +198,7 @@ class Installation
 
       while (sizeof($directories)) {
         $dir  = array_pop($directories);
-      
+
         if ($handle = opendir($dir)) {
           while (false !== ($file = readdir($handle))) {
             if ($file == '.' || $file == '..') {
@@ -231,7 +258,7 @@ class Installation
 
         Logger::Log($data['text'],$data['logLevel'],false,Installation::$logFile, LogLevel::$names[$data['logLevel']] . ','.$data['name'],false,Installation::$logLevel);
     }
-  
+
     public static function Get($area, $cell, $name='default', $params=array())
     {
         $value = Language::Get($area, $cell, $name, $params);
@@ -239,5 +266,53 @@ class Installation
             Installation::log(array('text'=>Language::Get('main','unknownPlaceholder','default', array('name'=>$area.'::'.$cell)),'logLevel'=>LogLevel::ERROR));
         }
         return $value;
+    }
+
+    // @http://www.roemische-ziffern.de/Roemische-Zahlen-PHP-berechnen.html
+    public static function intToRoman($arabische_zahl)
+    {
+           $ar_r = array( "M","CM","D","CD","C","XC","L","XL","X","IX","V","IV","I");
+           $ar_a = array(1000, 900,500, 400,100, 90,  50, 40,  10,   9,  5,   4,  1);
+           $roemische_zahl = "";
+
+           for ($count=0; $count < count($ar_a); $count++) {
+              while ($arabische_zahl >= $ar_a[$count]) {
+                 $roemische_zahl .= $ar_r[$count];
+                 $arabische_zahl -= $ar_a[$count];
+              }
+           }
+        return $roemische_zahl;
+    }
+    
+    public static function errorHandler($text, Exception $e)
+    {
+        $info = debug_backtrace();
+        $infoString = '';
+        if (isset($info[1])) {
+            $callerInfo = $info[1];
+            if (isset($callerInfo['class']))$infoString .= $callerInfo['class'];
+            if (isset($callerInfo['type']))$infoString .= $callerInfo['type'];
+            if (isset($callerInfo['function']))$infoString .= $callerInfo['function'];
+        } else {
+            $callerInfo = $info[0];
+            if (isset($callerInfo['file']))$infoString .=  basename($callerInfo['file']);
+        }
+
+        if (isset($info[0]['line'])) {
+            $infoString .= ':' . $info[0]['line'] . ')';
+        } elseif (isset($info[1]['line'])) {
+            $infoString .= ' (' . $info[1]['line'] . ')';
+        }
+        $name = $infoString;
+        self::log(array('logLevel'=>LogLevel::ERROR,'text'=>$text."\n".$e->getMessage()."\n".$e->getTraceAsString(),'name'=>$name));
+    }
+
+    public static function execInBackground($cmd) {
+        if (substr(php_uname(), 0, 7) == "Windows"){
+            pclose(popen("start /B ". $cmd, "r"));
+        }
+        else {
+            exec($cmd . " > /dev/null &");
+        }
     }
 }

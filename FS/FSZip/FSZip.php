@@ -1,12 +1,16 @@
 <?php
-
-
 /**
  * @file FSZip.php contains the FSZip class
  *
- * @author Till Uhlig
- * @author Felix Schmidt
- * @date 2013-2014
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.0
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2013-2016
+ * @author Felix Schmidt <Fiduz@Live.de>
+ * @date 2014
  */
 
 include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
@@ -126,7 +130,9 @@ class FSZip
                                                 );
                         } else {
                             $zip->close( );
-                            unlink( $filePath );
+                            if (file_exists($filePath)){
+                                unlink( $filePath );
+                            }
                             return Model::isProblem(new File());
                         }
                     }
@@ -134,7 +140,9 @@ class FSZip
                 }
                 $zip->close( );
             } else {
-                unlink( $filePath );
+                if (file_exists( $filePath )){
+                    unlink( $filePath );
+                }
                 return Model::isProblem(new File());
             }
         }
@@ -259,11 +267,13 @@ class FSZip
             $file->setMimeType("application/zip");
 
             // removes the file
-            unlink( $this->config['DIR']['files'] . '/' . $filePath );
+            if (file_exists($this->config['DIR']['files'] . '/' . $filePath)){
+                unlink( $this->config['DIR']['files'] . '/' . $filePath );
+            }
 
             // the removing/unlink process failed, if the file still exists.
             if ( file_exists( $this->config['DIR']['files'] . '/' . $filePath ) ){
-            return Model::isProblem(new File( ));
+                return Model::isProblem(new File( ));
             }
 
             // the file is removed

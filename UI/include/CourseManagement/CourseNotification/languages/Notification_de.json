@@ -1,0 +1,11 @@
+{
+    "main": {
+        "student": "Student",
+        "tutor": "Tutor",
+        "lecturer": "Dozent",
+        "administrator": "Administrator",
+        "rights": "Nutzer",
+        "startDate": "Beginn",
+        "endDate": "Ende"
+    }
+}

@@ -1,0 +1,16 @@
+{"generateComponents": {
+    "title": "Komponenten eintragen",
+    "generateComponents": "Komponenten eintragen",
+    "numberComponents": "Komponenten",
+    "numberLinks": "Verknüpfungen",
+    "noAccess": "Die Konfigurationsdatei konnte nicht geladen werden",
+    "description": "Dieser Breich sammelt die Komponentendaten der Pakete und trägt diese in die Datenbank ein, sodass sie im nachfolgenden Schritt initialisiert werden können.",
+    "createTruncateQuery": "sql = $sql",
+    "truncateQueryResult": "Resultat: $res",
+    "createResetStatusQuery": "sql = $sql",
+    "resetStatusQueryResult": "Resultat: $res",
+    "createInsertQuery": "sql = $sql",
+    "insertQueryResult": "Resultat: $res",
+    "createInsertLinksQuery": "sql = $sql",
+    "insertLinksQueryResult": "Resultat: $res"
+}}

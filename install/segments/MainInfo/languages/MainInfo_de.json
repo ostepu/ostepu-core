@@ -1,0 +1,8 @@
+{"mainInfo": {
+    "title": "",
+    "notWritable": "keine Schreibrechte vorhanden",
+    "noWritePermission": "keine Schreibrechte",
+    "positiveResult": "Prüfung erfolgreich",
+    "checkPath": "prüfe Pfad: $path",
+    "checkFile": "prüfe Datei: $file"
+}}

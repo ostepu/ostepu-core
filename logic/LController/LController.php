@@ -2,9 +2,22 @@
 /**
  * @file LController.php Contains the LController class
  *
- * @author Martin Daute
- * @author Christian Elze
- * @author Peter Koenig
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.0
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2016
+ * @author Peter König <upbkgs20@arcor.de>
+ * @date 2014
+ * @author Martin Daute <martin.daute@student.uni-halle.de>
+ * @date 2013-2014
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2014
+ * @author Florian Lücke <florian.luecke@gmail.com>
+ * @date 2014
+ * @author Christian Elze <christian.elze@gmail.com>
  * @date 2013-2014
  */
 

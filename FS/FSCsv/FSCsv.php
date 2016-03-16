@@ -1,12 +1,16 @@
 <?php
-
-
 /**
  * @file FSCsv.php contains the FSCsv class
  *
- * @author Till Uhlig
- * @author Felix Schmidt
- * @date 2013-2014
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.3.2
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015-2016
+ * @author Sandro Wefel <sandro.wefel@informatik.uni-halle.de>
+ * @date 2015
  */
 
 include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );

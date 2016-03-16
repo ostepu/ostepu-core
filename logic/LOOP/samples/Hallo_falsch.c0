@@ -1,0 +1,9 @@
+prog OOP1_3{
+print("    .--.\n");
+print("   |o_o |\n");
+print("   |:_/ |\n");
+print("  //   \\ \\\n");
+print(" (|     | )\n");
+print("/`\\_   _/´\\\n")
+print("\\___)=(___/\n"); 
+}

@@ -1,0 +1,34 @@
+{
+    "name": "FORMS",
+    "version": "0.1",
+    "requirements": [{
+        "type": "plugin",
+        "name": "CORE",
+        "version": "0.4.3"
+    }],
+    "files": [
+        {
+            "path": "/",
+            "type": "git",
+            "params": {
+                "name":"forms",
+                "branch": "master",
+                "URL": "https://github.com/ostepu/ostepu-forms.git",
+                "path": "install/vendor/Forms/"
+            },
+            "exclude": [
+                ".gitignore",
+                "README.md"
+            ]
+        }
+    ],
+    "components": [
+        {"conf": "vendor/forms/DBChoice/Component.json"},
+        {"conf": "vendor/forms/DBForm/Component.json"},
+        {"conf": "vendor/forms/DBFormResult.json"},
+        {"conf": "vendor/forms/DBProcessList.json"},
+        {"conf": "vendor/forms/DBProcessAttachment.json"},
+        {"conf": "vendor/forms/DBProcessWorkFiles.json"},
+        {"conf": "vendor/forms/LForm/Component.json"}
+    ]
+}

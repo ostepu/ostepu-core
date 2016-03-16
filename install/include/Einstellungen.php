@@ -1,11 +1,14 @@
 <?php
-
-
 /**
  * @file Einstellungen.php contains the Einstellungen class
  *
- * @author Till Uhlig
- * @date 2014
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.4
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2016
  */
 
 include_once ( dirname( __FILE__ ) . '/../../Assistants/Structures.php' );
@@ -190,12 +193,12 @@ class Einstellungen
      *
      * @return string[] Die Standardwerte der Segmente
      */
-    public static function getAllDefaults()
+    public static function getAllDefaults($data)
     {
         $defaults = array();
         foreach(Einstellungen::$segments as $segs){
             if (!is_callable("{$segs}::getDefaults")) continue;
-            $def = $segs::getDefaults();
+            $def = $segs::getDefaults($data);
             if (count($def)>0){
                 foreach ($def as $key => $values){
                     if (!isset($values[0]) || !isset($values[1])) continue;
@@ -250,7 +253,7 @@ class Einstellungen
             $keys = array_reverse($keys,false);
         }
 
-        $default = self::getAllDefaults();
+        $default = self::getAllDefaults($data);
         $konfiguration = array();
         $data = array();
         if (file_exists($path.'/'.$serverName.".ini") && is_readable($path.'/'.$serverName.".ini")){
@@ -550,5 +553,24 @@ class Einstellungen
             $cp .= "/".$e[$i];
         }
         return @mkdir($path, $mode);
+    }
+
+    public static function deleteDir($path)
+    {
+        // entfernt einen Ordner und zuvor alle enthaltenen Dateien
+        if (is_dir($path) === true) {
+            $files = array_diff(scandir($path), array('.', '..'));
+
+            foreach ($files as $file) {
+                self::deleteDir(realpath($path) . '/' . $file);
+            }
+            return rmdir($path);
+        }
+
+        // Datei entfernen
+        else if (is_file($path) === true) {
+            return unlink($path);
+        }
+        return false;
     }
 }

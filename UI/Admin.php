@@ -3,10 +3,21 @@
  * @file Admin.php
  * Constructs the page that is displayed to an admin.
  *
- * @author Felix Schmidt
- * @author Florian Lücke
- * @author Ralf Busch
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.0
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2013-2014
+ * @author Felix Schmidt <Fiduz@Live.de>
+ * @date 2013-2014
+ * @author Florian Lücke <florian.luecke@gmail.com>
+ * @date 2013-2014
  */
+
 ob_start();
 
 include_once dirname(__FILE__).'/include/Boilerplate.php';
@@ -55,7 +66,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
         $sheetNotifications[$foundValues['deleteSheetWarning']][] = MakeNotification('warning', Language::Get('main','askDeleteSheet', $langTemplate));
     } elseif ($postDeleteSheetValidation->isValid() && $postResults['action'] == 'ExerciseSheetLecturer' && isset($foundValues['deleteSheet'])) { /// !!! darf er das ??? ///
 
-        $URL = $logicURI . "/exercisesheet/exercisesheet/{$postResults['deleteSheet']}"; /// !!! darf er das ??? ///
+        $URL = $logicURI . "/exercisesheet/exercisesheet/{$foundValues['deleteSheet']}"; /// !!! darf er das ??? ///
         $result = http_delete($URL, true, $message);
 
         if ($message === 201){

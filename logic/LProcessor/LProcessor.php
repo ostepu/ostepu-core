@@ -2,8 +2,15 @@
 /**
  * @file LProcessor.php Contains the LProcessor class
  *
- * @author Till Uhlig
- * @date 2014
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.1
+ *
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2015-2016
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
  */
 
 require_once dirname(__FILE__) . '/../../Assistants/vendor/Slim/Slim/Slim.php';
@@ -606,7 +613,8 @@ class LProcessor
                     $process->setAttachment($pro->getAttachment());
                     $process->setTarget($pro->getTarget());
                     $process->setWorkFiles($pro->getWorkFiles());
-
+                    $process->setProcessId($pro->getProcessId());
+                        
 //echo Process::encodeProcess($process)."_______";// return;
 
                     $result = Request::post($component->getAddress().'/process', array(),  Process::encodeProcess($process));
@@ -614,6 +622,14 @@ class LProcessor
                     if ( $result['status'] >= 200 &&
                          $result['status'] <= 299 ){
                          $process = Process::decodeProcess( $result['content'] );
+
+                         if (isset($result['content'])){
+                            $content = Process::decodeProcess($result['content']); 
+                            //$submission->setStatus($content->getStatus());
+                            $submission = $process->getSubmission();
+                            if ($submission===null)$submission = $process->getRawSubmission();
+                            $submission->addMessages($content->getMessages());
+                        } 
 
                     } else {
                         $fail = true;
@@ -686,6 +702,46 @@ class LProcessor
                 }
             }
 
+            // postprocess submission
+            if ($processors !== null){
+                if (!is_array($processors)) $processors = array($processors);
+                
+                foreach($processors as $pro){
+                    $component = $pro->getTarget();
+                    
+                    if ($process->getExercise()===null)
+                        $process->setExercise($pro->getExercise());
+                     
+                    /*$process->setParameter($pro->getParameter());
+                    $process->setAttachment($pro->getAttachment());
+                    $process->setTarget($pro->getTarget());
+                    $process->setWorkFiles($pro->getWorkFiles());*/
+                        
+//echo Process::encodeProcess($process)."_______";// return;
+
+                    $result = Request::post($component->getAddress().'/postprocess', array(),  Process::encodeProcess($process));
+//echo $result['content'].'_______';
+                    if ( $result['status'] >= 200 && 
+                         $result['status'] <= 299 ){
+                         /*
+                          *  evaluating for response of postprocess is possible here
+                          */
+                    } elseif ($result['status'] == 404) {
+                        // skip if no postprocess command is found
+                        continue;
+                    } /*else {
+                        $submission->addMessage("Beim Nachbearbeiten der Einsendung ist ein Fehler aufgetreten");
+
+                        if (isset($result['content'])){
+                            $content = Process::decodeProcess($result['content']); 
+                            $submission->setStatus($content->getStatus());  
+                            $submission->addMessages($content->getMessages());
+                        }
+                       break;
+                    }*/
+                }
+            }
+          
             // upload marking
             if ($process->getMarking()!==null){
 //echo Marking::encodeMarking($process->getMarking());

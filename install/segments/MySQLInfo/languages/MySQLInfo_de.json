@@ -1,0 +1,5 @@
+{"mySQLInfo": {
+    "title": "",
+    "title2": "MySQL Hinweis",
+    "description": "Damit wir mit deutschen Umlauten in unserer Datenbank arbeiten können, muss die <span class='info-color'>my.cnf<\/span> bzw. <span class='info-color'>my.ini<\/span> des MySQL-Server angepasst werden.<br><br>Bsp.:<br>[ client ] <br> #<br># nicht auf utf -8 einstellen !!<br>#<br><br>[ mysql ]<br>#<br># Standardeinstellung war leer , scheint zu funktionieren .<br>#<br><br>[ mysqld ]<br>character_set_server = utf8<br>skip - character -set -client - handshake<br>..."
+}}

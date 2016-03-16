@@ -108,6 +108,8 @@ $(document).ready( function()
         var oldName = $(all[i]).attr('name');
         CKEDITOR.inline( oldName );
     }
+    
+    processorsReady();
 });
 
 function deleteFile(event) 

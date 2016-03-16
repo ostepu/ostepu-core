@@ -56,6 +56,7 @@ var trig = $(this);
                 trig.parents().find('.processor').last().find('.add-attachment').first().click();
             }
             renameProcessor();
+            singleProcessorReady(trig.find('option:selected').text());
             });
         });
     } else
@@ -70,6 +71,7 @@ var trig = $(this);
             trig.parents().find('.processor').last().find('.add-attachment').first().click();
         }
             renameProcessor();
+            singleProcessorReady(trig.find('option:selected').text());
         });
     }
 
@@ -94,6 +96,46 @@ var trig = $(this);
         trig.parent().find('.delete-attachment').last().on("click",removeAttachment);
         renameProcessor();
     });
+}
+
+function processorsReady(){
+    // all active processor-types
+    var all = $('.processor-type option:selected');
+
+    var names = [];
+
+    
+    for (var i = 0; i < all.length; i++) {
+        // get active processors
+        var elem = $(all[i]);
+        var processorname = elem.text();
+
+        // only call ready functions once
+        if ($.inArray(processorname, names) == -1)
+        {
+            names.push(processorname);
+
+            // construct function name
+            var funcsuffix = "_ready";
+            processorname = processorname.toLowerCase().concat(funcsuffix);
+
+            if ($.isFunction(window[processorname]))
+            {
+                window[processorname]();
+            }
+        }
+    }
+}
+
+function singleProcessorReady(processorname){
+    // construct function name
+    var funcsuffix = "_ready";
+    processorname = processorname.toLowerCase().concat(funcsuffix);
+
+    if ($.isFunction(window[processorname]))
+    {
+        window[processorname]();
+    }
 }
 
 function renameProcessor(){
@@ -140,7 +182,7 @@ function renameProcessor(){
             var elem3 = $(allChoices[c]);
             var oldName = elem3.attr('name');
             var regex = /exercises\[(.+?)]\[.+?\]\[(.+?)]\[(.+?)]\[[0-9]+\]\[]/gm;
-            var nameString = "exercises[$1][subexercises][$2][processorParameterList]["+ (i) +"][]";
+            var nameString = "exercises[$1][subexercises][$2][$3]["+ (i) +"][]";
 
             // match the regex and replace the numbers
             var newName = oldName.replace(regex, nameString);

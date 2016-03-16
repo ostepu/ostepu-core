@@ -3,18 +3,30 @@
  * @file CreateSheet.php
  * Constructs a page where a user can create an exercise sheet.
  *
- * @author Felix Schmidt
- * @author Florian Lücke
- * @author Ralf Busch
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.0
+ *
+ * @author Ralf Busch <ralfbusch92@gmail.com>
+ * @date 2014-2016
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ * @author Felix Schmidt <Fiduz@Live.de>
+ * @date 2013-2014
+ * @author Florian Lücke <florian.luecke@gmail.com>
+ * @date 2013-2014
  *
  * @todo choose correct groupsize for no Group (0 or 1)
  * @todo evaluate correct exercisetype in $subeval
  */
+
 ob_start();
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
 include_once dirname(__FILE__) . '/include/FormEvaluator.php';
+include_once dirname(__FILE__) . '/include/CreateSheet/Processor/Processor.functions.php';
 require_once dirname(__FILE__).'/phplatex.php';
 
 global $globalUserData;
@@ -386,8 +398,42 @@ if ($correctExercise == true) {
                                 $Data2[] = $dat;
 
                         if (isset($tempProcessors[$tempKey]))
-                            $tempProcessors[$tempKey]->setParameter(implode(' ',array_values($Data2)));                  
+                        {
+                            $tempProcessors[$tempKey]->setParameter(implode(' ',array_values($Data2)));
+
+                            // call functions for saving parameters in other format
+                            $componentId = $tempProcessors[$tempKey]->getTarget()->getId();
+                            // search components name
+                            if (isset($components) && !empty($components) && $components !== '')
+                            {
+                                foreach ($components as $tempKey2 => $Data)
+                                {
+                                    if ($componentId == $Data->getId())
+                                    {
+                                        // create string for function createparameters 
+                                        $functionname = $Data->getName();
+                                        $functionname .= "_createParameters";
+
+                                        // if Processor has such function then call it
+                                        if (is_callable($functionname, false, $callable_name))
+                                        {
+                                            $tempProcessors[$tempKey]->setParameter($callable_name($subexercise,
+                                                                                                   $tempKey,
+                                                                                                   $key1,
+                                                                                                   $key2,
+                                                                                                   $tempProcessors[$tempKey]->getParameter(),
+                                                                                                   isset($_FILES['exercises']['tmp_name'][$key1]['subexercises'][$key2]['fileParameter'])?$_FILES['exercises']['tmp_name'][$key1]['subexercises'][$key2]['fileParameter']:null,
+                                                                                                   isset($_FILES['exercises']['name'][$key1]['subexercises'][$key2]['fileParameter'])?$_FILES['exercises']['name'][$key1]['subexercises'][$key2]['fileParameter']:null,
+                                                                                                   isset($_FILES['exercises']['error'][$key1]['subexercises'][$key2]['fileParameter'])?$_FILES['exercises']['error'][$key1]['subexercises'][$key2]['fileParameter']:null,
+                                                                                                   $logicFileURI,
+                                                                                                   $databaseURI));
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
+                    //$tempProcessors[$tempKey]->get
                 }
 
                 $processors = array_merge($processors,$tempProcessors);
@@ -754,6 +800,14 @@ if (isset($_POST['action'])) {// && $_POST['action'] == "new"
     }  else {
         $notifications = array_merge($notifications, $f->notifications);
     }
+}
+
+if (isset($_POST['action']) && ($_POST['action'] == 'new' || $_POST['action'] == 'edit')){
+    // wenn eine neue Serie angelegt wurde, müssen die Serien
+    // neu geladen werden
+    $URL = $getSiteURI . "/createsheet/user/{$uid}/course/{$cid}";
+    $createsheetData = http_get($URL, true);
+    $createsheetData = json_decode($createsheetData, true);
 }
 
 if (isset($sid)){

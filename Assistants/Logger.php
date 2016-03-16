@@ -3,6 +3,16 @@
  * @file Logger.php
  * Contains the classes Logger and LogLevel.
  *
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.1.0
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2015
+ * @author Florian Lücke <florian.luecke@gmail.com>
+ * @date 2013-2014
+ *
  * This file contains two classes. This is an exception but it seemed neccessary
  * to keep them as close toghether as possible as LogLevel is only used to
  * enumerate values for Logger
@@ -20,8 +30,6 @@
  * // log to file test2.log in /var/log
  * Logger::Log("test3");
  * @endcode
- *
- * @author Florian Lücke
  */
 
 /**

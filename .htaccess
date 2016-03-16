@@ -1,3 +1,4 @@
+<ifmodule mod_rewrite.c>
 RewriteEngine on
 
 RewriteCond %{REQUEST_FILENAME} !-d
@@ -11,7 +12,10 @@ RewriteRule ^Sheets/?$ Sheet.php
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(/?)$ %{REQUEST_URI}UI/ [R,L]
+</ifmodule>
 
 <ifmodule mod_deflate.c>
+<ifmodule mod_filter.c>
 AddOutputFilterByType DEFLATE text/text text/html text/plain text/xml text/css application/x-javascript application/javascript application/json
+</ifmodule>
 </ifmodule>
