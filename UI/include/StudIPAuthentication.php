@@ -245,6 +245,7 @@ class StudIPAuthentication extends AbstractAuthentication
 ///Logger::Log("get_title_url: ".$query, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
 ///Logger::Log("get_title_message: ".$message, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
 ///Logger::Log("get_title_result: ".$title, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+
         if ($message == 200 && $title != "not found") {
             $query = StudIPAuthentication::$StudipAPI . "/request.php?cmd=get_semester&vid={$vid}";
             $semester = http_get($query, false, $message);
@@ -252,10 +253,11 @@ class StudIPAuthentication extends AbstractAuthentication
 ///Logger::Log("get_semester_url: ".$query, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
 ///Logger::Log("get_semester_message: ".$message, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
 ///Logger::Log("get_semester_result: ".$semester, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+        
             if ($message == 200 && $semester != "not found") {
                 if (substr($semester,0,2)==='WS')
                     $semester = substr($semester,0,-2).'20'.substr($semester,-2);
-                return Course::createCourse(null,$title,$semester,1);
+                return Course::createCourse(null,utf8_encode($title),$semester,1);
             }
         }
 
