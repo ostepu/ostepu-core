@@ -856,7 +856,7 @@ class LOOP
                             $param = str_replace('$parameters',$params,$param);
                         }
 
-                        if (isset($submission) && !empty($submission)) {
+                        if (isset($submission) && !empty($submission) && isset($submission->getFile()) && !empty($submission->getFile())) {
                             $param = str_replace('$file',escapeshellarg($myWorkDir.'/'.$submission->getFile()->getDisplayName()),$param);
                         } else {
                             $param = str_replace('$file','',$param);
