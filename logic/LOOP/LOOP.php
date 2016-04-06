@@ -328,12 +328,12 @@ class LOOP
             $counter = 1;
             foreach ($testcases as $value) {
                 if (!empty($value->getRunOutput())) {
-                    $Text.= "Durchgang {$counter}: ".$value->getRunOutput()."<br />";
+                    $Text.= "Durchgang {$counter}:<br />".$value->getRunOutput()."<br />";
                 } else {
-                    $Text.= "Durchgang {$counter}: leer<br />";
+                    $Text.= "Durchgang {$counter}:<br />leer<br />";
                 }
                 if ($value->getStatus() == 2) {$Text.= "ist Korrekt.<br /><br />";}
-                if ($value->getStatus() == 3) {$Text.= "ist Falsch.<br />Passt nicht zu:".$value->getOutput()."<br /><br />";}
+                if ($value->getStatus() == 3) {$Text.= "ist Falsch. Passt nicht zu:<br />".$value->getOutput()."<br /><br />";}
 
                 $counter = $counter + 1;
             }
