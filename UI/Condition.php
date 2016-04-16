@@ -11,6 +11,14 @@
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
 
+if (isset($_GET['downloadConditionCsv'])) {
+    $cid = cleanInput($_GET['downloadConditionCsv']);
+}
+
+if (isset($_GET['downloadConditionPdf'])) {
+    $cid = cleanInput($_GET['downloadConditionPdf']);
+}
+
 global $globalUserData;
 Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $globalUserData);
 
@@ -64,14 +72,6 @@ if (isset($_POST['action'])) {
         }
 
     }
-}
-
-if (isset($_GET['downloadConditionCsv'])) {
-    $cid = cleanInput($_GET['downloadConditionCsv']);
-}
-
-if (isset($_GET['downloadConditionPdf'])) {
-    $cid = cleanInput($_GET['downloadConditionPdf']);
 }
 
 // load user data from the database
