@@ -329,18 +329,18 @@ class LOOP
                     "<hr>";
                     
             $Text.= "<p>".
-                    "<h2>Testcases:</h2>".
+                    "<h2>Ausgabe der Testcases:</h2>".
                     "<span style=\"color: 'black'\">";
 
             $counter = 1;
             foreach ($testcases as $value) {
                 if (!empty($value->getRunOutput())) {
-                    $Text.= "Durchgang {$counter} Ausgabe: <br />".$value->getRunOutput()."<br />";
+                    $Text.= "Durchgang {$counter}:<br />".$value->getRunOutput()."<br />";
                 } else {
-                    $Text.= "Durchgang {$counter} Ausgabe: <br />leer<br />";
+                    $Text.= "Durchgang {$counter}:<br />leer<br />";
                 }
                 if ($value->getStatus() == 2) {$Text.= "ist Korrekt.<br /><br />";}
-                if ($value->getStatus() == 3) {$Text.= "ist Falsch.<br /><br />";}
+                if ($value->getStatus() == 3) {$Text.= "ist Falsch. Passt nicht zu:<br />".$value->getOutput()."<br /><br />";}
 
                 $counter = $counter + 1;
             }
@@ -863,6 +863,12 @@ class LOOP
                             $param = str_replace('$parameters',$params,$param);
                         }
 
+                        if (isset($submission) && !empty($submission) && $submission->getFile() !== null && !empty($submission->getFile())) {
+                            $param = str_replace('$file',escapeshellarg($myWorkDir.'/'.$submission->getFile()->getDisplayName()),$param);
+                        } else {
+                            $param = str_replace('$file','',$param);
+                        }
+
                         if (isset($compileconfig[3]) && !empty($compileconfig[3])) {
                             // copy compile script to workdir
                             $compilefile = File::decodeFile($compileconfig[3],false);
@@ -1276,8 +1282,8 @@ class LOOP
                             $return = -1;
 
                             $param = implode(' ',$parameter);
-                            if ($param!=''){
-                                $param=str_replace('$file',escapeshellarg($filePath . '/' . $fileName),$param);
+                            if ($param != ''){
+                                $param = str_replace('$file',escapeshellarg($filePath . '/' . $fileName),$param);
                             } else
                                 $param = escapeshellarg($filePath . '/' . $fileName);
 

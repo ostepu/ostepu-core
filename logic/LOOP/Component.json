@@ -32,7 +32,7 @@
   "connector":[
     {"name":"extension", "target":"LExtension"},
     {"name":"request", "target":"CLocalObjectRequest"},
-    {"name":"request", "target":"CHelp", "links":[{"path":"/help/:language/extension/LOOP.md"}]},
+    {"name":"request", "target":"CHelp", "links":[{"path":"/help/:language/extension/LOOP.md"},{"path":"/help/:language/extension/LOOPA.png"},{"path":"/help/:language/extension/LOOPB.png"},{"path":"/help/:language/extension/LOOPC.png"},{"path":"/help/:language/extension/LOOPD.png"},{"path":"/help/:language/extension/LOOPE.png"}]},
     {"name": "postPlatform","target": "CInstall"}
   ]
 }
