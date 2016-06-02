@@ -264,8 +264,11 @@ $setCondition->bind($condition_data);
 $userList = Template::WithTemplateFile('include/Condition/UserList.template.html');
 $userList->bind($condition_data);
 
+$summary = Template::WithTemplateFile('include/Condition/Summary.template.html');
+$summary->bind($condition_data);
+
 // wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, $setCondition, $userList);
+$w = new HTMLWrapper($h, $summary, $setCondition, $userList);
 $w->defineForm(basename(__FILE__)."?cid=".$cid, false, $setCondition);
 $w->set_config_file('include/configs/config_condition.json');
 $w->show();

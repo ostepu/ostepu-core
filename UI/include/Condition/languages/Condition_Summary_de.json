@@ -1,0 +1,11 @@
+{
+    "main": {
+        "title": "Zusammenfassung",
+        "approvedUsers": "Nutzer mit Zulassung",
+        "notApprovedUsers": "Nutzer ohne Zulassung",
+        "percent": "%",
+        "maxPoints": "max.",
+        "totalPoints": "Gesamtpunkte",
+        "avgPoints": "Durchschnittspunkte"
+    }
+}

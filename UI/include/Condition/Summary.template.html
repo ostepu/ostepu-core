@@ -1,0 +1,84 @@
+<?php $langTemplate='Condition_Summary';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
+<?php
+    $fileName = "Condition.php";
+?>
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+    </div>
+
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            <?php
+                if (isset($users[0])) {
+                    $approvedUsers = 0;
+                    $notApprovedUsers = 0;
+                    $collectedPoints = array();
+                    $collectedPercentage = array();
+                    foreach ($users as $user) {
+                        if ($user['isApproved']){
+                            $approvedUsers++;
+                        } else {
+                            $notApprovedUsers++;                        
+                        }                        
+                        
+                        foreach ($user['percentages'] as $key => $percentage) {
+                                if (!isset($collectedPoints[$key])){
+                                    $collectedPoints[$key] = 0;
+                                    $collectedPercentage[$key] = 0;
+                                }
+                                $collectedPoints[$key] += $percentage['points'];
+                                $collectedPercentage[$key] += $percentage['percentage'];
+                        }
+                    }
+            ?>
+            <div>
+                <label class="form-field label bold" for="" >
+                    <?php echo Language::Get('main','approvedUsers', $langTemplate); ?>:
+                </label>
+                <?php echo $approvedUsers."/".count($users)." (".round($approvedUsers/count($users)*100,2).Language::Get('main','percent', $langTemplate).")"; ?>
+            </div>
+            <div>
+                <label class="form-field label bold" for="" >
+                    <?php echo Language::Get('main','notApprovedUsers', $langTemplate); ?>:
+                </label>
+                <?php echo $notApprovedUsers."/".count($users)." (".round($notApprovedUsers/count($users)*100,2).Language::Get('main','percent', $langTemplate).")"; ?>
+            </div>
+            <?php
+                // prints all exercise types as header
+                foreach ($minimumPercentages as $key => $percentage) {
+                    print '<div>';
+                    print '<label class="form-field label bold" for="" >';
+                    print $percentage['exerciseType'] . " (".Language::Get('main','maxPoints', $langTemplate)." " . $percentage['maxPoints'] . "P)";
+                    print '</label>';
+                    
+                    print '<div>';
+                    print '<label class="form-field label bold" for="" >';
+                    print '</label>';
+                    print '<label class="form-field label bold" for="" >';
+                    print Language::Get('main','totalPoints', $langTemplate).'';
+                    print '</label>';
+                    print round($collectedPoints[$key],2);
+                    print '</div>';
+                    
+                    print '<div class="left">';
+                    print '<label class="form-field label bold" for="" >';
+                    print '</label>';
+                    print '<label class="form-field label bold" for="" >';
+                    print Language::Get('main','avgPoints', $langTemplate).'';
+                    print '</label>';
+                    print round($collectedPoints[$key]/count($users),2).' ('.round($collectedPercentage[$key]/count($users),2).Language::Get('main','percent', $langTemplate).')';
+                    print '</div>';
+                    
+                    print "</div>";
+                }
+            ?>
+            <?php 
+            } else {
+                echo Language::Get('main','noData', $langTemplate);
+            }
+            ?>
+        </div>
+    </div> <!-- end: content-body -->
+</div> <!-- end: content-wrapper -->
