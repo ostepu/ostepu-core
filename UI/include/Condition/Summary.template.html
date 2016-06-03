@@ -5,6 +5,7 @@
 ?>
 <div class="content-element">
     <div class="content-header">
+        <?php echo MakeInfoButton('condition','summary.md'); ?>
         <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
     </div>
 
@@ -43,26 +44,31 @@
                         unset($tmp);
                     }
             ?>
-            <div>
-                <label class="form-field label bold" for="" >
-                    <?php echo Language::Get('main','students', $langTemplate); ?>:
-                </label>
-                <?php echo count($users); ?>
-            </div>
-            <div>
-                <label class="form-field label bold" for="" >
-                    <?php echo Language::Get('main','approvedUsers', $langTemplate); ?>:
-                </label>
-                <?php echo $approvedUsers."/".count($users)." (".round($approvedUsers/count($users)*100,2).Language::Get('main','percent', $langTemplate).")"; ?>
-            </div>
-            <div>
-                <label class="form-field label bold" for="" >
-                    <?php echo Language::Get('main','notApprovedUsers', $langTemplate); ?>:
-                </label>
-                <?php echo $notApprovedUsers."/".count($users)." (".round($notApprovedUsers/count($users)*100,2).Language::Get('main','percent', $langTemplate).")"; ?>
+            <div style='display:block;margin-bottom: 0px'>
+                <label class="form-field label bold info-color content-title"><?php echo Language::Get('main','common', $langTemplate); ?></label>
+                <div>
+                    <label class="form-field label bold" for="" >
+                        <?php echo Language::Get('main','students', $langTemplate); ?>:
+                    </label>
+                    <?php echo count($users); ?>
+                </div>
+                <div>
+                    <label class="form-field label bold" for="" >
+                        <?php echo Language::Get('main','approvedUsers', $langTemplate); ?>:
+                    </label>
+                    <?php echo $approvedUsers."/".count($users)." (".round($approvedUsers/count($users)*100,2).Language::Get('main','percent', $langTemplate).")"; ?>
+                </div>
+                <div>
+                    <label class="form-field label bold" for="" >
+                        <?php echo Language::Get('main','notApprovedUsers', $langTemplate); ?>:
+                    </label>
+                    <?php echo $notApprovedUsers."/".count($users)." (".round($notApprovedUsers/count($users)*100,2).Language::Get('main','percent', $langTemplate).")"; ?>
+                </div>
             </div>
             <hr>
-            <div class="content-wrapper">
+            
+            <div style='display:block;margin-bottom: 0px'>
+                <label class="form-field label bold info-color content-title"><?php echo Language::Get('main','exerciseTypes', $langTemplate); ?></label>
             <?php
                 // prints all exercise types as header
                 foreach ($minimumPercentages as $key => $percentage) {
@@ -77,7 +83,7 @@
                     print '<label class="form-field label bold" for="" >';
                     print Language::Get('main','totalPoints', $langTemplate).'';
                     print '</label>';
-                    print round($collectedPoints[$key],2);
+                    print round($collectedPoints[$key],2).'/'.($percentage['maxPoints']*count($users));
                     print '</div>';
                     
                     print '<div>';
@@ -86,7 +92,7 @@
                     print '<label class="form-field label bold" for="" >';
                     print Language::Get('main','avgPoints', $langTemplate).'';
                     print '</label>';
-                    print round($collectedPoints[$key]/count($users),2).' ('.round($collectedPercentage[$key]/count($users),2).Language::Get('main','percent', $langTemplate).')';
+                    print round($collectedPoints[$key]/count($users),2).'/'.$percentage['maxPoints'].' ('.round($collectedPercentage[$key]/count($users),2).Language::Get('main','percent', $langTemplate).')';
                     print '</div>';
                     
                     print "</div>";
@@ -95,7 +101,8 @@
             </div>
             
             <?php if (isset($sheets) && count($sheets)>0){
-            print '<hr><div class="content-wrapper"><table>';
+            print '<hr><div style="display:block;margin-bottom: 0px"><table>';
+                print '<label class="form-field label bold info-color content-title">'.Language::Get('main','sheets', $langTemplate).'</label>';
                 foreach ($sheets as $sheet) {
                     print '<tr>';
                     print '<td class="bold">';

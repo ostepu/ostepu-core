@@ -11,6 +11,9 @@
         "noData": "Es sind noch keine Daten vorhanden.",
         "avg_short": " &#8709;",
         "all": "Alle",
-        "submissionsOnly": ""
+        "submissionsOnly": "",
+        "common": "Allgemein",
+        "exerciseTypes": "Aufgabentypen",
+        "sheets": "Übungsserien"
     }
 }
