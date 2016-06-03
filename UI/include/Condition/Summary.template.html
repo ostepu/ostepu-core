@@ -117,7 +117,7 @@
                         print '<td><span class="bold">';
                         print (isset($exercise['id']) ? $namesOfExercises[$exercise['id']] : '???').' ('.$exerciseTypes[$exercise['type']]['name'].')';
                         print '</span><br>';
-                        print Language::Get('main','avg_short', $langTemplate).round(($exercisePoints[$exercise['id']]['points']/count($users)),2).'/'.$exercise['maxPoints'].'P <br>';
+                        //print Language::Get('main','avg_short', $langTemplate).round(($exercisePoints[$exercise['id']]['points']/count($users)),2).'/'.$exercise['maxPoints'].'P ';
                         $value = 0;
                         if ($exercisePoints[$exercise['id']]['markings']>0){
                             $value = round(($exercisePoints[$exercise['id']]['points']/$exercisePoints[$exercise['id']]['markings']),2);

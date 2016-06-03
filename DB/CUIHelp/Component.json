@@ -186,7 +186,18 @@
                 {},
                 {"path": "/help/:language/setting/MaxStudentUploadSizeDesc.md"},
                 {"path": "/help/:language/setting/maxStudentUploadSizeA.png"},
-                {"path": "/help/:language/setting/maxStudentUploadSizeB.png"}
+                {"path": "/help/:language/setting/maxStudentUploadSizeB.png"},
+                {},
+                {"path": "/help/:language/condition/summary.md"},
+                {"path": "/help/:language/condition/summaryA.png"},
+                {"path": "/help/:language/condition/summaryB.png"},
+                {"path": "/help/:language/condition/summaryC.png"},
+                {"path": "/help/:language/condition/summaryD.png"},
+                {"path": "/help/:language/condition/summaryE.png"},
+                {"path": "/help/:language/condition/summaryF.png"},
+                {"path": "/help/:language/condition/summaryG.png"},
+                {"path": "/help/:language/condition/summaryH.png"},
+                {"path": "/help/:language/condition/summaryI.png"}
             ]
         }
     ]
