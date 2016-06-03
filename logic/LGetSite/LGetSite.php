@@ -1225,7 +1225,7 @@ class LGetSite
         $courseUser = json_decode($answer2[2]['content'], true);
         $markings = json_decode($answer2[3]['content'], true);
         unset($answer2);
-
+        
         $URL = "{$this->_getSelectedSubmission->getAddress()}/selectedsubmission/course/{$courseid}";
         $answer = Request::custom('GET', $URL, array(), '');
         $selectedSubs = json_decode($answer['content'], true);
@@ -1536,7 +1536,11 @@ class LGetSite
 
         $URL = $this->_getGroup->getAddress().'/group/course/' . $courseid;
         $handler = Request_CreateRequest::createGet($URL, array(), '');
-        $multiRequestHandle->addRequest($handler);        
+        $multiRequestHandle->addRequest($handler);     
+
+        $URL = $this->lURL . '/exercisesheet/course/' . $courseid.'/exercise';
+        $handler = Request_CreateRequest::createGet($URL, array(), '');
+        $multiRequestHandle->addRequest($handler);     
         
         $answer = $multiRequestHandle->run();
         
@@ -1545,6 +1549,39 @@ class LGetSite
         $approvalconditions = json_decode($answer[2]['content'], true);
         $students = json_decode($answer[3]['content'], true);
         $groups = json_decode($answer[4]['content'], true);
+        $sheets = json_decode($answer[5]['content'], true);
+        
+        $exercisePoints = array();
+        
+        
+        $namesOfExercises = array();
+        // find the current sheet and it's exercises
+        foreach ($sheets as $sheet) {
+            $thisSheetId = $sheet['id'];
+            $thisExerciseSheet = $sheet;
+                    // create exercise names
+            //an array to descripe the subtasks
+            $alphabet = range('a', 'z');
+            $count = 0;
+            
+            $count=null;
+            if (isset($sheet['exercises'])){
+                $exercises2 = $sheet['exercises'];
+                foreach ($exercises2 as $key => $exercise){
+                    $exerciseId = $exercise['id'];
+
+                    if ($count===null || $exercises[$count]['link'] != $exercise['link']){
+                        $count=$key;
+                        $namesOfExercises[$exerciseId] = $exercise['link'];
+                        $subtask = 0;
+                    }else{
+                        $subtask++;
+                        $namesOfExercises[$exerciseId] = $exercise['link'].$alphabet[$subtask];
+                        $namesOfExercises[$exercises2[$count]['id']] = $exercises2[$count]['link'].$alphabet[0];
+                    }
+                }
+            }
+        }
 
         // preprocess the data to make it quicker to get specific values
         $exerciseTypes = array();
@@ -1555,6 +1592,7 @@ class LGetSite
         $exercisesById = array();
         foreach ($exercises as $exercise) {
             $exercisesById[$exercise['id']] = $exercise;
+            $exercisePoints[$exercise['id']] = array('points'=>0, 'markings'=>0);
         }
 
         $exercisesByType = array();
@@ -1654,6 +1692,8 @@ class LGetSite
                 $studentMarkings[$leaderID][$exerciseType] = 0;
 
             $studentMarkings[$leaderID][$exerciseType] += isset($marking['points']) ? $marking['points'] : 0;
+            $exercisePoints[$exerciseID]['points'] += isset($marking['points']) ? $marking['points'] : 0;
+            $exercisePoints[$exerciseID]['markings'] += isset($marking['points']) ? 1 : 0;
             
             if (isset($allGroups[$sheetID][$leaderID])){
                 $group = $allGroups[$sheetID][$leaderID];
@@ -1665,6 +1705,8 @@ class LGetSite
                             $studentMarkings[$member['id']][$exerciseType] = 0;
                         
                         $studentMarkings[$member['id']][$exerciseType] += isset($marking['points']) ? $marking['points'] : 0;
+                        $exercisePoints[$exerciseID]['points'] += isset($marking['points']) ? $marking['points'] : 0;
+                        $exercisePoints[$exerciseID]['markings'] += isset($marking['points']) ? 1 : 0;
                     }
                 }
             }
@@ -1767,6 +1809,11 @@ class LGetSite
             $response['users'] = $students;
 
         $response['minimumPercentages'] = array_values($approvalconditionsByType);
+        $response['sheets'] = $sheets;
+        $response['exercises'] = $exercises;
+        $response['exercisePoints'] = $exercisePoints;
+        $response['namesOfExercises'] = $namesOfExercises;
+        $response['exerciseTypes'] = array_values($exerciseTypes);
 
         $this->app->response->setBody(json_encode($response));
     }

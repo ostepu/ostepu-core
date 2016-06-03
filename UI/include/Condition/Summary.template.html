@@ -32,7 +32,23 @@
                                 $collectedPercentage[$key] += $percentage['percentage'];
                         }
                     }
+                    
+                    // der Index des Arrays soll entsprechend der exerciseID benannt sein
+                    if (isset($exerciseTypes)){
+                        $tmp = array();
+                        foreach($exerciseTypes as $ex){
+                            $tmp[$ex['id']] = $ex;
+                        }
+                        $exerciseTypes=$tmp;
+                        unset($tmp);
+                    }
             ?>
+            <div>
+                <label class="form-field label bold" for="" >
+                    <?php echo Language::Get('main','students', $langTemplate); ?>:
+                </label>
+                <?php echo count($users); ?>
+            </div>
             <div>
                 <label class="form-field label bold" for="" >
                     <?php echo Language::Get('main','approvedUsers', $langTemplate); ?>:
@@ -45,10 +61,12 @@
                 </label>
                 <?php echo $notApprovedUsers."/".count($users)." (".round($notApprovedUsers/count($users)*100,2).Language::Get('main','percent', $langTemplate).")"; ?>
             </div>
+            <hr>
+            <div class="content-wrapper">
             <?php
                 // prints all exercise types as header
                 foreach ($minimumPercentages as $key => $percentage) {
-                    print '<div>';
+                    print '<div style="display:block">';
                     print '<label class="form-field label bold" for="" >';
                     print $percentage['exerciseType'] . " (".Language::Get('main','maxPoints', $langTemplate)." " . $percentage['maxPoints'] . "P)";
                     print '</label>';
@@ -62,7 +80,7 @@
                     print round($collectedPoints[$key],2);
                     print '</div>';
                     
-                    print '<div class="left">';
+                    print '<div>';
                     print '<label class="form-field label bold" for="" >';
                     print '</label>';
                     print '<label class="form-field label bold" for="" >';
@@ -74,6 +92,39 @@
                     print "</div>";
                 }
             ?>
+            </div>
+            
+            <?php if (isset($sheets) && count($sheets)>0){
+            print '<hr><div class="content-wrapper"><table>';
+                foreach ($sheets as $sheet) {
+                    print '<tr>';
+                    print '<td class="bold">';
+                    print $sheet['sheetName'];
+                    print '</td>';
+                    
+                    $count=0;
+                    foreach($sheet['exercises'] as $exercise){
+                        if ($count>0 && $count%4==0){
+                            print '</tr><tr><td>&nbsp;</td>';
+                        }
+                        print '<td><span class="bold">';
+                        print (isset($exercise['id']) ? $namesOfExercises[$exercise['id']] : '???').' ('.$exerciseTypes[$exercise['type']]['name'].')';
+                        print '</span><br>';
+                        print Language::Get('main','avg_short', $langTemplate).round(($exercisePoints[$exercise['id']]['points']/count($users)),2).'/'.$exercise['maxPoints'].'P <br>';
+                        $value = 0;
+                        if ($exercisePoints[$exercise['id']]['markings']>0){
+                            $value = round(($exercisePoints[$exercise['id']]['points']/$exercisePoints[$exercise['id']]['markings']),2);
+                        }
+                        print Language::Get('main','avg_short', $langTemplate).$value.'/'.$exercise['maxPoints'].'P</td>';
+                        print '<td>&nbsp;</td>';
+                        $count++;
+                    }
+                    
+                    print '</tr>';
+                }
+            print '</table></div>';
+            } ?>
+            
             <?php 
             } else {
                 echo Language::Get('main','noData', $langTemplate);

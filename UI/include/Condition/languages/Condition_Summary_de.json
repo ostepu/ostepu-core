@@ -1,11 +1,16 @@
 {
     "main": {
         "title": "Zusammenfassung",
-        "approvedUsers": "Nutzer mit Zulassung",
-        "notApprovedUsers": "Nutzer ohne Zulassung",
+        "approvedUsers": "mit Zulassung",
+        "notApprovedUsers": "ohne Zulassung",
         "percent": "%",
         "maxPoints": "max.",
         "totalPoints": "Gesamtpunkte",
-        "avgPoints": "Durchschnittspunkte"
+        "avgPoints": "Durchschnittspunkte",
+        "students": "Studenten",
+        "noData": "Es sind noch keine Daten vorhanden.",
+        "avg_short": " &#8709;",
+        "all": "Alle",
+        "submissionsOnly": ""
     }
 }
