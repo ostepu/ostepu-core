@@ -30,7 +30,7 @@ Die Summe der Punkte, welche alle Studenten zusammen hätten erreichen können.
 
 ![](summaryF.png)
 
-Die durchschnittlich erreichte Punktzahl (pro Student).
+Die durchschnittlich erreichte Punktzahl (pro Student). Dieser Wert enthält auch 0 Punkte für Fälle in denen der Student/Gruppe nichts eingesendet hat.
 
 #### Übungsserien
 
