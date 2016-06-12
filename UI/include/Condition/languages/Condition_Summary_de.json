@@ -1,0 +1,19 @@
+{
+    "main": {
+        "title": "Zusammenfassung",
+        "approvedUsers": "mit Zulassung",
+        "notApprovedUsers": "ohne Zulassung",
+        "percent": "%",
+        "maxPoints": "max.",
+        "totalPoints": "Gesamtpunkte",
+        "avgPoints": "Durchschnittspunkte",
+        "students": "Studenten",
+        "noData": "Es sind noch keine Daten vorhanden.",
+        "avg_short": " &#8709;",
+        "all": "Alle",
+        "submissionsOnly": "",
+        "common": "Allgemein",
+        "exerciseTypes": "Aufgabentypen",
+        "sheets": "Übungsserien"
+    }
+}
