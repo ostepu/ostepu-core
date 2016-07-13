@@ -72,7 +72,7 @@ if ($getValidation->isValid() && isset($getResults['downloadConditionPdf'])) {
 }
 
 global $globalUserData;
-Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $globalUserData);
+Authentication::checkRights(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUserData);
 
 if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
     // creates a new course
@@ -134,7 +134,7 @@ $condition_data = json_decode($condition_data, true);
 $user_course_data = $condition_data['user'];
 
 $menu = MakeNavigationElement($user_course_data,
-                               PRIVILEGE_LEVEL::ADMIN,true);
+                               PRIVILEGE_LEVEL::LECTURER,true);
 
 if (isset($condition_data['users'])){
     function compare_lastName($a, $b) {
