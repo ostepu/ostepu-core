@@ -126,11 +126,24 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
     }
 }
 
+if (isset($_POST['selectedSheet'])){
+    // TODO: es muss noch geprüft werden, ob diese Übungsserie gewählt werden darf
+    $_SESSION['selectedSheet'] = $_POST['selectedSheet'];
+}
+
+
+$maxsid = null;
+$userNavigation = null;
+if (isset($_SESSION['selectedSheet'])){
+    $maxsid = $_SESSION['selectedSheet'];
+}
+    
+
+
 // load user data from the database
-$URL = $getSiteURI . "/condition/user/{$uid}/course/{$cid}";
+$URL = $getSiteURI . "/condition/user/{$uid}/course/{$cid}/lastsheet/{$maxsid}";
 $condition_data = http_get($URL, true);
 $condition_data = json_decode($condition_data, true);
-
 $user_course_data = $condition_data['user'];
 
 $menu = MakeNavigationElement($user_course_data,
@@ -303,12 +316,26 @@ if ($getValidation->isValid() && isset($getResults['sortId'])) {
     $condition_data['sortId'] = $getResults['sortId'];
 }
 
+if (!isset($_SESSION['selectedSheet'])){
+    $maxsid = isset($condition_data['allsheets'][0]) ? ExerciseSheet::decodeExerciseSheet(json_encode($condition_data['allsheets'][0])) : null;
+}
+
+$userNavigation = MakeUserNavigationElement($user_course_data,
+                                            null,
+                                            null,
+                                            PRIVILEGE_LEVEL::LECTURER,
+                                            $maxsid,
+                                            isset($condition_data['allsheets']) ? ExerciseSheet::decodeExerciseSheet(json_encode($condition_data['allsheets'])) : null,
+                                            false,
+                                            false);
+
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
 $h->bind(array('name' => $user_course_data['courses'][0]['course']['name'],
                'notificationElements' => $notifications,
-               'navigationElement' => $menu));
+               'navigationElement' => $menu,
+               'userNavigationElement' => $userNavigation));
 
 // construct a content element for setting exam paper conditions
 $setCondition = Template::WithTemplateFile('include/Condition/SetCondition.template.html');

@@ -183,6 +183,10 @@ class LGetSite
         $this->app->get('/condition/user/:userid/course/:courseid(/)',
                         array($this, 'checkCondition'));
 
+        //GET Condition
+        $this->app->get('/condition/user/:userid/course/:courseid/lastsheet/:maxsid(/)',
+                        array($this, 'checkCondition'));
+
         //run Slim
         $this->app->run();
     }
@@ -1619,8 +1623,12 @@ class LGetSite
      *
      * @author Florian Lücke
      */
-    public function checkCondition($userid, $courseid)
+    public function checkCondition($userid, $courseid, $maxsid = null)
     {
+        if (trim($maxsid) == '' ){
+            $maxsid = null;
+        }
+        
         // load all the data
         $multiRequestHandle = new Request_MultiRequest();
 
@@ -1657,12 +1665,65 @@ class LGetSite
         $groups = json_decode($answer[4]['content'], true);
         $sheets = json_decode($answer[5]['content'], true);
         
-        $exercisePoints = array();
         
+        // wenn es eine Obergrenze für die sheet-ID gibt, müssen zunächst alle unerlaubten
+        // Übungsserien aussortiert werden
+        $existingSheets = array();
+        $allsheets = array_merge($sheets, array());
+        $newSheets = array();
+        $found = false;
+        if ($maxsid !== null){
+            foreach ($sheets as $sheet){
+                if ($sheet['id'] == $maxsid){
+                    $found = true;
+                }
+                if ($found){
+                    $newSheets[] = $sheet;
+                }
+            }
+        }
+        $sheets = $newSheets;
+        unset($newSheets);
+
+        // nun werden alle erlaubten sheet-IDs zusammengetragen
+        foreach ($sheets as $key => $sheet){
+            if (!isset($sheet['id'])) continue;
+            $existingSheets[$sheet['id']] = $key;
+        }       
+        
+        // wenn eine Gruppe nicht erlaubt ist, wird sie aussortiert (wegen maxsid)
+        $newGroups = array();
+        foreach ($groups as $group){
+            if (isset($existingSheets[$group['sheetId']])){
+                $newGroups[] = $group;
+            }
+        }
+        $groups = $newGroups;
+        unset($newGroups);
+        
+        // wenn eine Aufgabe zu einer unerlaubten Übungsserie gehört, wird sie entfernt
+        $existingExercises = array();
+        $newExercises = array();
+        foreach ($exercises as $exercise){
+            if (isset($existingSheets[$exercise['sheetId']])){
+                $newExercises[] = $exercise;
+            }
+        }
+        $exercises = $newExercises;
+        unset($newExercises);
+        
+        // nun werden alle erlaubten Aufgabennummern zusammengetragen
+        foreach ($exercises as $key => $exercise) {
+            $existingExercises[$exercise['id']] = $key;
+        }
+        
+        $exercisePoints = array();
         
         $namesOfExercises = array();
         // find the current sheet and it's exercises
         foreach ($sheets as $sheet) {
+            if (!isset($sheet['id'])) continue;
+            
             $thisSheetId = $sheet['id'];
             $thisExerciseSheet = $sheet;
                     // create exercise names
@@ -1758,6 +1819,15 @@ class LGetSite
         $URL = $this->_getMarking->getAddress() . '/marking/course/'.$courseid;
         $answer = Request::custom('GET', $URL, array(), '');
         $markings = json_decode($answer['content'], true);
+        
+        // die Korrekturen, welche nicht erlaubt sind (wegen maxsid) müssen noch aussortiert werden
+        for ($i=0;$i<count($markings);$i++){
+            $myeid = $markings[$i]['submission']['exerciseId'];
+            if (isset($existingExercises[$myeid])){
+                continue;
+            }
+            $markings[$i] = null;
+        }
 
         foreach($markings as $marking){
             if (isset($marking['submission']['selectedForGroup']) && $marking['submission']['selectedForGroup'] == 1)
@@ -1916,6 +1986,7 @@ class LGetSite
 
         $response['minimumPercentages'] = array_values($approvalconditionsByType);
         $response['sheets'] = $sheets;
+        $response['allsheets'] = $allsheets;
         $response['exercises'] = $exercises;
         $response['exercisePoints'] = $exercisePoints;
         $response['namesOfExercises'] = $namesOfExercises;
