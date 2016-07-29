@@ -22,7 +22,7 @@ Beispieleingaben:
 2097152 => **2MB**,
 5242880 => **5MB**
 
-Studentenasicht beim Hochladen einer Einsendung:
+Studentenanssicht beim Hochladen einer Einsendung:
 ![](maxStudentUploadSizeA.png)
 
 Studentenansicht, wobei die Einsendung abgelehnt wurde:
