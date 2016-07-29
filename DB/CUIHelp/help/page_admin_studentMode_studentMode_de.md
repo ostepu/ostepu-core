@@ -23,7 +23,7 @@ Sie können hier den Studenten wählen, in dessen Ansicht Sie wechseln wollen. E
 
 ![](studentModeC.png)
 
-Einige der Übersichten beziehen sich auf konkrete Übungsserien, sodass hier die Möglichkeit besteht, einen schnellen Wechsel vorzunehmen. Möglicherweise werden hier nicht alle Übungsserien dieser Veranstaltung aufgelistet, weil der Student in diesem Fall nicht die Möglichkeit hat, die entsprechnde Übersicht, für diese Übungsserie aufzurufen.
+Einige der Übersichten beziehen sich auf konkrete Übungsserien, sodass hier die Möglichkeit besteht, einen schnellen Wechsel vorzunehmen. Möglicherweise werden hier nicht alle Übungsserien dieser Veranstaltung aufgelistet, weil der Student in diesem Fall nicht die Möglichkeit hat, die entsprechende Übersicht, für diese Übungsserie aufzurufen.
 
 > Beispiel für die Gruppenübersicht: Wenn die Übungsserie abgelaufen ist, kann die Gruppenstruktur durch den Studenten nicht mehr geändert werden, sodass Sie hier nicht aufgelistet wäre (ausser im erweiterten Modus).
 
