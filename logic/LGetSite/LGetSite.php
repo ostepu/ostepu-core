@@ -1681,9 +1681,9 @@ class LGetSite
                     $newSheets[] = $sheet;
                 }
             }
+            $sheets = $newSheets;
+            unset($newSheets);
         }
-        $sheets = $newSheets;
-        unset($newSheets);
 
         // nun werden alle erlaubten sheet-IDs zusammengetragen
         foreach ($sheets as $key => $sheet){
