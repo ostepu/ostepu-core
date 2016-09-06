@@ -18,6 +18,6 @@
 
 select
     S.*,
-    concat('<?php echo $courseid; ?>','_',S.REED_id) as RED_id
+    concat('<?php echo $courseid; ?>','_',S.RED_id) as RED_id
 from
     `Redirect<?php echo $pre; ?>_<?php echo $courseid; ?>` S

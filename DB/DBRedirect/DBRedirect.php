@@ -155,7 +155,7 @@ class DBRedirect
 
         // GET GetRedirect
         $this->_app->get(
-                         '(/:pre)/' . $this->getPrefix( ) . '/redirect/:setid',
+                         '(/:pre)/' . $this->getPrefix( ) . '/redirect/:redid',
                          array(
                                $this,
                                'getRedirect'
@@ -406,7 +406,7 @@ class DBRedirect
                                               $sqlFile,
                                               array(
                                                     'pre' => $pre,
-                                                    'setid' => $redid,
+                                                    'redid' => $redid,
                                                     'courseid' => $courseid,
                                                     'setname' => $locname
                                                     )
