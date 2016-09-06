@@ -1,0 +1,11 @@
+[
+    {    "method":"put", "path":"(/:pre)/redirect/redirect/:redid" },
+    {    "method":"delete", "path":"(/:pre)/redirect/redirect/:redid" },
+    {    "method":"post", "path":"(/:pre)/redirect/course/:courseid" },
+    {    "method":"get", "path":"(/:pre)/link/exists/course/:courseid" },
+    {    "method":"get", "path":"(/:pre)/redirect/course/:courseid" },
+    {    "method":"get", "path":"(/:pre)/redirect/redirect/:redid" },
+    {    "method":"get", "path":"(/:pre)/redirect/course/:courseid/location/:locname" },
+    {    "method":"delete", "path":"(/:pre)/course/:courseid" },
+    {    "method":"post", "path":"(/:pre)/course" }
+]

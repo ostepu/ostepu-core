@@ -1,0 +1,23 @@
+{
+  "name":"DBRedirect",
+  "version":"1.0",
+  "classFile":"DBRedirect.php",
+  "className":"DBRedirect",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"DBRedirect.php"},
+    {"path":"index.php"},
+    {"path":"Commands.json"},
+    {"path":"RedirectSample.json"},
+    {"path":"Sql/"},
+    {"path":"info/"}
+  ],
+  "links":[
+    {"name":"out", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
+  ],
+  "connector":[
+    {"name":"request", "target":"CLocalObjectRequest"},
+    {"name":"postCourse", "target":"LCourse", "priority":150},
+    {"name":"deleteCourse", "target":"LCourse", "priority":150}
+  ]
+}
