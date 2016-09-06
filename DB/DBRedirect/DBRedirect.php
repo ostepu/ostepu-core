@@ -22,7 +22,7 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
 \Slim\Slim::registerAutoloader( );
 
 /**
- * A class, to abstract the "Settings" table from database
+ * A class, to abstract the "DBRedirect" table from database
  */
 class DBRedirect
 {
@@ -488,7 +488,7 @@ class DBRedirect
     public function getRedirectByLocation($pre='' , $courseid, $locname )
     {
         $this->get(
-                   'GetSettingByName',
+                   'GetRedirectByLocation',
                    dirname(__FILE__) . '/Sql/GetRedirectByLocation.sql',
                    isset( $pre ) ? $pre : '',
                    isset( $redid ) ? $redid : '',
