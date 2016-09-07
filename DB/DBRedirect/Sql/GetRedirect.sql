@@ -20,5 +20,5 @@ select
     S.*,
     concat('<?php echo Redirect::getCourseFromRedirectId($redid); ?>','_',S.RED_id) as RED_id
 from
-    `Redirect<?php echo $pre; ?>_<?php echo Redirect::getCourseFromSettingId($redid); ?>` S
+    `Redirect<?php echo $pre; ?>_<?php echo Redirect::getCourseFromRedirectId($redid); ?>` S
 WHERE RED_id = '<?php echo Redirect::getIdFromRedirectId($redid); ?>'
