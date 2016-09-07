@@ -129,7 +129,7 @@ begin
     end if;
     DROP TEMPORARY TABLE IF EXISTS `ColData`;
     select 1;
-end;
+end; 
 
 CREATE TABLE IF NOT EXISTS `Component` (
   `CO_id` INT NOT NULL AUTO_INCREMENT,
@@ -205,6 +205,6 @@ AUTO_INCREMENT = 1;
 call execute_if_column_not_exists('ComponentLinkage','CL_priority','ALTER TABLE `ComponentLinkage` ADD COLUMN CL_priority int NOT NULL DEFAULT 100;');
 call execute_if_column_not_exists('ComponentLinkage','CL_path','ALTER TABLE `ComponentLinkage` ADD COLUMN CL_path VARCHAR(255) NOT NULL DEFAULT \'\';');
 
-SET SQL_MODE=@OLD_SQL_MODE;
+SET SQL_MODE=@OLD_SQL_MODE; 
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
