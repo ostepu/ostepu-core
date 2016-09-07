@@ -462,7 +462,7 @@ class Anfragegraph
         return str_replace($search, $replace, $text);;
     }
 
-    private static function prettyPrint( $json )
+    public static function prettyPrint( $json )
     {
         $result = '';
         $level = 0;
