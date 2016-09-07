@@ -151,6 +151,84 @@ class Redirect extends Object implements JsonSerializable
     }
 
     /**
+
+     * @var string $sublocation The place where the link should be displayed (additional condition).
+     */
+    private $sublocation = null;
+
+    /**
+     * the $sublocation getter
+     *
+     * @return the value of $sublocation
+     */
+    public function getSublocation( )
+    {
+        return $this->sublocation;
+    }
+
+    /**
+     * the $sublocation setter
+     *
+     * @param string $value the new value for $sublocation
+     */
+    public function setSublocation( $value = null )
+    {
+        $this->sublocation = $value;
+    }
+
+    /**
+
+     * @var string $condition A condition like 'expiredSheet', 'students' etc
+     */
+    private $condition = null;
+
+    /**
+     * the $condition getter
+     *
+     * @return the value of $condition
+     */
+    public function getCondition( )
+    {
+        return $this->condition;
+    }
+
+    /**
+     * the $condition setter
+     *
+     * @param string $value the new value for $condition
+     */
+    public function setCondition( $value = null )
+    {
+        $this->condition = $value;
+    }
+
+    /**
+
+     * @var string $style A style-attribute (css classes etc, not in use)
+     */
+    private $style    = null;
+
+    /**
+     * the $style getter
+     *
+     * @return the value of $style
+     */
+    public function getStyle( )
+    {
+        return $this->style;
+    }
+
+    /**
+     * the $style setter
+     *
+     * @param string $value the new value for $style
+     */
+    public function setStyle( $value = null )
+    {
+        $this->style = $value;
+    }
+
+    /**
      * @var string $authentication db authentication-type of the Setting
      */
     private $authentication = null;
@@ -186,7 +264,10 @@ class Redirect extends Object implements JsonSerializable
                                             $title,
                                             $url,
                                             $location=null,
-                                            $authentication=null
+                                            $authentication=null,
+                                            $sublocation=null,
+                                            $condition=null,
+                                            $style=null
                                             )
     {
         return new Redirect( array(
@@ -194,7 +275,10 @@ class Redirect extends Object implements JsonSerializable
                                      'title' => $title,
                                      'location' => $location,
                                      'url' => $url,
-                                     'authentication' => $authentication
+                                     'authentication' => $authentication,
+                                     'sublocation' => $sublocation,
+                                     'condition' => $condition,
+                                     'style' => $style
                                      ) );
     }
 
@@ -210,7 +294,10 @@ class Redirect extends Object implements JsonSerializable
                      'RED_title' => 'title',
                      'RED_location' => 'location',
                      'RED_url' => 'url',
-                     'RED_authentication' => 'authentication'
+                     'RED_authentication' => 'authentication',
+                     'RED_sublocation' => 'sublocation',
+                     'RED_condition' => 'condition',
+                     'RED_style' => 'style'
                      );
     }
 
@@ -252,6 +339,24 @@ class Redirect extends Object implements JsonSerializable
                                  $values,
                                  'RED_authentication',
                                  DBJson::mysql_real_escape_string( $this->authentication )
+                                 );
+        if ( $this->sublocation !== null )
+            $this->addInsertData(
+                                 $values,
+                                 'RED_sublocation',
+                                 DBJson::mysql_real_escape_string( $this->sublocation )
+                                 );
+        if ( $this->condition !== null )
+            $this->addInsertData(
+                                 $values,
+                                 'RED_condition',
+                                 DBJson::mysql_real_escape_string( $this->condition )
+                                 );
+        if ( $this->style !== null )
+            $this->addInsertData(
+                                 $values,
+                                 'RED_style',
+                                 DBJson::mysql_real_escape_string( $this->style )
                                  );
 
         if ( $values != '' ){
@@ -381,6 +486,12 @@ class Redirect extends Object implements JsonSerializable
             $list['location'] = $this->location;
         if ( $this->authentication !== null )
             $list['authentication'] = $this->authentication;
+        if ( $this->sublocation !== null )
+            $list['sublocation'] = $this->sublocation;
+        if ( $this->condition !== null )
+            $list['condition'] = $this->condition;
+        if ( $this->style !== null )
+            $list['style'] = $this->style;
         return array_merge($list,parent::jsonSerialize( ));
     }
 

@@ -25,6 +25,9 @@ CREATE TABLE IF NOT EXISTS `<?php echo $tableName;?>` (
   `RED_title` VARCHAR(120) NOT NULL,
   `RED_url` VARCHAR(255) NOT NULL DEFAULT '',
   `RED_location` VARCHAR(20) NOT NULL DEFAULT 'sheet',
+  `RED_sublocation` VARCHAR(20) NULL,
+  `RED_condition` VARCHAR(20) NULL,
+  `RED_style` VARCHAR(50) NULL,
   `RED_authentication` VARCHAR(20) NOT NULL DEFAULT 'none',
   PRIMARY KEY (`RED_id`),
   UNIQUE INDEX `RED_id_UNIQUE` USING BTREE (`RED_id` ASC))
