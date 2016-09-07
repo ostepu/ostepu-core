@@ -408,7 +408,7 @@ class DBRedirect
                                                     'pre' => $pre,
                                                     'redid' => $redid,
                                                     'courseid' => $courseid,
-                                                    'setname' => $locname
+                                                    'locname' => $locname
                                                     )
                                               );
 

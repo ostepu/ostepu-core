@@ -22,4 +22,4 @@ select
     concat('<?php echo $courseid; ?>','_',S.RED_id) as RED_id
 from
     `Redirect<?php echo $pre; ?>_<?php echo $courseid; ?>` S
-WHERE RED_name = '<?php echo $locname; ?>'
+WHERE RED_location = '<?php echo $locname; ?>'
