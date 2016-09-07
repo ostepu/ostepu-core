@@ -1,7 +1,7 @@
 RewriteEngine On
 
 # damit nur lokale Aufrufe erlaubt sind
-RewriteCond %{HTTP_HOST} !^localhost$
+RewriteCond %{HTTP_HOST} !^localhost(:\d+)?$
 RewriteRule ^ - [F] # ansonsten wird die Anfrage zurueckgewiesen
 
 # eingehende Anfragen werden auf die index.php umgeleitet
