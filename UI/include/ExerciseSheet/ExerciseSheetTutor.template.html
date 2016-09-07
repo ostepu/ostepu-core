@@ -227,6 +227,15 @@ if (isset($notifications)){
                             <?php echo Language::Get('sheetMenu','markingTool', $langTemplate); ?>
                         </a>
                     </li>
+                            
+                    <?php if (isset($redirect)){ 
+                        foreach($redirect as $red) {?>
+                        <li>
+                            <button title="<?php echo $red['title']; ?>" name="redirect" value="<?php echo $sheet['id'];?>_<?php echo $red['id']; ?>" class="text-button bold info-color">
+                                <?php echo $red['title']; ?>
+                            </button>
+                        </li>
+                    <?php }} ?>
                 </ol>
             </div>
         </div>

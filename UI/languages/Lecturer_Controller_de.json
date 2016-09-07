@@ -6,6 +6,10 @@
         "changeCourse": "Veranstaltung wechseln",
         "invalidAction": "Die Aktion konnte nicht ausgeführt werden.",
         "errorDeleteSheetWarningValidation": "(1) Ungültige Eingabe!",
-        "errorDeleteSheetValidation": "(2) Ungültige Eingabe!"
+        "errorDeleteSheetValidation": "(2) Ungültige Eingabe!",
+        "invalidCourse": "Ungültige Veranstaltung",
+        "invalidRedirect": "Ungültige Umleitung",
+        "invalidRedirectData": "Ungültige Umleitungsdaten",
+        "errorRedirect": "Umleitung fehlgeschlagen"
     }
 }

@@ -57,10 +57,44 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                 'valid_identifier',
                 'satisfy_not_equals_field'=>'deleteSheetWarning',
                 'on_error'=>['type'=>'error',
-                             'text'=>Language::Get('main','errorDeleteSheetValidation', $langTemplate)]]);
+                             'text'=>Language::Get('main','errorDeleteSheetValidation', $langTemplate)]])
+      ->addSet('redirect',
+               ['valid_identifier',
+                'on_error'=>['type'=>'error',
+                             'text'=>Language::Get('main','invalidRedirectData', $langTemplate)]]);
+
     $foundValues = $postDeleteSheetValidation->validate();
     $notifications = array_merge($notifications,$postDeleteSheetValidation->getPrintableNotifications('MakeNotification'));
     $postDeleteSheetValidation->resetNotifications()->resetErrors();
+    
+    
+    if ($postValidation->isValid() && isset($foundValues['redirect'])) {
+        $dat = explode('_',$foundValues['redirect']);
+        $sheetid = array_shift($dat);
+        $foundValues['redirect'] = implode('_',$dat);
+        
+        // nur wenn die Veranstaltung zur Umleitung passt, ist die Aktion erlaubt
+        if (Redirect::getCourseFromRedirectId($foundValues['redirect']) === $cid){
+            // nun soll der redirect ermittelt und ausgelöst werden
+            $URI = $serverURI . "/DB/DBRedirect/redirect/redirect/".$foundValues['redirect'];
+            $redirect = http_get($URI, true, $message);
+            
+            if ($message == 200){
+                // die Umleitung existiert
+                
+                $redirect = Redirect::decodeRedirect($redirect);
+                if (executeRedirect($redirect, $uid, $cid, $sheetid) === false){
+                    $notifications[] = MakeNotification('error', Language::Get('main','errorRedirect', $langTemplate));
+                }
+            } else {
+                // unbekannte Umleitung
+                $notifications[] = MakeNotification('error', Language::Get('main','invalidRedirect', $langTemplate));
+            }
+        } else {
+            // falsche Veranstaltung
+            $notifications[] = MakeNotification('error', Language::Get('main','invalidCourse', $langTemplate));
+        }
+    }
 
     if ($postDeleteSheetValidation->isValid() && $postResults['action'] === 'ExerciseSheetLecturer' && isset($foundValues['deleteSheetWarning'])) {
         $sheetNotifications[$foundValues['deleteSheetWarning']][] = MakeNotification('warning', Language::Get('main','askDeleteSheet', $langTemplate));

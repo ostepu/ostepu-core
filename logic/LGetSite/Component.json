@@ -23,7 +23,8 @@
     {"name":"getSubmission", "target":"DBSubmission","links":[]},
     {"name":"getCourse", "target":"DBCourse","links":[]},
     {"name":"getInvitation", "target":"DBInvitation","links":[]},
-    {"name":"getNotification", "target":"DBNotification","links":[]}
+    {"name":"getNotification", "target":"DBNotification","links":[]},
+    {"name":"getRedirect", "target":"DBRedirect","links":[]}
   ],
   "connector":[
     {"name":"request", "target":"CLocalObjectRequest"}

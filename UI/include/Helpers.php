@@ -35,6 +35,42 @@ function parse_size($size) {
     return round($size);
   }
 }
+
+// führt eine Umleitung aus (Typ: Redirect)
+function executeRedirect($redirect, $uid, $cid, $esid){
+    //var_dump($redirect);
+    $auth = $redirect->getAuthentication();
+    if ($auth === 'none' or $auth === ''){
+        // wir müssen nur umleiten
+        header_remove();
+        header('Location: ' . $redirect->getUrl());
+        exit();
+    } elseif ($auth == 'transaction'){
+        // wir hängen die Daten als GET an die URL
+        global $serverURI;
+        $URI = $serverURI . '/DB/DBCourseStatus/coursestatus/course/'.$cid.'/user/'.$uid;
+        $student_data = http_get($URI, true, $message);
+        
+        if ($message!=200) return false;
+    
+        // erzeuge nun den Inhalt
+        $data = array('esid'=>$esid, 'user'=>json_decode($student_data));
+            
+        $URI = $serverURI . "/DB/DBTransaction/transaction/course/".Redirect::getCourseFromRedirectId($redirect->getId());
+        $newTransaction = Transaction::createTransaction(null,time()+3600, 'redirect', json_encode($data));
+        $transaction = http_post_data($URI, Transaction::encodeTransaction($newTransaction), true, $message);
+
+        if ($message != "201") {
+            // es gab einen Fehler
+            return false;
+        } else {
+            $transaction = Transaction::decodeTransaction($transaction);
+            header('Location: ' . $redirect->getUrl().'?tid='.$transaction->getTransactionId());
+            exit();
+        }
+    }
+    return true;
+}
                     
 /**
  * Remove a value fom an array
