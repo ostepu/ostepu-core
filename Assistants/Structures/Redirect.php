@@ -70,7 +70,7 @@ class Redirect extends Object implements JsonSerializable
     }
 
     /**
-     * @var string $id db id of the Setting
+     * @var string $id db id of the Redirect
      */
     private $id = null;
 
@@ -116,12 +116,12 @@ class Redirect extends Object implements JsonSerializable
 
     public function getObjectCourseFromRedirectId()
     {
-        return Setting::getCourseFromRedirectId($this->id);
+        return Redirect::getCourseFromRedirectId($this->id);
     }
 
     public function getObjectIdFromRedirectId()
     {
-        return Setting::getIdFromRedirectId($this->id);
+        return Redirect::getIdFromRedirectId($this->id);
     }
 
     /**
@@ -229,7 +229,7 @@ class Redirect extends Object implements JsonSerializable
     }
 
     /**
-     * @var string $authentication db authentication-type of the Setting
+     * @var string $authentication db authentication-type of the Redirect
      */
     private $authentication = null;
 
@@ -314,7 +314,7 @@ class Redirect extends Object implements JsonSerializable
             $this->addInsertData(
                                  $values,
                                  'RED_id',
-                                 DBJson::mysql_real_escape_string( self::getIdFromSettingId($this->id) )
+                                 DBJson::mysql_real_escape_string( self::getIdFromRedirectId($this->id) )
                                  );
         if ( $this->title !== null )
             $this->addInsertData(
@@ -502,7 +502,7 @@ class Redirect extends Object implements JsonSerializable
                                              $isResult = true
                                              )
     {
-        // generates an assoc array of Settings by using a defined list of
+        // generates an assoc array of Redirects by using a defined list of
         // its attributes
         $res = DBJson::getObjectsByAttributes(
                                                       $data,
