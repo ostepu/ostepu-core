@@ -1,12 +1,13 @@
 [
     {
-        "__commentFile": "@file SettingSample.json This file represents a valid JSON object of type Setting for DBSetting.",
+        "__commentFile": "@file RedirectSample.json This file represents a valid JSON object of type Redirect for DBRedirect.",
         "__commentAuthor": "@author Till Uhlig"
     },
     {
-        "id": "1_1",
-        "name": "RegistrationPeriodEnd",
-        "state": "0",
-        "type": "TIMESTAMP"
+        "id": "1_2",
+        "title": "BBB",
+        "url": "test.php",
+        "location": "sheet",
+        "authentication": "transaction"
     }
 ]
