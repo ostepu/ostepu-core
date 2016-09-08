@@ -267,14 +267,10 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                     </button>
                 </li>
                             
-                    <?php if (isset($redirect)){ 
-                        foreach($redirect as $red) {?>
-                        <li>
-                            <button title="<?php echo $red['title']; ?>" name="redirect" value="<?php echo $sheet['id'];?>_<?php echo $red['id']; ?>" class="text-button bold info-color">
-                                <?php echo $red['title']; ?>
-                            </button>
-                        </li>
-                    <?php }} ?>
+                <?php if (isset($redirect)){ 
+                    foreach($redirect as $red) {
+                        echo '<li>'.createRedirectButton($red,$sheet['id']).'</li>';
+                    }} ?>
                        
             </ol>
         </div>

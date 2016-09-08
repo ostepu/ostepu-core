@@ -36,6 +36,14 @@ function parse_size($size) {
   }
 }
 
+function createRedirectButton($redirect,$esid){
+    $text = '';
+    $text.= '<button title="'.$redirect['title'].'" name="redirect" value="'.$esid.'_'.$redirect['id'].'" class="text-button bold info-color">';
+    $text.= $redirect['title'];
+    $text.= '</button>';
+    return $text;
+}
+
 // führt eine Umleitung aus (Typ: Redirect)
 function executeRedirect($redirect, $uid, $cid, $esid){
     //var_dump($redirect);
