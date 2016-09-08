@@ -1,0 +1,9 @@
+{
+    "main": {
+        "title": "Weiterleitungen",
+        "execute": "speichern",
+        "description": "Sie können hier Weiterleitungen für Ihre Veranstaltung erstellen, entfernen und bearbeiten.",
+        "addRedirect": "Hinzufügen",
+        "messages": "Weiterleitungen"
+    }
+}

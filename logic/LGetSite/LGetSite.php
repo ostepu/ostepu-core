@@ -2040,6 +2040,13 @@ class LGetSite
         }
         $notifications = LArraySorter::orderby($notifications,'innerId',SORT_DESC);
         $response['notifications'] = $notifications;
+        
+        // load course redirects
+        $URL = $this->_getRedirect->getAddress() . '/redirect/course/'.$courseid.'/location/sheet';
+        $answer = Request::custom('GET', $URL, array(), '');
+        $redirects = json_decode($answer['content'], true);
+        $response['redirect'] = $redirects;
+        
         unset($answer);
         unset($URL);
 
