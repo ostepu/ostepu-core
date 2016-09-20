@@ -343,8 +343,8 @@ if (isset($notifications)){
                     <?php } ?>
                             
                     <?php if (isset($redirect)){ 
-                        $redirect = array_reverse($redirect);
-                        foreach($redirect as $red) {
+                        $redirect2 = array_reverse($redirect);
+                        foreach($redirect2 as $red) {
                             echo '<li>'.createRedirectButton($red,$sheet['id']).'</li>';
                         }} ?>
                 </ol>
