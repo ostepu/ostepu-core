@@ -1,4 +1,4 @@
 RewriteEngine On
-RewriteCond %{HTTP_HOST} !^localhost(:\d+)?$
-RewriteRule ^ - [F]
+RewriteCond %{REQUEST_METHOD} !^(GET)$
+RewriteRule ^ - [F,L]
 RewriteRule ^ index.php [QSA,L]
