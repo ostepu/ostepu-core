@@ -60,12 +60,17 @@ function executeRedirect($redirect, $uid, $cid, $esid){
         $student_data = http_get($URI, true, $message);
         
         if ($message!=200) return false;
+        
+        $URI = $serverURI . '/DB/DBSession/session/user/'.$uid;
+        $session_data = http_get($URI, true, $message);
+        
+        if ($message!=200) return false;
     
         // erzeuge nun den Inhalt
-        $data = array('esid'=>$esid, 'user'=>json_decode($student_data));
+        $data = array('esid'=>$esid, 'user'=>json_decode($student_data), 'session'=>json_decode($session_data));
             
         $URI = $serverURI . "/DB/DBTransaction/transaction/course/".Redirect::getCourseFromRedirectId($redirect->getId());
-        $newTransaction = Transaction::createTransaction(null,time()+3600, 'redirect', json_encode($data));
+        $newTransaction = Transaction::createTransaction(null,time()+180, 'redirect', json_encode($data));
         $transaction = http_post_data($URI, Transaction::encodeTransaction($newTransaction), true, $message);
 
         if ($message != "201") {
