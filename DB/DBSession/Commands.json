@@ -67,6 +67,16 @@
         "path": "/session(/session)/:seid"
     },
     {
+        "name": "getValidSession",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
+        "outputType": "Session",
+        "inputType": "",
+        "method": "GET",
+        "placeholder":[{"name":"seid","regex":"%^([0-9_]+)$%"},{"name":"userid","regex":"%^[a-zA-Z0-9äöüÄÖÜß]+$%"}],
+        "path": "/session/session/:seid/user/:userid"
+    },
+    {
         "name": "addPlatform",
         "outputType": "Platform",
         "inputType": "Platform",

@@ -54,6 +54,16 @@
             ]
         },
         {
+            "name": "getValidSession",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBSessionGetValidSession/:seid/:userid"
+                }
+            ]
+        },
+        {
             "name": "getAllSessions",
             "target": "DBQuery2",
             "links": [
