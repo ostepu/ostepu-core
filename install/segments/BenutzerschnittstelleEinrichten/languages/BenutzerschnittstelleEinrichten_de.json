@@ -6,5 +6,8 @@
     "barResult": "Resultat: $res",
     "confContent": "Text = $content",
     "contFile": "Datei = $file",
-    "failureAccessConfFile": "Fehler: $message"
+    "failureAccessConfFile": "Fehler: $message",
+    "maintenanceMode": "Wartungsmodus",
+    "maintenanceText": "Wartungstext",
+    "maintenanceAllowedUsers": "erlaubte Nutzerkonten während der Wartung (NutzerA, NutzerB, ....)"
 }}
