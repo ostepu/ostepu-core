@@ -1,4 +1,6 @@
 RewriteEngine On
-RewriteCond %{REQUEST_METHOD} !^(GET)$
+RewriteCond %{HTTP_HOST} !^localhost(:\d+)?$
+RewriteCond %{REQUEST_METHOD} !^GET$ [OR]
+RewriteCond %{THE_REQUEST} !(.)*\/DBTransaction\/transaction\/authentication\/redirect\/transaction
 RewriteRule ^ - [F,L]
 RewriteRule ^ index.php [QSA,L]

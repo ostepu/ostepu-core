@@ -1,4 +1,6 @@
 RewriteEngine On
 RewriteCond %{HTTP_HOST} !^localhost(:\d+)?$
-RewriteRule ^ - [F]
+RewriteCond %{REQUEST_METHOD} !^GET$ [OR]
+RewriteCond %{THE_REQUEST} !(.)*\/DBSession\/session\/session
+RewriteRule ^ - [F,L]
 RewriteRule ^ index.php [QSA,L]
