@@ -99,7 +99,16 @@ class Paketverwaltung
         }
 
         self::$pluginFiles = array();
-        if ($handle = @opendir(self::getPackagePath($data))) {
+        try {
+            $handle = opendir(self::getPackagePath($data));
+        } catch (Exception $e) {
+            // der Ordner konnte nicht zugegriffen werden
+            Installation::log(array('text'=>self::getPackagePath($data).' existiert nicht oder es fehlt die Zugriffsberechtigung.','logLevel'=>LogLevel::ERROR));
+            Installer::$messages[] = array('text'=>self::getPackagePath($data).' existiert nicht oder es fehlt die Zugriffsberechtigung.','type'=>'error');
+            return self::$pluginFiles;
+        }
+        
+        if ($handle !== false) {
             while (false !== ($file = readdir($handle))) {
                 if (substr($file,-5)!='.json' || $file=='.' || $file=='..') continue;
                 if (is_dir(self::getPackagePath($data). DIRECTORY_SEPARATOR .$file)) continue;
@@ -119,7 +128,16 @@ class Paketverwaltung
         }
 
         self::$selectedPluginFiles = array();
-        if ($handle = @opendir(self::getPackagePath($data))) {
+        try {
+            $handle = opendir(self::getPackagePath($data));
+        } catch (Exception $e) {
+            // der Ordner konnte nicht zugegriffen werden
+            Installation::log(array('text'=>self::getPackagePath($data).' existiert nicht oder es fehlt die Zugriffsberechtigung.','logLevel'=>LogLevel::ERROR));
+            Installer::$messages[] = array('text'=>self::getPackagePath($data).' existiert nicht oder es fehlt die Zugriffsberechtigung.','type'=>'error');
+            return self::$selectedPluginFiles;
+        }
+        
+        if ($handle !== false) {
             while (false !== ($file = readdir($handle))) {
                 if (substr($file,-5)!='.json' || $file=='.' || $file=='..') continue;
                 if (is_dir(self::getPackagePath($data) . DIRECTORY_SEPARATOR . $file)) continue;
@@ -265,7 +283,16 @@ class Paketverwaltung
 
         if (!$fail){
             $pluginFiles = array();
-            if ($handle = @opendir(self::getPackagePath($data))) {
+            try {
+                $handle = opendir(self::getPackagePath($data));
+            } catch (Exception $e) {
+                // der Ordner konnte nicht zugegriffen werden
+                Installation::log(array('text'=>self::getPackagePath($data).' existiert nicht oder es fehlt die Zugriffsberechtigung.','logLevel'=>LogLevel::ERROR));
+                Installer::$messages[] = array('text'=>self::getPackagePath($data).' existiert nicht oder es fehlt die Zugriffsberechtigung.','type'=>'error');
+                return $pluginFiles;
+            }
+        
+            if ($handle !== false) {
                 while (false !== ($file = readdir($handle))) {
                     if ($file=='.' || $file=='..') continue;
                     if (is_dir(self::getPackagePath($data) . DIRECTORY_SEPARATOR .$file)) continue;

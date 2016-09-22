@@ -150,7 +150,16 @@ class Installation
         Einstellungen::generatepath(Einstellungen::$path);
         if (is_dir(Einstellungen::$path)) {
             Installation::log(array('text'=>'lese Konfigurationen'));
-            if ($handle = opendir(Einstellungen::$path)) {
+            try {
+                $handle = opendir(Einstellungen::$path);
+            } catch (Exception $e) {
+                // der Ordner konnte nicht zugegriffen werden
+                Installation::log(array('text'=>Einstellungen::$path.' existiert nicht oder es fehlt die Zugriffsberechtigung.','logLevel'=>LogLevel::ERROR));
+                Installer::$messages[] = array('text'=>Einstellungen::$path.' existiert nicht oder es fehlt die Zugriffsberechtigung.','type'=>'error');
+                return $serverFiles;
+            }
+        
+            if ($handle !== false) {
                 while (false !== ($file = readdir($handle))) {
                     if ($file=='.' || $file=='..') continue;
                     $serverFiles[] = $file;
@@ -198,8 +207,17 @@ class Installation
 
       while (sizeof($directories)) {
         $dir  = array_pop($directories);
+        
+        try {
+            $handle = opendir($dir);
+        } catch (Exception $e) {
+            // der Ordner konnte nicht zugegriffen werden
+            Installation::log(array('text'=>$dir.' existiert nicht oder es fehlt die Zugriffsberechtigung.','logLevel'=>LogLevel::ERROR));
+            Installer::$messages[] = array('text'=>$dir.' existiert nicht oder es fehlt die Zugriffsberechtigung.','type'=>'error');
+            return $serverFiles;
+        }
 
-        if ($handle = opendir($dir)) {
+        if ($handle !== false) {
           while (false !== ($file = readdir($handle))) {
             if ($file == '.' || $file == '..') {
               continue;

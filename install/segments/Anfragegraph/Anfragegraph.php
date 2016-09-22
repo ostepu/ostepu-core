@@ -123,7 +123,16 @@ class Anfragegraph
         // ermittelt vorhandene Aufzeichnungen
         $recordBase = array();
         $recordAccess = array();
-        if ($handle = @opendir($location)) {
+        try {
+            $handle = opendir($location);
+        } catch (Exception $e) {
+            // der Ordner konnte nicht zugegriffen werden
+            Installation::log(array('text'=>$location.' existiert nicht oder es fehlt die Zugriffsberechtigung.','logLevel'=>LogLevel::ERROR));
+            Installer::$messages[] = array('text'=>$location.' existiert nicht oder es fehlt die Zugriffsberechtigung.','type'=>'error');
+            return $pluginFiles;
+        }
+            
+        if ($handle !== false) {
             while (false !== ($file = readdir($handle))) {
                 if ($file=='.' || $file=='..') continue;
                 $filePath = $location. DIRECTORY_SEPARATOR .$file;

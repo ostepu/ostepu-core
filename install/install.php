@@ -61,6 +61,8 @@ class Installer
     public static $menuTypes = array(0,0,0,0,0,1,1);
     
     public static $segmentStatus = array();
+    
+    public static $messages = array();
 
     /**
      * REST actions
@@ -157,7 +159,18 @@ class Installer
         Installation::log(array('text'=>Installation::Get('main','functionBegin')));
         $p = dirname(__FILE__) . '/segments';
         Einstellungen::generatepath($p);
-        if ($handle = opendir($p)) {
+        
+        try {
+            $handle = opendir($p);
+        } catch (Exception $e) {
+            // der Ordner konnte nicht zugegriffen werden
+            Installation::log(array('text'=>$p.' existiert nicht oder es fehlt die Zugriffsberechtigung.','logLevel'=>LogLevel::ERROR));
+            Installer::$messages[] = array('text'=>$p.' existiert nicht oder es fehlt die Zugriffsberechtigung.','type'=>'error');
+            return;
+        }
+        
+        
+        if ($handle !== false) {
             $segs = array();
             while (false !== ($file = @readdir($handle))) {
                 if ($file=='.' || $file=='..') continue;
@@ -623,6 +636,16 @@ class Installer
 
 
         if (true){
+            // zeige alle globalen Meldungen an
+            foreach(Installer::$messages as $message){
+                $type = '';
+                if (isset($message['type']) && $message['type'] == 'error') $type = 'error_light';
+                if (isset($message['type']) && $message['type'] == 'warning') $type = 'warning_light';
+                if (isset($message['text']) && trim($message['text']) != ''){
+                    echo '<div align="left" class="'.$type.'">'.$message['text'].'</div>';
+                }
+            }
+            
             // show segments
             Installation::log(array('text'=>Installation::Get('main','beginShowSegments')));
             foreach(Einstellungen::$segments as $segs){
