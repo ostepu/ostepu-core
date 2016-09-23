@@ -63,8 +63,13 @@ class Einstellungen
      * @param string $name Der Name des Ausgangs, dessen Ziele gesucht ermittelt werden sollen
      * @return link[] Eine Liste der Komponenten an diesem Ausgang
      */
-    public static function getLinks($name)
+    public static function getLinks($name, $basePath = null, $confFile = null)
     {
+        if ( $basePath !== null && $confFile !== null){
+            $conf = CConfig::loadStaticConfig('','',$basePath,$confFile);
+            return CConfig::getLinks($conf->getLinks(),$name);
+        }
+        
         if (self::$config === null){
             self::$config=CConfig::loadStaticConfig('','',dirname(__FILE__),'/../component/cinstall_cconfig.json');
         }
