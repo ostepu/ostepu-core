@@ -42,18 +42,6 @@
             <!--<label class="form-field left label bold new-line" for="permanentLogin"><?php echo Language::Get('main','permanentLogin', $langTemplate); ?>:</label>
             <input class="form-field left" type="checkbox" name="permanentLogin" id="permanentLogin" />-->
         </div>
-        <div class="content-body left" style="width:100%">
-            <?php
-            // prüfe den Wartungsmodus
-            global $maintenanceMode;
-            global $maintenanceText;
-            global $maintenanceAllowedUsers;
-            if ($maintenanceMode === '1'){
-                $text = $maintenanceText;
-                if (trim($maintenanceText) == '') $text = "Wartungsarbeiten!!!";
-                echo  MakeNotification("error", $text);
-            }?>
-        </div>
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->
 </form>

@@ -108,6 +108,13 @@ if(Authentication::checkLogin()) {
     exit();
 }
 
+// prüfe den Wartungsmodus
+if ($maintenanceMode === '1'){
+    $text = $maintenanceText;
+    if (trim($maintenanceText) == '') $text = "Wartungsarbeiten!!!";
+    $notifications[] = MakeNotification('error', $text);
+}
+
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind(array('backTitle' => Language::Get('main','changeCourse', $langTemplate),
