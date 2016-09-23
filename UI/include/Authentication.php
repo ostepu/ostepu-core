@@ -89,9 +89,9 @@ class Authentication extends AbstractAuthentication
         // check if user exists
         if ($message != "404" && empty($user) == false) {
             // create passwordhash with salt as suffix
-            if (isset($user['failedLogins']) && time()-$user['failedLogins']<15){
+            if (isset($user['failedLogins']) && time()-$user['failedLogins']<5){
             
-                $waitSeconds = 15-(time()-$user['failedLogins']);
+                $waitSeconds = 5-(time()-$user['failedLogins']);
                 return MakeNotification("error", "Die Anmeldung ist für {$waitSeconds} Sekunden gesperrt!!!");
             }
             
