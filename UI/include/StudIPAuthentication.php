@@ -345,6 +345,17 @@ class StudIPAuthentication extends AbstractAuthentication
      */
     public function loginUser($username, $password)
     {
+        // prüfe den Wartungsmodus
+        global $maintenanceMode;
+        global $maintenanceText;
+        global $maintenanceAllowedUsers;
+        if ($maintenanceMode === '1' && !in_array($username,explode(',',str_replace(' ', '', $maintenanceAllowedUsers)))){
+            $text = $maintenanceText;
+            if (trim($maintenanceText) == '') $text = "Wartungsarbeiten!!!";
+            set_error("error", $text);
+            exit(); 
+        }
+        
         global $databaseURI;
         global $logicURI;
 
