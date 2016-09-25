@@ -1,6 +1,8 @@
 {
     "name": "DOCU",
     "version": "0.1",
+    "description":{"de":"Dieses Paket enthält Beschreibungen zum Aufbau und Hilfsdokumente zur Plattform."},
+    "descUrl":"https://github.com/ostepu/ostepu-core-documentation",
     "files": [
         {
             "path": "vendor/Docu/",

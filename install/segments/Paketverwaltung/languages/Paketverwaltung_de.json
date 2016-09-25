@@ -27,5 +27,7 @@
     "noDirLocation": "Repo-Pfad existiert nicht!!!",
     "noDirFile": "Dateipfad existiert nicht: $path",
     "path": "Zielpfad des Repo: $path",
-    "errorOnChangeDir": "Verzeichnis konnte nicht gewechselt werden >> $path"
+    "errorOnChangeDir": "Verzeichnis konnte nicht gewechselt werden >> $path",
+    "desc": "Beschreibung: ",
+    "descUrl":"Homepage: "
 }}

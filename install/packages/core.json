@@ -3,6 +3,8 @@
     "version": "0.5.0",
     "versionDate": "30.09.2016",
     "requirements": [],
+    "description":{"de":"Hier sind die Hauptdateien der Plattform enthalten."},
+    "descUrl":"https://github.com/ostepu/ostepu-core",
     "files": [
         {
             "virtual": true,

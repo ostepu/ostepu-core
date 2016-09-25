@@ -152,6 +152,17 @@ class Paketverwaltung
 
         return self::$selectedPluginFiles;
     }
+    
+    public static function getDescription($data, $descData)
+    {
+        if (isset($data['PL']['language'])){
+            $lang = $data['PL']['language'];
+            
+            if (isset($descData[$lang])) return $descData[$lang];
+            return '';
+        }
+        return '';
+    }
 
     public static function show($console, $result, $data)
     {
@@ -183,17 +194,28 @@ class Paketverwaltung
             $name = isset($dat['name']) ? $dat['name'] : '???';
             $version = isset($dat['version']) ? $dat['version'] : null;
             $voraussetzungen = isset($dat['requirements']) ? $dat['requirements'] : array();
+            $description =  self::getDescription($data, isset($dat['description']) ? $dat['description'] : array());
+            $descUrl =  isset($dat['descUrl']) ? $dat['descUrl'] : '';
             if (!is_array($voraussetzungen)) $voraussetzungen = array($voraussetzungen);
 
             $versionText = isset($dat['version']) ? ' v'.$dat['version'] : '';
             $text .= Design::erstelleZeile($console, $name.$versionText, 'e', ((self::$onEvents['install']['enabledInstall'] || self::$onEvents['uninstall']['enabledInstall']) ? Design::erstelleAuswahl($console, $data['PLUG']['plug_install_'.$name], 'data[PLUG][plug_install_'.$name.']', $name, null, true) : ''), 'v_c');
 
+            if (trim($description) !== ''){
+                $text .= Design::erstelleZeile($console, Installation::Get('packages','desc',self::$langTemplate), 'v', $description, 'v');
+            }
+            
+            if (trim($descUrl) !== ''){
+                $text .= Design::erstelleZeile($console, Installation::Get('packages','descUrl',self::$langTemplate), 'v', '<a class="e" href="'.$descUrl.'">'.htmlentities($descUrl).'</a>', 'v');
+            }
+            
             $isInstalled=false;
             if (isset($installedPlugins)){
                 foreach($installedPlugins as $instPlug){
                     if ($name == $instPlug['name']){
                         if (isset($instPlug['version'])){
-                            $text .= Design::erstelleZeile($console, Installation::Get('packages','currentVersion',self::$langTemplate) , 'v', 'v'.$instPlug['version'] , 'v');
+                            // die aktuelle Version wird noch nicht ausreichend verwendet
+                            /// /// $text .= Design::erstelleZeile($console, Installation::Get('packages','currentVersion',self::$langTemplate) , 'v', 'v'.$instPlug['version'] , 'v');
                         }
                         $isInstalled=true;
                         break;
@@ -201,8 +223,10 @@ class Paketverwaltung
                 }
             }
 
-            if (!$isInstalled)
-                $text .= Design::erstelleZeile($console, Installation::Get('packages','currentVersion',self::$langTemplate) , 'v', '---' , 'v');
+            if (!$isInstalled){
+                            // die aktuelle Version wird noch nicht ausreichend verwendet
+                /// /// $text .= Design::erstelleZeile($console, Installation::Get('packages','currentVersion',self::$langTemplate) , 'v', '---' , 'v');
+            }
 
             $vorText = '';
             foreach ($voraussetzungen as $vor){
@@ -212,7 +236,8 @@ class Paketverwaltung
 
             } else {
                 $vorText = substr($vorText,0,-2);
-                $text .= Design::erstelleZeile($console, Installation::Get('packages','requirements',self::$langTemplate) , 'v', $vorText , 'v');
+                // die Bedingungen der Pakete werden noch nicht ausreichend verwendet
+                /// /// $text .= Design::erstelleZeile($console, Installation::Get('packages','requirements',self::$langTemplate) , 'v', $vorText , 'v');
             }
 
 
@@ -251,6 +276,8 @@ class Paketverwaltung
                     $text .= Design::erstelleZeile($console, Installation::Get('packages','size',self::$langTemplate) , 'v', Design::formatBytes($fileSize) , 'v');
                 }
             }
+            
+            $text .= Design::erstelleZeile($console, '' , '');
         }
 
         /*if ($installPlugins){
