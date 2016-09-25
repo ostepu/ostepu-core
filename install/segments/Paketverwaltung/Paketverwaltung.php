@@ -277,7 +277,7 @@ class Paketverwaltung
                 }
             }
             
-            $text .= Design::erstelleZeile($console, '' , '');
+            $text .= Design::erstelleZeile($console, '' , '', '', '');
         }
 
         /*if ($installPlugins){
