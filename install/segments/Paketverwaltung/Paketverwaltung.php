@@ -104,7 +104,7 @@ class Paketverwaltung
         } catch (Exception $e) {
             // der Ordner konnte nicht zugegriffen werden
             Installation::log(array('text'=>self::getPackagePath($data).' existiert nicht oder es fehlt die Zugriffsberechtigung.','logLevel'=>LogLevel::ERROR));
-            Installer::$messages[] = array('text'=>self::getPackagePath($data).' existiert nicht oder es fehlt die Zugriffsberechtigung.','type'=>'error');
+            Installer::$messages[] = array('text'=>self::getPackagePath($data).' existiert nicht oder es fehlt die Zugriffsberechtigung. Möglicherweise wurde der lokale Pfad nicht korrekt angegeben.','type'=>'error');
             return self::$pluginFiles;
         }
         
@@ -133,7 +133,7 @@ class Paketverwaltung
         } catch (Exception $e) {
             // der Ordner konnte nicht zugegriffen werden
             Installation::log(array('text'=>self::getPackagePath($data).' existiert nicht oder es fehlt die Zugriffsberechtigung.','logLevel'=>LogLevel::ERROR));
-            Installer::$messages[] = array('text'=>self::getPackagePath($data).' existiert nicht oder es fehlt die Zugriffsberechtigung.','type'=>'error');
+            Installer::$messages[] = array('text'=>self::getPackagePath($data).' existiert nicht oder es fehlt die Zugriffsberechtigung. Möglicherweise wurde der lokale Pfad nicht korrekt angegeben.','type'=>'error');
             return self::$selectedPluginFiles;
         }
         

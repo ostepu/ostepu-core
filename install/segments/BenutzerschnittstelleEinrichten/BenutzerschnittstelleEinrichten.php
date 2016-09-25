@@ -77,6 +77,11 @@ class BenutzerschnittstelleEinrichten
 
         if (!$console){
             $text .= Design::erstelleZeile($console, Installation::Get('userInterface','conf',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['UI']['conf'], 'data[UI][conf]', '../UI/include/Config.php', true), 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0]), 'h');
+            if (!file_exists($data['UI']['conf'])){
+                Installation::log(array('text'=>'data[UI][conf]: '.$data['UI']['conf'].' muss installiert werden.','logLevel'=>LogLevel::WARNING));
+                $text .= Design::erstelleZeile($console, '', 'e', $data['UI']['conf'].' muss installiert werden.' , 'error v');
+            }
+            
             $text .= Design::erstelleZeile($console, Installation::Get('userInterface','siteKey',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['UI']['siteKey'], 'data[UI][siteKey]', 'b67dc54e7d03a9afcd16915a55edbad2d20a954562c482de3863456f01a0dee4', true), 'v');
             $text .= Design::erstelleZeile($console, Installation::Get('userInterface','maintenanceMode',self::$langTemplate), 'e', Design::erstelleAuswahl($console, $data['UI']['maintenanceMode'], 'data[UI][maintenanceMode]', '1', null, true), 'v_c');
             $text .= Design::erstelleZeile($console, Installation::Get('userInterface','maintenanceText',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['UI']['maintenanceText'], 'data[UI][maintenanceText]', '', true), 'v');

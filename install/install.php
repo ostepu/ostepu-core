@@ -642,7 +642,7 @@ class Installer
                 if (isset($message['type']) && $message['type'] == 'error') $type = 'error_light';
                 if (isset($message['type']) && $message['type'] == 'warning') $type = 'warning_light';
                 if (isset($message['text']) && trim($message['text']) != ''){
-                    echo '<div align="left" class="'.$type.'">'.$message['text'].'</div>';
+                    echo '<div align="left" class="'.$type.'">'.$message['text'].'</div><br>';
                 }
             }
             

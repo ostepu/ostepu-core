@@ -84,9 +84,23 @@ class Grundinformationen
             $text .= Design::erstelleZeile($console, Installation::Get('general_informations','server_name',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['SV']['name'], 'data[SV][name]', $data['SV']['name'], false), 'v');
             $text .= Design::erstelleZeile($console, Installation::Get('general_informations','url',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['PL']['url'], 'data[PL][url]', 'http://localhost/uebungsplattform', true), 'v');
             $text .= Design::erstelleZeile($console, Installation::Get('general_informations','localPath',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['PL']['localPath'], 'data[PL][localPath]', '/var/www/uebungsplattform', true), 'v');
+            if (!file_exists($data['PL']['localPath'])){
+                Installation::log(array('text'=>'data[PL][localPath]: '.$data['PL']['localPath'].' existiert nicht.','logLevel'=>LogLevel::WARNING));
+                $text .= Design::erstelleZeile($console, '', 'e', $data['PL']['localPath'].' existiert nicht.' , 'error v');
+            }
+            
             $text .= Design::erstelleZeile($console, Installation::Get('general_informations','urlExtern',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['PL']['urlExtern'], 'data[PL][urlExtern]', 'http://localhost/uebungsplattform', true), 'v');
             $text .= Design::erstelleZeile($console, Installation::Get('general_informations','temp',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['PL']['temp'], 'data[PL][temp]', '/var/www/temp', true), 'v');
+            if (!file_exists($data['PL']['temp'])){
+                Installation::log(array('text'=>'data[PL][temp]: '.$data['PL']['temp'].' existiert nicht.','logLevel'=>LogLevel::WARNING));
+                $text .= Design::erstelleZeile($console, '', 'e', $data['PL']['temp'].' existiert nicht.' , 'error v');
+            }
+            
             $text .= Design::erstelleZeile($console, Installation::Get('general_informations','files',self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['PL']['files'], 'data[PL][files]', '/var/www/files', true), 'v');
+            if (!file_exists($data['PL']['files'])){
+                Installation::log(array('text'=>'data[PL][files]: '.$data['PL']['files'].' existiert nicht.','logLevel'=>LogLevel::WARNING));
+                $text .= Design::erstelleZeile($console, '', 'e', $data['PL']['files'].' existiert nicht.' , 'error v');
+            }
         }
 
         echo Design::erstelleBlock($console, Installation::Get('general_informations','title',self::$langTemplate), $text);
