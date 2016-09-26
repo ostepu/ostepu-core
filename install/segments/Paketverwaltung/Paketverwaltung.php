@@ -116,7 +116,13 @@ class Paketverwaltung
             }
             closedir($handle);
         }
+        
+        function getPackageDefinitionsSort($a, $b)
+        {
+            return strcmp(basename($a), basename($b));
+        }
 
+        usort(self::$pluginFiles, "getPackageDefinitionsSort");
         return self::$pluginFiles;
     }
 
@@ -149,7 +155,13 @@ class Paketverwaltung
             }
             closedir($handle);
         }
+        
+        function getSelectedPackageDefinitionsSort($a, $b)
+        {
+            return strcmp(basename($a), basename($b));
+        }
 
+        usort(self::$pluginFiles, "getSelectedPackageDefinitionsSort");
         return self::$selectedPluginFiles;
     }
     
