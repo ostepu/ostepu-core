@@ -83,8 +83,8 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
           ->addSet('plugins',
                    ['is_array',
                     'set_default'=>null,
-                    'perform_this_array'=>[['key_all'],
-                                      ['valid_identifier']],
+                    'perform_this_array'=>[[['key_all'],
+                                      ['valid_identifier']]],
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidExtensionId', $langTemplate)]]);
 
