@@ -252,7 +252,6 @@ if ($postValidation->isValid() && $postResults['action'] === 'submit') {
 
                             if ($message !== 201) {
                                 $result = Submission::decodeSubmission($result);
-                                $exercise = $key + 1;
                                 $errormsg = Language::Get('main','errorUploadSubmission', $langTemplate, array('status'=>$message,'exerciseName'=>$exercise['name']));
 
                                 if ($result!==null && !empty($result)){
@@ -285,7 +284,6 @@ if ($postValidation->isValid() && $postResults['action'] === 'submit') {
 
                                         if ($message !== 201) {
                                             $result2 = Choice::decodeChoice($result2);
-                                            $exercise = $key + 1;
                                             $errormsg = Language::Get('main','errorUploadSubmission', $langTemplate, array('status'=>$message,'exerciseName'=>$exercise['name']));
 
                                             if ($result2!==null){
