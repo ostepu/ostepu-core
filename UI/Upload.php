@@ -425,9 +425,9 @@ $formdata = http_get($URL, true);
 $formdata = Form::decodeForm($formdata);
 if (!is_array($formdata))$formdata=array($formdata);
 foreach ($formdata as $value){
-    foreach ($upload_data['exercises'] as &$key){
-        if ($value->getExerciseId() == $key['id']){
-            $key['form'] = $value;
+    foreach ($upload_data['exercises'] as $key => $elem){
+        if ($value->getExerciseId() == $elem['id']){
+            $upload_data['exercises'][$key]['form'] = $value;
             break;
         }
     }
@@ -475,7 +475,7 @@ if (isset($_SESSION['selectedUser'])){
                     }
 
                 } elseif (!$hasStarted){
-                    unset($courseSheets[$key]);
+                   unset($courseSheets[$key]);
                 }
 
             } else {
