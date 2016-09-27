@@ -29,5 +29,6 @@
     "path": "Zielpfad des Repo: $path",
     "errorOnChangeDir": "Verzeichnis konnte nicht gewechselt werden >> $path",
     "desc": "Beschreibung: ",
-    "descUrl":"Homepage: "
+    "descUrl":"Homepage: ",
+    "updateAvailable": "Aktualisierung verfügbar!!!"
 }}

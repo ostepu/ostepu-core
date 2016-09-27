@@ -325,6 +325,7 @@ class Paketverwaltung
                             $errno = 0;
                             $error = '';
                             if (isset($collected['commits'][0])){
+                                $text .= Design::erstelleZeileShort($console, Installation::Get('packages','updateAvailable',self::$langTemplate), 'error v');
                                 $text .= GitAktualisierung::visualizeModifications($data, $console, $fail, $errno, $error, $collected, true, 5, false);
                             }
                         }
