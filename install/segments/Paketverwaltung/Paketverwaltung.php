@@ -211,14 +211,14 @@ class Paketverwaltung
             if (!is_array($voraussetzungen)) $voraussetzungen = array($voraussetzungen);
 
             $versionText = isset($dat['version']) ? ' v'.$dat['version'] : '';
-            $text .= Design::erstelleZeile($console, $name.$versionText, 'e', ((self::$onEvents['install']['enabledInstall'] || self::$onEvents['uninstall']['enabledInstall']) ? Design::erstelleAuswahl($console, $data['PLUG']['plug_install_'.$name], 'data[PLUG][plug_install_'.$name.']', $name, null, true) : ''), 'v_c');
+            $text .= Design::erstelleZeileShort($console, $name.$versionText, 'e', ((self::$onEvents['install']['enabledInstall'] || self::$onEvents['uninstall']['enabledInstall']) ? Design::erstelleAuswahl($console, $data['PLUG']['plug_install_'.$name], 'data[PLUG][plug_install_'.$name.']', $name, null, true) : ''), 'v_c');
 
             if (trim($description) !== ''){
-                $text .= Design::erstelleZeile($console, Installation::Get('packages','desc',self::$langTemplate), 'v', $description, 'v');
+                $text .= Design::erstelleZeileShort($console, Installation::Get('packages','desc',self::$langTemplate), 'v', $description, 'v');
             }
             
             if (trim($descUrl) !== ''){
-                $text .= Design::erstelleZeile($console, Installation::Get('packages','descUrl',self::$langTemplate), 'v', '<a class="e" href="'.$descUrl.'">'.htmlentities($descUrl).'</a>', 'v');
+                $text .= Design::erstelleZeileShort($console, Installation::Get('packages','descUrl',self::$langTemplate), 'v', '<a class="e" href="'.$descUrl.'">'.htmlentities($descUrl).'</a>', 'v');
             }
             
             $isInstalled=false;
@@ -279,17 +279,62 @@ class Paketverwaltung
                 }
 
                 if ($componentCount>0){
-                    $text .= Design::erstelleZeile($console, Installation::Get('packages','numberComponents',self::$langTemplate) , 'v', $componentCount , 'v');
+                    $text .= Design::erstelleZeileShort($console, Installation::Get('packages','numberComponents',self::$langTemplate) , 'v', $componentCount , 'v');
                 }
                 if ($fileCount>0){
-                    $text .= Design::erstelleZeile($console, Installation::Get('packages','numberFiles',self::$langTemplate) , 'v', $fileCount , 'v');
+                    $text .= Design::erstelleZeileShort($console, Installation::Get('packages','numberFiles',self::$langTemplate) , 'v', $fileCount , 'v');
                 }
                 if ($fileSize>0){
-                    $text .= Design::erstelleZeile($console, Installation::Get('packages','size',self::$langTemplate) , 'v', Design::formatBytes($fileSize) , 'v');
+                    $text .= Design::erstelleZeileShort($console, Installation::Get('packages','size',self::$langTemplate) , 'v', Design::formatBytes($fileSize) , 'v');
                 }
             }
             
-            $text .= Design::erstelleZeile($console, '' , '', '', '');
+            if ($isInstalled){
+                $content = self::gibPaketInhalt($data, $plug);
+                
+                if ($content !== null){
+                    
+                    $list=null;
+                    self::gibPaketEintraegeNachTyp($content, 'git',$list);
+
+                    foreach($list as $entry){
+                        if (!isset($entry['path'])) continue;
+                        $virtual = (isset($entry['virtual'])?$entry['virtual']:false);
+                        if ($virtual) continue;
+
+                        // nun wollen wir jedes dieser repos pruefen
+                        $name = '???';
+                        $url = '';
+                        if (isset($entry['params']['name'])){
+                            $name = $entry['params']['name'];
+                        }
+                        if (isset($entry['params']['URL'])){
+                            $url = $entry['params']['URL'];
+                        }
+                        
+                        $text .= Design::erstelleZeileShort($console, $name.': '.$url, 'info-color e');
+                        $myerror = '';
+                        $myfail = false;
+                        $myerrno=0;
+                        $collected = GitAktualisierung::collectGitChanges($data['PL']['localPath'] . DIRECTORY_SEPARATOR . $entry['path'], $data, $myfail, $myerrno, $myerror);
+                        if ($myfail){
+                            // es ist ein Fehler aufgetreten
+                            $text .= Design::erstelleZeileShort($console, $myerror , 'error v');                            
+                        } else {
+                            $fail=false;
+                            $errno = 0;
+                            $error = '';
+                            if (isset($collected['commits'][0])){
+                                $text .= GitAktualisierung::visualizeModifications($data, $console, $fail, $errno, $error, $collected, true, 5, false);
+                            }
+                        }
+                    }
+                } else {
+                    // Fehler beim Lesen des Pakets
+                }
+            }
+            
+            $text .= Design::erstelleZeileShort($console, '' , '', '', '');
         }
 
         /*if ($installPlugins){
