@@ -59,6 +59,7 @@
         "invalidRedirectId":"Ungültige Weiterleitungs-ID.",
         "invalidRedirectTitle":"Ungültiger Weiterleitungstitel",
         "invalidRedirectUrl":"Ungültige Weiterleitungs-URL.",
+        "invalidRedirectLocation": "Ungültiger Weiterleitungsort",
         "invalidRedirectAuth":"Ungültige Weiterleitungs-Auth-Auswahl.",
         "errorRemoveRedirect":"Beim Löschen ist ein Fehler aufgetreten!",
         "successRemoveRedirect":"Die Weiterleitungen wurden entfernt.",

@@ -145,6 +145,11 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
                                                                        ['satisfy_exists',
                                                                         'on_error'=>['type'=>'error',
                                                                                      'text'=>Language::Get('main','invalidRedirectUrl', $langTemplate)]]],
+                                                                      ['location',
+                                                                       ['satisfy_exists',
+                                                                        'satisfy_in_list'=>['sheet','course'],
+                                                                        'on_error'=>['type'=>'error',
+                                                                                     'text'=>Language::Get('main','invalidRedirectLocation', $langTemplate)]]],
                                                                       ['auth',
                                                                        ['set_default'=>'none',
                                                                         'satisfy_in_list'=>['none', 'transaction'],
@@ -176,9 +181,9 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
             foreach($data as $key => $elem){
                 if (isset($elem['id']) && trim($elem['id']) != ''){
                     $foundList[] = $elem['id'];
-                    $foundExistingElements[$elem['id']] = Redirect::createRedirect($elem['id'],$elem['title'],$elem['url'],'sheet',$elem['auth']);
+                    $foundExistingElements[$elem['id']] = Redirect::createRedirect($elem['id'],$elem['title'],$elem['url'],$elem['location'],$elem['auth']);
                 } else {
-                    $foundNewElements[] = Redirect::createRedirect(null,$elem['title'],$elem['url'],'sheet',$elem['auth']);
+                    $foundNewElements[] = Redirect::createRedirect(null,$elem['title'],$elem['url'],$elem['location'],$elem['auth']);
                 }
             };
 
