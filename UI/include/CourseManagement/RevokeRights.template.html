@@ -65,29 +65,29 @@ if (isset($RevokeRightsNotificationElements)) {
                                 
                             if ($user['statusName'] == "student") {
 
-                                $studentsArea .= '<option value="' . $user['id'] . '">' . $user['firstName'] . " ";
-                                $studentsArea .= $user['lastName'] . ", " . $user['userName'] . "</option>";
+                                $studentsArea .= '<option value="' . $user['id'] . '">' . (isset( $user['firstName']) ? $user['firstName'] : '???') . " ";
+                                $studentsArea .= (isset( $user['lastName']) ? $user['lastName'] : '???') . ", " . (isset( $user['userName']) ? $user['userName'] : '???') . "</option>";
 
                                 $emptyStudents = false;
 
                             } elseif ($user['statusName'] == "tutor") {
 
-                                $tutorsArea .= '<option value="' . $user['id'] . '">' . $user['firstName'] . " ";
-                                $tutorsArea .= $user['lastName'] . ", " . $user['userName'] . "</option>";
+                                $tutorsArea .= '<option value="' . $user['id'] . '">' . (isset( $user['firstName']) ? $user['firstName'] : '???') . " ";
+                                $tutorsArea .= (isset( $user['lastName']) ? $user['lastName'] : '???') . ", " . (isset( $user['userName']) ? $user['userName'] : '???') . "</option>";
 
                                 $emptyTutors = false;
 
                             } elseif ($user['statusName'] == "lecturer") {
 
-                                $lecturersArea .= '<option value="' . $user['id'] . '">' . $user['firstName'] . " ";
-                                $lecturersArea .= $user['lastName'] . ", " . $user['userName'] . "</option>";
+                                $lecturersArea .= '<option value="' . $user['id'] . '">' . (isset( $user['firstName']) ? $user['firstName'] : '???') . " ";
+                                $lecturersArea .= (isset( $user['lastName']) ? $user['lastName'] : '???') . ", " . (isset( $user['userName']) ? $user['userName'] : '???') . "</option>";
 
                                 $emptyLecturers = false;
 
                             } elseif ($user['statusName'] == "administrator") {
 
-                                $adminsArea .= '<option value="' . $user['id'] . '">' . $user['firstName'] . " ";
-                                $adminsArea .= $user['lastName'] . ", " . $user['userName'] . "</option>";
+                                $adminsArea .= '<option value="' . $user['id'] . '">' . (isset( $user['firstName']) ? $user['firstName'] : '???') . " ";
+                                $adminsArea .= (isset( $user['lastName']) ? $user['lastName'] : '???') . ", " . (isset( $user['userName']) ? $user['userName'] : '???') . "</option>";
 
                                 $emptyAdmins = false;
                             }
