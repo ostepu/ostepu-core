@@ -25,7 +25,7 @@ if (isset($notifications)){
     echo "<div align='center' class='notification-list'>";
     foreach($notifications as $note){
         if (isset($note['begin']) && trim($note['begin']) != '' && $note['begin'] !== '0'){
-            $date = date('d.m.Y - H:i', $note['begin'])."\n";
+            $date = date('d.m.Y - H:i', $note['begin'])."\n\n";
         } else {
             $date = '';
         }
@@ -132,7 +132,7 @@ if (isset($notifications)){
                         <div class="exercise-status">
                             <?php if (isset($exercise['submission']) && (!isset($exercise['submission']['accepted']) || $exercise['submission']['accepted'] == 0) && (!$privileged)){ ?>
                                 <?php echo Language::Get('sheet','notAccepted', $langTemplate); ?>
-                            <?php } elseif (isset($exercise['submission']['marking']) && ($isExpired || !$privileged)) { ?>
+                            <?php } elseif (isset($exercise['submission']['marking']) && ($isExpired || $privileged)) { ?>
                                 <?php echo $exercise['submission']['marking']['status']; ?>
                             <?php } elseif (isset($exercise['submission']) || (isset($exercise['submission']['marking']) && !$isExpired)) { ?>
                                 <?php echo Language::Get('sheet','notCorrected', $langTemplate); ?>
@@ -190,7 +190,7 @@ if (isset($notifications)){
                             <?php // creates a deleteSubmission icon for the submission (if it exists) ?>
                             <?php if (isset($exercise['submission']['studentId']) 
                                       && $exercise['submission']['studentId'] == $uid
-                                      && !$isExpired
+                                      && (!$isExpired || $privileged)
                                       && $exercise['submission']['hideFile'] == "0"): ?>    
                                     <button title="Einsendung löschen" name="<?php echo (!isset($_POST['deleteSubmissionWarning']) || (isset($_POST['deleteSubmission']) && $_POST['deleteSubmission'] != $exercise['submission']['id'])) ? 'deleteSubmissionWarning' : 'deleteSubmission';?>" value="<?php echo $exercise['submission']['id']; ?>"class="image-button<?php echo (!isset($_POST['deleteSubmissionWarning']) || (isset($_POST['deleteSubmissionWarning']) && $_POST['deleteSubmissionWarning'] != $exercise['submission']['id'])) ? ' ' : '-simple  error-simple' ;?>">                                      
                                         <img src="Images/Delete.png">
@@ -203,7 +203,7 @@ if (isset($notifications)){
                             
                             <?php if (isset($exercise['submission']['marking']['tutorComment']) && 
                                       trim($exercise['submission']['marking']['tutorComment']) != '' && 
-                                      ($isExpired || !$privileged)) { 
+                                      ($isExpired || $privileged)) { 
                             $comment = trim($exercise['submission']['marking']['tutorComment']); ?>
                             <div class="" style="margin-top:-10px;margin-bottom:0px;word-break: break-all;">
                             <table border="0" style="width:auto">
@@ -230,7 +230,7 @@ if (isset($notifications)){
 
             <div class="content-body right">
                 <ol class="body-options body-option-color">
-                    <?php // creates a downloadAttachment icon for the exercise (if it exists) ?>
+                    <?php // creates a downloadSampleSolution icon for the exercise (if it exists) ?>
                     <?php if(($isExpired || $privileged) && isset($sheet['sampleSolution'])): ?>
                         <?php $displayName = $sheet['sampleSolution']['displayName']; ?>
                         <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
@@ -314,7 +314,7 @@ if (isset($notifications)){
                     <?php } ?>
 
                     <?php // prints a link to download markings ?>
-                    <?php if (!(($sheet['hasMarkings'] || $sheet['hasSubmissions'] || $sheet['hasAttachments']) && $isExpired)){ ?>
+                    <?php if (!(($sheet['hasMarkings'] || $sheet['hasSubmissions'] || $sheet['hasAttachments']) && ($isExpired || $privileged))){ ?>
                         <!--<li>
                             <a style="color:#b9b8b8">
                                 <?php echo Language::Get('sheetMenu','downloadStudentContent', $langTemplate); ?>
