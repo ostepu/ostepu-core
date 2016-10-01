@@ -475,7 +475,7 @@ class LGetSite
         $handler6 = Request_CreateRequest::createGet($URL, array(), '');
         
         // load course redirects
-        $URL = $this->_getRedirect->getAddress().'/redirect/course/'.$courseid.'/location/sheet';
+        $URL = $this->_getRedirect->getAddress().'/redirect/course/'.$courseid;
         $handler7 = Request_CreateRequest::createGet($URL, array(), '');
 
         $multiRequestHandle = new Request_MultiRequest();
@@ -1290,7 +1290,7 @@ class LGetSite
         $handler5 = Request_CreateRequest::createGet($URL, array(), '');
         
         // load course redirects
-        $URL = $this->_getRedirect->getAddress().'/redirect/course/'.$courseid.'/location/sheet';
+        $URL = $this->_getRedirect->getAddress().'/redirect/course/'.$courseid;
         $handler6 = Request_CreateRequest::createGet($URL, array(), '');
         
         $multiRequestHandle2->addRequest($handler1);
@@ -2042,7 +2042,7 @@ class LGetSite
         $response['notifications'] = $notifications;
         
         // load course redirects
-        $URL = $this->_getRedirect->getAddress() . '/redirect/course/'.$courseid.'/location/sheet';
+        $URL = $this->_getRedirect->getAddress() . '/redirect/course/'.$courseid;
         $answer = Request::custom('GET', $URL, array(), '');
         $redirects = json_decode($answer['content'], true);
         $response['redirect'] = $redirects;
