@@ -55,7 +55,7 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
          */
         public function __construct($header)
         {
-            $this->header = $header;
+            $this->header = array($header);
             $arguments = func_get_args();
             array_shift($arguments);
             $this->contentElements = $arguments;
@@ -98,6 +98,7 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
 
             // get position of the Templates in contentElements
             $first = array_values($arguments)[0];
+
             $firstkey = array_search($first, $this->contentElements, true);
             $end = end($arguments);
             $endkey = array_search($end, $this->contentElements, true);
@@ -123,6 +124,29 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
                                         array(0 => $formend),
                                         array_slice($this->contentElements,
                                                     $endkey+1)
+                                                );
+        }
+
+        public function defineHeaderForm($target, $fileupload)
+        {
+            $arguments = func_get_args();
+            array_shift($arguments);
+            array_shift($arguments);
+
+            // define form
+            if ($fileupload == false) {
+                $formstart = "<form id=\"".md5(HTMLWrapper::$anchorName)."\" name=\"".md5(HTMLWrapper::$anchorName)."\" action=\"{$target}#".md5(HTMLWrapper::$anchorName)."\" method=\"POST\">";
+            } else {
+                $formstart = "<form id=\"".md5(HTMLWrapper::$anchorName)."\" name=\"".md5(HTMLWrapper::$anchorName)."\" action=\"{$target}#".md5(HTMLWrapper::$anchorName)."\" method=\"POST\" enctype=\"multipart/form-data\">";
+            }
+            HTMLWrapper::$anchorName++;
+            $formend = "</form>";
+
+            // insert formtags before and after the given range
+            $this->header = array_merge(
+                                        array(0 => $formstart),
+                                        $this->header,
+                                        array(0 => $formend)
                                                 );
         }
 
@@ -156,7 +180,13 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
             <body>
                 <div id=\"body-wrapper\" class=\"body-wrapper\">";
 
-                    $this->header->show();
+                    foreach($this->header as $head){
+                        if (is_string($head)){
+                            echo $head;
+                        } else {
+                            $head->show();
+                        }
+                    }
 
                     print '<div id="content-wrapper" class="content-wrapper">';
 
