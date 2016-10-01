@@ -231,6 +231,7 @@ if (isset($notifications)){
                     <?php if (isset($redirect)){ 
                         $redirect2 = array_reverse($redirect);
                         foreach($redirect2 as $red) {
+                            if ($red['location'] !== 'sheet') continue;
                             echo '<li>'.createRedirectButton($red,$sheet['id']).'</li>';
                         }} ?>
                 </ol>
