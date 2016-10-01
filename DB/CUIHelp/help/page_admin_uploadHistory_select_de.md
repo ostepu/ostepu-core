@@ -38,3 +38,7 @@ Um den gesuchten Studenten schneller zu finden, können Sie die Studentenliste n
 ![](selectA.png)
 
 Sie müssen die Sortierung bestätigen.
+
+#### den Einsendungsverlauf nutzen
+
+<iframe width="640" height="360" src="https://www.youtube-nocookie.com/embed/T6UFJQ-Kj3o?list=PLfnTtQX6vUn2lHxmo2WqLsPaEZihOEczh&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>

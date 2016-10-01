@@ -43,3 +43,8 @@ Sie können die vorgenommenen Änderungen, über diese Schaltfläche, speichern.
 Dabei wird nur der Block gespeichert, dessen Schaltfläche Sie auslösen.
 
 ![](workD.png)
+
+#### den Korrekturassistenten nutzen
+
+<iframe width="640" height="360" src="https://www.youtube-nocookie.com/embed/a-_Ze-h2xvQ?list=PLfnTtQX6vUn2lHxmo2WqLsPaEZihOEczh&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+

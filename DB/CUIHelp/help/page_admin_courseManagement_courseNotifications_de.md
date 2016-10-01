@@ -54,3 +54,7 @@ Wenn Sie eine neue Meldung erzeugt haben, eine Äderung vorgenommen haben oder e
 Ein Student sieht die Meldungen folgendermaßen:
 
 ![](courseNotificationsH.png)
+
+#### Veranstaltungsmeldungen verwenden
+
+<iframe width="640" height="360" src="https://www.youtube-nocookie.com/embed/sWwP9y1akOw?list=PLfnTtQX6vUn2lHxmo2WqLsPaEZihOEczh&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>

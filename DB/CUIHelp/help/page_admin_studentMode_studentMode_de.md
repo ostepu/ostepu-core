@@ -29,4 +29,8 @@ Einige der Übersichten beziehen sich auf konkrete Übungsserien, sodass hier di
 
 ![](studentModeD.png)
 
-Um Ansicht zu erhalten und Änderungen vorzunehmen, welche der Student selbst nicht warnehmen könnte, ist es Ihnen über diese Auswahlfläche möglich, in einen erweiterten Modus zu wechseln, sodass beispielsweise der Einsendungsverlauf und die Gruppenübersicht nach dem Ablauf der Übungsserie für Sie verfügbar werden.s
+Um Ansicht zu erhalten und Änderungen vorzunehmen, welche der Student selbst nicht warnehmen könnte, ist es Ihnen über diese Auswahlfläche möglich, in einen erweiterten Modus zu wechseln, sodass beispielsweise der Einsendungsverlauf und die Gruppenübersicht nach dem Ablauf der Übungsserie für Sie verfügbar werden.
+
+#### den Studentenmodus verwenden
+
+<iframe width="640" height="360" src="https://www.youtube-nocookie.com/embed/tAaBmvEUJS0?list=PLfnTtQX6vUn2lHxmo2WqLsPaEZihOEczh&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>

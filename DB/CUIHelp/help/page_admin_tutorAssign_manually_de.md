@@ -67,3 +67,7 @@ Sollte es noch unzugeordnete Einsendungen geben, werden diese hier aufgelistet. 
 ![](manE.png)
 
 Wenn eine Korrektur durch einen Kontrolleur erfolgte, welcher nicht mehr zu dieser Veranstaltung gehört, werden dessen Korrekturen hier aufgelistet. Zudem werden automatische Korrekturen ebenfalls hier gelistet. Dem unbekannten Kontrolleur können keine Einsendungen zugeordnet werden.
+
+##### Die Kontrolleurzuweisung verwenden
+
+<iframe width="640" height="360" src="https://www.youtube-nocookie.com/embed/xyeXngESPNI?list=PLfnTtQX6vUn2lHxmo2WqLsPaEZihOEczh&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>

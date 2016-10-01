@@ -34,3 +34,7 @@ Dieser Student erfüllt alle Bedingungen.
 ![](listA.png)
 
 Sie können die dargestellte Übersicht, in eines der angebotenen Formate, überführen lassen. Dabei wirkt sich die ausgewählte Sortierung auf das Ergenis aus.
+
+#### die Veranstaltungszusammenfassung verwenden
+
+<iframe width="640" height="360" src="https://www.youtube-nocookie.com/embed/UbZcK9mXud4?list=PLfnTtQX6vUn2lHxmo2WqLsPaEZihOEczh&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
