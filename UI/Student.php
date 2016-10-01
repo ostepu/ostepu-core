@@ -162,7 +162,10 @@ $student_data['uid'] = $selectedUser;
 $user_course_data = $student_data['user'];
 
 $menu = MakeNavigationElement($user_course_data,
-                              PRIVILEGE_LEVEL::STUDENT);
+                              PRIVILEGE_LEVEL::STUDENT,
+                              false,
+                              false,
+                              (isset($student_data['redirect']) ? $student_data['redirect'] : array()));
 
 $userNavigation = null;
 if (isset($_SESSION['selectedUser'])){
@@ -201,6 +204,7 @@ $t->bind($student_data);
 $t->bind(array('uid'=>$selectedUser, 'privileged'=>$privileged));
 
 $w = new HTMLWrapper($h, $t);
+$w->defineHeaderForm(basename(__FILE__).'?cid='.$cid, false, $h);
 $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $t);
 $w->set_config_file('include/configs/config_student_tutor.json');
 $w->show();

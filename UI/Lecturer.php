@@ -37,7 +37,7 @@ unset($_SESSION['selectedUser']);
 $postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
   ->addSet('action',
            ['set_default'=>'noAction',
-            'satisfy_in_list'=>['noAction', 'ExerciseSheetLecturer'],
+            'satisfy_in_list'=>['noAction', 'ExerciseSheetLecturer', 'navigation'],
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','invalidAction', $langTemplate)]]);
 $postResults = $postValidation->validate();
@@ -125,7 +125,10 @@ if (is_null($user_course_data)) {
 }
 
 $menu = MakeNavigationElement($user_course_data,
-                              PRIVILEGE_LEVEL::LECTURER);
+                              PRIVILEGE_LEVEL::LECTURER,
+                              false,
+                              false,
+                              (isset($lecturer_data['redirect']) ? $lecturer_data['redirect'] : array()));
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
@@ -142,6 +145,7 @@ if (isset($sheetNotifications))
     $t->bind(array('SheetNotificationElements' => $sheetNotifications));
 
 $w = new HTMLWrapper($h, $t);
+$w->defineHeaderForm(basename(__FILE__).'?cid='.$cid, false, $h);
 $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $t);
 $w->set_config_file('include/configs/config_admin_lecturer.json');
 $w->show();

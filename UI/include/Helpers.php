@@ -36,9 +36,17 @@ function parse_size($size) {
   }
 }
 
-function createRedirectButton($redirect,$esid){
+function createRedirectButton($redirect,$esid=null){
     $text = '';
-    $text.= '<button title="'.$redirect['title'].'" name="redirect" value="'.$esid.'_'.$redirect['id'].'" class="text-button bold info-color">';
+    $text.= '<button title="'.$redirect['title'].'" name="redirect" value="'.(isset($esid) ? $esid.'_' : '_').$redirect['id'].'" class="text-button body-option-color">';
+    $text.= $redirect['title'];
+    $text.= '</button>';
+    return $text;
+}
+
+function createRedirectButtonHeader($redirect,$esid=null){
+    $text = '';
+    $text.= '<button style="text-decoration: none;color: #2B648F;" title="'.$redirect['title'].'" name="redirect" value="'.(isset($esid) ? $esid.'_' : '_').$redirect['id'].'" class="text-button-simple">';
     $text.= $redirect['title'];
     $text.= '</button>';
     return $text;
@@ -67,7 +75,10 @@ function executeRedirect($redirect, $uid, $cid, $esid){
         if ($message!=200) return false;
     
         // erzeuge nun den Inhalt
-        $data = array('esid'=>$esid, 'user'=>json_decode($student_data), 'session'=>json_decode($session_data));
+        $data = array('user'=>json_decode($student_data), 'session'=>json_decode($session_data));
+        if (isset($esid) && trim($esid) != ''){
+            $data['esid'] = $esid;
+        }
             
         $URI = $serverURI . "/DB/DBTransaction/transaction/course/".Redirect::getCourseFromRedirectId($redirect->getId());
         $newTransaction = Transaction::createTransaction(null,time()+180, 'redirect', json_encode($data));
@@ -312,7 +323,8 @@ function cleanInput($input)
 function MakeNavigationElement($user,
                                $requiredPrivilege,
                                $switchDisabled = false,
-                               $forIndex = false)
+                               $forIndex = false,
+                               $links = array())
 {
     $courses = isset($user['courses']) ? $user['courses'] : null;
 
@@ -339,7 +351,8 @@ function MakeNavigationElement($user,
                                    'switchDisabled' => $switchDisabled,
                                    'sites' => PRIVILEGE_LEVEL::$SITES,
                                    'isSuperAdmin' => $isSuperAdmin,
-                                   'forIndex' => $forIndex));
+                                   'forIndex' => $forIndex,
+                                   'links'=>$links));
 
     return $navigationElement;
 }

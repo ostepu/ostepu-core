@@ -18,8 +18,10 @@
 
 <?php $langTemplate='Navigation';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 
+<input type="hidden" name="action" value="navigation">
+
 <ul id="navigation" class="navigation">
-<!--<div class="">-->
+<span class="left very-wide">
 <?php if ($isSuperAdmin || $courseStatus > 1) { ?>
 <?php if ($isSuperAdmin){ ?>
     <li>
@@ -54,7 +56,18 @@
         <a href="TutorUpload.php?cid=<?php echo $cid; ?>"><?php echo Language::Get('main','tutorUpload', $langTemplate); ?></a>
     </li>
 <?php } ?>
-<!--</div>-->
+                        
+<?php if (count($links)>0){
+        echo '<span class="new-line left">';
+        $links2 = array_reverse($links); 
+          foreach($links as $link) {
+                if ($link['location'] !== 'course') continue;
+                echo '<li>'.createRedirectButtonHeader($link).'</li>';
+           }
+        echo '</span>';
+    }?>
+    </span>
+
     <span class="right medium">
     <li>
         <a class="log-out" href="AccountSettings.php"><?php echo Language::Get('main','accountSettings', $langTemplate); ?></a>

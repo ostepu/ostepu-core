@@ -85,7 +85,10 @@ $tutor_data['cid'] = $cid;
 $user_course_data = $tutor_data['user'];
 
 $menu = MakeNavigationElement($user_course_data,
-                              PRIVILEGE_LEVEL::TUTOR);
+                              PRIVILEGE_LEVEL::TUTOR,
+                              false,
+                              false,
+                              (isset($tutor_data['redirect']) ? $tutor_data['redirect'] : array()));
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
@@ -100,6 +103,7 @@ $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetTutor.templa
 $t->bind($tutor_data);
 
 $w = new HTMLWrapper($h, $t);
+$w->defineHeaderForm(basename(__FILE__).'?cid='.$cid, false, $h);
 $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $t);
 $w->set_config_file('include/configs/config_student_tutor.json');
 $w->show();
