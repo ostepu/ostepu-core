@@ -36,7 +36,9 @@ if ($message == 200){
 
     echo "NutzerID: ".$content['user']['id']."<br>";
     echo "Session: ".$content['session']['session']."<br>";
-    echo "Übungsserie-ID: ".$content['esid']."<br>";
+    if (isset($content['esid'])){
+        echo "Übungsserie-ID: ".$content['esid']."<br>";
+    }
     echo "Vernstaltung-ID: ".$content['user']['courses'][0]['course']['id']."<br>";
     echo "Nutzername: ".$content['user']['userName']."<br>";
     echo "Vorname: ".$content['user']['firstName']."<br>";
