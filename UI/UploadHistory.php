@@ -78,6 +78,7 @@ $getValidation->resetNotifications()->resetErrors();
 
 if (isset($postResults['sheetID'])){
     $sid = $postResults['sheetID'];
+    $_POST['sheetID'] = $sid;
 }
 
 $selectedUser = $uid;
@@ -129,9 +130,18 @@ if (Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUse
 if (isset($sid)){
     $sheetID = $sid;
     $postResults['sheetID'] = $sid;
+    $_POST['sheetID'] = $sid;
 }
-if (isset($getResults['action']) && !isset($postResults['action'])){
+
+if (isset($getResults['action']) && (!isset($postResults['action']) || $postResults['action'] == 'noAction')){
     $postResults['action'] = $getResults['action'];
+    if (isset($sid)){
+        $_POST['sheetID'] = $sid;
+    }
+}
+
+if (isset($postResults['action'])){
+    $_POST['action'] = $postResults['action'];
 }
 
 // updates the selectedSubmissions for the group
@@ -195,6 +205,7 @@ if (isset($user_course_data['courses'][0]['status'])){
 if ($postValidation->isValid()){
     if ($courseStatus==0){
         $postResults['userID'] = $selectedUser;
+        $_POST['userID'] = null; // damit ein Student keinen anderen aufrufen kann
     }
     $uploadUserID = $postResults['userID'];
 }
@@ -253,6 +264,7 @@ $hasStarted=null;
 
 if ($courseStatus<=0 /* PRIVILEGE_LEVEL::STUDENT */){
     // extract the correct sheet
+    
     $sheet=null;
     foreach ($uploadHistoryOptions_data['sheets'] as $key => $value){
         if ($value['id'] == $sheetID){
@@ -273,8 +285,9 @@ if ($courseStatus<=0 /* PRIVILEGE_LEVEL::STUDENT */){
             set_error(Language::Get('main','noStartedExercisePeriod', $langTemplate,array('startDate'=>date('d.m.Y  -  H:i', $sheet['startDate']))));
         }
 
-    } else
+    } else {
         set_error(Language::Get('main','noExercisePeriod', $langTemplate));
+    }
 }
 
 // construct a new header
