@@ -188,8 +188,9 @@ class GitAktualisierung
                         foreach($output as $out){
                             $period = substr(strrchr ( $out , ',' ),1);
                             $period = trim($period, "'");
-                            $description = substr( $out, 0,strlen($out) - strlen($period) - 2 );
+                            $description = substr( $out, 0,strlen($out) - strlen($period) - 1 );
                             $description = trim($description, "'");
+                            $description = trim($description, ",");
                             $element = array('desc'=>$description, 'period'=>$period);
                             $result['commits'][] = $element;
                         }
