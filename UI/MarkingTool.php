@@ -233,7 +233,7 @@ $markingTool_data = json_decode($markingTool_data, true);
 if (isset($_GET['sortUsers'])) $_POST['sortUsers'] = cleanInput($_GET['sortUsers']);
 $dataList = array();
 foreach ($markingTool_data['groups'] as $key => $group)
-    $dataList[] = array('pos' => $key,'userName'=>$group['leader']['userName'],'lastName'=>$group['leader']['lastName'],'firstName'=>$group['leader']['firstName']);
+    $dataList[] = array('pos' => $key,'userName'=>(isset($group['leader']['userName']) ? $group['leader']['userName'] : '???'),'lastName'=>(isset($group['leader']['lastName']) ? $group['leader']['lastName'] : '???'),'firstName'=>(isset($group['leader']['firstName']) ? $group['leader']['firstName'] : '???'));
 $sortTypes = array('lastName','firstName','userName');
 if (!isset($_POST['sortUsers'])) $_POST['sortUsers'] = null;
 $_POST['sortUsers'] = (in_array($_POST['sortUsers'],$sortTypes) ? $_POST['sortUsers'] : $sortTypes[0]);

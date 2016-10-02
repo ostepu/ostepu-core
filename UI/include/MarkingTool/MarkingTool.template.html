@@ -60,7 +60,7 @@ if (isset($GroupNotificationElements)) {
     <div class="content-header">
         <?php echo MakeInfoButton('page/admin/markingTool','work.md'); ?>
         <div class="content-title left uppercase">
-            <?php print $group['leader']['firstName'] . " " . $group['leader']['lastName'] . (isset($group['leader']['userName']) ? " ({$group['leader']['userName']})" : ''); ?>
+            <?php print (isset($group['leader']['firstName']) ? $group['leader']['firstName'] : '???') . " " . (isset($group['leader']['lastName']) ? $group['leader']['lastName'] : '???') . (isset($group['leader']['userName']) ? " ({$group['leader']['userName']})" : ''); ?>
         </div>
         <div class="info-color bold right">
             <button class="text-button info-color bold right" 

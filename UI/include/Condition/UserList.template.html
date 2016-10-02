@@ -109,20 +109,17 @@
 
                         // firstName
                         print "<td>";
-                        if (isset($user['firstName']))
-                            print $user['firstName'];
+                        print (isset($user['firstName']) ? $user['firstName'] : '???');
                         print "</td>";
 
                         // lastName
                         print "<td>";
-                        if (isset($user['lastName']))
-                            print $user['lastName'];
+                        print (isset($user['lastName']) ? $user['lastName'] : '???');
                         print "</td>";
                         
                         // userId
                         print "<td>";
-                        if (isset($user['userName']))
-                            print $user['userName'];
+                        print (isset($user['userName']) ? $user['userName'] : '???');
                         print "</td>";
                         
                         // studentNumber

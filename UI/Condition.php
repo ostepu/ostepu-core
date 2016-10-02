@@ -151,7 +151,7 @@ $menu = MakeNavigationElement($user_course_data,
 
 if (isset($condition_data['users'])){
     function compare_lastName($a, $b) {
-        return strnatcmp(strtolower($a['lastName']), strtolower($b['lastName']));
+        return strnatcmp(strtolower((isset($a['lastName']) ? $a['lastName'] : '???')), strtolower((isset($b['lastName']) ? $b['lastName'] : '???')));
     }
     usort($condition_data['users'], 'compare_lastName');
 
@@ -241,22 +241,13 @@ if (isset($getResults['downloadConditionCsv']) || isset($getResults['downloadCon
         $row = array();
 
         // firstName
-        if (isset($user['firstName'])){
-            $row[] = $user['firstName'];
-        } else
-            $row[] = '';
+        $row[] = (isset($user['firstName']) ? $user['firstName'] : '???');
 
         // lastName
-        if (isset($user['lastName'])){
-            $row[] = $user['lastName'];
-        } else
-            $row[] = '';
+        $row[] = (isset($user['lastName']) ? $user['lastName'] : '???');
 
         // userId
-        if (isset($user['userName'])){
-            $row[] = $user['userName'];
-        } else
-            $row[] = '';
+        $row[] = (isset($user['userName']) ? $user['userName'] : '???');
 
         // studentNumber
         /*if (isset($user['studentNumber'])){
