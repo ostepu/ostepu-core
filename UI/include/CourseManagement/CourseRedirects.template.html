@@ -39,7 +39,7 @@ if (isset($CourseRedirectsNotifications)) {
                 <?php echo Language::Get('main','messages', $langTemplate); ?>:
             </label>
             <a style="padding-left:0px" class="text-button info-color addRedirectElement" href="javascript:void(0);"><?php echo Language::Get('main','addRedirect', $langTemplate); ?></a>
-            <div class="left checkbox-container new-line very-wide" style="height:350px">
+            <div class="left checkbox-container new-line very-wide" style="height:250px">
                 <?php
                 if (isset($redirect) && is_array($redirect)){
                     $redirect = array_reverse($redirect);
