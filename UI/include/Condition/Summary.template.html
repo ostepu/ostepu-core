@@ -44,21 +44,21 @@
                         unset($tmp);
                     }
             ?>
-            <div style='display:block;margin-bottom: 0px'>
+            <div style='display:inline-block;margin-bottom: 0px'>
                 <label class="form-field label bold info-color content-title"><?php echo Language::Get('main','common', $langTemplate); ?></label>
-                <div>
+                <div class="short">
                     <label class="form-field label bold" for="" >
                         <?php echo Language::Get('main','students', $langTemplate); ?>:
                     </label>
                     <?php echo count($users); ?>
                 </div>
-                <div>
+                <div class="short">
                     <label class="form-field label bold" for="" >
                         <?php echo Language::Get('main','approvedUsers', $langTemplate); ?>:
                     </label>
                     <?php echo $approvedUsers."/".count($users)." (".round($approvedUsers/count($users)*100,2).Language::Get('main','percent', $langTemplate).")"; ?>
                 </div>
-                <div>
+                <div class="short">
                     <label class="form-field label bold" for="" >
                         <?php echo Language::Get('main','notApprovedUsers', $langTemplate); ?>:
                     </label>
