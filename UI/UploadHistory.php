@@ -172,7 +172,7 @@ if ($postValidation->isValid()){
 }
 
 foreach ($uploadHistoryOptions_data['users'] as $key => $user)
-    $dataList[] = array('pos' => $key,'userName'=>$user['userName'],'lastName'=>$user['lastName'],'firstName'=>$user['firstName']);
+    $dataList[] = array('pos' => $key,'userName'=>(isset($user['userName'])?$user['userName']:'???'),'lastName'=>(isset($user['lastName'])?$user['lastName']:'???'),'firstName'=>(isset($user['firstName'])?$user['firstName']:'???'));
 $sortTypes = array('lastName','firstName','userName');
 $dataList=LArraySorter::orderby($dataList, $sortUsersValue, SORT_ASC, $sortTypes[(array_search($sortUsersValue,$sortTypes)+1)%count($sortTypes)], SORT_ASC);
 $tempData = array();
