@@ -84,15 +84,17 @@ $data = array('tutors' => array(),
     }
 }
 
-$data = json_encode($data);
+if ($postAssignAutomaticallyValidation->isValid()) {
+    $data = json_encode($data);
 
-$URI = $logicURI . "/tutor/auto/group/course/{$cid}/exercisesheet/{$sid}";
-http_post_data($URI, $data, true, $message);
+    $URI = $logicURI . "/tutor/auto/group/course/{$cid}/exercisesheet/{$sid}";
+    http_post_data($URI, $data, true, $message);
 
-if ($message === 201 || $message === 200) {
-    $msg = Language::Get('main','successAssignment', $langTemplate);
-    $assignAutomaticallyNotifications[] = MakeNotification('success', $msg);
-} else {
-    $msg = Language::Get('main','errorAssignment', $langTemplate);
-    $assignAutomaticallyNotifications[] = MakeNotification('error', $msg);
+    if ($message === 201 || $message === 200) {
+        $msg = Language::Get('main','successAssignment', $langTemplate);
+        $assignAutomaticallyNotifications[] = MakeNotification('success', $msg);
+    } else {
+        $msg = Language::Get('main','errorAssignment', $langTemplate);
+        $assignAutomaticallyNotifications[] = MakeNotification('error', $msg);
+    }
 }

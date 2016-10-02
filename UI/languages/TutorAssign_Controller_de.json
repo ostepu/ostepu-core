@@ -13,6 +13,16 @@
         "successMake": "Die Einsendungen wurde erfolgreich erstellt.",
         "invalidAction": "Die Aktion konnte nicht ausgeführt werden.",
         "invalidSortUsers": "Unbekanntes Sortierkriterium",
-        "invalidActionSortUser": "Die Aktion konnte nicht ausgeführt werden."
+        "invalidActionSortUser": "Die Aktion konnte nicht ausgeführt werden.",
+        "noAssignment": "Keine Einsendungen gewählt.",
+        "invalidAssignment": "Ungütige Einsendungswahl.",
+        "errorValidateAssignAllProposals": "Aufgabe konnte nicht ermittelt werden.",
+        "errorValidateAssignManually": "Aufgabe konnte nicht bestimmt werden.",
+        "invalidExerciseId": "Ungültige Aufgabennummer.",
+        "invalidLeader": "Ungültige Nutzerkennung.",
+        "errorValidateSelection": "Eingabe konnte nicht validiert werden.",
+        "invalidCourseId": "Ungültige Veranstaltung.",
+        "noPossibleAssignments": "Keine Zuweisungen möglich!",
+        "noTutorSelected": "Es wurden keine Tutoren ausgewählt."
     }
 }

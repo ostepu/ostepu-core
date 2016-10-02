@@ -49,7 +49,7 @@ if (isset($AssignManuallyNotificationElements)) {
                             }
                         ?>
                 </select>
-                <button name="actionSortUsers" value="" class="text-button-simple body-option-color">>></button>
+                <button name="actionSortUsers" value="sort" class="text-button-simple body-option-color">>></button>
             </div>
         </div>
         <div>    
@@ -77,10 +77,10 @@ if (isset($AssignManuallyNotificationElements)) {
                                 if (!isset($tutorAssignment['tutor']['id'])){
                                     echo Language::Get('main','unknownTutor', $langTemplate);
                                 } else {
-                                    print isset($tutorAssignment['tutor']['firstName']) ? $tutorAssignment['tutor']['firstName'].' ' : '';
-                                    print isset($tutorAssignment['tutor']['lastName']) ? $tutorAssignment['tutor']['lastName'].' ': '';
+                                    print isset($tutorAssignment['tutor']['firstName']) ? $tutorAssignment['tutor']['firstName'].' ' : '???';
+                                    print isset($tutorAssignment['tutor']['lastName']) ? $tutorAssignment['tutor']['lastName'].' ': '???';
                                     $status = isset($tutorAssignment['tutor']['courses'][0]['status']) ? $statusList[$tutorAssignment['tutor']['courses'][0]['status']] : '';
-                                    echo isset($tutorAssignment['tutor']['userName']) ? '('.$tutorAssignment['tutor']['userName'].','.$status.')' : '';
+                                    echo isset($tutorAssignment['tutor']['userName']) ? '('.$tutorAssignment['tutor']['userName'].','.$status.')' : '???';
                                 }
                                 print " (" . count($tutorAssignment['submissions']) . ")";
                             } else {
@@ -123,10 +123,10 @@ if (isset($AssignManuallyNotificationElements)) {
                     if ($tutorId == 'u'){
                         echo Language::Get('main','unknownTutor', $langTemplate);
                     } else {
-                        print isset($tutorAssignment['tutor']['firstName']) ? $tutorAssignment['tutor']['firstName'].' ' : '';
-                        print isset($tutorAssignment['tutor']['lastName']) ? $tutorAssignment['tutor']['lastName'].' ': '';
+                        print isset($tutorAssignment['tutor']['firstName']) ? $tutorAssignment['tutor']['firstName'].' ' : '???';
+                        print isset($tutorAssignment['tutor']['lastName']) ? $tutorAssignment['tutor']['lastName'].' ': '???';
                         $status = isset($tutorAssignment['tutor']['courses'][0]['status']) ? $statusList[$tutorAssignment['tutor']['courses'][0]['status']] : '';
-                        echo isset($tutorAssignment['tutor']['userName']) ? '('.$tutorAssignment['tutor']['userName'].','.$status.')' : '';
+                        echo isset($tutorAssignment['tutor']['userName']) ? '('.$tutorAssignment['tutor']['userName'].','.$status.')' : '???';
                     }
                     print " (" . count($tutorAssignment['submissions']) . ")";
                 } else {
@@ -164,8 +164,8 @@ if (isset($AssignManuallyNotificationElements)) {
                             print '" value="';
                             print $submission['id'] . '"/>'; 
                             print '<span class="proposal">';
-                            $name = (isset($submission['user']['firstName']) && isset($submission['user']['lastName'])) ? $submission['user']['firstName'].' '.$submission['user']['lastName'].',': '';
-                            print (isset($namesOfExercises[$submission['exerciseId']]) ? $namesOfExercises[$submission['exerciseId']] : '?').(isset($submission['user']['userName']) ? ' ('.$name.$submission['user']['userName'].')' : ' ???');
+                            $name = (isset($submission['user']['firstName']) && isset($submission['user']['lastName'])) ? $submission['user']['firstName'].' '.$submission['user']['lastName'].',': '???, ???, ';
+                            print (isset($namesOfExercises[$submission['exerciseId']]) ? $namesOfExercises[$submission['exerciseId']] : '?').(isset($submission['user']['userName']) ? ' ('.$name.$submission['user']['userName'].')' : '('.$name.' ???)');
                             print '</span><br />';
                         }
                     }
@@ -179,8 +179,8 @@ if (isset($AssignManuallyNotificationElements)) {
                         print '" value="';
                         print $submission['id'] . '"/>';
                         print '<span>';
-                        $name = (isset($submission['user']['firstName']) && isset($submission['user']['lastName'])) ? $submission['user']['firstName'].' '.$submission['user']['lastName'].',': '';
-                        print (isset($namesOfExercises[$submission['exerciseId']]) ? $namesOfExercises[$submission['exerciseId']] : '?').(isset($submission['user']['userName']) ? ' ('.$name.$submission['user']['userName'].')' : ' ???');
+                        $name = (isset($submission['user']['firstName']) && isset($submission['user']['lastName'])) ? $submission['user']['firstName'].' '.$submission['user']['lastName'].',': '???, ???, ';
+                        print (isset($namesOfExercises[$submission['exerciseId']]) ? $namesOfExercises[$submission['exerciseId']] : '?').(isset($submission['user']['userName']) ? ' ('.$name.$submission['user']['userName'].')' : '('.$name.' ???)');
                         print '</span><br />';
                         $count--;
                     }
