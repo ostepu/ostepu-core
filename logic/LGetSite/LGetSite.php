@@ -1695,6 +1695,12 @@ class LGetSite
                     $newSheets[] = $sheet;
                 }
             }
+            
+            if (!$found){
+                // wenn die ID nicht gefunden wird, dann nutze alle Uebungsserien
+                $newSheets = $sheets;
+            }
+            
             $sheets = $newSheets;
             unset($newSheets);
         }
