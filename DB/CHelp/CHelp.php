@@ -125,6 +125,7 @@ class CHelp
             
             // die Hilfedatei wird lokal gespeichert
             @file_put_contents($cachePath,$input);
+            chmod($cachePath, 0774);
             return Model::isOk($input);
         };
         
