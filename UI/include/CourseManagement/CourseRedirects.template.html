@@ -22,6 +22,21 @@ if (isset($CourseRedirectsNotifications)) {
 }
 ?>
 
+<?php
+    // Quelle: http://php.net/manual/de/function.readdir.php
+    // ermittle die verfügbaren Templates
+    $templates = array('none' => Language::Get('main','templateNone', $langTemplate));
+    if ($handle = @opendir(dirname(__FILE__). DIRECTORY_SEPARATOR . 'CourseRedirect' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR)) {
+        /* Das ist der korrekte Weg, ein Verzeichnis zu durchlaufen. */
+        while (false !== ($entry = readdir($handle))) {
+            if (trim($entry,'.') == '') continue;
+            $path_parts = pathinfo($entry);
+            $templates[$path_parts['filename']] = $path_parts['filename'];
+        }
+        closedir($handle);
+    }
+?>
+
 <input type="hidden" name="action" value="CourseRedirect">
 <div class="content-element">
     <div class="content-header">
@@ -38,7 +53,20 @@ if (isset($CourseRedirectsNotifications)) {
             <label class="form-field left label bold new-line" for="defaultPlugins">
                 <?php echo Language::Get('main','messages', $langTemplate); ?>:
             </label>
+
+            <label class="left label bold" for="defaultPlugins">
+                <?php echo Language::Get('main','template', $langTemplate); ?>:
+            </label>
+            <select class="form-field text-input short RedirectTemplates">
+                <?php                    
+                    foreach ($templates as $tempName => $template){
+                        echo     '<option value="' . $tempName  . '">'.$template.'</option>';
+                    }
+                ?>
+            </select>
             <a style="padding-left:0px" class="text-button info-color addRedirectElement" href="javascript:void(0);"><?php echo Language::Get('main','addRedirect', $langTemplate); ?></a>
+
+            
             <div class="left checkbox-container new-line very-wide" style="height:250px">
                 <?php
                 if (isset($redirect) && is_array($redirect)){

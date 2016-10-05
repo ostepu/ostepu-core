@@ -4,6 +4,8 @@
         "execute": "speichern",
         "description": "Sie können hier Weiterleitungen für Ihre Veranstaltung erstellen, entfernen und bearbeiten.",
         "addRedirect": "Hinzufügen",
-        "messages": "Weiterleitungen"
+        "messages": "Weiterleitungen",
+        "templateNone": "Leer",
+        "template": "Vorlage"
     }
 }

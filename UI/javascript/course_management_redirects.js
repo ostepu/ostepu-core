@@ -25,9 +25,10 @@ function removeRedirectElement(event)
 function addRedirectElement(event)
 {
     var trig = $(this);
-
+    var templateElem = trig.parent().find('.RedirectTemplates').first().val();
+    
     // insert subtask
-    $.get("include/CourseManagement/CourseRedirect/Redirect.template.php", function (data) {
+    $.get("include/CourseManagement/CourseRedirect/Redirect.template.php?template="+templateElem, function (data) {
         trig.parent().find('.endRedirect, .RedirectElement').first().before(data);
         var elem = trig.parent().find('.RedirectElement').first();
         elem.toggle(false);

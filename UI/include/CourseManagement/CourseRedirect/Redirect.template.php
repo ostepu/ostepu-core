@@ -7,6 +7,23 @@
 <?php
  header('Content-Type: text/html; charset=utf-8');
  ?>
+ 
+<?php
+ // soll ein Template verwendet werden?
+ $template = 'none';
+ if (isset($_GET['template'])){
+    $tmp = basename($_GET['template']);
+    if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $tmp . '.json')){
+        $template = $tmp;
+    }
+ }
+
+ if ($template !== 'none' && isset($template)){
+    $content = json_decode(file_get_contents(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template . '.json'), true);
+    extract($content, EXTR_SKIP);
+ }
+?>
+ 
 <div class="RedirectElement left new-line">
     <a style="padding-left:0px" class="text-button error-color right removeRedirectElement" href="javascript:void(0);">löschen</a>
     <input type="hidden" class="RedirectName" name="data[0][id]" value="<?php echo (isset($id) ? $id : null); ?>">
