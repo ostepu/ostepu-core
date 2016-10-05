@@ -96,7 +96,11 @@ class GitAktualisierung
         if ($showCommits && isset($collected['commits']) && $collected['commits'] !== null){
             for($i=0;$i<$showCommitsMax && $i<count($collected['commits']);$i++){
                 if (!$console){
-                    $text .= "<tr><td class='v' colspan='2'>{$collected['commits'][$i]['desc']}</td><td class='e'>{$collected['commits'][$i]['period']}</td></tr>";
+                    if (isset($collected['commits'][$i]['period'])){
+                        $text .= "<tr><td class='v' colspan='2'>{$collected['commits'][$i]['desc']}</td><td class='e'>{$collected['commits'][$i]['period']}</td></tr>"; 
+                    } else {
+                        $text .= "<tr><td class='v' colspan='3'>{$collected['commits'][$i]['desc']}</td></tr>";                        
+                    }
                 } else  {
 
                 }
@@ -142,7 +146,7 @@ class GitAktualisierung
         $pathOld = getcwd();
         $output=null;
         
-        if (!file_exists($path . DIRECTORY_SEPARATOR)){
+        if (!file_exists($path . DIRECTORY_SEPARATOR . '.git')){
             $fail = true;
             $error = Installation::Get('gitUpdate','errorDirMissing',self::$langTemplate, array('path'=>$path));
         } else {
