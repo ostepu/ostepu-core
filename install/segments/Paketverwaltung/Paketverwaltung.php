@@ -47,6 +47,13 @@ class Paketverwaltung
     {
         return $mainPath = $data['PL']['localPath'] . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR . str_replace(array("\\","/"), array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR), self::$packagePath);
     }
+    
+    public static function execWithUmask($command, &$output, &$return)
+    {
+        $old = umask(003); // 664
+        exec($command, $output, $return);
+        umask($old);
+    }
 
     public static function getDefaults($data)
     {
@@ -480,7 +487,7 @@ class Paketverwaltung
                         Installation::log(array('text'=>Installation::Get('packages','execClone',self::$langTemplate,array('cmd'=>'(git clone --single-branch --branch '.$branch.' '.$repo.' .) 2>&1'))));
                         if (@chdir($location)){
                             // klont das Repo
-                            exec('(git clone --single-branch --branch '.$branch.' '.$repo.' .) 2>&1', $output, $return);
+                            self::execWithUmask('(git clone --single-branch --branch '.$branch.' '.$repo.' .) 2>&1', $output, $return);
                             @chdir($pathOld);
                         } else {
                             $return = 1;
@@ -496,8 +503,8 @@ class Paketverwaltung
                         $pathOld = getcwd();
                         Installation::log(array('text'=>Installation::Get('packages','execRemote',self::$langTemplate,array('cmd'=>'(git remote set-url origin '.$repo.' ) 2>&1'))));
                         if (@chdir($location)){
-                            // klont das Repo
-                            exec('git remote set-url origin '.$repo.' ) 2>&1', $output, $return);
+                            // setzt die URL des Repo korrekt
+                            exec('(git remote set-url origin '.$repo.' ) 2>&1', $output, $return);
                             @chdir($pathOld);
                         } else {
                             $return = 1;
@@ -511,9 +518,12 @@ class Paketverwaltung
 
                     $pathOld = getcwd();
                     if (@chdir($location)){
+                        exec('(git config --local core.fileMode false) 2>&1', $output, $return); // wird das ausreichend ueberprueft?
+                            
                         // aktualisiert das Repo
-                        exec('(git fetch) 2>&1', $output, $return);
-                        exec('(git pull) 2>&1', $output2, $return2);
+                        self::execWithUmask('(git reset --hard) 2>&1', $output, $return); // wird das ausreichend ueberprueft?
+                        self::execWithUmask('(git fetch) 2>&1', $output, $return);
+                        self::execWithUmask('(git pull) 2>&1', $output2, $return2);
                         @chdir($pathOld);
                     } else {
                         $return = 1;

@@ -148,6 +148,7 @@ class GitAktualisierung
         } else {
             Installation::log(array('text'=>Installation::Get('gitUpdate','execGitFetch',self::$langTemplate)));
             if (@chdir($path . DIRECTORY_SEPARATOR)){
+                exec('(git config --local core.fileMode false) 2>&1', $output, $return); // wird das ausreichend ueberprueft?
                 exec('(git fetch -p) 2>&1', $output, $return);
                 @chdir($pathOld);
             } else {
@@ -231,7 +232,7 @@ class GitAktualisierung
 
         Installation::log(array('text'=>Installation::Get('gitUpdate','execGitReset',self::$langTemplate)));
         if (@chdir($data['PL']['localPath'] . DIRECTORY_SEPARATOR)){
-            exec('(git reset --hard) 2>&1', $output, $return);
+            Paketverwaltung::execWithUmask('(git reset --hard) 2>&1', $output, $return);
             @chdir($pathOld);
         } else {
             $return = 1;
@@ -244,7 +245,7 @@ class GitAktualisierung
 
             Installation::log(array('text'=>Installation::Get('gitUpdate','execGitPull',self::$langTemplate)));
             if (@chdir($data['PL']['localPath'] . DIRECTORY_SEPARATOR)){
-                exec('(git pull) 2>&1', $output, $return);
+                Paketverwaltung::execWithUmask('(git pull) 2>&1', $output, $return);
                 @chdir($pathOld);
             } else {
                 $return = 1;
