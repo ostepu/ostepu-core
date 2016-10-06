@@ -164,6 +164,8 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                 $notifications[] = MakeNotification('error',
                                                     Language::Get('main','errorCreateCourse', $langTemplate));
             }
+        } else {
+            $notifications = array_merge($notifications, $postCreateCourseValidation->getPrintableNotifications('MakeNotification'));
         }
     }
 
@@ -221,6 +223,8 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                     $notifications[] = MakeNotification('success', Language::Get('main','successSetAdmin', $langTemplate));
                 }
             }
+        } else {
+            $notifications = array_merge($notifications, $postSetAdminValidation->getPrintableNotifications('MakeNotification'));
         }
     }
 
@@ -303,7 +307,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                 $notifications[] = MakeNotification('error', Language::Get('main','errorCreateUser', $langTemplate));
             }
         } else {
-            $notifications = $notifications + $postValidation->notifications;
+            $notifications = array_merge($notifications, $postCreateUserValidation->getPrintableNotifications('MakeNotification'));
         }
     }
 
@@ -345,6 +349,8 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                     $notifications[] = MakeNotification('error', Language::Get('main','errorDeleteUser', $langTemplate));
                 }
             }
+        } else {
+            $notifications = array_merge($notifications, $postDeleteUserValidation->getPrintableNotifications('MakeNotification'));
         }
     }
 }
