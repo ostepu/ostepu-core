@@ -523,6 +523,10 @@ $t->bind(array('privileged' => $privileged));
 
 $w = new HTMLWrapper($h, $t);
 $w->set_config_file('include/configs/config_upload_exercise.json');
+if (isset($maintenanceMode) && $maintenanceMode === '1'){
+    $w->add_config_file('include/configs/config_maintenanceMode.json');
+}
+
 $w->show();
 
 ob_end_flush();

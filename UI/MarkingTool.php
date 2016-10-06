@@ -392,6 +392,10 @@ $searchSettings->bind(array('allOutputs'=>$allOutputs));
 
 $w->defineForm(basename(__FILE__).'?cid='.$cid.'&sid='.$sid, false, $searchSettings);
 $w->set_config_file('include/configs/config_marking_tool.json');
+if (isset($maintenanceMode) && $maintenanceMode === '1'){
+    $w->add_config_file('include/configs/config_maintenanceMode.json');
+}
+
 $w->show();
 
 ob_end_flush();

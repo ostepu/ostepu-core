@@ -871,6 +871,10 @@ if (isset($sheet_data))
 $w = new HTMLWrapper($h, $sheetSettings, $createExercise);
 $w->defineForm(basename(__FILE__).'?cid='.$cid.(isset($sid) ? "&sid={$sid}" : ''), true, $sheetSettings, $createExercise);
 $w->set_config_file('include/configs/config_createSheet.json');
+if (isset($maintenanceMode) && $maintenanceMode === '1'){
+    $w->add_config_file('include/configs/config_maintenanceMode.json');
+}
+
 $w->show();
 
 ob_end_flush();

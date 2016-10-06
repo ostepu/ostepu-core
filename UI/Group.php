@@ -663,6 +663,10 @@ if (isset($invitationsFromGroup))
 if (isset($invitationsToGroup))
     $w->defineForm(basename(__FILE__).'?cid='.$cid.'&sid='.$sid, false, $invitationsToGroup);
 $w->set_config_file('include/configs/config_group.json');
+if (isset($maintenanceMode) && $maintenanceMode === '1'){
+    $w->add_config_file('include/configs/config_maintenanceMode.json');
+}
+
 $w->show();
 
 ob_end_flush();

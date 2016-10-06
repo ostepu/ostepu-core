@@ -376,6 +376,10 @@ $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $userList);
 $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $setCondition);
 $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $summary);
 $w->set_config_file('include/configs/config_condition.json');
+if (isset($maintenanceMode) && $maintenanceMode === '1'){
+    $w->add_config_file('include/configs/config_maintenanceMode.json');
+}
+
 $w->show();
 
 ob_end_flush();

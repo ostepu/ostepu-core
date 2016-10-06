@@ -222,6 +222,10 @@ $w->defineForm(basename(__FILE__).'?cid='.$cid.'&sid='.$sid, false, $assignManua
 $w->defineForm(basename(__FILE__).'?cid='.$cid.'&sid='.$sid, false, $assignMake);
 $w->defineForm(basename(__FILE__).'?cid='.$cid.'&sid='.$sid, false, $assignRemove);
 $w->set_config_file('include/configs/config_tutor_assign.json');
+if (isset($maintenanceMode) && $maintenanceMode === '1'){
+    $w->add_config_file('include/configs/config_maintenanceMode.json');
+}
+
 //$w->set_config_file('include/configs/config_default.json');
 $w->show();
 

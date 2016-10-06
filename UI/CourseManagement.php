@@ -1057,6 +1057,10 @@ $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $addUser);
 $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $editExternalId);
 $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $addExternalId);
 $w->set_config_file('include/configs/config_course_management.json');
+if (isset($maintenanceMode) && $maintenanceMode === '1'){
+    $w->add_config_file('include/configs/config_maintenanceMode.json');
+}
+
 $w->show();
 
 ob_end_flush();
