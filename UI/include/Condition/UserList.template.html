@@ -19,8 +19,25 @@
 <?php $langTemplate='Condition_UserList';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 
 <?php
+if (isset($UserListNotificationElements)) {
+    foreach ($UserListNotificationElements as $notificationElement) {
+        print $notificationElement;
+    }
+}
+?>
+
+<?php
     $fileName = "Condition.php";
 ?>
+
+<?php if (isset($sortby)){ ?>
+<input type="hidden" name="sortby" value="<?php echo $sortby; ?>">
+<?php } ?>
+
+<?php if (isset($sortId)){ ?>
+<input type="hidden" name="sortId" value="<?php echo $sortId; ?>">
+<?php } ?>
+
 <div class="content-element">
     <div class="content-header">
         <?php echo MakeInfoButton('page/admin/condition','list.md'); ?>
@@ -43,62 +60,39 @@
             <table>
                 <tr class="bold">
                     <th>
-                        <?php
-                            print '<a class="body-option-color plain" href="';
-                            print $fileName;
-                            print '?cid=';
-                            print $user['courses'][0]['course']['id'];
-                            print '&sortby=firstName">'.Language::Get('main','firstName', $langTemplate).'</a>';
-                        ?>
+                        <button name="sortby" value="firstName" class="text-button-simple body-option-color bold">
+                            <?php echo Language::Get('main','firstName', $langTemplate); ?>
+                        </button>
                     </th>
                     <th>
-                        <?php
-                            print '<a class="body-option-color plain" href="';
-                            print $fileName;
-                            print '?cid=';
-                            print $user['courses'][0]['course']['id'];
-                            print '&sortby=lastName">'.Language::Get('main','lastName', $langTemplate).'</a>';
-                        ?>
+                        <button name="sortby" value="lastName" class="text-button-simple body-option-color bold">
+                            <?php echo Language::Get('main','lastName', $langTemplate); ?>
+                        </button>
                     </th>
                     <th>
-                        <?php
-                            print '<a class="body-option-color plain" href="';
-                            print $fileName;
-                            print '?cid=';
-                            print $user['courses'][0]['course']['id'];
-                            print '&sortby=userName">'.Language::Get('main','userName', $langTemplate).'</a>';
-                        ?>
+                        <button name="sortby" value="userName" class="text-button-simple body-option-color bold">
+                            <?php echo Language::Get('main','userName', $langTemplate); ?>
+                        </button>
                     </th>
                     <!--<th>
-                        <?php
-                            print '<a class="body-option-color plain" href="';
-                            print $fileName;
-                            print '?cid=';
-                            print $user['courses'][0]['course']['id'];
-                            print '&sortby=studentNumber">'.Language::Get('main','studentNumber', $langTemplate).'</a>';
-                        ?>
+                        <button name="sortby" value="studentNumber" class="text-button-simple body-option-color bold">
+                            <?php echo Language::Get('main','studentNumber', $langTemplate); ?>
+                        </button>
                     </th>-->
                     <th>
-                        <?php
-                            print '<a class="body-option-color plain" href="';
-                            print $fileName;
-                            print '?cid=';
-                            print $user['courses'][0]['course']['id'];
-                            print '&sortby=isApproved">'.Language::Get('main','approval', $langTemplate).'</a>';
-                        ?>
+                        <button name="sortby" value="isApproved" class="text-button-simple body-option-color bold">
+                            <?php echo Language::Get('main','approval', $langTemplate); ?>
+                        </button>
                     </th>
                     <?php
                         // prints all exercise types as header
-                        foreach ($minimumPercentages as $percentage) {
-                            print "<th colspan=\"2\">";
-                            print '<a class="body-option-color plain" href="';
-                            print $fileName;
-                            print '?cid=';
-                            print $user['courses'][0]['course']['id'];
-                            print '&sortby=type&sortId='.$percentage['exerciseTypeId'].'">';
-                            print $percentage['exerciseType'] . " (".Language::Get('main','maxPoints', $langTemplate)." " . $percentage['maxPoints'] . "P)";
-                            print '</a>';
-                            print "</th>";
+                        foreach ($minimumPercentages as $percentage) {?>
+                            <th colspan="2">
+                                <button name="sortby" value="type|<?php echo $percentage['exerciseTypeId']; ?>" class="text-button-simple body-option-color bold">
+                                    <?php echo $percentage['exerciseType'] . " (".Language::Get('main','maxPoints', $langTemplate)." " . $percentage['maxPoints'] . "P)"; ?>
+                                </button>
+                            </th>
+                            <?php
                         }
                     ?>
                 </tr>

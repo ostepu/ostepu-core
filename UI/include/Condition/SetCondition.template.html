@@ -18,6 +18,22 @@
 
 <?php $langTemplate='Condition_SetCondition';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 
+<?php
+if (isset($SetConditionNotificationElements)) {
+    foreach ($SetConditionNotificationElements as $notificationElement) {
+        print $notificationElement;
+    }
+}
+?>
+
+<?php if (isset($sortby)){ ?>
+<input type="hidden" name="sortby" value="<?php echo $sortby; ?>">
+<?php } ?>
+
+<?php if (isset($sortId)){ ?>
+<input type="hidden" name="sortId" value="<?php echo $sortId; ?>">
+<?php } ?>
+
 <input type="hidden" name="action" value="SetCondition">
 <div class="content-element">
     <div class="content-header">

@@ -45,12 +45,28 @@ $getValidation = Validation::open($_GET, array('preRules'=>array('sanitize')))
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','errorSortIdValidation', $langTemplate)]]);
 
+// TODO: ist etwas unsauber und muss daher noch korrekt validiert werden
+if (isset($_POST['sortby'])){
+    $tmp = explode('|',$_POST['sortby']);
+    $_POST['sortby'] = $tmp[0];
+    if (count($tmp)>=2) $_POST['sortId'] = $tmp[1];
+}
+
 $postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
   ->addSet('action',
            ['set_default'=>'noAction',
             'satisfy_in_list'=>['noAction', 'SetCondition'],
             'on_error'=>['type'=>'error',
-                         'text'=>Language::Get('main','invalidAction', $langTemplate)]]);
+                         'text'=>Language::Get('main','invalidAction', $langTemplate)]])
+  ->addSet('sortby',
+           ['set_default'=>'userName',
+            'satisfy_in_list'=>['firstName','lastName','userName','studentNumber','isApproved','type'],
+            'on_error'=>['type'=>'error',
+                         'text'=>Language::Get('main','errorSortbyValidation', $langTemplate)]])                              
+  ->addSet('sortId',
+           ['valid_identifier',
+            'on_error'=>['type'=>'error',
+                         'text'=>Language::Get('main','errorSortIdValidation', $langTemplate)]]);
 
 $getResults = $getValidation->validate();
 $postResults = $postValidation->validate();
@@ -61,12 +77,16 @@ $postValidation->resetNotifications()->resetErrors();
 
 if ($getValidation->isValid() && isset($getResults['downloadConditionCsv'])) {
     $cid = $getResults['downloadConditionCsv'];
+    $postResults['sortby'] = $getResults['sortby'];
+    $postResults['sortId'] = $getResults['sortId'];
 } elseif(isset($getResults['downloadConditionCsv'])) {
     exit(1);
 }
 
 if ($getValidation->isValid() && isset($getResults['downloadConditionPdf'])) {
     $cid = $getResults['downloadConditionPdf'];
+    $postResults['sortby'] = $getResults['sortby'];
+    $postResults['sortId'] = $getResults['sortId'];
 } elseif(isset($getResults['downloadConditionPdf'])) {
     exit(1);
 }
@@ -77,6 +97,8 @@ Authentication::checkRights(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUserDa
 if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
     // creates a new course
     if ($postResults['action'] === 'SetCondition') {
+        $setConditionNotifications = array();
+        
         // bool which is true if any error occured
         $RequestError = false;
 
@@ -105,22 +127,22 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                 http_put_data($URI, $newApprovalConditionSettings, true, $message);
 
                 if ($message !== 201) {
-                    $notifications[] = MakeNotification('error', Language::Get('main','errorSetCondition', $langTemplate));
+                    $setConditionNotifications[] = MakeNotification('error', Language::Get('main','errorSetCondition', $langTemplate));
                     $RequestError = true;
                 }
             }
         } else {
-            $notifications = $notifications + $getValidation->getPrintableNotifications('MakeNotification');
+            $setConditionNotifications =  array_merge($setConditionNotifications, $getValidation->getPrintableNotifications('MakeNotification'));
             $getValidation->resetNotifications()->resetErrors();
             $RequestError = true;
         }
 
         // creates a notification depending on RequestError
         if ($RequestError) {
-            $notifications[] = MakeNotification('error', Language::Get('main','errorSetConditions', $langTemplate));
+            $setConditionNotifications[] = MakeNotification('error', Language::Get('main','errorSetConditions', $langTemplate));
         }
         else {
-            $notifications[] = MakeNotification('success', Language::Get('main','successSetConditions', $langTemplate));
+            $setConditionNotifications[] = MakeNotification('success', Language::Get('main','successSetConditions', $langTemplate));
         }
 
     }
@@ -156,13 +178,15 @@ if (isset($condition_data['users'])){
     usort($condition_data['users'], 'compare_lastName');
 
     // manages table sort
-    if ($getValidation->isValid() && isset($getResults['sortby'])) {
-        $sortBy = $getResults['sortby'];
+    if ($postValidation->isValid() && isset($postResults['sortby'])) {
+        $sortBy = $postResults['sortby'];
 
         switch ($sortBy) {
             case 'firstName':
                 $condition_data['users']=array_reverse($condition_data['users']);
                 function compare_firstName($a, $b) {
+                        if (!isset($a['firstName'])) return 0;
+                        if (!isset($b['firstName'])) return 0;
                     return strnatcmp(strtolower($a['firstName']), strtolower($b['firstName']));
                 }
                 usort($condition_data['users'], 'compare_firstName');
@@ -199,8 +223,8 @@ if (isset($condition_data['users'])){
             case 'type':
                 $condition_data['users']=array_reverse($condition_data['users']);
                 function compare_type($a, $b) {
-                    global $getResults;
-                    $type=$getResults['sortId'];
+                    global $postResults;
+                    $type=$postResults['sortId'];
                     $aId = null;
                     $bId = null;
                     if (isset($a['percentages']))
@@ -300,11 +324,11 @@ if (isset($getResults['downloadConditionCsv']) || isset($getResults['downloadCon
     exit(0);
 }
 
-if ($getValidation->isValid() && isset($getResults['sortby'])) {
-    $condition_data['sortby'] = $getResults['sortby'];
+if ($postValidation->isValid() && isset($postResults['sortby'])) {
+    $condition_data['sortby'] = $postResults['sortby'];
 }
-if ($getValidation->isValid() && isset($getResults['sortId'])) {
-    $condition_data['sortId'] = $getResults['sortId'];
+if ($postValidation->isValid() && isset($postResults['sortId'])) {
+    $condition_data['sortId'] = $postResults['sortId'];
 }
 
 if (!isset($_SESSION['selectedSheet'])){
@@ -331,16 +355,26 @@ $h->bind(array('name' => $user_course_data['courses'][0]['course']['name'],
 // construct a content element for setting exam paper conditions
 $setCondition = Template::WithTemplateFile('include/Condition/SetCondition.template.html');
 $setCondition->bind($condition_data);
+$setCondition->bind($condition_data);
+if (isset($setConditionNotifications))
+    $setCondition->bind(array('SetConditionNotificationElements' => $setConditionNotifications));
 
 $userList = Template::WithTemplateFile('include/Condition/UserList.template.html');
 $userList->bind($condition_data);
+$userList->bind($condition_data);
+if (isset($userListNotifications))
+    $userList->bind(array('UserListNotificationElements' => $userListNotifications));
 
 $summary = Template::WithTemplateFile('include/Condition/Summary.template.html');
 $summary->bind($condition_data);
+if (isset($summaryNotifications))
+    $summary->bind(array('SummaryNotificationElements' => $summaryNotifications));
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $summary, $setCondition, $userList);
+$w->defineForm(basename(__FILE__).'?cid='.$cid, false, $userList);
 $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $setCondition);
+$w->defineForm(basename(__FILE__).'?cid='.$cid, false, $summary);
 $w->set_config_file('include/configs/config_condition.json');
 $w->show();
 
