@@ -16,6 +16,14 @@
 
 <?php $langTemplate='MainSettings_DeleteUser';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 
+<?php
+if (isset($DeleteUserNotificationElements)) {
+    foreach ($DeleteUserNotificationElements as $notificationElement) {
+        print $notificationElement;
+    }
+}
+?>
+
 <input type="hidden" name="action" value="DeleteUser">
 <div class="content-element">
     <div class="content-header">

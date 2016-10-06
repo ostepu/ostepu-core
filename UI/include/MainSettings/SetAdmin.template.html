@@ -14,6 +14,14 @@
 
 <?php $langTemplate='MainSettings_SetAdmin';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 
+<?php
+if (isset($SetAdminNotificationElements)) {
+    foreach ($SetAdminNotificationElements as $notificationElement) {
+        print $notificationElement;
+    }
+}
+?>
+
 <input type="hidden" name="action" value="SetAdmin">
 <div class="content-element">
     <div class="content-header">

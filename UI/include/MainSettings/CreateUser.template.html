@@ -18,6 +18,14 @@
 
 <?php $langTemplate='MainSettings_CreateUser';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 
+<?php
+if (isset($CreateUserNotificationElements)) {
+    foreach ($CreateUserNotificationElements as $notificationElement) {
+        print $notificationElement;
+    }
+}
+?>
+
 <input type="hidden" name="action" value="CreateUser">
 <div class="content-element">
     <div class="content-header">
