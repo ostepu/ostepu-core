@@ -155,6 +155,14 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
          */
         public function show()
         {
+            $default = array('content'=>'text/html','charset'=>'utf-8','title'=>'','stylesheets'=>array(),'javascripts'=>array());
+            if (!isset($this->config)) $this->config = $default;
+            foreach($default as $defKey => $def){
+                if (!isset($this->config[$defKey])){
+                    $this->config[$defKey] = $def;
+                }
+            }
+            
             print "<!DOCTYPE HTML>
             <html>
             <head>
@@ -228,6 +236,37 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
         if ($this->config == false || is_array($this->config) == false) {
             Logger::Log("Invalid JSON in file: {$configdata}",
                         LogLevel::WARNING);
+        }
+    }
+    
+    public function add_config_file($configdata)
+    {
+        $fileContents = file_get_contents($configdata);
+        // check if file is loaded
+        if ($fileContents == false) {
+            Logger::Log("Could not open file: {$configdata}",
+                        LogLevel::WARNING);
+        }
+
+        $conf = json_decode($fileContents, true);
+        // check if file is valid JSON
+        if ($conf == false || is_array($conf) == false) {
+            Logger::Log("Invalid JSON in file: {$configdata}",
+                        LogLevel::WARNING);
+        }
+        
+        if (!isset($this->config)) $this->config = array();
+        
+        foreach($conf as $key => $val){
+            if (!isset($this->config[$key])){
+                $this->config[$key] = $val;
+            } else {
+                if (is_array($this->config[$key])){
+                    $this->config[$key] = array_merge($this->config[$key], $val);
+                } else {
+                    $this->config[$key] = $val;                    
+                }
+            }
         }
     }
 }
