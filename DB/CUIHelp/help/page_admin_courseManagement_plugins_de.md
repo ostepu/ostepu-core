@@ -26,3 +26,7 @@ Sie können sowohl Erweiterungen installieren (Haken gesetzt) und deinstallieren
 Wenn Sie den grünen Hinweis sehen, wurden die Änderungen erfolgreich durchgeführt.
 
 ![](pluginsC.png)
+
+#### Erweiterungen verwenden
+
+<iframe width="640" height="360" src="https://www.youtube-nocookie.com/embed/oSmPDnC6mzA?list=PLfnTtQX6vUn2lHxmo2WqLsPaEZihOEczh&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>

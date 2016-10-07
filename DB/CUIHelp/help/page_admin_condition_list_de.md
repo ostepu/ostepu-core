@@ -34,3 +34,8 @@ Dieser Student erfüllt alle Bedingungen.
 ![](listA.png)
 
 Sie können die dargestellte Übersicht, in eines der angebotenen Formate, überführen lassen. Dabei wirkt sich die ausgewählte Sortierung auf das Ergenis aus.
+
+#### die Veranstaltungszusammenfassung verwenden
+*Dieses Video wird von einem externen Anbieter bereitgestellt, sodass wir keinen Einfluss auf zusätzliche Inhalte (u.a. Werbung) haben und dieser eventuell Daten, im Rahmen der Nutzung, erheben könnte.*
+<iframe width="640" height="360" src="https://www.youtube-nocookie.com/embed/UbZcK9mXud4?list=PLfnTtQX6vUn2lHxmo2WqLsPaEZihOEczh&amp;showinfo=0&amp;modestbranding=1&amp;loop=1&amp;listType=playlist" frameborder="0" allowfullscreen></iframe>
+*Quelle: https://www.youtube-nocookie.com/embed/UbZcK9mXud4*

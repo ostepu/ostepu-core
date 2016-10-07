@@ -23,3 +23,8 @@ Einfachauswahl (Studentenansicht):
 
 Mehrfachauswahl (Studentenansicht):
 ![](MehrfachauswahlVerwendenSample.png "Beispiel")
+
+#### Eingabemasken verwenden
+*Dieses Video wird von einem externen Anbieter bereitgestellt, sodass wir keinen Einfluss auf zusätzliche Inhalte (u.a. Werbung) haben und dieser eventuell Daten, im Rahmen der Nutzung, erheben könnte.*
+<iframe width="640" height="360" src="https://www.youtube-nocookie.com/embed/YCzIjr9ESK8?list=PLfnTtQX6vUn2lHxmo2WqLsPaEZihOEczh&amp;showinfo=0&amp;modestbranding=1&amp;loop=1&amp;listType=playlist" frameborder="0" allowfullscreen></iframe>
+*Quelle: https://www.youtube-nocookie.com/embed/YCzIjr9ESK8*
