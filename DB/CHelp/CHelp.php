@@ -94,8 +94,7 @@ class CHelp
         }
         
         $cachePath = dirname(__FILE__).'/cache/'.implode('/',$params['path']).$cacheExtension;
-        //Überprüft ob die Daten schon im Cache existieren und maximal 1 Woche (604800 Sekunden) alt sind.
-        if (file_exists($cachePath) && filemtime($cachePath) >= time() - 604800){
+        if (file_exists($cachePath)){
             Model::header('Content-Length',filesize($cachePath));
             return Model::isOk(file_get_contents($cachePath));
         }
