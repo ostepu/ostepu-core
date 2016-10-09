@@ -9,6 +9,8 @@
  *
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
  * @date 2015-2016
+ * @author Max Brauer <ma.brauer@student.uni-halle.de>
+ * @date 2016
  */
 
 include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
