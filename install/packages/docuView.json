@@ -1,0 +1,21 @@
+{
+    "name": "DOCU_VIEW",
+    "version": "1.0",
+    "description":{"de":"Beschreibung"},
+    "descUrl":"https://github.com/Garados007/ostepu-docuView",
+    "files": [
+        {
+            "path": "install/segments/ext_DocuView/",
+            "type": "git",
+            "params": {
+                "name": "docuview",
+                "branch": "master",
+                "URL": "https://github.com/Garados007/ostepu-docuView.git",
+                "path": "install/segments/ext_DocuView/"
+            }
+        }
+    ],
+    "components": [
+        {"conf": "install/segments/ext_DocuView/DocuView.json"}
+        ]
+}
