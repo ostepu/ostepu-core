@@ -18,6 +18,8 @@
  * @date 2014
  * @author Peter König <upbkgs20@arcor.de>
  * @date 2014
+ * @author Max Brauer <ma.brauer@live.de>
+ * @date 2016
  */
 
 require_once dirname(__FILE__).'/../../Assistants/vendor/Slim/Slim/Slim.php';
@@ -187,6 +189,10 @@ class LGetSite
 
         //GET Condition
         $this->app->get('/condition/user/:userid/course/:courseid/lastsheet/:maxsid(/)',
+                        array($this, 'checkCondition'));
+
+        //GET Condition
+        $this->app->get('/condition/user/:userid/course/:courseid/firstsheet/:minsid/lastsheet/:maxsid(/)',
                         array($this, 'checkCondition'));
 
         //run Slim
@@ -1637,8 +1643,11 @@ class LGetSite
      *
      * @author Florian Lücke
      */
-    public function checkCondition($userid, $courseid, $maxsid = null)
+    public function checkCondition($userid, $courseid, $minsid = null, $maxsid = null)
     {
+        if (trim($minsid) == '' ){
+            $minsid = null;
+        }
         if (trim($maxsid) == '' ){
             $maxsid = null;
         }
@@ -1693,6 +1702,31 @@ class LGetSite
                 }
                 if ($found){
                     $newSheets[] = $sheet;
+                }
+            }
+            
+            if (!$found){
+                // wenn die ID nicht gefunden wird, dann nutze alle Uebungsserien
+                $newSheets = $sheets;
+            }
+            
+            $sheets = $newSheets;
+            unset($newSheets);
+        }
+
+        // wenn es eine Untergrenze für die sheet-ID gibt, müssen zunächst alle unerlaubten
+        // Übungsserien aussortiert werden
+        $existingSheets = array();
+        $allsheets = array_merge($sheets, array());
+        $newSheets = array();
+        $found = false;
+        if ($minsid !== null){
+            foreach ($sheets as $sheet){
+                if (!$found){
+                    $newSheets[] = $sheet;
+                }
+                if ($sheet['id'] == $minsid){
+                    $found = true;
                 }
             }
             

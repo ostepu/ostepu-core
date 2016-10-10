@@ -16,6 +16,8 @@
  * @date 2014
  * @author Florian Lücke <florian.luecke@gmail.com>
  * @date 2013-2014
+ * @author Max Brauer <ma.brauer@live.de>
+ * @date 2016
  */
  
  
@@ -366,7 +368,8 @@ function MakeUserNavigationElement($user,
                                $switchDisabled = false,
                                $forIndex = false,
                                $helpPath = null,
-                               $buttons = array())
+                               $buttons = array(),
+                               $stid = null)
 {
     $courses = isset($user['courses']) ? $user['courses'] : null;
 
@@ -403,6 +406,7 @@ function MakeUserNavigationElement($user,
                                    'sites' => PRIVILEGE_LEVEL::$SITES,
                                    'isSuperAdmin' => $isSuperAdmin,
                                    'forIndex' => $forIndex,
+                                   'stid' => $stid,
                                    'sid' => $sid,
                                    'courseUser' => $courseUser,
                                    'courseSheets' => $courseSheets,

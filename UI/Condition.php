@@ -16,6 +16,8 @@
  * @date 2013-2014
  * @author Florian Lücke <florian.luecke@gmail.com>
  * @date 2014
+ * @author Max Brauer <ma.brauer@live.de>
+ * @date 2016
  */
 
 ob_start();
@@ -148,14 +150,22 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
     }
 }
 
+//Bestimmt den Bereich der Übungsserien
+if (isset($_POST['startSheet'])) {
+    // TODO: es muss noch geprüft werden, ob diese Übungsserie gewählt werden darf
+    $_SESSION['startSheet'] = $_POST['startSheet'];
+}
 if (isset($_POST['selectedSheet'])){
     // TODO: es muss noch geprüft werden, ob diese Übungsserie gewählt werden darf
     $_SESSION['selectedSheet'] = $_POST['selectedSheet'];
 }
 
-
+$minsid = null;
 $maxsid = null;
 $userNavigation = null;
+if (isset($_SESSION['startSheet'])){
+    $minsid = $_SESSION['startSheet'];
+}
 if (isset($_SESSION['selectedSheet'])){
     $maxsid = $_SESSION['selectedSheet'];
 }
@@ -163,7 +173,7 @@ if (isset($_SESSION['selectedSheet'])){
 
 
 // load user data from the database
-$URL = $getSiteURI . "/condition/user/{$uid}/course/{$cid}/lastsheet/{$maxsid}";
+$URL = $getSiteURI . "/condition/user/{$uid}/course/{$cid}/firstsheet/{$minsid}/lastsheet/{$maxsid}";
 $condition_data = http_get($URL, true);
 $condition_data = json_decode($condition_data, true);
 $user_course_data = $condition_data['user'];
@@ -342,7 +352,10 @@ $userNavigation = MakeUserNavigationElement($user_course_data,
                                             $maxsid,
                                             isset($condition_data['allsheets']) ? ExerciseSheet::decodeExerciseSheet(json_encode($condition_data['allsheets'])) : null,
                                             false,
-                                            false);
+                                            false,
+                                            null,
+                                            array(),
+                                            $minsid);
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');

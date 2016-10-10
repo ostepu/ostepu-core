@@ -9,6 +9,8 @@
  *
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
  * @date 2015
+ * @author Max Brauer <ma.brauer@live.de>
+ * @date 2016
  */
 ?>
 
@@ -50,10 +52,18 @@
             </li>
         <?php } ?>
         
-        <?php if (isset($sid) && isset($courseSheets)){ ?>
+        <?php if (isset($sid) && isset($stid) && isset($courseSheets)){ ?>
             <li>
                 <form action="#" method="POST">
                 <?php echo Language::Get('main','selectSheet', $langTemplate); ?>:
+                    <select class="short" name="selectedSheet" size="1" onchange="this.form.submit()">
+                
+                <?php foreach($courseSheets as $sheet){?>
+                        <option value="<?php echo $sheet->getId(); ?>" <?php echo ($stid == $sheet->getId() ?"selected=\"selected\"":''); ?>>
+                            <?php echo $sheet->getSheetName(); ?>
+                        </option>
+                <?php }?>
+                    </select>-
                     <select class="short" name="selectedSheet" size="1" onchange="this.form.submit()">
                 
                 <?php foreach($courseSheets as $sheet){?>
