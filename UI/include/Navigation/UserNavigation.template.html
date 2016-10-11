@@ -52,18 +52,36 @@
             </li>
         <?php } ?>
         
-        <?php if (isset($sid) && isset($stid) && isset($courseSheets)){ ?>
+        <?php if (isset($sid) && isset($courseSheets)){ ?>
             <li>
                 <form action="#" method="POST">
                 <?php echo Language::Get('main','selectSheet', $langTemplate); ?>:
-                    <select class="short" name="selectedSheet" size="1" onchange="this.form.submit()">
                 
-                <?php foreach($courseSheets as $sheet){?>
-                        <option value="<?php echo $sheet->getId(); ?>" <?php echo ($stid == $sheet->getId() ?"selected=\"selected\"":''); ?>>
+                <?php if (isset($stid)) { ?>
+                    <select class="short" name="startSheet" size="1" onchange="this.form.submit()">
+                    <?php $found = false;
+                        if (count($courseSheets)>0){
+                            end($courseSheets);
+                            $lastKey = key($courseSheets);
+                        } else {
+                            $lastKey = null;
+                        }
+                        foreach($courseSheets as $key => $sheet){
+                            $add = '';
+                            if (isset($stid) && $stid == $sheet->getId()){
+                                $add = "selected=\"selected\"";
+                                $found = true;
+                            } elseif (!$found && $key == $lastKey) {
+                                $add = "selected=\"selected\"";
+                            }
+                        ?>
+                        <option value="<?php echo $sheet->getId(); ?>" <?php echo $add; ?>>
                             <?php echo $sheet->getSheetName(); ?>
                         </option>
-                <?php }?>
-                    </select>-
+                    <?php }?>
+                        </select>-
+                <?php } ?>
+                    
                     <select class="short" name="selectedSheet" size="1" onchange="this.form.submit()">
                 
                 <?php foreach($courseSheets as $sheet){?>

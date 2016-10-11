@@ -342,7 +342,12 @@ if ($postValidation->isValid() && isset($postResults['sortId'])) {
 }
 
 if (!isset($_SESSION['selectedSheet'])){
-    $maxsid = isset($condition_data['allsheets'][0]) ? ExerciseSheet::decodeExerciseSheet(json_encode($condition_data['allsheets'][0])) : null;
+    $maxsid = isset($condition_data['allsheets'][0]['id']) ? $condition_data['allsheets'][0]['id'] : null;
+}
+
+if (!isset($_SESSION['startSheet'])){
+    $last = end($condition_data['allsheets']);
+    $minsid = ($last !== false) ? $last['id'] : null;
 }
 
 $userNavigation = MakeUserNavigationElement($user_course_data,

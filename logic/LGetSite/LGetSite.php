@@ -1688,11 +1688,11 @@ class LGetSite
         $groups = json_decode($answer[4]['content'], true);
         $sheets = json_decode($answer[5]['content'], true);
         
+        $existingSheets = array();
+        $allsheets = array_merge($sheets, array());
         
         // wenn es eine Obergrenze für die sheet-ID gibt, müssen zunächst alle unerlaubten
         // Übungsserien aussortiert werden
-        $existingSheets = array();
-        $allsheets = array_merge($sheets, array());
         $newSheets = array();
         $found = false;
         if ($maxsid !== null){
@@ -1716,26 +1716,30 @@ class LGetSite
 
         // wenn es eine Untergrenze für die sheet-ID gibt, müssen zunächst alle unerlaubten
         // Übungsserien aussortiert werden
-        $existingSheets = array();
-        $allsheets = array_merge($sheets, array());
         $newSheets = array();
         $found = false;
         if ($minsid !== null){
+            $sheets = array_reverse($sheets);
+            
             foreach ($sheets as $sheet){
-                if (!$found){
-                    $newSheets[] = $sheet;
-                }
                 if ($sheet['id'] == $minsid){
                     $found = true;
                 }
+                if ($found){
+                    $newSheets[] = $sheet;
+                }
             }
             
+            
+            // TODO: eventuell wurde die Serie aber schon beim entfernen bis maxsind gelöscht
             if (!$found){
                 // wenn die ID nicht gefunden wird, dann nutze alle Uebungsserien
                 $newSheets = $sheets;
             }
             
             $sheets = $newSheets;
+            $sheets = array_reverse($sheets);
+            
             unset($newSheets);
         }
 
