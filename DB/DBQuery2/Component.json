@@ -10,8 +10,14 @@
         {"path": "Commands.json"},
         {"path": "info/"}
     ],
-    "connector": [{
-        "name": "request",
-        "target": "CLocalObjectRequest"
-    }]
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        },
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView"
+        }
+    ]
 }

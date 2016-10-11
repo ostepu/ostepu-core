@@ -94,6 +94,7 @@
         {
             "name": "postPlatform",
             "target": "CInstall"
-        }
+        },
+        { "name": "getDescFiles","target": "TDocuView"}
     ]
 }
