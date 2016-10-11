@@ -48,7 +48,7 @@ function createRedirectButton($redirect,$esid=null){
 
 function createRedirectButtonHeader($redirect,$esid=null){
     $text = '';
-    $text.= '<button style="text-decoration: none;color: #2B648F;" title="'.$redirect['title'].'" name="redirect" value="'.(isset($esid) ? $esid.'_' : '_').$redirect['id'].'" class="text-button-simple noanchor">';
+    $text.= '<button formaction="" style="text-decoration: none;color: #2B648F;" title="'.$redirect['url'].'" name="redirect" value="'.(isset($esid) ? $esid.'_' : '_').$redirect['id'].'" class="text-button-simple">';
     $text.= $redirect['title'];
     $text.= '</button>';
     return $text;

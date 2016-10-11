@@ -17,7 +17,6 @@
         "javascript/sheets.js",
         "javascript/interactive.js",
         "javascript/download.js",
-        "javascript/notification-box.js",
-        "javascript/noanchor.js"
+        "javascript/notification-box.js"
     ]
 }
