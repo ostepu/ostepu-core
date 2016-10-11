@@ -52,7 +52,7 @@
             </li>
         <?php } ?>
         
-        <?php if (isset($sid) && isset($courseSheets)){ ?>
+        <?php if (isset($sid) && isset($courseSheets) && count($courseSheets)>0){ ?>
             <li>
                 <form action="#" method="POST">
                 <?php echo Language::Get('main','selectSheet', $langTemplate); ?>:
@@ -79,7 +79,8 @@
                             <?php echo $sheet->getSheetName(); ?>
                         </option>
                     <?php }?>
-                        </select>-
+                        </select>
+                        <?php echo Language::Get('main','to', $langTemplate); ?>
                 <?php } ?>
                     
                     <select class="short" name="selectedSheet" size="1" onchange="this.form.submit()">

@@ -2,6 +2,7 @@
     "main": {
         "selectUser": "Student",
         "selectSheet": "&Uuml;bungsserie",
-        "privileged": "Erweitert"
+        "privileged": "Erweitert",
+        "to": "bis"
     }
 }
