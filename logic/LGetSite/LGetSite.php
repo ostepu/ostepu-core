@@ -1688,30 +1688,34 @@ class LGetSite
         $groups = json_decode($answer[4]['content'], true);
         $sheets = json_decode($answer[5]['content'], true);
         
+        if (!isset($sheets)){
+            $sheets = array();
+        }
+        
         $existingSheets = array();
         $allsheets = array_merge($sheets, array());
         
+        // nun werden alle sheet-IDs zusammengetragen
+        $sheetsID = array();
+        foreach ($sheets as $key => $sheet){
+            if (!isset($sheet['id'])) continue;
+            $sheetsID[] = $sheet['id'];
+        }
+
         // wenn es eine Obergrenze für die sheet-ID gibt, müssen zunächst alle unerlaubten
         // Übungsserien aussortiert werden
-        $newSheets = array();
+        $maxpos=null;
         $found = false;
+        $tempSheetsID = array_merge($sheetsID, array());
         if ($maxsid !== null){
-            foreach ($sheets as $sheet){
-                if ($sheet['id'] == $maxsid){
-                    $found = true;
-                }
-                if ($found){
-                    $newSheets[] = $sheet;
-                }
+            if (in_array($maxsid,$tempSheetsID)){
+                $maxpos = array_search($maxsid,$tempSheetsID);
+                $sheets = array_values(array_slice($sheets, $maxpos));
+                $tempSheetsID = array_values(array_slice($tempSheetsID, $maxpos));
+            } else {
+                // die ID ist falsch oder schon entfernt
+                // keine Aktion
             }
-            
-            if (!$found){
-                // wenn die ID nicht gefunden wird, dann nutze alle Uebungsserien
-                $newSheets = $sheets;
-            }
-            
-            $sheets = $newSheets;
-            unset($newSheets);
         }
 
         // wenn es eine Untergrenze für die sheet-ID gibt, müssen zunächst alle unerlaubten
@@ -1719,35 +1723,25 @@ class LGetSite
         $newSheets = array();
         $found = false;
         if ($minsid !== null){
-            $sheets = array_reverse($sheets);
-            
-            foreach ($sheets as $sheet){
-                if ($sheet['id'] == $minsid){
-                    $found = true;
-                }
-                if ($found){
-                    $newSheets[] = $sheet;
+            if (in_array($minsid,$tempSheetsID)){
+                $minpos = array_search($minsid,$tempSheetsID);
+                $sheets = array_values(array_slice($sheets, 0, $minpos+1));
+                $tempSheetsID = array_values(array_slice($tempSheetsID, $minpos));
+            } else {
+                // die ID ist falsch oder schon entfernt
+                if ($maxpos!== null && in_array($minsid,$sheetsID)){
+                    // minpos wurde schon gelöscht, daher entfernen wir alle
+                    $sheets = array();
                 }
             }
-            
-            
-            // TODO: eventuell wurde die Serie aber schon beim entfernen bis maxsind gelöscht
-            if (!$found){
-                // wenn die ID nicht gefunden wird, dann nutze alle Uebungsserien
-                $newSheets = $sheets;
-            }
-            
-            $sheets = $newSheets;
-            $sheets = array_reverse($sheets);
-            
-            unset($newSheets);
         }
+        unset($tempSheetsID);
 
         // nun werden alle erlaubten sheet-IDs zusammengetragen
         foreach ($sheets as $key => $sheet){
             if (!isset($sheet['id'])) continue;
             $existingSheets[$sheet['id']] = $key;
-        }       
+        }      
         
         // wenn eine Gruppe nicht erlaubt ist, wird sie aussortiert (wegen maxsid)
         $newGroups = array();
