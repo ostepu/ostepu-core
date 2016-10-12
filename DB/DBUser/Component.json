@@ -31,7 +31,7 @@
         },
         {
             "name": "getUser",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
                 "path": "/query/procedure/DBUserGetUser/:userid"
@@ -39,7 +39,7 @@
         },
         {
             "name": "getUsers",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
                 "path": "/query/procedure/DBUserGetUsers"
@@ -47,7 +47,7 @@
         },
         {
             "name": "getCourseMember",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
                 "path": "/query/procedure/DBUserGetCourseMember/:courseid"
@@ -55,7 +55,7 @@
         },
         {
             "name": "getGroupMember",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
                 "path": "/query/procedure/DBUserGetGroupMember/:esid/:userid"
@@ -63,7 +63,7 @@
         },
         {
             "name": "getUserByStatus",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
                 "path": "/query/procedure/DBUserGetUserByStatus/:statusid"
@@ -71,7 +71,7 @@
         },
         {
             "name": "getCourseUserByStatus",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
                 "path": "/query/procedure/DBUserGetCourseUserByStatus/:courseid/:statusid"
@@ -87,7 +87,7 @@
         },
         {
             "name": "getExistsPlatform",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
                 "path": "/query/procedure/DBUserGetExistsPlatform"
@@ -95,7 +95,7 @@
         },
         {
             "name": "getSamplesInfo",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
                 "path": "/query/procedure/DBUserGetExistsPlatform"

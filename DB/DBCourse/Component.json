@@ -25,7 +25,7 @@
         },
         {
             "name": "getCourse",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [
                 {
                     "method": "GET",
@@ -35,7 +35,7 @@
         },
         {
             "name": "getAllCourses",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [
                 {
                     "method": "GET",
@@ -45,7 +45,7 @@
         },
         {
             "name": "getUserCourses",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [
                 {
                     "method": "GET",
@@ -55,7 +55,7 @@
         },
         {
             "name": "getExistsPlatform",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [
                 {
                     "method": "GET",
@@ -65,7 +65,7 @@
         },
         {
             "name": "getSamplesInfo",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [
                 {
                     "method": "GET",
