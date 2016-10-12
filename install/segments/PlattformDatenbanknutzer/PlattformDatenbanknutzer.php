@@ -85,8 +85,14 @@ class PlattformDatenbanknutzer
             $oldName = $data['DB']['db_name'];
             $data['DB']['db_name'] = null;
             $sql = "DROP USER '{$data['DB']['db_user_operator']}'@'%';";
+            $sql .= "DROP USER '{$data['DB']['db_user_operator']}Read'@'%';";
+            $sql .= "DROP USER '{$data['DB']['db_user_operator']}Write'@'%';";
+            $sql .= "DROP USER '{$data['DB']['db_user_operator']}Setup'@'%';";
             Installation::log(array('text'=>Installation::Get('createDatabasePlatformUser','dropGlobalUserSql',self::$langTemplate,array('sql'=>$sql))));
             $sql2 = "DROP USER '{$data['DB']['db_user_operator']}'@'localhost';";
+            $sql2 .= "DROP USER '{$data['DB']['db_user_operator']}Read'@'localhost';";
+            $sql2 .= "DROP USER '{$data['DB']['db_user_operator']}Write'@'localhost';";
+            $sql2 .= "DROP USER '{$data['DB']['db_user_operator']}Setup'@'localhost';";
             Installation::log(array('text'=>Installation::Get('createDatabasePlatformUser','dropLocalUserSql',self::$langTemplate,array('sql'=>$sql2))));
             $result = DBRequest::request2($sql, false, $data);
             $result = DBRequest::request2($sql2, false, $data);
@@ -127,34 +133,44 @@ class PlattformDatenbanknutzer
 
             $oldName = $data['DB']['db_name'];
             $data['DB']['db_name'] = null;
-            $sql = "CREATE USER '{$data['DB']['db_user_operator']}'@'%'".
-                    "IDENTIFIED BY '{$data['DB']['db_passwd_operator']}';";
-            $sql.= "GRANT REFERENCES,LOCK TABLES,CREATE VIEW,EXECUTE,ALTER ROUTINE,CREATE ROUTINE,SHOW VIEW,CREATE TEMPORARY TABLES,INDEX,ALTER,SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,TRIGGER ".
-                    "ON `{$oldName}`.* ".
-                    "TO '{$data['DB']['db_user_operator']}'@'%'; ";
-            $sql.= "CREATE USER '{$data['DB']['db_user_operator']}'@'localhost'".
-                    "IDENTIFIED BY '{$data['DB']['db_passwd_operator']}';";
-            $sql.= "GRANT REFERENCES,LOCK TABLES,CREATE VIEW,EXECUTE,ALTER ROUTINE,CREATE ROUTINE,SHOW VIEW,CREATE TEMPORARY TABLES,INDEX,ALTER,SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,TRIGGER ".
-                    "ON `{$oldName}`.* ".
-                    "TO '{$data['DB']['db_user_operator']}'@'localhost';";
+            $userVariants = array('', 'Read', 'Write', 'Setup');
+            $userRights = array('REFERENCES,LOCK TABLES,CREATE VIEW,EXECUTE,ALTER ROUTINE,CREATE ROUTINE,SHOW VIEW,CREATE TEMPORARY TABLES,INDEX,ALTER,SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,TRIGGER',
+                                'LOCK TABLES,CREATE VIEW,SELECT,SHOW VIEW,EXECUTE',
+                                'LOCK TABLES,INSERT,UPDATE,DELETE',
+                                'REFERENCES,LOCK TABLES,CREATE VIEW,EXECUTE,ALTER ROUTINE,CREATE ROUTINE,SHOW VIEW,CREATE TEMPORARY TABLES,INDEX,ALTER,SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,TRIGGER');
+            
+            foreach ($userVariants as $key => $addToUserName){
+                $sql = "CREATE USER '".$data['DB']['db_user_operator'].$addToUserName."'@'%' ".
+                        "IDENTIFIED BY '{$data['DB']['db_passwd_operator']}';";
+                $sql.= "GRANT ".$userRights[$key]." ".
+                        "ON `{$oldName}`.* ".
+                        "TO '".$data['DB']['db_user_operator'].$addToUserName."'@'%'; ";
+                $sql.= "CREATE USER '".$data['DB']['db_user_operator'].$addToUserName."'@'localhost' ".
+                        "IDENTIFIED BY '{$data['DB']['db_passwd_operator']}';";
+                $sql.= "GRANT ".$userRights[$key]." ".
+                        "ON `{$oldName}`.* ".
+                        "TO '".$data['DB']['db_user_operator'].$addToUserName."'@'localhost';";
 
-            $logSql = "CREATE USER '{$data['DB']['db_user_operator']}'@'%'".
-                    "IDENTIFIED BY *****;";
-            $logSql.= "GRANT REFERENCES,LOCK TABLES,CREATE VIEW,EXECUTE,ALTER ROUTINE,CREATE ROUTINE,SHOW VIEW,CREATE TEMPORARY TABLES,INDEX,ALTER,SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,TRIGGER ".
-                    "ON `{$oldName}`.* ".
-                    "TO '{$data['DB']['db_user_operator']}'@'%'; ";
-            $logSql.= "CREATE USER '{$data['DB']['db_user_operator']}'@'localhost'".
-                    "IDENTIFIED BY *****;";
-            $logSql.= "GRANT REFERENCES,LOCK TABLES,CREATE VIEW,EXECUTE,ALTER ROUTINE,CREATE ROUTINE,SHOW VIEW,CREATE TEMPORARY TABLES,INDEX,ALTER,SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,TRIGGER ".
-                    "ON `{$oldName}`.* ".
-                    "TO '{$data['DB']['db_user_operator']}'@'localhost';";
-            Installation::log(array('text'=>Installation::Get('createDatabasePlatformUser','createUserSql',self::$langTemplate,array('sql'=>$logSql))));
-            $result = DBRequest::request2($sql, false, $data);
+                $logSql = "CREATE USER '".$data['DB']['db_user_operator'].$addToUserName."'@'%' ".
+                        "IDENTIFIED BY *****;";
+                $logSql.= "GRANT ".$userRights[$key]." ".
+                        "ON `{$oldName}`.* ".
+                        "TO '".$data['DB']['db_user_operator'].$addToUserName."'@'%'; ";
+                $logSql.= "CREATE USER '".$data['DB']['db_user_operator'].$addToUserName."'@'localhost' ".
+                        "IDENTIFIED BY *****;";
+                $logSql.= "GRANT ".$userRights[$key]." ".
+                        "ON `{$oldName}`.* ".
+                        "TO '".$data['DB']['db_user_operator'].$addToUserName."'@'localhost';";
+                Installation::log(array('text'=>Installation::Get('createDatabasePlatformUser','createUserSql',self::$langTemplate,array('sql'=>$logSql))));
+                $result = DBRequest::request2($sql, false, $data);           
+                
+                if ($result[0]['errno'] !== 0 && (count($result)<2 || $result[1]['errno'] !== 0)){
+                    $fail = true; $errno = $result[0]['errno'];$error = isset($result[0]["error"]) ? $result[0]["error"] : '';
+                    Installation::log(array('text'=>Installation::Get('createDatabasePlatformUser','failureCreateUser',self::$langTemplate,array('message'=>json_encode($result))), 'logLevel'=>LogLevel::ERROR));
+                    break;
+                }
+            }    
 
-            if ($result[0]['errno'] !== 0 && (count($result)<2 || $result[1]['errno'] !== 0)){
-                $fail = true; $errno = $result[0]['errno'];$error = isset($result[0]["error"]) ? $result[0]["error"] : '';
-                Installation::log(array('text'=>Installation::Get('createDatabasePlatformUser','failureCreateUser',self::$langTemplate,array('message'=>json_encode($result))), 'logLevel'=>LogLevel::ERROR));
-            }
             $data['DB']['db_name'] = $oldName;
         } elseif ($userExists){
             $fail = true; $errno = 0;$error = 'user already exists';
