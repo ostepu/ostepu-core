@@ -13,7 +13,7 @@
 ?>
 
 DROP PROCEDURE IF EXISTS `DBUserGetGroupMember`;
-CREATE PROCEDURE `DBUserGetGroupMember` (IN esid INT,IN userid varchar(120))
+CREATE PROCEDURE `DBUserGetGroupMember` (IN profile varchar(30), IN esid INT,IN userid varchar(120))
 READS SQL DATA
 begin
 SET @s = concat("
@@ -44,11 +44,11 @@ FROM
     `Group` G2 ON (G.ES_id = G2.ES_id
         and G.U_id_member = G2.U_id_member)
         join
-    User U2 ON (U2.U_id = G.U_id_leader)
+    `User",profile,"` U2 ON (U2.U_id = G.U_id_leader)
         join
-    (User U
-    left join CourseStatus CS ON (U.U_id = CS.U_id)
-    left join Course C ON (CS.C_id = C.C_id)) ON U.U_id = G2.U_id_leader
+    (`User",profile,"` U
+    left join `CourseStatus` CS ON (U.U_id = CS.U_id)
+    left join `Course` C ON (CS.C_id = C.C_id)) ON U.U_id = G2.U_id_leader
 WHERE
     (U2.U_id like '",userid,"'
         or U2.U_username = '",userid,"' or U2.U_externalId = '",userid,"')

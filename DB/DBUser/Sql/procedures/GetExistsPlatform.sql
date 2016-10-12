@@ -13,8 +13,8 @@
 ?>
 
 DROP PROCEDURE IF EXISTS `DBUserGetExistsPlatform`;
-CREATE PROCEDURE `DBUserGetExistsPlatform` ()
+CREATE PROCEDURE `DBUserGetExistsPlatform` (IN profile varchar(30))
 READS SQL DATA
 begin
-show tables like 'User';
+show tables like concat('User',profile);
 end;

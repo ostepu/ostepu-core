@@ -12,6 +12,11 @@
  */
 ?>
 
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
 CREATE OR REPLACE VIEW generator AS
 SELECT 0 n
 UNION ALL
@@ -50,7 +55,7 @@ SET @row = 0;
 
 
 INSERT
-IGNORE INTO `User`
+IGNORE INTO `User<?php echo $profile;?>`
 SELECT @row := @row + 1,
                SUBSTRING(md5(@row),-8),
                SUBSTRING(md5(@row),-FLOOR(5 + (RAND() * 15))),

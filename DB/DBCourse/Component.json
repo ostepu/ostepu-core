@@ -29,7 +29,7 @@
             "links": [
                 {
                     "method": "GET",
-                    "path": "/query/procedure/DBCourseGetCourse/:courseid"
+                    "path": "/query/procedure/DBCourseGetCourse/:profile/:exerciseSheetProfile/:settingProfile/:courseid"
                 }
             ]
         },
@@ -39,7 +39,7 @@
             "links": [
                 {
                     "method": "GET",
-                    "path": "/query/procedure/DBCourseGetAllCourses"
+                    "path": "/query/procedure/DBCourseGetAllCourses/:profile/:exerciseSheetProfile"
                 }
             ]
         },
@@ -49,7 +49,7 @@
             "links": [
                 {
                     "method": "GET",
-                    "path": "/query/procedure/DBCourseGetUserCourses/:userid"
+                    "path": "/query/procedure/DBCourseGetUserCourses/:profile/:exerciseSheetProfile/:userid"
                 }
             ]
         },
@@ -59,7 +59,7 @@
             "links": [
                 {
                     "method": "GET",
-                    "path": "/query/procedure/DBCourseGetExistsPlatform"
+                    "path": "/query/procedure/DBCourseGetExistsPlatform/:profile"
                 }
             ]
         },
@@ -69,7 +69,7 @@
             "links": [
                 {
                     "method": "GET",
-                    "path": "/query/procedure/DBCourseGetExistsPlatform"
+                    "path": "/query/procedure/DBCourseGetExistsPlatform/:profile"
                 }
             ]
         }

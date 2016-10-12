@@ -13,7 +13,7 @@
 ?>
 
 DROP PROCEDURE IF EXISTS `DBUserGetCourseUserByStatus`;
-CREATE PROCEDURE `DBUserGetCourseUserByStatus` (IN courseid INT,IN statusid INT)
+CREATE PROCEDURE `DBUserGetCourseUserByStatus` (IN profile varchar(30), IN courseid INT,IN statusid INT)
 READS SQL DATA
 begin
 SET @s = concat("
@@ -39,11 +39,11 @@ select SQL_CACHE
     C.C_semester,
     C.C_defaultGroupSize
 FROM
-    User U
+    `User",profile,"` U
         left join
-    CourseStatus CS ON (U.U_id = CS.U_id)
+    `CourseStatus` CS ON (U.U_id = CS.U_id)
         left join
-    Course C ON (CS.C_id = C.C_id)
+    `Course` C ON (CS.C_id = C.C_id)
 where CS.CS_status = '",statusid,"' and C.C_id = '",courseid,"';");
 PREPARE stmt1 FROM @s;
 EXECUTE stmt1;

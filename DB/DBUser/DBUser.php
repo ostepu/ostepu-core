@@ -34,7 +34,10 @@ class DBUser
     private $_component = null;
     public function __construct( )
     {
-        $component = new Model('user', dirname(__FILE__), $this);
+        $component = new Model('user', dirname(__FILE__), $this, false, false, array('cloneable'=>true,
+                                                                                     'defaultParams'=>array('exerciseSheetProfile'=>'','settingProfile'=>''),
+                                                                                     'addOptionsToParametersAsPostfix'=>true,
+                                                                                     'addProfileToParametersAsPostfix'=>true));
         $this->_component=$component;
         $component->run();
     }
@@ -95,7 +98,7 @@ class DBUser
             $obj->setId( $input[0]->getInsertId( ) );
             return array("status"=>201,"content"=>$obj);
         };
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/AddUser.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new User()),false);
+        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/AddUser.sql',array_merge($params,array( 'values' => $input->getInsertData( ))),201,$positive,array(),'Model::isProblem',array(new User()),false);
     }
 
     public function get( $functionName, $linkName, $params=array(), $checkSession = true )
@@ -131,7 +134,7 @@ class DBUser
      */
     public function deletePlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array($params),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 
     /**
@@ -142,7 +145,7 @@ class DBUser
      */
     public function addPlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array_merge($params,array('object' => $input)),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 
     public function getSamplesInfo( $callName, $input, $params = array() )

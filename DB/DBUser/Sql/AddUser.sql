@@ -15,5 +15,10 @@
  */
 ?>
 
-insert into User SET <?php echo $values; ?>;
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
+insert into `User<?php echo $profile;?>` SET <?php echo $values; ?>;
 

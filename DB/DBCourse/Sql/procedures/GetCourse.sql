@@ -13,7 +13,7 @@
 ?>
 
 DROP PROCEDURE IF EXISTS `DBCourseGetCourse`;
-CREATE PROCEDURE `DBCourseGetCourse` (IN courseid INT)
+CREATE PROCEDURE `DBCourseGetCourse` (IN profile varchar(30), IN exerciseSheetProfile varchar(30), IN settingProfile varchar(30), IN courseid INT)
 READS SQL DATA
 begin
 SET @s = concat("
@@ -26,11 +26,11 @@ select SQL_CACHE
     S.*,
     concat(",courseid,",'_',S.SET_id) as SET_id
 from
-    Course C
+    `Course",profile,"` C
         left join
-    ExerciseSheet ES ON C.C_id = ES.C_id
+    `ExerciseSheet",exerciseSheetProfile,"` ES ON C.C_id = ES.C_id
         left join
-    Setting_",courseid," S ON (1)
+    `Setting",settingProfile,"_",courseid,"` S ON (1)
 where
     C.C_id = '",courseid,"';");
 PREPARE stmt1 FROM @s;
