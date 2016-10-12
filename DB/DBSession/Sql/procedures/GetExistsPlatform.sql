@@ -13,8 +13,8 @@
 ?>
 
 DROP PROCEDURE IF EXISTS `DBSessionGetExistsPlatform`;
-CREATE PROCEDURE `DBSessionGetExistsPlatform` ()
+CREATE PROCEDURE `DBSessionGetExistsPlatform` (IN profile varchar(30))
 READS SQL DATA
 begin
-show tables like 'Session';
+show tables like concat('Session',profile);
 end;

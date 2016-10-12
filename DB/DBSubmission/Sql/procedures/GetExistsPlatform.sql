@@ -13,8 +13,8 @@
 ?>
 
 DROP PROCEDURE IF EXISTS `DBSubmissionGetExistsPlatform`;
-CREATE PROCEDURE `DBSubmissionGetExistsPlatform` ()
+CREATE PROCEDURE `DBSubmissionGetExistsPlatform` (IN profile varchar(30))
 READS SQL DATA
 begin
-show tables like 'Submission';
+show tables like concat('Submission',profile);
 end;

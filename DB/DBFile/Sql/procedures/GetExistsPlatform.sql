@@ -13,8 +13,8 @@
 ?>
 
 DROP PROCEDURE IF EXISTS `DBFileGetExistsPlatform`;
-CREATE PROCEDURE `DBFileGetExistsPlatform` ()
+CREATE PROCEDURE `DBFileGetExistsPlatform` (IN profile varchar(30))
 READS SQL DATA
 begin
-show tables like 'File';
+show tables like concat('File',profile);
 end;

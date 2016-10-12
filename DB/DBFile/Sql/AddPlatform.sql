@@ -12,11 +12,16 @@
  */
 ?>
 
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
-CREATE TABLE IF NOT EXISTS `File` (
+CREATE TABLE IF NOT EXISTS `File<?php echo $profile;?>` (
   `F_id` INT NOT NULL AUTO_INCREMENT,
   `F_displayName` VARCHAR(255) NULL,
   `F_address` CHAR(55) NOT NULL,

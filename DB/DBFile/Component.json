@@ -14,90 +14,118 @@
     ],
     "links": [
         {
-            "name": "out",
-            "target": "DBQuery",
-            "links": [
-                {
-                    "method": "POST",
-                    "path": "/query"
-                }
-            ]
+            "name": "editFile",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
         },
         {
-            "name": "out2",
-            "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "POST",
-                    "path": "/query"
-                }
-            ]
+            "name": "removeFile",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "addFile",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "deletePlatform",
+            "target": "DBQuerySetup",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "addPlatform",
+            "target": "DBQuerySetup",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "postSamples",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
         },
         {
             "name": "getFile",
-            "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBFileGetFile/:fileid"
-                }
-            ]
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBFileGetFile/:profile/:fileid"
+            }]
         },
         {
             "name": "getAllFiles",
-            "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBFileGetAllFiles/:beginStamp/:endStamp"
-                }
-            ]
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBFileGetAllFiles/:profile/:beginStamp/:endStamp"
+            }]
         },
         {
             "name": "getFileByHash",
-            "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBFileGetFileByHash/:hash"
-                }
-            ]
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBFileGetFileByHash/:profile/:hash"
+            }]
         },
         {
             "name": "getFileByMimeType",
-            "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBFileGetFileByMimeType/:base/:type/:beginStamp/:endStamp"
-                }
-            ]
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBFileGetFileByMimeType/:profile/:base/:type/:beginStamp/:endStamp"
+            }]
         },
         {
             "name": "getExistsPlatform",
-            "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBFileGetExistsPlatform"
-                }
-            ]
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBFileGetExistsPlatform/:profile"
+            }]
         },
         {
             "name": "getSamplesInfo",
-            "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBFileGetExistsPlatform"
-                }
-            ]
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBFileGetExistsPlatform/:profile"
+            }]
         }
     ],
     "connector": [
-        {"name": "request","target": "CLocalObjectRequest"},
-        {"name": "postPlatform","target": "CInstall"},
-        {"name": "postSamples","target": "CInstall"},
-        { "name": "getDescFiles","target": "TDocuView"}
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        },
+        {
+            "name": "postPlatform",
+            "target": "CInstall"
+        },
+        {
+            "name": "postSamples",
+            "target": "CInstall"
+        },
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView"
+        }
     ]
 }

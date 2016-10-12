@@ -13,7 +13,7 @@
 ?>
 
 DROP PROCEDURE IF EXISTS `DBSubmissionGetSheetSubmissions`;
-CREATE PROCEDURE `DBSubmissionGetSheetSubmissions` (IN esid INT)
+CREATE PROCEDURE `DBSubmissionGetSheetSubmissions` (IN profile varchar(30), IN selectedSubmissionProfile varchar(30), IN fileProfile varchar(30), IN esid INT)
 READS SQL DATA
 begin
 SET @s = concat("
@@ -39,11 +39,11 @@ select SQL_CACHE
     S.E_id,
     S.ES_id
 from
-    Submission S
+    `Submission",profile,"` S
         left join
-    File F ON (S.F_id_file = F.F_id)
+    `File",fileProfile,"` F ON (S.F_id_file = F.F_id)
         left join
-    SelectedSubmission SS ON (S.S_id = SS.S_id_selected
+    `SelectedSubmission",selectedSubmissionProfile,"` SS ON (S.S_id = SS.S_id_selected
         and S.E_id = SS.E_id)
 where
     S.ES_id = '",esid,"';");

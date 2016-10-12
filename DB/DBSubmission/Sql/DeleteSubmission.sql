@@ -15,6 +15,11 @@
  */
 ?>
 
-DELETE FROM Submission
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
+DELETE FROM `Submission<?php echo $profile;?>`
 WHERE
     S_id = '<?php echo $suid; ?>'

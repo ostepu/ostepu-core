@@ -15,6 +15,11 @@
  */
 ?>
 
-INSERT INTO File SET <?php echo $values; ?>
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
+INSERT INTO `File<?php echo $profile;?>` SET <?php echo $values; ?>
 ON DUPLICATE KEY UPDATE `F_id`=LAST_INSERT_ID(`F_id`),<?php echo $values; ?>;
 SELECT LAST_INSERT_ID() as 'ID';

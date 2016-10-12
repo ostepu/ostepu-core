@@ -13,7 +13,7 @@
 ?>
 
 DROP PROCEDURE IF EXISTS `DBFileGetFile`;
-CREATE PROCEDURE `DBFileGetFile` (IN fileid INT)
+CREATE PROCEDURE `DBFileGetFile` (IN profile varchar(30), IN fileid INT)
 READS SQL DATA
 begin
 SET @s = concat("
@@ -27,7 +27,7 @@ select SQL_CACHE
     F_hash,
     F_mimeType
 from
-    File
+    `File",profile,"`
 where
     F_id = '",fileid,"';");
 PREPARE stmt1 FROM @s;

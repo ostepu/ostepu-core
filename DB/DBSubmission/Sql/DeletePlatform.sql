@@ -12,20 +12,25 @@
  */
 ?>
 
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
-DROP TABLE IF EXISTS `Submission`;
+DROP TABLE IF EXISTS `Submission<?php echo $profile;?>`;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
-DROP TRIGGER IF EXISTS `Submission_BDEL`;
-DROP TRIGGER IF EXISTS `Submission_BINS`;
-DROP TRIGGER IF EXISTS `Submission_BUPD`;
-DROP TRIGGER IF EXISTS `Submission_ADEL`;
+DROP TRIGGER IF EXISTS `Submission<?php echo $profile;?>_BDEL`;
+DROP TRIGGER IF EXISTS `Submission<?php echo $profile;?>_BINS`;
+DROP TRIGGER IF EXISTS `Submission<?php echo $profile;?>_BUPD`;
+DROP TRIGGER IF EXISTS `Submission<?php echo $profile;?>_ADEL`;
 DROP PROCEDURE IF EXISTS `DBSubmissionGetExerciseSubmissions`;
 DROP PROCEDURE IF EXISTS `DBSubmissionGetExistsPlatform`;
 DROP PROCEDURE IF EXISTS `DBSubmissionGetGroupCourseSubmissions`;

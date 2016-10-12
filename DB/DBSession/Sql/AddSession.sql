@@ -17,6 +17,11 @@
  */
 ?>
 
-INSERT INTO Session (U_id, SE_sessionID)
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
+INSERT INTO `Session<?php echo $profile;?>` (U_id, SE_sessionID)
 VALUES ('<?php echo $userid; ?>', '<?php echo $sessionid; ?>')
 ON DUPLICATE KEY UPDATE SE_sessionID = '<?php echo $sessionid; ?>'

@@ -13,7 +13,7 @@
 ?>
 
 DROP PROCEDURE IF EXISTS `DBSubmissionGetGroupSubmissions`;
-CREATE PROCEDURE `DBSubmissionGetGroupSubmissions` (IN userid INT,IN esid INT)
+CREATE PROCEDURE `DBSubmissionGetGroupSubmissions` (IN profile varchar(30), IN selectedSubmissionProfile varchar(30), IN fileProfile varchar(30), IN exerciseProfile varchar(30), IN groupProfile varchar(30), IN userid INT,IN esid INT)
 READS SQL DATA
 begin
 SET @s = concat("
@@ -39,19 +39,19 @@ select SQL_CACHE
     S.E_id,
     S.ES_id
 from
-    `Group` G
+    `Group",groupProfile,"`` G
         join
-    `Group` G2 ON (G.U_id_leader = '",userid,"'
+    `Group",groupProfile,"`` G2 ON (G.U_id_leader = '",userid,"'
         and G.U_id_member = G2.U_id_member
         and G.ES_id = '",esid,"'
         and G2.ES_id = G.ES_id)
         join
-    (Submission S
-    join Exercise E ON (S.E_id = E.E_id and E.ES_id = '",esid,"')) ON (G2.U_id_leader = S.U_id)
+    (`Submission",profile,"` S
+    join `Exercise",exerciseProfile,"`` E ON (S.E_id = E.E_id and E.ES_id = '",esid,"')) ON (G2.U_id_leader = S.U_id)
         left join
-    File F ON (S.F_id_file = F.F_id)
+    `File",fileProfile,"`` F ON (S.F_id_file = F.F_id)
         left join
-    SelectedSubmission SS ON (S.S_id = SS.S_id_selected
+    `SelectedSubmission",selectedSubmissionProfile,"`` SS ON (S.S_id = SS.S_id_selected
         and S.E_id = SS.E_id);");
 PREPARE stmt1 FROM @s;
 EXECUTE stmt1;

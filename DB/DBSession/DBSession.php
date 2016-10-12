@@ -34,7 +34,10 @@ class DBSession
     private $_component = null;
     public function __construct( )
     {
-        $component = new Model('session', dirname(__FILE__), $this);
+        $component = new Model('session', dirname(__FILE__), $this, false, false, array('cloneable'=>true,
+                                                                                        'defaultParams'=>array('userProfile'=>''),
+                                                                                        'addOptionsToParametersAsPostfix'=>true,
+                                                                                        'addProfileToParametersAsPostfix'=>true));
         $this->_component=$component;
         $component->run();
     }
@@ -51,7 +54,7 @@ class DBSession
      */
     public function editSession( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/EditSession.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new Session()),'Model::isProblem',array(new Session()));
+        return $this->_component->callSqlTemplate('editSession',dirname(__FILE__).'/Sql/EditSession.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new Session()),'Model::isProblem',array(new Session()));
     }
 
     /**
@@ -64,7 +67,7 @@ class DBSession
      */
     public function deleteSession( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/DeleteSession.sql',$params,201,'Model::isCreated',array(new Session()),'Model::isProblem',array(new Session()));
+        return $this->_component->callSqlTemplate('deleteSession',dirname(__FILE__).'/Sql/DeleteSession.sql',$params,201,'Model::isCreated',array(new Session()),'Model::isProblem',array(new Session()));
     }
 
     /**
@@ -79,7 +82,7 @@ class DBSession
      */
     public function editUserSession( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/EditUserSession.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new User()),'Model::isProblem',array(new User()));
+        return $this->_component->callSqlTemplate('editUserSession',dirname(__FILE__).'/Sql/EditUserSession.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new User()),'Model::isProblem',array(new User()));
     }
 
     /**
@@ -92,7 +95,7 @@ class DBSession
      */
     public function deleteUserSession( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/DeleteUserSession.sql',$params,201,'Model::isCreated',array(new Session()),'Model::isProblem',array(new Session()));
+        return $this->_component->callSqlTemplate('deleteUserSession',dirname(__FILE__).'/Sql/DeleteUserSession.sql',$params,201,'Model::isCreated',array(new Session()),'Model::isProblem',array(new Session()));
     }
 
     /**
@@ -116,7 +119,7 @@ class DBSession
         $sessionid = DBJson::mysql_real_escape_string( $sessionid );
         $userid = DBJson::mysql_real_escape_string( $userid );
 
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddSession.sql',array('sessionid' => $sessionid,'userid' => $userid, 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new Session()));
+        return $this->_component->callSqlTemplate('addSession',dirname(__FILE__).'/Sql/AddSession.sql',array_merge($params,array('sessionid' => $sessionid,'userid' => $userid, 'values' => $input->getInsertData( ))),201,$positive,array(),'Model::isProblem',array(new Session()));
     }
 
     public function get( $functionName, $linkName, $params=array(), $checkSession = true )
@@ -152,7 +155,7 @@ class DBSession
      */
     public function deletePlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('deletePlatform',dirname(__FILE__).'/Sql/DeletePlatform.sql',$params,201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 
     /**
@@ -163,7 +166,7 @@ class DBSession
      */
     public function addPlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('addPlatform',dirname(__FILE__).'/Sql/AddPlatform.sql',array_merge($params,array('object' => $input)),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 
     public function getSamplesInfo( $callName, $input, $params = array() )
@@ -195,11 +198,11 @@ class DBSession
             $obj = Session::createSession($i,$rr);
             $sql[]="insert ignore into Session SET ".$obj->getInsertData( ).";";
             if ($i%1000==0){
-                $this->_component->callSql('out2',implode('',$sql),201,'Model::isCreated',array(),'Model::isProblem',array(new File()));
+                $this->_component->callSql('postSamples',implode('',$sql),201,'Model::isCreated',array(),'Model::isProblem',array(new File()));
                 $sql=array();
             }
         }
-        $this->_component->callSql('out2',implode('',$sql),201,'Model::isCreated',array(),'Model::isProblem',array(new File()));
+        $this->_component->callSql('postSamples',implode('',$sql),201,'Model::isCreated',array(),'Model::isProblem',array(new File()));
 
         return Model::isCreated();
     }
