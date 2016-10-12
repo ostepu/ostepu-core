@@ -49,7 +49,7 @@ class DBExerciseFileType
      */
     public function editExerciseFileType( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/EditExerciseFileType.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new ExerciseFileType()),'Model::isProblem',array(new ExerciseFileType()));
+        return $this->_component->callSqlTemplate('editExerciseFileType',dirname(__FILE__).'/Sql/EditExerciseFileType.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new ExerciseFileType()),'Model::isProblem',array(new ExerciseFileType()));
     }
 
     /**
@@ -62,17 +62,17 @@ class DBExerciseFileType
      */
     public function deleteExerciseFileType( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteExerciseFileType.sql',$params,201,'Model::isCreated',array(new ExerciseFileType()),'Model::isProblem',array(new ExerciseFileType()));
+        return $this->_component->callSqlTemplate('deleteExerciseFileType',dirname(__FILE__).'/Sql/DeleteExerciseFileType.sql',$params,201,'Model::isCreated',array(new ExerciseFileType()),'Model::isProblem',array(new ExerciseFileType()));
     }
 
     public function deleteExerciseExerciseFileType( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteExerciseExerciseFileType.sql',$params,201,'Model::isCreated',array(new ExerciseFileType()),'Model::isProblem',array(new ExerciseFileType()));
+        return $this->_component->callSqlTemplate('deleteExerciseExerciseFileType',dirname(__FILE__).'/Sql/DeleteExerciseExerciseFileType.sql',$params,201,'Model::isCreated',array(new ExerciseFileType()),'Model::isProblem',array(new ExerciseFileType()));
     }
 
     public function deleteExerciseSheetExerciseFileType( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteExerciseSheetExerciseFileType.sql',$params,201,'Model::isCreated',array(new ExerciseFileType()),'Model::isProblem',array(new ExerciseFileType()));
+        return $this->_component->callSqlTemplate('deleteExerciseSheetExerciseFileType',dirname(__FILE__).'/Sql/DeleteExerciseSheetExerciseFileType.sql',$params,201,'Model::isCreated',array(new ExerciseFileType()),'Model::isProblem',array(new ExerciseFileType()));
     }
 
     /**
@@ -91,7 +91,7 @@ class DBExerciseFileType
             $obj->setId( $input[0]->getInsertId( ) );
             return array("status"=>201,"content"=>$obj);
         };
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddExerciseFileType.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new ExerciseFileType()));
+        return $this->_component->callSqlTemplate('addExerciseFileType',dirname(__FILE__).'/Sql/AddExerciseFileType.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new ExerciseFileType()));
     }
 
     public function get( $functionName, $linkName, $params=array(), $checkSession = true )
@@ -127,7 +127,7 @@ class DBExerciseFileType
      */
     public function deletePlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('deletePlatform',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 
     /**
@@ -138,6 +138,6 @@ class DBExerciseFileType
      */
     public function addPlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('addPlatform',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 }

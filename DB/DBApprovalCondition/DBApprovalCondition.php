@@ -51,7 +51,7 @@ class DBApprovalCondition
      */
     public function editApprovalCondition( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/EditApprovalCondition.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new ApprovalCondition()),'Model::isProblem',array(new ApprovalCondition()));
+        return $this->_component->callSqlTemplate('editApprovalCondition',dirname(__FILE__).'/Sql/EditApprovalCondition.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new ApprovalCondition()),'Model::isProblem',array(new ApprovalCondition()));
     }
 
     /**
@@ -64,7 +64,7 @@ class DBApprovalCondition
      */
     public function deleteApprovalCondition( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/DeleteApprovalCondition.sql',$params,201,'Model::isCreated',array(new ApprovalCondition()),'Model::isProblem',array(new ApprovalCondition()));
+        return $this->_component->callSqlTemplate('deleteApprovalCondition',dirname(__FILE__).'/Sql/DeleteApprovalCondition.sql',$params,201,'Model::isCreated',array(new ApprovalCondition()),'Model::isProblem',array(new ApprovalCondition()));
     }
 
     /**
@@ -83,7 +83,7 @@ class DBApprovalCondition
             $obj->setId( $input[0]->getInsertId( ) );
             return array("status"=>201,"content"=>$obj);
         };
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/AddApprovalCondition.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new ApprovalCondition()));
+        return $this->_component->callSqlTemplate('addApprovalCondition',dirname(__FILE__).'/Sql/AddApprovalCondition.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new ApprovalCondition()));
     }
 
     public function get( $functionName, $linkName, $params=array(), $checkSession = true )
@@ -119,7 +119,7 @@ class DBApprovalCondition
      */
     public function deletePlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('deletePlatform',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 
     /**
@@ -130,7 +130,7 @@ class DBApprovalCondition
      */
     public function addPlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('addPlatform',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 
     public function getSamplesInfo( $callName, $input, $params = array() )
@@ -163,11 +163,11 @@ class DBApprovalCondition
                 $sql[]="insert ignore into ApprovalCondition SET ".$obj->getInsertData( ).";";
             }
             if ($i%1000==0){
-                $this->_component->callSql('out2',implode('',$sql),201,'Model::isCreated',array(),'Model::isProblem',array(new File()));
+                $this->_component->callSql('postSamples',implode('',$sql),201,'Model::isCreated',array(),'Model::isProblem',array(new File()));
                 $sql=array();
             }
         }
-        $this->_component->callSql('out2',implode('',$sql),201,'Model::isCreated',array(),'Model::isProblem',array(new File()));
+        $this->_component->callSql('postSamples',implode('',$sql),201,'Model::isCreated',array(),'Model::isProblem',array(new File()));
 
         return Model::isCreated();
     }

@@ -53,7 +53,7 @@ class DBInvitation
      */
     public function editInvitation( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/EditInvitation.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new Invitation()),'Model::isProblem',array(new Invitation()));
+        return $this->_component->callSqlTemplate('editInvitation',dirname(__FILE__).'/Sql/EditInvitation.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new Invitation()),'Model::isProblem',array(new Invitation()));
     }
 
     /**
@@ -68,7 +68,7 @@ class DBInvitation
      */
     public function deleteInvitation( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteInvitation.sql',$params,201,'Model::isCreated',array(new Invitation()),'Model::isProblem',array(new Invitation()));
+        return $this->_component->callSqlTemplate('deleteInvitation',dirname(__FILE__).'/Sql/DeleteInvitation.sql',$params,201,'Model::isCreated',array(new Invitation()),'Model::isProblem',array(new Invitation()));
     }
 
     /**
@@ -87,7 +87,7 @@ class DBInvitation
             //$obj->setId( $input[0]->getInsertId( ) );
             return array("status"=>201,"content"=>$obj);
         };
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddInvitation.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new Invitation()));
+        return $this->_component->callSqlTemplate('addInvitation',dirname(__FILE__).'/Sql/AddInvitation.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new Invitation()));
     }
 
     public function get( $functionName, $linkName, $params=array(), $checkSession = true )
@@ -123,7 +123,7 @@ class DBInvitation
      */
     public function deletePlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('deletePlatform',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 
     /**
@@ -134,7 +134,7 @@ class DBInvitation
      */
     public function addPlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('addPlatform',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 }
 

@@ -51,7 +51,7 @@ class DBExerciseType
      */
     public function editExerciseType( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/EditExerciseType.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new ExerciseType()),'Model::isProblem',array(new ExerciseType()));
+        return $this->_component->callSqlTemplate('editExerciseType',dirname(__FILE__).'/Sql/EditExerciseType.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new ExerciseType()),'Model::isProblem',array(new ExerciseType()));
     }
 
     /**
@@ -64,7 +64,7 @@ class DBExerciseType
      */
     public function deleteExerciseType( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/DeleteExerciseType.sql',$params,201,'Model::isCreated',array(new ExerciseType()),'Model::isProblem',array(new ExerciseType()));
+        return $this->_component->callSqlTemplate('deleteExerciseType',dirname(__FILE__).'/Sql/DeleteExerciseType.sql',$params,201,'Model::isCreated',array(new ExerciseType()),'Model::isProblem',array(new ExerciseType()));
     }
 
     /**
@@ -83,7 +83,7 @@ class DBExerciseType
             $obj->setId( $input[0]->getInsertId( ) );
             return array("status"=>201,"content"=>$obj);
         };
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/AddExerciseType.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new ExerciseType()));
+        return $this->_component->callSqlTemplate('addExerciseType',dirname(__FILE__).'/Sql/AddExerciseType.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new ExerciseType()));
     }
 
     public function get( $functionName, $linkName, $params=array(), $checkSession = true )
@@ -119,7 +119,7 @@ class DBExerciseType
      */
     public function deletePlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('deletePlatform',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 
     /**
@@ -130,7 +130,7 @@ class DBExerciseType
      */
     public function addPlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('addPlatform',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 
     public function getSamplesInfo( $callName, $input, $params = array() )
@@ -166,7 +166,7 @@ class DBExerciseType
                 $sql=array();
             }
         }
-        $this->_component->callSql('out2',implode('',$sql),201,'Model::isCreated',array(),'Model::isProblem',array(new File()));
+        $this->_component->callSql('postSamples',implode('',$sql),201,'Model::isCreated',array(),'Model::isProblem',array(new File()));
 
         return Model::isCreated();
     }
