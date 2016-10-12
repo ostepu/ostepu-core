@@ -32,7 +32,7 @@ class DBQuery2
     private $_component = null;
     public function __construct( )
     {
-        $component = new Model('query', dirname(__FILE__), $this, false, false, true);
+        $component = new Model('query', dirname(__FILE__), $this, false, false, array('cloneable'=>true));
         $this->_component=$component;
         $component->run();
     }
