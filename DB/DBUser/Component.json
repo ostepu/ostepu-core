@@ -74,7 +74,7 @@
             "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
-                "path": "/query/procedure/DBUserGetUser/:userid"
+                "path": "/query/procedure/DBUserGetUser/:profile/:userid"
             }]
         },
         {
@@ -82,7 +82,7 @@
             "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
-                "path": "/query/procedure/DBUserGetUsers"
+                "path": "/query/procedure/DBUserGetUsers/:profile"
             }]
         },
         {
@@ -90,7 +90,7 @@
             "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
-                "path": "/query/procedure/DBUserGetCourseMember/:courseid"
+                "path": "/query/procedure/DBUserGetCourseMember/:profile/:courseid"
             }]
         },
         {
@@ -98,7 +98,7 @@
             "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
-                "path": "/query/procedure/DBUserGetGroupMember/:esid/:userid"
+                "path": "/query/procedure/DBUserGetGroupMember/:profile/:esid/:userid"
             }]
         },
         {
@@ -106,7 +106,7 @@
             "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
-                "path": "/query/procedure/DBUserGetUserByStatus/:statusid"
+                "path": "/query/procedure/DBUserGetUserByStatus/:profile/:statusid"
             }]
         },
         {
@@ -114,7 +114,7 @@
             "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
-                "path": "/query/procedure/DBUserGetCourseUserByStatus/:courseid/:statusid"
+                "path": "/query/procedure/DBUserGetCourseUserByStatus/:profile/:courseid/:statusid"
             }]
         },
         {
@@ -122,7 +122,7 @@
             "target": "DBQueryWrite",
             "links": [{
                 "method": "GET",
-                "path": "/query/procedure/DBUserGetIncreaseUserFailedLogin/:userid"
+                "path": "/query/procedure/DBUserGetIncreaseUserFailedLogin/:profile/:userid"
             }]
         },
         {
@@ -130,7 +130,7 @@
             "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
-                "path": "/query/procedure/DBUserGetExistsPlatform"
+                "path": "/query/procedure/DBUserGetExistsPlatform/:profile"
             }]
         },
         {
@@ -138,7 +138,7 @@
             "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
-                "path": "/query/procedure/DBUserGetExistsPlatform"
+                "path": "/query/procedure/DBUserGetExistsPlatform/:profile"
             }]
         }
     ],
