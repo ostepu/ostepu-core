@@ -52,7 +52,14 @@ class Model
 
     private $_noInfo = null;
     private $_noHelp = null;
-    private $_cloneable = false;
+    
+    private $_options = array();
+    private $_default = array('cloneable'=>false,
+                              'addOptionsToParameters'=>false,
+                              'addOptionsToParametersAsPostfix'=>false,
+                              'addProfileToParameters'=>false,
+                              'addProfileToParametersAsPostfix'=>false,
+                              'defaultParams' => array());
 
     /**
      * Der Konstruktor
@@ -61,14 +68,22 @@ class Model
      * @param string Der lokale Pfade des Moduls
      * @param string Der Klassenname des Moduls
      */
-    public function __construct( $prefix, $path, $class, $noInfo = false, $noHelp = false, $cloneable = false)
+     // options:
+     // cloneable: true|false
+    public function __construct( $prefix, $path, $class, $noInfo = false, $noHelp = false, $options = array())
     {
         $this->_path=$path;
         $this->_prefix=$prefix;
         $this->_class=$class;
         $this->_noInfo=$noInfo;
         $this->_noHelp=$noHelp;
-        $this->_cloneable=$cloneable;
+        $this->_options = $options;
+    }
+    
+    public function getOption($name)
+    {
+        if (isset($this->_options[$name])) return $this->_options[$name];
+        return $this->_default[$name];
     }
 
     /**
@@ -108,7 +123,7 @@ class Model
             foreach ($methods as $method){
                 // wenn das Modul auch als clone verwendet werden soll, müssen die Aufrufe erweitert werden
                 $cloneAdd = '';
-                if ($this->_cloneable){
+                if ($this->getOption('cloneable')){
                     $cloneAdd = '(/profile/:profileName)';
                 }
                 
@@ -181,6 +196,7 @@ class Model
             }
 
             $params = $matches->getParams();
+            
             $placeholder = array('profileName'=>'%^([a-zA-Z0-9_]*)$%'); // profileName soll geprueft werden
             // prüfe die Bedingungen für die Platzhalter
             foreach ($selectedCommand['placeholder'] as $holder){
@@ -190,7 +206,6 @@ class Model
             }
 
             // hier werden die eigentlichen Bedingungen der Platzhalter geprüft
-            // todo: muss wieder genutzt werden
             foreach ($params as $key => $value){
                 if (isset($placeholder[$key])){
                     if (is_array($value)){
@@ -225,12 +240,44 @@ class Model
             }
 
             // der Befehl wurde nun bestimmt, sodass wir jetzt den Rest der Komponente laden koennen
-            if ($this->_cloneable && isset($params['profileName'])){
+            if ($this->getOption('cloneable') && isset($params['profileName'])){
                 $conf = $com->loadConfig( $params['profileName'] );
             } else {
                 $conf = $com->loadConfig( );
             }
             $this->_conf=$conf;
+            
+            $params = array_merge($params, $this->getOption('defaultParams'));
+            
+            if ($this->getOption('addOptionsToParametersAsPostfix')){
+                // fügt die Options der Komponente den Ausfuehrungsparametern hinzu
+                $options = $this->extractComponentOptions();
+                if (isset($options) && is_array($options)){
+                    $params = array_merge($options, $params);
+                    foreach($options as $key => $value){
+                        Model::generatePostfix(array($key=>$key), $params);
+                    }
+                }
+                unset($options);
+            }
+            
+            if ($this->getOption('addOptionsToParameters')){
+                // fügt die Options der Komponente den Ausfuehrungsparametern hinzu
+                $options = $this->extractComponentOptions();
+                if (isset($options) && is_array($options)){
+                    $params = array_merge($options, $params);
+                }
+                unset($options);
+            }
+            
+            
+            if ($this->getOption('addProfileToParametersAsPostfix')){
+                if ($this->getOption('cloneable') && isset($params['profileName'])){
+                    // fügt die Options der Komponente den Ausfuehrungsparametern hinzu
+                    Model::generatePostfix(array('profileName'=>'profile'), $params);
+                    unset($options);
+                }
+            }
 
             // nun soll die zugehörige Funktion im Modul aufgerufen werden
             if (isset($selectedCommand['inputType']) && trim($selectedCommand['inputType'])!='' && isset($rawInput)){
@@ -400,7 +447,7 @@ class Model
         // ersetzt die Platzer im Ausgang mit den eingegeben Parametern
         foreach ($params as $key=>$param)
             $order = str_replace( ':'.$key, $param, $order);
-
+///echo $order; // die URL, welche aufgerufen wird
         // führe nun den Aufruf aus
         $result = Request::routeRequest(
                                         $method,
@@ -760,7 +807,61 @@ class Model
         return self::createAnswer(401,$params);
     }
 
-    public static function header($name, $value){
+    public static function header($name, $value)
+    {
         header($name.': '.$value);
+    }
+    
+    // für die Tabellen werden oft postfixe benötigt, welche aus
+    // den eingehenden Parametern aufgebaut werden
+    // list hat den Aufbau array(ausgangselement => zielelement, ...)
+    public static function generatePostfix($list, &$params)
+    {
+        foreach ($list as $key => $value){
+            $tmp = '';
+            if (isset($params[$key]) && trim($params[$key]) !== ''){
+                $tmp = '_'.$params[$key];
+            }
+            $params[$value] = $tmp;
+        }
+    }
+    
+    // liefert die Optionen der Komponente (sind in der Components.json eingetragen)
+    public function extractComponentOptions($split=true, $glueA=';', $glueB='=')
+    {
+        if ($this->_conf !== null){
+            $options = $this->_conf->getOption();
+            if (!isset($options)){
+                // es wurden keine Optionen gefunden
+                if ($split){
+                    return array();
+                }
+                return '';
+            }
+            
+            // zerlegt den Optionsstring znaechst nach glueA, dann nach glueB
+            if ($split){
+                $options = explode($glueA, $options);
+                $res = array();
+                foreach($options as $option){
+                    $tmp = explode($glueB, $option);
+                    if (count($tmp)==1){
+                        if (trim($tmp[0]) === '') continue;
+                        $res[$tmp[0]] = $tmp[0];
+                    } else if(count($tmp)==2){
+                        if (trim($tmp[0]) === '') continue;
+                        $res[$tmp[0]] = $tmp[1];
+                    } else {
+                        $name = array_shift($tmp);
+                        $res[$name] = $tmp;
+                    }
+                }
+                return $res;
+            }
+            // wenn die Optionen nicht zerlegt werden sollen, dann nur als String
+            return $options;
+        }
+        // es ist keine Komponente geladen
+        return null;
     }
 }
