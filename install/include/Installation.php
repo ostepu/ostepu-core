@@ -122,7 +122,7 @@ class Installation
                                             null,
                                             null,
                                             $data['DB']['db_user_operator'].$dbuserPostfix,
-                                            $data['DB']['db_passwd_operator'],
+                                            $data['DB']['db_passwd_operator'.$dbuserPostfix],
                                             $data['PL']['temp'],
                                             $data['PL']['files'],
                                             $data['PL']['urlExtern'],

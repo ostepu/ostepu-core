@@ -25,9 +25,12 @@ class PlattformDatenbanknutzer
     public static $onEvents = array('install'=>array('name'=>'DBOperator','event'=>array('actionInstallDBOperator','install')));
 
     public static function getDefaults()
-    {
+    {        
         return array(
                      'db_user_override_operator' => array('data[DB][db_user_override_operator]', null),
+                     'db_passwd_operatorRead' => array('data[DB][db_passwd_operatorRead]', Einstellungen::CreatePassword(20)),
+                     'db_passwd_operatorWrite' => array('data[DB][db_passwd_operatorWrite]', Einstellungen::CreatePassword(20)),
+                     'db_passwd_operatorSetup' => array('data[DB][db_passwd_operatorSetup]', Einstellungen::CreatePassword(50))
                      );
     }
 
@@ -40,6 +43,9 @@ class PlattformDatenbanknutzer
         $def = self::getDefaults();
 
         $text = '';
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_passwd_operatorRead'], 'data[DB][db_passwd_operatorRead]', $def['db_passwd_operatorRead'][1],true);
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_passwd_operatorWrite'], 'data[DB][db_passwd_operatorWrite]', $def['db_passwd_operatorWrite'][1],true);
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_passwd_operatorSetup'], 'data[DB][db_passwd_operatorSetup]', $def['db_passwd_operatorSetup'][1],true);
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_user_override_operator'], 'data[DB][db_user_override_operator]', $def['db_user_override_operator'][1], true);
         echo $text;
         self::$initialized = true;
@@ -60,7 +66,17 @@ class PlattformDatenbanknutzer
         }
 
         if (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']]!=null){
-           $result =  $result[self::$onEvents['install']['name']];
+            $result =  $result[self::$onEvents['install']['name']];
+
+            // diese Zeilen sorgen dafür, dass die Werte, welche im install gesetzt wurden, nicht 
+            // nach dem Formular absenden wieder ueberschrieben werden
+            $data['DB']['db_passwd_operatorRead'] = Einstellungen::Get('data[DB][db_passwd_operatorRead]', $data['DB']['db_passwd_operatorRead']);
+            $data['DB']['db_passwd_operatorWrite'] = Einstellungen::Get('data[DB][db_passwd_operatorWrite]', $data['DB']['db_passwd_operatorWrite']);
+            $data['DB']['db_passwd_operatorSetup'] = Einstellungen::Get('data[DB][db_passwd_operatorSetup]', $data['DB']['db_passwd_operatorSetup']);
+            $def = self::getDefaults();
+            $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_passwd_operatorRead'], 'data[DB][db_passwd_operatorRead]', $def['db_passwd_operatorRead'][1],false);
+            $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_passwd_operatorWrite'], 'data[DB][db_passwd_operatorWrite]', $def['db_passwd_operatorWrite'][1],false);
+            $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_passwd_operatorSetup'], 'data[DB][db_passwd_operatorSetup]', $def['db_passwd_operatorSetup'][1],false);
         } else
             $result = array('content'=>null,'fail'=>false,'errno'=>null,'error'=>null);
 
@@ -136,17 +152,28 @@ class PlattformDatenbanknutzer
             $userVariants = array('', 'Read', 'Write', 'Setup');
             $userRights = array('REFERENCES,LOCK TABLES,CREATE VIEW,EXECUTE,ALTER ROUTINE,CREATE ROUTINE,SHOW VIEW,CREATE TEMPORARY TABLES,INDEX,ALTER,SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,TRIGGER',
                                 'LOCK TABLES,CREATE VIEW,SELECT,SHOW VIEW,EXECUTE',
-                                'LOCK TABLES,INSERT,UPDATE,DELETE',
+                                'LOCK TABLES,INSERT,UPDATE,DELETE,CREATE VIEW,SELECT,SHOW VIEW,EXECUTE',
                                 'REFERENCES,LOCK TABLES,CREATE VIEW,EXECUTE,ALTER ROUTINE,CREATE ROUTINE,SHOW VIEW,CREATE TEMPORARY TABLES,INDEX,ALTER,SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,TRIGGER');
+            
+            // erzeuge neue Passwörter für die speziellen Nutzer
+            $data['DB']['db_passwd_operatorRead'] = Einstellungen::CreatePassword(20);
+            $data['DB']['db_passwd_operatorWrite'] = Einstellungen::CreatePassword(20);
+            $data['DB']['db_passwd_operatorSetup'] = Einstellungen::CreatePassword(50);
+            
+            Einstellungen::Set('data[DB][db_passwd_operatorRead]', $data['DB']['db_passwd_operatorRead']);
+            Einstellungen::Set('data[DB][db_passwd_operatorWrite]', $data['DB']['db_passwd_operatorWrite']);
+            Einstellungen::Set('data[DB][db_passwd_operatorSetup]', $data['DB']['db_passwd_operatorSetup']);
+            
+            $userPasswords = array($data['DB']['db_passwd_operator'], $data['DB']['db_passwd_operatorRead'], $data['DB']['db_passwd_operatorWrite'], $data['DB']['db_passwd_operatorSetup']);
             
             foreach ($userVariants as $key => $addToUserName){
                 $sql = "CREATE USER '".$data['DB']['db_user_operator'].$addToUserName."'@'%' ".
-                        "IDENTIFIED BY '{$data['DB']['db_passwd_operator']}';";
+                        "IDENTIFIED BY '".$userPasswords[$key]."';";
                 $sql.= "GRANT ".$userRights[$key]." ".
                         "ON `{$oldName}`.* ".
                         "TO '".$data['DB']['db_user_operator'].$addToUserName."'@'%'; ";
                 $sql.= "CREATE USER '".$data['DB']['db_user_operator'].$addToUserName."'@'localhost' ".
-                        "IDENTIFIED BY '{$data['DB']['db_passwd_operator']}';";
+                        "IDENTIFIED BY '".$userPasswords[$key]."';";
                 $sql.= "GRANT ".$userRights[$key]." ".
                         "ON `{$oldName}`.* ".
                         "TO '".$data['DB']['db_user_operator'].$addToUserName."'@'localhost';";
