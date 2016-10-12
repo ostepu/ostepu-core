@@ -181,7 +181,7 @@ class Model
             }
 
             $params = $matches->getParams();
-            $placeholder = array('profileName'=>'%^([a-zA-Z0-9_]+)$%'); // profileName soll geprueft werden
+            $placeholder = array('profileName'=>'%^([a-zA-Z0-9_]*)$%'); // profileName soll geprueft werden
             // prüfe die Bedingungen für die Platzhalter
             foreach ($selectedCommand['placeholder'] as $holder){
                 if (!isset($holder['name'])) continue;
