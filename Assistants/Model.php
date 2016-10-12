@@ -52,6 +52,7 @@ class Model
 
     private $_noInfo = null;
     private $_noHelp = null;
+    private $_cloneable = false;
 
     /**
      * Der Konstruktor
@@ -60,13 +61,14 @@ class Model
      * @param string Der lokale Pfade des Moduls
      * @param string Der Klassenname des Moduls
      */
-    public function __construct( $prefix, $path, $class, $noInfo = false, $noHelp = false)
+    public function __construct( $prefix, $path, $class, $noInfo = false, $noHelp = false, $cloneable = false)
     {
         $this->_path=$path;
         $this->_prefix=$prefix;
         $this->_class=$class;
         $this->_noInfo=$noInfo;
         $this->_noHelp=$noHelp;
+        $this->_cloneable=$cloneable;
     }
 
     /**
@@ -79,8 +81,7 @@ class Model
 
         // lädt die Konfiguration des Moduls
         if ( $com->used( ) ) return;
-            $conf = $com->loadConfig( );
-        $this->_conf=$conf;
+        ///var_dump($conf);
         $this->_com=$com;
         $commands = $com->commands(array(),true,true);
 
@@ -105,7 +106,13 @@ class Model
             $methods = explode(',',$command['method']);
 
             foreach ($methods as $method){
-                $route = new \Slim\Route($command['path'],array($this->_class,$command['callback']),false);
+                // wenn das Modul auch als clone verwendet werden soll, müssen die Aufrufe erweitert werden
+                $cloneAdd = '';
+                if ($this->_cloneable){
+                    $cloneAdd = '(/profile/:profileName)';
+                }
+                
+                $route = new \Slim\Route($cloneAdd.$command['path'],array($this->_class,$command['callback']),false);
                 $route->via(strtoupper($method));
                 $route->setName($command['name']);
                 $router->map($route);
@@ -113,7 +120,7 @@ class Model
                 // wenn es ein GET Befehl ist, wird automatisch HEAD unterstützt
                 if (strtoupper($method)=='GET'){
                     // erzeugt einen HEAD Router
-                    $route = new \Slim\Route($command['path'],array($this->_class,$command['callback']),false);
+                    $route = new \Slim\Route($cloneAdd.$command['path'],array($this->_class,$command['callback']),false);
                     $route->via('HEAD');
                     $route->setName($command['name']);
                     $router->map($route);
@@ -174,7 +181,7 @@ class Model
             }
 
             $params = $matches->getParams();
-            $placeholder = array();
+            $placeholder = array('profileName'=>'%^([a-zA-Z0-9_]+)$%'); // profileName soll geprueft werden
             // prüfe die Bedingungen für die Platzhalter
             foreach ($selectedCommand['placeholder'] as $holder){
                 if (!isset($holder['name'])) continue;
@@ -184,7 +191,7 @@ class Model
 
             // hier werden die eigentlichen Bedingungen der Platzhalter geprüft
             // todo: muss wieder genutzt werden
-            /*foreach ($params as $key => $value){
+            foreach ($params as $key => $value){
                 if (isset($placeholder[$key])){
                     if (is_array($value)){
                         // wenn es ein Array ist, wurde ein :Element+ verwendet (Slim)
@@ -215,7 +222,15 @@ class Model
                         }
                     }
                 }
-            }*/
+            }
+
+            // der Befehl wurde nun bestimmt, sodass wir jetzt den Rest der Komponente laden koennen
+            if ($this->_cloneable && isset($params['profileName'])){
+                $conf = $com->loadConfig( $params['profileName'] );
+            } else {
+                $conf = $com->loadConfig( );
+            }
+            $this->_conf=$conf;
 
             // nun soll die zugehörige Funktion im Modul aufgerufen werden
             if (isset($selectedCommand['inputType']) && trim($selectedCommand['inputType'])!='' && isset($rawInput)){
@@ -527,7 +542,7 @@ class Model
      * @param bool $checkSession Ob die Sessiondaten in der Datenbank geprüft werden sollen
      * @return mixed Das Ergebnis der aufgerufenen Resultatfunktion
      */
-    public function callSqlTemplate($linkName, $file, $params, $positiveStatus, callable $positiveMethod, $positiveParams, callable $negativeMethod, $negativeParams, $checkSession=true)
+    public function callSqlTemplate($linkName, $file, $params, $positiveStatus, callable $positiveMethod, $positiveParams, callable $negativeMethod, $negativeParams, $checkSession=false)
     {
         $link=CConfig::getLink($this->_conf->getLinks( ),$linkName);
 
@@ -565,7 +580,7 @@ class Model
      * @param bool $checkSession Ob die Sessiondaten in der Datenbank geprüft werden sollen
      * @return mixed Das Ergebnis der aufgerufenen Resultatfunktion
      */
-    public function callSql($linkName, $sql, $positiveStatus, callable $positiveMethod, $positiveParams, callable $negativeMethod, $negativeParams, $checkSession=true)
+    public function callSql($linkName, $sql, $positiveStatus, callable $positiveMethod, $positiveParams, callable $negativeMethod, $negativeParams, $checkSession=false)
     {
         $link=CConfig::getLink($this->_conf->getLinks( ),$linkName);
         // starts a query, by using given sql statements/statement
