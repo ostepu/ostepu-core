@@ -109,7 +109,7 @@ class Installation
      * @param string[][] $data Die Serverdaten
      * @return Patform Die Plattformdaten
      */
-    public static function PlattformZusammenstellen($data)
+    public static function PlattformZusammenstellen($data, $dbuserPostfix='')
     {
         Installation::log(array('text'=>'starte Funktion'));
         $settings = self::collectPlatformSettings($data);
@@ -121,7 +121,7 @@ class Installation
                                             $data['DB']['db_name'],
                                             null,
                                             null,
-                                            $data['DB']['db_user_operator'],
+                                            $data['DB']['db_user_operator'].$dbuserPostfix,
                                             $data['DB']['db_passwd_operator'],
                                             $data['PL']['temp'],
                                             $data['PL']['files'],
