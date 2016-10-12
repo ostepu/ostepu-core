@@ -14,71 +14,115 @@
     ],
     "links": [
         {
-            "name": "out2",
-            "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "POST",
-                    "path": "/query"
-                }
-            ]
+            "name": "editCourse",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "deleteCourse",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "addCourse",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "deletePlatform",
+            "target": "DBQuerySetup",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "addPlatform",
+            "target": "DBQuerySetup",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "postSamples",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
         },
         {
             "name": "getCourse",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBCourseGetCourse/:profile/:exerciseSheetProfile/:settingProfile/:courseid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBCourseGetCourse/:profile/:exerciseSheetProfile/:settingProfile/:courseid"
+            }]
         },
         {
             "name": "getAllCourses",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBCourseGetAllCourses/:profile/:exerciseSheetProfile"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBCourseGetAllCourses/:profile/:exerciseSheetProfile"
+            }]
         },
         {
             "name": "getUserCourses",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBCourseGetUserCourses/:profile/:exerciseSheetProfile/:userid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBCourseGetUserCourses/:profile/:exerciseSheetProfile/:userid"
+            }]
         },
         {
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBCourseGetExistsPlatform/:profile"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBCourseGetExistsPlatform/:profile"
+            }]
         },
         {
             "name": "getSamplesInfo",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBCourseGetExistsPlatform/:profile"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBCourseGetExistsPlatform/:profile"
+            }]
         }
     ],
     "connector": [
-        {"name": "request","target": "CLocalObjectRequest"},
-        {"name": "postPlatform","target": "CInstall"},
-        {"name": "postSamples","target": "CInstall"},
-        {"name":"postCourse", "target":"LCourse", "priority":300},
-        { "name": "getDescFiles","target": "TDocuView"}
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        },
+        {
+            "name": "postPlatform",
+            "target": "CInstall"
+        },
+        {
+            "name": "postSamples",
+            "target": "CInstall"
+        },
+        {
+            "name": "postCourse",
+            "target": "LCourse",
+            "priority": 300
+        },
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView"
+        }
     ]
 }

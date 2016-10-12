@@ -14,16 +14,56 @@
     ],
     "links": [
         {
-            "name": "out",
-            "target": "DBQuery",
+            "name": "editUser",
+            "target": "DBQueryWrite",
             "links": [{
                 "method": "POST",
                 "path": "/query"
             }]
         },
         {
-            "name": "out2",
-            "target": "DBQuery2",
+            "name": "removeUser",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "removeUserPermanent",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "addUser",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "deletePlatform",
+            "target": "DBQuerySetup",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "addPlatform",
+            "target": "DBQuerySetup",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "postSamples",
+            "target": "DBQueryWrite",
             "links": [{
                 "method": "POST",
                 "path": "/query"
@@ -79,7 +119,7 @@
         },
         {
             "name": "getIncreaseUserFailedLogin",
-            "target": "DBQuery2",
+            "target": "DBQueryWrite",
             "links": [{
                 "method": "GET",
                 "path": "/query/procedure/DBUserGetIncreaseUserFailedLogin/:userid"
@@ -120,6 +160,9 @@
             "target": "CHelp",
             "links": [{"path": "/link/exists/platform"}]
         },
-        { "name": "getDescFiles","target": "TDocuView"}
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView"
+        }
     ]
 }
