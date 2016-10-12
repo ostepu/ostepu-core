@@ -71,11 +71,11 @@ class Authentication extends AbstractAuthentication
      */
     public function loginUser($username, $password )
     {
-        global $databaseURI;
-        $databaseURL = "{$databaseURI}/user/user/{$username}";
+        global $serverURI;
+        $databaseURL = "{$serverURI}/DB/DBUser/user/user/{$username}";
         $user = http_get($databaseURL, false, $message);
         $user = json_decode($user, true);
-        
+
         // prüfe den Wartungsmodus
         global $maintenanceMode;
         global $maintenanceText;
@@ -106,7 +106,7 @@ class Authentication extends AbstractAuthentication
                     return $refresh;
                 } else {
                     $userid = $user['id'];
-                    $databaseURL = "{$databaseURI}/user/user/{$userid}/IncFailedLogin";
+                    $databaseURL = "{$serverURI}/DB/DBUser/user/user/{$userid}/IncFailedLogin";
                     $user = http_get($databaseURL, false, $message);
                 }
             }
