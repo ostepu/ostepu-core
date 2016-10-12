@@ -16,5 +16,8 @@ DROP PROCEDURE IF EXISTS `DBFileGetExistsPlatform`;
 CREATE PROCEDURE `DBFileGetExistsPlatform` (IN profile varchar(30))
 READS SQL DATA
 begin
-show tables like concat('File',profile);
+SET @s = concat("show tables like 'File",profile,"';");
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
 end;
