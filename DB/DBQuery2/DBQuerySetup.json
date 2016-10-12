@@ -4,7 +4,6 @@
     "type": "clone",
     "base": "DBQuery2",
     "baseURI": "/profile/setup",
-    "option": "db_user=db_user_setup",
     "connector": [{
         "name": "postPlatformSetupUser",
         "target": "CInstall",

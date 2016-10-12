@@ -4,7 +4,6 @@
     "type": "clone",
     "base": "DBQuery2",
     "baseURI": "/profile/read",
-    "option": "db_user=db_user_read",
     "connector": [{
         "name": "postPlatformReadUser",
         "target": "CInstall",
