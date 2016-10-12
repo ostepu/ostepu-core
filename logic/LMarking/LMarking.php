@@ -87,21 +87,9 @@ class LMarking
         $this->app->post('/'.$this->getPrefix().'(/)',
                         array($this, 'addMarking'));
 
-        // GET GetMarkingURL
-        $this->app->get('/'.$this->getPrefix().'/marking/:markingid(/)',
-                        array ($this, 'getMarkingURL'));
-
         // DELETE DeleteMarking
         $this->app->delete('/'.$this->getPrefix().'/marking/:markingid(/)',
                         array($this, 'deleteMarking'));
-
-        // PUT EditMarking
-        $this->app->put('/'.$this->getPrefix().'/marking/:markingid(/)',
-                        array($this, 'editMarking'));
-
-        // PUT EditMarkingStatus
-        $this->app->put('/'.$this->getPrefix().'/marking/:markingid/status(/)',
-                        array($this, 'editMarkingStatus'));
 
         // run Slim
         $this->app->run();
@@ -230,18 +218,6 @@ class LMarking
     }
 
     /**
-     * Returns the URL to a given marking.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /marking/marking/$markingid(/).
-     *
-     * @param int $markingid The id of the marking the returned URL belongs to.
-     */
-    public function getMarkingURL($markingid) {
-
-    }
-
-    /**
      * Deletes a marking.
      *
      * Called when this component receives an HTTP DELETE request to
@@ -282,51 +258,5 @@ class LMarking
             $this->app->response->setBody( '' );
             $this->app->stop( );
         }
-    }
-
-    /**
-     * Edits a marking.
-     *
-     * Called when this component receives an HTTP PUT request to
-     * /marking/marking/$markingid(/).
-     * The request body should contain a JSON object representing the marking's new
-     * attributes.
-     *
-     * @param int $markingid The id of the marking that is being updated.
-     */
-    public function editMarking($markingid){
-        /*$header = $this->app->request->headers->all();
-        $body = json_decode($this->app->request->getBody());
-        $file = json_encode($body->{'file'});
-        //Anfrage an FileSystem
-        $URL = $this->lURL.'/FS/marking/'.$markingid.'/tutor/'.$tutorid;
-        $answer = Request::custom('PUT', $URL, $header, $file);
-
-        if($answer['status'] == 200){
-            $body->{'_file'} = json_decode($answer['content']);
-            //Anfrage an DataBase
-            $URL = $this->lURL.'/DB/marking/'.$markingid.'/tutor/'.$tutorid;
-            $answer = Request::custom('PUT', $URL, $header, json_encode($body));
-            $this->app->response->setStatus($answer['status']);
-        }*/
-    }
-
-    /**
-     * Edits a marking status.
-     *
-     * Called when this component receives an HTTP PUT request to
-     * /marking/marking/$markingid/status(/).
-     * The request body should contain a JSON object representing the marking's new
-     * attributes.
-     *
-     * @param int $markingid The id of the marking that is being updated.
-     */
-    public function editMarkingStatus($markingid){
-        /*$header = $this->app->request->headers->all();
-        $body = $this->app->request->getBody();
-        $URL = $this->lURL.'/DB/marking/'.$markingid;
-        $answer = Request::custom('PUT', $URL, $header, $body);
-        $this->app->response->setBody($answer['content']);
-        $this->app->response->setStatus($answer['status']);*/
     }
 }
