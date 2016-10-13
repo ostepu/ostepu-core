@@ -5,7 +5,7 @@
         "inputType": "Exercise",
         "method": "PUT",
         "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercise(/exercise)/:eid"
+        "path": "/exercise/exercise/:eid"
     },
     {
         "name": "deleteExercise",
@@ -13,7 +13,7 @@
         "inputType": "",
         "method": "DELETE",
         "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercise(/exercise)/:eid"
+        "path": "/exercise/exercise/:eid"
     },
     {
         "name": "addExercise",
@@ -28,7 +28,7 @@
         "outputType": "Exercise",
         "inputType": "",
         "method": "GET",
-        "path": "/exercise(/exercise)(/:sub)"
+        "path": "/exercise(/:sub)"
     },
     {
         "name": "getSheetExercises",
@@ -56,7 +56,7 @@
         "inputType": "",
         "method": "GET",
         "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercise(/exercise)/:eid(/:sub)"
+        "path": "/exercise/exercise/:eid(/:sub)"
     },
     {
         "name": "addPlatform",

@@ -5,7 +5,7 @@
         "inputType": "User",
         "method": "PUT",
         "placeholder":[{"name":"userid","regex":"%^([a-zA-Z0-9äöüÄÖÜß]+)$%"}],
-        "path": "/user(/user)/:userid"
+        "path": "/user/user/:userid"
     },
     {
         "name": "removeUser",
@@ -13,7 +13,7 @@
         "inputType": "",
         "method": "DELETE",
         "placeholder":[{"name":"userid","regex":"%^([a-zA-Z0-9äöüÄÖÜß]+)$%"}],
-        "path": "/user(/user)/:userid"
+        "path": "/user/user/:userid"
     },
     {
         "name": "removeUserPermanent",
@@ -21,7 +21,7 @@
         "inputType": "",
         "method": "DELETE",
         "placeholder":[{"name":"userid","regex":"%^([a-zA-Z0-9äöüÄÖÜß]+)$%"}],
-        "path": "/user(/user)/:userid/permanent"
+        "path": "/user/user/:userid/permanent"
     },
     {
         "name": "addUser",
@@ -36,7 +36,7 @@
         "outputType": "User",
         "inputType": "",
         "method": "GET",
-        "path": "/user(/user)"
+        "path": "/user"
     },
     {
         "name": "getIncreaseUserFailedLogin",
@@ -46,7 +46,7 @@
         "inputType": "",
         "method": "GET",
         "placeholder":[{"name":"userid","regex":"%^([a-zA-Z0-9äöüÄÖÜß]+)$%"}],
-        "path": "/user(/user)/:userid/IncFailedLogin"
+        "path": "/user/user/:userid/IncFailedLogin"
     },
     {
         "name": "getUser",
@@ -56,7 +56,7 @@
         "inputType": "",
         "method": "GET",
         "placeholder":[{"name":"userid","regex":"%^([a-zA-Z0-9äöüÄÖÜß]+)$%"}],
-        "path": "/user(/user)/:userid"
+        "path": "/user/user/:userid"
     },
     {
         "name": "getCourseUserByStatus",

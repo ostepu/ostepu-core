@@ -176,7 +176,7 @@ class StudIPAuthentication extends AbstractAuthentication
     public function convertVidToCid($vid)
     {
         global $databaseURI;
-        $url = "{$databaseURI}/externalid/S_".$vid;
+        $url = "{$databaseURI}/externalid/externalid/S_".$vid;
         $message=null;
         $answer = http_get($url, false, $message);
         if ($message == 200){

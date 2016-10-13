@@ -658,7 +658,7 @@ class LTutor
         }
         
         $multiRequestHandle = new Request_MultiRequest();
-        $handler = Request_CreateRequest::createCustom('GET', $this->_getCourse[0]->getAddress().'/course/'.$courseid, array(),"");
+        $handler = Request_CreateRequest::createCustom('GET', $this->_getCourse[0]->getAddress().'/course/course/'.$courseid, array(),"");
         $multiRequestHandle->addRequest($handler);
         $answer = $multiRequestHandle->run();
         if (count($answer)< 1 || !isset($answer[0]['status']) || $answer[0]['status']!=200 || !isset($answer[0]['content'])){

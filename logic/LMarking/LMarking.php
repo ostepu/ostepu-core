@@ -231,7 +231,7 @@ class LMarking
     public function deleteMarking($markingid){
         $result = Request::routeRequest(
                                         'DELETE',
-                                        '/marking/'.$markingid,
+                                        '/marking/marking/'.$markingid,
                                         $this->app->request->headers->all( ),
                                         '',
                                         $this->_marking,

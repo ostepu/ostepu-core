@@ -5,7 +5,7 @@
         "inputType": "Marking",
         "method": "PUT",
         "placeholder":[{"name":"mid","regex":"%^([0-9_]+)$%"}],
-        "path": "/marking(/marking)/:mid"
+        "path": "/marking/marking/:mid"
     },
     {
         "name": "deleteMarking",
@@ -13,7 +13,7 @@
         "inputType": "",
         "method": "DELETE",
         "placeholder":[{"name":"mid","regex":"%^([0-9_]+)$%"}],
-        "path": "/marking(/marking)/:mid"
+        "path": "/marking/marking/:mid"
     },
     {
         "name": "deleteSheetMarkings",
@@ -21,7 +21,7 @@
         "inputType": "",
         "method": "DELETE",
         "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
-        "path": "/marking(/marking)/exercisesheet/:esid"
+        "path": "/marking/marking/exercisesheet/:esid"
     },
     {
         "name": "addMarking",
@@ -111,7 +111,7 @@
         "inputType": "",
         "method": "GET",
         "placeholder":[{"name":"mid","regex":"%^([0-9_]+)$%"}],
-        "path": "/marking(/marking)/:mid(/:sub)"
+        "path": "/marking/marking/:mid(/:sub)"
     },
     {
         "name": "getAllMarkings",
@@ -119,7 +119,7 @@
         "outputType": "Marking",
         "inputType": "",
         "method": "GET",
-        "path": "/marking(/marking)(/:sub)"
+        "path": "/marking(/:sub)"
     },
     {
         "name": "addPlatform",

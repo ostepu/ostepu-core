@@ -255,7 +255,7 @@ class LAttachment
 
         if (isset($body['file'])) {
             // request to database
-            $URL = $this->lURL.'/DB/attachment/'.$attachmentid;
+            $URL = $this->lURL.'/DB/attachment/attachment/'.$attachmentid;
             $answer = Request::custom('DELETE', $URL, $header, $body);
             $this->app->response->setStatus($answer['status']);
 

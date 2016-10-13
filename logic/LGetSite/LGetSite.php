@@ -2050,7 +2050,7 @@ class LGetSite
     public function courseManagement($userid, $courseid)
     {
         // returns basic course information
-        $URL = $this->_getCourse->getAddress() . '/course/'.$courseid;
+        $URL = $this->_getCourse->getAddress() . '/course/course/'.$courseid;
         $answer = Request::custom('GET', $URL, array(), '');
         $response['course'] = json_decode($answer['content'], true);
 

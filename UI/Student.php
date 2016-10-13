@@ -121,7 +121,7 @@ if (isset($postResults['deleteSubmissionWarning'])) {
     $suid = $postResults['deleteSubmission'];
 
     // extractes the studentId of the submission
-    $URI = $databaseURI . '/submission/' . $suid;
+    $URI = $databaseURI . '/submission/submission/' . $suid;
     $submission = http_get($URI, true);                 
     $submission = json_decode($submission, true);
 

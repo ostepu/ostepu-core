@@ -5,7 +5,7 @@
         "inputType": "Course",
         "method": "PUT",
         "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],
-        "path": "/course(/course)/:courseid"
+        "path": "/course/course/:courseid"
     },
     {
         "name": "deleteCourse",
@@ -13,7 +13,7 @@
         "inputType": "",
         "method": "DELETE",
         "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],
-        "path": "/course(/course)/:courseid"
+        "path": "/course/course/:courseid"
     },
     {
         "name": "addCourse",
@@ -30,7 +30,7 @@
         "inputType": "",
         "method": "GET",
         "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],
-        "path": "/course(/course)/:courseid"
+        "path": "/course/course/:courseid"
     },
     {
         "name": "getAllCourses",
@@ -38,7 +38,7 @@
         "outputType": "Course",
         "inputType": "",
         "method": "GET",
-        "path": "/course(/course)"
+        "path": "/course"
     },
     {
         "name": "getUserCourses",

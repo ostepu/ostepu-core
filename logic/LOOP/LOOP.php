@@ -464,7 +464,7 @@ class LOOP
 
             $result2 = Request::routeRequest( 
                                             'DELETE',
-                                            '/course/' . $courseid,
+                                            '/course/course/' . $courseid,
                                             $this->app->request->headers->all( ),
                                             '',
                                             $this->_deleteCourse,

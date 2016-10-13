@@ -122,7 +122,7 @@ class LFileHandler2
             // requests to file-table of DB
             $answer = Request::routeRequest(
                                             'DELETE',
-                                            '/file/'.$file->getFileId(),
+                                            '/file/file/'.$file->getFileId(),
                                             $header,
                                             '',
                                             $database,

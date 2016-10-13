@@ -247,7 +247,7 @@ class LSubmission
     public function deleteSubmission($submissionid){
         $result = Request::routeRequest(
                                         'DELETE',
-                                        '/submission/'.$submissionid,
+                                        '/submission/submission/'.$submissionid,
                                         array(),
                                         '',
                                         $this->_submission,

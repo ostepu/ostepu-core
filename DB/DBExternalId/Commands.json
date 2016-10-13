@@ -5,7 +5,7 @@
         "inputType": "ExternalId",
         "method": "PUT",
         "placeholder":[{"name":"exid","regex":"%^[0-9a-zA-Z_]+$%"}],
-        "path": "/externalid(/externalid)/:exid"
+        "path": "/externalid/externalid/:exid"
     },
     {
         "name": "deleteExternalId",
@@ -13,7 +13,7 @@
         "inputType": "",
         "method": "DELETE",
         "placeholder":[{"name":"exid","regex":"%^[0-9a-zA-Z_]+$%"}],
-        "path": "/externalid(/externalid)/:exid"
+        "path": "/externalid/externalid/:exid"
     },
     {
         "name": "addExternalId",
@@ -30,7 +30,7 @@
         "inputType": "",
         "method": "GET",
         "placeholder":[{"name":"exid","regex":"%^[0-9a-zA-Z_]+$%"}],
-        "path": "/externalid(/externalid)/:exid"
+        "path": "/externalid/externalid/:exid"
     },
     {
         "name": "getAllExternalIds",
@@ -38,7 +38,7 @@
         "outputType": "ExternalId",
         "inputType": "",
         "method": "GET",
-        "path": "/externalid(/externalid)"
+        "path": "/externalid"
     },
     {
         "name": "getCourseExternalIds",
