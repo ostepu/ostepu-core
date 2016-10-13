@@ -55,7 +55,7 @@
         "inputType": "",
         "method": "GET",
         "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercisefiletype/exercisefiletype/exercise/:eid"
+        "path": "/exercisefiletype/exercise/:eid"
     },
     {
         "name": "getSheetExerciseFileTypes",
@@ -64,7 +64,7 @@
         "inputType": "",
         "method": "GET",
         "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercisefiletype/exercisefiletype/exercisesheet/:esid"
+        "path": "/exercisefiletype/exercisesheet/:esid"
     },
     {
         "name": "getAllExerciseFileTypes",

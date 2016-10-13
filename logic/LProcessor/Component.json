@@ -19,7 +19,7 @@
     {"name":"workFiles", "target":"DBProcessWorkFiles", "links":[{"method":"POST", "path":"/attachment" }] },
     {"name":"getExerciseExerciseFileType", "target":"DBExerciseFileType", "links":[{"method":"GET", "path":"/exercisefiletype/exercise/:eid" }] },
     {"name":"file", "target":"LFile", "links":[{"method":"POST", "path":"/file" }] },
-    {"name":"postCourse", "target":"DBProcess", "links":[{"method":"GET", "path":"/link/exists/course/:courseid" },{"method":"POST", "path":"/course" },{"method":"DELETE", "path":"/course/:courseid" }] }
+    {"name":"postCourse", "target":"DBProcess", "links":[{"method":"GET", "path":"/link/exists/course/:courseid" },{"method":"POST", "path":"/course" },{"method":"DELETE", "path":"/course/course/:courseid" }] }
   ],
   "connector":[
     {"name":"deleteCourse", "target":"LCourse", "priority":150},
