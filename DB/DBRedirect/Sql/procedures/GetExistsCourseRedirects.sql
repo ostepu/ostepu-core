@@ -18,8 +18,8 @@
  */
 ?>
 
-DROP PROCEDURE IF EXISTS `DBRedirectGetExistsPlatform`;
-CREATE PROCEDURE `DBRedirectGetExistsPlatform` (IN profile varchar(30), IN courseid INT)
+DROP PROCEDURE IF EXISTS `DBRedirectGetExistsCourseRedirects`;
+CREATE PROCEDURE `DBRedirectGetExistsCourseRedirects` (IN profile varchar(30), IN courseid INT)
 READS SQL DATA
 begin
 SET @s = concat("show tables like 'Redirect",profile,"_",courseid,"';");

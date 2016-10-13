@@ -32,7 +32,6 @@ class DBRedirect
     public function __construct( )
     {
         $component = new Model('redirect,course', dirname(__FILE__), $this, false, false, array('cloneable'=>true,
-                                                                                         'defaultParams'=>array('exerciseSheetProfile'=>'','settingProfile'=>''),
                                                                                          'addOptionsToParametersAsPostfix'=>true,
                                                                                          'addProfileToParametersAsPostfix'=>true));
         $this->_component=$component;
@@ -119,6 +118,9 @@ class DBRedirect
      */
     public function addCourse($callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('addCourse',dirname(__FILE__).'/Sql/AddCourse.sql',array_merge($params,array('object' => $input)),201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()),false);
+        $positive = function($input, $course) {
+            return array("status"=>201,"content"=>$course);
+        };
+        return $this->_component->callSqlTemplate('addCourse',dirname(__FILE__).'/Sql/AddCourse.sql',array_merge($params,array('object' => $input)),201,$positive,array('course'=>$input),'Model::isProblem',array(new Course()),false);
     }
 }
