@@ -1,24 +1,109 @@
 {
-  "name":"DBRedirect",
-  "version":"1.0",
-  "classFile":"DBRedirect.php",
-  "className":"DBRedirect",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"DBRedirect.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"},
-    {"path":"RedirectSample.json"},
-    {"path":"Sql/"},
-    {"path":"info/"}
-  ],
-  "links":[
-    {"name":"out", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
-  ],
-  "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"},
-    {"name":"postCourse", "target":"LCourse", "priority":150},
-    {"name":"deleteCourse", "target":"LCourse", "priority":150},
-    { "name": "getDescFiles","target": "TDocuView"}
-  ]
+    "name": "DBRedirect",
+    "version": "1.0",
+    "classFile": "DBRedirect.php",
+    "className": "DBRedirect",
+    "files": [
+        {"path": ".htaccess"},
+        {"path": "DBRedirect.php"},
+        {"path": "index.php"},
+        {"path": "Commands.json"},
+        {"path": "RedirectSample.json"},
+        {"path": "Sql/"},
+        {"path": "info/"}
+    ],
+    "links": [
+        {
+            "name": "editRedirect",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "deleteRedirect",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "addRedirect",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "deleteCourse",
+            "target": "DBQuerySetup",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "addCourse",
+            "target": "DBQuerySetup",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "getRedirect",
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBRedirectGetRedirect/:profile/:courseid/:redid"
+            }]
+        },
+        {
+            "name": "getRedirectByLocation",
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBRedirectGetRedirectByLocation/:profile/:courseid/:locname"
+            }]
+        },
+        {
+            "name": "getExistsCourseRedirects",
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBRedirectGetExistsPlatform/:profile/:courseid"
+            }]
+        },
+        {
+            "name": "getCourseRedirects",
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBRedirectGetCourseRedirects/:profile/:courseid"
+            }]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        },
+        {
+            "name": "postCourse",
+            "target": "LCourse",
+            "priority": 150
+        },
+        {
+            "name": "deleteCourse",
+            "target": "LCourse",
+            "priority": 150
+        },
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView"
+        }
+    ]
 }

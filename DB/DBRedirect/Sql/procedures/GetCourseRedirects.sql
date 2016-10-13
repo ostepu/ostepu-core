@@ -16,8 +16,18 @@
  */
 ?>
 
+DROP PROCEDURE IF EXISTS `DBRedirectGetCourseRedirects`;
+CREATE PROCEDURE `DBRedirectGetCourseRedirects` (IN profile varchar(30), IN courseid INT)
+READS SQL DATA
+begin
+SET @s = concat("
 select
     S.*,
-    concat('<?php echo $courseid; ?>','_',S.RED_id) as RED_id
+    concat('",courseid,"','_',S.RED_id) as RED_id
 from
-    `Redirect<?php echo $pre; ?>_<?php echo $courseid; ?>` S
+    `Redirect",profile,"_",courseid,"` S;");
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
+end;
+

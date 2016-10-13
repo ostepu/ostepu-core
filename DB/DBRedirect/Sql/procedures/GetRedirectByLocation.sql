@@ -17,9 +17,18 @@
  */
 ?>
 
+DROP PROCEDURE IF EXISTS `DBRedirectGetRedirectByLocation`;
+CREATE PROCEDURE `DBRedirectGetRedirectByLocation` (IN profile varchar(30), IN courseid INT, IN locname varchar(30))
+READS SQL DATA
+begin
+SET @s = concat("
 select
     S.*,
-    concat('<?php echo $courseid; ?>','_',S.RED_id) as RED_id
+    concat('",courseid,"','_',S.RED_id) as RED_id
 from
-    `Redirect<?php echo $pre; ?>_<?php echo $courseid; ?>` S
-WHERE RED_location = '<?php echo $locname; ?>'
+    `Redirect",profile,"_",courseid,"` S
+WHERE RED_location = '",locname,"';");
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
+end;

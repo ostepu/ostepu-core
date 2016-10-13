@@ -15,6 +15,11 @@
  */
 ?>
 
-UPDATE `Redirect<?php echo $pre; ?>_<?php echo Redirect::getCourseFromRedirectId($redid); ?>`
-SET <?php echo $object->getInsertData(); ?>
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
+UPDATE `Redirect<?php echo $profile; ?>_<?php echo Redirect::getCourseFromRedirectId($redid); ?>`
+SET <?php echo $in->getInsertData(); ?>
 WHERE RED_id = '<?php echo Redirect::getIdFromRedirectId($redid); ?>'
