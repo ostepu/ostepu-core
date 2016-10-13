@@ -249,6 +249,17 @@ class Model
             
             $params = array_merge($params, $this->getOption('defaultParams'));
             
+            
+            if ($this->getOption('cloneable')){
+                // fügt profileName der Komponente den Ausfuehrungsparametern hinzu
+                if (isset($params['profileName'])){
+                    $params['profile'] = $params['profileName'];
+                } else {
+                    $params['profile'] = '';                       
+                }
+                unset($options);
+            }
+            
             if ($this->getOption('addOptionsToParametersAsPostfix')){
                 // fügt die Options der Komponente den Ausfuehrungsparametern hinzu
                 $options = $this->extractComponentOptions();
@@ -270,10 +281,9 @@ class Model
                 unset($options);
             }
             
-            
             if ($this->getOption('addProfileToParametersAsPostfix')){
-                if ($this->getOption('cloneable') && isset($params['profileName'])){
-                    // fügt die Options der Komponente den Ausfuehrungsparametern hinzu
+                if ($this->getOption('cloneable')){
+                    // fügt profileName der Komponente den Ausfuehrungsparametern hinzu
                     Model::generatePostfix(array('profileName'=>'profile'), $params);
                     unset($options);
                 }
