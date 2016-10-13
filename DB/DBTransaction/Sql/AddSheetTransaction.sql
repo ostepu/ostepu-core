@@ -14,9 +14,14 @@
  */
 ?>
 
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
 SET @course = (select ES.C_id from `ExerciseSheet` ES where ES.ES_id = <?php echo $esid; ?> limit 1);
 SET @statement =
-concat("INSERT INTO `Transaction<?php echo $name; ?>_", @course, "` SET <?php echo $object->getInsertData(true); ?>,T_random = '<?php echo $random; ?>';");
+concat("INSERT INTO `Transaction<?php echo $profile; ?>_", @course, "` SET <?php echo $in->getInsertData(true); ?>,T_random = '<?php echo $random; ?>';");
 PREPARE stmt1 FROM @statement;
 EXECUTE stmt1;
 select @course as 'C_id';

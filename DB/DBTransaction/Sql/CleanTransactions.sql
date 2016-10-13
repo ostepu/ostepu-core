@@ -14,6 +14,11 @@
  */
 ?>
 
-delete from `Transaction<?php echo $name; ?>_<?php echo $courseid; ?>`
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
+delete from `Transaction<?php echo $profile; ?>_<?php echo $courseid; ?>`
 where T_durability < UNIX_TIMESTAMP();
 

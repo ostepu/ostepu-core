@@ -126,8 +126,8 @@ class VeranstaltungenBereinigen
                     $multiRequestHandle = new Request_MultiRequest();
                     for ($i=0;$i<count($cleanLinks);$i++){
                         // inits all components
-                        Installation::log(array('text'=>Installation::Get('cleanCourses','createCollectQuery',self::$langTemplate,array('url'=>'GET '.$cleanLinks[$i]->getAddress(). '/clean/clean/course/'.$course->getId()))));
-                        $handler = Request_CreateRequest::createGet($cleanLinks[$i]->getAddress(). '/clean/clean/course/'.$course->getId(),array(), '');
+                        Installation::log(array('text'=>Installation::Get('cleanCourses','createCollectQuery',self::$langTemplate,array('url'=>'GET '.$cleanLinks[$i]->getAddress(). '/clean/course/'.$course->getId()))));
+                        $handler = Request_CreateRequest::createGet($cleanLinks[$i]->getAddress(). '/clean/course/'.$course->getId(),array(), '');
                         $multiRequestHandle->addRequest($handler);
                     }
                     $answer = $multiRequestHandle->run();
@@ -207,8 +207,8 @@ class VeranstaltungenBereinigen
                     $answer=array();
                     for ($i=0;$i<count($cleanLinks);$i++){
                         // inits all components
-                        Installation::log(array('text'=>Installation::Get('cleanCourses','createCleanQuery',self::$langTemplate,array('url'=>'DELETE '.$cleanLinks[$i]->getAddress(). '/clean/clean/course/'.$course->getId()))));
-                        $handler = Request_CreateRequest::createDelete($cleanLinks[$i]->getAddress(). '/clean/clean/course/'.$course->getId(),array(), '');
+                        Installation::log(array('text'=>Installation::Get('cleanCourses','createCleanQuery',self::$langTemplate,array('url'=>'DELETE '.$cleanLinks[$i]->getAddress(). '/clean/course/'.$course->getId()))));
+                        $handler = Request_CreateRequest::createDelete($cleanLinks[$i]->getAddress(). '/clean/course/'.$course->getId(),array(), '');
                         $multiRequestHandle->addRequest($handler);
                     }
                     $answer = $multiRequestHandle->run();

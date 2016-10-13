@@ -11,17 +11,7 @@
  * @date 2014-2015
  */
 
-require_once ( dirname(__FILE__) . '/../../Assistants/vendor/Slim/Slim/Slim.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Structures/Transaction.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Structures/Course.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Structures/Query.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Request.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/DBJson.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/DBRequest.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
-
-\Slim\Slim::registerAutoloader( );
+include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
 
 /**
  * A class, to abstract the "Transaction" table from database
@@ -30,160 +20,21 @@ class DBTransaction
 {
 
     /**
-     * @var Slim $_app the slim object
-     */
-    private $_app = null;
-
-    /**
-     * @var Component $_conf the component data object
-     */
-    private $_conf = null;
-
-    /**
-     * @var Link[] $query a list of links to a query component
-     */
-    private $query = array( );
-
-    /**
      * REST actions
      *
      * This function contains the REST actions with the assignments to
      * the functions.
+     *
+     * @param Component $conf component data
      */
+    private $_component = null;
     public function __construct( )
     {
-        // runs the CConfig
-        $com = new CConfig( 'transaction,course,link', dirname(__FILE__) );
-
-        // runs the DBTransaction
-        if ( $com->used( ) ) return;
-
-        $this->_conf = $com;
-
-        // initialize slim
-        $this->_app = new \Slim\Slim(array('debug' => true));
-        $this->_app->response->headers->set(
-                                            'Content-Type',
-                                            'application/json'
-                                            );
-
-        // POST AddCourse
-        $this->_app->post(
-                         '(/:name)/course',
-                         array(
-                               $this,
-                               'addCourse'
-                               )
-                         );
-
-        // POST DeleteCourse
-        $this->_app->delete(
-                         '(/:name)/course/:courseid',
-                         array(
-                               $this,
-                               'deleteCourse'
-                               )
-                         );
-
-       // GET GetExistsCourseTransactions
-        $this->_app->get(
-                         '(/:name)/link/exists/course/:courseid',
-                         array(
-                               $this,
-                               'getExistsCourseTransactions'
-                               )
-                        );
-
-        // DELETE DeleteTransaction
-        $this->_app->delete(
-                            '(/:name)/transaction/authentication/:auid/transaction/:tid',
-                            array(
-                                  $this,
-                                  'deleteTransaction'
-                                  )
-                            );
-
-        // DELETE DeleteTransactionShort
-        $this->_app->delete(
-                            '(/:name)/transaction/transaction/:tid',
-                            array(
-                                  $this,
-                                  'deleteTransactionShort'
-                                  )
-                            );
-
-        // POST AddTransaction
-        $this->_app->post(
-                          '(/:name)/transaction/course/:courseid',
-                          array(
-                                $this,
-                                'addTransaction'
-                                )
-                          );
-
-        // POST AddSheetTransaction
-        $this->_app->post(
-                          '(/:name)/transaction/exercisesheet/:esid',
-                          array(
-                                $this,
-                                'addSheetTransaction'
-                                )
-                          );
-
-        // POST AddExerciseTransaction
-        $this->_app->post(
-                          '(/:name)/transaction/exercise/:eid',
-                          array(
-                                $this,
-                                'addExerciseTransaction'
-                                )
-                          );
-
-        // GET GetTransaction
-        $this->_app->get(
-                         '(/:name)/transaction/authentication/:auid/transaction/:tid',
-                         array(
-                               $this,
-                               'getTransaction'
-                               )
-                         );
-
-        // GET GetAmountOfExpiredTransactions
-        $this->_app->get(
-                         '(/:name)/clean/clean/course/:courseid',
-                         array(
-                               $this,
-                               'getAmountOfExpiredTransactions'
-                               )
-                         );
-
-        // DELETE CleanTransactions
-        $this->_app->delete(
-                         '(/:name)/clean/clean/course/:courseid',
-                         array(
-                               $this,
-                               'cleanTransactions'
-                               )
-                         );
-
-        // run Slim
-        $this->_app->run( );
-    }
-
-    /**
-     * Loads the configuration data for the component from CConfig.json file
-     *
-     * @param int $name A optional name for the attachment table.
-     *
-     * @return an component object, which represents the configuration
-     */
-    public function loadConfig( $name='' ){
-        // initialize component
-        $this->_conf = $this->_conf->loadConfig( $name );
-        $this->query = array( CConfig::getLink(
-                                               $this->_conf->getLinks( ),
-                                               'out'
-                                               ) );
+        $component = new Model('transaction,course', dirname(__FILE__), $this, false, false, array('cloneable'=>true,
+                                                                                                   'addOptionsToParametersAsPostfix'=>true,
+                                                                                                   'addProfileToParametersAsPostfix'=>true));
+        $this->_component=$component;
+        $component->run();
     }
 
     /**
@@ -196,52 +47,14 @@ class DBTransaction
      * @param string $auid A text to verify the call .
      * @param int $name A optional name for the transaction table.
      */
-    public function deleteTransaction( $name='' ,$auid, $tid )
+    public function deleteTransaction( $callName, $input, $params = array() )
     {
-        $this->loadConfig($name);
-        $name = ($name === '' ? '' : '_') . $name;
-
-        Logger::Log(
-                    'starts DELETE DeleteTransaction',
-                    LogLevel::DEBUG
-                    );
-
-        $tid = DBJson::mysql_real_escape_string( $tid );
-        $name = DBJson::mysql_real_escape_string( $name );
-        $auid = DBJson::mysql_real_escape_string( $auid );
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile(
-                                              $this->query,
-                                              dirname(__FILE__) . '/Sql/DeleteTransaction.sql',
-                                              array( 'auid' => $auid,'name' => $name,'tid' => $tid )
-                                              );
-
-        // checks the correctness of the query
-        if ( $result['status'] >= 200 &&
-             $result['status'] <= 299 ){
-            $this->_app->response->setStatus( 201 );
-
-            if ( isset( $result['headers']['Content-Type'] ) )
-                $this->_app->response->headers->set(
-                                                    'Content-Type',
-                                                    $result['headers']['Content-Type']
-                                                    );
-
-        } else {
-            Logger::Log(
-                        'DELETE DeleteTransaction failed',
-                        LogLevel::ERROR
-                        );
-
-            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-            $this->_app->stop( );
-        }
+        return $this->_component->callSqlTemplate('deleteTransaction',dirname(__FILE__).'/Sql/DeleteTransaction.sql',$params,201,'Model::isCreated',array(new Transaction()),'Model::isProblem',array(new Transaction()));
     }
 
-    public function deleteTransactionShort( $name='', $tid )
+    public function deleteTransactionShort( $callName, $input, $params = array() )
     {
-        $this->deleteTransaction( $name ,null, $tid );
+        return $this->_component->callSqlTemplate('deleteTransactionShort',dirname(__FILE__).'/Sql/DeleteTransactionShort.sql',$params,201,'Model::isCreated',array(new Transaction()),'Model::isProblem',array(new Transaction()));
     }
 
     /**
@@ -254,233 +67,105 @@ class DBTransaction
      *
      * @param string $name A optional name for the transaction table.
      */
-    public function addTransaction( $name='', $courseid )
+    public function addTransaction( $callName, $input, $params = array() )
     {
-        $this->add($name, $courseid, 'courseid', 'POST AddTransaction', dirname(__FILE__) . '/Sql/AddTransaction.sql');
-    }
-
-    public function addSheetTransaction( $name='', $esid )
-    {
-        $this->add($name, $esid, 'esid', 'POST AddShetTransaction', dirname(__FILE__) . '/Sql/AddSheetTransaction.sql');
-    }
-
-   public function addExerciseTransaction( $name='', $eid )
-    {
-        $this->add($name, $eid, 'eid', 'POST AddExerciseTransaction', dirname(__FILE__) . '/Sql/AddExerciseTransaction.sql');
-    }
-
-    public function add( $name='', $id, $idName ,$functionName, $sqlFile)
-    {
-        $this->loadConfig($name);
-        $name = ($name === '' ? '' : '_') . $name;
-
-        Logger::Log(
-                    'starts '.$functionName,
-                    LogLevel::DEBUG
-                    );
-
-        // decode the received attachment data, as an object
-        $insert = Transaction::decodeTransaction( $this->_app->request->getBody( ) );
-
-        // always been an array
-        $arr = true;
-        if ( !is_array( $insert ) ){
-            $insert = array( $insert );
-            $arr = false;
-        }
-
-        $name = DBJson::mysql_real_escape_string( $name );
-        $id = DBJson::mysql_real_escape_string( $id );
-
         $uuid = new uuid();
-        // this array contains the indices of the inserted objects
+         // this array contains the indices of the inserted objects
         $res = array( );
-        foreach ( $insert as $in ){
+        $params['random'] = str_replace('-','',$uuid->get());
+        $input->setTransactionId(null);
 
-            $random = str_replace('-','',$uuid->get());
-            $in->setTransactionId(null);
+        $positive = function($input, $random) {
+            // sets the new auto-increment id
+           
+           $course = Course::ExtractCourse($input[count($input)-1]->getResponse(),true);
 
-            // generates the insert data for the object
-            $data = $in->getInsertData( );
+            // sets the new auto-increment id
+            $obj = new Transaction( );                
+            $obj->setTransactionId( $course->getId() . '_' . $input[count($input)-2]->getInsertId( ) . '_' . $random );
 
-            // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile(
-                                                  $this->query,
-                                                  $sqlFile,
-                                                  array( 'object' => $in,'name' => $name, $idName => $id, 'random' => $random )
-                                                  );
+            return array("status"=>201,"content"=>$obj);
+        };
+        return $this->_component->callSqlTemplate('addTransaction',dirname(__FILE__).'/Sql/AddTransaction.sql',array_merge($params,array( 'in' => $input)),201,$positive,array('random'=>$params['random']),'Model::isProblem',array(new Transaction()),false);
+    }
 
-            // checks the correctness of the query
-            if ( $result['status'] >= 200 &&
-                 $result['status'] <= 299 ){
-                $queryResult = Query::decodeQuery( $result['content'] );
+    public function addSheetTransaction( $callName, $input, $params = array() )
+    {
+        $uuid = new uuid();
+         // this array contains the indices of the inserted objects
+        $res = array( );
+        $params['random'] = str_replace('-','',$uuid->get());
+        $input->setTransactionId(null);
 
-                // sets the new auto-increment id
-                $obj = new Transaction( );
-                $course = Course::ExtractCourse($queryResult[count($queryResult)-1]->getResponse(),true);
+        $positive = function($input) {
+            // sets the new auto-increment id
+            $id = 0;
+            $queryResult = $input[count($input)-1];
+            $resp =$queryResult->getResponse();
+            if (isset($resp[0]['@a']))
+                $id = $resp[0]['@a'];
 
-                $obj->setTransactionId( $course->getId() . '_' . $queryResult[count($queryResult)-2]->getInsertId( ) . '_' . $random );
+            // sets the new auto-increment id
+            $obj = new Transaction( );
+            $obj->setTransactionId( ($input[0]->getInsertId( )==0 ? $id : $input[0]->getInsertId( )) );
+            return array("status"=>201,"content"=>$obj);
+        };
+        return $this->_component->callSqlTemplate('addSheetTransaction',dirname(__FILE__).'/Sql/AddSheetTransaction.sql',array_merge($params,array( 'in' => $input)),201,$positive,array(),'Model::isProblem',array(new Transaction()),false);
+    }
 
+   public function addExerciseTransaction( $callName, $input, $params = array())
+    {
+        $uuid = new uuid();
+         // this array contains the indices of the inserted objects
+        $res = array( );
+        $params['random'] = str_replace('-','',$uuid->get());
+        $input->setTransactionId(null);
 
-                $res[] = $obj;
-                $this->_app->response->setStatus( 201 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set(
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
+        $positive = function($input) {
+            // sets the new auto-increment id
+            $id = 0;
+            $queryResult = $input[count($input)-1];
+            $resp =$queryResult->getResponse();
+            if (isset($resp[0]['@a']))
+                $id = $resp[0]['@a'];
 
-            } else {
-                Logger::Log(
-                            $functionName.' failed',
-                            LogLevel::ERROR
-                            );
-                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-                $this->_app->response->setBody( Transaction::encodeTransaction( $res ) );
-                $this->_app->stop( );
+            // sets the new auto-increment id
+            $obj = new Transaction( );
+            $obj->setTransactionId( ($input[0]->getInsertId( )==0 ? $id : $input[0]->getInsertId( )) );
+            return array("status"=>201,"content"=>$obj);
+        };
+        return $this->_component->callSqlTemplate('addExerciseTransaction',dirname(__FILE__).'/Sql/AddExerciseTransaction.sql',array_merge($params,array( 'in' => $input)),201,$positive,array(),'Model::isProblem',array(new Transaction()),false);
+    }
+
+    public function get( $functionName, $linkName, $params=array(), $checkSession = true )
+    {
+        if (isset($params['tid'])){
+            $params['courseid'] = Transaction::getCourseFromTransactionId($params['tid']);
+            $params['random'] = Transaction::getRandomFromTransactionId($params['tid']);
+            $params['tid'] = Transaction::getIdFromTransactionId($params['tid']);
+        }
+
+        $positive = function($input) {
+            //$input = $input[count($input)-1];
+            $result = Model::isEmpty();$result['content']=array();
+            foreach ($input as $inp){
+                if ( $inp->getNumRows( ) > 0 ){
+                    // extract transaction data from db answer
+                    $res = Transaction::ExtractTransaction( $inp->getResponse( ), false);
+                    $result['content'] = array_merge($result['content'], (is_array($res) ? $res : array($res)));
+                    $result['status'] = 200;
+                }
             }
-        }
+            return $result;
+        };
 
-        if ( !$arr &&
-             count( $res ) == 1 ){
-            $this->_app->response->setBody( Transaction::encodeTransaction( $res[0] ) );
-
-        } else
-            $this->_app->response->setBody( Transaction::encodeTransaction( $res ) );
+        $params = DBJson::mysql_real_escape_string( $params );
+        return $this->_component->call($linkName, $params, '', 200, $positive, array(), 'Model::isProblem', array(), 'Query');
     }
 
-    public function get(
-                        $functionName,
-                        $sqlFile,
-                        $name='' ,
-                        $userid,
-                        $courseid,
-                        $esid,
-                        $eid,
-                        $auid,
-                        $tid,
-                        $singleResult = false
-                        )
+    public function getMatch($callName, $input, $params = array())
     {
-        $this->loadConfig($name);
-        $name = ($name === '' ? '' : '_') . $name;
-
-        Logger::Log(
-                    'starts GET ' . $functionName,
-                    LogLevel::DEBUG
-                    );
-
-        $name = DBJson::mysql_real_escape_string( $name );
-        $userid = DBJson::mysql_real_escape_string( $userid );
-        $courseid = DBJson::mysql_real_escape_string( $courseid );
-        $esid = DBJson::mysql_real_escape_string( $esid );
-        $eid = DBJson::mysql_real_escape_string( $eid );
-        $auid = DBJson::mysql_real_escape_string( $auid );
-        $tid = DBJson::mysql_real_escape_string( $tid );
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile(
-                                              $this->query,
-                                              $sqlFile,
-                                              array(
-                                                    'name' => $name,
-                                                    'userid' => $userid,
-                                                    'courseid' => $courseid,
-                                                    'esid' => $esid,
-                                                    'eid' => $eid,
-                                                    'auid' => $auid,
-                                                    'tid' => $tid
-                                                    )
-                                              );
-
-        // checks the correctness of the query
-        if ( $result['status'] >= 200 &&
-             $result['status'] <= 299 ){
-            $query = Query::decodeQuery( $result['content'] );
-
-            if (is_array($query))
-            $query = $query[count($query)-1];
-
-            if ( $query->getNumRows( ) > 0 ){
-                $res = Transaction::ExtractTransaction(
-                                                     $query->getResponse( ),
-                                                     $singleResult
-                                                     );
-
-                $this->_app->response->setBody( Transaction::encodeTransaction( $res ) );
-
-                $this->_app->response->setStatus( 200 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set(
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
-
-                $this->_app->stop( );
-
-            } else
-                $result['status'] = 404;
-        }
-
-        Logger::Log(
-                    'GET ' . $functionName . ' failed',
-                    LogLevel::ERROR
-                    );
-
-        $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-        $this->_app->response->setBody( Transaction::encodeTransaction( new Transaction( ) ) );
-        $this->_app->stop( );
-    }
-
-    /**
-     * Returns a transaction.
-     *
-     * Called when this component receives an HTTP GET request to
-     * (/:name)/authentication/:auid/transaction/:tid.
-     *
-     * @param string $tid The id of the transaction that is being deleted.
-     * @param string $auid A text to verify the call .
-     * @param int $name A optional name for the transaction table.
-     */
-    public function getTransaction( $name='' ,$auid, $tid )
-    {
-        $this->get(
-                   'GetTransaction',
-                   dirname(__FILE__) . '/Sql/procedures/GetTransaction.sql',
-                   isset( $name ) ? $name : '',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $auid ) ? $auid : '',
-                   isset( $tid ) ? $tid : '',
-                   true
-                   );
-    }
-
-    /**
-     * Returns status code 200, if this component is correctly installed for the given course
-     *
-     * Called when this component receives an HTTP GET request to
-     * (/$name)/link/exists/course/$courseid.
-     *
-     * @param string $courseid The id of the course.
-     * @param int $name A optional name for the transaction table.
-     */
-    public function getExistsCourseTransactions( $name='' , $courseid )
-    {
-        $this->get(
-                   'GetExistsCourseTransactions',
-                   dirname(__FILE__) . '/Sql/procedures/GetExistsCourseTransactions.sql',
-                   isset( $pre ) ? $pre : '',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $auid ) ? $auid : '',
-                   isset( $tid ) ? $tid : '',
-                   true
-                   );
+        return $this->get($callName,$callName,$params);
     }
 
     /**
@@ -492,123 +177,34 @@ class DBTransaction
      * @param string $courseid The id of the course.
      * @param string $name A optional name for the transaction table.
      */
-    public function deleteCourse( $name='' , $courseid )
+    public function deleteCourse( $callName, $input, $params = array() )
     {
-        $this->loadConfig($name);
-        $name = ($name === '' ? '' : '_') . $name;
-
-        Logger::Log(
-                    'starts DELETE DeleteCourse',
-                    LogLevel::DEBUG
-                    );
-
-        $courseid = DBJson::mysql_real_escape_string( $courseid );
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile(
-                                              $this->query,
-                                              dirname(__FILE__) . '/Sql/DeleteCourse.sql',
-                                              array( 'courseid' => $courseid,'name' => $name )
-                                              );
-
-        // checks the correctness of the query
-        if ( $result['status'] >= 200 &&
-             $result['status'] <= 299 ){
-
-            $this->_app->response->setStatus( 201 );
-            $this->_app->response->setBody( '' );
-            if ( isset( $result['headers']['Content-Type'] ) )
-                $this->_app->response->headers->set(
-                                                    'Content-Type',
-                                                    $result['headers']['Content-Type']
-                                                    );
-
-        } else {
-            Logger::Log(
-                        'DELETE DeleteCourse failed',
-                        LogLevel::ERROR
-                        );
-            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-            $this->_app->response->setBody( '' );
-            $this->_app->stop( );
-        }
+        return $this->_component->callSqlTemplate('deleteCourse',dirname(__FILE__).'/Sql/DeleteCourse.sql',array($params),201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()),false);
     }
 
-    public function cleanTransactions( $name='' , $courseid )
+    public function cleanTransactions( $callName, $input, $params = array() )
     {
-        $this->loadConfig($name);
-        $name = ($name === '' ? '' : '_') . $name;
-
-        Logger::Log(
-                    'starts DELETE CleanTransactions',
-                    LogLevel::DEBUG
-                    );
-        $courseid = DBJson::mysql_real_escape_string( $courseid );
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile(
-                                              $this->query,
-                                              dirname(__FILE__) . '/Sql/CleanTransactions.sql',
-                                              array( 'courseid' => $courseid,'name' => $name )
-                                              );
-
-        // checks the correctness of the query
-        if ( $result['status'] >= 200 &&
-             $result['status'] <= 299 ){
-
-            $this->_app->response->setStatus( 201 );
-            $this->_app->response->setBody( '' );
-
-        } else {
-            Logger::Log(
-                        'DELETE CleanTransactions failed',
-                        LogLevel::ERROR
-                        );
-            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-            $this->_app->response->setBody( '' );
-            $this->_app->stop( );
-        }
+        return $this->_component->callSqlTemplate('cleanTransactions',dirname(__FILE__).'/Sql/CleanTransactions.sql',array($params),201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()),false);
     }
 
-    public function getAmountOfExpiredTransactions( $name='' , $courseid )
-    {
-        $this->loadConfig($name);
-        $name = ($name === '' ? '' : '_') . $name;
+    public function getAmountOfExpiredTransactions( $callName, $input, $params = array() )
+    {    
+        $positive = function($input) {
+            $result = Model::isEmpty();$result['content']=array();
+            foreach($input as $inp){
+                if ( $inp->getNumRows( ) > 0 ){
+                     $result['content'] = $inp->getResponse();
+                     foreach ($result['content'] as &$res){
+                        $res['component'] = $this->_component->_conf->getName();
+                    }
+                    $result['status'] = 200;
+                }
+            }
+            return $result;
+        };
 
-        Logger::Log(
-                    'starts GET GetAmountOfExpiredTransactions',
-                    LogLevel::DEBUG
-                    );
-        $courseid = DBJson::mysql_real_escape_string( $courseid );
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile(
-                                              $this->query,
-                                              dirname(__FILE__) . '/Sql/procedures/GetAmountOfExpiredTransactions.sql',
-                                              array( 'courseid' => $courseid,'name' => $name )
-                                              );
-
-        // checks the correctness of the query
-        if ( $result['status'] >= 200 &&
-             $result['status'] <= 299 ){
-
-             $query = Query::decodeQuery($result['content']);
-             $result = $query->getResponse();
-             foreach ($result as &$res){
-                $res['component'] = $this->_conf->getName();
-             }
-            $this->_app->response->setStatus( 200 );
-            $this->_app->response->setBody( json_encode($result) );
-
-        } else {
-            Logger::Log(
-                        'GET GetAmountOfExpiredTransactions failed',
-                        LogLevel::ERROR
-                        );
-            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-            $this->_app->response->setBody( '' );
-            $this->_app->stop( );
-        }
+        $params = DBJson::mysql_real_escape_string( $params );
+        return $this->_component->call('getAmountOfExpiredTransactions', $params, '', 200, $positive, array(), 'Model::isProblem', array(), 'Query');
     }
 
     /**
@@ -619,67 +215,12 @@ class DBTransaction
      *
      * @param string $name A optional name for the attachment table.
      */
-    public function addCourse( $name='' )
-    {
-        $this->loadConfig($name);
-        $name = ($name === '' ? '' : '_') . $name;
-
-        Logger::Log(
-                    'starts POST AddCourse',
-                    LogLevel::DEBUG
-                    );
-
-        // decode the received course data, as an object
-        $insert = Course::decodeCourse( $this->_app->request->getBody( ) );
-
-        // always been an array
-        $arr = true;
-        if ( !is_array( $insert ) ){
-            $insert = array( $insert );
-            $arr = false;
-        }
-
-        // this array contains the indices of the inserted objects
-        $res = array( );
-        foreach ( $insert as $in ){
-
-            // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile(
-                                                  $this->query,
-                                                  dirname(__FILE__) . '/Sql/AddCourse.sql',
-                                                  array( 'object' => $in,'name' => $name )
-                                                  );
-
-            // checks the correctness of the query
-            if ( $result['status'] >= 200 &&
-                 $result['status'] <= 299 ){
-                $queryResult = Query::decodeQuery( $result['content'] );
-
-                $res[] = $in;
-                $this->_app->response->setStatus( 201 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set(
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
-
-            } else {
-                Logger::Log(
-                            'POST AddCourse failed',
-                            LogLevel::ERROR
-                            );
-                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-                $this->_app->response->setBody( Course::encodeCourse( $res ) );
-                $this->_app->stop( );
-            }
-        }
-
-        if ( !$arr &&
-             count( $res ) == 1 ){
-            $this->_app->response->setBody( Course::encodeCourse( $res[0] ) );
-
-        } else
-            $this->_app->response->setBody( Course::encodeCourse( $res ) );
+    public function addCourse( $callName, $input, $params = array() )
+    {        
+        $positive = function($input, $course) {
+            return array("status"=>201,"content"=>$course);
+        };
+        return $this->_component->callSqlTemplate('addCourse',dirname(__FILE__).'/Sql/AddCourse.sql',array_merge($params,array('object' => $input)),201,$positive,array('course'=>$input),'Model::isProblem',array(new Course()),false);
     }
 
 }
