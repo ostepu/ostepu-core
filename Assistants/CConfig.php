@@ -77,17 +77,22 @@ class CConfig
     private $_noInfo = false;
     private $_noHelp = false;
     private $_defaultLanguage = null;
+    private $_getAndHead = false;
+    private $_allowOptions = false;
 
     /**
      * the CConfig constructor
      *
      * @param $prefix the prefix, the component works with
      */
-    public function __construct( $prefix, $callPath = null, $noInfo = false, $noHelp = false, $defaultLanguage = 'de' )
+    public function __construct( $prefix, $callPath = null, $noInfo = false, $noHelp = false, $defaultLanguage = 'de', $options=array() )
     {
         if (!in_array('Slim\Slim', get_declared_classes())){
             return;
         }
+        
+        if (isset($options['getAndHead'])) $this->_getAndHead = $options['getAndHead'];
+        if (isset($options['allowOptions'])) $this->_allowOptions = $options['allowOptions'];
 
         $this->_noInfo = $noInfo;
         $this->_noHelp = $noHelp;
@@ -277,12 +282,23 @@ class CConfig
             $commands = json_decode(file_get_contents(($this->callPath!=null ? $this->callPath.'/':'').'Commands.json'), true);
 
             if (!$nativeOnly){
-                $commands[] = array('method' => 'get', 'path' => '(/:pre)/info/commands(/)');
-                $commands[] = array('method' => 'get', 'path' => '(/:pre)/info/links(/)');
-                if (!$this->_noInfo) $commands[] = array('method' => 'get', 'path' => '(/:pre)/info/:language(/)');
-                $commands[] = array('method' => 'post', 'path' => '(/:pre)/control');
-                $commands[] = array('method' => 'get', 'path' => '(/:pre)/control');
-                if (!$this->_noHelp) $commands[] = array('method' => 'get', 'path' => '(/:pre)/help/:language/path+');
+                if ($this->_getAndHead){
+                    // wenn ein get angeboten wird, kann auch head genutzt werden
+                    foreach($commands as $command){
+                        if (isset($command['method']) && strtolower($command['method']) == 'get'){
+                            $tmp = array_merge($command,array());
+                            $tmp['method'] = 'head';
+                            $commands[] = $tmp;
+                        }
+                    }
+                }
+                
+                $commands[] = array('method' => 'get', 'path' => '((/profile)/:pre)/info/commands(/)');
+                $commands[] = array('method' => 'get', 'path' => '((/profile)/:pre)/info/links(/)');
+                if (!$this->_noInfo) $commands[] = array('method' => 'get', 'path' => '((/profile)/:pre)/info/:language(/)');
+                $commands[] = array('method' => 'post', 'path' => '((/profile)/:pre)/control');
+                $commands[] = array('method' => 'get', 'path' => '((/profile)/:pre)/control');
+                if (!$this->_noHelp) $commands[] = array('method' => 'get', 'path' => '((/profile)/:pre)/help/:language/path+');
             }
 
             if ($returnData){

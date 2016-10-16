@@ -92,7 +92,7 @@ class Model
     public function run()
     {
         // runs the CConfig
-        $com = new CConfig( $this->_prefix, $this->_path, $this->_noInfo, $this->_noHelp );
+        $com = new CConfig( $this->_prefix, $this->_path, $this->_noInfo, $this->_noHelp, 'de', array('getAndHead'=>true, 'allowOptions'=>true) );
 
         // lädt die Konfiguration des Moduls
         if ( $com->used( ) ) return;
