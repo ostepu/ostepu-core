@@ -14,6 +14,11 @@
  */
 ?>
 
-INSERT INTO `Setting<?php echo $pre; ?>_<?php echo $courseid; ?>` SET <?php echo $object->getInsertData(); ?>
-ON DUPLICATE KEY UPDATE <?php echo $object->getInsertData(); ?>;
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
+INSERT INTO `Setting<?php echo $profile; ?>_<?php echo $courseid; ?>` SET <?php echo $in->getInsertData(); ?>
+ON DUPLICATE KEY UPDATE <?php echo $in->getInsertData(); ?>;
 select '<?php echo $courseid; ?>' as 'C_id';

@@ -1,11 +1,107 @@
 [
-    {    "method":"put", "path":"(/:pre)/setting/setting/:setid" },
-    {    "method":"delete", "path":"(/:pre)/setting/setting/:setid" },
-    {    "method":"post", "path":"(/:pre)/setting/course/:courseid" },
-    {    "method":"get", "path":"(/:pre)/link/exists/course/:courseid" },
-    {    "method":"get", "path":"(/:pre)/setting/course/:courseid" },
-    {    "method":"get", "path":"(/:pre)/setting/setting/:setid" },
-    {    "method":"get", "path":"(/:pre)/setting/course/:courseid/name/:setname" },
-    {    "method":"delete", "path":"(/:pre)/course/:courseid" },
-    {    "method":"post", "path":"(/:pre)/course" }
+    {
+        "name": "editSetting",
+        "outputType": "Setting",
+        "inputType": "Setting",
+        "method": "put",
+        "placeholder": [{
+            "name": "setid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/setting/setting/:setid"
+    },
+    {
+        "name": "deleteSetting",
+        "outputType": "Setting",
+        "inputType": "",
+        "method": "delete",
+        "placeholder": [{
+            "name": "setid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/setting/setting/:setid"
+    },
+    {
+        "name": "addSetting",
+        "outputType": "Setting",
+        "inputType": "Setting",
+        "method": "post",
+        "placeholder": [{
+            "name": "courseid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/setting/course/:courseid"
+    },
+    {
+        "name": "getExistsCourseSettings",
+        "callback": "getMatch",
+        "outputType": "Setting",
+        "inputType": "",
+        "method": "get",
+        "placeholder": [{
+            "name": "courseid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/link/exists/course/:courseid"
+    },
+    {
+        "name": "getCourseSettings",
+        "callback": "getMatch",
+        "outputType": "Setting",
+        "inputType": "",
+        "method": "get",
+        "placeholder": [{
+            "name": "courseid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/setting/course/:courseid"
+    },
+    {
+        "name": "getSetting",
+        "callback": "getMatch",
+        "outputType": "Setting",
+        "inputType": "",
+        "method": "get",
+        "placeholder": [{
+            "name": "setid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/setting/setting/:setid"
+    },
+    {
+        "name": "getSettingByName",
+        "callback": "getMatch",
+        "outputType": "Setting",
+        "inputType": "",
+        "method": "get",
+        "placeholder": [
+            {
+                "name": "courseid",
+                "regex": "%^([0-9_]+)$%"
+            },
+            {
+                "name": "setname",
+                "regex": "%^([a-zA-Z0-9_]+)$%"
+            }
+        ],
+        "path": "/setting/course/:courseid/name/:setname"
+    },
+    {
+        "name": "deleteCourse",
+        "outputType": "Course",
+        "inputType": "",
+        "method": "delete",
+        "placeholder": [{
+            "name": "courseid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/course/:courseid"
+    },
+    {
+        "name": "addCourse",
+        "outputType": "Course",
+        "inputType": "Course",
+        "method": "post",
+        "path": "/course"
+    }
 ]
