@@ -169,13 +169,11 @@ class DBQuery2
     public function getProcedureQuery( $callName, $input, $par = array() )
     {
         $par = DBJson::mysql_real_escape_string( $par );
-        $params=array();
-        extract(
-                $par,
-                EXTR_OVERWRITE
-        );
+        $procedure = $par['procedure'];
+        $profileName = $par['profileName'];
+        $params = isset($par['params']) ? $par['params'] : array();
 
-        $name = (isset($par['profileName']) && $par['profileName']!=='' ? '_'.$par['profileName'] : '');
+        $name = (isset($profileName) && $profileName!=='' ? '_'.$profileName : '');
         if (self::$config === null || self::$configName !== $name){
             self::$config = parse_ini_file(
                                             dirname(__FILE__).'/config'.$name.'.ini',
