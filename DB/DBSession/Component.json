@@ -54,6 +54,16 @@
             ]
         },
         {
+            "name": "getValidSession",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBSessionGetValidSession/:seid/:userid"
+                }
+            ]
+        },
+        {
             "name": "getAllSessions",
             "target": "DBQuery2",
             "links": [
@@ -86,6 +96,7 @@
     ],
     "connector": [
         {"name": "request","target": "CLocalObjectRequest"},
-        {"name": "postPlatform","target": "CInstall"}
+        {"name": "postPlatform","target": "CInstall"},
+        { "name": "getDescFiles","target": "TDocuView"}
     ]
 }

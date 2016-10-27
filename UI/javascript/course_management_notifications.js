@@ -5,14 +5,14 @@
  
 $(document).ready( function() 
 {
-    setCurrentTimeData();
+    initNotifications();
     renameNotifications();
 });
 
 /**
  * sets the current time
  */
-function setCurrentTimeData() 
+function initNotifications() 
 {
     $('.removeNotificationElement').on("click",removeNotificationElement);
     $('.addNotificationElement').on("click",addNotificationElement);

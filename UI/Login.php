@@ -108,6 +108,13 @@ if(Authentication::checkLogin()) {
     exit();
 }
 
+// prüfe den Wartungsmodus
+if (isset($maintenanceMode) && $maintenanceMode === '1'){
+    $text = $maintenanceText;
+    if (trim($maintenanceText) == '') $text = "Wartungsarbeiten!!!";
+    $notifications[] = MakeNotification('error', $text);
+}
+
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind(array('backTitle' => Language::Get('main','changeCourse', $langTemplate),
@@ -130,6 +137,10 @@ $userLogin->bind($backdata);
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $userLogin);
 $w->set_config_file('include/configs/config_default.json');
+if (isset($maintenanceMode) && $maintenanceMode === '1'){
+    $w->add_config_file('include/configs/config_maintenanceMode.json');
+}
+
 $w->show();
 
 ob_end_flush();

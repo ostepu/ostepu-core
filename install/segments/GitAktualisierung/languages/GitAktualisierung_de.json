@@ -7,6 +7,7 @@
     "installGitUpdatesDesc": "Neuerungen herunterladen",
     "noUpdates": "Ihr System ist momentan auf dem neuesten Stand.",
     "additionalCommits": "+$additionalCommits Änderungen",
+    "errorDirMissing": "das Verzeichnis $path existiert nicht!!!",
     "errorGitFetch": "git fetch konnte nicht aufgerufen werden!!!",
     "errorGitDiff": "git diff konnte nicht aufgerufen werden!!!",
     "errorGitLog": "git log konnte nicht aufgerufen werden!!!",

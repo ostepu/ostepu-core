@@ -123,7 +123,22 @@ class Anfragegraph
         // ermittelt vorhandene Aufzeichnungen
         $recordBase = array();
         $recordAccess = array();
-        if ($handle = @opendir($location)) {
+
+        if (file_exists($location)){
+            try {
+                $handle = opendir($location);
+            } catch (Exception $e) {
+                // der Ordner konnte nicht zugegriffen werden
+                Installation::log(array('text'=>$location.' existiert nicht oder es fehlt die Zugriffsberechtigung.','logLevel'=>LogLevel::ERROR));
+                Installer::$messages[] = array('text'=>$location.' existiert nicht oder es fehlt die Zugriffsberechtigung.','type'=>'error');
+                return $pluginFiles;
+            }
+        } else {
+            Installation::log(array('text'=>$location.' existiert nicht.','logLevel'=>LogLevel::WARNING));
+            $text .= Design::erstelleZeile($console, '', 'e', $location.' existiert nicht.' , 'error v');
+        }
+            
+        if (isset($handle) && $handle !== false) {
             while (false !== ($file = readdir($handle))) {
                 if ($file=='.' || $file=='..') continue;
                 $filePath = $location. DIRECTORY_SEPARATOR .$file;
@@ -462,7 +477,7 @@ class Anfragegraph
         return str_replace($search, $replace, $text);;
     }
 
-    private static function prettyPrint( $json )
+    public static function prettyPrint( $json )
     {
         $result = '';
         $level = 0;

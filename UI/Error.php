@@ -45,7 +45,11 @@ if (isset($msg) && $msg == '403') {
     $notifications[] = MakeNotification('error', '409: Conflict!');
 }else{
     header('HTTP/1.0 403 Not Found');
-    $notifications[] = MakeNotification('error', '403: '.$msg);
+    if (isset($msg)){
+        $notifications[] = MakeNotification('error', '403: '.$msg);
+    } else {
+        $notifications[] = MakeNotification('error', '403: Access Forbidden');
+    }
 }
 
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
@@ -58,6 +62,10 @@ $h->bind(array('name' => 'Übungsplattform',
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h);
 $w->set_config_file('include/configs/config_default.json');
+if (isset($maintenanceMode) && $maintenanceMode === '1'){
+    $w->add_config_file('include/configs/config_maintenanceMode.json');
+}
+
 $w->show();
 
 ob_end_flush();

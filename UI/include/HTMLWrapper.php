@@ -55,7 +55,7 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
          */
         public function __construct($header)
         {
-            $this->header = $header;
+            $this->header = array($header);
             $arguments = func_get_args();
             array_shift($arguments);
             $this->contentElements = $arguments;
@@ -98,6 +98,7 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
 
             // get position of the Templates in contentElements
             $first = array_values($arguments)[0];
+
             $firstkey = array_search($first, $this->contentElements, true);
             $end = end($arguments);
             $endkey = array_search($end, $this->contentElements, true);
@@ -126,11 +127,42 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
                                                 );
         }
 
+        public function defineHeaderForm($target, $fileupload)
+        {
+            $arguments = func_get_args();
+            array_shift($arguments);
+            array_shift($arguments);
+
+            // define form
+            if ($fileupload == false) {
+                $formstart = "<form id=\"".md5(HTMLWrapper::$anchorName)."\" name=\"".md5(HTMLWrapper::$anchorName)."\" action=\"{$target}#".md5(HTMLWrapper::$anchorName)."\" method=\"POST\">";
+            } else {
+                $formstart = "<form id=\"".md5(HTMLWrapper::$anchorName)."\" name=\"".md5(HTMLWrapper::$anchorName)."\" action=\"{$target}#".md5(HTMLWrapper::$anchorName)."\" method=\"POST\" enctype=\"multipart/form-data\">";
+            }
+            HTMLWrapper::$anchorName++;
+            $formend = "</form>";
+
+            // insert formtags before and after the given range
+            $this->header = array_merge(
+                                        array(0 => $formstart),
+                                        $this->header,
+                                        array(0 => $formend)
+                                                );
+        }
+
         /**
          * A function that displays the wrapper
          */
         public function show()
         {
+            $default = array('content'=>'text/html','charset'=>'utf-8','title'=>'','stylesheets'=>array(),'javascripts'=>array());
+            if (!isset($this->config)) $this->config = $default;
+            foreach($default as $defKey => $def){
+                if (!isset($this->config[$defKey])){
+                    $this->config[$defKey] = $def;
+                }
+            }
+            
             print "<!DOCTYPE HTML>
             <html>
             <head>
@@ -156,7 +188,13 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
             <body>
                 <div id=\"body-wrapper\" class=\"body-wrapper\">";
 
-                    $this->header->show();
+                    foreach($this->header as $head){
+                        if (is_string($head)){
+                            echo $head;
+                        } else {
+                            $head->show();
+                        }
+                    }
 
                     print '<div id="content-wrapper" class="content-wrapper">';
 
@@ -198,6 +236,37 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
         if ($this->config == false || is_array($this->config) == false) {
             Logger::Log("Invalid JSON in file: {$configdata}",
                         LogLevel::WARNING);
+        }
+    }
+    
+    public function add_config_file($configdata)
+    {
+        $fileContents = file_get_contents($configdata);
+        // check if file is loaded
+        if ($fileContents == false) {
+            Logger::Log("Could not open file: {$configdata}",
+                        LogLevel::WARNING);
+        }
+
+        $conf = json_decode($fileContents, true);
+        // check if file is valid JSON
+        if ($conf == false || is_array($conf) == false) {
+            Logger::Log("Invalid JSON in file: {$configdata}",
+                        LogLevel::WARNING);
+        }
+        
+        if (!isset($this->config)) $this->config = array();
+        
+        foreach($conf as $key => $val){
+            if (!isset($this->config[$key])){
+                $this->config[$key] = $val;
+            } else {
+                if (is_array($this->config[$key])){
+                    $this->config[$key] = array_merge($this->config[$key], $val);
+                } else {
+                    $this->config[$key] = $val;                    
+                }
+            }
         }
     }
 }

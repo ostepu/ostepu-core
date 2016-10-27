@@ -113,7 +113,7 @@ foreach ($tutorAssign_data['tutorAssignments'] as $key2 => $tutorAssignment){
         }
 
         foreach ($assignments as $key => $submission)
-            $dataList[] = array('pos' => $key,'userName'=>$submission['user']['userName'],'lastName'=>$submission['user']['lastName'],'firstName'=>$submission['user']['firstName']);
+            $dataList[] = array('pos' => $key,'userName'=>(isset($submission['user']['userName'])?$submission['user']['userName']:'???'),'lastName'=>(isset($submission['user']['lastName'])?$submission['user']['lastName']:'???'),'firstName'=>(isset($submission['user']['firstName'])?$submission['user']['firstName']:'???'));
         $sortTypes = array('lastName','firstName','userName');
         $dataList=LArraySorter::orderby($dataList, $sortUsersValue, SORT_ASC,$sortTypes[(array_search($sortUsersValue,$sortTypes)+1)%count($sortTypes)], SORT_ASC);
         $tempData = array();
@@ -132,7 +132,7 @@ foreach ($tutorAssign_data['tutorAssignments'] as $key2 => $tutorAssignment){
     }
 
     foreach ($assignments as $key => $submission)
-        $dataList[] = array('pos' => $key,'userName'=>$submission['user']['userName'],'lastName'=>$submission['user']['lastName'],'firstName'=>$submission['user']['firstName']);
+        $dataList[] = array('pos' => $key,'userName'=>(isset($submission['user']['userName'])?$submission['user']['userName']:'???'),'lastName'=>(isset($submission['user']['lastName'])?$submission['user']['lastName']:'???'),'firstName'=>(isset($submission['user']['firstName'])?$submission['user']['firstName']:'???'));
     $sortTypes = array('lastName','firstName','userName');
     $dataList=LArraySorter::orderby($dataList, $sortUsersValue, SORT_ASC,$sortTypes[(array_search($sortUsersValue,$sortTypes)+1)%count($sortTypes)], SORT_ASC);
     $tempData = array();
@@ -155,15 +155,16 @@ function custom_sort($a,$b) {
 usort($tutorAssign_data['tutorAssignments'], 'custom_sort');
 
 $user_course_data = $tutorAssign_data['user'];
-
 if (isset($sortUsersValue)) {
     $tutorAssign_data['sortUsers'] = $sortUsersValue;
+} else {
+    $sortUsersValue = 'lastName';
 }
 
 foreach($tutorAssign_data['emptyGroups'] as $exercise => $emptyGroups){
     $dataList = array();
     foreach ($emptyGroups as $key => $group)
-        $dataList[] = array('pos' => $key,'userName'=>(isset($group['userName'])?$group['userName']:null),'lastName'=>(isset($group['lastName'])?$group['lastName']:null),'firstName'=>(isset($group['firstName'])?$group['firstName']:null));
+        $dataList[] = array('pos' => $key,'userName'=>(isset($group['userName'])?$group['userName']:'???'),'lastName'=>(isset($group['lastName'])?$group['lastName']:'???'),'firstName'=>(isset($group['firstName'])?$group['firstName']:'???'));
     $sortTypes = array('lastName','firstName','userName');
     $dataList=LArraySorter::orderby($dataList, $sortUsersValue, SORT_ASC, $sortTypes[(array_search($sortUsersValue,$sortTypes)+1)%count($sortTypes)], SORT_ASC);
     $tempData = array();
@@ -221,6 +222,10 @@ $w->defineForm(basename(__FILE__).'?cid='.$cid.'&sid='.$sid, false, $assignManua
 $w->defineForm(basename(__FILE__).'?cid='.$cid.'&sid='.$sid, false, $assignMake);
 $w->defineForm(basename(__FILE__).'?cid='.$cid.'&sid='.$sid, false, $assignRemove);
 $w->set_config_file('include/configs/config_tutor_assign.json');
+if (isset($maintenanceMode) && $maintenanceMode === '1'){
+    $w->add_config_file('include/configs/config_maintenanceMode.json');
+}
+
 //$w->set_config_file('include/configs/config_default.json');
 $w->show();
 

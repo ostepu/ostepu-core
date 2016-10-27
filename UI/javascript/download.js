@@ -30,7 +30,7 @@ function download(event)
                     trig.css('color',trig.attr('col'));
                 }, 2000);
             } else {
-                window.location.replace("../FS/FSBinder/"+data.address+"/"+data.displayName);
+                window.location.href = "../FS/FSBinder/"+data.address+"/"+data.displayName;
                 trig.css('color','#2DB22D');
                 trig.text('Weiterleitung...');
                 setTimeout(function() {

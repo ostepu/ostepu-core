@@ -252,7 +252,6 @@ if ($postValidation->isValid() && $postResults['action'] === 'submit') {
 
                             if ($message !== 201) {
                                 $result = Submission::decodeSubmission($result);
-                                $exercise = $key + 1;
                                 $errormsg = Language::Get('main','errorUploadSubmission', $langTemplate, array('status'=>$message,'exerciseName'=>$exercise['name']));
 
                                 if ($result!==null && !empty($result)){
@@ -285,7 +284,6 @@ if ($postValidation->isValid() && $postResults['action'] === 'submit') {
 
                                         if ($message !== 201) {
                                             $result2 = Choice::decodeChoice($result2);
-                                            $exercise = $key + 1;
                                             $errormsg = Language::Get('main','errorUploadSubmission', $langTemplate, array('status'=>$message,'exerciseName'=>$exercise['name']));
 
                                             if ($result2!==null){
@@ -425,9 +423,9 @@ $formdata = http_get($URL, true);
 $formdata = Form::decodeForm($formdata);
 if (!is_array($formdata))$formdata=array($formdata);
 foreach ($formdata as $value){
-    foreach ($upload_data['exercises'] as &$key){
-        if ($value->getExerciseId() == $key['id']){
-            $key['form'] = $value;
+    foreach ($upload_data['exercises'] as $key => $elem){
+        if ($value->getExerciseId() == $elem['id']){
+            $upload_data['exercises'][$key]['form'] = $value;
             break;
         }
     }
@@ -475,7 +473,7 @@ if (isset($_SESSION['selectedUser'])){
                     }
 
                 } elseif (!$hasStarted){
-                    unset($courseSheets[$key]);
+                   unset($courseSheets[$key]);
                 }
 
             } else {
@@ -525,6 +523,10 @@ $t->bind(array('privileged' => $privileged));
 
 $w = new HTMLWrapper($h, $t);
 $w->set_config_file('include/configs/config_upload_exercise.json');
+if (isset($maintenanceMode) && $maintenanceMode === '1'){
+    $w->add_config_file('include/configs/config_maintenanceMode.json');
+}
+
 $w->show();
 
 ob_end_flush();

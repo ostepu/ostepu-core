@@ -1,0 +1,13 @@
+[
+    {
+        "__commentFile": "@file RedirectSample.json This file represents a valid JSON object of type Redirect for DBRedirect.",
+        "__commentAuthor": "@author Till Uhlig"
+    },
+    {
+        "id": "1_2",
+        "title": "BBB",
+        "url": "test.php",
+        "location": "sheet",
+        "authentication": "transaction"
+    }
+]

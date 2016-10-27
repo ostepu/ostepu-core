@@ -29,7 +29,7 @@
  header('Content-Type: text/html; charset=utf-8');
  ?>
 <div class="content-element ProcessorParameterArea" style="outline:2px solid #b9b8b8;border-radius: 0px;margin: 0px;">
-    <?php echo MakeInfoButton('extension','LOOP.md'); ?>
+    <?php echo MakeInfoButton('extension/LOOP','LOOP.md'); ?>
     <div class="content-body-wrapper" style="padding: 10px; margin-top: 0px;">
         <div class="content-body left" style="width:100%;">
             <table border="1" style="width:100%;"> 

@@ -78,6 +78,7 @@ $getValidation->resetNotifications()->resetErrors();
 
 if (isset($postResults['sheetID'])){
     $sid = $postResults['sheetID'];
+    $_POST['sheetID'] = $sid;
 }
 
 $selectedUser = $uid;
@@ -129,9 +130,18 @@ if (Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUse
 if (isset($sid)){
     $sheetID = $sid;
     $postResults['sheetID'] = $sid;
+    $_POST['sheetID'] = $sid;
 }
-if (isset($getResults['action']) && !isset($postResults['action'])){
+
+if (isset($getResults['action']) && (!isset($postResults['action']) || $postResults['action'] == 'noAction')){
     $postResults['action'] = $getResults['action'];
+    if (isset($sid)){
+        $_POST['sheetID'] = $sid;
+    }
+}
+
+if (isset($postResults['action'])){
+    $_POST['action'] = $postResults['action'];
 }
 
 // updates the selectedSubmissions for the group
@@ -172,7 +182,7 @@ if ($postValidation->isValid()){
 }
 
 foreach ($uploadHistoryOptions_data['users'] as $key => $user)
-    $dataList[] = array('pos' => $key,'userName'=>$user['userName'],'lastName'=>$user['lastName'],'firstName'=>$user['firstName']);
+    $dataList[] = array('pos' => $key,'userName'=>(isset($user['userName'])?$user['userName']:'???'),'lastName'=>(isset($user['lastName'])?$user['lastName']:'???'),'firstName'=>(isset($user['firstName'])?$user['firstName']:'???'));
 $sortTypes = array('lastName','firstName','userName');
 $dataList=LArraySorter::orderby($dataList, $sortUsersValue, SORT_ASC, $sortTypes[(array_search($sortUsersValue,$sortTypes)+1)%count($sortTypes)], SORT_ASC);
 $tempData = array();
@@ -195,6 +205,7 @@ if (isset($user_course_data['courses'][0]['status'])){
 if ($postValidation->isValid()){
     if ($courseStatus==0){
         $postResults['userID'] = $selectedUser;
+        $_POST['userID'] = null; // damit ein Student keinen anderen aufrufen kann
     }
     $uploadUserID = $postResults['userID'];
 }
@@ -207,9 +218,9 @@ $menu = MakeNavigationElement($user_course_data,
 
 $userNavigation = null;
 if (isset($_SESSION['selectedUser'])){
-    $courseStatus = null;
+    $globalCourseStatus = null;
     if (isset($globalUserData['courses'][0]) && isset($globalUserData['courses'][0]['status']))
-        $courseStatus = $globalUserData['courses'][0]['status'];
+        $globalCourseStatus = $globalUserData['courses'][0]['status'];
     
     $URI = $serverURI . "/DB/DBUser/user/course/{$cid}/status/0";
     $courseUser = http_get($URI, true);
@@ -245,7 +256,7 @@ if (isset($_SESSION['selectedUser'])){
                                                 false,
                                                 false,
                                                 array('page/admin/studentMode','studentMode.md'),
-                                                array(array('title'=>Language::Get('main','leaveStudent', $langTemplate),'target'=>PRIVILEGE_LEVEL::$SITES[$courseStatus].'?cid='.$cid)));
+                                                array(array('title'=>Language::Get('main','leaveStudent', $langTemplate),'target'=>PRIVILEGE_LEVEL::$SITES[$globalCourseStatus].'?cid='.$cid)));
 }
 
 $isExpired=null;
@@ -253,6 +264,7 @@ $hasStarted=null;
 
 if ($courseStatus<=0 /* PRIVILEGE_LEVEL::STUDENT */){
     // extract the correct sheet
+    
     $sheet=null;
     foreach ($uploadHistoryOptions_data['sheets'] as $key => $value){
         if ($value['id'] == $sheetID){
@@ -273,8 +285,9 @@ if ($courseStatus<=0 /* PRIVILEGE_LEVEL::STUDENT */){
             set_error(Language::Get('main','noStartedExercisePeriod', $langTemplate,array('startDate'=>date('d.m.Y  -  H:i', $sheet['startDate']))));
         }
 
-    } else
+    } else {
         set_error(Language::Get('main','noExercisePeriod', $langTemplate));
+    }
 }
 
 // construct a new header
@@ -337,6 +350,10 @@ $w = new HTMLWrapper($h, isset($uploadHistorySettings) ? $uploadHistorySettings 
 if (isset($uploadHistorySettings)) $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $uploadHistorySettings);
 if (isset($uploadHistory))$w->defineForm(basename(__FILE__).'?cid='.$cid, false, $uploadHistory);
 $w->set_config_file('include/configs/config_default.json');
+if (isset($maintenanceMode) && $maintenanceMode === '1'){
+    $w->add_config_file('include/configs/config_maintenanceMode.json');
+}
+
 $w->show();
 
 ob_end_flush();

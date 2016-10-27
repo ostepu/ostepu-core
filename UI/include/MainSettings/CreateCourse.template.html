@@ -18,6 +18,14 @@
 
 <?php $langTemplate='MainSettings_CreateCourse';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 
+<?php
+if (isset($CreateCourseNotificationElements)) {
+    foreach ($CreateCourseNotificationElements as $notificationElement) {
+        print $notificationElement;
+    }
+}
+?>
+
 <input type="hidden" name="action" value="CreateCourse">
 <div class="content-element">
     <div class="content-header">

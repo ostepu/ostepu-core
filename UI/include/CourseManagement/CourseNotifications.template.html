@@ -39,7 +39,7 @@ if (isset($CourseNotificationsNotifications)) {
                 <?php echo Language::Get('main','messages', $langTemplate); ?>:
             </label>
             <a style="padding-left:0px" class="text-button info-color addNotificationElement" href="javascript:void(0);"><?php echo Language::Get('main','addNotification', $langTemplate); ?></a>
-            <div class="left checkbox-container new-line very-wide" style="height:350px">
+            <div class="left checkbox-container new-line very-wide" style="height:250px">
                 <?php
                 if (isset($notifications) && is_array($notifications)){
                     foreach ($notifications as $key => $notification){

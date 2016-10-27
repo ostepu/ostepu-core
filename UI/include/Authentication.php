@@ -75,13 +75,23 @@ class Authentication extends AbstractAuthentication
         $databaseURL = "{$databaseURI}/user/user/{$username}";
         $user = http_get($databaseURL, false, $message);
         $user = json_decode($user, true);
+        
+        // prüfe den Wartungsmodus
+        global $maintenanceMode;
+        global $maintenanceText;
+        global $maintenanceAllowedUsers;
+        if ($maintenanceMode === '1' && !in_array($username,explode(',',str_replace(' ', '', $maintenanceAllowedUsers)))){
+            $text = $maintenanceText;
+            if (trim($maintenanceText) == '') $text = "Wartungsarbeiten!!!";
+            return MakeNotification("error", $text);
+        }
 
         // check if user exists
         if ($message != "404" && empty($user) == false) {
             // create passwordhash with salt as suffix
-            if (isset($user['failedLogins']) && time()-$user['failedLogins']<15){
+            if (isset($user['failedLogins']) && time()-$user['failedLogins']<5){
             
-                $waitSeconds = 15-(time()-$user['failedLogins']);
+                $waitSeconds = 5-(time()-$user['failedLogins']);
                 return MakeNotification("error", "Die Anmeldung ist für {$waitSeconds} Sekunden gesperrt!!!");
             }
             

@@ -119,6 +119,7 @@
             "name": "getAlive",
             "target": "CHelp",
             "links": [{"path": "/link/exists/platform"}]
-        }
+        },
+        { "name": "getDescFiles","target": "TDocuView"}
     ]
 }

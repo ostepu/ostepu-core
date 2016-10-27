@@ -36,6 +36,7 @@
         {
             "name": "request",
             "target": "CLocalObjectRequest"
-        }
+        },
+        { "name": "getDescFiles","target": "TDocuView"}
     ]
 }

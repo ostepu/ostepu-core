@@ -16,6 +16,8 @@
  * @date 2014
  * @author Florian Lücke <florian.luecke@gmail.com>
  * @date 2013-2014
+ * @author Max Brauer <ma.brauer@live.de>
+ * @date 2016
  */
  
  
@@ -34,6 +36,66 @@ function parse_size($size) {
   else {
     return round($size);
   }
+}
+
+function createRedirectButton($redirect,$esid=null){
+    $text = '';
+    $text.= '<button title="'.$redirect['title'].'" name="redirect" value="'.(isset($esid) ? $esid.'_' : '_').$redirect['id'].'" class="text-button body-option-color">';
+    $text.= $redirect['title'];
+    $text.= '</button>';
+    return $text;
+}
+
+function createRedirectButtonHeader($redirect,$esid=null){
+    $text = '';
+    $text.= '<button formaction="" style="text-decoration: none;color: #2B648F;" title="'.$redirect['url'].'" name="redirect" value="'.(isset($esid) ? $esid.'_' : '_').$redirect['id'].'" class="text-button-simple">';
+    $text.= $redirect['title'];
+    $text.= '</button>';
+    return $text;
+}
+
+// führt eine Umleitung aus (Typ: Redirect)
+function executeRedirect($redirect, $uid, $cid, $esid){
+    //var_dump($redirect);
+    $auth = $redirect->getAuthentication();
+    if ($auth === 'none' or $auth === ''){
+        // wir müssen nur umleiten
+        header_remove();
+        header('Location: ' . $redirect->getUrl());
+        exit();
+    } elseif ($auth == 'transaction'){
+        // wir hängen die Daten als GET an die URL
+        global $serverURI;
+        $URI = $serverURI . '/DB/DBCourseStatus/coursestatus/course/'.$cid.'/user/'.$uid;
+        $student_data = http_get($URI, true, $message);
+        
+        if ($message!=200) return false;
+        
+        $URI = $serverURI . '/DB/DBSession/session/user/'.$uid;
+        $session_data = http_get($URI, true, $message);
+        
+        if ($message!=200) return false;
+    
+        // erzeuge nun den Inhalt
+        $data = array('user'=>json_decode($student_data), 'session'=>json_decode($session_data));
+        if (isset($esid) && trim($esid) != ''){
+            $data['esid'] = $esid;
+        }
+            
+        $URI = $serverURI . "/DB/DBTransaction/transaction/course/".Redirect::getCourseFromRedirectId($redirect->getId());
+        $newTransaction = Transaction::createTransaction(null,time()+180, 'redirect', json_encode($data));
+        $transaction = http_post_data($URI, Transaction::encodeTransaction($newTransaction), true, $message);
+
+        if ($message != "201") {
+            // es gab einen Fehler
+            return false;
+        } else {
+            $transaction = Transaction::decodeTransaction($transaction);
+            header('Location: ' . $redirect->getUrl().'?tid='.$transaction->getTransactionId());
+            exit();
+        }
+    }
+    return true;
 }
                     
 /**
@@ -263,7 +325,8 @@ function cleanInput($input)
 function MakeNavigationElement($user,
                                $requiredPrivilege,
                                $switchDisabled = false,
-                               $forIndex = false)
+                               $forIndex = false,
+                               $links = array())
 {
     $courses = isset($user['courses']) ? $user['courses'] : null;
 
@@ -290,7 +353,8 @@ function MakeNavigationElement($user,
                                    'switchDisabled' => $switchDisabled,
                                    'sites' => PRIVILEGE_LEVEL::$SITES,
                                    'isSuperAdmin' => $isSuperAdmin,
-                                   'forIndex' => $forIndex));
+                                   'forIndex' => $forIndex,
+                                   'links'=>$links));
 
     return $navigationElement;
 }
@@ -304,7 +368,8 @@ function MakeUserNavigationElement($user,
                                $switchDisabled = false,
                                $forIndex = false,
                                $helpPath = null,
-                               $buttons = array())
+                               $buttons = array(),
+                               $stid = null)
 {
     $courses = isset($user['courses']) ? $user['courses'] : null;
 
@@ -341,6 +406,7 @@ function MakeUserNavigationElement($user,
                                    'sites' => PRIVILEGE_LEVEL::$SITES,
                                    'isSuperAdmin' => $isSuperAdmin,
                                    'forIndex' => $forIndex,
+                                   'stid' => $stid,
                                    'sid' => $sid,
                                    'courseUser' => $courseUser,
                                    'courseSheets' => $courseSheets,

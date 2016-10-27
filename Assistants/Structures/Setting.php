@@ -126,7 +126,7 @@ class Setting extends Object implements JsonSerializable
 
     /**
 
-     * @var string $state The id of the exercise this Setting belongs to.
+     * @var string $state The current state of the setting.
      */
     private $state = null;
 
@@ -151,7 +151,7 @@ class Setting extends Object implements JsonSerializable
     }
 
     /**
-     * @var string $id db category of the Setting
+     * @var string $category db category of the Setting
      */
     private $category = null;
 

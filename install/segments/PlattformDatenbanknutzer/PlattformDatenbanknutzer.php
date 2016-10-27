@@ -129,23 +129,23 @@ class PlattformDatenbanknutzer
             $data['DB']['db_name'] = null;
             $sql = "CREATE USER '{$data['DB']['db_user_operator']}'@'%'".
                     "IDENTIFIED BY '{$data['DB']['db_passwd_operator']}';";
-            $sql.= "GRANT LOCK TABLES,CREATE VIEW,EXECUTE,ALTER ROUTINE,CREATE ROUTINE,SHOW VIEW,CREATE TEMPORARY TABLES,INDEX,ALTER,SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,TRIGGER ".
+            $sql.= "GRANT REFERENCES,LOCK TABLES,CREATE VIEW,EXECUTE,ALTER ROUTINE,CREATE ROUTINE,SHOW VIEW,CREATE TEMPORARY TABLES,INDEX,ALTER,SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,TRIGGER ".
                     "ON `{$oldName}`.* ".
                     "TO '{$data['DB']['db_user_operator']}'@'%'; ";
             $sql.= "CREATE USER '{$data['DB']['db_user_operator']}'@'localhost'".
                     "IDENTIFIED BY '{$data['DB']['db_passwd_operator']}';";
-            $sql.= "GRANT LOCK TABLES,CREATE VIEW,EXECUTE,ALTER ROUTINE,CREATE ROUTINE,SHOW VIEW,CREATE TEMPORARY TABLES,INDEX,ALTER,SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,TRIGGER ".
+            $sql.= "GRANT REFERENCES,LOCK TABLES,CREATE VIEW,EXECUTE,ALTER ROUTINE,CREATE ROUTINE,SHOW VIEW,CREATE TEMPORARY TABLES,INDEX,ALTER,SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,TRIGGER ".
                     "ON `{$oldName}`.* ".
                     "TO '{$data['DB']['db_user_operator']}'@'localhost';";
 
             $logSql = "CREATE USER '{$data['DB']['db_user_operator']}'@'%'".
                     "IDENTIFIED BY *****;";
-            $logSql.= "GRANT LOCK TABLES,CREATE VIEW,EXECUTE,ALTER ROUTINE,CREATE ROUTINE,SHOW VIEW,CREATE TEMPORARY TABLES,INDEX,ALTER,SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,TRIGGER ".
+            $logSql.= "GRANT REFERENCES,LOCK TABLES,CREATE VIEW,EXECUTE,ALTER ROUTINE,CREATE ROUTINE,SHOW VIEW,CREATE TEMPORARY TABLES,INDEX,ALTER,SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,TRIGGER ".
                     "ON `{$oldName}`.* ".
                     "TO '{$data['DB']['db_user_operator']}'@'%'; ";
             $logSql.= "CREATE USER '{$data['DB']['db_user_operator']}'@'localhost'".
                     "IDENTIFIED BY *****;";
-            $logSql.= "GRANT LOCK TABLES,CREATE VIEW,EXECUTE,ALTER ROUTINE,CREATE ROUTINE,SHOW VIEW,CREATE TEMPORARY TABLES,INDEX,ALTER,SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,TRIGGER ".
+            $logSql.= "GRANT REFERENCES,LOCK TABLES,CREATE VIEW,EXECUTE,ALTER ROUTINE,CREATE ROUTINE,SHOW VIEW,CREATE TEMPORARY TABLES,INDEX,ALTER,SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,TRIGGER ".
                     "ON `{$oldName}`.* ".
                     "TO '{$data['DB']['db_user_operator']}'@'localhost';";
             Installation::log(array('text'=>Installation::Get('createDatabasePlatformUser','createUserSql',self::$langTemplate,array('sql'=>$logSql))));

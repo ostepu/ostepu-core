@@ -52,6 +52,8 @@ $postValidation->resetNotifications()->resetErrors();
 if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
     // creates a new course
     if ($postResults['action'] === 'CreateCourse') {
+        $createCourseNotifications = array();
+        
         $postCreateCourseValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
           ->addSet('courseName',
                    ['satisfy_exists',
@@ -83,13 +85,13 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
           ->addSet('plugins',
                    ['is_array',
                     'set_default'=>null,
-                    'perform_this_array'=>[['key_all'],
-                                      ['valid_identifier']],
+                    'perform_this_array'=>[[['key_all'],
+                                      ['valid_identifier']]],
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidExtensionId', $langTemplate)]]);
 
         $foundValues = $postCreateCourseValidation->validate();
-        $notifications = array_merge($notifications,$postCreateCourseValidation->getPrintableNotifications('MakeNotification'));
+        $createCourseNotifications = array_merge($createCourseNotifications,$postCreateCourseValidation->getPrintableNotifications('MakeNotification'));
         $postCreateCourseValidation->resetNotifications()->resetErrors();
 
         if($postCreateCourseValidation->isValid()) {
@@ -158,16 +160,18 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
 
             // creates a notification depending on RequestError
             if ($RequestError === false) {
-                $notifications[] = MakeNotification('success',
+                $createCourseNotifications[] = MakeNotification('success',
                                                     Language::Get('main','successCreateCourse', $langTemplate));
             } else {
-                $notifications[] = MakeNotification('error',
+                $createCourseNotifications[] = MakeNotification('error',
                                                     Language::Get('main','errorCreateCourse', $langTemplate));
             }
         }
     }
 
     if ($postResults['action'] === 'SetAdmin') {
+        $setAdminNotifications = array();
+        
         $postSetAdminValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
           ->addSet('courseID',
                    ['satisfy_exists',
@@ -183,7 +187,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                                  'text'=>Language::Get('main','invalidUserName', $langTemplate)]]);
 
         $foundValues = $postSetAdminValidation->validate();
-        $notifications = array_merge($notifications,$postSetAdminValidation->getPrintableNotifications('MakeNotification'));
+        $setAdminNotifications = array_merge($setAdminNotifications,$postSetAdminValidation->getPrintableNotifications('MakeNotification'));
         $postSetAdminValidation->resetNotifications()->resetErrors();
 
         if ($postSetAdminValidation->isValid()){
@@ -198,7 +202,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
 
             // sets admin rights for the user
             if (empty($user_data)) {
-                $notifications[] = MakeNotification('error', Language::Get('main','invalidUserId', $langTemplate));
+                $setAdminNotifications[] = MakeNotification('error', Language::Get('main','invalidUserId', $langTemplate));
             } else {
                 $userID = $user_data['id'];
                 $status = 3;
@@ -213,12 +217,12 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                     http_put_data($url, $data, true, $message);
 
                     if ($message === 201) {
-                        $notifications[] = MakeNotification('success', Language::Get('main','successSetAdmin', $langTemplate));
+                        $setAdminNotifications[] = MakeNotification('success', Language::Get('main','successSetAdmin', $langTemplate));
                     } else {
-                        $notifications[] = MakeNotification('error', Language::Get('main','errorSetAdmin', $langTemplate));
+                        $setAdminNotifications[] = MakeNotification('error', Language::Get('main','errorSetAdmin', $langTemplate));
                     }
                 } else {
-                    $notifications[] = MakeNotification('success', Language::Get('main','successSetAdmin', $langTemplate));
+                    $setAdminNotifications[] = MakeNotification('success', Language::Get('main','successSetAdmin', $langTemplate));
                 }
             }
         }
@@ -226,6 +230,8 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
 
     // creates a new user
     if ($postResults['action'] === 'CreateUser') {
+        $createUserNotifications = array();
+        
         $postCreateUserValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
           ->addSet('lastName',
                    ['satisfy_exists',
@@ -270,7 +276,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                                            'text'=>Language::Get('main','differentPasswords', $langTemplate))));
 
         $foundValues = $postCreateUserValidation->validate();
-        $notifications = array_merge($notifications,$postCreateUserValidation->getPrintableNotifications('MakeNotification'));
+        $createUserNotifications = array_merge($createUserNotifications,$postCreateUserValidation->getPrintableNotifications('MakeNotification'));
         $postCreateUserValidation->resetNotifications()->resetErrors();
 
         if($postCreateUserValidation->isValid()) {
@@ -296,19 +302,19 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
             if ($message === 201) {
                 $user = User::decodeUser($answer);
                 if ($user->getStatus() == '201'){
-                    $notifications[] = MakeNotification('success', Language::Get('main','successCreateUser', $langTemplate));
+                    $createUserNotifications[] = MakeNotification('success', Language::Get('main','successCreateUser', $langTemplate));
                 } else
-                    $notifications[] = MakeNotification('error', Language::Get('main','errorCreateUser', $langTemplate));
+                    $createUserNotifications[] = MakeNotification('error', Language::Get('main','errorCreateUser', $langTemplate));
             } else {
-                $notifications[] = MakeNotification('error', Language::Get('main','errorCreateUser', $langTemplate));
+                $createUserNotifications[] = MakeNotification('error', Language::Get('main','errorCreateUser', $langTemplate));
             }
-        } else {
-            $notifications = $notifications + $postValidation->notifications;
         }
     }
 
     // deletes an user
     if ($postResults['action'] === 'DeleteUser') {
+        $deleteUserNotifications = array();
+        
         $postDeleteUserValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
           ->addSet('userName',
                    ['satisfy_exists',
@@ -318,7 +324,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                                  'text'=>Language::Get('main','invalidUserName', $langTemplate)]]);
 
         $foundValues = $postDeleteUserValidation->validate();
-        $notifications = array_merge($notifications,$postDeleteUserValidation->getPrintableNotifications('MakeNotification'));
+        $deleteUserNotifications = array_merge($deleteUserNotifications,$postDeleteUserValidation->getPrintableNotifications('MakeNotification'));
         $postDeleteUserValidation->resetNotifications()->resetErrors();
 
         if($postDeleteUserValidation->isValid()) {
@@ -331,7 +337,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
             $user_data = json_decode($user_data, true);
 
             if (empty($user_data)) {
-                $notifications[] = MakeNotification('error', Language::Get('main','invalidUserId', $langTemplate));
+                $deleteUserNotifications[] = MakeNotification('error', Language::Get('main','invalidUserId', $langTemplate));
             } else {
                 $userID = $user_data['id'];
 
@@ -340,9 +346,9 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                 http_delete($url, true, $message);
 
                 if ($message === 201) {
-                    $notifications[] = MakeNotification('success',Language::Get('main','successDeleteUser', $langTemplate));
+                    $deleteUserNotifications[] = MakeNotification('success',Language::Get('main','successDeleteUser', $langTemplate));
                 } else {
-                    $notifications[] = MakeNotification('error', Language::Get('main','errorDeleteUser', $langTemplate));
+                    $deleteUserNotifications[] = MakeNotification('error', Language::Get('main','errorDeleteUser', $langTemplate));
                 }
             }
         }
@@ -373,22 +379,24 @@ $h->bind(array('name' => Language::Get('main','settings', $langTemplate),
 // construct a content element for creating new courses
 $createCourse = Template::WithTemplateFile('include/MainSettings/CreateCourse.template.html');
 $createCourse->bind($mainSettings_data);
-if (count($notifications) > 0) {
-    ///$createCourse->bind($_POST); /// !!! das geht so nicht ??? ///
-}
+if (isset($createCourseNotifications))
+    $createCourse->bind(array('CreateCourseNotificationElements' => $createCourseNotifications));
 
 // construct a content element for setting admins
 $setAdmin = Template::WithTemplateFile('include/MainSettings/SetAdmin.template.html');
 $setAdmin->bind($mainSettings_data);
+if (isset($setAdminNotifications))
+    $setAdmin->bind(array('SetAdminNotificationElements' => $setAdminNotifications));
 
 // construct a content element for creating new users
 $createUser = Template::WithTemplateFile('include/MainSettings/CreateUser.template.html');
-if (count($notifications) > 0) {
-    ///$createUser->bind($_POST); /// !!! das geht so nicht ??? ///
-}
+if (isset($createUserNotifications))
+    $createUser->bind(array('CreateUserNotificationElements' => $createUserNotifications));
 
 // construct a content element for deleting users
 $deleteUser = Template::WithTemplateFile('include/MainSettings/DeleteUser.template.html');
+if (isset($deleteUserNotifications))
+    $deleteUser->bind(array('DeleteUserNotificationElements' => $deleteUserNotifications));
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $createCourse, $setAdmin, $createUser, $deleteUser);
@@ -397,6 +405,10 @@ $w->defineForm(basename(__FILE__), false, $setAdmin);
 $w->defineForm(basename(__FILE__), false, $createUser);
 $w->defineForm(basename(__FILE__), false, $deleteUser);
 $w->set_config_file('include/configs/config_default.json');
+if (isset($maintenanceMode) && $maintenanceMode === '1'){
+    $w->add_config_file('include/configs/config_maintenanceMode.json');
+}
+
 $w->show();
 
 ob_end_flush();

@@ -9,6 +9,8 @@
  *
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
  * @date 2015
+ * @author Max Brauer <ma.brauer@live.de>
+ * @date 2016
  */
 ?>
 
@@ -50,10 +52,37 @@
             </li>
         <?php } ?>
         
-        <?php if (isset($sid) && isset($courseSheets)){ ?>
+        <?php if (isset($sid) && isset($courseSheets) && count($courseSheets)>0){ ?>
             <li>
                 <form action="#" method="POST">
                 <?php echo Language::Get('main','selectSheet', $langTemplate); ?>:
+                
+                <?php if (isset($stid)) { ?>
+                    <select class="short" name="startSheet" size="1" onchange="this.form.submit()">
+                    <?php $found = false;
+                        if (count($courseSheets)>0){
+                            end($courseSheets);
+                            $lastKey = key($courseSheets);
+                        } else {
+                            $lastKey = null;
+                        }
+                        foreach($courseSheets as $key => $sheet){
+                            $add = '';
+                            if (isset($stid) && $stid == $sheet->getId()){
+                                $add = "selected=\"selected\"";
+                                $found = true;
+                            } elseif (!$found && $key == $lastKey) {
+                                $add = "selected=\"selected\"";
+                            }
+                        ?>
+                        <option value="<?php echo $sheet->getId(); ?>" <?php echo $add; ?>>
+                            <?php echo $sheet->getSheetName(); ?>
+                        </option>
+                    <?php }?>
+                        </select>
+                        <?php echo Language::Get('main','to', $langTemplate); ?>
+                <?php } ?>
+                    
                     <select class="short" name="selectedSheet" size="1" onchange="this.form.submit()">
                 
                 <?php foreach($courseSheets as $sheet){?>

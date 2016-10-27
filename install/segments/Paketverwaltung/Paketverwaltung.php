@@ -47,6 +47,13 @@ class Paketverwaltung
     {
         return $mainPath = $data['PL']['localPath'] . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR . str_replace(array("\\","/"), array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR), self::$packagePath);
     }
+    
+    public static function execWithUmask($command, &$output, &$return)
+    {
+        $old = umask(003); // 664
+        exec($command, $output, $return);
+        umask($old);
+    }
 
     public static function getDefaults($data)
     {
@@ -99,7 +106,16 @@ class Paketverwaltung
         }
 
         self::$pluginFiles = array();
-        if ($handle = @opendir(self::getPackagePath($data))) {
+        try {
+            $handle = opendir(self::getPackagePath($data));
+        } catch (Exception $e) {
+            // der Ordner konnte nicht zugegriffen werden
+            Installation::log(array('text'=>self::getPackagePath($data).' existiert nicht oder es fehlt die Zugriffsberechtigung.','logLevel'=>LogLevel::ERROR));
+            Installer::$messages[] = array('text'=>self::getPackagePath($data).' existiert nicht oder es fehlt die Zugriffsberechtigung. Möglicherweise wurde der lokale Pfad nicht korrekt angegeben.','type'=>'error');
+            return self::$pluginFiles;
+        }
+        
+        if ($handle !== false) {
             while (false !== ($file = readdir($handle))) {
                 if (substr($file,-5)!='.json' || $file=='.' || $file=='..') continue;
                 if (is_dir(self::getPackagePath($data). DIRECTORY_SEPARATOR .$file)) continue;
@@ -107,7 +123,13 @@ class Paketverwaltung
             }
             closedir($handle);
         }
+        
+        function getPackageDefinitionsSort($a, $b)
+        {
+            return strcmp(basename($a), basename($b));
+        }
 
+        usort(self::$pluginFiles, "getPackageDefinitionsSort");
         return self::$pluginFiles;
     }
 
@@ -119,7 +141,16 @@ class Paketverwaltung
         }
 
         self::$selectedPluginFiles = array();
-        if ($handle = @opendir(self::getPackagePath($data))) {
+        try {
+            $handle = opendir(self::getPackagePath($data));
+        } catch (Exception $e) {
+            // der Ordner konnte nicht zugegriffen werden
+            Installation::log(array('text'=>self::getPackagePath($data).' existiert nicht oder es fehlt die Zugriffsberechtigung.','logLevel'=>LogLevel::ERROR));
+            Installer::$messages[] = array('text'=>self::getPackagePath($data).' existiert nicht oder es fehlt die Zugriffsberechtigung. Möglicherweise wurde der lokale Pfad nicht korrekt angegeben.','type'=>'error');
+            return self::$selectedPluginFiles;
+        }
+        
+        if ($handle !== false) {
             while (false !== ($file = readdir($handle))) {
                 if (substr($file,-5)!='.json' || $file=='.' || $file=='..') continue;
                 if (is_dir(self::getPackagePath($data) . DIRECTORY_SEPARATOR . $file)) continue;
@@ -131,8 +162,25 @@ class Paketverwaltung
             }
             closedir($handle);
         }
+        
+        function getSelectedPackageDefinitionsSort($a, $b)
+        {
+            return strcmp(basename($a), basename($b));
+        }
 
+        usort(self::$pluginFiles, "getSelectedPackageDefinitionsSort");
         return self::$selectedPluginFiles;
+    }
+    
+    public static function getDescription($data, $descData)
+    {
+        if (isset($data['PL']['language'])){
+            $lang = $data['PL']['language'];
+            
+            if (isset($descData[$lang])) return $descData[$lang];
+            return '';
+        }
+        return '';
     }
 
     public static function show($console, $result, $data)
@@ -165,17 +213,28 @@ class Paketverwaltung
             $name = isset($dat['name']) ? $dat['name'] : '???';
             $version = isset($dat['version']) ? $dat['version'] : null;
             $voraussetzungen = isset($dat['requirements']) ? $dat['requirements'] : array();
+            $description =  self::getDescription($data, isset($dat['description']) ? $dat['description'] : array());
+            $descUrl =  isset($dat['descUrl']) ? $dat['descUrl'] : '';
             if (!is_array($voraussetzungen)) $voraussetzungen = array($voraussetzungen);
 
             $versionText = isset($dat['version']) ? ' v'.$dat['version'] : '';
-            $text .= Design::erstelleZeile($console, $name.$versionText, 'e', ((self::$onEvents['install']['enabledInstall'] || self::$onEvents['uninstall']['enabledInstall']) ? Design::erstelleAuswahl($console, $data['PLUG']['plug_install_'.$name], 'data[PLUG][plug_install_'.$name.']', $name, null, true) : ''), 'v_c');
+            $text .= Design::erstelleZeileShort($console, $name.$versionText, 'e', ((self::$onEvents['install']['enabledInstall'] || self::$onEvents['uninstall']['enabledInstall']) ? Design::erstelleAuswahl($console, $data['PLUG']['plug_install_'.$name], 'data[PLUG][plug_install_'.$name.']', $name, null, true) : ''), 'v_c');
 
+            if (trim($description) !== ''){
+                $text .= Design::erstelleZeileShort($console, Installation::Get('packages','desc',self::$langTemplate), 'v', $description, 'v');
+            }
+            
+            if (trim($descUrl) !== ''){
+                $text .= Design::erstelleZeileShort($console, Installation::Get('packages','descUrl',self::$langTemplate), 'v', '<a class="e" href="'.$descUrl.'">'.htmlentities($descUrl).'</a>', 'v');
+            }
+            
             $isInstalled=false;
             if (isset($installedPlugins)){
                 foreach($installedPlugins as $instPlug){
                     if ($name == $instPlug['name']){
                         if (isset($instPlug['version'])){
-                            $text .= Design::erstelleZeile($console, Installation::Get('packages','currentVersion',self::$langTemplate) , 'v', 'v'.$instPlug['version'] , 'v');
+                            // die aktuelle Version wird noch nicht ausreichend verwendet
+                            /// /// $text .= Design::erstelleZeile($console, Installation::Get('packages','currentVersion',self::$langTemplate) , 'v', 'v'.$instPlug['version'] , 'v');
                         }
                         $isInstalled=true;
                         break;
@@ -183,8 +242,10 @@ class Paketverwaltung
                 }
             }
 
-            if (!$isInstalled)
-                $text .= Design::erstelleZeile($console, Installation::Get('packages','currentVersion',self::$langTemplate) , 'v', '---' , 'v');
+            if (!$isInstalled){
+                            // die aktuelle Version wird noch nicht ausreichend verwendet
+                /// /// $text .= Design::erstelleZeile($console, Installation::Get('packages','currentVersion',self::$langTemplate) , 'v', '---' , 'v');
+            }
 
             $vorText = '';
             foreach ($voraussetzungen as $vor){
@@ -194,7 +255,8 @@ class Paketverwaltung
 
             } else {
                 $vorText = substr($vorText,0,-2);
-                $text .= Design::erstelleZeile($console, Installation::Get('packages','requirements',self::$langTemplate) , 'v', $vorText , 'v');
+                // die Bedingungen der Pakete werden noch nicht ausreichend verwendet
+                /// /// $text .= Design::erstelleZeile($console, Installation::Get('packages','requirements',self::$langTemplate) , 'v', $vorText , 'v');
             }
 
 
@@ -224,15 +286,63 @@ class Paketverwaltung
                 }
 
                 if ($componentCount>0){
-                    $text .= Design::erstelleZeile($console, Installation::Get('packages','numberComponents',self::$langTemplate) , 'v', $componentCount , 'v');
+                    $text .= Design::erstelleZeileShort($console, Installation::Get('packages','numberComponents',self::$langTemplate) , 'v', $componentCount , 'v');
                 }
                 if ($fileCount>0){
-                    $text .= Design::erstelleZeile($console, Installation::Get('packages','numberFiles',self::$langTemplate) , 'v', $fileCount , 'v');
+                    $text .= Design::erstelleZeileShort($console, Installation::Get('packages','numberFiles',self::$langTemplate) , 'v', $fileCount , 'v');
                 }
                 if ($fileSize>0){
-                    $text .= Design::erstelleZeile($console, Installation::Get('packages','size',self::$langTemplate) , 'v', Design::formatBytes($fileSize) , 'v');
+                    $text .= Design::erstelleZeileShort($console, Installation::Get('packages','size',self::$langTemplate) , 'v', Design::formatBytes($fileSize) , 'v');
                 }
             }
+            
+            if ($isInstalled){
+                $content = self::gibPaketInhalt($data, $plug);
+                
+                if ($content !== null){
+                    
+                    $list=null;
+                    self::gibPaketEintraegeNachTyp($content, 'git',$list);
+
+                    foreach($list as $entry){
+                        if (!isset($entry['path'])) continue;
+                        $virtual = (isset($entry['virtual'])?$entry['virtual']:false);
+                        if ($virtual) continue;
+
+                        // nun wollen wir jedes dieser repos pruefen
+                        $name = '???';
+                        $url = '';
+                        if (isset($entry['params']['name'])){
+                            $name = $entry['params']['name'];
+                        }
+                        if (isset($entry['params']['URL'])){
+                            $url = $entry['params']['URL'];
+                        }
+                        
+                        $text .= Design::erstelleZeileShort($console, $name.': '.$url, 'info-color e');
+                        $myerror = '';
+                        $myfail = false;
+                        $myerrno=0;
+                        $collected = GitAktualisierung::collectGitChanges($data['PL']['localPath'] . DIRECTORY_SEPARATOR . $entry['path'], $data, $myfail, $myerrno, $myerror);
+                        if ($myfail){
+                            // es ist ein Fehler aufgetreten
+                            $text .= Design::erstelleZeileShort($console, $myerror , 'error v');                            
+                        } else {
+                            $fail=false;
+                            $errno = 0;
+                            $error = '';
+                            if (isset($collected['commits'][0])){
+                                $text .= Design::erstelleZeileShort($console, Installation::Get('packages','updateAvailable',self::$langTemplate), 'error v');
+                                $text .= GitAktualisierung::visualizeModifications($data, $console, $fail, $errno, $error, $collected, true, 5, false);
+                            }
+                        }
+                    }
+                } else {
+                    // Fehler beim Lesen des Pakets
+                }
+            }
+            
+            $text .= Design::erstelleZeileShort($console, '' , '', '', '');
         }
 
         /*if ($installPlugins){
@@ -265,7 +375,16 @@ class Paketverwaltung
 
         if (!$fail){
             $pluginFiles = array();
-            if ($handle = @opendir(self::getPackagePath($data))) {
+            try {
+                $handle = opendir(self::getPackagePath($data));
+            } catch (Exception $e) {
+                // der Ordner konnte nicht zugegriffen werden
+                Installation::log(array('text'=>self::getPackagePath($data).' existiert nicht oder es fehlt die Zugriffsberechtigung.','logLevel'=>LogLevel::ERROR));
+                Installer::$messages[] = array('text'=>self::getPackagePath($data).' existiert nicht oder es fehlt die Zugriffsberechtigung.','type'=>'error');
+                return $pluginFiles;
+            }
+        
+            if ($handle !== false) {
                 while (false !== ($file = readdir($handle))) {
                     if ($file=='.' || $file=='..') continue;
                     if (is_dir(self::getPackagePath($data) . DIRECTORY_SEPARATOR .$file)) continue;
@@ -368,7 +487,7 @@ class Paketverwaltung
                         Installation::log(array('text'=>Installation::Get('packages','execClone',self::$langTemplate,array('cmd'=>'(git clone --single-branch --branch '.$branch.' '.$repo.' .) 2>&1'))));
                         if (@chdir($location)){
                             // klont das Repo
-                            exec('(git clone --single-branch --branch '.$branch.' '.$repo.' .) 2>&1', $output, $return);
+                            self::execWithUmask('(git clone --single-branch --branch '.$branch.' '.$repo.' .) 2>&1', $output, $return);
                             @chdir($pathOld);
                         } else {
                             $return = 1;
@@ -384,8 +503,8 @@ class Paketverwaltung
                         $pathOld = getcwd();
                         Installation::log(array('text'=>Installation::Get('packages','execRemote',self::$langTemplate,array('cmd'=>'(git remote set-url origin '.$repo.' ) 2>&1'))));
                         if (@chdir($location)){
-                            // klont das Repo
-                            exec('git remote set-url origin '.$repo.' ) 2>&1', $output, $return);
+                            // setzt die URL des Repo korrekt
+                            exec('(git remote set-url origin '.$repo.' ) 2>&1', $output, $return);
                             @chdir($pathOld);
                         } else {
                             $return = 1;
@@ -399,9 +518,12 @@ class Paketverwaltung
 
                     $pathOld = getcwd();
                     if (@chdir($location)){
+                        exec('(git config --local core.fileMode false) 2>&1', $output, $return); // wird das ausreichend ueberprueft?
+                            
                         // aktualisiert das Repo
-                        exec('(git fetch) 2>&1', $output, $return);
-                        exec('(git pull) 2>&1', $output2, $return2);
+                        self::execWithUmask('(git reset --hard) 2>&1', $output, $return); // wird das ausreichend ueberprueft?
+                        self::execWithUmask('(git fetch) 2>&1', $output, $return);
+                        self::execWithUmask('(git pull) 2>&1', $output2, $return2);
                         @chdir($pathOld);
                     } else {
                         $return = 1;

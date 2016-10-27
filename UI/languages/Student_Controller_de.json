@@ -7,6 +7,10 @@
         "errorDeleteSubmission": "Beim Löschen ist ein Fehler aufgetreten!",
         "changeCourse": "Veranstaltung wechseln",
         "invalidSheetId": "Ungültige Übungsserie!",
-        "leaveStudent": "Studentenrolle verlassen"
+        "leaveStudent": "Studentenrolle verlassen",
+        "invalidCourse": "Ungültige Veranstaltung",
+        "invalidRedirect": "Ungültige Umleitung",
+        "invalidRedirectData": "Ungültige Umleitungsdaten",
+        "errorRedirect": "Umleitung fehlgeschlagen"
     }
 }

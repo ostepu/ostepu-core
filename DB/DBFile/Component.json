@@ -97,6 +97,7 @@
     "connector": [
         {"name": "request","target": "CLocalObjectRequest"},
         {"name": "postPlatform","target": "CInstall"},
-        {"name": "postSamples","target": "CInstall"}
+        {"name": "postSamples","target": "CInstall"},
+        { "name": "getDescFiles","target": "TDocuView"}
     ]
 }

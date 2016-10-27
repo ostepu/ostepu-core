@@ -34,3 +34,8 @@ Wenn Sie den grünen Hinweis sehen, wurde der Nutzer erfolgreich eingetragen.
 Sollte der Vorgang scheitern, sollten Sie prüfen, ob der Nutzername korrekt geschrieben war und der Nutzer der Plattform bekannt ist.
 
 ![](addUserD.png)
+
+##### einen Nutzer einer Veranstaltung hinzufügen
+*Dieses Video wird von einem externen Anbieter bereitgestellt, sodass wir keinen Einfluss auf zusätzliche Inhalte (u.a. Werbung) haben und dieser eventuell Daten, im Rahmen der Nutzung, erheben könnte.*
+<iframe width="640" height="360" src="https://www.youtube-nocookie.com/embed/HFZNAnB0UW8?list=PLfnTtQX6vUn2lHxmo2WqLsPaEZihOEczh&amp;showinfo=0&amp;modestbranding=1&amp;loop=1&amp;listType=playlist" frameborder="0" allowfullscreen></iframe>
+*Quelle: https://www.youtube-nocookie.com/embed/HFZNAnB0UW8*

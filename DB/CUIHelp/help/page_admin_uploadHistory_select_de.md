@@ -38,3 +38,8 @@ Um den gesuchten Studenten schneller zu finden, können Sie die Studentenliste n
 ![](selectA.png)
 
 Sie müssen die Sortierung bestätigen.
+
+#### den Einsendungsverlauf nutzen
+*Dieses Video wird von einem externen Anbieter bereitgestellt, sodass wir keinen Einfluss auf zusätzliche Inhalte (u.a. Werbung) haben und dieser eventuell Daten, im Rahmen der Nutzung, erheben könnte.*
+<iframe width="640" height="360" src="https://www.youtube-nocookie.com/embed/T6UFJQ-Kj3o?list=PLfnTtQX6vUn2lHxmo2WqLsPaEZihOEczh&amp;showinfo=0&amp;modestbranding=1&amp;loop=1&amp;listType=playlist" frameborder="0" allowfullscreen></iframe>
+*Quelle: https://www.youtube-nocookie.com/embed/T6UFJQ-Kj3o*

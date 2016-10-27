@@ -1,10 +1,12 @@
 {
     "name": "FORMS",
     "version": "0.1",
+    "description":{"de":"Die Verwendung von Eingabeformularen, für Einsendungen, wird über dieses Paket ermöglicht."},
+    "descUrl":"https://github.com/ostepu/ostepu-forms",
     "requirements": [{
         "type": "plugin",
         "name": "CORE",
-        "version": "0.4.3"
+        "version": "0.5.0"
     }],
     "files": [
         {

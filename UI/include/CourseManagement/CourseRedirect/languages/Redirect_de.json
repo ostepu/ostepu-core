@@ -1,0 +1,10 @@
+{
+    "main": {
+        "title": "Titel",
+        "url": "URL",
+        "transaction": "Transaktion",
+        "location": "Ort",
+        "sheetLocation": "Übungsserien",
+        "courseLocation": "Veranstaltung"
+    }
+}

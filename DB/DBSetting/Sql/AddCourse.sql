@@ -38,5 +38,5 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 call execute_if_column_not_exists('<?php echo $tableName;?>','SET_category','ALTER TABLE `<?php echo $tableName;?>` ADD COLUMN SET_category VARCHAR(255) NOT NULL DEFAULT \'\';');
 
-ALTER IGNORE TABLE `<?php echo $tableName;?>` MODIFY COLUMN SET_state VARCHAR(255) NOT NULL DEFAULT '';
-ALTER IGNORE TABLE `<?php echo $tableName;?>` MODIFY COLUMN SET_type VARCHAR(255) NOT NULL DEFAULT 'TEXT';
+ALTER TABLE `<?php echo $tableName;?>` MODIFY COLUMN SET_state VARCHAR(255) NOT NULL DEFAULT '';
+ALTER TABLE `<?php echo $tableName;?>` MODIFY COLUMN SET_type VARCHAR(255) NOT NULL DEFAULT 'TEXT';

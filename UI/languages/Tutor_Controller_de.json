@@ -1,5 +1,9 @@
 {
     "main": {
-        "changeCourse": "Veranstaltung wechseln"
+        "changeCourse": "Veranstaltung wechseln",
+        "invalidCourse": "Ungültige Veranstaltung",
+        "invalidRedirect": "Ungültige Umleitung",
+        "invalidRedirectData": "Ungültige Umleitungsdaten",
+        "errorRedirect": "Umleitung fehlgeschlagen"
     }
 }

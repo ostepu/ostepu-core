@@ -99,6 +99,7 @@
             "name": "postSamples",
             "target": "CInstall",
             "priority": 120
-        }
+        },
+        { "name": "getDescFiles","target": "TDocuView"}
     ]
 }

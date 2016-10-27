@@ -60,7 +60,7 @@ foreach ($plugins_data['plugins'] as &$plugin){
 $postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
   ->addSet('action',
            ['set_default'=>'noAction',
-            'satisfy_in_list'=>['noAction', 'CourseNotification', 'EditExternalId', 'AddExternalId', 'Plugins', 'CourseSettings', 'AddExerciseType', 'EditExerciseType', 'GrantRights', 'RevokeRights', 'AddUser'],
+            'satisfy_in_list'=>['noAction', 'CourseRedirect', 'CourseNotification', 'EditExternalId', 'AddExternalId', 'Plugins', 'CourseSettings', 'AddExerciseType', 'EditExerciseType', 'GrantRights', 'RevokeRights', 'AddUser'],
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','invalidAction', $langTemplate)]])
   ->addSet('sortUsers',
@@ -120,6 +120,132 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
             }
         }
 
+    }   
+    
+    if ($postResults['action'] === 'CourseRedirect') {
+        $courseRedirectsNotifications = array();
+
+        $postCourseRedirectValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+          ->addSet('data',
+                   ['set_default'=>array(),
+                    'is_array',
+                    'perform_this_foreach'=>[['key',
+                                              ['valid_integer']],
+                                             ['elem',
+                                              ['perform_this_array'=>[['id',
+                                                                       ['logic_or'=>[['satisfy_value'=>''],
+                                                                                     ['valid_identifier']],
+                                                                        'on_error'=>['type'=>'error',
+                                                                                     'text'=>Language::Get('main','invalidRedirectId', $langTemplate)]]],
+                                                                      ['title',
+                                                                       ['satisfy_exists',
+                                                                        'on_error'=>['type'=>'error',
+                                                                                     'text'=>Language::Get('main','invalidRedirectTitle', $langTemplate)]]],
+                                                                      ['url',
+                                                                       ['satisfy_exists',
+                                                                        'on_error'=>['type'=>'error',
+                                                                                     'text'=>Language::Get('main','invalidRedirectUrl', $langTemplate)]]],
+                                                                      ['location',
+                                                                       ['satisfy_exists',
+                                                                        'satisfy_in_list'=>['sheet','course'],
+                                                                        'on_error'=>['type'=>'error',
+                                                                                     'text'=>Language::Get('main','invalidRedirectLocation', $langTemplate)]]],
+                                                                      ['auth',
+                                                                       ['set_default'=>'none',
+                                                                        'satisfy_in_list'=>['none', 'transaction'],
+                                                                        'on_error'=>['type'=>'error',
+                                                                                     'text'=>Language::Get('main','invalidRedirectAuth', $langTemplate)]]]
+                                                                                     ]]]]]);
+                                 
+                                 
+        $foundValues = $postCourseRedirectValidation->validate();
+        $courseRedirectsNotifications = array_merge($courseRedirectsNotifications,$postCourseRedirectValidation->getPrintableNotifications('MakeNotification'));
+        $postCourseRedirectValidation->resetNotifications()->resetErrors();
+
+        if ($postCourseRedirectValidation->isValid()){
+            //echo json_encode($foundValues);
+            $data = $foundValues['data'];
+            
+            $URI = $serverURI . '/DB/DBRedirect/redirect/course/'.$cid;
+            $currentRedirects = http_get($URI, true);
+            $currentRedirects = Redirect::decodeRedirect($currentRedirects);
+            $currentList = array(); // enthält die IDs der existierenden Umleitungen
+            foreach($currentRedirects as $key => $elem){
+                $currentList[] = $elem->getId();
+            }
+            unset($currentRedirects);
+            
+            $foundList = array(); // enthält die IDs der übermittelten Umleitungen
+            $foundExistingElements = array();
+            $foundNewElements = array();
+            foreach($data as $key => $elem){
+                if (isset($elem['id']) && trim($elem['id']) != ''){
+                    $foundList[] = $elem['id'];
+                    $foundExistingElements[$elem['id']] = Redirect::createRedirect($elem['id'],$elem['title'],$elem['url'],$elem['location'],$elem['auth']);
+                } else {
+                    $foundNewElements[] = Redirect::createRedirect(null,$elem['title'],$elem['url'],$elem['location'],$elem['auth']);
+                }
+            };
+
+            // finde die Elemente, welche gelöscht werden sollen
+            $removeElements = array_diff($currentList,$foundList);
+            $removeFailure = false;
+            foreach($removeElements as $key){
+                $URI = $serverURI . "/DB/DBRedirect/redirect/redirect/".$key;
+                http_delete($URI, true, $messageNewAc);
+                if ($messageNewAc !== 201) {
+                    $removeFailure = true;
+                    break;
+                }
+            }
+            
+            if (count($removeElements)>0){
+                if ($removeFailure === true) {
+                    $courseRedirectsNotifications[] = MakeNotification('error', Language::Get('main','errorRemoveRedirect', $langTemplate));
+                } else {
+                    $courseRedirectsNotifications[] = MakeNotification('success', Language::Get('main','successRemoveRedirect', $langTemplate));
+                }
+            }
+            
+            // finde die Elemente, welche geändert werden sollen
+            $editElements = array_intersect($currentList,$foundList);
+            $editFailure = false;
+            foreach($editElements as $key){
+                $URI = $serverURI . "/DB/DBRedirect/redirect/redirect/".$key;
+                $res = http_put_data($URI, Redirect::encodeRedirect($foundExistingElements[$key]), true, $messageNewAc);
+                if ($messageNewAc !== 201) {
+                    $editFailure = true;
+                    break;
+                }
+            }
+            
+            if (count($editElements)>0){
+                if ($editFailure === true) {
+                    $courseRedirectsNotifications[] = MakeNotification('error', Language::Get('main','errorEditRedirect', $langTemplate));
+                } else {
+                    $courseRedirectsNotifications[] = MakeNotification('success', Language::Get('main','successEditRedirect', $langTemplate));
+                }
+            }
+            
+            // erstelle die neuen Elemente
+            $createFailure = false;
+            foreach($foundNewElements as $key => $elem){
+                $URI = $serverURI . "/DB/DBRedirect/redirect/course/".$cid;
+                $res = http_post_data($URI, Redirect::encodeRedirect($elem), true, $messageNewAc);
+                if ($messageNewAc !== 201) {
+                    $createFailure = true;
+                    break;
+                }
+            }
+            
+            if (count($foundNewElements)>0){
+                if ($createFailure === true) {
+                    $courseRedirectsNotifications[] = MakeNotification('error', Language::Get('main','errorCreateRedirect', $langTemplate));
+                } else {
+                    $courseRedirectsNotifications[] = MakeNotification('success', Language::Get('main','successCreateRedirect', $langTemplate));
+                }
+            }
+        }
     }
     
     if ($postResults['action'] === 'CourseNotification') {
@@ -767,7 +893,6 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
         $postAddUserValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
           ->addSet('rights',
                    ['satisfy_exists',
-                    'satisfy_not_empty',
                     'satisfy_min_numeric'=>0,
                     'satisfy_max_numeric'=>3,
                     'to_integer',
@@ -823,7 +948,7 @@ if ($postValidation->isValid()){
 }
 
 foreach ($courseManagement_data['users'] as $key => $user)
-    $dataList[] = array('pos' => $key,'userName'=>$user['userName'],'lastName'=>$user['lastName'],'firstName'=>$user['firstName']);
+    $dataList[] = array('pos' => $key,'userName'=>(isset($user['userName']) ? $user['userName'] : '???'),'lastName'=>(isset($user['lastName']) ? $user['lastName'] : '???'),'firstName'=>(isset($user['firstName']) ? $user['firstName'] : '???'));
 $sortTypes = array('lastName','firstName','userName');
 $dataList=LArraySorter::orderby($dataList, $sortUsersValue, SORT_ASC, $sortTypes[(array_search($sortUsersValue,$sortTypes)+1)%count($sortTypes)], SORT_ASC);
 $tempData = array();
@@ -908,15 +1033,22 @@ $courseNotifications->bind($courseManagement_data);
 if (isset($courseNotificationsNotifications))
     $courseNotifications->bind(array('CourseNotificationsNotifications' => $courseNotificationsNotifications));
 
+// construct a content element for redirect links
+$courseRedirects = Template::WithTemplateFile('include/CourseManagement/CourseRedirects.template.html');
+$courseRedirects->bind($courseManagement_data);
+if (isset($courseRedirectsNotifications))
+    $courseRedirects->bind(array('CourseRedirectsNotifications' => $courseRedirectsNotifications));
+
 /**
  * @todo combine the templates into a single file
  */
 
 // wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, $courseSettings, $plugins, $courseNotifications, $addExerciseType, $editExerciseType, $grantRights, $revokeRights, $addUser, $editExternalId, $addExternalId);
+$w = new HTMLWrapper($h, $courseSettings, $plugins, $courseNotifications, $courseRedirects, $addExerciseType, $editExerciseType, $grantRights, $revokeRights, $addUser, $editExternalId, $addExternalId);
 $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $courseSettings);
 $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $plugins);
 $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $courseNotifications);
+$w->defineForm(basename(__FILE__).'?cid='.$cid, false, $courseRedirects);
 $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $addExerciseType);
 $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $editExerciseType);
 $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $grantRights);
@@ -925,6 +1057,10 @@ $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $addUser);
 $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $editExternalId);
 $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $addExternalId);
 $w->set_config_file('include/configs/config_course_management.json');
+if (isset($maintenanceMode) && $maintenanceMode === '1'){
+    $w->add_config_file('include/configs/config_maintenanceMode.json');
+}
+
 $w->show();
 
 ob_end_flush();

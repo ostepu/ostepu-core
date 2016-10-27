@@ -182,6 +182,8 @@ class Model
                 $placeholder[$holder['name']] = $holder['regex'];
             }
 
+            // hier werden die eigentlichen Bedingungen der Platzhalter geprüft
+            // todo: muss wieder genutzt werden
             /*foreach ($params as $key => $value){
                 if (isset($placeholder[$key])){
                     if (is_array($value)){

@@ -345,8 +345,20 @@ class StudIPAuthentication extends AbstractAuthentication
      */
     public function loginUser($username, $password)
     {
+        // prüfe den Wartungsmodus
+        global $maintenanceMode;
+        global $maintenanceText;
+        global $maintenanceAllowedUsers;
+        if ($maintenanceMode === '1' && !in_array($username,explode(',',str_replace(' ', '', $maintenanceAllowedUsers)))){
+            $text = $maintenanceText;
+            if (trim($maintenanceText) == '') $text = "Wartungsarbeiten!!!";
+            set_error("error", $text);
+            exit(); 
+        }
+        
         global $databaseURI;
         global $logicURI;
+        global $serverURI;
 
         // check if logged in in studip
         $studip = $this->checkUserInStudip($this->uid,$this->sid);
@@ -383,7 +395,7 @@ class StudIPAuthentication extends AbstractAuthentication
 ///Logger::Log("createCourse>>".$_GET['vid'] , LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
                             $courseObject = $this->getCourseInStudip($this->vid);
                             if ($courseObject!==null){
-                                $url = "{$logicURI}/course";
+                                $url = "{$serverURI}/logic/LCourse/course";
                                 $courseObject = http_post_data($url, Course::encodeCourse($courseObject), false, $message);
                                 if ($message===201){
                                     // new course was created

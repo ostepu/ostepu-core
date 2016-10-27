@@ -76,11 +76,44 @@ $postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
            ['set_default'=>null,
             'valid_identifier',
             'on_error'=>['type'=>'error',
-                         'text'=>Language::Get('main','invalidSheetId', $langTemplate)]]);
+                         'text'=>Language::Get('main','invalidSheetId', $langTemplate)]])
+  ->addSet('redirect',
+           ['valid_identifier',
+            'on_error'=>['type'=>'error',
+                         'text'=>Language::Get('main','invalidRedirectData', $langTemplate)]]);
 
 $postResults = $postValidation->validate();
 $notifications = array_merge($notifications,$postValidation->getPrintableNotifications('MakeNotification'));
 $postValidation->resetNotifications()->resetErrors();
+
+
+if ($postValidation->isValid() && isset($postResults['redirect'])) {
+    $dat = explode('_',$postResults['redirect']);
+    $sheetid = array_shift($dat);
+    $postResults['redirect'] = implode('_',$dat);
+    
+    // nur wenn die Veranstaltung zur Umleitung passt, ist die Aktion erlaubt
+    if (Redirect::getCourseFromRedirectId($postResults['redirect']) === $cid){
+        // nun soll der redirect ermittelt und ausgelöst werden
+        $URI = $serverURI . "/DB/DBRedirect/redirect/redirect/".$postResults['redirect'];
+        $redirect = http_get($URI, true, $message);
+        
+        if ($message == 200){
+            // die Umleitung existiert
+            
+            $redirect = Redirect::decodeRedirect($redirect);
+            if (executeRedirect($redirect, $selectedUser, $cid, $sheetid) === false){
+                $notifications[] = MakeNotification('error', Language::Get('main','errorRedirect', $langTemplate));
+            }
+        } else {
+            // unbekannte Umleitung
+            $notifications[] = MakeNotification('error', Language::Get('main','invalidRedirect', $langTemplate));
+        }
+    } else {
+        // falsche Veranstaltung
+        $notifications[] = MakeNotification('error', Language::Get('main','invalidCourse', $langTemplate));
+    }
+}
 
 if (isset($postResults['deleteSubmissionWarning'])) {
     $notifications[] = MakeNotification('warning', Language::Get('main','askDeleteSubmission', $langTemplate));
@@ -129,7 +162,10 @@ $student_data['uid'] = $selectedUser;
 $user_course_data = $student_data['user'];
 
 $menu = MakeNavigationElement($user_course_data,
-                              PRIVILEGE_LEVEL::STUDENT);
+                              PRIVILEGE_LEVEL::STUDENT,
+                              false,
+                              false,
+                              (isset($student_data['redirect']) ? $student_data['redirect'] : array()));
 
 $userNavigation = null;
 if (isset($_SESSION['selectedUser'])){
@@ -168,8 +204,13 @@ $t->bind($student_data);
 $t->bind(array('uid'=>$selectedUser, 'privileged'=>$privileged));
 
 $w = new HTMLWrapper($h, $t);
+$w->defineHeaderForm(basename(__FILE__).'?cid='.$cid, false, $h);
 $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $t);
 $w->set_config_file('include/configs/config_student_tutor.json');
+if (isset($maintenanceMode) && $maintenanceMode === '1'){
+    $w->add_config_file('include/configs/config_maintenanceMode.json');
+}
+
 $w->show();
 
 ob_end_flush();

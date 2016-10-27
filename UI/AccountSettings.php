@@ -159,6 +159,10 @@ $w = new HTMLWrapper($h, $accountInfo, $changePassword);
 $w->defineForm(basename(__FILE__), false, $changePassword);
 $w->defineForm(basename(__FILE__), false, $accountInfo);
 $w->set_config_file('include/configs/config_default.json');
+if (isset($maintenanceMode) && $maintenanceMode === '1'){
+    $w->add_config_file('include/configs/config_maintenanceMode.json');
+}
+
 $w->show();
 
 ob_end_flush();

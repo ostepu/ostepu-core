@@ -140,16 +140,16 @@ class Logger
             // or overwriting each other
             //do{} while(!flock($fp, LOCK_EX);
             
-            if (flock($fp, LOCK_EX)) {
+           /// if (flock($fp, LOCK_EX)) {
                 // print the message to the file
                 fwrite($fp, $infoString);
 
                 // unlock and close the file
-                flock($fp, LOCK_UN);
+             ///   flock($fp, LOCK_UN);
 
-            } else {
+          ///  } else {
                 //die("Getting lock on " . $logFile . " failed!\n");
-            }
+           /// }
 
             fclose($fp);
             return true;

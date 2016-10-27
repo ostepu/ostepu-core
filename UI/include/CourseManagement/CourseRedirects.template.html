@@ -1,0 +1,85 @@
+<?php
+/**
+ * @file CourseRedirects.template.html
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/system)
+ * @since 0.5.0
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2016
+ */
+?>
+
+<?php $langTemplate='CourseManagement_CourseRedirects';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
+<?php
+if (isset($CourseRedirectsNotifications)) {
+    foreach ($CourseRedirectsNotifications as $notificationElement) {
+        print $notificationElement;
+    }
+}
+?>
+
+<?php
+    // Quelle: http://php.net/manual/de/function.readdir.php
+    // ermittle die verfügbaren Templates
+    $templates = array('none' => Language::Get('main','templateNone', $langTemplate));
+    if ($handle = @opendir(dirname(__FILE__). DIRECTORY_SEPARATOR . 'CourseRedirect' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR)) {
+        /* Das ist der korrekte Weg, ein Verzeichnis zu durchlaufen. */
+        while (false !== ($entry = readdir($handle))) {
+            if (trim($entry,'.') == '') continue;
+            $path_parts = pathinfo($entry);
+            $templates[$path_parts['filename']] = $path_parts['filename'];
+        }
+        closedir($handle);
+    }
+?>
+
+<input type="hidden" name="action" value="CourseRedirect">
+<div class="content-element">
+    <div class="content-header">
+        <?php echo MakeInfoButton('page/admin/courseManagement','courseRedirects.md'); ?>
+        <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <button class="text-button info-color bold right"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
+    </div>
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            <div class="content-description">
+                <?php echo Language::Get('main','description', $langTemplate); ?>
+            </div>
+            
+            <label class="form-field left label bold new-line" for="defaultPlugins">
+                <?php echo Language::Get('main','messages', $langTemplate); ?>:
+            </label>
+
+            <label class="left label bold" for="defaultPlugins">
+                <?php echo Language::Get('main','template', $langTemplate); ?>:
+            </label>
+            <select class="form-field text-input short RedirectTemplates">
+                <?php                    
+                    foreach ($templates as $tempName => $template){
+                        echo     '<option value="' . $tempName  . '">'.$template.'</option>';
+                    }
+                ?>
+            </select>
+            <a style="padding-left:0px" class="text-button info-color addRedirectElement" href="javascript:void(0);"><?php echo Language::Get('main','addRedirect', $langTemplate); ?></a>
+
+            
+            <div class="left checkbox-container new-line very-wide" style="height:250px">
+                <?php
+                if (isset($redirect) && is_array($redirect)){
+                    $redirect = array_reverse($redirect);
+                    foreach ($redirect as $key => $red){
+                        $subtask = Template::WithTemplateFile('include/CourseManagement/CourseRedirect/Redirect.template.php');
+                        $subtask->bind($red);
+                        $subtask->show();
+                    }
+                }
+                ?>
+            <span class="endRedirect"/>
+            </div>
+        </div>
+    </div> <!-- end: content-body -->
+</div> <!-- end: content-wrapper -->

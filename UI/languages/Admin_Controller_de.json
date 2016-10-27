@@ -6,6 +6,10 @@
         "invalidDeleteSheetWarning": "Ungültige Löschanfrage!",
         "invalidDeleteSheet": "Ungültiger Löschversuch!",
         "changeCourse": "Veranstaltung wechseln",
-        "invalidAction": "Die Aktion konnte nicht ausgeführt werden."
+        "invalidAction": "Die Aktion konnte nicht ausgeführt werden.",
+        "invalidCourse": "Ungültige Veranstaltung",
+        "invalidRedirect": "Ungültige Umleitung",
+        "invalidRedirectData": "Ungültige Umleitungsdaten",
+        "errorRedirect": "Umleitung fehlgeschlagen"
     }
 }

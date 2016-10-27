@@ -18,6 +18,8 @@
  * @date 2014
  * @author Peter König <upbkgs20@arcor.de>
  * @date 2014
+ * @author Max Brauer <ma.brauer@live.de>
+ * @date 2016
  */
 
 require_once dirname(__FILE__).'/../../Assistants/vendor/Slim/Slim/Slim.php';
@@ -69,6 +71,7 @@ class LGetSite
     private $_getCourse = array();
     private $_getInvitation = array();
     private $_getNotification = array();
+    private $_getRedirect = array();
 
     private $flag = 0;
 
@@ -102,6 +105,7 @@ class LGetSite
         $this->_getCourse = CConfig::getLink($conf->getLinks(),"getCourse");
         $this->_getInvitation = CConfig::getLink($conf->getLinks(),"getInvitation");
         $this->_getNotification = CConfig::getLink($conf->getLinks(),"getNotification");
+        $this->_getRedirect = CConfig::getLink($conf->getLinks(),"getRedirect");
 
         $this->lURL = $this->query->getAddress();
 
@@ -181,6 +185,14 @@ class LGetSite
 
         //GET Condition
         $this->app->get('/condition/user/:userid/course/:courseid(/)',
+                        array($this, 'checkCondition'));
+
+        //GET Condition
+        $this->app->get('/condition/user/:userid/course/:courseid/lastsheet/:maxsid(/)',
+                        array($this, 'checkCondition'));
+
+        //GET Condition
+        $this->app->get('/condition/user/:userid/course/:courseid/firstsheet/:minsid/lastsheet/:maxsid(/)',
                         array($this, 'checkCondition'));
 
         //run Slim
@@ -467,6 +479,10 @@ class LGetSite
         // load course notifications
         $URL = $this->_getNotification->getAddress().'/notification/alive/course/'.$courseid;
         $handler6 = Request_CreateRequest::createGet($URL, array(), '');
+        
+        // load course redirects
+        $URL = $this->_getRedirect->getAddress().'/redirect/course/'.$courseid;
+        $handler7 = Request_CreateRequest::createGet($URL, array(), '');
 
         $multiRequestHandle = new Request_MultiRequest();
         $multiRequestHandle->addRequest($handler1);
@@ -475,6 +491,7 @@ class LGetSite
         $multiRequestHandle->addRequest($handler4);
         $multiRequestHandle->addRequest($handler5);
         $multiRequestHandle->addRequest($handler6);
+        $multiRequestHandle->addRequest($handler7);
 
         $answer = $multiRequestHandle->run();
 
@@ -496,6 +513,7 @@ class LGetSite
         $possibleExerciseTypes = json_decode($answer[4]['content'], true);
         
         $notifications = json_decode($answer[5]['content'], true);
+        $response['redirect'] = json_decode($answer[6]['content'], true);
 
         $markingStatus = Marking::getStatusDefinition();
 
@@ -1277,11 +1295,16 @@ class LGetSite
         $URL = $this->_getNotification->getAddress().'/notification/alive/course/'.$courseid;
         $handler5 = Request_CreateRequest::createGet($URL, array(), '');
         
+        // load course redirects
+        $URL = $this->_getRedirect->getAddress().'/redirect/course/'.$courseid;
+        $handler6 = Request_CreateRequest::createGet($URL, array(), '');
+        
         $multiRequestHandle2->addRequest($handler1);
         $multiRequestHandle2->addRequest($handler2);
         $multiRequestHandle2->addRequest($handler3);
         $multiRequestHandle2->addRequest($handler4);
         $multiRequestHandle2->addRequest($handler5);
+        $multiRequestHandle2->addRequest($handler6);
 
         $answer2 = $multiRequestHandle2->run();
         unset($multiRequestHandle2);
@@ -1292,8 +1315,9 @@ class LGetSite
         $courseUser = json_decode($answer2[2]['content'], true);
         $markings = json_decode($answer2[3]['content'], true);
         $notifications = json_decode($answer2[4]['content'], true);
+        $response['redirect'] = json_decode($answer2[5]['content'], true);
         unset($answer2);
-
+        
         $URL = "{$this->_getSelectedSubmission->getAddress()}/selectedsubmission/course/{$courseid}";
         $answer = Request::custom('GET', $URL, array(), '');
         $selectedSubs = json_decode($answer['content'], true);
@@ -1619,8 +1643,15 @@ class LGetSite
      *
      * @author Florian Lücke
      */
-    public function checkCondition($userid, $courseid)
+    public function checkCondition($userid, $courseid, $minsid = null, $maxsid = null)
     {
+        if (trim($minsid) == '' ){
+            $minsid = null;
+        }
+        if (trim($maxsid) == '' ){
+            $maxsid = null;
+        }
+        
         // load all the data
         $multiRequestHandle = new Request_MultiRequest();
 
@@ -1642,7 +1673,11 @@ class LGetSite
 
         $URL = $this->_getGroup->getAddress().'/group/course/' . $courseid;
         $handler = Request_CreateRequest::createGet($URL, array(), '');
-        $multiRequestHandle->addRequest($handler);
+        $multiRequestHandle->addRequest($handler);     
+
+        $URL = $this->lURL . '/exercisesheet/course/' . $courseid.'/exercise';
+        $handler = Request_CreateRequest::createGet($URL, array(), '');
+        $multiRequestHandle->addRequest($handler);     
 
         $answer = $multiRequestHandle->run();
 
@@ -1651,6 +1686,121 @@ class LGetSite
         $approvalconditions = json_decode($answer[2]['content'], true);
         $students = json_decode($answer[3]['content'], true);
         $groups = json_decode($answer[4]['content'], true);
+        $sheets = json_decode($answer[5]['content'], true);
+        
+        if (!isset($sheets)){
+            $sheets = array();
+        }
+        
+        $existingSheets = array();
+        $allsheets = array_merge($sheets, array());
+        
+        // nun werden alle sheet-IDs zusammengetragen
+        $sheetsID = array();
+        foreach ($sheets as $key => $sheet){
+            if (!isset($sheet['id'])) continue;
+            $sheetsID[] = $sheet['id'];
+        }
+
+        // wenn es eine Obergrenze für die sheet-ID gibt, müssen zunächst alle unerlaubten
+        // Übungsserien aussortiert werden
+        $maxpos=null;
+        $found = false;
+        $tempSheetsID = array_merge($sheetsID, array());
+        if ($maxsid !== null){
+            if (in_array($maxsid,$tempSheetsID)){
+                $maxpos = array_search($maxsid,$tempSheetsID);
+                $sheets = array_values(array_slice($sheets, $maxpos));
+                $tempSheetsID = array_values(array_slice($tempSheetsID, $maxpos));
+            } else {
+                // die ID ist falsch oder schon entfernt
+                // keine Aktion
+            }
+        }
+
+        // wenn es eine Untergrenze für die sheet-ID gibt, müssen zunächst alle unerlaubten
+        // Übungsserien aussortiert werden
+        $newSheets = array();
+        $found = false;
+        if ($minsid !== null){
+            if (in_array($minsid,$tempSheetsID)){
+                $minpos = array_search($minsid,$tempSheetsID);
+                $sheets = array_values(array_slice($sheets, 0, $minpos+1));
+                $tempSheetsID = array_values(array_slice($tempSheetsID, $minpos));
+            } else {
+                // die ID ist falsch oder schon entfernt
+                if ($maxpos!== null && in_array($minsid,$sheetsID)){
+                    // minpos wurde schon gelöscht, daher entfernen wir alle
+                    $sheets = array();
+                }
+            }
+        }
+        unset($tempSheetsID);
+
+        // nun werden alle erlaubten sheet-IDs zusammengetragen
+        foreach ($sheets as $key => $sheet){
+            if (!isset($sheet['id'])) continue;
+            $existingSheets[$sheet['id']] = $key;
+        }      
+        
+        // wenn eine Gruppe nicht erlaubt ist, wird sie aussortiert (wegen maxsid)
+        $newGroups = array();
+        foreach ($groups as $group){
+            if (isset($existingSheets[$group['sheetId']])){
+                $newGroups[] = $group;
+            }
+        }
+        $groups = $newGroups;
+        unset($newGroups);
+        
+        // wenn eine Aufgabe zu einer unerlaubten Übungsserie gehört, wird sie entfernt
+        $existingExercises = array();
+        $newExercises = array();
+        foreach ($exercises as $exercise){
+            if (isset($existingSheets[$exercise['sheetId']])){
+                $newExercises[] = $exercise;
+            }
+        }
+        $exercises = $newExercises;
+        unset($newExercises);
+        
+        // nun werden alle erlaubten Aufgabennummern zusammengetragen
+        foreach ($exercises as $key => $exercise) {
+            $existingExercises[$exercise['id']] = $key;
+        }
+        
+        $exercisePoints = array();
+        
+        $namesOfExercises = array();
+        // find the current sheet and it's exercises
+        foreach ($sheets as $sheet) {
+            if (!isset($sheet['id'])) continue;
+            
+            $thisSheetId = $sheet['id'];
+            $thisExerciseSheet = $sheet;
+                    // create exercise names
+            //an array to descripe the subtasks
+            $alphabet = range('a', 'z');
+            $count = 0;
+            
+            $count=null;
+            if (isset($sheet['exercises'])){
+                $exercises2 = $sheet['exercises'];
+                foreach ($exercises2 as $key => $exercise){
+                    $exerciseId = $exercise['id'];
+
+                    if ($count===null || $exercises[$count]['link'] != $exercise['link']){
+                        $count=$key;
+                        $namesOfExercises[$exerciseId] = $exercise['link'];
+                        $subtask = 0;
+                    }else{
+                        $subtask++;
+                        $namesOfExercises[$exerciseId] = $exercise['link'].$alphabet[$subtask];
+                        $namesOfExercises[$exercises2[$count]['id']] = $exercises2[$count]['link'].$alphabet[0];
+                    }
+                }
+            }
+        }
 
         // preprocess the data to make it quicker to get specific values
         $exerciseTypes = array();
@@ -1661,6 +1811,7 @@ class LGetSite
         $exercisesById = array();
         foreach ($exercises as $exercise) {
             $exercisesById[$exercise['id']] = $exercise;
+            $exercisePoints[$exercise['id']] = array('points'=>0, 'markings'=>0);
         }
 
         $exercisesByType = array();
@@ -1720,6 +1871,15 @@ class LGetSite
         $URL = $this->_getMarking->getAddress() . '/marking/course/'.$courseid;
         $answer = Request::custom('GET', $URL, array(), '');
         $markings = json_decode($answer['content'], true);
+        
+        // die Korrekturen, welche nicht erlaubt sind (wegen maxsid) müssen noch aussortiert werden
+        for ($i=0;$i<count($markings);$i++){
+            $myeid = $markings[$i]['submission']['exerciseId'];
+            if (isset($existingExercises[$myeid])){
+                continue;
+            }
+            $markings[$i] = null;
+        }
 
         foreach($markings as $marking){
             if (isset($marking['submission']['selectedForGroup']) && $marking['submission']['selectedForGroup'] == 1)
@@ -1760,6 +1920,8 @@ class LGetSite
                 $studentMarkings[$leaderID][$exerciseType] = 0;
 
             $studentMarkings[$leaderID][$exerciseType] += isset($marking['points']) ? $marking['points'] : 0;
+            $exercisePoints[$exerciseID]['points'] += isset($marking['points']) ? $marking['points'] : 0;
+            $exercisePoints[$exerciseID]['markings'] += isset($marking['points']) ? 1 : 0;
 
             if (isset($allGroups[$sheetID][$leaderID])){
                 $group = $allGroups[$sheetID][$leaderID];
@@ -1771,6 +1933,8 @@ class LGetSite
                             $studentMarkings[$member['id']][$exerciseType] = 0;
 
                         $studentMarkings[$member['id']][$exerciseType] += isset($marking['points']) ? $marking['points'] : 0;
+                        $exercisePoints[$exerciseID]['points'] += isset($marking['points']) ? $marking['points'] : 0;
+                        $exercisePoints[$exerciseID]['markings'] += isset($marking['points']) ? 1 : 0;
                     }
                 }
             }
@@ -1873,6 +2037,12 @@ class LGetSite
             $response['users'] = $students;
 
         $response['minimumPercentages'] = array_values($approvalconditionsByType);
+        $response['sheets'] = $sheets;
+        $response['allsheets'] = $allsheets;
+        $response['exercises'] = $exercises;
+        $response['exercisePoints'] = $exercisePoints;
+        $response['namesOfExercises'] = $namesOfExercises;
+        $response['exerciseTypes'] = array_values($exerciseTypes);
 
         $this->app->response->setBody(json_encode($response));
     }
@@ -1908,6 +2078,13 @@ class LGetSite
         }
         $notifications = LArraySorter::orderby($notifications,'innerId',SORT_DESC);
         $response['notifications'] = $notifications;
+        
+        // load course redirects
+        $URL = $this->_getRedirect->getAddress() . '/redirect/course/'.$courseid;
+        $answer = Request::custom('GET', $URL, array(), '');
+        $redirects = json_decode($answer['content'], true);
+        $response['redirect'] = $redirects;
+        
         unset($answer);
         unset($URL);
 

@@ -37,7 +37,7 @@ unset($_SESSION['selectedUser']);
 $postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
   ->addSet('action',
            ['set_default'=>'noAction',
-            'satisfy_in_list'=>['noAction', 'ExerciseSheetLecturer'],
+            'satisfy_in_list'=>['noAction', 'ExerciseSheetLecturer', 'navigation'],
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','invalidAction', $langTemplate)]]);
 $postResults = $postValidation->validate();
@@ -57,10 +57,43 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                 'valid_identifier',
                 'satisfy_not_equals_field'=>'deleteSheetWarning',
                 'on_error'=>['type'=>'error',
-                             'text'=>Language::Get('main','invalidDeleteSheet', $langTemplate)]]);
+                             'text'=>Language::Get('main','invalidDeleteSheet', $langTemplate)]])
+      ->addSet('redirect',
+               ['valid_identifier',
+                'on_error'=>['type'=>'error',
+                             'text'=>Language::Get('main','invalidRedirectData', $langTemplate)]]);
+                         
     $foundValues = $postDeleteSheetValidation->validate();
     $notifications = array_merge($notifications,$postDeleteSheetValidation->getPrintableNotifications('MakeNotification'));
     $postDeleteSheetValidation->resetNotifications()->resetErrors();
+    
+    if ($postValidation->isValid() && isset($foundValues['redirect'])) {
+        $dat = explode('_',$foundValues['redirect']);
+        $sheetid = array_shift($dat);
+        $foundValues['redirect'] = implode('_',$dat);
+        
+        // nur wenn die Veranstaltung zur Umleitung passt, ist die Aktion erlaubt
+        if (Redirect::getCourseFromRedirectId($foundValues['redirect']) === $cid){
+            // nun soll der redirect ermittelt und ausgelöst werden
+            $URI = $serverURI . "/DB/DBRedirect/redirect/redirect/".$foundValues['redirect'];
+            $redirect = http_get($URI, true, $message);
+            
+            if ($message == 200){
+                // die Umleitung existiert
+                
+                $redirect = Redirect::decodeRedirect($redirect);
+                if (executeRedirect($redirect, $uid, $cid, $sheetid) === false){
+                    $notifications[] = MakeNotification('error', Language::Get('main','errorRedirect', $langTemplate));
+                }
+            } else {
+                // unbekannte Umleitung
+                $notifications[] = MakeNotification('error', Language::Get('main','invalidRedirect', $langTemplate));
+            }
+        } else {
+            // falsche Veranstaltung
+            $notifications[] = MakeNotification('error', Language::Get('main','invalidCourse', $langTemplate));
+        }
+    }
 
     if ($postDeleteSheetValidation->isValid() && $postResults['action'] === 'ExerciseSheetLecturer' && isset($foundValues['deleteSheetWarning'])) {
         $sheetNotifications[$foundValues['deleteSheetWarning']][] = MakeNotification('warning', Language::Get('main','askDeleteSheet', $langTemplate));
@@ -87,7 +120,10 @@ $admin_data['cid'] = $cid;
 $user_course_data = $admin_data['user'];
 
 $menu = MakeNavigationElement($user_course_data,
-                              PRIVILEGE_LEVEL::ADMIN);
+                              PRIVILEGE_LEVEL::ADMIN,
+                              false,
+                              false,
+                              (isset($admin_data['redirect']) ? $admin_data['redirect'] : array()));
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
@@ -105,8 +141,13 @@ if (isset($sheetNotifications))
     $t->bind(array('SheetNotificationElements' => $sheetNotifications));
 
 $w = new HTMLWrapper($h, $t);
+$w->defineHeaderForm(basename(__FILE__).'?cid='.$cid, false, $h);
 $w->defineForm(basename(__FILE__).'?cid='.$cid, false, $t);
 $w->set_config_file('include/configs/config_admin_lecturer.json');
+if (isset($maintenanceMode) && $maintenanceMode === '1'){
+    $w->add_config_file('include/configs/config_maintenanceMode.json');
+}
+
 $w->show();
 
 ob_end_flush();

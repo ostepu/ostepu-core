@@ -34,12 +34,12 @@ $(document).ready( function()
 function growNotificationBox(event)
 {
     var trig = $(this);
-    if (trig.css('width') != '748px'){
+    if (trig.attr('status') == undefined || trig.attr('status') == '0'){
+        trig.attr('status', '1');
         trig.attr('min-height', trig.css('height'));
         trig.attr('min-width', trig.css('width'));
-        //trig.css('width', '748px');
         trig.animate({width: '748px'}, 500, 'linear', function() {     
-            trig.animate({height: (trig[0].scrollHeight)+"px"}, 500).delay(750);   
+            trig.animate({height: (trig[0].scrollHeight)+"px"}, 500).delay(750);
         });    
     }
 }
@@ -76,7 +76,8 @@ function growNotificationList(event)
 function shrinkNotificationBox(event)
 {
     var trig = $(this);
-    if (trig.css('width') == '748px'){
+    if (trig.attr('status') == undefined || trig.attr('status') == '1'){
+        trig.attr('status', '0');
         trig.animate({
            height: trig.attr('min-height')
         }, 500, 'linear', function() {

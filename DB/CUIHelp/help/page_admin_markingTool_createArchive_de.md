@@ -76,3 +76,8 @@ Sie können die **Bewertung**, die **Korrekturdatei**, den **Korrekturstatus** u
 Sie können Kommentarzeilen in die csv-Datei eintragen, indem Sie diese mit **--** beginnen. Zudem sind leere Zeilen erlaubt.
 
 Wenn Sie eine Einsendung nicht bewerten möchten bzw. nur eine bestimmte Menge der Einsendungen bearbeiten wollen, können Sie die übrigen Zeilen aus der Liste.csv entfernen und nur die notwendigen Dateien und Zeilen hochladen.
+
+#### Einsendungen bewerten
+*Dieses Video wird von einem externen Anbieter bereitgestellt, sodass wir keinen Einfluss auf zusätzliche Inhalte (u.a. Werbung) haben und dieser eventuell Daten, im Rahmen der Nutzung, erheben könnte.*
+<iframe width="640" height="360" src="https://www.youtube-nocookie.com/embed/rt3k1m5etZM?list=PLfnTtQX6vUn2lHxmo2WqLsPaEZihOEczh&amp;showinfo=0&amp;modestbranding=1&amp;loop=1&amp;listType=playlist" frameborder="0" allowfullscreen></iframe>
+*Quelle: https://www.youtube-nocookie.com/embed/rt3k1m5etZM*

@@ -25,7 +25,7 @@ if (isset($notifications)){
     echo "<div align='center' class='notification-list'>";
     foreach($notifications as $note){
         if (isset($note['begin']) && trim($note['begin']) != '' && $note['begin'] !== '0'){
-            $date = date('d.m.Y - H:i', $note['begin'])."\n";
+            $date = date('d.m.Y - H:i', $note['begin'])."\n\n";
         } else {
             $date = '';
         }
@@ -266,6 +266,13 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                         <?php echo Language::Get('sheetMenu','deleteSheet', $langTemplate); ?>
                     </button>
                 </li>
+                            
+                <?php if (isset($redirect)){
+                    $redirect2 = array_reverse($redirect);
+                    foreach($redirect2 as $red) {
+                        if ($red['location'] !== 'sheet') continue;
+                        echo '<li>'.createRedirectButton($red,$sheet['id']).'</li>';
+                    }} ?>
                        
             </ol>
         </div>

@@ -144,12 +144,13 @@ class Language
      */
     public static function Get($area, $cell, $name='default', $params=array())
     {        
-        if (self::$selectedLanguage != null && isset(self::$language[$name]) && isset(self::$language[$name][$area]) && isset(self::$language[$name][$area][$cell])){
+        if (self::$selectedLanguage !== null && isset(self::$language[$name]) && isset(self::$language[$name][$area]) && isset(self::$language[$name][$area][$cell])){
             $res = self::$language[$name][$area][$cell];
-        } elseif (self::$selectedDefaultLanguage != null && isset(self::$defaultLanguage[$name]) && isset(self::$defaultLanguage[$name][$area]) && isset(self::$defaultLanguage[$name][$area][$cell])){
+        } elseif (self::$selectedDefaultLanguage !== null && isset(self::$defaultLanguage[$name]) && isset(self::$defaultLanguage[$name][$area]) && isset(self::$defaultLanguage[$name][$area][$cell])){
             $res = self::$defaultLanguage[$name][$area][$cell];
-        } else
+        } else {
             $res = self::$errorValue;
+        }
         
         $matches = array();
         preg_match_all('/[^\\\\]\$\[([\w,]+)\]/', $res, $matches);

@@ -546,6 +546,9 @@ class CConfig
                                     $name
                                     )
     {
+        // wenn NULL übergeben wird, soll es keinen Absturz geben
+        if (!isset($linkList)) $linkList = array();
+
         $result = array( );
         foreach ( $linkList as $link ){
 

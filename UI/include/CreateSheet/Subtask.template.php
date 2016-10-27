@@ -29,7 +29,7 @@ include_once dirname(__FILE__) . '/../Helpers.php';
 
 <li>
     <span style="display:inline-table">
-    <input class="form-field text-input very-short" name="exercises[0][subexercises][0][maxPoints]" placeholder="<?php echo Language::Get('main','points', $langTemplate); ?>" id="exerciseMaxPoints" <?php echo isset($maxPoints) ? "value='{$maxPoints}'" : ''?>/>
+    <input onkeyup="this.value = parseInt(this.value);if (isNaN(parseInt(this.value)) || parseInt(this.value)<0) {this.value='0';}" class="form-field text-input very-short" name="exercises[0][subexercises][0][maxPoints]" placeholder="<?php echo Language::Get('main','points', $langTemplate); ?>" id="exerciseMaxPoints" <?php echo isset($maxPoints) ? "value='{$maxPoints}'" : ''?>/>
     <select class="form-field text-input short" name="exercises[0][subexercises][0][exerciseType]" id="exerciseType">
         <?php
         if (!isset($exerciseTypes)){

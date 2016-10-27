@@ -18,5 +18,7 @@
     {    "method":"GET", "path":"/admin/user/:userid/course/:courseid" },
     {    "method":"GET", "path":"/lecturer/user/:userid/course/:courseid" },
     {    "method":"GET", "path":"/group/user/:userid/course/:courseid/exercisesheet/:sheetid" },
-    {    "method":"GET", "path":"/condition/user/:userid/course/:courseid" }
+    {    "method":"GET", "path":"/condition/user/:userid/course/:courseid" },
+    {    "method":"GET", "path":"/condition/user/:userid/course/:courseid/lastsheet/:maxsid" },
+    {    "method":"GET", "path":"/condition/user/:userid/course/:courseid/firstsheet/:minsid/lastsheet/:maxsid" }
 ]

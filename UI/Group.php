@@ -412,8 +412,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                     'satisfy_not_empty',
                     'is_array',
                     'perform_this_array'=>[[['key_all'],
-                                       ['satisfy_not_empty',
-                                        'valid_userName']]],
+                                       ['valid_userName']]],
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidUserNames', $langTemplate)]]);
 
@@ -423,6 +422,8 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
 
                 if ($postInviteUsersValidation->isValid()) {
                     foreach ($foundValues['userName'] as $key => $memberName) {
+                        if (trim($memberName) == '') continue;
+
                         // extracts the userID
                         $URI = $databaseURI . "/user/user/{$memberName}";
                         $user_data = http_get($URI, true);
@@ -662,6 +663,10 @@ if (isset($invitationsFromGroup))
 if (isset($invitationsToGroup))
     $w->defineForm(basename(__FILE__).'?cid='.$cid.'&sid='.$sid, false, $invitationsToGroup);
 $w->set_config_file('include/configs/config_group.json');
+if (isset($maintenanceMode) && $maintenanceMode === '1'){
+    $w->add_config_file('include/configs/config_maintenanceMode.json');
+}
+
 $w->show();
 
 ob_end_flush();

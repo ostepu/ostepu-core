@@ -9,6 +9,8 @@
  *
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
  * @date 2015-2016
+ * @author Max Brauer <ma.brauer@student.uni-halle.de>
+ * @date 2016
  */
 
 include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
@@ -94,7 +96,8 @@ class CHelp
         }
         
         $cachePath = dirname(__FILE__).'/cache/'.implode('/',$params['path']).$cacheExtension;
-        if (file_exists($cachePath)){
+        //Überprüft ob die Daten schon im Cache existieren und maximal 1 Woche (604800 Sekunden) alt sind.
+        if (file_exists($cachePath) && filemtime($cachePath) >= time() - 604800){
             Model::header('Content-Length',filesize($cachePath));
             return Model::isOk(file_get_contents($cachePath));
         }
@@ -125,6 +128,7 @@ class CHelp
             
             // die Hilfedatei wird lokal gespeichert
             @file_put_contents($cachePath,$input);
+            chmod($cachePath, 0774);
             return Model::isOk($input);
         };
         

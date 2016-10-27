@@ -67,3 +67,8 @@ Sollte es noch unzugeordnete Einsendungen geben, werden diese hier aufgelistet. 
 ![](manE.png)
 
 Wenn eine Korrektur durch einen Kontrolleur erfolgte, welcher nicht mehr zu dieser Veranstaltung gehört, werden dessen Korrekturen hier aufgelistet. Zudem werden automatische Korrekturen ebenfalls hier gelistet. Dem unbekannten Kontrolleur können keine Einsendungen zugeordnet werden.
+
+##### Die Kontrolleurzuweisung verwenden
+*Dieses Video wird von einem externen Anbieter bereitgestellt, sodass wir keinen Einfluss auf zusätzliche Inhalte (u.a. Werbung) haben und dieser eventuell Daten, im Rahmen der Nutzung, erheben könnte.*
+<iframe width="640" height="360" src="https://www.youtube-nocookie.com/embed/xyeXngESPNI?list=PLfnTtQX6vUn2lHxmo2WqLsPaEZihOEczh&amp;showinfo=0&amp;modestbranding=1&amp;loop=1&amp;listType=playlist" frameborder="0" allowfullscreen></iframe>
+*Quelle: https://www.youtube-nocookie.com/embed/xyeXngESPNI*

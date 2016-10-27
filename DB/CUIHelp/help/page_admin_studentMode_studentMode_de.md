@@ -23,10 +23,14 @@ Sie können hier den Studenten wählen, in dessen Ansicht Sie wechseln wollen. E
 
 ![](studentModeC.png)
 
-Einige der Übersichten beziehen sich auf konkrete Übungsserien, sodass hier die Möglichkeit besteht, einen schnellen Wechsel vorzunehmen. Möglicherweise werden hier nicht alle Übungsserien dieser Veranstaltung aufgelistet, weil der Student in diesem Fall nicht die Möglichkeit hat, die entsprechnde Übersicht, für diese Übungsserie aufzurufen.
+Einige der Übersichten beziehen sich auf konkrete Übungsserien, sodass hier die Möglichkeit besteht, einen schnellen Wechsel vorzunehmen. Möglicherweise werden hier nicht alle Übungsserien dieser Veranstaltung aufgelistet, weil der Student in diesem Fall nicht die Möglichkeit hat, die entsprechende Übersicht, für diese Übungsserie aufzurufen.
 
 > Beispiel für die Gruppenübersicht: Wenn die Übungsserie abgelaufen ist, kann die Gruppenstruktur durch den Studenten nicht mehr geändert werden, sodass Sie hier nicht aufgelistet wäre (ausser im erweiterten Modus).
 
 ![](studentModeD.png)
+Um Ansichten zu erhalten und Änderungen vorzunehmen, welche der Student selbst nicht warnehmen könnte, ist es Ihnen über diese Auswahlfläche möglich, in einen erweiterten Modus zu wechseln, sodass beispielsweise der Einsendungsverlauf und die Gruppenübersicht nach dem Ablauf der Übungsserie für Sie verfügbar werden.
 
-Um Ansicht zu erhalten und Änderungen vorzunehmen, welche der Student selbst nicht warnehmen könnte, ist es Ihnen über diese Auswahlfläche möglich, in einen erweiterten Modus zu wechseln, sodass beispielsweise der Einsendungsverlauf und die Gruppenübersicht nach dem Ablauf der Übungsserie für Sie verfügbar werden.s
+#### den Studentenmodus verwenden
+*Dieses Video wird von einem externen Anbieter bereitgestellt, sodass wir keinen Einfluss auf zusätzliche Inhalte (u.a. Werbung) haben und dieser eventuell Daten, im Rahmen der Nutzung, erheben könnte.*
+<iframe width="640" height="360" src="https://www.youtube-nocookie.com/embed/tAaBmvEUJS0?list=PLfnTtQX6vUn2lHxmo2WqLsPaEZihOEczh&amp;showinfo=0&amp;modestbranding=1&amp;loop=1&amp;listType=playlist" frameborder="0" allowfullscreen></iframe>
+*Quelle: https://www.youtube-nocookie.com/embed/tAaBmvEUJS0*
