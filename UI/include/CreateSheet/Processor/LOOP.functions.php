@@ -94,6 +94,15 @@ function LOOP_createParameters(&$subexercise, $key, $exercisekey, $subexerciseke
     {
         $parameters[0]->setErrorsEnabled("0");
     }
+
+    if (isset($subexercise['rejectOnErrorsParameter'][$key][0]) && $subexercise['rejectOnErrorsParameter'][$key][0] == "1")
+    {
+        $parameters[0]->setRejectSubmissionOnError("1");
+    }
+    else
+    {
+        $parameters[0]->setRejectSubmissionOnError("0");
+    }
     
     
     $timestamp = time();

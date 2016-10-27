@@ -157,6 +157,7 @@ class Sandbox
         if (!$nocmd && Sandbox::command_exist($command) == false)
         {
             chdir($pathOld);
+            $output = "Die Sandbox kann nicht aufgerufen werden!";
             return 1; //error status of "which" that means not available
         }
 

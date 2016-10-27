@@ -43,6 +43,7 @@
                     $i=0;
                     $params = array();
                     $errorsEnabled = true;
+                    $rejectSubmissionOnError = false;
 
                     if (isset($process['parameter'])){
                         //check if processparameter is json
@@ -53,6 +54,7 @@
                             {
                                 $params = explode(' ',$data[0]->getInput()[0]);
                             }
+                            
                             if (!is_null($data[0]->getErrorsEnabled()))
                             {
                                 if ($data[0]->getErrorsEnabled() == "1")
@@ -64,8 +66,21 @@
                                     $errorsEnabled = false;
                                 }
                             }
+                            
+                            if (!is_null($data[0]->getRejectSubmissionOnError()))
+                            {
+                                if ($data[0]->getRejectSubmissionOnError() == "1")
+                                {
+                                    $rejectSubmissionOnError = true;
+                                }
+                                else
+                                {
+                                    $rejectSubmissionOnError = false;
+                                }
+                            }
                         }
                     }
+                    
                     ?>
                     <td style="width: 24%;">
                         <label class="label bold" for=""><?php echo Language::Get('main','executable', $langTemplate); ?>:</label>
@@ -85,6 +100,14 @@
                     </td>
                     <td style="width: 76%;">
                         <input type="checkbox" class="parameter-choice" style="width: 100%;" name="exercises[0][subexercises][0][showErrorsParameter][0][]" value="1" <?php echo($errorsEnabled == true ? 'checked="checked"' : ''); ?>/>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 24%;">
+                        <label class="label bold" for=""><?php echo Language::Get('main','rejectOnErrors', $langTemplate); ?>:</label>
+                    </td>
+                    <td style="width: 76%;">
+                        <input type="checkbox" class="parameter-choice" style="width: 100%;" name="exercises[0][subexercises][0][rejectOnErrorsParameter][0][]" value="1" <?php echo($rejectSubmissionOnError == true ? 'checked="checked"' : ''); ?>/>
                     </td>
                 </tr>
                 <tr>

@@ -18,6 +18,7 @@
         "noData": "keine Datei",
         "noScript": "keine Skriptdatei",
         "addData": "Datei hinzufügen",
-        "showErrors": "Rückmeldung anzeigen?"
+        "showErrors": "Rückmeldung anzeigen?",
+        "rejectOnErrors": "Einsendung im Fehlerfall ablehnen?"
     }
 }

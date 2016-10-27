@@ -140,7 +140,9 @@
                 {"path": "/help/:language/extension/LOOP/LOOPB.png"},
                 {"path": "/help/:language/extension/LOOP/LOOPC.png"},
                 {"path": "/help/:language/extension/LOOP/LOOPD.png"},
-                {"path": "/help/:language/extension/LOOP/LOOPE.png"}
+                {"path": "/help/:language/extension/LOOP/LOOPE.png"},
+                {"path": "/help/:language/extension/LOOP/LOOPF.png"},
+                {"path": "/help/:language/extension/LOOP/LOOPG.png"}
             ]
         },
         {
