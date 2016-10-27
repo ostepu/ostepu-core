@@ -36,7 +36,7 @@ Wenn diese Option ausgewählt wurde, werden den Studenten die Rückmeldung des K
 ---
 #### fehlerhafte Einsendungen #####
 
-![](LOOPF.png)
+![](LOOPG.png)
 
 Wenn diese Option ausgewählt wurde, wird eine Einsendung, welche nicht durch den Kompilierprozess läuft abgelehnt, ansonsten wird
 die eine Einsendung immer akzeptiert (aber die Meldungen angezeigt).
