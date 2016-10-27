@@ -192,8 +192,14 @@ class CConfig
             $this->_app->response->setStatus( 200 );
             $this->_app->response->setBody( file_get_contents($path.'info/'.$language.'.md') );
         }else{
-            $this->_app->response->setStatus( 404 );
-            $this->_app->response->setBody( '' );
+            // wenn die gewollte Datei nicht existiert, suche wenigstens noch "de"
+            if (file_exists($path.'info/de.md')){
+                $this->_app->response->setStatus( 200 );
+                $this->_app->response->setBody( file_get_contents($path.'info/de.md') );                
+            } else {
+                $this->_app->response->setStatus( 404 );
+                $this->_app->response->setBody( '' );
+            }
         }
     }
 
