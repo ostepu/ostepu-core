@@ -285,7 +285,10 @@ if (isset($_GET['downloadCSV'])) {
         }
     }
 
-    $URI = $logicURI . '/tutor/archive/user/' . $uid . '/exercisesheet/' . $sid.'/withnames';
+    $URI = $logicURI . '/tutor/archive/user/' . $uid . '/exercisesheet/' . $sid;
+    if (Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUserData)){
+        $URI = $logicURI . '/tutor/archive/user/' . $uid . '/exercisesheet/' . $sid.'/withnames';
+    }
     $csvFile = http_post_data($URI, Marking::encodeMarking($markings), true);
     echo $csvFile;
     exit(0);
