@@ -1,24 +1,136 @@
 {
-  "name":"DBTransaction",
-  "version":"1.0",
-  "classFile":"DBTransaction.php",
-  "className":"DBTransaction",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"DBTransaction.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"},
-    {"path": "TransactionSample.json"},
-    {"path":"Sql/"}
-  ],
-  "links":[
-    {"name":"out", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
-  ],
-  "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"},
-    {"name":"postCourse", "target":"LCourse", "priority":150},
-    {"name":"deleteCourse", "target":"LCourse", "priority":150},
-    {"name":"getCleanAmount", "target":"CInstall"},
-    {"name":"deleteClean", "target":"CInstall"}
-  ]
+    "name": "DBTransaction",
+    "version": "1.0",
+    "classFile": "DBTransaction.php",
+    "className": "DBTransaction",
+    "files": [
+        {"path": ".htaccess"},
+        {"path": "DBTransaction.php"},
+        {"path": "index.php"},
+        {"path": "Commands.json"},
+        {"path": "TransactionSample.json"},
+        {"path": "Sql/"}
+    ],
+    "links": [
+        {
+            "name": "deleteTransaction",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "DELETE",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "addTransaction",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "deleteTransactionShort",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "DELETE",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "cleanTransactions",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "DELETE",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "addExerciseTransaction",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "addSheetTransaction",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "deleteCourse",
+            "target": "DBQuerySetup",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "addCourse",
+            "target": "DBQuerySetup",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "getTransaction",
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBTransactionGetTransaction/:profile/:courseid/:auid/:tid/:random"
+            }]
+        },
+        {
+            "name": "getTransactionShort",
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBTransactionGetTransactionShort/:profile/:courseid/:tid/:random"
+            }]
+        },
+        {
+            "name": "getAmountOfExpiredTransactions",
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBTransactionGetAmountOfExpiredTransactions/:profile/:courseid"
+            }]
+        },
+        {
+            "name": "getExistsCourseTransactions",
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBTransactionGetExistsCourseTransactions/:profile/:courseid"
+            }]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        },
+        {
+            "name": "postCourse",
+            "target": "LCourse",
+            "priority": 150
+        },
+        {
+            "name": "deleteCourse",
+            "target": "LCourse",
+            "priority": 150
+        },
+        {
+            "name": "getCleanAmount",
+            "target": "CInstall"
+        },
+        {
+            "name": "deleteClean",
+            "target": "CInstall"
+        }
+    ]
 }

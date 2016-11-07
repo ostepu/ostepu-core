@@ -15,6 +15,11 @@
  */
 ?>
 
-DELETE FROM User
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
+DELETE FROM `User<?php echo $profile;?>`
 WHERE
     U_id like '<?php echo $userid; ?>' or U_username = '<?php echo $userid; ?>' or U_externalId = '<?php echo $userid; ?>'

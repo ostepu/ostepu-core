@@ -51,7 +51,7 @@ class DBExternalId
      */
     public function editExternalId( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/EditExternalId.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new ExternalId()),'Model::isProblem',array(new ExternalId()));
+        return $this->_component->callSqlTemplate('editExternalId',dirname(__FILE__).'/Sql/EditExternalId.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new ExternalId()),'Model::isProblem',array(new ExternalId()));
     }
 
     /**
@@ -64,7 +64,7 @@ class DBExternalId
      */
     public function deleteExternalId( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteExternalId.sql',$params,201,'Model::isCreated',array(new ExternalId()),'Model::isProblem',array(new ExternalId()));
+        return $this->_component->callSqlTemplate('deleteExternalId',dirname(__FILE__).'/Sql/DeleteExternalId.sql',$params,201,'Model::isCreated',array(new ExternalId()),'Model::isProblem',array(new ExternalId()));
     }
 
     /**
@@ -85,7 +85,7 @@ class DBExternalId
             $obj->setId( $input[0]->getInsertId( ) );
             return array("status"=>201,"content"=>$obj);
         };
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddExternalId.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new ExternalId()));
+        return $this->_component->callSqlTemplate('addExternalId',dirname(__FILE__).'/Sql/AddExternalId.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new ExternalId()));
     }
 
     public function get( $functionName, $linkName, $params=array(), $checkSession = true )
@@ -121,7 +121,7 @@ class DBExternalId
      */
     public function deletePlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('deletePlatform',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 
     /**
@@ -132,7 +132,7 @@ class DBExternalId
      */
     public function addPlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('addPlatform',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 }
 

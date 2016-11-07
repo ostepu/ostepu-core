@@ -99,10 +99,6 @@ class LSubmission
         //AddSubmission
         $this->app->post('/'.$this->getPrefix().'(/)', array($this, 'addSubmission'));
 
-        //EditSubmissionState
-        $this->app->put('/'.$this->getPrefix().'/submission/:submissionid(/)',
-                        array ($this, 'editSubmissionState'));
-
         //deleteSubmission
         $this->app->delete('/'.$this->getPrefix().'/submission/:submissionid(/)',
                         array($this, 'deleteSubmission'));
@@ -110,14 +106,6 @@ class LSubmission
         //LoadSubmissionAsZip
         $this->app->get('/'.$this->getPrefix().'/exercisesheet/:sheetid/user/:userid(/)',
                         array($this, 'loadSubmissionAsZip'));
-
-        //ShowSubmissionsHistory
-        $this->app->get('/'.$this->getPrefix().'/exercisesheet/:sheetid/user/:userid/history(/)',
-                        array($this, 'showSubmissionsHistory'));
-
-        //GetSubmissionFile
-        $this->app->get('/'.$this->getPrefix().'/submission/:submissionid(/)',
-                        array($this, 'getSubmissionFile'));
 
         $this->app->run();
     }
@@ -242,23 +230,6 @@ class LSubmission
     }
 
     /**
-     * Edits a submission's state.
-     *
-     * Called when this component receives an HTTP PUT request to
-     * /submissions/$submissionid(/).
-     * The request body should contain a JSON object representing a submission.
-     *
-     * @param int $submissionid The id of the submission that is beeing updated.
-     */
-    public function editSubmissionState($submissionid){
-       /* $header = $this->app->request->headers->all();
-        $body = $this->app->request->getBody();
-        $URL = $this->lURL.'/DB/submission/'.$submissionid;
-        $answer = Request::custom('PUT', $URL, $header, $body);
-        $this->app->response->setStatus($answer['status']);*/
-    }
-
-    /**
      * Deletes a submission.
      *
      * Called when this component revceives an HTTP DELETE request to
@@ -276,7 +247,7 @@ class LSubmission
     public function deleteSubmission($submissionid){
         $result = Request::routeRequest(
                                         'DELETE',
-                                        '/submission/'.$submissionid,
+                                        '/submission/submission/'.$submissionid,
                                         array(),
                                         '',
                                         $this->_submission,
@@ -372,49 +343,5 @@ class LSubmission
         $this->app->response->setBody('');
         $this->app->response->setStatus( 404 );
         $this->app->stop( );
-    }
-
-    /**
-     * Loads the submission history of a user.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /submissions/exercisesheet/$sheetid/user/$userid/history.
-     *
-     * @param int $sheetid The id of the sheet of which the submissions should
-     * be loaded.
-     * @param int $userid The id of the user whose submissions should be loaded.
-     */
-    public function showSubmissionsHistory($sheetid, $userid){
-       /* $header = $this->app->request->headers->all();
-        $body = $this->app->request->getBody();
-        $URL = $this->lURL.'/DB/exercisesheet/'.$sheetid.'/user/'.$userid.'/history';
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $this->app->response->setBody($answer['content']);
-        $this->app->response->setStatus($answer['status']);*/
-    }
-
-    /**
-     * Loads a specific submission.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /submissions/$submissionid(/).
-     *
-     * @param int $submissionid The id of the requested submission.
-     */
-    public function getSubmissionFile($submissionid){
-       /* $header = $this->app->request->headers->all();
-        $body = $this->app->request->getBody();
-        $URL = $this->lURL.'/DB/submission/'.$submissionid;
-        $answer = Request::custom('GET', $URL, $header, "");
-        $submission = json_decode($answer['content'], true);
-
-
-        $URL = $this->lURL.'/FS/'.$submission['file']['address'].'/'.$submission['file']['displayName'];
-        $answer = Request::custom('GET', $URL, $header, "");
-
-        $this->app->response->headers->set('Content-Type', $answer['headers']['Content-Type']);
-        $this->app->response->headers->set('Content-Disposition', $answer['headers']['Content-Disposition']);
-        $this->app->response->setBody($answer['content']);
-        $this->app->response->setStatus($answer['status']);*/
     }
 }

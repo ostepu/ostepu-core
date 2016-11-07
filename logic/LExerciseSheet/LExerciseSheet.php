@@ -193,7 +193,7 @@ class LExerciseSheet
         $method='POST';
         if (isset($body['id']) && $body['id'] !== null){
            $method='PUT';
-           $URL = $this->lURL.'/DB/exercisesheet/'.$body['id'];
+           $URL = $this->lURL.'/DB/exercisesheet/exercisesheet/'.$body['id'];
         }
 
         $CreateSheetDB = Request::custom($method, $URL, array(), json_encode($body));
@@ -420,7 +420,7 @@ class LExerciseSheet
         // getExerciseSheet
         $result = Request::routeRequest(
                                         'GET',
-                                        '/exercisesheet/'.$sheetid,
+                                        '/exercisesheet/exercisesheet/'.$sheetid,
                                         array(),
                                         '',
                                         $this->_getExerciseSheet,
@@ -438,7 +438,7 @@ class LExerciseSheet
             // delete exerciseSheet
             $result = Request::routeRequest(
                                             'DELETE',
-                                            '/exercisesheet/'.$sheetid,
+                                            '/exercisesheet/exercisesheet/'.$sheetid,
                                             array(),
                                             '',
                                             $this->_deleteExerciseSheet,
@@ -453,7 +453,7 @@ class LExerciseSheet
                 if ($sampleFile !== null){
                     $result = Request::routeRequest(
                                                     'DELETE',
-                                                    '/file/'.$sampleFile->getFileId(),
+                                                    '/file/file/'.$sampleFile->getFileId(),
                                                     array(),
                                                     '',
                                                     $this->_deleteFile,
@@ -465,7 +465,7 @@ class LExerciseSheet
                 if ($sheetFile !== null){
                     $result = Request::routeRequest(
                                                     'DELETE',
-                                                    '/file/'.$sheetFile->getFileId(),
+                                                    '/file/file/'.$sheetFile->getFileId(),
                                                     array(),
                                                     '',
                                                     $this->_deleteFile,

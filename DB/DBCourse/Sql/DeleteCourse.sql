@@ -15,6 +15,11 @@
  */
 ?>
 
-DELETE FROM Course
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
+DELETE FROM `Course<?php echo $profile;?>`
 WHERE
     C_id = '<?php echo $courseid; ?>'

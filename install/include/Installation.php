@@ -133,14 +133,25 @@ class Installation {
      * @param string[][] $data Die Serverdaten
      * @return Patform Die Plattformdaten
      */
-    public static function PlattformZusammenstellen($data) {
-        Installation::log(array('text' => 'starte Funktion'));
+    public static function PlattformZusammenstellen($data, $dbuserPostfix='')
+    {
+        Installation::log(array('text'=>'starte Funktion'));
         $settings = self::collectPlatformSettings($data);
 
         // hier aus den Daten ein Plattform-Objekt zusammenstellen
         $platform = Platform::createPlatform(
-                        $data['PL']['url'], $data['DB']['db_path'], $data['DB']['db_name'], null, null, $data['DB']['db_user_operator'], $data['DB']['db_passwd_operator'], $data['PL']['temp'], $data['PL']['files'], $data['PL']['urlExtern'], $settings
-        );
+                                            $data['PL']['url'],
+                                            $data['DB']['db_path'],
+                                            $data['DB']['db_name'],
+                                            null,
+                                            null,
+                                            $data['DB']['db_user_operator'].$dbuserPostfix,
+                                            $data['DB']['db_passwd_operator'.$dbuserPostfix],
+                                            $data['PL']['temp'],
+                                            $data['PL']['files'],
+                                            $data['PL']['urlExtern'],
+                                            $settings
+                                            );
         $tempPlatform = clone $platform;
         $tempPlatform->setDatabaseRootPassword('*****');
         $tempPlatform->setDatabaseOperatorPassword('*****');

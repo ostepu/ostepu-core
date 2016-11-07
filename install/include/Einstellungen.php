@@ -607,5 +607,50 @@ class Einstellungen {
         }
         return false;
     }
+    
+    /* @source http://timkunze.eu/passwort-generator-mit-php/
+     * 
+     * @param integer  $length
+     * @param boolean  $capitals
+     * @param boolean  $specialSigns
+     *
+     * @return string
+     */
+      public static function CreatePassword($length = 7, $capitals = true, $specialSigns = true)
+      {
+        $array = array();
 
+
+        if($length < 8)
+          $length = mt_rand(8,20);
+
+        # Zahlen
+        for($i=48;$i<58;$i++)
+          $array[] = chr($i);
+
+        # kleine Buchstaben
+        for($i=97;$i<=122;$i++)
+          $array[] = chr($i);
+
+        # Großbuchstaben
+        if($capitals )
+          for($i=65;$i<=90;$i++)
+            $array[] = chr($i);
+
+        # Sonderzeichen:
+        if($specialSigns)
+        {
+            $array = array_merge($array, array('_', '-', '?', '+', '!', '#', '%', '(', ')', '.', ',', '*', '~', '@', ';', '[', ']', '{', '}'));
+        }
+
+        $passwort = '';
+
+        for ($i=1; $i<=$length; $i++)
+        {
+          $rnd = mt_rand( 0, count($array)-1 );
+          $passwort .= $array[$rnd];
+        }
+
+        return $passwort;
+      }
 }

@@ -15,7 +15,12 @@
  */
 ?>
 
-update User
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
+update `User<?php echo $profile;?>`
 set
     U_flag = 0
 where

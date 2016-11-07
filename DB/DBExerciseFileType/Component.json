@@ -14,16 +14,56 @@
     ],
     "links": [
         {
-            "name": "out",
-            "target": "DBQuery",
+            "name": "editExerciseFileType",
+            "target": "DBQueryWrite",
             "links": [{
                 "method": "POST",
                 "path": "/query"
             }]
         },
         {
-            "name": "out2",
-            "target": "DBQuery2",
+            "name": "deleteExerciseFileType",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "deleteExerciseExerciseFileType",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "deleteExerciseSheetExerciseFileType",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "addExerciseFileType",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "deletePlatform",
+            "target": "DBQuerySetup",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "addPlatform",
+            "target": "DBQuerySetup",
             "links": [{
                 "method": "POST",
                 "path": "/query"
@@ -31,7 +71,7 @@
         },
         {
             "name": "getExerciseFileType",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
                 "path": "/query/procedure/DBExerciseFileTypeGetExerciseFileType/:eftid"
@@ -39,7 +79,7 @@
         },
         {
             "name": "getAllExerciseFileTypes",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
                 "path": "/query/procedure/DBExerciseFileTypeGetAllExerciseFileTypes"
@@ -47,7 +87,7 @@
         },
         {
             "name": "getExerciseExerciseFileTypes",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
                 "path": "/query/procedure/DBExerciseFileTypeGetExerciseExerciseFileTypes/:eid"
@@ -55,7 +95,7 @@
         },
         {
             "name": "getSheetExerciseFileTypes",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
                 "path": "/query/procedure/DBExerciseFileTypeGetSheetExerciseFileTypes/:esid"
@@ -63,7 +103,7 @@
         },
         {
             "name": "getExistsPlatform",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
                 "path": "/query/procedure/DBExerciseFileTypeGetExistsPlatform"
@@ -79,6 +119,9 @@
             "name": "postPlatform",
             "target": "CInstall"
         },
-        { "name": "getDescFiles","target": "TDocuView"}
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView"
+        }
     ]
 }

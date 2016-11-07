@@ -5,7 +5,7 @@
         "inputType": "Session",
         "method": "PUT",
         "placeholder":[{"name":"seid","regex":"%^[0-9A-Fa-f]{32}$%"}],
-        "path": "/session(/session)/:seid"
+        "path": "/session/session/:seid"
     },
     {
         "name": "deleteSession",
@@ -13,7 +13,7 @@
         "inputType": "",
         "method": "DELETE",
         "placeholder":[{"name":"seid","regex":"%^[0-9A-Fa-f]{32}$%"}],
-        "path": "/session(/session)/:seid"
+        "path": "/session/session/:seid"
     },
     {
         "name": "editUserSession",
@@ -44,7 +44,7 @@
         "outputType": "Session",
         "inputType": "",
         "method": "GET",
-        "path": "/session(/session)"
+        "path": "/session"
     },
     {
         "name": "getUserSession",
@@ -64,7 +64,7 @@
         "inputType": "",
         "method": "GET",
         "placeholder":[{"name":"seid","regex":"%^([0-9_]+)$%"}],
-        "path": "/session(/session)/:seid"
+        "path": "/session/session/:seid"
     },
     {
         "name": "getValidSession",

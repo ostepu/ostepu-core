@@ -129,7 +129,7 @@ class LExercise
                 $method='POST';
                 if (isset($subexercise['id']) && $subexercise['id'] !== null){
                    $method='PUT';
-                   $URL = $this->lURL.'/DB/exercise/'.$subexercise['id'];
+                   $URL = $this->lURL.'/DB/exercise/exercise/'.$subexercise['id'];
                 }
                 $subexerciseAnswer = Request::custom($method, $URL, $header, $subexerciseJSON);
 

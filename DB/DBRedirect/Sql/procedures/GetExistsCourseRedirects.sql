@@ -18,4 +18,12 @@
  */
 ?>
 
-show tables like 'Redirect<?php echo $pre; ?>_<?php echo $courseid; ?>';
+DROP PROCEDURE IF EXISTS `DBRedirectGetExistsCourseRedirects`;
+CREATE PROCEDURE `DBRedirectGetExistsCourseRedirects` (IN profile varchar(30), IN courseid INT)
+READS SQL DATA
+begin
+SET @s = concat("show tables like 'Redirect",profile,"_",courseid,"';");
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
+end;

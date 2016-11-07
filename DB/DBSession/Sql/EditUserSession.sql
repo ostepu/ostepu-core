@@ -16,6 +16,11 @@
  */
 ?>
 
-UPDATE `Session`
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
+UPDATE `Session<?php echo $profile;?>`
 SET <?php echo $values; ?>
 WHERE U_id = '<?php echo $userid; ?>'

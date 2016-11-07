@@ -15,6 +15,11 @@
  */
 ?>
 
-UPDATE `Setting<?php echo $pre; ?>_<?php echo Setting::getCourseFromSettingId($setid); ?>`
-SET <?php echo $object->getInsertData(); ?>
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
+UPDATE `Setting<?php echo $profile; ?>_<?php echo Setting::getCourseFromSettingId($setid); ?>`
+SET <?php echo $in->getInsertData(); ?>
 WHERE SET_id = '<?php echo Setting::getIdFromSettingId($setid); ?>'

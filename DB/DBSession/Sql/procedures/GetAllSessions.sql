@@ -13,7 +13,7 @@
 ?>
 
 DROP PROCEDURE IF EXISTS `DBSessionGetAllSessions`;
-CREATE PROCEDURE `DBSessionGetAllSessions` ()
+CREATE PROCEDURE `DBSessionGetAllSessions` (IN profile varchar(30))
 READS SQL DATA
 begin
 SET @s = concat("
@@ -21,7 +21,7 @@ select SQL_CACHE
     U_id,
     SE_sessionID
 from
-    `Session`;");
+    `Session",profile,"`;");
 PREPARE stmt1 FROM @s;
 EXECUTE stmt1;
 DEALLOCATE PREPARE stmt1;

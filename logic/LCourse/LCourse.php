@@ -233,7 +233,7 @@ class LCourse
         foreach ( $this->_deleteCourse as $_link ){
             $result = Request::routeRequest(
                                             'DELETE',
-                                            '/course/'.$courseid,
+                                            '/course/course/'.$courseid,
                                             $header,
                                             '',
                                             $_link,

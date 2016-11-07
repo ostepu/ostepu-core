@@ -77,17 +77,22 @@ class CConfig
     private $_noInfo = false;
     private $_noHelp = false;
     private $_defaultLanguage = null;
+    private $_getAndHead = false;
+    private $_allowOptions = false;
 
     /**
      * the CConfig constructor
      *
      * @param $prefix the prefix, the component works with
      */
-    public function __construct( $prefix, $callPath = null, $noInfo = false, $noHelp = false, $defaultLanguage = 'de' )
+    public function __construct( $prefix, $callPath = null, $noInfo = false, $noHelp = false, $defaultLanguage = 'de', $options=array() )
     {
         if (!in_array('Slim\Slim', get_declared_classes())){
             return;
         }
+        
+        if (isset($options['getAndHead'])) $this->_getAndHead = $options['getAndHead'];
+        if (isset($options['allowOptions'])) $this->_allowOptions = $options['allowOptions'];
 
         $this->_noInfo = $noInfo;
         $this->_noHelp = $noHelp;
@@ -103,11 +108,11 @@ class CConfig
         $requestUri = $_SERVER['REQUEST_URI'];
         $path = str_replace('?' . (isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : ''), '', substr_replace($requestUri, '', 0, strlen((strpos($requestUri, $scriptName) !== false ? $scriptName : str_replace('\\', '', dirname($scriptName))))));
 
-        $pregA = @preg_match("%^(/[a-zA-Z0-9_\x7f-\xff]*)?/control$%", $path);
-        $pregB = @preg_match("%^(/[a-zA-Z0-9_\x7f-\xff]*)?/info/commands(/?)$%", $path);
-        $pregC = @preg_match("%^(/[a-zA-Z0-9_\x7f-\xff]*)?/info/links(/?)$%", $path);
-        $pregD = @preg_match("%^(/[a-zA-Z0-9_\x7f-\xff]*)?/info/([a-zA-Z0-9_\x7f-\xff]*)(/?)$%", $path);
-        $pregE = @preg_match("%^(/[a-zA-Z0-9_\x7f-\xff]*)?/help/([a-zA-Z0-9_\x7f-\xff]*)/%", $path);
+        $pregA = @preg_match("%^((/[a-zA-Z0-9_\x7f-\xff]*)?|(/profile/[a-zA-Z0-9_\x7f-\xff]*)?)/control$%", $path);
+        $pregB = @preg_match("%^((/[a-zA-Z0-9_\x7f-\xff]*)?|(/profile/[a-zA-Z0-9_\x7f-\xff]*)?)/info/commands(/?)$%", $path);
+        $pregC = @preg_match("%^((/[a-zA-Z0-9_\x7f-\xff]*)?|(/profile/[a-zA-Z0-9_\x7f-\xff]*)?)/info/links(/?)$%", $path);
+        $pregD = @preg_match("%^((/[a-zA-Z0-9_\x7f-\xff]*)?|(/profile/[a-zA-Z0-9_\x7f-\xff]*)?)/info/([a-zA-Z0-9_\x7f-\xff]*)(/?)$%", $path);
+        $pregE = @preg_match("%^((/[a-zA-Z0-9_\x7f-\xff]*)?|(/profile/[a-zA-Z0-9_\x7f-\xff]*)?)/help/([a-zA-Z0-9_\x7f-\xff]*)/%", $path);
 
         if ( $pregA || $pregB || $pregC || (!$noInfo && $pregD )  || (!$noHelp && $pregE ) ) {
 
@@ -120,7 +125,7 @@ class CConfig
 
             // GET Commands
             $this->_app->map(
-                              '(/:pre)/info/commands(/)',
+                              '((/profile)/:pre)/info/commands(/)',
                               array(
                                     $this,
                                     'commands'
@@ -129,7 +134,7 @@ class CConfig
 
             // GET Instruction
             $this->_app->get(
-                              '(/:pre)/info/links(/)',
+                              '((/profile)/:pre)/info/links(/)',
                               array(
                                     $this,
                                     'instruction'
@@ -139,7 +144,7 @@ class CConfig
             if (!$this->_noInfo){
                 // GET Info
                 $this->_app->get(
-                                  '(/:pre)/info/:language(/)',
+                                  '((/profile)/:pre)/info/:language(/)',
                                   array(
                                         $this,
                                         'info'
@@ -149,7 +154,7 @@ class CConfig
 
             // POST Config
             $this->_app->post(
-                              '(/:pre)/control',
+                              '((/profile)/:pre)/control',
                               array(
                                     $this,
                                     'postConfig'
@@ -158,7 +163,7 @@ class CConfig
 
             // GET Config
             $this->_app->get(
-                             '(/:pre)/control',
+                             '((/profile)/:pre)/control',
                              array(
                                    $this,
                                    'getConfig'
@@ -168,7 +173,7 @@ class CConfig
             if (!$this->_noHelp){
                 // GET Help
                 $this->_app->get(
-                                 '(/:pre)/help/:language/:helpPath+',
+                                 '((/profile)/:pre)/help/:language/:helpPath+',
                                  array(
                                        $this,
                                        'getHelp'
@@ -283,12 +288,23 @@ class CConfig
             $commands = json_decode(file_get_contents(($this->callPath!=null ? $this->callPath.'/':'').'Commands.json'), true);
 
             if (!$nativeOnly){
-                $commands[] = array('method' => 'get', 'path' => '(/:pre)/info/commands(/)');
-                $commands[] = array('method' => 'get', 'path' => '(/:pre)/info/links(/)');
-                if (!$this->_noInfo) $commands[] = array('method' => 'get', 'path' => '(/:pre)/info/:language(/)');
-                $commands[] = array('method' => 'post', 'path' => '(/:pre)/control');
-                $commands[] = array('method' => 'get', 'path' => '(/:pre)/control');
-                if (!$this->_noHelp) $commands[] = array('method' => 'get', 'path' => '(/:pre)/help/:language/path+');
+                if ($this->_getAndHead){
+                    // wenn ein get angeboten wird, kann auch head genutzt werden
+                    foreach($commands as $command){
+                        if (isset($command['method']) && strtolower($command['method']) == 'get'){
+                            $tmp = array_merge($command,array());
+                            $tmp['method'] = 'head';
+                            $commands[] = $tmp;
+                        }
+                    }
+                }
+                
+                $commands[] = array('method' => 'get', 'path' => '((/profile)/:pre)/info/commands(/)');
+                $commands[] = array('method' => 'get', 'path' => '((/profile)/:pre)/info/links(/)');
+                if (!$this->_noInfo) $commands[] = array('method' => 'get', 'path' => '((/profile)/:pre)/info/:language(/)');
+                $commands[] = array('method' => 'post', 'path' => '((/profile)/:pre)/control');
+                $commands[] = array('method' => 'get', 'path' => '((/profile)/:pre)/control');
+                if (!$this->_noHelp) $commands[] = array('method' => 'get', 'path' => '((/profile)/:pre)/help/:language/path+');
             }
 
             if ($returnData){

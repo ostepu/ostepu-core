@@ -18,4 +18,12 @@
  */
 ?>
 
-show tables like 'Setting<?php echo $pre; ?>_<?php echo $courseid; ?>';
+DROP PROCEDURE IF EXISTS `DBSettingGetExistsCourseSettings`;
+CREATE PROCEDURE `DBSettingGetExistsCourseSettings` (IN profile varchar(30), IN courseid INT)
+READS SQL DATA
+begin
+SET @s = concat("show tables like 'Setting",profile,"_",courseid,"';");
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
+end;

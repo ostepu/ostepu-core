@@ -12,11 +12,16 @@
  */
 ?>
 
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
 SET @row = 0;
 SET @a = (SELECT count(*) FROM File)-1;
 
 INSERT
-IGNORE INTO `Submission`
+IGNORE INTO `Submission<?php echo $profile;?>`
 SELECT C.U_id as A, @row := @row + 1,
                        FLOOR(1 + (RAND() * @a)) as B,
                        NULL as C,
@@ -27,6 +32,6 @@ SELECT C.U_id as A, @row := @row + 1,
                        NULL as H,
                        NULL as I,
                        NULL as J
-FROM Exercise E
-JOIN CourseStatus C ON (E.C_id=C.C_id
+FROM `Exercise<?php echo $exerciseProfile;?>` E
+JOIN `CourseStatus<?php echo $courseStatusProfile;?>` C ON (E.C_id=C.C_id
                         AND C.CS_status=0);

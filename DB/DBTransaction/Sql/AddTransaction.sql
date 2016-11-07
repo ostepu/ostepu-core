@@ -14,5 +14,10 @@
  */
 ?>
 
-INSERT INTO `Transaction<?php echo $name; ?>_<?php echo $courseid; ?>` SET <?php echo $object->getInsertData(); ?>,T_random = '<?php echo $random; ?>';
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
+INSERT INTO `Transaction<?php echo $profile; ?>_<?php echo $courseid; ?>` SET <?php echo $in->getInsertData(); ?>,T_random = '<?php echo $random; ?>';
 select '<?php echo $courseid; ?>' as 'C_id';

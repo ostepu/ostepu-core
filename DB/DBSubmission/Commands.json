@@ -5,7 +5,7 @@
         "inputType": "Submission",
         "method": "PUT",
         "placeholder":[{"name":"suid","regex":"%^([0-9_]+)$%"}],
-        "path": "/submission(/submission)/:suid"
+        "path": "/submission/submission/:suid"
     },
     {
         "name": "deleteSubmission",
@@ -13,7 +13,7 @@
         "inputType": "",
         "method": "DELETE",
         "placeholder":[{"name":"suid","regex":"%^([0-9_]+)$%"}],
-        "path": "/submission(/submission)/:suid"
+        "path": "/submission/submission/:suid"
     },
     {
         "name": "addSubmission",
@@ -120,7 +120,7 @@
         "inputType": "",
         "method": "GET",
         "placeholder":[{"name":"suid","regex":"%^([0-9_]+)$%"}],
-        "path": "/submission(/submission)/:suid"
+        "path": "/submission/submission/:suid"
     },
     {
         "name": "getAllSubmissions",
@@ -128,7 +128,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "path": "/submission(/submission)(/:selected)(/date/begin/:beginStamp/end/:endStamp)"
+        "path": "/submission(/:selected)(/date/begin/:beginStamp/end/:endStamp)"
     },
     {
         "name": "getSelectedExerciseSubmissions",

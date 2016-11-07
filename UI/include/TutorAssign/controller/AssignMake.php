@@ -18,7 +18,7 @@ $groups = http_get($URI, true, $message);
 $groups = Group::decodeGroup($groups);
 
 if ($message === 200) {
-    $URI = $databaseURI . "/exercisesheet/{$sid}/exercise";
+    $URI = $databaseURI . "/exercisesheet/exercisesheet/{$sid}/exercise";
     $exerciseSheet = http_get($URI, true, $message);
     $exerciseSheet = ExerciseSheet::decodeExerciseSheet($exerciseSheet);
     

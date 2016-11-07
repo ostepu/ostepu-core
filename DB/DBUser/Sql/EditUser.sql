@@ -16,6 +16,11 @@
  */
 ?>
 
-UPDATE User
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
+UPDATE `User<?php echo $profile;?>`
 SET <?php echo $values; ?>
 WHERE U_id like '<?php echo $userid; ?>' or U_username = '<?php echo $userid; ?>' or U_externalId = '<?php echo $userid; ?>'

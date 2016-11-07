@@ -51,7 +51,7 @@ class DBSelectedSubmission
      */
     public function editSelectedSubmission( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/EditSelectedSubmission.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new SelectedSubmission()),'Model::isProblem',array(new SelectedSubmission()));
+        return $this->_component->callSqlTemplate('editSelectedSubmission',dirname(__FILE__).'/Sql/EditSelectedSubmission.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new SelectedSubmission()),'Model::isProblem',array(new SelectedSubmission()));
     }
 
     /**
@@ -65,7 +65,7 @@ class DBSelectedSubmission
      */
     public function editSubmissionSelectedSubmission( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/EditSubmissionSelectedSubmission.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new SelectedSubmission()),'Model::isProblem',array(new SelectedSubmission()));
+        return $this->_component->callSqlTemplate('editSubmissionSelectedSubmission',dirname(__FILE__).'/Sql/EditSubmissionSelectedSubmission.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new SelectedSubmission()),'Model::isProblem',array(new SelectedSubmission()));
     }
 
     /**
@@ -79,7 +79,7 @@ class DBSelectedSubmission
      */
     public function deleteSelectedSubmission($callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteSelectedSubmission.sql',$params,201,'Model::isCreated',array(new SelectedSubmission()),'Model::isProblem',array(new SelectedSubmission()));
+        return $this->_component->callSqlTemplate('deleteSelectedSubmission',dirname(__FILE__).'/Sql/DeleteSelectedSubmission.sql',$params,201,'Model::isCreated',array(new SelectedSubmission()),'Model::isProblem',array(new SelectedSubmission()));
     }
 
     /**
@@ -93,7 +93,7 @@ class DBSelectedSubmission
      */
     public function deleteUserSheetSelectedSubmission($callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteUserSheetSelectedSubmission.sql',$params,201,'Model::isCreated',array(new SelectedSubmission()),'Model::isProblem',array(new SelectedSubmission()));
+        return $this->_component->callSqlTemplate('deleteUserSheetSelectedSubmission',dirname(__FILE__).'/Sql/DeleteUserSheetSelectedSubmission.sql',$params,201,'Model::isCreated',array(new SelectedSubmission()),'Model::isProblem',array(new SelectedSubmission()));
     }
 
     /**
@@ -106,7 +106,7 @@ class DBSelectedSubmission
      */
     public function deleteSubmissionSelectedSubmission( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteSubmissionSelectedSubmission.sql',$params,201,'Model::isCreated',array(new SelectedSubmission()),'Model::isProblem',array(new SelectedSubmission()));
+        return $this->_component->callSqlTemplate('deleteSubmissionSelectedSubmission',dirname(__FILE__).'/Sql/DeleteSubmissionSelectedSubmission.sql',$params,201,'Model::isCreated',array(new SelectedSubmission()),'Model::isProblem',array(new SelectedSubmission()));
     }
 
     /**
@@ -124,7 +124,7 @@ class DBSelectedSubmission
             //$obj->setId( $input[0]->getInsertId( ) );
             return array("status"=>201,"content"=>$obj);
         };
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddSelectedSubmission.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new SelectedSubmission()));
+        return $this->_component->callSqlTemplate('addSelectedSubmission',dirname(__FILE__).'/Sql/AddSelectedSubmission.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new SelectedSubmission()));
     }
 
     public function get( $functionName, $linkName, $params=array(), $checkSession = true )
@@ -160,7 +160,7 @@ class DBSelectedSubmission
      */
     public function deletePlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('deletePlatform',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 
     /**
@@ -171,7 +171,7 @@ class DBSelectedSubmission
      */
     public function addPlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('addPlatform',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 
     public function getSamplesInfo( $callName, $input, $params = array() )
@@ -197,7 +197,7 @@ class DBSelectedSubmission
     public function postSamples( $callName, $input, $params = array() )
     {
         set_time_limit(0);
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new SelectedSubmission()),'Model::isProblem',array(new SelectedSubmission()));
+        return $this->_component->callSqlTemplate('postSamples',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new SelectedSubmission()),'Model::isProblem',array(new SelectedSubmission()));
     }
 }
 

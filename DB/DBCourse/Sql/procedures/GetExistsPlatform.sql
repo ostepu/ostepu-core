@@ -13,8 +13,11 @@
 ?>
 
 DROP PROCEDURE IF EXISTS `DBCourseGetExistsPlatform`;
-CREATE PROCEDURE `DBCourseGetExistsPlatform` ()
+CREATE PROCEDURE `DBCourseGetExistsPlatform` (IN profile varchar(30))
 READS SQL DATA
 begin
-show tables like 'Course';
+SET @s = concat("show tables like 'Course",profile,"';");
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
 end;

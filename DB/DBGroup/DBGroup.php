@@ -53,7 +53,7 @@ class DBGroup
      */
     public function editGroup( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/EditGroup.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new Group()),'Model::isProblem',array(new Group()));
+        return $this->_component->callSqlTemplate('editGroup',dirname(__FILE__).'/Sql/EditGroup.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new Group()),'Model::isProblem',array(new Group()));
     }
 
     /**
@@ -68,7 +68,7 @@ class DBGroup
      */
     public function deleteGroup( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/DeleteGroup.sql',$params,201,'Model::isCreated',array(new Group()),'Model::isProblem',array(new Group()));
+        return $this->_component->callSqlTemplate('deleteGroup',dirname(__FILE__).'/Sql/DeleteGroup.sql',$params,201,'Model::isCreated',array(new Group()),'Model::isProblem',array(new Group()));
     }
 
     /**
@@ -87,7 +87,7 @@ class DBGroup
             $obj->setId( $input[0]->getInsertId( ) );
             return array("status"=>201,"content"=>$obj);
         };
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/AddGroup.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new Group()));
+        return $this->_component->callSqlTemplate('addGroup',dirname(__FILE__).'/Sql/AddGroup.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new Group()));
     }
 
     public function get( $functionName, $linkName, $params=array(), $checkSession = true )
@@ -123,7 +123,7 @@ class DBGroup
      */
     public function deletePlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('deletePlatform',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 
     /**
@@ -134,7 +134,7 @@ class DBGroup
      */
     public function addPlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('addPlatform',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
     
     public function getSamplesInfo( $callName, $input, $params = array() )
@@ -160,7 +160,7 @@ class DBGroup
     public function postSamples( $callName, $input, $params = array() )
     {
         set_time_limit(0);
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));
+        return $this->_component->callSqlTemplate('postSamples',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));
     }
 }
 

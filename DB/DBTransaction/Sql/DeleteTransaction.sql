@@ -15,9 +15,14 @@
  */
 ?>
 
-DELETE FROM `Transaction<?php echo $name; ?>_<?php echo Transaction::getCourseFromTransactionId($tid); ?>`
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
+DELETE FROM `Transaction<?php echo $profile; ?>_<?php echo Transaction::getCourseFromTransactionId($tid); ?>`
 WHERE
     T_id = '<?php echo Transaction::getIdFromTransactionId($tid); ?>'
-    and ((T.T_authentication is null and '<?php echo $auid; ?>' = '') or T.T_authentication = '<?php echo $auid; ?>')
+    and T.T_authentication = '<?php echo $auid; ?>'
     and T_random = '<?php echo Transaction::getRandomFromTransactionId($tid); ?>';
 

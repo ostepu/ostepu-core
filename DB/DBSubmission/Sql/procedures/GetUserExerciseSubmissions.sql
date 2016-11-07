@@ -13,7 +13,7 @@
 ?>
 
 DROP PROCEDURE IF EXISTS `DBSubmissionGetUserExerciseSubmissions`;
-CREATE PROCEDURE `DBSubmissionGetUserExerciseSubmissions` (IN userid INT,IN eid INT)
+CREATE PROCEDURE `DBSubmissionGetUserExerciseSubmissions` (IN profile varchar(30), IN selectedSubmissionProfile varchar(30), IN fileProfile varchar(30), IN userid INT,IN eid INT)
 READS SQL DATA
 begin
 SET @s = concat("
@@ -39,11 +39,11 @@ select SQL_CACHE
     S.E_id,
     S.ES_id
 from
-    Submission S
+    `Submission",profile,"` S
        left join
-    File F ON (S.F_id_file = F.F_id)
+    `File",fileProfile,"` F ON (S.F_id_file = F.F_id)
         left join
-    SelectedSubmission SS ON (S.S_id = SS.S_id_selected)
+    `SelectedSubmission",selectedSubmissionProfile,"` SS ON (S.S_id = SS.S_id_selected)
 where
     S.U_id = '",userid,"' and S.E_id = '",eid,"';");
 PREPARE stmt1 FROM @s;

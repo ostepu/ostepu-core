@@ -79,14 +79,14 @@ abstract class AbstractAuthentication
      */
     protected function refreshSession()
     {
-        global $databaseURI;
+        global $serverURI;
         $_SESSION['SESSION'] = $this->hashData("md5", session_id() . $_SERVER['HTTP_USER_AGENT'] . $_SERVER['REMOTE_ADDR']);
 
         // create Session in DB
         $sessionbody = array('user' => $_SESSION['UID'],
                              'session' => $_SESSION['SESSION']);
         $sessionbody = json_encode($sessionbody);
-        $url = "{$databaseURI}/session";
+        $url = "{$serverURI}/DB/DBSession/session";
         http_post_data($url, $sessionbody, false, $message);
 
         // only true if session is created in DB
@@ -145,12 +145,12 @@ abstract class AbstractAuthentication
      */
     public static function logoutUser($noback = false)
     {
-        global $databaseURI;
+        global $serverURI;
 
         // delete session in DB
         if (isset($_SESSION['SESSION'])) {
             $session = $_SESSION['SESSION'];
-            http_delete("{$databaseURI}/session/{$session}",true,$message,true);
+            http_delete("{$serverURI}/DB/DBSession/session/{$session}",true,$message,true);
         }
 
         // delete session in UI

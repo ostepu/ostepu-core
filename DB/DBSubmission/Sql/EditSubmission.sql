@@ -16,6 +16,11 @@
  */
 ?>
 
-UPDATE Submission
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
+UPDATE `Submission<?php echo $profile;?>`
 SET <?php echo $values; ?>
 WHERE S_id = '<?php echo $suid; ?>'

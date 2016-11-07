@@ -274,7 +274,7 @@ class LProcessor
         foreach ( $this->_createCourse as $_link ){
             $result = Request::routeRequest(
                                             'DELETE',
-                                            '/course/'.$courseid,
+                                            '/course/course/'.$courseid,
                                             array(),
                                             '',
                                             $_link,
@@ -329,7 +329,7 @@ class LProcessor
             $URL='/process';
             if ($process->getProcessId() !== null){
                $method='PUT';
-               $URL = '/process/'.$process->getProcessId();
+               $URL = '/process/process/'.$process->getProcessId();
             }
 
             $result = Request::routeRequest(

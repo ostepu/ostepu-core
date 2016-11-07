@@ -14,16 +14,56 @@
     ],
     "links": [
         {
-            "name": "out",
-            "target": "DBQuery",
+            "name": "editUser",
+            "target": "DBQueryWrite",
             "links": [{
                 "method": "POST",
                 "path": "/query"
             }]
         },
         {
-            "name": "out2",
-            "target": "DBQuery2",
+            "name": "removeUser",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "removeUserPermanent",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "addUser",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "deletePlatform",
+            "target": "DBQuerySetup",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "addPlatform",
+            "target": "DBQuerySetup",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "postSamples",
+            "target": "DBQueryWrite",
             "links": [{
                 "method": "POST",
                 "path": "/query"
@@ -31,74 +71,74 @@
         },
         {
             "name": "getUser",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
-                "path": "/query/procedure/DBUserGetUser/:userid"
+                "path": "/query/procedure/DBUserGetUser/:profile/:userid"
             }]
         },
         {
             "name": "getUsers",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
-                "path": "/query/procedure/DBUserGetUsers"
+                "path": "/query/procedure/DBUserGetUsers/:profile"
             }]
         },
         {
             "name": "getCourseMember",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
-                "path": "/query/procedure/DBUserGetCourseMember/:courseid"
+                "path": "/query/procedure/DBUserGetCourseMember/:profile/:courseid"
             }]
         },
         {
             "name": "getGroupMember",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
-                "path": "/query/procedure/DBUserGetGroupMember/:esid/:userid"
+                "path": "/query/procedure/DBUserGetGroupMember/:profile/:esid/:userid"
             }]
         },
         {
             "name": "getUserByStatus",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
-                "path": "/query/procedure/DBUserGetUserByStatus/:statusid"
+                "path": "/query/procedure/DBUserGetUserByStatus/:profile/:statusid"
             }]
         },
         {
             "name": "getCourseUserByStatus",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
-                "path": "/query/procedure/DBUserGetCourseUserByStatus/:courseid/:statusid"
+                "path": "/query/procedure/DBUserGetCourseUserByStatus/:profile/:courseid/:statusid"
             }]
         },
         {
             "name": "getIncreaseUserFailedLogin",
-            "target": "DBQuery2",
+            "target": "DBQueryWrite",
             "links": [{
                 "method": "GET",
-                "path": "/query/procedure/DBUserGetIncreaseUserFailedLogin/:userid"
+                "path": "/query/procedure/DBUserGetIncreaseUserFailedLogin/:profile/:userid"
             }]
         },
         {
             "name": "getExistsPlatform",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
-                "path": "/query/procedure/DBUserGetExistsPlatform"
+                "path": "/query/procedure/DBUserGetExistsPlatform/:profile"
             }]
         },
         {
             "name": "getSamplesInfo",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
-                "path": "/query/procedure/DBUserGetExistsPlatform"
+                "path": "/query/procedure/DBUserGetExistsPlatform/:profile"
             }]
         }
     ],
@@ -120,6 +160,9 @@
             "target": "CHelp",
             "links": [{"path": "/link/exists/platform"}]
         },
-        { "name": "getDescFiles","target": "TDocuView"}
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView"
+        }
     ]
 }

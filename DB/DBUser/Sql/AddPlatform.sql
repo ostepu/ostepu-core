@@ -12,11 +12,16 @@
  */
 ?>
 
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
-CREATE TABLE IF NOT EXISTS `User` (
+CREATE TABLE IF NOT EXISTS `User<?php echo $profile;?>` (
   `U_id` INT NOT NULL AUTO_INCREMENT,
   `U_username` VARCHAR(120) NOT NULL,
   `U_email` VARCHAR(120) NULL,
@@ -41,12 +46,12 @@ SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
-ALTER TABLE `User` MODIFY COLUMN U_flag TINYINT NULL DEFAULT 1;
-ALTER TABLE `User` MODIFY COLUMN U_isSuperAdmin TINYINT NULL DEFAULT 0;
-call execute_if_column_not_exists('User','U_lang','ALTER TABLE `User` ADD COLUMN U_lang CHAR(2) NOT NULL DEFAULT \'de\';');
+ALTER TABLE `User<?php echo $profile;?>` MODIFY COLUMN U_flag TINYINT NULL DEFAULT 1;
+ALTER TABLE `User<?php echo $profile;?>` MODIFY COLUMN U_isSuperAdmin TINYINT NULL DEFAULT 0;
+call execute_if_column_not_exists('User<?php echo $profile;?>','U_lang','ALTER TABLE `User<?php echo $profile;?>` ADD COLUMN U_lang CHAR(2) NOT NULL DEFAULT \'de\';');
 
-DROP TRIGGER IF EXISTS `User_BUPD`;
-CREATE TRIGGER `User_BUPD` BEFORE UPDATE ON `User` FOR EACH ROW
+DROP TRIGGER IF EXISTS `User<?php echo $profile;?>_BUPD`;
+CREATE TRIGGER `User<?php echo $profile;?>_BUPD` BEFORE UPDATE ON `User<?php echo $profile;?>` FOR EACH ROW
 <?php
 /*delete from user
 @just keep id, username and flag
@@ -63,8 +68,8 @@ SET NEW.U_failed_logins = ' ';
 END IF;
 end;
 
-DROP TRIGGER IF EXISTS `User_AUPD`;
-CREATE TRIGGER `User_AUPD` AFTER UPDATE ON `User` FOR EACH ROW
+DROP TRIGGER IF EXISTS `User<?php echo $profile;?>_AUPD`;
+CREATE TRIGGER `User<?php echo $profile;?>_AUPD` AFTER UPDATE ON `User<?php echo $profile;?>` FOR EACH ROW
 <?php
 /*if user is inactiv or deleted delete session
 @author Lisa Dietrich */

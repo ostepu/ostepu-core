@@ -158,6 +158,7 @@ class DBRequest
         return $query_result;
     }
     
+    // benutzt die mysqli-Erweiterung, wobei mehrere Anfragen in einem sqlStatement erlaubt sind
     public static function request2( 
                                    $sqlStatement,
                                    $checkSession,
@@ -307,6 +308,88 @@ class DBRequest
             $query_result[] = $result;
         } while (mysqli_more_results($dbconn) && mysqli_next_result($dbconn));
     }
+        // closes the connection and returns the result
+        mysqli_close( $dbconn );
+        $dbconn = null;
+        return $query_result;
+    }
+    
+    // benutzt die mysqli_query Methode, sodass nur eine einzelne Anfrage ausgewertet wird
+    public static function request2Single( 
+                                   $sqlStatement,
+                                   $checkSession,
+                                   $config = null,
+                                   $useDbOperator = false
+                                   )
+    {
+
+        if ($config===null){
+            // loads the mysql server config from file
+            $config = parse_ini_file( 
+                                     'config.ini',
+                                     TRUE
+                                     );
+        }
+
+        //ini_set('mysql.connect_timeout','60');
+        
+        // creates a new connection to database
+        if (!isset($config['ZV']['zv_type']) || (isset($config['ZV']['zv_type']) && $config['ZV']['zv_type']=='local')){
+            $path = (strpos($config['PL']['urlExtern'],$config['DB']['db_path'])===false ? $config['DB']['db_path'] : 'localhost' );
+        } else
+            $path = $config['DB']['db_path'];
+            
+        if (!$useDbOperator){
+            $dbconn = @mysqli_connect( 
+                                    $path,
+                                    $config['DB']['db_user'],
+                                    $config['DB']['db_passwd'],
+                                    $config['DB']['db_name'] 
+                                    );
+        } else {
+            $dbconn = @mysqli_connect( 
+                                    $path,
+                                    $config['DB']['db_user_operator'],
+                                    $config['DB']['db_passwd_operator'],
+                                    $config['DB']['db_name'] 
+                                    );
+
+        }
+                                
+        if (!$dbconn){
+            $query_result['errno'] = 10;
+            return $query_result;
+        }
+
+        // use UTF8
+        mysqli_set_charset($dbconn,"utf8");
+
+        // performs the request
+        $answ = mysqli_query(
+                                                $dbconn,
+                                                $sqlStatement, 
+                                                MYSQLI_USE_RESULT
+                                               );
+                                               
+        $query_result=array();   
+
+        if ($answ===false){     
+            $hash=''; 
+            $query_result['affectedRows'] = mysqli_affected_rows( $dbconn);
+            $query_result['insertId'] = mysqli_insert_id( $dbconn);
+            $query_result['errno'] = mysqli_errno( $dbconn );
+            $query_result['error'] =mysqli_error( $dbconn );     
+        } else {             
+            $hash='';
+            $query_result['content']  = DBJson::getRows2( $answ, $hash );
+            $query_result['numRows'] = count($query_result['content']);
+            $query_result['hash'] = $hash;
+            $query_result['affectedRows'] = mysqli_affected_rows( $dbconn);
+            $query_result['insertId'] = mysqli_insert_id( $dbconn);
+            $query_result['errno'] = mysqli_errno( $dbconn );
+            $query_result['error'] =mysqli_error( $dbconn );
+        }
+
         // closes the connection and returns the result
         mysqli_close( $dbconn );
         $dbconn = null;

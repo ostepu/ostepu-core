@@ -15,4 +15,9 @@
  */
 ?>
 
-INSERT INTO Submission SET <?php echo $values; ?>
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
+INSERT INTO `Submission<?php echo $profile;?>` SET <?php echo $values; ?>

@@ -15,9 +15,18 @@
  * - S, the Setting data
  */
 ?>
-
+    
+DROP PROCEDURE IF EXISTS `DBSettingGetCourseSettings`;
+CREATE PROCEDURE `DBSettingGetCourseSettings` (IN profile varchar(30), IN courseid INT)
+READS SQL DATA
+begin
+SET @s = concat("
 select
     S.*,
-    concat('<?php echo $courseid; ?>','_',S.SET_id) as SET_id
+    concat('",courseid,"','_',S.SET_id) as SET_id
 from
-    `Setting<?php echo $pre; ?>_<?php echo $courseid; ?>` S
+    `Setting",profile,"_",courseid,"` S;");
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
+end;

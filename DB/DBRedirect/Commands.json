@@ -1,11 +1,109 @@
 [
-    {    "method":"put", "path":"(/:pre)/redirect/redirect/:redid" },
-    {    "method":"delete", "path":"(/:pre)/redirect/redirect/:redid" },
-    {    "method":"post", "path":"(/:pre)/redirect/course/:courseid" },
-    {    "method":"get", "path":"(/:pre)/link/exists/course/:courseid" },
-    {    "method":"get", "path":"(/:pre)/redirect/course/:courseid" },
-    {    "method":"get", "path":"(/:pre)/redirect/redirect/:redid" },
-    {    "method":"get", "path":"(/:pre)/redirect/course/:courseid/location/:locname" },
-    {    "method":"delete", "path":"(/:pre)/course/:courseid" },
-    {    "method":"post", "path":"(/:pre)/course" }
+    {
+        "name": "editRedirect",
+        "outputType": "Redirect",
+        "inputType": "Redirect",
+        "method": "put",
+        "placeholder": [{
+            "name": "redid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/redirect/redirect/:redid"
+    },
+    {
+        "name": "deleteRedirect",
+        "outputType": "Redirect",
+        "inputType": "",
+        "method": "delete",
+        "placeholder": [{
+            "name": "redid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/redirect/redirect/:redid"
+    },
+    {
+        "name": "addRedirect",
+        "outputType": "Redirect",
+        "inputType": "Redirect",
+        "method": "post",
+        "placeholder": [{
+            "name": "courseid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/redirect/course/:courseid"
+    },
+    {
+        "name": "getExistsCourseRedirects",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
+        "outputType": "Course",
+        "inputType": "",
+        "method": "get",
+        "placeholder": [{
+            "name": "courseid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/link/exists/course/:courseid"
+    },
+    {
+        "name": "getCourseRedirects",
+        "callback": "getMatch",
+        "outputType": "Redirect",
+        "inputType": "",
+        "method": "get",
+        "placeholder": [{
+            "name": "courseid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/redirect/course/:courseid"
+    },
+    {
+        "name": "getRedirect",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
+        "outputType": "Redirect",
+        "inputType": "",
+        "method": "get",
+        "placeholder": [{
+            "name": "redid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/redirect/redirect/:redid"
+    },
+    {
+        "name": "getRedirectByLocation",
+        "callback": "getMatch",
+        "outputType": "Redirect",
+        "inputType": "",
+        "method": "get",
+        "placeholder": [
+            {
+                "name": "courseid",
+                "regex": "%^([0-9_]+)$%"
+            },
+            {
+                "name": "locname",
+                "regex": "%^([a-zA-Z_]+)$%"
+            }
+        ],
+        "path": "/redirect/course/:courseid/location/:locname"
+    },
+    {
+        "name": "deleteCourse",
+        "outputType": "Course",
+        "inputType": "",
+        "method": "delete",
+        "placeholder": [{
+            "name": "courseid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/course/:courseid"
+    },
+    {
+        "name": "addCourse",
+        "outputType": "Course",
+        "inputType": "Course",
+        "method": "post",
+        "path": "/course"
+    }
 ]

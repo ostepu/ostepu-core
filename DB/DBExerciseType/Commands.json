@@ -5,7 +5,7 @@
         "inputType": "ExerciseType",
         "method": "PUT",
         "placeholder":[{"name":"etid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercisetype(/exercisetype)/:etid"
+        "path": "/exercisetype/exercisetype/:etid"
     },
     {
         "name": "deleteExerciseType",
@@ -13,7 +13,7 @@
         "inputType": "",
         "method": "DELETE",
         "placeholder":[{"name":"etid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercisetype(/exercisetype)/:etid"
+        "path": "/exercisetype/exercisetype/:etid"
     },
     {
         "name": "addExerciseType",
@@ -30,7 +30,7 @@
         "inputType": "",
         "method": "GET",
         "placeholder":[{"name":"etid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercisetype(/exercisetype)/:etid"
+        "path": "/exercisetype/exercisetype/:etid"
     },
     {
         "name": "getAllExerciseTypes",
@@ -38,7 +38,7 @@
         "outputType": "ExerciseType",
         "inputType": "",
         "method": "GET",
-        "path": "/exercisetype(/exercisetype)"
+        "path": "/exercisetype"
     },
     {
         "name": "addPlatform",

@@ -16,6 +16,11 @@
  */
 ?>
 
-UPDATE File
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
+UPDATE `File<?php echo $profile;?>`
 SET <?php echo $values; ?>
 WHERE F_id = '<?php echo $fileid; ?>'

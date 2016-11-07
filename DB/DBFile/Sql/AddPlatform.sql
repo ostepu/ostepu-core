@@ -12,11 +12,16 @@
  */
 ?>
 
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
-CREATE TABLE IF NOT EXISTS `File` (
+CREATE TABLE IF NOT EXISTS `File<?php echo $profile;?>` (
   `F_id` INT NOT NULL AUTO_INCREMENT,
   `F_displayName` VARCHAR(255) NULL,
   `F_address` CHAR(55) NOT NULL,
@@ -34,6 +39,13 @@ AUTO_INCREMENT = 1;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+ALTER TABLE `File<?php echo $profile;?>` MODIFY COLUMN F_mimeType VARCHAR(255) NULL;
+ALTER TABLE `File<?php echo $profile;?>` MODIFY COLUMN F_timeStamp INT UNSIGNED NULL DEFAULT 0;
+
+call drop_index_if_exists('File<?php echo $profile;?>','F_hash_UNIQUE');
+call drop_index_if_exists('File<?php echo $profile;?>','F_address_UNIQUE');
+ALTER IGNORE TABLE `File<?php echo $profile;?>` ADD CONSTRAINT `F_address_displayName_UNIQUE` UNIQUE (`F_address` ASC,`F_displayName` ASC);
 
 <?php if (is_dir($sqlPath.'/procedures')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/procedures/'.$inp);}},scandir($sqlPath.'/procedures'),array_pad(array(),count(scandir($sqlPath.'/procedures')),$sqlPath));?>
 <?php if (is_dir($sqlPath.'/migrations')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/migrations/'.$inp);}},scandir($sqlPath.'/migrations'),array_pad(array(),count(scandir($sqlPath.'/migrations')),$sqlPath));?>

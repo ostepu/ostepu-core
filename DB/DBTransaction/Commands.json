@@ -1,13 +1,144 @@
 [
-    {    "method":"delete", "path":"(/:name)/transaction/authentication/:auid/transaction/:tid" },
-    {    "method":"delete", "path":"(/:name)/transaction/transaction/:tid" },
-    {    "method":"get", "path":"(/:name)/link/exists/course/:courseid" },
-    {    "method":"get", "path":"(/:name)/transaction/authentication/:auid/transaction/:tid" },
-    {    "method":"get", "path":"(/:name)/clean/clean/course/:courseid" },
-    {    "method":"delete", "path":"(/:name)/clean/clean/course/:courseid" },
-    {    "method":"delete", "path":"(/:name)/course" },
-    {    "method":"post", "path":"(/:name)/course/:courseid" },
-    {    "method":"post", "path":"(/:name)/transaction/exercisesheet/:esid" },
-    {    "method":"post", "path":"(/:name)/transaction/course/:courseid" },
-    {    "method":"post", "path":"(/:name)/transaction/exercise/:eid" }
+    {
+        "name": "deleteTransaction",
+        "outputType": "Transaction",
+        "inputType": "",
+        "method": "delete",
+        "placeholder": [
+            {
+                "name": "auid",
+                "regex": "%^([a-zA-Z0-9_]+)$%"
+            },
+            {
+                "name": "tid",
+                "regex": "%^([a-z0-9_]+)$%"
+            }
+        ],
+        "path": "/transaction/authentication/:auid/transaction/:tid"
+    },
+    {
+        "name": "deleteTransactionShort",
+        "outputType": "Transaction",
+        "inputType": "",
+        "method": "delete",
+        "placeholder": [{
+            "name": "tid",
+            "regex": "%^([a-z0-9_]+)$%"
+        }],
+        "path": "/transaction/transaction/:tid"
+    },
+    {
+        "name": "getExistsCourseTransactions",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
+        "outputType": "Course",
+        "inputType": "",
+        "method": "get",
+        "placeholder": [{
+            "name": "courseid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/link/exists/course/:courseid"
+    },
+    {
+        "name": "getTransaction",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
+        "outputType": "Course",
+        "inputType": "",
+        "method": "get",
+        "placeholder": [
+            {
+                "name": "auid",
+                "regex": "%^([a-zA-Z0-9_]+)$%"
+            },
+            {
+                "name": "tid",
+                "regex": "%^([a-z0-9_]+)$%"
+            }
+        ],
+        "path": "/transaction/authentication/:auid/transaction/:tid"
+    },
+    {
+        "name": "getTransactionShort",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
+        "outputType": "Course",
+        "inputType": "",
+        "method": "get",
+        "placeholder": [{
+            "name": "tid",
+            "regex": "%^([a-z0-9_]+)$%"
+        }],
+        "path": "/transaction/transaction/:tid"
+    },
+    {
+        "name": "getAmountOfExpiredTransactions",
+        "outputType": "",
+        "inputType": "",
+        "method": "get",
+        "placeholder": [{
+            "name": "courseid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/clean/course/:courseid"
+    },
+    {
+        "name": "cleanTransactions",
+        "outputType": "Transaction",
+        "inputType": "",
+        "method": "delete",
+        "placeholder": [{
+            "name": "courseid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/clean/course/:courseid"
+    },
+    {
+        "name": "deleteCourse",
+        "outputType": "Course",
+        "inputType": "",
+        "method": "delete",
+        "path": "/course"
+    },
+    {
+        "name": "addCourse",
+        "outputType": "Course",
+        "inputType": "Course",
+        "method": "post",
+        "path": "/course"
+    },
+    {
+        "name": "addSheetTransaction",
+        "outputType": "Transaction",
+        "inputType": "Transaction",
+        "method": "post",
+        "placeholder": [{
+            "name": "esid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/transaction/exercisesheet/:esid"
+    },
+    {
+        "name": "addTransaction",
+        "outputType": "Transaction",
+        "inputType": "Transaction",
+        "method": "post",
+        "placeholder": [{
+            "name": "courseid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/transaction/course/:courseid"
+    },
+    {
+        "name": "addExerciseTransaction",
+        "outputType": "Transaction",
+        "inputType": "Transaction",
+        "method": "post",
+        "placeholder": [{
+            "name": "eid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/transaction/exercise/:eid"
+    }
 ]

@@ -15,7 +15,12 @@
  */
 ?>
 
-INSERT IGNORE INTO Course
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
+INSERT IGNORE INTO `Course<?php echo $profile;?>`
 SET <?php echo $values; ?> ON DUPLICATE KEY UPDATE <?php echo $values; ?>;
 SET @a = <?php if ($in->getId()!==null){echo "'".$in->getId()."';";} else echo "LAST_INSERT_ID();"; ?>
 

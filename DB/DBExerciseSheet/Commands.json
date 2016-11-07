@@ -5,7 +5,7 @@
         "inputType": "ExerciseSheet",
         "method": "PUT",
         "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercisesheet(/exercisesheet)/:esid"
+        "path": "/exercisesheet/exercisesheet/:esid"
     },
     {
         "name": "deleteExerciseSheet",
@@ -13,7 +13,7 @@
         "inputType": "",
         "method": "DELETE",
         "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercisesheet(/exercisesheet)/:esid"
+        "path": "/exercisesheet/exercisesheet/:esid"
     },
     {
         "name": "addExerciseSheet",
@@ -30,7 +30,7 @@
         "inputType": "",
         "method": "GET",
         "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercisesheet(/exercisesheet)/:esid/url"
+        "path": "/exercisesheet/exercisesheet/:esid/url"
     },
     {
         "name": "getCourseSheetURLs",
@@ -56,7 +56,7 @@
         "inputType": "",
         "method": "GET",
         "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercisesheet(/exercisesheet)/:esid(/:exercise)"
+        "path": "/exercisesheet/exercisesheet/:esid(/:exercise)"
     },
     {
         "name": "addPlatform",

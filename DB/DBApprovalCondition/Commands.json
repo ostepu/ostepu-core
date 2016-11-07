@@ -5,7 +5,7 @@
         "inputType": "ApprovalCondition",
         "method": "PUT",
         "placeholder":[{"name":"apid","regex":"%^([0-9_]+)$%"}],
-        "path": "/approvalcondition(/approvalcondition)/:apid"
+        "path": "/approvalcondition/approvalcondition/:apid"
     },
     {
         "name": "deleteApprovalCondition",
@@ -13,7 +13,7 @@
         "inputType": "",
         "method": "DELETE",
         "placeholder":[{"name":"apid","regex":"%^([0-9_]+)$%"}],
-        "path": "/approvalcondition(/approvalcondition)/:apid"
+        "path": "/approvalcondition/approvalcondition/:apid"
     },
     {
         "name": "addApprovalCondition",
@@ -30,7 +30,7 @@
         "inputType": "",
         "method": "GET",
         "placeholder":[{"name":"apid","regex":"%^([0-9_]+)$%"}],
-        "path": "/approvalcondition(/approvalcondition)/:apid"
+        "path": "/approvalcondition/approvalcondition/:apid"
     },
     {
         "name": "getAllApprovalConditions",
@@ -38,7 +38,7 @@
         "outputType": "ApprovalCondition",
         "inputType": "",
         "method": "GET",
-        "path": "/approvalcondition(/approvalcondition)"
+        "path": "/approvalcondition/approvalcondition"
     },
     {
         "name": "getCourseApprovalConditions",

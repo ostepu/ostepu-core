@@ -51,7 +51,7 @@ class DBMarking
      */
     public function editMarking( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/EditMarking.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new Marking()),'Model::isProblem',array(new Marking()));
+        return $this->_component->callSqlTemplate('editMarking',dirname(__FILE__).'/Sql/EditMarking.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new Marking()),'Model::isProblem',array(new Marking()));
     }
 
 
@@ -65,7 +65,7 @@ class DBMarking
      */
     public function deleteMarking( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/DeleteMarking.sql',$params,201,'Model::isCreated',array(new Marking()),'Model::isProblem',array(new Marking()));
+        return $this->_component->callSqlTemplate('deleteMarking',dirname(__FILE__).'/Sql/DeleteMarking.sql',$params,201,'Model::isCreated',array(new Marking()),'Model::isProblem',array(new Marking()));
     }
 
     /**
@@ -78,7 +78,7 @@ class DBMarking
      */
     public function deleteSheetMarkings( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/DeleteSheetMarkings.sql',$params,201,'Model::isCreated',array(new Marking()),'Model::isProblem',array(new Marking()));
+        return $this->_component->callSqlTemplate('deleteSheetMarkings',dirname(__FILE__).'/Sql/DeleteSheetMarkings.sql',$params,201,'Model::isCreated',array(new Marking()),'Model::isProblem',array(new Marking()));
     }
 
     /**
@@ -97,7 +97,7 @@ class DBMarking
             $obj->setId( $input[0]->getInsertId( ) );
             return array("status"=>201,"content"=>$obj);
         };
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/AddMarking.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new Marking()));
+        return $this->_component->callSqlTemplate('addMarking',dirname(__FILE__).'/Sql/AddMarking.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new Marking()));
     }
 
     public function get( $functionName, $linkName, $params=array(), $checkSession = true )
@@ -133,7 +133,7 @@ class DBMarking
      */
     public function deletePlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('deletePlatform',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 
     /**
@@ -144,7 +144,7 @@ class DBMarking
      */
     public function addPlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('addPlatform',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 
     public function getSamplesInfo( $callName, $input, $params = array() )
@@ -170,7 +170,7 @@ class DBMarking
     public function postSamples( $callName, $input, $params = array() )
     {
         set_time_limit(0);
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));
+        return $this->_component->callSqlTemplate('postSamples',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));
     }
 }
 
