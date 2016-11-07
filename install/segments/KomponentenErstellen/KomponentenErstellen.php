@@ -333,7 +333,6 @@ class KomponentenErstellen {
                 }
             }
         }
-        echo $sql;
         $installComponentDefsResult['linksCount'] = count($links);
         $sql .= " SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;COMMIT;";
         Installation::log(array('text' => Installation::Get('generateComponents', 'createInsertLinksQuery', self::$langTemplate, array('sql' => $sql))));
