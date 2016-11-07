@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file Einstellungen.php contains the Einstellungen class
  *
@@ -10,12 +11,11 @@
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
  * @date 2014-2016
  */
-
-include_once ( dirname( __FILE__ ) . '/../../Assistants/Structures.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
 include_once( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
 
-class Einstellungen
-{
+class Einstellungen {
+
     /**
      * @var string[] $konfiguration Die globalen Konfigurationsdaten
      */
@@ -63,18 +63,17 @@ class Einstellungen
      * @param string $name Der Name des Ausgangs, dessen Ziele gesucht ermittelt werden sollen
      * @return link[] Eine Liste der Komponenten an diesem Ausgang
      */
-    public static function getLinks($name, $basePath = null, $confFile = null)
-    {
-        if ( $basePath !== null && $confFile !== null){
-            $conf = CConfig::loadStaticConfig('','',$basePath,$confFile);
-            return CConfig::getLinks($conf->getLinks(),$name);
-        }
-        
-        if (self::$config === null){
-            self::$config=CConfig::loadStaticConfig('','',dirname(__FILE__),'/../component/cinstall_cconfig.json');
+    public static function getLinks($name, $basePath = null, $confFile = null) {
+        if ($basePath !== null && $confFile !== null) {
+            $conf = CConfig::loadStaticConfig('', '', $basePath, $confFile);
+            return CConfig::getLinks($conf->getLinks(), $name);
         }
 
-        return CConfig::getLinks(self::$config->getLinks(),$name);
+        if (self::$config === null) {
+            self::$config = CConfig::loadStaticConfig('', '', dirname(__FILE__), '/../component/cinstall_cconfig.json');
+        }
+
+        return CConfig::getLinks(self::$config->getLinks(), $name);
     }
 
     /**
@@ -82,16 +81,17 @@ class Einstellungen
      *
      * @return string Der Pfad der neuen Konfigurationsdatei
      */
-    public static function NeuenServerAnlegen()
-    {
+    public static function NeuenServerAnlegen() {
         // wenn der config Pfad noch nicht existiert, wird er erzeugt
         Einstellungen::$path = dirname(__FILE__) . '/../config';
         Einstellungen::generatepath(Einstellungen::$path);
 
         // nun wird so lange gesucht, bis ein nicht existierender Pfad gefunden wurde
-        $i=0;
-        while (file_exists(Einstellungen::$path."/unbenannt({$i}).ini")){$i++;}
-        return Einstellungen::$path."/unbenannt({$i}).ini";
+        $i = 0;
+        while (file_exists(Einstellungen::$path . "/unbenannt({$i}).ini")) {
+            $i++;
+        }
+        return Einstellungen::$path . "/unbenannt({$i}).ini";
     }
 
     /**
@@ -100,10 +100,10 @@ class Einstellungen
      * @param string $serverNameOld Der Name der bisherigen Konfiguration
      * @param string $serverNameNew Der neue Name der Konfiguration
      */
-    public static function umbenennenEinstellungen(&$serverNameOld, $serverNameNew)
-    {
+    public static function umbenennenEinstellungen(&$serverNameOld,
+            $serverNameNew) {
         Einstellungen::$path = dirname(__FILE__) . '/../config';
-        rename(Einstellungen::$path.'/'.$serverNameOld.'.ini',Einstellungen::$path.'/'.$serverNameNew.'.ini');
+        rename(Einstellungen::$path . '/' . $serverNameOld . '.ini', Einstellungen::$path . '/' . $serverNameNew . '.ini');
         $serverNameOld = $serverNameNew;
     }
 
@@ -113,8 +113,7 @@ class Einstellungen
      * @param string $serverName Der Name der Konfiguration
      * @param string[][] $data Die Serverdaten
      */
-    public static function ladeEinstellungen($serverName, &$data)
-    {
+    public static function ladeEinstellungen($serverName, &$data) {
         ///$begin = microtime(true);
         $serverHash = md5($serverName);
 
@@ -126,20 +125,20 @@ class Einstellungen
 
         // erzeuge die Liste der Passwörter anhand des masterPasswort für die Verschlüsselung
         $keys = array();
-        if (isset(self::$masterPassword[$serverHash]) && trim(self::$masterPassword[$serverHash]) != ''){
+        if (isset(self::$masterPassword[$serverHash]) && trim(self::$masterPassword[$serverHash]) != '') {
             $keys = self::makeKeys(self::$masterPassword[$serverHash]);
-            $keys = array_reverse($keys,false);
+            $keys = array_reverse($keys, false);
         }
 
-        if (file_exists(Einstellungen::$path.'/'.$serverName.".ini") && is_readable(Einstellungen::$path.'/'.$serverName.".ini")){
-            $temp = file_get_contents(Einstellungen::$path.'/'.$serverName.".ini");
+        if (file_exists(Einstellungen::$path . '/' . $serverName . ".ini") && is_readable(Einstellungen::$path . '/' . $serverName . ".ini")) {
+            $temp = file_get_contents(Einstellungen::$path . '/' . $serverName . ".ini");
 
-            if (isset(self::$masterPassword[$serverHash]) && trim(self::$masterPassword[$serverHash]) != ''){
-                foreach ($keys as $key){
-                    if ($key === '_BASE64'){
-                        $element2 = @base64_decode($temp,true);
+            if (isset(self::$masterPassword[$serverHash]) && trim(self::$masterPassword[$serverHash]) != '') {
+                foreach ($keys as $key) {
+                    if ($key === '_BASE64') {
+                        $element2 = @base64_decode($temp, true);
 
-                        if ($element2===false) {
+                        if ($element2 === false) {
                             // die base64 dekodierung ist fehlgeschlagen
                             Einstellungen::$konfiguration = array();
                             return;
@@ -152,38 +151,39 @@ class Einstellungen
                 }
             }
 
-            $temp = explode("\n",$temp);
-            foreach ($temp as $element){
-                if (trim($element) == '') continue;
+            $temp = explode("\n", $temp);
+            foreach ($temp as $element) {
+                if (trim($element) == '')
+                    continue;
 
                 $pos = strpos($element, '=');
-                if ($pos === false || $pos === 0){
+                if ($pos === false || $pos === 0) {
                     // es wurde kein gültiges '=' gefunden
                     Einstellungen::$konfiguration = array();
                     return;
                 }
-                $value = substr($element,$pos+1);
-                $dat = @parse_ini_string('a='.$value);
-                if ($dat === false){
+                $value = substr($element, $pos + 1);
+                $dat = @parse_ini_string('a=' . $value);
+                if ($dat === false) {
                     // die Daten konnten nicht geparst werden
                     Einstellungen::$konfiguration = array();
                     return;
                 }
                 $dat = trim($dat['a']);
 
-                Einstellungen::$konfiguration[substr($element,0,$pos)] = $dat;
+                Einstellungen::$konfiguration[substr($element, 0, $pos)] = $dat;
             }
         }
 
-        if (count(Einstellungen::$konfiguration) === 0){
+        if (count(Einstellungen::$konfiguration) === 0) {
             Einstellungen::$accessAllowed = true;
-        } elseif (!isset(Einstellungen::$konfiguration['data[SV][hash]']) && count(Einstellungen::$konfiguration)>0){
+        } elseif (!isset(Einstellungen::$konfiguration['data[SV][hash]']) && count(Einstellungen::$konfiguration) > 0) {
             Einstellungen::$accessAllowed = false;
         } else {
             $existingHash = Einstellungen::$konfiguration['data[SV][hash]'];
             unset(Einstellungen::$konfiguration['data[SV][hash]']);
             $hash = self::makeHash(Einstellungen::$konfiguration);
-            if ($existingHash == $hash){
+            if ($existingHash == $hash) {
                 Einstellungen::$accessAllowed = true;
             } else {
                 Einstellungen::$accessAllowed = false;
@@ -198,15 +198,20 @@ class Einstellungen
      *
      * @return string[] Die Standardwerte der Segmente
      */
-    public static function getAllDefaults($data)
-    {
+    public static function getAllDefaults($data) {
         $defaults = array();
-        foreach(Einstellungen::$segments as $segs){
-            if (!is_callable("{$segs}::getDefaults")) continue;
+        foreach (Einstellungen::$segments as $segs) {
+            if (!is_callable("{$segs}::getDefaults")) {
+                continue;
+            }
+
             $def = $segs::getDefaults($data);
-            if (count($def)>0){
-                foreach ($def as $key => $values){
-                    if (!isset($values[0]) || !isset($values[1])) continue;
+            if (count($def) > 0) {
+                foreach ($def as $key => $values) {
+                    if (!isset($values[0]) || !isset($values[1])) {
+                        continue;
+                    }
+
                     $defaults[$values[0]] = $values[1];
                 }
             }
@@ -222,16 +227,26 @@ class Einstellungen
      * @param string $name Der Präfix der Werte, nach denen gesucht werden soll (Bsp. 'Data')
      * @return string[][] Die aufgespaltene Liste
      */
-    public static function extractData($conf, $name)
-    {
+    public static function extractData($conf, $name) {
         $res = array();
-        foreach($conf as $key => $value){
-            if (strpos($key,$name.'[') === false) continue;
-            $key = substr($key,strlen($name));
+        foreach ($conf as $key => $value) {
+
+            if (strpos($key, $name . '[') === false) {
+                continue;
+            }
+
+            $key = substr($key, strlen($name));
             $matches = array();
-            preg_match_all("/\[([\w]+)\]/",$key,$matches);
-            if (!isset($matches[1][0]) || !isset($matches[1][1])) continue;
-            if (!isset($res[$matches[1][0]])) $res[$matches[1][0]] = array();
+            preg_match_all("/\[([\w]+)\]/", $key, $matches);
+
+            if (!isset($matches[1][0]) || !isset($matches[1][1])) {
+                continue;
+            }
+
+            if (!isset($res[$matches[1][0]])) {
+                $res[$matches[1][0]] = array();
+            }
+
             $res[$matches[1][0]][$matches[1][1]] = $value;
         }
         return $res;
@@ -245,30 +260,29 @@ class Einstellungen
      * @param string[][] $data Die Serverdaten
      * @return string[][] Die Konfiguration, null im Fehlerfall
      */
-    public static function ladeEinstellungenDirekt($serverName, $data)
-    {
+    public static function ladeEinstellungenDirekt($serverName, $data) {
         $serverHash = md5($serverName);
         $path = dirname(__FILE__) . '/../config';
         Einstellungen::generatepath($path);
 
         // erzeuge die Liste der Passwörter anhand des masterPasswort für die Verschlüsselung
         $keys = array();
-        if (isset(self::$masterPassword[$serverHash]) && trim(self::$masterPassword[$serverHash]) != ''){
+        if (isset(self::$masterPassword[$serverHash]) && trim(self::$masterPassword[$serverHash]) != '') {
             $keys = self::makeKeys(self::$masterPassword[$serverHash]);
-            $keys = array_reverse($keys,false);
+            $keys = array_reverse($keys, false);
         }
 
         $default = self::getAllDefaults($data);
         $konfiguration = array();
         $data = array();
-        if (file_exists($path.'/'.$serverName.".ini") && is_readable($path.'/'.$serverName.".ini")){
-            $temp = file_get_contents($path.'/'.$serverName.".ini");
-            if (isset(self::$masterPassword[$serverHash]) && trim(self::$masterPassword[$serverHash]) != ''){
-                foreach ($keys as $key){
-                    if ($key === '_BASE64'){
-                        $element2 = @base64_decode($temp,true);
+        if (file_exists($path . '/' . $serverName . ".ini") && is_readable($path . '/' . $serverName . ".ini")) {
+            $temp = file_get_contents($path . '/' . $serverName . ".ini");
+            if (isset(self::$masterPassword[$serverHash]) && trim(self::$masterPassword[$serverHash]) != '') {
+                foreach ($keys as $key) {
+                    if ($key === '_BASE64') {
+                        $element2 = @base64_decode($temp, true);
 
-                        if ($element2===false) {
+                        if ($element2 === false) {
                             // die base64 dekodierung ist fehlgeschlagen
                             return null;
                         }
@@ -280,70 +294,92 @@ class Einstellungen
                 }
             }
 
-            $temp = explode("\n",$temp);
-            foreach ($temp as $element){
-                if (trim($element)=='') continue;
+            $temp = explode("\n", $temp);
+            foreach ($temp as $element) {
+                if (trim($element) == '') {
+                    continue;
+                }
 
                 $pos = strpos($element, '=');
-                if ($pos === false || $pos === 0){
+                if ($pos === false || $pos === 0) {
                     return null;
                 }
 
-                $dat = @parse_ini_string('a='.substr($element,$pos+1));
+                $dat = @parse_ini_string('a=' . substr($element, $pos + 1));
 
-                if ($dat === false){
+                if ($dat === false) {
                     return null;
                 }
+
                 $dat = $dat['a'];
                 $dat = trim($dat);
 
-                $konfiguration[substr($element,0,$pos)] = $dat;
+                $konfiguration[substr($element, 0, $pos)] = $dat;
             }
         }
 
-        if (count($konfiguration) === 0){
+        if (count($konfiguration) === 0) {
             // leer
-        } elseif (!isset($konfiguration['data[SV][hash]']) && count($konfiguration)>0){
+        } elseif (!isset($konfiguration['data[SV][hash]']) && count($konfiguration) > 0) {
             return null;
         } else {
             $existingHash = $konfiguration['data[SV][hash]'];
             unset($konfiguration['data[SV][hash]']);
             $hash = self::makeHash($konfiguration);
-            if ($existingHash == $hash){
+            if ($existingHash == $hash) {
                 // leer
             } else {
                 return null;
             }
         }
 
-        $konfiguration = self::extractData($konfiguration,'data');
-        $default = self::extractData($default,'data');
+        $konfiguration = self::extractData($konfiguration, 'data');
+        $default = self::extractData($default, 'data');
 
         ///////////////////////////
-        if (isset($_POST['update']))
+        if (isset($_POST['update'])) {
             $_POST['action'] = 'update';
+        }
 
-        if (isset($_POST['actionInstall']))
+        if (isset($_POST['actionInstall'])) {
             $_POST['action'] = 'install';
+        }
 
-        if (isset($_POST['actionUpdate']))
+        if (isset($_POST['actionUpdate'])) {
             $_POST['action'] = 'update';
+        }
 
-        if (!isset($konfiguration['PL']['language']))
+        if (!isset($konfiguration['PL']['language'])) {
             $konfiguration['PL']['language'] = 'de';
+        }
 
-        if (!isset($konfiguration['PL']['init']))
+        if (!isset($konfiguration['PL']['init'])) {
             $konfiguration['PL']['init'] = 'DB/CControl';
+        }
 
-        if (isset($konfiguration['PL']['url'])) $konfiguration['PL']['url'] = rtrim($konfiguration['PL']['url'], '/');
-        if (isset($konfiguration['PL']['urlExtern'])) $konfiguration['PL']['urlExtern'] = rtrim($konfiguration['PL']['urlExtern'], '/');
-        if (isset($konfiguration['PL']['temp'])) $konfiguration['PL']['temp'] = rtrim($konfiguration['PL']['temp'], '/');
-        if (isset($konfiguration['PL']['files'])) $konfiguration['PL']['files'] = rtrim($konfiguration['PL']['files'], '/');
-        if (isset($konfiguration['PL']['init'])) $konfiguration['PL']['init'] = rtrim($konfiguration['PL']['init'], '/');
+        if (isset($konfiguration['PL']['url'])) {
+            $konfiguration['PL']['url'] = rtrim($konfiguration['PL']['url'], '/');
+        }
+
+        if (isset($konfiguration['PL']['urlExtern'])) {
+            $konfiguration['PL']['urlExtern'] = rtrim($konfiguration['PL']['urlExtern'], '/');
+        }
+
+        if (isset($konfiguration['PL']['temp'])) {
+            $konfiguration['PL']['temp'] = rtrim($konfiguration['PL']['temp'], '/');
+        }
+
+        if (isset($konfiguration['PL']['files'])) {
+            $konfiguration['PL']['files'] = rtrim($konfiguration['PL']['files'], '/');
+        }
+
+        if (isset($konfiguration['PL']['init'])) {
+            $konfiguration['PL']['init'] = rtrim($konfiguration['PL']['init'], '/');
+        }
         ///////////////////////////
 
-        $konfiguration = array_merge($default, $konfiguration);
-        return $konfiguration;
+        $konfigurationResult = array_merge($default, $konfiguration);
+        return $konfigurationResult;
     }
 
     /**
@@ -352,21 +388,20 @@ class Einstellungen
      * @param string $key Ein Passwort
      * @return string[] Der Ablauf, welcher für den Schlüssel entwurfen wurde
      */
-    public static function makeKeys($key)
-    {
-        for ($i=0;$i<10;$i++){
+    public static function makeKeys($key) {
+        for ($i = 0; $i < 10; $i++) {
             $key = hash('sha512', $key, true);
         }
 
         $keys = array();
         $A = str_split($key, 32);
 
-        for ($i=0;$i<50;$i++){
+        for ($i = 0; $i < 50; $i++) {
             $keys = array_merge($keys, $A);
         }
 
-        $keys = array_merge($keys, array('_BASE64'));
-        return $keys;
+        $keysResult = array_merge($keys, array('_BASE64'));
+        return $keysResult;
     }
 
     /**
@@ -375,11 +410,10 @@ class Einstellungen
      * @param string[] $data Die Eingabedaten
      * @return string Der resultierende Hash
      */
-    public static function makeHash($data)
-    {
+    public static function makeHash($data) {
         $content = '';
-        foreach ($data as $key => $value){
-            $content.=$key.'_'.trim($value);
+        foreach ($data as $key => $value) {
+            $content .= $key . '_' . trim($value);
         }
         return md5($content);
     }
@@ -387,50 +421,45 @@ class Einstellungen
     /**
      * Speichert die aktuelle Konfiguration
      *
-     * @param string $servername Der Servername für den Speicherort
+     * @param string $serverName Der Servername für den Speicherort
      * @param string[][] $data Die Serverdaten
      */
-    public static function speichereEinstellungen($serverName, $data)
-    {
+    public static function speichereEinstellungen($serverName, $data) {
         $serverHash = md5($serverName);
 
-        if (!Einstellungen::$accessAllowed) return;
+        if (!Einstellungen::$accessAllowed) {
+            return;
+        }
 
-        $filename = Einstellungen::$path."/../config/".$serverName.".ini";
+        $filename = Einstellungen::$path . "/../config/" . $serverName . ".ini";
 
         if (!$handle = @fopen($filename, "w")) {
             return;
         }
 
-        // mischt die Einträge der Konfiguration
-        /*$tmp_keys = array_keys(Einstellungen::$konfiguration);
-        $tmp_new = array();
-        shuffle($tmp_keys);
-        foreach($tmp_keys as $key) {
-            $tmp_new[$key] = Einstellungen::$konfiguration[$key];
-        }
-        Einstellungen::$konfiguration = $tmp_new;*/
-
         // hänge den Hash der Daten an
-        if (isset(Einstellungen::$konfiguration['data[SV][hash]'])) unset(Einstellungen::$konfiguration['data[SV][hash]']);
+        if (isset(Einstellungen::$konfiguration['data[SV][hash]'])) {
+            unset(Einstellungen::$konfiguration['data[SV][hash]']);
+        }
+
         Einstellungen::$konfiguration['data[SV][hash]'] = self::makeHash(Einstellungen::$konfiguration);
 
         // erzeuge die Ablaufliste für das Verschlüsseln anhand des masterPasswort für die Verschlüsselung
         $keys = array();
-        if (isset(self::$masterPassword[$serverHash]) && trim(self::$masterPassword[$serverHash]) != ''){
+        if (isset(self::$masterPassword[$serverHash]) && trim(self::$masterPassword[$serverHash]) != '') {
             $keys = self::makeKeys(self::$masterPassword[$serverHash]);
         }
 
         // Daten zusammentragen
         $dat = '';
-        foreach (Einstellungen::$konfiguration as $varName => $value){
-            $write = str_replace(array("\\","\""),array("\\\\","\\\""),$value);
-            $dat .= $varName.'="'.$write."\"\n";
+        foreach (Einstellungen::$konfiguration as $varName => $value) {
+            $write = str_replace(array("\\", "\""), array("\\\\", "\\\""), $value);
+            $dat .= $varName . '="' . $write . "\"\n";
         }
 
-        if (isset(self::$masterPassword[$serverHash]) && trim(self::$masterPassword[$serverHash]) != ''){
-            foreach ($keys as $key){
-                if ($key === '_BASE64'){
+        if (isset(self::$masterPassword[$serverHash]) && trim(self::$masterPassword[$serverHash]) != '') {
+            foreach ($keys as $key) {
+                if ($key === '_BASE64') {
                     $dat = base64_encode($dat);
                 } else {
                     $dat = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $dat, MCRYPT_MODE_ECB);
@@ -439,8 +468,8 @@ class Einstellungen
         }
 
         // ab hier werden die Konfigurationsdaten in die Zieldatei geschrieben
-        if (!fwrite($handle, $dat)){
-           fclose($handle);
+        if (!fwrite($handle, $dat)) {
+            fclose($handle);
             return;
         }
 
@@ -448,29 +477,27 @@ class Einstellungen
     }
 
     /**
-     * Setzt den Wert einer Variablen
+     * Setzt den Wert einer Variablen in den Einstellungen
      *
      * @param string $varName Der Name der Variablen
      * @param mixed $value Der neue Wert
      */
-    public static function Set($varName, $value)
-    {
+    public static function Set($varName, $value) {
         Einstellungen::$konfiguration[$varName] = $value;
     }
 
     /**
-     * Liefert den Wert einer Variablen
+     * Liefert den Wert einer Variablen (aus den Einstellungen)
      *
      * @param string $varName Der Name der Variablen
      * @param mixed $default Der Standardwert, falls die Variable nicht gesetzt oder noch unbekannt ist
      * @return mixed Der Wert der Variablen
      */
-    public static function Get($varName, $default)
-    {
-        if (Einstellungen::$konfiguration !== null && isset(Einstellungen::$konfiguration[$varName])){
+    public static function Get($varName, $default) {
+        if (Einstellungen::$konfiguration !== null && isset(Einstellungen::$konfiguration[$varName])) {
             return Einstellungen::$konfiguration[$varName];
-        } else
-            return $default;
+        }
+        return $default;
     }
 
     /**
@@ -481,12 +508,11 @@ class Einstellungen
      * @param mixed $default Der Standardwert, falls die Variable nicht gesetzt oder noch unbekannt ist
      * @return mixed Der Wert der Variablen
      */
-    public static function GetDirekt($konfiguration, $varName, $default)
-    {
-        if ($konfiguration !== null && isset($konfiguration[$varName])){
+    public static function GetDirekt($konfiguration, $varName, $default) {
+        if ($konfiguration !== null && isset($konfiguration[$varName])) {
             return $konfiguration[$varName];
-        } else
-            return $default;
+        }
+        return $default;
     }
 
     /**
@@ -495,16 +521,16 @@ class Einstellungen
      * @param string $varName Der Variablenname
      * @param mixed $CurrentValue Der aktuelle Wert der Variablen oder null
      */
-    public static function GetValue($varName, &$CurrentValue)
-    {
-        if (isset($CurrentValue)){
+    public static function GetValue($varName, &$CurrentValue) {
+        if (isset($CurrentValue)) {
             Einstellungen::Set($varName, $CurrentValue);
             return;
         }
 
         $val = Einstellungen::Get($varName, null);
-        if ($val !== null)
+        if ($val !== null) {
             $CurrentValue = $val;
+        }
 
         Einstellungen::Set($varName, $CurrentValue);
         return;
@@ -517,23 +543,23 @@ class Einstellungen
      * @param string $varName Der Variablenname
      * @param mixed $CurrentValue Der aktuelle Wert der Variablen oder null
      */
-    public static function GetValueDirekt($konfiguration, $varName, &$CurrentValue)
-    {
-        if (isset($CurrentValue)){
+    public static function GetValueDirekt($konfiguration, $varName,
+            &$CurrentValue) {
+        if (isset($CurrentValue)) {
             return;
         }
 
-        $val = Einstellungen::GetDirekt($konfiguration,$varName, null);
-        if ($val !== null)
+        $val = Einstellungen::GetDirekt($konfiguration, $varName, null);
+        if ($val !== null) {
             $CurrentValue = $val;
+        }
     }
 
     /**
      * Setzt die globalen Konfigurationsdaten auf den Ursprungszustand zurück
      */
-    public static function resetConf()
-    {
-        Einstellungen::$konfiguration=array();
+    public static function resetConf() {
+        Einstellungen::$konfiguration = array();
     }
 
     /**
@@ -542,26 +568,29 @@ class Einstellungen
      * @param string $path The path which should be created.
      * @see http://php.net/manual/de/function.mkdir.php#83265
      */
-    public static function generatepath( $path, $mode = 0755 )
-    {
-        $path = rtrim(preg_replace(array("/\\\\/", "/\/{2,}/"), "/", $path), "/");
-        $e = explode("/", ltrim($path, "/"));
-        if(substr($path, 0, 1) == "/") {
-            $e[0] = "/".$e[0];
+    public static function generatepath($path, $mode = 0755) {
+        $cleanPath = rtrim(preg_replace(array("/\\\\/", "/\/{2,}/"), "/", $path), "/");
+        $e = explode("/", ltrim($cleanPath, "/"));
+        if (substr($cleanPath, 0, 1) == "/") {
+            $e[0] = "/" . $e[0];
         }
         $c = count($e);
         $cp = $e[0];
-        for($i = 1; $i < $c; $i++) {
-            if(!is_dir($cp) && !@mkdir($cp, $mode)) {
+        for ($i = 1; $i < $c; $i++) {
+            if (!is_dir($cp) && !@mkdir($cp, $mode)) {
                 return false;
             }
-            $cp .= "/".$e[$i];
+            $cp .= "/" . $e[$i];
         }
-        return @mkdir($path, $mode);
+        return @mkdir($cleanPath, $mode);
     }
 
-    public static function deleteDir($path)
-    {
+    /**
+     * löscht ein Verzeichnis rekursiv
+     * @param type $path der Startpfad
+     * @return boolean true = erfolgreich, false = sonst
+     */
+    public static function deleteDir($path) {
         // entfernt einen Ordner und zuvor alle enthaltenen Dateien
         if (is_dir($path) === true) {
             $files = array_diff(scandir($path), array('.', '..'));
@@ -578,4 +607,5 @@ class Einstellungen
         }
         return false;
     }
+
 }

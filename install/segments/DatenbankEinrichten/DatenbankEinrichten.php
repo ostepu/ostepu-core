@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file DatenbankEinrichten.php
  *
@@ -10,46 +11,51 @@
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
  * @date 2015-2016
  */
-
 #region DatenbankEinrichten
-class DatenbankEinrichten
-{
-    private static $initialized=false;
+class DatenbankEinrichten {
+
+    private static $initialized = false;
     public static $name = 'initDatabase';
     public static $installed = false;
     public static $page = 1;
     public static $rank = 150;
     public static $enabledShow = true;
-    private static $langTemplate='DatenbankEinrichten';
-
+    private static $langTemplate = 'DatenbankEinrichten';
     public static $onEvents = array();
 
-
-    public static function init($console, &$data, &$fail, &$errno, &$error)
-    {
-        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
-        Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__).'/');
-        Installation::log(array('text'=>Installation::Get('main','languageInstantiated')));
+    /**
+     * initialisiert das Segment
+     * @param type $console
+     * @param string[][] $data die Serverdaten
+     * @param bool $fail wenn ein Fehler auftritt, dann auf true setzen
+     * @param string $errno im Fehlerfall kann hier eine Fehlernummer angegeben werden
+     * @param string $error ein Fehlertext für den Fehlerfall
+     */
+    public static function init($console, &$data, &$fail, &$errno, &$error) {
+        Installation::log(array('text' => Installation::Get('main', 'functionBegin')));
+        Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__) . '/');
+        Installation::log(array('text' => Installation::Get('main', 'languageInstantiated')));
 
         self::$initialized = true;
-        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
+        Installation::log(array('text' => Installation::Get('main', 'functionEnd')));
     }
 
-    public static function show($console, $result, $data)
-    {
-        if (!Einstellungen::$accessAllowed) return;
-            Installation::log(array('text'=>Installation::Get('main','functionBegin')));
-        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
+    public static function show($console, $result, $data) {
+        if (!Einstellungen::$accessAllowed)
+            return;
+        Installation::log(array('text' => Installation::Get('main', 'functionBegin')));
+        Installation::log(array('text' => Installation::Get('main', 'functionEnd')));
         return null;
     }
 
-    public static function install($data, &$fail, &$errno, &$error)
-    {
-        Installation::log(array('text'=>Installation::Get('main','functionBegin')));
-        Installation::log(array('text'=>Installation::Get('main','functionEnd')));
+    public static function install($data, &$fail, &$errno, &$error) {
+        Installation::log(array('text' => Installation::Get('main', 'functionBegin')));
+        Installation::log(array('text' => Installation::Get('main', 'functionEnd')));
         return null;
     }
+
 }
+
 /*if (!$console || !isset($segmentDatenbankEinrichten)){
     if ($selected_menu === 1 && false && isset($segmentDatenbankEinrichten)){ /// ausgeblendet
         $text='';
