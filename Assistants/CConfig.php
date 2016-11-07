@@ -131,6 +131,15 @@ class CConfig
                                     'commands'
                                     )
                               )->via('GET','OPTIONS');
+                              
+            // GET Component
+            $this->_app->map(
+                              '(/:pre)/info/component(/)',
+                              array(
+                                    $this,
+                                    'component'
+                                    )
+                              )->via('GET');
 
             // GET Instruction
             $this->_app->get(
@@ -322,6 +331,29 @@ class CConfig
         }
     }
 
+    public function component( $pre = '', $nativeOnly=false, $returnData=false )
+    {
+        if (file_exists(($this->callPath!=null ? $this->callPath.'/':'').'Component.json')){
+            if (!$returnData)
+                $this->_app->response->setStatus( 200 );
+
+            $component = json_decode(file_get_contents(($this->callPath!=null ? $this->callPath.'/':'').'Component.json'), true);
+
+            if ($returnData){
+                return $component;
+            } else
+                $this->_app->response->setBody( json_encode($component) );
+
+        }else{
+            if ($returnData){
+                return array();
+            } else {
+                $this->_app->response->setStatus( 404 );
+                $this->_app->response->setBody( '' );
+            }
+        }
+    }
+    
     /**
      * returns the value of $_used
      *
