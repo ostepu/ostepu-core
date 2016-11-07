@@ -123,11 +123,11 @@ class Paketverwaltung {
                 if (substr($file, -5) != '.json' || $file == '.' || $file == '..') {
                     continue;
                 }
-                
+
                 if (is_dir(self::getPackagePath($data) . DIRECTORY_SEPARATOR . $file)) {
                     continue;
                 }
-                
+
                 self::$pluginFiles[] = $file;
             }
             closedir($handle);
@@ -163,18 +163,18 @@ class Paketverwaltung {
                 if (substr($file, -5) != '.json' || $file == '.' || $file == '..') {
                     continue;
                 }
-                
+
                 if (is_dir(self::getPackagePath($data) . DIRECTORY_SEPARATOR . $file)) {
                     continue;
                 }
-                
+
                 $dat = file_get_contents(self::getPackagePath($data) . DIRECTORY_SEPARATOR . $file);
                 $dat = json_decode($dat, true);
                 $name = isset($dat['name']) ? $dat['name'] : '???';
                 if (!isset($data['PLUG']['plug_install_' . $name]) || $data['PLUG']['plug_install_' . $name] !== $name) {
                     continue;
                 }
-                
+
                 self::$selectedPluginFiles[] = $file;
             }
             closedir($handle);
@@ -330,7 +330,7 @@ class Paketverwaltung {
                         if (!isset($entry['path'])) {
                             continue;
                         }
-                        
+
                         $virtual = (isset($entry['virtual']) ? $entry['virtual'] : false);
                         if ($virtual) {
                             continue;
@@ -719,7 +719,7 @@ class Paketverwaltung {
                         if (!is_array($exclude)) {
                             $exclude = array($exclude);
                         }
-                        
+
                         foreach ($tempExclude as &$ex) {
                             $ex = str_replace(array("\\", "/"), array(DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR), $ex);
                             $ex = $location . DIRECTORY_SEPARATOR . $ex;
@@ -843,7 +843,7 @@ class Paketverwaltung {
                     if (!isset($dat['name'])) {
                         continue;
                     }
-                    
+
                     self::evaluierePlugin($data, $dat);
                     self::gibPaketDateien($data, $dat, $fileList, null, $componentFiles);
                 }

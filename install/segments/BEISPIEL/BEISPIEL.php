@@ -50,6 +50,7 @@ class BEISPIEL  { // der Name der Klasse muss mit dem Dateinamen uebereinstimmen
     }
 
     public static function show($console, $result, $data) {
+        // das Segment soll nur gezeichnet werden, wenn der Nutzer eingeloggt ist
         if (!Einstellungen::$accessAllowed)
             return;
 

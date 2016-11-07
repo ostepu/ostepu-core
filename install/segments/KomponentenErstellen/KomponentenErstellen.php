@@ -43,27 +43,32 @@ class KomponentenErstellen {
     }
 
     public static function show($console, $result, $data) {
-        if (!Einstellungen::$accessAllowed)
+        // das Segment soll nur gezeichnet werden, wenn der Nutzer eingeloggt ist
+        if (!Einstellungen::$accessAllowed) {
             return;
+        }
 
         Installation::log(array('text' => Installation::Get('main', 'functionBegin')));
         $text = '';
 
-        if (!$console)
+        if (!$console) {
             $text .= Design::erstelleBeschreibung($console, Installation::Get('generateComponents', 'description', self::$langTemplate));
+        }
 
         if (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']] != null) {
             $result = $result[self::$onEvents['install']['name']];
-        } else
+        } else {
             $result = array('content' => null, 'fail' => false, 'errno' => null, 'error' => null);
+        }
 
         $fail = $result['fail'];
         $error = $result['error'];
         $errno = $result['errno'];
         $content = $result['content'];
 
-        if (!$console)
+        if (!$console) {
             $text .= Design::erstelleZeile($console, Installation::Get('generateComponents', 'generateComponents', self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0]), 'h');
+        }
 
         if (self::$installed) {
             if (isset($content['components'])) {
@@ -95,8 +100,9 @@ class KomponentenErstellen {
 
             $componentList = Zugang::Ermitteln('actionInstallComponentDefs', 'KomponentenErstellen::installiereKomponentenDefinitionen', $tempData, $fail, $errno, $error);
 
-            if (isset($componentList['components']))
+            if (isset($componentList['components'])) {
                 $installComponentDefsResult['components'] = array_merge($installComponentDefsResult['components'], $componentList['components']);
+            }
         }
         //var_dump($installComponentDefsResult['components']);
         // Komponenten erzeugen
@@ -107,10 +113,12 @@ class KomponentenErstellen {
         // zunächst die Komponentenliste nach Namen sortieren
         $ComponentListInput = array();
         foreach ($installComponentDefsResult['components'] as $key => $input) {
-            if (!isset($input['name']))
+            if (!isset($input['name'])) {
                 continue;
-            if (!isset($ComponentListInput[$input['name']]))
+            }
+            if (!isset($ComponentListInput[$input['name']])) {
                 $ComponentListInput[$input['name']] = array();
+            }
             $ComponentListInput[$input['name']][$key] = $input;
         }
 
@@ -118,8 +126,9 @@ class KomponentenErstellen {
             $tempList = array();
             foreach ($ComponentListInput as $key2 => $ComNames) {
                 foreach ($ComNames as $key => $input) {
-                    if (!isset($input['name']))
+                    if (!isset($input['name'])) {
                         continue;
+                    }
 
                     if (!isset($input['type']) || $input['type'] == 'normal') {
                         // normale Komponente
@@ -132,41 +141,47 @@ class KomponentenErstellen {
                             $input['dbName'] = $key . '_' . $input['name'];
                             $input['registered'] = '1';
                         }
-                        if (!isset($tempList[$key2]))
+                        if (!isset($tempList[$key2])) {
                             $tempList[$key2] = array();
+                        }
                         $tempList[$key2][] = $input;
                     } elseif (isset($input['type']) && $input['type'] == 'clone') {
                         // Komponente basiert auf einer bestehenden
-                        if (!isset($input['base']))
+                        if (!isset($input['base'])) {
                             continue;
-                        if (!isset($input['baseURI']))
+                        }
+                        if (!isset($input['baseURI'])) {
                             $input['baseURI'] = '';
+                        }
 
-                        if (isset($ComponentListInput[$input['base']]))
+                        if (isset($ComponentListInput[$input['base']])) {
                             foreach ($ComponentListInput[$input['base']] as $key3 => $input2) {
-                                if (!isset($input2['name']))
+                                if (!isset($input2['name'])) {
                                     continue;
+                                }
 
                                 // pruefe, dass die Eintraege nicht doppelt erstellt werden
                                 $found = false;
-                                if (isset($ComponentListInput[$input['name']]))
+                                if (isset($ComponentListInput[$input['name']])) {
                                     foreach ($ComponentListInput[$input['name']] as $input3) {
                                         if ((!isset($input3['type']) || $input3['type'] == 'normal') && $input['name'] == $input3['name'] && "{$input3['urlExtern']}/{$input3['path']}" == "{$input2['urlExtern']}/{$input2['path']}{$input['baseURI']}") {
                                             $found = true;
                                             break;
                                         }
                                     }
+                                }
                                 if ($found) {
                                     continue;
                                 }
 
-                                if (isset($tempList[$input['name']]))
+                                if (isset($tempList[$input['name']])) {
                                     foreach ($tempList[$input['name']] as $input3) {
                                         if ($input['name'] == $input3['name'] && "{$input3['urlExtern']}/{$input3['path']}" == "{$input2['urlExtern']}/{$input2['path']}{$input['baseURI']}") {
                                             $found = true;
                                             break;
                                         }
                                     }
+                                }
                                 if ($found) {
                                     continue;
                                 }
@@ -176,15 +191,18 @@ class KomponentenErstellen {
 
                                 $input2['links'] = array_merge((isset($input2['links']) ? $input2['links'] : array()), (isset($input['links']) ? $input['links'] : array()));
                                 $input2['connector'] = array_merge((isset($input2['connector']) ? $input2['connector'] : array()), (isset($input['connector']) ? $input['connector'] : array()));
-                                if (isset($input['option']))
+                                if (isset($input['option'])) {
                                     $input2['option'] = $input['option'];
+                                }
 
                                 $input2['name'] = $input['name'];
                                 $input2['registered'] = null;
-                                if (!isset($tempList[$key2]))
+                                if (!isset($tempList[$key2])) {
                                     $tempList[$key2] = array();
+                                }
                                 $tempList[$key2][] = $input2;
                             }
+                        }
                     }
                 }
             }
@@ -217,27 +235,32 @@ class KomponentenErstellen {
 
         foreach ($ComponentListInput as $key2 => $ComNames) {
             foreach ($ComNames as $key => $input) {
-                if (isset($input['type']) && $input['type'] != 'normal')
+                if (isset($input['type']) && $input['type'] != 'normal') {
                     continue;
+                }
                 if (isset($input['dbName'])) {
                     $input['link_type'] = 'full';
                     $input['link_availability'] = 'full';
 
                     // prüfe nun alle Verknüpfungen dieser Komponente und erstelle diese
-                    if (isset($input['links']))
+                    if (isset($input['links'])) {
                         foreach ($input['links'] as $link) {
-                            if (!isset($link['target']))
+                            if (!isset($link['target'])) {
                                 $link['target'] = '';
-                            if (!is_array($link['target']))
+                            }
+                            if (!is_array($link['target'])) {
                                 $link['target'] = array($link['target']);
+                            }
 
                             foreach ($link['target'] as $tar) {// $tar -> der Name der Zielkomponente
-                                if (!isset($ComponentListInput[$tar]))
+                                if (!isset($ComponentListInput[$tar])) {
                                     continue;
+                                }
                                 foreach ($ComponentListInput[$tar] as $target) {
                                     // $target -> das Objekt der Zielkomponente
-                                    if (!isset($target['dbName']))
+                                    if (!isset($target['dbName'])) {
                                         continue;
+                                    }
                                     if (!isset($input['link_type']) || $input['link_type'] == 'local' || $input['link_type'] == '') {
                                         if ($input['urlExtern'] == $target['urlExtern']) {
 
@@ -258,23 +281,29 @@ class KomponentenErstellen {
                                 }
                             }
                         }
+                    }
 
                     if (isset($input['connector'])) {
                         foreach ($input['connector'] as $link) {
-                            if (!isset($link['target']))
+                            if (!isset($link['target'])) {
                                 $link['target'] = '';
-                            if (!is_array($link['target']))
+                            }
+                            if (!is_array($link['target'])) {
                                 $link['target'] = array($link['target']);
-                            if (!isset($link['links']))
+                            }
+                            if (!isset($link['links'])) {
                                 $link['links'] = array('a' => null);
+                            }
                             foreach ($link['links'] as $callKey => $call) {
                                 foreach ($link['target'] as $tar) {// $tar -> der Name der Zielkomponente
-                                    if (!isset($ComponentListInput[$tar]))
+                                    if (!isset($ComponentListInput[$tar])) {
                                         continue;
+                                    }
                                     foreach ($ComponentListInput[$tar] as $target) {
                                         // $target -> das Objekt der Zielkomponente
-                                        if (!isset($target['dbName']))
+                                        if (!isset($target['dbName'])) {
                                             continue;
+                                        }
                                         if (!isset($input['link_type']) || $input['link_type'] == 'local' || $input['link_type'] == '') {
                                             if ($input['urlExtern'] == $target['urlExtern']) {
 
@@ -351,22 +380,27 @@ class KomponentenErstellen {
                     continue;
                 }
 
-                if (isset($data['PL']['urlExtern']) && !isset($input['urlExtern']))
+                if (isset($data['PL']['urlExtern']) && !isset($input['urlExtern'])) {
                     $input['urlExtern'] = $data['PL']['urlExtern'];
-                if (isset($data['PL']['url']) && !isset($input['url']))
+                }
+                if (isset($data['PL']['url']) && !isset($input['url'])) {
                     $input['url'] = $data['PL']['url'];
+                }
                 if (!isset($input['path'])) {
                     $input['path'] = substr(dirname($comFile), strlen($mainPath) + 1);
                     $input['path'] = str_replace(array("\\"), array('/'), $input['path']);
                 }
                 $input['def'] = array($input['name'], str_replace("\\", "/", realpath($comFile)));
-                if (isset($data['CO']['co_link_type']))
+                if (isset($data['CO']['co_link_type'])) {
                     $input['link_type'] = $data['CO']['co_link_type'];
-                if (isset($data['CO']['co_link_availability']))
+                }
+                if (isset($data['CO']['co_link_availability'])) {
                     $input['link_availability'] = $data['CO']['co_link_availability'];
+                }
 
-                if (isset($input['files']))
+                if (isset($input['files'])) {
                     unset($input['files']);
+                }
 
                 $res['components'][] = $input;
 

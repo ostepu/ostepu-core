@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Dieses Segment erzeugt eine Update-Schaltfläche in der infoBar am linken Rand des Fensters.
+ * Über diese Schaltfläche kann in den anderen Segmenten das Ereignis "update" ausgelöst werden.
  * @file Aktionsleiste.php
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
@@ -29,7 +31,7 @@ class Aktionsleiste {
      */
     public static function init($console, &$data, &$fail, &$errno, &$error) {
         Installation::log(array('text' => Installation::Get('main', 'functionBegin')));
-        
+
         // hier wird die Sprachdatei geladen
         Language::loadLanguageFile('de', self::$langTemplate, 'json', dirname(__FILE__) . '/');
         Installation::log(array('text' => Installation::Get('main', 'languageInstantiated')));
@@ -42,7 +44,7 @@ class Aktionsleiste {
      */
     public static function showInfoBar(&$data) {
         Installation::log(array('text' => Installation::Get('main', 'functionBegin')));
-        
+
         // die Leiste soll nur gezeichnet werden, wenn der Nutzer eingeloggt ist
         if (Einstellungen::$accessAllowed) {
             // Aktionen

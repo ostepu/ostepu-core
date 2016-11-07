@@ -37,6 +37,7 @@ class MySQLInfo {
     }
 
     public static function show($console, $result, $data) {
+        // das Segment soll nur gezeichnet werden, wenn der Nutzer eingeloggt ist
         if (!Einstellungen::$accessAllowed)
             return;
 

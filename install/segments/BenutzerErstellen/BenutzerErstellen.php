@@ -60,8 +60,10 @@ class BenutzerErstellen {
     }
 
     public static function show($console, $result, $data) {
-        if (!Einstellungen::$accessAllowed)
+        // das Segment soll nur gezeichnet werden, wenn der Nutzer eingeloggt ist
+        if (!Einstellungen::$accessAllowed) {
             return;
+        }
 
         Installation::log(array('text' => Installation::Get('main', 'functionBegin')));
         $text = '';
@@ -77,16 +79,18 @@ class BenutzerErstellen {
 
         if (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']] != null) {
             $result = $result[self::$onEvents['install']['name']];
-        } else
+        } else {
             $result = array('content' => null, 'fail' => false, 'errno' => null, 'error' => null);
+        }
 
         $fail = $result['fail'];
         $error = $result['error'];
         $errno = $result['errno'];
         $content = $result['content'];
 
-        if (self::$installed)
+        if (self::$installed) {
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);
+        }
 
         echo Design::erstelleBlock($console, Installation::Get('createSuperAdmin', 'title', self::$langTemplate), $text);
         Installation::log(array('text' => Installation::Get('main', 'functionEnd')));

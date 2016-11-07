@@ -25,21 +25,25 @@ class GitAktualisierung {
         'install' => array('procedure' => 'install', 'name' => 'installGitUpdates', 'event' => array('actionInstallGitUpdates')));
 
     public static function show($console, $result, $data) {
-        if (!Einstellungen::$accessAllowed)
+        // das Segment soll nur gezeichnet werden, wenn der Nutzer eingeloggt ist
+        if (!Einstellungen::$accessAllowed) {
             return;
+        }
 
         Installation::log(array('text' => Installation::Get('main', 'functionBegin')));
         $text = '';
-        if (!$console)
+        if (!$console) {
             $text .= Design::erstelleBeschreibung($console, Installation::Get('gitUpdate', 'description', self::$langTemplate));
+        }
 
         $collected = array();
         if (isset($result[self::$onEvents['collect']['name']]) && $result[self::$onEvents['collect']['name']] != null) {
             $collected = $result[self::$onEvents['collect']['name']];
         } elseif (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']] != null) {
             $collected = $result[self::$onEvents['install']['name']];
-        } else
+        } else {
             $collected = array('content' => null, 'fail' => false, 'errno' => null, 'error' => null);
+        }
 
         $fail = $collected['fail'];
         $error = $collected['error'];

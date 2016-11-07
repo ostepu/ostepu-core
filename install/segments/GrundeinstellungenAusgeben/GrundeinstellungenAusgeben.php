@@ -56,8 +56,10 @@ class GrundeinstellungenAusgeben {
     }
 
     public static function show($console, $result, $data) {
-        if (!Einstellungen::$accessAllowed)
+        // das Segment soll nur gezeichnet werden, wenn der Nutzer eingeloggt ist
+        if (!Einstellungen::$accessAllowed) {
             return;
+        }
 
         Installation::log(array('text' => Installation::Get('main', 'functionBegin')));
         $text = '';
@@ -73,8 +75,9 @@ class GrundeinstellungenAusgeben {
 
         if (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']] != null) {
             $result = $result[self::$onEvents['install']['name']];
-        } else
+        } else {
             $result = array('content' => null, 'fail' => false, 'errno' => null, 'error' => null);
+        }
 
         $fail = $result['fail'];
         $error = $result['error'];
@@ -86,8 +89,9 @@ class GrundeinstellungenAusgeben {
                 foreach ($content as $component => $dat) {
                     if (!$console) {
                         $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>" . ((isset($dat['status']) && $dat['status'] === 201) ? Installation::Get('main', 'ok') : "<font color='red'>" . Installation::Get('main', 'fail') . " ({$dat['status']})</font>") . "</align></td></tr>";
-                    } else
+                    } else {
                         $text .= "{$component}: " . ((isset($dat['status']) && $dat['status'] === 201) ? Installation::Get('main', 'ok') . "\n" : Installation::Get('main', 'fail') . " ({$dat['status']})\n");
+                    }
                 }
             }
 
@@ -158,7 +162,7 @@ class GrundeinstellungenAusgeben {
                     if (isset($result['status'])) {
                         $errno = $result['status'];
                         $res[$url]['status'] = $result['status'];
-                    };
+                    }
                     ///if (isset($result['content'])) echo $result['content'];
                     Installation::log(array('text' => Installation::Get('database', 'failureInitComponents', self::$langTemplate, array('status' => $res[$url]['status'])), 'logLevel' => LogLevel::ERROR));
                 }

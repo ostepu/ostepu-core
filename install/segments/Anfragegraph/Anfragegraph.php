@@ -89,8 +89,10 @@ class Anfragegraph {
     }
 
     public static function show($console, $result, $data) {
-        if (!Einstellungen::$accessAllowed)
+        // das Segment soll nur gezeichnet werden, wenn der Nutzer eingeloggt ist
+        if (!Einstellungen::$accessAllowed) {
             return;
+        }
 
         Installation::log(array('text' => Installation::Get('main', 'functionBegin')));
 
@@ -148,8 +150,10 @@ class Anfragegraph {
 
         if (isset($handle) && $handle !== false) {
             while (false !== ($file = readdir($handle))) {
-                if ($file == '.' || $file == '..')
+                if ($file == '.' || $file == '..') {
                     continue;
+                }
+
                 $filePath = $location . DIRECTORY_SEPARATOR . $file;
                 if (is_dir($filePath)) {
                     $recordBase[$file] = $filePath;
@@ -257,16 +261,19 @@ class Anfragegraph {
             $elements = scandir($location);
 
             foreach ($elements as $elem) {
-                if ($elem == '.' || $elem == '..')
+                if ($elem == '.' || $elem == '..') {
                     continue;
-                if (!is_dir($location . '/' . $elem))
+                }
+                if (!is_dir($location . '/' . $elem)) {
                     continue;
+                }
 
                 $files = scandir($location . '/' . $elem);
                 $SVG = array();
                 foreach ($files as $file) {
-                    if ($file == '.' || $file == '..')
+                    if ($file == '.' || $file == '..') {
                         continue;
+                    }
 
                     if (substr($file, -4) == '.svg') {
                         $SVG[] = $location . '/' . $elem . '/' . $file;
@@ -342,10 +349,12 @@ class Anfragegraph {
 
                         // ab hier wird der Bereich für die Eingabedaten, des Aufrufs, gebaut
                         $text = '';
-                        if (isset($data['method']))
+                        if (isset($data['method'])) {
                             $text .= Design::erstelleZeileShort(false, 'Methode', 'e', $data['method'], 'v');
-                        if (isset($data['URI']))
+                        }
+                        if (isset($data['URI'])) {
                             $text .= Design::erstelleZeileShort(false, 'Aufruf', 'e', $data['URI'], 'v');
+                        }
                         if (isset($data['input']) && trim($data['input']) != '') {
                             $text .= Design::erstelleZeileShort(false, 'Eingabe', 'e', Design::zeichneEingabebereich(false, 'Daten', $data['input'], 'v'));
                             $text .= Design::erstelleZeileShort(false, 'Größe', 'e', Design::formatBytes(strlen($data['input'])), 'v');
@@ -391,10 +400,12 @@ class Anfragegraph {
 
                         // fügt Eingabe und Ausgabe zu einem Block zusammen
                         $text3 = '';
-                        if (trim($text) != '')
+                        if (trim($text) != '') {
                             $text3 .= Design::erstelleZeileShort(false, $text, 'break');
-                        if (trim($text2) != '')
+                        }
+                        if (trim($text2) != '') {
                             $text3 .= Design::erstelleZeileShort(false, $text2, 'break');
+                        }
 
                         $addLink = '';
                         if (file_exists($mdFile) || file_exists($mdFileResult)) {
@@ -483,7 +494,6 @@ class Anfragegraph {
         $search = array('ä', 'Ä', 'ö', 'Ö', 'ü', 'Ü', 'ß');
         $replace = array('&auml;', '&Auml;', '&ouml;', '&Ouml;', '&uuml;', '&Uuml;', '&szlig;');
         return str_replace($search, $replace, $text);
-        ;
     }
 
     public static function prettyPrint($json) {

@@ -53,8 +53,10 @@ class Komponenten {
     }
 
     public static function show($console, $result, $data) {
-        if (!Einstellungen::$accessAllowed)
+        // das Segment soll nur gezeichnet werden, wenn der Nutzer eingeloggt ist
+        if (!Einstellungen::$accessAllowed) {
             return;
+        }
 
         Installation::log(array('text' => Installation::Get('main', 'functionBegin')));
         $isUpdate = (isset($data['action']) && $data['action'] == 'update') ? true : false;
@@ -69,8 +71,9 @@ class Komponenten {
 
         if (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']] != null) {
             $result = $result[self::$onEvents['install']['name']];
-        } else
+        } else {
             $result = array('content' => null, 'fail' => false, 'errno' => null, 'error' => null);
+        }
 
         $fail = $result['fail'];
         $error = $result['error'];
@@ -88,11 +91,13 @@ class Komponenten {
             $installedLinks = 0;
 
             foreach ($content as $componentName => $component) {
-                if (isset($component['init']))
+                if (isset($component['init'])) {
                     $content[$componentName]['init'] = Component::decodeComponent(json_encode($component['init']));
+                }
 
-                if (isset($component['links']))
+                if (isset($component['links'])) {
                     $content[$componentName]['links'] = Link::decodeLink(json_encode($component['links']));
+                }
 
                 if (isset($component['commands'])) {
                     if (in_array("Slim\\Slim", get_declared_classes())) {
@@ -115,20 +120,24 @@ class Komponenten {
                 $callNames = array();
 
                 $links = array();
-                if (isset($component['links']))
+                if (isset($component['links'])) {
                     $links = $component['links'];
+                }
+
                 foreach ($links as $link) {
                     $linkNames[] = $link->getName();
                     $linkNamesUnique[$link->getName()] = $link->getName();
                 }
 
                 $calls = null;
-                if (isset($component['call']))
+                if (isset($component['call'])) {
                     $calls = $component['call'];
+                }
                 if ($calls !== null) {
                     foreach ($calls as $pos => $callList) {
-                        if (isset($callList['name']))
+                        if (isset($callList['name'])) {
                             $callNames[$callList['name']] = $callList['name'];
+                        }
                     }
                 }
 
@@ -157,14 +166,16 @@ class Komponenten {
                     }
 
                     $links = array();
-                    if (isset($component['links']))
+                    if (isset($component['links'])) {
                         $links = $component['links'];
+                    }
                     $lastLink = null;
 
                     foreach ($links as $link) {
                         $calls = null;
-                        if (isset($component['call']))
+                        if (isset($component['call'])) {
                             $calls = $component['call'];
+                        }
                         $linkFound = false;
                         if ($calls !== null) {
                             foreach ($calls as $pos => $callList) {
@@ -177,15 +188,17 @@ class Komponenten {
 
                         if ($lastLink != $link->getName() && $linkFound) {
                             $calls = null;
-                            if (isset($component['call']))
+                            if (isset($component['call'])) {
                                 $calls = $component['call'];
+                            }
 
                             $notRoutable = false;
                             if ($calls !== null) {
                                 $errorMessage = '';
                                 foreach ($calls as $pos => $callList) {
-                                    if ($link->getName() !== $callList['name'])
+                                    if ($link->getName() !== $callList['name']) {
                                         continue;
+                                    }
                                     if (isset($callList['links']) && $callList['links'] !== null) {
                                         foreach ($callList['links'] as $pos2 => $call) {
                                             if (!isset($content[$link->getTargetName()]['router'])) {
@@ -194,14 +207,18 @@ class Komponenten {
                                                 $errorMessage = Installation::Get('components', 'notRoutable', self::$langTemplate);
                                                 break;
                                             }
-                                            if ($content[$link->getTargetName()]['router'] == null)
+                                            if ($content[$link->getTargetName()]['router'] == null) {
                                                 continue;
-                                            if ($call === null)
+                                            }
+                                            if ($call === null) {
                                                 continue;
-                                            if (!isset($call['method']))
+                                            }
+                                            if (!isset($call['method'])) {
                                                 continue;
-                                            if (!isset($call['path']))
+                                            }
+                                            if (!isset($call['path'])) {
                                                 continue;
+                                            }
 
                                             $routes = count($content[$link->getTargetName()]['router']->getMatchedRoutes(strtoupper($call['method']), $call['path']), true);
                                             if ($routes === 0) {
@@ -240,8 +257,10 @@ class Komponenten {
 
                     // fehlende links
                     $calls = null;
-                    if (isset($component['call']))
+                    if (isset($component['call'])) {
                         $calls = $component['call'];
+                    }
+
                     if ($calls !== null) {
                         foreach ($calls as $pos => $callList) {
                             $found = false;
@@ -263,18 +282,21 @@ class Komponenten {
                 if (isset($component['init']) && isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate) {
                     $max = count($tempTextList);
                     for ($b = 0; $b < $max; $b++) {
-                        if (!isset($tempTextList[$b]))
+                        if (!isset($tempTextList[$b])) {
                             continue;
+                        }
                         $part = $tempTextList[$b];
                         if (is_array($part)) {
                             // eine Zeile mit einer Kante, diese soll eventuell mit anderen zusammegefasst werden
                             for ($i = $b + 1; $i < $max; $i++) {
-                                if (!isset($tempTextList[$i]))
+                                if (!isset($tempTextList[$i])) {
                                     continue;
+                                }
                                 // ermittelt doppelte Zeilen und fasst diese zusammen
                                 $elem = $tempTextList[$i];
-                                if (!is_array($elem))
+                                if (!is_array($elem)) {
                                     break;
+                                }
                                 if ($elem[0] === $part[0] && $elem[1] === $part[1]) {
                                     $part[2] ++;
                                     unset($tempTextList[$i]);
@@ -282,12 +304,14 @@ class Komponenten {
                             }
 
                             for ($i = $b + 1; $i < $max; $i++) {
-                                if (!isset($tempTextList[$i]))
+                                if (!isset($tempTextList[$i])) {
                                     continue;
+                                }
                                 // ermittelt doppelte Ziele in den Zeilen und fasst die Quellen zusammen
                                 $elem = $tempTextList[$i];
-                                if (!is_array($elem))
+                                if (!is_array($elem)) {
                                     break;
+                                }
                                 if ($elem[1] === $part[1] && $elem[2] === 1 && $part[2] === 1) {
                                     $part[0] = array_merge($part[0], $elem[0]);
                                     unset($tempTextList[$i]);
@@ -323,8 +347,9 @@ class Komponenten {
                 $error = Installation::Get('components', 'noCommands', self::$langTemplate);
             }
 
-            if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate)
+            if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate) {
                 $text .= Design::erstelleZeile($console, '', '', '', '', '', '');
+            }
 
             $text .= Design::erstelleZeile($console, Installation::Get('components', 'installedComponents', self::$langTemplate), 'e', '', 'v', $installedComponents, 'v');
             $text .= Design::erstelleZeile($console, Installation::Get('components', 'installedLinks', self::$langTemplate), 'e', '', 'v', $installedLinks, 'v');
@@ -356,8 +381,9 @@ class Komponenten {
             $results = Installation::orderBy(json_decode($result['content'], true), 'name', SORT_ASC);
             $results = Component::decodeComponent(json_encode($results));
 
-            if (!is_array($results))
+            if (!is_array($results)) {
                 $results = array($results);
+            }
 
             if (count($results) == 0) {
                 $fail = true;
@@ -376,8 +402,9 @@ class Komponenten {
 
             if (isset($result4['content']) && isset($result4['status']) && $result4['status'] === 200) {
                 $definitions = Component::decodeComponent($result4['content']);
-                if (!is_array($definitions))
+                if (!is_array($definitions)) {
                     $definitions = array($definitions);
+                }
 
                 if (count($definitions) == 0) {
                     $fail = true;
@@ -427,8 +454,9 @@ class Komponenten {
                             $links = $definition->getLinks();
                             $links = Installation::orderBy(json_decode(Link::encodeLink($links), true), 'name', SORT_ASC);
                             $links = Link::decodeLink(json_encode($links));
-                            if (!is_array($links))
+                            if (!is_array($links)) {
                                 $links = array($links);
+                            }
 
                             $components[$definition->getName()]['links'] = $links;
 

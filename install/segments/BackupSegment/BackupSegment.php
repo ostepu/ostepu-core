@@ -84,8 +84,10 @@ class BackupSegment {
     }
 
     public static function show($console, $result, $data) {
-        if (!Einstellungen::$accessAllowed)
+        // das Segment soll nur gezeichnet werden, wenn der Nutzer eingeloggt ist
+        if (!Einstellungen::$accessAllowed) {
             return;
+        }
 
         Installation::log(array('text' => Installation::Get('main', 'functionBegin')));
         $text = '';
@@ -101,18 +103,24 @@ class BackupSegment {
         $createBackup = false;
         if (isset($result[self::$onEvents['createImage']['name']])) {
             $content = $result[self::$onEvents['createImage']['name']]['content'];
-            if (!isset($content['databaseOutput']))
+            if (!isset($content['databaseOutput'])) {
                 $content['databaseOutput'] = '';
-            if (!isset($content['databaseOutputStatus']))
+            }
+            if (!isset($content['databaseOutputStatus'])) {
                 $content['databaseOutputStatus'] = 1;
-            if (!isset($content['databaseOutputSize']))
+            }
+            if (!isset($content['databaseOutputSize'])) {
                 $content['databaseOutputSize'] = 0;
-            if (!isset($content['filesOutputSize']))
+            }
+            if (!isset($content['filesOutputSize'])) {
                 $content['filesOutputSize'] = 0;
-            if (!isset($content['filesOutputAmount']))
+            }
+            if (!isset($content['filesOutputAmount'])) {
                 $content['filesOutputAmount'] = 0;
-            if (!isset($content['file']))
+            }
+            if (!isset($content['file'])) {
                 $content['file'] = '???';
+            }
 
             $createBackup = true;
             if (!empty($content['output'])) {

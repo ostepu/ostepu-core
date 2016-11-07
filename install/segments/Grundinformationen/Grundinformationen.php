@@ -77,8 +77,10 @@ class Grundinformationen {
     }
 
     public static function show($console, $result, $data) {
-        if (!Einstellungen::$accessAllowed)
+        // das Segment soll nur gezeichnet werden, wenn der Nutzer eingeloggt ist
+        if (!Einstellungen::$accessAllowed) {
             return;
+        }
 
         Installation::log(array('text' => Installation::Get('main', 'functionBegin')));
         $text = '';
@@ -108,12 +110,6 @@ class Grundinformationen {
         }
 
         echo Design::erstelleBlock($console, Installation::Get('general_informations', 'title', self::$langTemplate), $text);
-        Installation::log(array('text' => Installation::Get('main', 'functionEnd')));
-        return null;
-    }
-
-    public static function install($data, &$fail, &$errno, &$error) {
-        Installation::log(array('text' => Installation::Get('main', 'functionBegin')));
         Installation::log(array('text' => Installation::Get('main', 'functionEnd')));
         return null;
     }

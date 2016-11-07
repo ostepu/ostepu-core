@@ -105,41 +105,41 @@ class PlattformEinrichten {
 
             $multiRequestHandle = new Request_MultiRequest();
             $fullList = array();
-            
+
             $list = Einstellungen::getLinks('postPlatformSetupUser');
             $fullList = array_merge($fullList, $list);
             $platform = Installation::PlattformZusammenstellen($data, 'Setup');
-            for ($i=0;$i<count($list);$i++){
+            for ($i = 0; $i < count($list); $i++) {
                 // inits all components
-                Installation::log(array('text'=>Installation::Get('platform','createInitQuery',self::$langTemplate,array('url'=>$list[$i]->getAddress(). '/platform'))));
-                $handler = Request_CreateRequest::createPost($list[$i]->getAddress(). '/platform',array(),Platform::encodePlatform($platform));
+                Installation::log(array('text' => Installation::Get('platform', 'createInitQuery', self::$langTemplate, array('url' => $list[$i]->getAddress() . '/platform'))));
+                $handler = Request_CreateRequest::createPost($list[$i]->getAddress() . '/platform', array(), Platform::encodePlatform($platform));
                 $multiRequestHandle->addRequest($handler);
             }
-            
+
             $list = Einstellungen::getLinks('postPlatformWriteUser');
             $fullList = array_merge($fullList, $list);
             $platform = Installation::PlattformZusammenstellen($data, 'Write');
-            for ($i=0;$i<count($list);$i++){
+            for ($i = 0; $i < count($list); $i++) {
                 // inits all components
-                Installation::log(array('text'=>Installation::Get('platform','createInitQuery',self::$langTemplate,array('url'=>$list[$i]->getAddress(). '/platform'))));
-                $handler = Request_CreateRequest::createPost($list[$i]->getAddress(). '/platform',array(),Platform::encodePlatform($platform));
+                Installation::log(array('text' => Installation::Get('platform', 'createInitQuery', self::$langTemplate, array('url' => $list[$i]->getAddress() . '/platform'))));
+                $handler = Request_CreateRequest::createPost($list[$i]->getAddress() . '/platform', array(), Platform::encodePlatform($platform));
                 $multiRequestHandle->addRequest($handler);
             }
-            
+
             $list = Einstellungen::getLinks('postPlatformReadUser');
             $fullList = array_merge($fullList, $list);
             $platform = Installation::PlattformZusammenstellen($data, 'Read');
-            for ($i=0;$i<count($list);$i++){
+            for ($i = 0; $i < count($list); $i++) {
                 // inits all components
-                Installation::log(array('text'=>Installation::Get('platform','createInitQuery',self::$langTemplate,array('url'=>$list[$i]->getAddress(). '/platform'))));
-                $handler = Request_CreateRequest::createPost($list[$i]->getAddress(). '/platform',array(),Platform::encodePlatform($platform));
+                Installation::log(array('text' => Installation::Get('platform', 'createInitQuery', self::$langTemplate, array('url' => $list[$i]->getAddress() . '/platform'))));
+                $handler = Request_CreateRequest::createPost($list[$i]->getAddress() . '/platform', array(), Platform::encodePlatform($platform));
                 $multiRequestHandle->addRequest($handler);
             }
 
             $list = Einstellungen::getLinks('postPlatform');
             $fullList = array_merge($fullList, $list);
             $platform = Installation::PlattformZusammenstellen($data);
-            for ($i=0;$i<count($list);$i++){
+            for ($i = 0; $i < count($list); $i++) {
                 // inits all components
                 Installation::log(array('text' => Installation::Get('platform', 'createInitQuery', self::$langTemplate, array('url' => $list[$i]->getAddress() . '/platform'))));
                 $handler = Request_CreateRequest::createPost($list[$i]->getAddress() . '/platform', array(), Platform::encodePlatform($platform));
@@ -149,14 +149,14 @@ class PlattformEinrichten {
             $answer = $multiRequestHandle->run();
 
 
-            for ($i=0;$i<count($fullList);$i++){
-                Installation::log(array('text'=>Installation::Get('platform','initComponent',self::$langTemplate,array('component'=>$fullList[$i]->getTargetName()))));
+            for ($i = 0; $i < count($fullList); $i++) {
+                Installation::log(array('text' => Installation::Get('platform', 'initComponent', self::$langTemplate, array('component' => $fullList[$i]->getTargetName()))));
                 $url = $fullList[$i]->getTargetName();
                 $result = $answer[$i];
                 $res[$url] = array();
                 if (isset($result['content']) && isset($result['status']) && $result['status'] === 201) {
                     $res[$url]['status'] = 201;
-                    Installation::log(array('text'=>Installation::Get('platform','initComponentSuccess',self::$langTemplate,array('component'=>$fullList[$i]->getTargetName()))));
+                    Installation::log(array('text' => Installation::Get('platform', 'initComponentSuccess', self::$langTemplate, array('component' => $fullList[$i]->getTargetName()))));
                 } else {
                     $res[$url]['status'] = 409;
                     $fail = true;
@@ -169,7 +169,7 @@ class PlattformEinrichten {
                     if (isset($res[$url]['content'])) {
                         $content = $res[$url]['content'];
                     }
-                    Installation::log(array('text'=>Installation::Get('platform','initComponentError',self::$langTemplate,array('component'=>$fullList[$i]->getTargetName(),'url'=>json_encode($res[$url]),'content'=>json_encode($content))), 'logLevel'=>LogLevel::ERROR));
+                    Installation::log(array('text' => Installation::Get('platform', 'initComponentError', self::$langTemplate, array('component' => $fullList[$i]->getTargetName(), 'url' => json_encode($res[$url]), 'content' => json_encode($content))), 'logLevel' => LogLevel::ERROR));
                 }
             }
         }
