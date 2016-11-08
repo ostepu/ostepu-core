@@ -775,7 +775,7 @@ class CControl
 
                 // prüfen, welche Komponente auf diesem Server ist
                 // es werden nur "lokale" Komponenten initialisiert
-                if (strpos($object->getAddress().'/', $data['PL']['urlExtern'].'/')===false) continue;
+                //if (strpos($object->getAddress().'/', $data['PL']['urlExtern'].'/')===false) continue;
 
                 $URL = $object->getAddress();//$data['PL']['url'].substr($object->getAddress(),strlen($data['PL']['urlExtern']));
                 $result = Request_CreateRequest::createPost(
