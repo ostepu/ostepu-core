@@ -903,6 +903,10 @@ class LGetSite
             $group['exercises'] = $exercises;
         }
 
+        // kehrt die Korrekturen um, damit bei der Zuordnung zu den Einsendungen auch wirklich
+        // die letzte Korrektur gewählt wird
+        $markings = array_reverse($markings);
+        
         foreach ($markings as $key => $marking) {
             $markings[$key]['submissionId'] = $markings[$key]['submission']['id'];
         }
