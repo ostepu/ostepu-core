@@ -230,6 +230,10 @@ class LTutor
         //Get zip
         $this->app->get('/'.$this->getPrefix().'/user/:userid/exercisesheet/:sheetid(/status/:status)(/)',
                 array($this, 'getZip'));
+                
+        //Get zip
+        $this->app->get('/'.$this->getPrefix().'/user/:userid/exercisesheet/:sheetid(/status/:status)(/withnames)(/)',
+                array($this, 'getZipWithNames'));
 
         //Post zip
         $this->app->post('/'.$this->getPrefix().'/archive/user/:userid/exercisesheet/:sheetid(/)',
@@ -1019,8 +1023,13 @@ class LTutor
              return array('status'=>409,'content'=>'');
 
     }
+    
+    public function getZipWithNames($userid, $sheetid, $status=null)
+    {
+        $this->getZip($userid, $sheetid, $status, true);
+    }
 
-    public function getZip($userid, $sheetid, $status=null)
+    public function getZip($userid, $sheetid, $status=null, $withnames = false)
     {
         if (trim($status) == ''){
             $status = null;
@@ -1054,7 +1063,7 @@ class LTutor
         
         // TODO: was ist, wenn mehrere Korrekturen zu einer Aufgabe zugewiesen wurden?
 
-        $answer = $this->generateTutorArchive($userid, $sheetid, $markings);
+        $answer = $this->generateTutorArchive($userid, $sheetid, $markings, $withnames);
         $this->app->response->setStatus($answer['status']);
         $this->app->response->setBody($answer['content']);
     }
