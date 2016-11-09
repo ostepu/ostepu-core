@@ -196,7 +196,7 @@ class DBQuery2
         if ( $query_result['errno'] != 0 ){
             if ( isset($query_result['errno']) && $query_result['errno'] != 0 ){
                 Logger::Log(
-                            'GET queryResult failed errno: ' . $query_result['errno'] . ' error: ' . $query_result['error'],
+                            'GET queryResult failed errno: ' . $query_result['errno'] . (isset($query_result['error']) ? ' error: ' . $query_result['error'] : ''),
                             LogLevel::ERROR
                             );
                 // der Fehler wird noch nicht zurückgegeben
