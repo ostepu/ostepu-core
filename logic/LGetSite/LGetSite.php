@@ -903,6 +903,10 @@ class LGetSite
             $group['exercises'] = $exercises;
         }
 
+        // kehrt die Korrekturen um, damit bei der Zuordnung zu den Einsendungen auch wirklich
+        // die letzte Korrektur gewählt wird
+        $markings = array_reverse($markings);
+        
         foreach ($markings as $key => $marking) {
             $markings[$key]['submissionId'] = $markings[$key]['submission']['id'];
         }
@@ -1096,18 +1100,28 @@ class LGetSite
             $URL = $this->_getSubmission->getAddress().'/submission/group/user/'.$uploaduserid.'/exercisesheet/'.$sheetid;
             $answer = Request::custom('GET', $URL, array(), '');
             $answer = json_decode($answer['content'], true);
+            
             $URL = $this->_getMarking->getAddress().'/marking/exercisesheet/'.$sheetid.'/user/'.$uploaduserid;
             $answer2 = Request::custom('GET', $URL, array(), '');
             $answer2 = json_decode($answer2['content'], true);
+            
+            // kehrt die Korrekturen um, damit bei der Zuordnung zu den Einsendungen auch wirklich
+            // die letzte Korrektur gewählt wird
+            $answer2 = array_reverse($answer2);
 
             if(!empty($answer)) {
+                // er geht nun alle Einsendungen durch und versucht ihnen eine Korrektur zuzuordnen
                 foreach ($answer as $submission){
                     if (isset($submission['exerciseId'])){
                         if (!empty($answer2)){
+                            
+                            // gehe alle Korrektureinträge durch und suche den letzten
                             foreach ($answer2 as $key => $marking){
                                 if (isset($marking['submission']['id']) && $marking['submission']['id'] == $submission['id']){
                                     unset($marking['submission']);
                                     $submission['marking'] = $marking;
+                                    
+                                    // der Korrektureintrag kann aus der Liste entfernt werden, er wurde bereits zugeordnet
                                     unset($answer2[$key]);
                                     break;
                                 }

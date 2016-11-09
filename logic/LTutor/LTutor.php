@@ -477,6 +477,10 @@ class LTutor
            /* $ExerciseData = array();
             $ExerciseData['userId'] = $userid;
             $ExerciseData['markings'] = array();*/
+            
+            // die Aufgaben müssen entsprechend sortiert sein, sonst werden die Namen falsch erzeugt,
+            // falls eine Aufgabe später hinzugefügt wurde
+            $exercises = LArraySorter::orderBy($exercises, 'link', SORT_ASC, 'linkName', SORT_ASC);
 
             $count=null;
             foreach ($exercises as $key => $exercise){
@@ -639,6 +643,11 @@ class LTutor
 
         $courseid=null;
         $count=null;
+        
+        // die Aufgaben müssen entsprechend sortiert sein, sonst werden die Namen falsch erzeugt,
+        // falls eine Aufgabe später hinzugefügt wurde
+        $exercises = LArraySorter::orderBy($exercises, 'link', SORT_ASC, 'linkName', SORT_ASC);
+        
         foreach ($exercises as $key => $exercise){
             if ($courseid===null){
                 $courseid = $exercise['courseId'];
@@ -1013,6 +1022,10 @@ class LTutor
 
     public function getZip($userid, $sheetid, $status=null)
     {
+        if (trim($status) == ''){
+            $status = null;
+        }
+        
         $multiRequestHandle = new Request_MultiRequest();
         $filesList=array();
 
@@ -1038,6 +1051,8 @@ class LTutor
 
         // sortiere die Korrekturen innerhalb dieser Liste
         $markings = LArraySorter::orderby($markings, 'id', SORT_ASC);
+        
+        // TODO: was ist, wenn mehrere Korrekturen zu einer Aufgabe zugewiesen wurden?
 
         $answer = $this->generateTutorArchive($userid, $sheetid, $markings);
         $this->app->response->setStatus($answer['status']);

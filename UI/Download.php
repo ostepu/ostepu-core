@@ -130,6 +130,10 @@ if (isset($_GET['downloadMarkings'])) {
     $count = 0;
     $namesOfExercises = array();
     $attachments = array();
+    
+    // die Aufgaben müssen entsprechend sortiert sein, sonst werden die Namen falsch erzeugt,
+    // falls eine Aufgabe später hinzugefügt wurde
+    $exercises = LArraySorter::orderBy($exercises, 'link', SORT_ASC, 'linkName', SORT_ASC);
 
     $count=null;
     foreach ($exercises as $key => $exercise){
