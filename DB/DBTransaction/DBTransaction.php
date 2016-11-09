@@ -97,20 +97,18 @@ class DBTransaction
         $params['random'] = str_replace('-','',$uuid->get());
         $input->setTransactionId(null);
 
-        $positive = function($input) {
+        $positive = function($input, $random) {
             // sets the new auto-increment id
-            $id = 0;
-            $queryResult = $input[count($input)-1];
-            $resp =$queryResult->getResponse();
-            if (isset($resp[0]['@a']))
-                $id = $resp[0]['@a'];
+           
+           $course = Course::ExtractCourse($input[count($input)-1]->getResponse(),true);
 
             // sets the new auto-increment id
-            $obj = new Transaction( );
-            $obj->setTransactionId( ($input[0]->getInsertId( )==0 ? $id : $input[0]->getInsertId( )) );
+            $obj = new Transaction( );                
+            $obj->setTransactionId( $course->getId() . '_' . $input[count($input)-2]->getInsertId( ) . '_' . $random );
+
             return array("status"=>201,"content"=>$obj);
         };
-        return $this->_component->callSqlTemplate('addSheetTransaction',dirname(__FILE__).'/Sql/AddSheetTransaction.sql',array_merge($params,array( 'in' => $input)),201,$positive,array(),'Model::isProblem',array(new Transaction()),false);
+        return $this->_component->callSqlTemplate('addSheetTransaction',dirname(__FILE__).'/Sql/AddSheetTransaction.sql',array_merge($params,array( 'in' => $input)),201,$positive,array('random'=>$params['random']),'Model::isProblem',array(new Transaction()),false);
     }
 
    public function addExerciseTransaction( $callName, $input, $params = array())
@@ -121,20 +119,18 @@ class DBTransaction
         $params['random'] = str_replace('-','',$uuid->get());
         $input->setTransactionId(null);
 
-        $positive = function($input) {
+        $positive = function($input, $random) {
             // sets the new auto-increment id
-            $id = 0;
-            $queryResult = $input[count($input)-1];
-            $resp =$queryResult->getResponse();
-            if (isset($resp[0]['@a']))
-                $id = $resp[0]['@a'];
+           
+           $course = Course::ExtractCourse($input[count($input)-1]->getResponse(),true);
 
             // sets the new auto-increment id
-            $obj = new Transaction( );
-            $obj->setTransactionId( ($input[0]->getInsertId( )==0 ? $id : $input[0]->getInsertId( )) );
+            $obj = new Transaction( );                
+            $obj->setTransactionId( $course->getId() . '_' . $input[count($input)-2]->getInsertId( ) . '_' . $random );
+
             return array("status"=>201,"content"=>$obj);
         };
-        return $this->_component->callSqlTemplate('addExerciseTransaction',dirname(__FILE__).'/Sql/AddExerciseTransaction.sql',array_merge($params,array( 'in' => $input)),201,$positive,array(),'Model::isProblem',array(new Transaction()),false);
+        return $this->_component->callSqlTemplate('addExerciseTransaction',dirname(__FILE__).'/Sql/AddExerciseTransaction.sql',array_merge($params,array( 'in' => $input)),201,$positive,array('random'=>$params['random']),'Model::isProblem',array(new Transaction()),false);
     }
 
     public function get( $functionName, $linkName, $params=array(), $checkSession = true )
