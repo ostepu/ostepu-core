@@ -288,6 +288,15 @@ if (isset($_GET['downloadCSV'])) {
     $URI = $logicURI . '/tutor/archive/user/' . $uid . '/exercisesheet/' . $sid;
     if (Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUserData)){
         $URI = $logicURI . '/tutor/archive/user/' . $uid . '/exercisesheet/' . $sid.'/withnames';
+    } else
+    {
+        $obj = Course::decodeCourse(Course::encodeCourse($globalUserData['courses'][0]['course']));
+        if (Course::containsSetting($obj,'InsertStudentNamesIntoTutorArchives') !== null){
+            if (Course::containsSetting($obj,'InsertStudentNamesIntoTutorArchives') == 1){
+                // auch Tutoren sollen die Studentendaten bekommen
+                $URI = $logicURI . '/tutor/archive/user/' . $uid . '/exercisesheet/' . $sid.'/withnames';
+            }
+        }
     }
     $csvFile = http_post_data($URI, Marking::encodeMarking($markings), true);
     echo $csvFile;
