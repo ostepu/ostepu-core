@@ -310,8 +310,8 @@ class LGetSite
         $response['tutorAssignments']['unkown'] = array('tutor' => json_decode(User::encodeUser(User::createUser(null,'','','','',null,null,null,null,null,null)),true), 'submissions' => array());
 
         // assign submissions for the markings to the right tutor
-        $computedSubmissions = array();
-        $reversedMarkings = array_reverse($markings);
+        $computedSubmissions = array();        
+        $reversedMarkings = LArraySorter::orderby($markings, 'id', SORT_DESC);
         unset($markings);
         foreach ($reversedMarkings as $marking ) {
 
@@ -905,7 +905,7 @@ class LGetSite
 
         // kehrt die Korrekturen um, damit bei der Zuordnung zu den Einsendungen auch wirklich
         // die letzte Korrektur gewählt wird
-        $markings = array_reverse($markings);
+        $markings = LArraySorter::orderby($markings, 'id', SORT_DESC);
         
         foreach ($markings as $key => $marking) {
             $markings[$key]['submissionId'] = $markings[$key]['submission']['id'];
@@ -1107,7 +1107,7 @@ class LGetSite
             
             // kehrt die Korrekturen um, damit bei der Zuordnung zu den Einsendungen auch wirklich
             // die letzte Korrektur gewählt wird
-            $answer2 = array_reverse($answer2);
+            $answer2 = LArraySorter::orderby($answer2, 'id', SORT_DESC);
 
             if(!empty($answer)) {
                 // er geht nun alle Einsendungen durch und versucht ihnen eine Korrektur zuzuordnen
@@ -1363,7 +1363,7 @@ class LGetSite
         unset($selectedSubs);
 
         $computedSubmissions = array();
-        $reversedMarkings = array_reverse($markings);
+        $reversedMarkings = LArraySorter::orderby($markings, 'id', SORT_DESC);
         unset($markings);
         foreach ($reversedMarkings as $marking){
             if (isset($marking['submission']['selectedForGroup']) && $marking['submission']['selectedForGroup']){
