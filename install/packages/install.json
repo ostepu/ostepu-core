@@ -1,7 +1,7 @@
 {
     "name": "INSTALL",
-    "version": "0.5.0",
-    "versionDate": "30.09.2016",
+    "version": "0.6.0",
+    "versionDate": "08.11.2016",
     "description":{"de":"Hier sind die Dateien des Installationsassistenten enthalten."},
     "descUrl":"https://github.com/ostepu/ostepu-core",
     "requirements": [{
