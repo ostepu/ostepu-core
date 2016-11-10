@@ -364,6 +364,10 @@ class Komponenten {
 
     public static function install($data, &$fail, &$errno, &$error) {
         Installation::log(array('text' => Installation::Get('main', 'functionBegin')));
+        
+        // er soll so lange rechnen können, wie er benötigt (Achtung!!!)
+        set_time_limit(0);
+        
         $fail = false;
         $url = $data['PL']['init'];
         $components = array();
