@@ -125,9 +125,8 @@ class SyntaxPruefen {
             $componentCount = 0;
 
             $fileList = array();
-            $componentFiles = array();
-            Paketverwaltung::gibPaketDateien($data, $dat, $fileList, null, $componentFiles);
-            unset($componentFiles);
+            $nullArray = null;
+            Paketverwaltung::gibPaketDateien($data, $dat, $fileList, null, $nullArray);
             $res['plugins'][$plug]['filesAmount'] = count($fileList);
 
             foreach ($fileList as $f) {

@@ -26,7 +26,7 @@ class Paketverwaltung {
         'check' => array(
             'name' => 'checkPlugins',
             'event' => array('page'),
-            'procedure' => 'installCheckPackages'
+            'procedure' => 'getPackageContents'
         ),
         'install' => array(
             'name' => 'installPlugins',
@@ -58,10 +58,10 @@ class Paketverwaltung {
         $res = array();
         $pluginFiles = self::getPackageDefinitions($data);
         foreach ($pluginFiles as $plug) {
-            $filePath = self::getPackagePath($data) . DIRECTORY_SEPARATOR . $plug;
+            $filePath = $plug;
             if (is_readable($filePath)) {
-                $input = file_get_contents($filePath);
-                $input = json_decode($input, true);
+                $input = @file_get_contents($filePath);
+                $input = @json_decode($input, true);
                 if ($input == null) {
                     // Fehler beim dekodieren
                 } else {
@@ -72,6 +72,7 @@ class Paketverwaltung {
                 }
             }
         }
+        
         $res['details'] = array('data[PLUG][details]', null);
         return $res;
     }
@@ -103,12 +104,19 @@ class Paketverwaltung {
 
     private static $pluginFiles = null;
 
+    /**
+     * ermittelt alle existierenden Paketdateien,
+     * auch solche, welche nicht ausgewählt sind
+     * @param string[][] $data die Serveraden
+     * @return string[] die Paketdateien
+     */
     public static function getPackageDefinitions($data) {
         if (self::$pluginFiles !== null) {
             return self::$pluginFiles;
         }
 
-        self::$pluginFiles = array();
+        self::$pluginFiles = Installation::collect('getPackageDefinitions',$data, array(__CLASS__));
+        
         try {
             $handle = opendir(self::getPackagePath($data));
         } catch (Exception $e) {
@@ -128,7 +136,7 @@ class Paketverwaltung {
                     continue;
                 }
 
-                self::$pluginFiles[] = $file;
+                self::$pluginFiles[] = self::getPackagePath($data) . DIRECTORY_SEPARATOR . $file;
             }
             closedir($handle);
         }
@@ -143,48 +151,28 @@ class Paketverwaltung {
 
     private static $selectedPluginFiles = null;
 
+    /**
+     * ermittelt alle Paketdateien (aber nur die ausgewählten)
+     * @param string[][] $data die Serverdaten
+     * @return string[] die Paketdateien
+     */
     public static function getSelectedPackageDefinitions($data) {
         if (self::$selectedPluginFiles !== null) {
             return self::$selectedPluginFiles;
         }
 
         self::$selectedPluginFiles = array();
-        try {
-            $handle = opendir(self::getPackagePath($data));
-        } catch (Exception $e) {
-            // der Ordner konnte nicht zugegriffen werden
-            Installation::log(array('text' => self::getPackagePath($data) . ' existiert nicht oder es fehlt die Zugriffsberechtigung.', 'logLevel' => LogLevel::ERROR));
-            Installer::$messages[] = array('text' => self::getPackagePath($data) . ' existiert nicht oder es fehlt die Zugriffsberechtigung. Möglicherweise wurde der lokale Pfad nicht korrekt angegeben.', 'type' => 'error');
-            return self::$selectedPluginFiles;
-        }
-
-        if ($handle !== false) {
-            while (false !== ($file = readdir($handle))) {
-                if (substr($file, -5) != '.json' || $file == '.' || $file == '..') {
-                    continue;
-                }
-
-                if (is_dir(self::getPackagePath($data) . DIRECTORY_SEPARATOR . $file)) {
-                    continue;
-                }
-
-                $dat = file_get_contents(self::getPackagePath($data) . DIRECTORY_SEPARATOR . $file);
+        $plugins = self::getPackageDefinitions($data);
+        foreach($plugins as $plugin){
+                $dat = file_get_contents($plugin);
                 $dat = json_decode($dat, true);
                 $name = isset($dat['name']) ? $dat['name'] : '???';
                 if (!isset($data['PLUG']['plug_install_' . $name]) || $data['PLUG']['plug_install_' . $name] !== $name) {
                     continue;
                 }
 
-                self::$selectedPluginFiles[] = $file;
-            }
-            closedir($handle);
+                self::$selectedPluginFiles[] = $plugin;
         }
-
-        function getSelectedPackageDefinitionsSort($a, $b) {
-            return strcmp(basename($a), basename($b));
-        }
-
-        usort(self::$pluginFiles, "getSelectedPackageDefinitionsSort");
         return self::$selectedPluginFiles;
     }
 
@@ -229,7 +217,7 @@ class Paketverwaltung {
 
         // hier die möglichen Erweiterungen ausgeben, zudem noch die Daten dieser Erweiterungen
         foreach ($pluginFiles as $plug) {
-            $dat = file_get_contents(self::getPackagePath($data) . DIRECTORY_SEPARATOR . $plug);
+            $dat = file_get_contents($plug);
             $dat = json_decode($dat, true);
             $name = isset($dat['name']) ? $dat['name'] : '???';
             $version = isset($dat['version']) ? $dat['version'] : null;
@@ -284,7 +272,7 @@ class Paketverwaltung {
 
 
             if (!$isUpdate && isset($data['PLUG']['details']) && $data['PLUG']['details'] === 'details') {
-                $file = self::getPackagePath($data) . DIRECTORY_SEPARATOR . $plug;
+                $file = $plug;
                 $fileCount = 0;
                 $fileSize = 0;
                 $componentCount = 0;
@@ -394,47 +382,56 @@ class Paketverwaltung {
         Installation::log(array('text' => Installation::Get('main', 'functionEnd')));
         return null;
     }
+    
+    /**
+     * ermittelt alle Komponentendateien aus den ausgewählten Paketen
+     * @param string[][] $data die Serverdaten
+     * @param bool $fail wenn ein Fehler auftritt, dann auf true setzen
+     * @param string $errno im Fehlerfall kann hier eine Fehlernummer angegeben werden
+     * @param string $error ein Fehlertext für den Fehlerfall
+     * @return array die Komponenteninhalte
+     */
+    public static function getComponentFilesFromSelectedPackages($data, &$fail, &$errno, &$error){
+        $componentFiles = array();
+        $plugins = Paketverwaltung::getPackageContents($data, $fail, $errno, $error);
 
-    public static function installCheckPackages($data, &$fail, &$errno, &$error,
+        foreach ($plugins as $input) {
+            // Dateiliste zusammentragen
+            $nullArray = null;
+            Paketverwaltung::gibPaketDateien($data, $input, $nullArray, null, $componentFiles);
+        }
+        return $componentFiles;
+    }
+
+    /**
+     * liefert die Inhalte der Paketdefinitionen
+     * @param string[][] $data die Serverdaten
+     * @param bool $fail wenn ein Fehler auftritt, dann auf true setzen
+     * @param string $errno im Fehlerfall kann hier eine Fehlernummer angegeben werden
+     * @param string $error ein Fehlertext für den Fehlerfall
+     * @param boolean $checkPluginIsSelected true = muss gewählt sein, false = sonst
+     * @return array die Inhalte der Paketdefinitionen
+     */
+    public static function getPackageContents($data, &$fail, &$errno, &$error,
             $checkPluginIsSelected = true) {
         Installation::log(array('text' => Installation::Get('main', 'functionBegin')));
         $res = array();
 
         if (!$fail) {
-            $pluginFiles = array();
-            try {
-                $handle = opendir(self::getPackagePath($data));
-            } catch (Exception $e) {
-                // der Ordner konnte nicht zugegriffen werden
-                Installation::log(array('text' => self::getPackagePath($data) . ' existiert nicht oder es fehlt die Zugriffsberechtigung.', 'logLevel' => LogLevel::ERROR));
-                Installer::$messages[] = array('text' => self::getPackagePath($data) . ' existiert nicht oder es fehlt die Zugriffsberechtigung.', 'type' => 'error');
-                return $pluginFiles;
+            if (!$checkPluginIsSelected){
+                $plugins = self::getPackageDefinitions($data);
+            } else {
+                $plugins = self::getSelectedPackageDefinitions($data);
             }
 
-            if ($handle !== false) {
-                while (false !== ($file = readdir($handle))) {
-                    if ($file == '.' || $file == '..') {
-                        continue;
-                    }
-                    if (is_dir(self::getPackagePath($data) . DIRECTORY_SEPARATOR . $file)) {
-                        continue;
-                    }
-                    $filePath = self::getPackagePath($data) . DIRECTORY_SEPARATOR . $file;
-                    if (substr($filePath, -5) == '.json' && file_exists($filePath) && is_readable($filePath)) {
-                        $input = file_get_contents($filePath);
-                        $input = json_decode($input, true);
-                        if ($input == null) {
-                            //$fail = true;
-                            //break;
-                        }
-                        if (isset($input['name']) && isset($data['PLUG']['plug_install_' . $input['name']]) && $data['PLUG']['plug_install_' . $input['name']] == $input['name']) {
-                            $res[] = $input;
-                        } else {
-                            // Name ist nicht gesetzt
-                        }
-                    }
+            foreach($plugins as $plugin){
+                $input = file_get_contents($plugin);
+                $input = json_decode($input, true);
+                if ($input == null) {
+                    //$fail = true;
+                    //break;
                 }
-                closedir($handle);
+                $res[] = $input;
             }
         }
 
@@ -609,7 +606,6 @@ class Paketverwaltung {
     }
 
     public static function gibPaketInhalt($data, $file) {
-        $file = self::getPackagePath($data) . DIRECTORY_SEPARATOR . $file;
         if (file_exists($file) && is_readable($file)) {
             $input = file_get_contents($file);
             $input = json_decode($input, true);
@@ -668,7 +664,7 @@ class Paketverwaltung {
         Installation::log(array('text' => Installation::Get('packages', 'mainPath', self::$langTemplate, array('path' => $mainPath))));
 
 
-        if (isset($input['files'])) {
+        if ($fileList !== null && isset($input['files'])) {
             $files = $input['files'];
             if (!is_array($files))
                 $files = array($files);
@@ -779,36 +775,54 @@ class Paketverwaltung {
                     $file['conf'] = str_replace(array("\\", "/"), array('/', '/'), $file['conf']);
                     $realConfPath = self::expandPath($file['conf'], $mainPath);
 
-                    $componentFiles[] = $realConfPath;
-                    $definition = @file_get_contents($realConfPath);
-
-                    if ($definition === false) {
-                        continue;
+                    if (isset($file['location']) && $file['location'] == 'external' && isset($file['name'])){
+                        if (isset($data['PLUG']['componentDef_'.$file['name']]) && $data['PLUG']['componentDef_'.$file['name']] != ''){
+                            $realConfPath = $data['PLUG']['componentDef_'.$file['name']];
+                        }
                     }
+                    
+                    $newComp = array('location'=>'local', 'name'=>'', 'conf'=>$realConfPath);
+                    $newComp['location'] = (isset($file['location']) ? $file['location'] : $newComp['location']);
+                    $newComp['name'] = (isset($file['name']) ? $file['name'] : $newComp['name']);
+                        
+                    // wenn die Komponentendateien nicht angefordert wurden, müssen wir sie auch nicht erstellen
+                    if ($componentFiles !== null){
+                        $componentFiles[] = $newComp;
+                    }
+                    
+                    if ($fileList !== null){
+                        $definition = @file_get_contents($realConfPath);
 
-                    $definition = json_decode($definition, true);
-                    $comPath = dirname($realConfPath);
-
-                    $fileList[] = $realConfPath;
-
-                    if (isset($definition['files']) && self::isLocalPath($realConfPath)) {
-                        if (!is_array($definition['files'])) {
-                            $definition['files'] = array($definition['files']);
+                        if ($definition === false) {
+                            continue;
                         }
 
-                        foreach ($definition['files'] as $paths) {
-                            if (!isset($paths['path'])) {
-                                continue;
+                        $definition = json_decode($definition, true);
+                        $comPath = dirname($realConfPath);
+
+                        if ($fileList !== null){
+                            $fileList[] = $realConfPath;
+                        }
+
+                        if (isset($definition['files']) && self::isLocalPath($realConfPath)) {
+                            if (!is_array($definition['files'])) {
+                                $definition['files'] = array($definition['files']);
                             }
 
-                            $paths['path'] = str_replace(array("\\", "/"), array('/', '/'), $paths['path']);
-                            if (is_dir($comPath . DIRECTORY_SEPARATOR . $paths['path'])) {
-                                $found = Installation::read_all_files($comPath . DIRECTORY_SEPARATOR . $paths['path']);
-                                foreach ($found['files'] as $temp) {
-                                    $fileList[] = $temp;
+                            foreach ($definition['files'] as $paths) {
+                                if (!isset($paths['path'])) {
+                                    continue;
                                 }
-                            } else {
-                                $fileList[] = $comPath . DIRECTORY_SEPARATOR . $paths['path'];
+
+                                $paths['path'] = str_replace(array("\\", "/"), array('/', '/'), $paths['path']);
+                                if (is_dir($comPath . DIRECTORY_SEPARATOR . $paths['path'])) {
+                                    $found = Installation::read_all_files($comPath . DIRECTORY_SEPARATOR . $paths['path']);
+                                    foreach ($found['files'] as $temp) {
+                                        $fileList[] = $temp;
+                                    }
+                                } else {
+                                    $fileList[] = $comPath . DIRECTORY_SEPARATOR . $paths['path'];
+                                }
                             }
                         }
                     }
@@ -816,7 +830,9 @@ class Paketverwaltung {
             }
         }
 
-        $fileList = array_unique($fileList);
+        if ($fileList !== null){
+            $fileList = array_unique($fileList);
+        }
 
         Installation::log(array('text' => Installation::Get('main', 'functionEnd')));
     }
