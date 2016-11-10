@@ -1057,11 +1057,23 @@ class LTutor
                     $marks[] = $marking;
             $markings=$marks;
         }
+        
+        // nun werden die übrigen (erlaubten Korrekturen) noch aussortiert, sodass eine Einsendung
+        // nur eine Korrektur hat (wähle die letzte Korrektur)
+        $computedSubmissions=array();
+        $markings = LArraySorter::orderby($markings, 'id', SORT_DESC);
+        foreach($markings as $key => $marking){
+            $sid = $marking['submission']['id'];
+            if (isset($computedSubmissions[$sid])){
+                unset($markings[$key]);
+            } else {
+                $computedSubmissions[$sid] = $sid;
+            }
+        }
+        unset($computedSubmissions);
 
         // sortiere die Korrekturen innerhalb dieser Liste
         $markings = LArraySorter::orderby($markings, 'id', SORT_ASC);
-        
-        // TODO: was ist, wenn mehrere Korrekturen zu einer Aufgabe zugewiesen wurden?
 
         $answer = $this->generateTutorArchive($userid, $sheetid, $markings, $withnames);
         $this->app->response->setStatus($answer['status']);

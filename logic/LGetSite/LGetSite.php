@@ -1785,6 +1785,9 @@ class LGetSite
         
         $exercisePoints = array();
         
+        // die exercises müssne hier nicht extra sortiert werden, weil sie von LExerciseSheet kommen,
+        // dort werden sie bereits vorsortiert (trotzdem vielleicht sortieren?)
+        
         $namesOfExercises = array();
         // find the current sheet and it's exercises
         foreach ($sheets as $sheet) {
@@ -1900,6 +1903,20 @@ class LGetSite
                 $allMarkings[] = $marking;
         }
         unset($markings);
+        
+        // nun werden die übrigen (erlaubten Korrekturen) noch aussortiert, sodass eine Einsendung
+        // nur eine Korrektur hat (wähle die letzte Korrektur)
+        $computedSubmissions=array();
+        $allMarkings = LArraySorter::orderby($allMarkings, 'id', SORT_DESC);
+        foreach($allMarkings as $key => $marking){
+            $sid = $marking['submission']['id'];
+            if (isset($computedSubmissions[$sid])){
+                unset($allMarkings[$key]);
+            } else {
+                $computedSubmissions[$sid] = $sid;
+            }
+        }
+        unset($computedSubmissions);
 
         $allGroups = array();
         foreach ($groups as $group){
