@@ -507,6 +507,20 @@ class LGetSite
         if (!isset($markings)) {
             $markings = array();
         }
+        
+        // nun werden die Korrekturen noch aussortiert, sodass eine Einsendung
+        // nur eine Korrektur hat (wähle die letzte Korrektur)
+        $computedSubmissions=array();
+        $markings = LArraySorter::orderby($markings, 'id', SORT_DESC);
+        foreach($markings as $key => $marking){
+            $sid = $marking['submission']['id'];
+            if (isset($computedSubmissions[$sid])){
+                unset($markings[$key]);
+            } else {
+                $computedSubmissions[$sid] = $sid;
+            }
+        }
+        unset($computedSubmissions);
 
         $groups = json_decode($answer[3]['content'], true);
 
@@ -525,6 +539,9 @@ class LGetSite
         }
 
         // add markings to the submissions
+        // wenn er hier mehrere Korrekturaufträge zu einer Einsendung hätte, würde er beim Zuordnen,
+        // der Korrekturen zu den Einsendungen, submission['marking'] mit jeder weiteren immer wieder
+        // überschreiben
         foreach ($markings as &$marking) {
             $studentId = $marking['submission']['studentId'];
             $exerciseId = $marking['submission']['exerciseId'];
@@ -540,7 +557,7 @@ class LGetSite
                     // id of the marking match
 
                     // add marking status to the marking
-                    $status = $marking['status'];
+                    $status = $marking['status']; // wieso wird hier das Feld der StatusId einfach nur umbenannt?
                     $marking['statusId'] = $status;
 
                     // add marking status name to the marking
@@ -594,17 +611,20 @@ class LGetSite
                     if (isset($submissionsByExercise[$exerciseID])) {
                         $submission = &$submissionsByExercise[$exerciseID];
 
-                        if (!isset($submission['hideFile']) || !$submission['hideFile'])
+                        if (!isset($submission['hideFile']) || !$submission['hideFile']){
                             $hasSubmissions=true;
+                        }
 
                         if (isset($submission['marking'])) {
                             $marking = $submission['marking'];
 
-                        if (isset($submission['accepted']) && $submission['accepted'] == 1)
-                            $sheetPoints += isset($marking['points']) ? $marking['points'] : 0 ;
+                            if (isset($submission['accepted']) && $submission['accepted'] == 1){
+                                $sheetPoints += isset($marking['points']) ? $marking['points'] : 0 ;
+                            }
 
-                            if (!isset($submission['marking']['hideFile']) || !$submission['marking']['hideFile'])
+                            if (!isset($submission['marking']['hideFile']) || !$submission['marking']['hideFile']){
                                 $hasMarkings = true;
+                            }
                         }
 
                         $exercise['submission'] = $submission;
