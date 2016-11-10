@@ -71,12 +71,42 @@ class KomponentenErstellen {
         }
 
         if (self::$installed) {
+            
+            // gibt die Daten zu den installierten Komponenten und Verbindungen aus
             if (isset($content['components'])) {
                 $text .= Design::erstelleZeile($console, Installation::Get('generateComponents', 'numberComponents', self::$langTemplate), 'v', $content['componentsCount'], 'v');
                 $text .= Design::erstelleZeile($console, Installation::Get('generateComponents', 'numberLinks', self::$langTemplate), 'v', $content['linksCount'], 'v');
             }
+            
+            // gibt die Fehlermeldungen aus
+            if (isset($content['errorMessages'])){
+                foreach ($content['errorMessages'] as $messageText){
+                    $text .= Design::erstelleZeileShort($console, $messageText, 'error');
+                }
+            }
 
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);
+        }
+        
+        if (!$console){
+            $componentFiles = Paketverwaltung::getComponentFilesFromSelectedPackages($data, $fail, $errno, $error);
+            $externals = array();
+            foreach($componentFiles as $com){
+                if ($com['location'] != 'external'){
+                    // wir interessieren uns hier nur für externe
+                    continue;
+                }
+                $externals[] = $com;
+            }
+            
+            if (count($externals)>0){
+                $text .= Design::erstelleZeileShort($console, '', '');
+                $text .= Design::erstelleZeileShort($console, Installation::Get('generateComponents', 'configureExternalDefinitions', self::$langTemplate), 'e_c');
+                foreach($externals as $ext){
+                    // es handelt sich um eine externe Definition, sodass wir hier ein Feld zum Eintragen bereitstellen wollen
+                    $text .= Design::erstelleZeile($console, $com['name'], 'e', Design::erstelleEingabezeile($console, $data['PLUG']['componentDef_'.$com['name']], 'data[PLUG][componentDef_'.$com['name'].']', $com['conf'], true), 'v');
+                }
+            }
         }
 
         echo Design::erstelleBlock($console, Installation::Get('generateComponents', 'title', self::$langTemplate), $text);
@@ -89,6 +119,8 @@ class KomponentenErstellen {
         $serverFiles = Installation::GibServerDateien();
 
         $installComponentDefsResult['components'] = array();
+        $installComponentDefsResult['errorMessages'] = array();
+        
         foreach ($serverFiles as $sf) {
             $sf = pathinfo($sf)['filename'];
             $tempData = Einstellungen::ladeEinstellungenDirekt($sf, $data);
@@ -102,6 +134,10 @@ class KomponentenErstellen {
 
             if (isset($componentList['components'])) {
                 $installComponentDefsResult['components'] = array_merge($installComponentDefsResult['components'], $componentList['components']);
+            }
+            
+            if (isset($componentList['errorMessages'])) {
+                $installComponentDefsResult['errorMessages'] = array_merge($installComponentDefsResult['errorMessages'], $componentList['errorMessages']);
             }
         }
         //var_dump($installComponentDefsResult['components']);
@@ -348,34 +384,33 @@ class KomponentenErstellen {
             &$errno, &$error) {
         Installation::log(array('text' => Installation::Get('main', 'functionBegin')));
         $res = array();
+        $res['errorMessages'] = array();
 
         if (!$fail) {
             $mainPath = realpath($data['PL']['localPath']);
-            $components = array();
-
-            $componentFiles = array();
-            $plugins = Paketverwaltung::installCheckPackages($data, $fail, $errno, $error);
-
-            foreach ($plugins as $input) {
-
-                // Dateiliste zusammentragen
-                $fileList = array();
-                Paketverwaltung::gibPaketDateien($data, $input, $fileList, null, $componentFiles);
-                unset($fileList);
-            }
+            $componentFiles = Paketverwaltung::getComponentFilesFromSelectedPackages($data, $fail, $errno, $error);
 
             // Komponentennamen und Orte ermitteln
             $res['components'] = array();
-            foreach ($componentFiles as $comFile) {
-                $input = @file_get_contents($comFile);
+            foreach ($componentFiles as $comFileEntry) {
+                $comFile = $comFileEntry['conf'];
+                if ($comFile == ''){
+                    $res['errorMessages'][] = Installation::Get('generateComponents', 'missingConfFile', self::$langTemplate);
+                }
+                
+                $input = @file_get_contents($comFile);   
 
                 // wenn die Datei nicht gelesen werden kann, dann überspringen
                 if ($input === false) {
+                    $res['errorMessages'][] = Installation::Get('generateComponents', 'missingFile', self::$langTemplate, array('file'=>$comFile));
                     continue;
                 }
 
                 $input = json_decode($input, true);
+                
+                // wenn die Datei nicht wohlgeformt ist, dann überspringen
                 if ($input == null) {
+                    $res['errorMessages'][] = Installation::Get('generateComponents', 'jsonErrorInFile', self::$langTemplate, array('file'=>$comFile));
                     continue;
                 }
 
@@ -403,7 +438,7 @@ class KomponentenErstellen {
 
                 $res['components'][] = $input;
 
-                /* if ($input['name'] == 'LSQLGrader'){
+                 /*if ($input['name'] == 'LSQLGrader'){
                   var_dump($input);
                   } */
             }

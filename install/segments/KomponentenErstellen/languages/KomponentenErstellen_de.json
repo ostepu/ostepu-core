@@ -12,5 +12,9 @@
     "createInsertQuery": "sql = $sql",
     "insertQueryResult": "Resultat: $res",
     "createInsertLinksQuery": "sql = $sql",
-    "insertLinksQueryResult": "Resultat: $res"
+    "insertLinksQueryResult": "Resultat: $res",
+    "missingFile":" $file existiert nicht!",
+    "jsonErrorInFile": " $file ist fehlerhaft!",
+    "missingConfFile": "Einer der Komponenteneinträge ware fehlerhaft!",
+    "configureExternalDefinitions": "externe Definitionen festlegen"
 }}
