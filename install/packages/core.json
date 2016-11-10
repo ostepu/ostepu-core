@@ -1,7 +1,7 @@
 {
     "name": "CORE",
-    "version": "0.5.0",
-    "versionDate": "30.09.2016",
+    "version": "0.6.0",
+    "versionDate": "08.11.2016",
     "requirements": [],
     "description":{"de":"Hier sind die Hauptdateien der Plattform enthalten."},
     "descUrl":"https://github.com/ostepu/ostepu-core",
@@ -123,6 +123,7 @@
         {"conf": "DB/CControl/Component.json"},
         {"conf": "DB/CSystem/Component.json"},
         {"conf": "---DB/CGate/Component.json"},
+        {"conf": "DB/DBGate/Component.json"},
         {"conf": "DB/CAbstract/Component.json"},
         {"conf": "DB/CHelp/Component.json"},
         {"conf": "DB/DBQuery2/DBQuery.json"},
