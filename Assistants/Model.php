@@ -82,7 +82,9 @@ class Model
     
     public function getOption($name)
     {
-        if (isset($this->_options[$name])) return $this->_options[$name];
+        if (isset($this->_options[$name])) {
+            return $this->_options[$name];
+        }
         return $this->_default[$name];
     }
 
@@ -95,7 +97,9 @@ class Model
         $com = new CConfig( $this->_prefix, $this->_path, $this->_noInfo, $this->_noHelp, 'de', array('getAndHead'=>true, 'allowOptions'=>true) );
 
         // lädt die Konfiguration des Moduls
-        if ( $com->used( ) ) return;
+        if ($com->used()) {
+            return;
+        }
         ///var_dump($conf);
         $this->_com=$com;
         $commands = $com->commands(array(),true,true);
@@ -109,12 +113,24 @@ class Model
         // welcher für die Beantwortung zuständig ist
         $router = new \Slim\Router();
         foreach ($commands as $key => $command){
-            if (!isset($command['name'])) continue;
-            if (!isset($command['method'])) $commands[$key]['method'] = 'GET';
-            if (!isset($command['callback'])) $commands[$key]['callback'] = $command['name'];
-            if (!isset($command['seqInput'])) $commands[$key]['seqInput'] = 'TRUE';
-            if (!isset($command['singleOutput']))$commands[$key]['singleOutput'] = 'FALSE';
-            if (!isset($command['placeholder'])) $commands[$key]['placeholder'] = array();
+            if (!isset($command['name'])) {
+                continue;
+            }
+            if (!isset($command['method'])) {
+                $commands[$key]['method'] = 'GET';
+            }
+            if (!isset($command['callback'])) {
+                $commands[$key]['callback'] = $command['name'];
+            }
+            if (!isset($command['seqInput'])) {
+                $commands[$key]['seqInput'] = 'TRUE';
+            }
+            if (!isset($command['singleOutput'])) {
+                $commands[$key]['singleOutput'] = 'FALSE';
+            }
+            if (!isset($command['placeholder'])) {
+                $commands[$key]['placeholder'] = array();
+            }
             $command = $commands[$key];
             
             // Methoden können durch Komma getrennt aufgelistet sein
@@ -200,8 +216,15 @@ class Model
             $placeholder = array('profileName'=>'%^([a-zA-Z0-9_]*)$%'); // profileName soll geprueft werden
             // prüfe die Bedingungen für die Platzhalter
             foreach ($selectedCommand['placeholder'] as $holder){
-                if (!isset($holder['name'])) continue;
-                if (!isset($holder['regex'])) continue;
+                if (!isset($holder['name'])) {
+                    // der Eintrag muss sich auf einen Platzhalter beziehen
+                    continue;
+                }
+                if (!isset($holder['regex'])) {
+                    // der Eintrag muss einen regulären Ausdruck besitzen, der 
+                    // getestet werden kann
+                    continue;
+                }
                 $placeholder[$holder['name']] = $holder['regex'];
             }
 
@@ -374,8 +397,9 @@ class Model
                 // wenn der Ausgabetyp "binär" ist, erfolgt keine Anpassung
             } else {
                 // selbst wenn nichts zutrifft, wird json kodiert
-                if (isset( $result['content']) )
+                if (isset($result['content'])) {
                     $result['content'] = json_encode($result['content']);
+                }
                 header('Content-Type: application/json');
             }
         } else {
@@ -399,14 +423,162 @@ class Model
         }
 
         $statusText = null;
-        if (isset($result['statusText']))
-            $statusText = ' '.$result['statusText'];
+        if (isset($result['statusText'])) {
+            $statusText = ' ' . $result['statusText'];
+        }
 
         $protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
         header($protocol . ' ' . $code . (isset($statusText)?$statusText:''));
 
-        if (isset( $result['content'])  )
+        if (isset($result['content'])) {
             echo $result['content'];
+        }
+    }
+    public function getLinks($linkName)
+    {
+        return CConfig::getLinks($this->_conf->getLinks( ),$linkName);
+    }
+    
+    public function callAll($linkName, $params, $body, $positiveStatus, callable $positiveMethod, $positiveParams, callable $negativeMethod, $negativeParams, $returnType=null)
+    {
+        $links=$this->getLinks($linkName);
+        $instructions = $this->_com->instruction('',true);
+
+        // ermittle den zutreffenden Ausgang
+        $selectedInstruction=null;
+        foreach($instructions as $instruction){
+            if ($instruction['name']==$linkName){
+                $selectedInstruction =$instruction;
+            }
+        }
+
+        $result = array();
+        
+        foreach($links as $key => $link){
+            $method = 'GET';
+            if ($link->getPath()!==null && $link->getPath()!==''){
+                $order = $link->getPath();
+                $met = strpos($order, ' ');
+                if ($met !== false){
+                    $method = substr($order,0,$met);
+                    $order = substr($order,$met+1);
+                } else {
+                    return call_user_func_array($negativeMethod, $negativeParams);
+                }
+            } else {
+                $order = $selectedInstruction['links'][0]['path'];
+                if (isset($selectedInstruction['links'][0]['method'])){
+                    $method = $selectedInstruction['links'][0]['method'];
+                }
+            }
+
+            // ersetzt die Platzer im Ausgang mit den eingegeben Parametern
+            foreach ($params as $key => $param) {
+                $order = str_replace(':' . $key, $param, $order);
+            }
+
+            // führe nun den Aufruf aus
+            $result = Request::routeRequest(
+                                            $method,
+                                            $order,
+                                            array(),
+                                            $body,
+                                            $link,
+                                            $link->getPrefix()
+                                            );
+
+            if ( $result['status'] == $positiveStatus ){
+                // die Antwort war so, wie wir sie erwartet haben
+                if ($returnType!==null){
+                    // wenn ein erwarteter Rückgabetyp angegeben wurde, wird eine Typ::decodeType() ausgeführt
+                    $result['content'] = call_user_func_array('\\'.$returnType.'::decode'.$returnType, array($result['content']));
+                    if (!is_array($result['content'])) {
+                        $result['content'] = array($result['content']);
+                    }
+                }
+
+                // rufe nun die positive Methode auf
+                $result[] =  call_user_func_array($positiveMethod, array_merge(array("input"=>$result['content']),$positiveParams));
+            }
+
+            // ansonsten rufen wir die negative Methode auf
+            $result[] = call_user_func_array($negativeMethod, $negativeParams);
+        }
+        
+        return $result;
+    }
+    
+    public function callAllWithRelevanz($linkName, $relevanz, $params, $body, $positiveStatus, callable $positiveMethod, $positiveParams, callable $negativeMethod, $negativeParams, $returnType=null)
+    {
+        $links=$this->getLinks($linkName);
+        $instructions = $this->_com->instruction('',true);
+
+        // ermittle den zutreffenden Ausgang
+        $selectedInstruction=null;
+        foreach($instructions as $instruction){
+            if ($instruction['name']==$linkName){
+                $selectedInstruction =$instruction;
+            }
+        }
+
+        $result = array();
+        
+        foreach($links as $key => $link){
+            if ($link->getRelevanz() !== $relevanz) {
+                continue;
+            }
+
+            $method = 'GET';
+            if ($link->getPath()!==null && $link->getPath()!==''){
+                $order = $link->getPath();
+                $met = strpos($order, ' ');
+                if ($met !== false){
+                    $method = substr($order,0,$met);
+                    $order = substr($order,$met+1);
+                } else {
+                    return call_user_func_array($negativeMethod, $negativeParams);
+                }
+            } else {
+                $order = $selectedInstruction['links'][0]['path'];
+                if (isset($selectedInstruction['links'][0]['method'])){
+                    $method = $selectedInstruction['links'][0]['method'];
+                }
+            }
+
+            // ersetzt die Platzer im Ausgang mit den eingegeben Parametern
+            foreach ($params as $key => $param) {
+                $order = str_replace(':' . $key, $param, $order);
+            }
+
+            // führe nun den Aufruf aus
+            $result = Request::routeRequest(
+                                            $method,
+                                            $order,
+                                            array(),
+                                            $body,
+                                            $link,
+                                            $link->getPrefix()
+                                            );
+
+            if ( $result['status'] == $positiveStatus ){
+                // die Antwort war so, wie wir sie erwartet haben
+                if ($returnType!==null){
+                    // wenn ein erwarteter Rückgabetyp angegeben wurde, wird eine Typ::decodeType() ausgeführt
+                    $result['content'] = call_user_func_array('\\'.$returnType.'::decode'.$returnType, array($result['content']));
+                    if (!is_array($result['content'])) {
+                        $result['content'] = array($result['content']);
+                    }
+                }
+
+                // rufe nun die positive Methode auf
+                $result[] =  call_user_func_array($positiveMethod, array_merge(array("input"=>$result['content']),$positiveParams));
+            }
+
+            // ansonsten rufen wir die negative Methode auf
+            $result[] = call_user_func_array($negativeMethod, $negativeParams);
+        }
+        
+        return $result;
     }
 
     /**
@@ -455,8 +627,9 @@ class Model
         }
 
         // ersetzt die Platzer im Ausgang mit den eingegeben Parametern
-        foreach ($params as $key=>$param)
-            $order = str_replace( ':'.$key, $param, $order);
+        foreach ($params as $key => $param) {
+            $order = str_replace(':' . $key, $param, $order);
+        }
 ///echo $order; // die URL, welche aufgerufen wird
         // führe nun den Aufruf aus
         $result = Request::routeRequest(
@@ -473,8 +646,9 @@ class Model
             if ($returnType!==null){
                 // wenn ein erwarteter Rückgabetyp angegeben wurde, wird eine Typ::decodeType() ausgeführt
                 $result['content'] = call_user_func_array('\\'.$returnType.'::decode'.$returnType, array($result['content']));
-                if ( !is_array( $result['content'] ) )
-                    $result['content'] = array( $result['content'] );
+                if (!is_array($result['content'])) {
+                    $result['content'] = array($result['content']);
+                }
             }
 
             // rufe nun die positive Methode auf
@@ -523,8 +697,9 @@ class Model
                 $met = strpos($testPath, ' ');
                 if ($met !== false){
                     $testPath = substr($testPath,$met+1);
-                    foreach ($params as $key=>$param)
-                        $testPath = str_replace( ':'.$key, $param, $testPath);
+                    foreach ($params as $key => $param) {
+                        $testPath = str_replace(':' . $key, $param, $testPath);
+                    }
 
                     if ($testPath == $order){
                         $link = $li;
@@ -556,8 +731,9 @@ class Model
         }
 
         // ersetzt die Platzer im Ausgang mit den eingegeben Parametern
-        foreach ($params as $key=>$param)
-            $order = str_replace( ':'.$key, $param, $order);
+        foreach ($params as $key => $param) {
+            $order = str_replace(':' . $key, $param, $order);
+        }
 
         // führe nun den Aufruf aus
         $result = Request::routeRequest(
@@ -573,8 +749,9 @@ class Model
             if ($returnType!==null){
                 // wenn ein erwarteter Rückgabetyp angegeben wurde, wird eine Typ::decodeType() ausgeführt
                 $result['content'] = call_user_func_array('\\'.$returnType.'::decode'.$returnType, array($result['content']));
-                if ( !is_array( $result['content'] ) )
-                    $result['content'] = array( $result['content'] );
+                if (!is_array($result['content'])) {
+                    $result['content'] = array($result['content']);
+                }
             }
 
             // rufe nun die positive Methode auf
@@ -614,7 +791,9 @@ class Model
         if ( $result['status'] == $positiveStatus){
             // die Antwort war so, wie wir sie erwartet haben
             $queryResult = Query::decodeQuery( $result['content'] );
-            if (!is_array($queryResult)) $queryResult = array($queryResult);
+            if (!is_array($queryResult)) {
+                $queryResult = array($queryResult);
+            }
 
             // rufe nun die positive Methode auf
             return call_user_func_array($positiveMethod, array_merge(array("input"=>$queryResult),$positiveParams));
@@ -651,7 +830,9 @@ class Model
         if ( $result['status'] == $positiveStatus){
             // die Antwort war so, wie wir sie erwartet haben
             $queryResult = Query::decodeQuery( $result['content'] );
-            if (!is_array($queryResult)) $queryResult = array($queryResult);
+            if (!is_array($queryResult)) {
+                $queryResult = array($queryResult);
+            }
 
             // rufe nun die positive Methode auf
             return call_user_func_array($positiveMethod, array_merge(array("input"=>$queryResult),$positiveParams));
@@ -856,10 +1037,14 @@ class Model
                 foreach($options as $option){
                     $tmp = explode($glueB, $option);
                     if (count($tmp)==1){
-                        if (trim($tmp[0]) === '') continue;
+                        if (trim($tmp[0]) === '') {
+                            continue;
+                        }
                         $res[$tmp[0]] = $tmp[0];
                     } else if(count($tmp)==2){
-                        if (trim($tmp[0]) === '') continue;
+                        if (trim($tmp[0]) === '') {
+                            continue;
+                        }
                         $res[$tmp[0]] = $tmp[1];
                     } else {
                         $name = array_shift($tmp);
