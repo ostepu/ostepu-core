@@ -434,8 +434,7 @@ class DBJson
     }
 
     /**
-     * concatenates two arrays by using attribute lists, assoc indizes remain,
-     * only one secondary object will attached to an primary object
+     * concatenates two arrays by using attribute lists, assoc indizes remain
      *
      * @param string[][] $data an array, which represents the data, received sql data
      * @param string[][] $prim the structure of objects to which you want to append the new objects

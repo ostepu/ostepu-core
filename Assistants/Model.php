@@ -1030,7 +1030,7 @@ class Model
                 return '';
             }
             
-            // zerlegt den Optionsstring znaechst nach glueA, dann nach glueB
+            // zerlegt den Optionsstring zunaechst nach glueA, dann nach glueB
             if ($split){
                 $options = explode($glueA, $options);
                 $res = array();
