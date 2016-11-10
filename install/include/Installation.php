@@ -77,10 +77,13 @@ class Installation {
      * @param string $data
      * @return mixed eine zusammengewürfeltes Ergebnis aller Aufrufe
      */
-    public static function collect($name, $data) {
+    public static function collect($name, $data, $excludeSegments=array()) {
         Installation::log(array('text' => 'starte Funktion'));
         $res = array();
         foreach (Einstellungen::$segments as $segs) {
+            if (in_array($segs, $excludeSegments)){
+                continue;
+            }
             if (isset(Installer::$segmentStatus[$segs]) && Installer::$segmentStatus[$segs] != 200) {
                 continue;
             }
