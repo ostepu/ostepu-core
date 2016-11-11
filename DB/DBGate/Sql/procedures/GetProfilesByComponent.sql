@@ -5,8 +5,15 @@ begin
 SET @s = concat("
 select SQL_CACHE
     GP.*,
-    GR.*,
-    GA.*
+    GR.GR_id,
+    GR.GR_type,
+    GR.GR_component,
+    GR.GR_content,
+    GA.GA_id,
+    GA.GA_type,
+    GA.GA_params,
+    GA.GA_login,
+    GA.GA_passwd
 FROM
     `GateRule",ruleProfile,"` GR
         join
