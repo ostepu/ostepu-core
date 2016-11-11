@@ -333,7 +333,41 @@ class Design {
         $result .= "<input style='' type='checkbox' id='{$variablenName}' name='{$variablenName}' value='" . $value . "'" . (($variable == $value && $variable != null) ? "checked" : ($default === null ? '' : ($default === $value ? "checked" : '')) ) . ">";
         return $result;
     }
+    
+    /**
+     * Erzeugt eine Auswahlliste
+     *
+     * @param bool $console true = Konsolendarstellung, false = HTML
+     * @param string[] $list die Auswahlmöglichkeit als Array mit Wert=>Bezeichner
+     * @param mixed $variable Der aktuelle Wert des Feldes (null = nicht zugewiesen)
+     * @param string $variablenName Der Name des Feldes
+     * @param mixed $default Der Standartwert (wenn $variable = null)
+     * @param bool $save true = speichere $variable in den Server Einstellungen, false = sonst
+     * @return string Der Text der Auswahlliste
+     */
+    public static function erstelleAuswahlliste($console, $list, &$variable, $variablenName, $default, $save = false) {
+        if ($save === true && $variable === null) {
+            $variable = Einstellungen::Get($variablenName, $default);
+        }
 
+        if ($save === true && $variable !== null) {
+            Einstellungen::Set($variablenName, $variable);
+        }
+
+        if ($variable === null) {
+            $variable = $default;
+        }
+
+        $empty = '_';
+        $result = Design::erstelleVersteckteEingabezeile($console, $empty, $variablenName, $default, false);
+        $result .= "<select style='' id='{$variablenName}' name='{$variablenName}'>";
+        foreach($list as $key => $value){
+            $result .= "<option value ='{$key}'". (($variable == $key && $variable != null) ? "selected='selected'" : ($default === null ? '' : ($default === $key ? "selected='selected'" : '')) ).">{$value}</option>";
+        }
+		$result .= "</select>";
+        return $result;
+    }
+    
     /**
      * Erzeugt eine Passwortzeile
      *
