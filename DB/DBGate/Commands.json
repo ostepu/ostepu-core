@@ -208,5 +208,32 @@
             }
         ],
         "path": "/gateprofile/gateprofile/:gpid/auth/:authType/component/:component"
+    },
+    {
+        "name": "getComponentProfileWithAuthLogin",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
+        "outputType": "GateProfile",
+        "inputType": "",
+        "method": "GET",
+        "placeholder": [
+            {
+                "name": "gpid",
+                "regex": "%^([0-9_]+)$%"
+            },
+            {
+                "name": "authType",
+                "regex": "%^([a-zA-Z0-9_]+)$%"
+            },
+            {
+                "name": "component",
+                "regex": "%^([a-zA-Z0-9_]+)$%"
+            },
+            {
+                "name": "login",
+                "regex": "%^([a-zA-Z0-9_]+)$%"
+            }
+        ],
+        "path": "/gateprofile/gateprofile/:gpid/auth/:authType/component/:component/login/:login"
     }
 ]

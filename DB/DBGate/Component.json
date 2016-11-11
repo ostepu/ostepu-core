@@ -157,6 +157,14 @@
             }]
         },
         {
+            "name": "getComponentProfileWithAuthLogin",
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBGateGetComponentGateProfileWithAuth/:profile/:authProfile/:ruleProfile/:gpid/:authType/:component/:login"
+            }]
+        },
+        {
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
             "links": [{
