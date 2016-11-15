@@ -642,7 +642,7 @@ function saveMarking($points, $tutorComment, $status, $submissionID, $markingID,
                                              time());
 
         $newMarking = Marking::encodeMarking($newMarking);
-        $URI = $databaseURI . "/marking/{$markingID}";
+        $URI = $databaseURI . "/marking/marking/{$markingID}";
         http_put_data($URI, $newMarking, true, $message);
 
         if ($message != 201) {
@@ -698,7 +698,7 @@ function updateSubmission($submissionId, $accepted)
                                                     );
 
     $newSubmission = Submission::encodeSubmission($newSubmission);
-    $URI = $databaseURI . "/submission/{$submissionId}";
+    $URI = $databaseURI . "/submission/submission/{$submissionId}";
     http_put_data($URI, $newSubmission, true, $message);
 
     if ($message != 201) {
