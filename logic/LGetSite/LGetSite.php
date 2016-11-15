@@ -307,7 +307,7 @@ class LGetSite
                 $response['tutorAssignments'][$tutor['id']] = array('tutor' => $tutor, 'submissions' => array());
             }
         }
-        $response['tutorAssignments']['unkown'] = array('tutor' => json_decode(User::encodeUser(User::createUser(null,'','','','',null,null,null,null,null,null)),true), 'submissions' => array());
+        $response['tutorAssignments']['unknown'] = array('tutor' => json_decode(User::encodeUser(User::createUser(null,'','','','',null,null,null,null,null,null)),true), 'submissions' => array());
 
         // assign submissions for the markings to the right tutor
         $computedSubmissions = array();
@@ -320,31 +320,36 @@ class LGetSite
             if (isset($computedSubmissions[$marking['submission']['id']])) continue;
             $computedSubmissions[$marking['submission']['id']] = 1;
 
-            if (isset($response['tutorAssignments'][$marking['tutorId']])){
-                unset($marking['submission']['file']);
-                unset($marking['submission']['comment']);
-                unset($marking['submission']['accepted']);
-                unset($marking['submission']['date']);
-                unset($marking['submission']['flag']);
-                unset($marking['submission']['selectedForGroup']);
+            unset($marking['submission']['file']);
+            unset($marking['submission']['comment']);
+            unset($marking['submission']['accepted']);
+            unset($marking['submission']['date']);
+            unset($marking['submission']['flag']);
+            unset($marking['submission']['selectedForGroup']);
 
-                $marking['submission']['user']=null;
-                if (isset($students[$marking['submission']['leaderId']])){
-                    $marking['submission']['user']=$students[$marking['submission']['leaderId']];
-                }
-
-                $marking['submission']['markingId'] = $marking['id'];
-                $response['tutorAssignments'][$marking['tutorId']]['submissions'][] = $marking['submission'];
-
-                // save ids of all assigned submission
-                $assignedSubmissionIDs[] = $marking['submission']['id'];
+            $marking['submission']['user']=null;
+            if (isset($students[$marking['submission']['leaderId']])){
+                $marking['submission']['user']=$students[$marking['submission']['leaderId']];
             }
+
+            $marking['submission']['markingId'] = $marking['id'];
+                
+            // er nimmt hier nur Korrekturen von bekannten Kontrolleuren auf
+            if (isset($response['tutorAssignments'][$marking['tutorId']])){
+                $response['tutorAssignments'][$marking['tutorId']]['submissions'][] = $marking['submission'];                 
+            } else {
+                // wenn er den Kontrolleur nicht kennt, ist er "unbekannt"
+                $response['tutorAssignments']['unknown']['submissions'][] = $marking['submission'];                
+            }
+            
+            // save ids of all assigned submission
+            $assignedSubmissionIDs[] = $marking['submission']['id'];
         }
         unset($reversedMarkings);
 
         // remove unknown lecturer if empty
-        if (count($response['tutorAssignments']['unkown']['submissions']) == 0)
-            unset($response['tutorAssignments']['unkown']);
+        if (count($response['tutorAssignments']['unknown']['submissions']) == 0)
+            unset($response['tutorAssignments']['unknown']);
 
         $response['tutorAssignments'] = array_values($response['tutorAssignments']);
 
