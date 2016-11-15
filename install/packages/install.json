@@ -17,5 +17,5 @@
             "vendor"
         ]
     }],
-    "components": [{"conf": "install/component/CInstall.json"}]
+    "components": [{"conf": "install/component/CInstall.json"},{"conf": "install/segments/Komponentenzugang/gateProfiles.json"}]
 }

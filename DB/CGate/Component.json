@@ -7,22 +7,34 @@
         {"path": ".htaccess"},
         {"path": "CGate.php"},
         {"path": "index.php"},
-        {"path": "Commands.json"},
+        {"path": "Commands.json"}
     ],
     "links": [
         {
-            "name": "getSession",
-            "target": "DBSession",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/session/session/:seid"
-                }
-            ]
+            "name": "getComponentProfileWithAuthLogin",
+            "target": "DBGate",
+            "links": [{
+                "method": "GET",
+                "path": "/gateprofile/gateprofile/:gpid/auth/:authType/component/:component/login/:login"
+            }]
+        },
+        {
+            "name": "getComponentProfileWithAuth",
+            "target": "DBGate",
+            "links": [{
+                "method": "GET",
+                "path": "/gateprofile/gateprofile/:gpid/auth/:authType/component/:component"
+            }]
         }
     ],
     "connector": [
-        {"name": "request","target": "CLocalObjectRequest"},
-        {"name": "postPlatform","target": "CInstall"}
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        },
+        {
+            "name": "postPlatform",
+            "target": "CInstall"
+        }
     ]
 }
