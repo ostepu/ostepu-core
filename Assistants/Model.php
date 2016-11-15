@@ -630,7 +630,8 @@ class Model
         foreach ($params as $key => $param) {
             $order = str_replace(':' . $key, $param, $order);
         }
-///echo $order; // die URL, welche aufgerufen wird
+//echo $link->getAddress();
+//echo $order; // die URL, welche aufgerufen wird
         // führe nun den Aufruf aus
         $result = Request::routeRequest(
                                         $method,
