@@ -62,7 +62,7 @@ $data = array('tutors' => array(),
                     }
                 }
             }
-        } elseif($fromTutor == 'u') { // unbekannter Kontrolleur
+        } elseif($fromTutor == 'u') { // unbekannter Kontrolleur (hier stecken auch die automatischen Korrekturen drin)
             foreach ($tutorAssign_data['tutorAssignments'] as $tutorAssignment) {
                 if (!isset($tutorAssignment['tutor']['id']) && $tutorAssignment['tutor']['userName'] !== 'unassigned') {
                     foreach ($tutorAssignment['submissions'] as $submission) {
