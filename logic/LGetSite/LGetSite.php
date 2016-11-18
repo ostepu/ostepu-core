@@ -342,7 +342,7 @@ class LGetSite
                 $response['tutorAssignments']['unknown']['submissions'][] = $marking['submission'];                
             }
             
-            // save ids of all assigned submission
+            // collect the ids of all assigned submissions
             $assignedSubmissionIDs[] = $marking['submission']['id'];
         }
         unset($reversedMarkings);
