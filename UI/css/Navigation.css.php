@@ -13,7 +13,7 @@
     padding: 20px 40px;
     display: block;
     background-repeat: no-repeat;
-    ;
+
     <?php 
         $month = date('m');
         $day = date('d');
@@ -27,15 +27,17 @@
         echo "background-position: 99% 5px;";
      } elseif ($month == 10 && $day <= 31) { 
         echo "background-size: 168px 100px;";
-        echo "background-image: url('../Images/events/halloween.jpg');";
+        echo "background-image: url('../Images/events/halloween3.jpg');";
         echo "background-position: 99% 5px;";
-     } elseif ($month == 12 && $day>=10 && $day <= 26) { 
+     } elseif ($month == 12 && $day >= 10 && $day <= 26) { 
         echo "background-size: 168px 100px;";
         echo "background-image: url('../Images/events/christmas.jpg');";
         echo "background-position: 99% 5px;";
      } else { 
         if (file_exists('../Images/head_logo_hover.png')) { 
             echo "background-image: url('../Images/head_logo_hover.png');";
+         } elseif (file_exists('../Images/head_logo_hover.jpg')) { 
+            echo "background-image: url('../Images/head_logo_hover.jpg');";
          } else { 
             echo "background-image: url('../Images/head_logo_hover_default.jpg');";
          } 
