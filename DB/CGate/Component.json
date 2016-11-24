@@ -15,7 +15,7 @@
             "target": "DBGate",
             "links": [{
                 "method": "GET",
-                "path": "/gateprofile/gateprofile/:gpid/auth/:authType/component/:component/login/:login"
+                "path": "/gateprofile/gateprofile/:profName/auth/:authType/component/:component/login/:login"
             }]
         },
         {
@@ -23,18 +23,17 @@
             "target": "DBGate",
             "links": [{
                 "method": "GET",
-                "path": "/gateprofile/gateprofile/:gpid/auth/:authType/component/:component"
+                "path": "/gateprofile/gateprofile/:profName/auth/:authType/component/:component"
             }]
+        },
+        {
+            "name": "request"
         }
     ],
     "connector": [
         {
             "name": "request",
             "target": "CLocalObjectRequest"
-        },
-        {
-            "name": "postPlatform",
-            "target": "CInstall"
         }
     ]
 }
