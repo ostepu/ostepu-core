@@ -103,7 +103,7 @@ class Komponenten {
                     if (in_array("Slim\\Slim", get_declared_classes())) {
                         $router = new \Slim\Router();
                         foreach ($component['commands'] as $command) {
-                            $route = new \Slim\Route($command['path'], 'is_array');
+                            $route = new \Slim\Route($command['path'], 'is_array');  // is_array wird hier benötigt, weil Route eine Funktion die er auf callable prüfen kann
                             $route->via((isset($command['method']) ? strtoupper($command['method']) : 'GET'));
                             $router->map($route);
                         }
