@@ -59,6 +59,7 @@ class Model
                               'addOptionsToParametersAsPostfix'=>false,
                               'addProfileToParameters'=>false,
                               'addProfileToParametersAsPostfix'=>false,
+                              'addRequestToParams'=>false,
                               'defaultParams' => array());
 
     /**
@@ -196,7 +197,7 @@ class Model
             $arr = true;
 
             // wenn zu diesem Befehl ein inputType angegeben wurde, wird eine Type::decodeType() aufgerufen
-            if (isset($selectedCommand['inputType']) && trim($selectedCommand['inputType'])!=''){
+            if (isset($selectedCommand['inputType']) && trim($selectedCommand['inputType'])!='' && trim($selectedCommand['inputType'])!='binary'){
                 $inputType = $selectedCommand['inputType'];
                 $rawInput = call_user_func_array('\\'.$inputType.'::decode'.$inputType, array($rawInput));
 
@@ -273,6 +274,12 @@ class Model
             $params = array_merge($params, $this->getOption('defaultParams'));
             
             
+            if ($this->getOption('addRequestToParams')){
+                $params['request'] = array('method'=>$matches->getHttpMethods()[0],
+                                           'pattern'=>$matches->getPattern(),
+                                           'headers'=>array()); // TODO: hier fehlen noch die richtigen Header
+            }
+            
             if ($this->getOption('cloneable')){
                 // fügt profileName der Komponente den Ausfuehrungsparametern hinzu
                 if (isset($params['profileName'])){
@@ -280,7 +287,6 @@ class Model
                 } else {
                     $params['profile'] = '';                       
                 }
-                unset($options);
             }
             
             if ($this->getOption('addOptionsToParametersAsPostfix')){
@@ -308,12 +314,11 @@ class Model
                 if ($this->getOption('cloneable')){
                     // fügt profileName der Komponente den Ausfuehrungsparametern hinzu
                     Model::generatePostfix(array('profileName'=>'profile'), $params);
-                    unset($options);
                 }
             }
 
             // nun soll die zugehörige Funktion im Modul aufgerufen werden
-            if (isset($selectedCommand['inputType']) && trim($selectedCommand['inputType'])!='' && isset($rawInput)){
+            if (isset($selectedCommand['inputType']) && trim($selectedCommand['inputType'])!='' && trim($selectedCommand['inputType'])!='binary' && isset($rawInput)){
                 // initialisiert die Ausgabe positiv
                 $result=array("status"=>201,"content"=>array());
 
@@ -483,8 +488,7 @@ class Model
                                             $order,
                                             array(),
                                             $body,
-                                            $link,
-                                            $link->getPrefix()
+                                            $link
                                             );
 
             if ( $result['status'] == $positiveStatus ){
@@ -556,8 +560,7 @@ class Model
                                             $order,
                                             array(),
                                             $body,
-                                            $link,
-                                            $link->getPrefix()
+                                            $link
                                             );
 
             if ( $result['status'] == $positiveStatus ){
@@ -638,8 +641,7 @@ class Model
                                         $order,
                                         array(),
                                         $body,
-                                        $link,
-                                        $link->getPrefix()
+                                        $link
                                         );
 
         if ( $result['status'] == $positiveStatus ){
