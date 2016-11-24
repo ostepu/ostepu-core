@@ -153,7 +153,7 @@
             "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
-                "path": "/query/procedure/DBGateGetComponentGateProfileWithAuth/:profile/:authProfile/:ruleProfile/:gpid/:authType/:component"
+                "path": "/query/procedure/DBGateGetComponentGateProfileWithAuth/:profile/:authProfile/:ruleProfile/:profName/:authType/:component"
             }]
         },
         {
@@ -161,7 +161,7 @@
             "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
-                "path": "/query/procedure/DBGateGetComponentGateProfileWithAuth/:profile/:authProfile/:ruleProfile/:gpid/:authType/:component/:login"
+                "path": "/query/procedure/DBGateGetComponentGateProfileWithAuth/:profile/:authProfile/:ruleProfile/:profName/:authType/:component/:login"
             }]
         },
         {
