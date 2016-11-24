@@ -16,248 +16,217 @@
         {
             "name": "editSubmission",
             "target": "DBQueryWrite",
-            "links": [
-                {
-                    "method": "POST",
-                    "path": "/query"
-                }
-            ]
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
         },
         {
             "name": "deleteSubmission",
             "target": "DBQueryWrite",
-            "links": [
-                {
-                    "method": "POST",
-                    "path": "/query"
-                }
-            ]
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
         },
         {
             "name": "addSubmission",
             "target": "DBQueryWrite",
-            "links": [
-                {
-                    "method": "POST",
-                    "path": "/query"
-                }
-            ]
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
         },
         {
             "name": "postSamples",
             "target": "DBQueryWrite",
-            "links": [
-                {
-                    "method": "POST",
-                    "path": "/query"
-                }
-            ]
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
         },
         {
             "name": "deletePlatform",
             "target": "DBQuerySetup",
-            "links": [
-                {
-                    "method": "POST",
-                    "path": "/query"
-                }
-            ]
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
         },
         {
             "name": "addPlatform",
             "target": "DBQuerySetup",
-            "links": [
-                {
-                    "method": "POST",
-                    "path": "/query"
-                }
-            ]
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
         },
         {
             "name": "getAllSubmissions",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBSubmissionGetAllSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:selected/:beginStamp/:endStamp"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSubmissionGetAllSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:selected/:beginStamp/:endStamp"
+            }]
         },
         {
             "name": "getCourseSubmissions",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBSubmissionGetCourseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:exerciseProfile/:courseid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSubmissionGetCourseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:exerciseProfile/:courseid"
+            }]
         },
         {
             "name": "getCourseUserSubmissions",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBSubmissionGetCourseUserSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:courseid/:userid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSubmissionGetCourseUserSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:courseid/:userid"
+            }]
         },
         {
             "name": "getExerciseSubmissions",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBSubmissionGetExerciseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:eid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSubmissionGetExerciseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:eid"
+            }]
         },
         {
             "name": "getGroupCourseSubmissions",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBSubmissionGetGroupCourseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:exerciseProfile/:groupProfile/:userid/:courseid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSubmissionGetGroupCourseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:exerciseProfile/:groupProfile/:userid/:courseid"
+            }]
         },
         {
             "name": "getGroupExerciseSubmissions",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBSubmissionGetGroupExerciseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:groupProfile/:userid/:eid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSubmissionGetGroupExerciseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:groupProfile/:userid/:eid"
+            }]
         },
         {
             "name": "getGroupSelectedCourseSubmissions",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBSubmissionGetGroupSelectedCourseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:exerciseProfile/:groupProfile/:userid/:courseid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSubmissionGetGroupSelectedCourseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:exerciseProfile/:groupProfile/:userid/:courseid"
+            }]
         },
         {
             "name": "getGroupSelectedExerciseSubmissions",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBSubmissionGetGroupSelectedExerciseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:groupProfile/:userid/:eid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSubmissionGetGroupSelectedExerciseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:groupProfile/:userid/:eid"
+            }]
         },
         {
             "name": "getGroupSelectedSubmissions",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBSubmissionGetGroupSelectedSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:exerciseProfile/:groupProfile/:userid/:esid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSubmissionGetGroupSelectedSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:exerciseProfile/:groupProfile/:userid/:esid"
+            }]
         },
         {
             "name": "getGroupSubmissions",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBSubmissionGetGroupSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:exerciseProfile/:groupProfile/:userid/:esid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSubmissionGetGroupSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:exerciseProfile/:groupProfile/:userid/:esid"
+            }]
         },
         {
             "name": "getSelectedCourseUserSubmissions",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBSubmissionGetSelectedCourseUserSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:exerciseProfile/:courseid/:userid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSubmissionGetSelectedCourseUserSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:exerciseProfile/:courseid/:userid"
+            }]
         },
         {
             "name": "getSelectedExerciseSubmissions",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBSubmissionGetSelectedExerciseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:eid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSubmissionGetSelectedExerciseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:eid"
+            }]
         },
         {
             "name": "getSelectedSheetSubmissions",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBSubmissionGetSelectedSheetSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:esid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSubmissionGetSelectedSheetSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:esid"
+            }]
         },
         {
             "name": "getSheetSubmissions",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBSubmissionGetSheetSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:esid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSubmissionGetSheetSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:esid"
+            }]
         },
         {
             "name": "getSubmission",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBSubmissionGetSubmission/:profile/:selectedSubmissionProfile/:fileProfile/:suid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSubmissionGetSubmission/:profile/:selectedSubmissionProfile/:fileProfile/:suid"
+            }]
         },
         {
             "name": "getUserExerciseSubmissions",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBSubmissionGetUserExerciseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:userid/:eid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSubmissionGetUserExerciseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:userid/:eid"
+            }]
         },
         {
             "name": "getUserSheetSubmissions",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBSubmissionGetUserSheetSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:userid/:esid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSubmissionGetUserSheetSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:userid/:esid"
+            }]
         },
         {
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBSubmissionGetExistsPlatform/:profile"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSubmissionGetExistsPlatform/:profile"
+            }]
         }
     ],
     "connector": [
-        {"name": "request","target": "CLocalObjectRequest"},
-        {"name": "postPlatform","target": "CInstall"},
-        {"name": "postSamples","target": "CInstall", "priority":140},
-        { "name": "getDescFiles","target": "TDocuView"}
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        },
+        {
+            "name": "postPlatform",
+            "target": "CInstall"
+        },
+        {
+            "name": "postSamples",
+            "target": "CInstall",
+            "priority": 140
+        },
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView"
+        },
+        {
+            "name": "request",
+            "target": "CGate"
+        }
     ]
 }

@@ -20,21 +20,24 @@
                 "method": "POST",
                 "path": "/query"
             }]
-        },  {
+        },
+        {
             "name": "deleteExercise",
             "target": "DBQueryWrite",
             "links": [{
                 "method": "POST",
                 "path": "/query"
             }]
-        },  {
+        },
+        {
             "name": "addExercise",
             "target": "DBQueryWrite",
             "links": [{
                 "method": "POST",
                 "path": "/query"
             }]
-        },  {
+        },
+        {
             "name": "postSamples",
             "target": "DBQueryWrite",
             "links": [{
@@ -49,7 +52,8 @@
                 "method": "POST",
                 "path": "/query"
             }]
-        },  {
+        },
+        {
             "name": "addPlatform",
             "target": "DBQuerySetup",
             "links": [{
@@ -112,6 +116,13 @@
             "target": "CInstall",
             "priority": 130
         },
-        { "name": "getDescFiles","target": "TDocuView"}
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView"
+        },
+        {
+            "name": "request",
+            "target": "CGate"
+        }
     ]
 }

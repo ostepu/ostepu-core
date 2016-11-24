@@ -80,67 +80,68 @@
         {
             "name": "getUserSession",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBSessionGetUserSession/:profile/:userid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSessionGetUserSession/:profile/:userid"
+            }]
         },
         {
             "name": "getSessionUser",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBSessionGetSessionUser/:profile/:seid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSessionGetSessionUser/:profile/:seid"
+            }]
         },
         {
             "name": "getValidSession",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBSessionGetValidSession/:profile/:seid/:userid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSessionGetValidSession/:profile/:seid/:userid"
+            }]
         },
         {
             "name": "getAllSessions",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBSessionGetAllSessions/:profile"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSessionGetAllSessions/:profile"
+            }]
         },
         {
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBSessionGetExistsPlatform/:profile"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSessionGetExistsPlatform/:profile"
+            }]
         },
         {
             "name": "getSamplesInfo",
             "target": "DBQueryRead",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBSessionGetExistsPlatform/:profile"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSessionGetExistsPlatform/:profile"
+            }]
         }
     ],
     "connector": [
-        {"name": "request","target": "CLocalObjectRequest"},
-        {"name": "postPlatform","target": "CInstall"},
-        { "name": "getDescFiles","target": "TDocuView"}
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        },
+        {
+            "name": "postPlatform",
+            "target": "CInstall"
+        },
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView"
+        },
+        {
+            "name": "request",
+            "target": "CGate"
+        }
     ]
 }
