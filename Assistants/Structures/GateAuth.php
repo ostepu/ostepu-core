@@ -202,12 +202,11 @@ class GateAuth extends Object implements JsonSerializable
     {
         $values = '';
 
-        if ( $this->id !== null )
-            $this->addInsertData(
-                                 $values,
-                                 'GA_id',
-                                 DBJson::mysql_real_escape_string( $this->id )
-                                 );
+        $this->addInsertData(
+                             $values,
+                             'GA_id',
+                             DBJson::mysql_real_escape_string( $this->id )
+                             );
         if ( $this->type !== null )
             $this->addInsertData(
                                  $values,
@@ -358,7 +357,7 @@ class GateAuth extends Object implements JsonSerializable
             $list['id'] = $this->id;
         if ( $this->type !== null )
             $list['type'] = $this->type;
-        if ( $this->params !== null )
+        if ( $this->params !== null)
             $list['params'] = $this->params;
         if ( $this->login !== null )
             $list['login'] = $this->login;

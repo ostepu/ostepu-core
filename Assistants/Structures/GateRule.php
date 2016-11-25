@@ -174,12 +174,11 @@ class GateRule extends Object implements JsonSerializable
     {
         $values = '';
 
-        if ( $this->id !== null )
-            $this->addInsertData(
-                                 $values,
-                                 'GR_id',
-                                 DBJson::mysql_real_escape_string( $this->id )
-                                 );
+        $this->addInsertData(
+                             $values,
+                             'GR_id',
+                             DBJson::mysql_real_escape_string( $this->id )
+                             );
         if ( $this->type !== null )
             $this->addInsertData(
                                  $values,

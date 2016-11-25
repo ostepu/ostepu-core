@@ -142,12 +142,11 @@ class GateProfile extends Object implements JsonSerializable
     {
         $values = '';
 
-        if ( $this->id !== null )
-            $this->addInsertData(
-                                 $values,
-                                 'GP_id',
-                                 DBJson::mysql_real_escape_string( $this->id )
-                                 );
+        $this->addInsertData(
+                             $values,
+                             'GP_id',
+                             DBJson::mysql_real_escape_string( $this->id )
+                             );
         if ( $this->name !== null )
             $this->addInsertData(
                                  $values,
