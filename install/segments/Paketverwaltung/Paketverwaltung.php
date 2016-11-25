@@ -392,7 +392,8 @@ class Paketverwaltung {
      * @return array die Komponenteninhalte
      */
     public static function getComponentFilesFromSelectedPackages($data, &$fail, &$errno, &$error){
-        $componentFiles = array();
+        $componentFiles = Installation::collect('getComponentFilesFromSelectedPackages',$data, array(__CLASS__));
+        
         $plugins = Paketverwaltung::getPackageContents($data, $fail, $errno, $error);
 
         foreach ($plugins as $input) {
@@ -400,6 +401,7 @@ class Paketverwaltung {
             $nullArray = null;
             Paketverwaltung::gibPaketDateien($data, $input, $nullArray, null, $componentFiles);
         }
+        
         return $componentFiles;
     }
 
