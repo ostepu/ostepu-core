@@ -256,7 +256,13 @@ class KomponentenErstellen {
                                     $input2['links'] = array();
                                 }
                                 
-                                $input2['connector'] = array_merge((isset($input2['connector']) ? $input2['connector'] : array()), (isset($input['connector']) ? $input['connector'] : array()));
+                                // virtuelle Komponenten sollen erstmal keine Konnektoren haben dürfen, keine vererbten
+                                if (isset($input2['initialization']) && $input2['initialization'] == 'virtual'){
+                                    $input2['connector'] = (isset($input['connector']) ? $input['connector'] : array());
+                                }else {
+                                    $input2['connector'] = array_merge((isset($input2['connector']) ? $input2['connector'] : array()), (isset($input['connector']) ? $input['connector'] : array()));
+                                }
+                                
                                 if (isset($input['option'])) {
                                     $input2['option'] = $input['option'];
                                 }
@@ -405,7 +411,6 @@ class KomponentenErstellen {
         }
         $installComponentDefsResult['linksCount'] = count($links);
         $sql .= " SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;COMMIT;";
-        echo $sql;
         Installation::log(array('text' => Installation::Get('generateComponents', 'createInsertLinksQuery', self::$langTemplate, array('sql' => $sql))));
         $res = DBRequest::request2($sql, false, $data, true);
         Installation::log(array('text' => Installation::Get('generateComponents', 'insertLinksQueryResult', self::$langTemplate, array('res' => json_encode($res)))));
