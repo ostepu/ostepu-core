@@ -21,7 +21,7 @@ FROM
         left join
     `GateRule",ruleProfile,"` GR ON (GP.GP_id = GR.GP_id)
 WHERE
-    GP.GP_name = '",profName,"' and (GA.GA_type = '",authType,"' or GA.GA_type='noAuth') and GR.GR_component = '",component,"' and GA.GA_login = '",login,"';");
+    GP.GP_name = '",profName,"' and ((GA.GA_type = '",authType,"' and GA.GA_login = '",login,"') or GA.GA_type='noAuth') and GR.GR_component = '",component,"';");
 PREPARE stmt1 FROM @s;
 EXECUTE stmt1;
 DEALLOCATE PREPARE stmt1;

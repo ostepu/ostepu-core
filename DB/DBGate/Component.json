@@ -161,7 +161,7 @@
             "target": "DBQueryRead",
             "links": [{
                 "method": "GET",
-                "path": "/query/procedure/DBGateGetComponentGateProfileWithAuth/:profile/:authProfile/:ruleProfile/:profName/:authType/:component/:login"
+                "path": "/query/procedure/DBGateGetComponentGateProfileWithAuthLogin/:profile/:authProfile/:ruleProfile/:profName/:authType/:component/:login"
             }]
         },
         {

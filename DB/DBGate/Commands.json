@@ -187,29 +187,6 @@
         "path": "/gateprofile/gateprofile/:gpid/auth/:authType"
     },
     {
-        "name": "getComponentProfileWithAuth",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "GateProfile",
-        "inputType": "",
-        "method": "GET",
-        "placeholder": [
-            {
-                "name": "profName",
-                "regex": "%^([a-zA-Z0-9_]+)$%"
-            },
-            {
-                "name": "authType",
-                "regex": "%^([a-zA-Z0-9_]+)$%"
-            },
-            {
-                "name": "component",
-                "regex": "%^([a-zA-Z0-9_]+)$%"
-            }
-        ],
-        "path": "/gateprofile/gateprofile/:profName/auth/:authType/component/:component"
-    },
-    {
         "name": "getComponentProfileWithAuthLogin",
         "callback": "getMatch",
         "singleOutput": "TRUE",
@@ -235,5 +212,28 @@
             }
         ],
         "path": "/gateprofile/gateprofile/:profName/auth/:authType/component/:component/login/:login"
+    },
+    {
+        "name": "getComponentProfileWithAuth",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
+        "outputType": "GateProfile",
+        "inputType": "",
+        "method": "GET",
+        "placeholder": [
+            {
+                "name": "profName",
+                "regex": "%^([a-zA-Z0-9_]+)$%"
+            },
+            {
+                "name": "authType",
+                "regex": "%^([a-zA-Z0-9_]+)$%"
+            },
+            {
+                "name": "component",
+                "regex": "%^([a-zA-Z0-9_]+)$%"
+            }
+        ],
+        "path": "/gateprofile/gateprofile/:profName/auth/:authType/component/:component"
     }
 ]
