@@ -11,6 +11,7 @@
  */
 
 include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
+include_once ( dirname(__FILE__) . '/../../UI/include/Authentication.php' );
 
 /**
  * ???
@@ -32,17 +33,66 @@ class CGate extends Model
      */
     public function request( $callName, $input, $params = array() )
     {
-        $authType = 'noAuth'; // er versteht nur public Zugänge
-        
+        $authType = 'noAuth';        
         $profile = $params['profile'];
         $component = $params['component'];
         $order = '/'.implode('/',$params['path']);
         $method = $params['request']['method']; // die Methode füllt hier Model.php hinein
+        $headers = $params['request']['headers'];
+        $login = '';
+        $passwd = '';
+
+        // ermittle nun den korrekten Zugang
+        if (isset($headers['PHP_AUTH_USER'])){
+            // wir prüfen nun eine HTTP-Authentifizierung
+            $login = $headers['PHP_AUTH_USER'];
+            $passwd = (isset($headers['PHP_AUTH_PW']) ? $headers['PHP_AUTH_PW'] : '');
+            $authType = 'httpAuth';
+        }
         
-        $positive = function($gateProfile, $method, $order, $component, $body) {
+        $positive = function($gateProfile, $method, $order, $component, $body, $authType, $login, $passwd) {
             $gateProfile = $gateProfile[0];
-            $rules = $gateProfile->getRules();
             
+            $auths = $gateProfile->getAuths();
+            $accepted = false;
+            
+            $authentication = new Authentication();
+
+            foreach($auths as $auth){
+                $authType = $auth->getType();
+                if ($authType == 'noAuth'){
+                    $accepted = true;
+                    break;
+                } elseif ($authType == 'httpAuth'){
+                    $params = $auth->getParams();
+                    
+                    /*$salt = '';
+                    if (isset($params['salt'])){
+                        $salt = $params['salt'];
+                    }
+                    
+                    $hashedPasswd = $authentication->hashPassword($passwd, $salt);*/
+            
+                    if ($auth->getLogin() == $login && $auth->getPasswd() == $passwd){
+                        $accepted = true;
+                        break;
+                    } else {
+                        // falsches Passwort
+                    }
+                } else {
+                    // diese Methode ist unbekannt
+                }
+            }
+            
+            if (!$accepted){
+                // es wurde kein gültiger Login gefunden
+                return Model::isRejected();
+            } else {
+                //der Zugang ist erlaubt
+            }
+            
+            $rules = $gateProfile->getRules();
+
             // nun muss geprüft werden, ob der Aufruf auch erlaubt ist
             if (in_array("Slim\\Slim", get_declared_classes())) {
                 $router = new \Slim\Router();
@@ -101,9 +151,9 @@ class CGate extends Model
         
         // ermittle nun, ob mit dem gegebenen authType, der Zugriff auf die Komponenten erlaubt ist
         if ($authType == 'noAuth'){
-            return Model::call('getComponentProfileWithAuth', array('profName'=>$profile, 'authType'=>$authType, 'component'=>$component), '', 200, $positive, array('method'=>$method, 'order'=>$order, 'component'=>$component, 'body'=>$input), 'Model::isError', array(), 'GateProfile');
+            return Model::call('getComponentProfileWithAuth', array('profName'=>$profile, 'authType'=>$authType, 'component'=>$component), '', 200, $positive, array('method'=>$method, 'order'=>$order, 'component'=>$component, 'body'=>$input, 'authType'=>$authType, 'login'=>$login, 'passwd'=>$passwd), 'Model::isRejected', array(), 'GateProfile');
         } else {
-            return Model::call('getComponentProfileWithAuthLogin', array('login'=>'???', 'profName'=>$profile, 'authType'=>$authType, 'component'=>$component), '', 200, $positive, array('method'=>$method, 'order'=>$order, 'component'=>$component, 'body'=>$input), 'Model::isError', array(), 'GateProfile');
+            return Model::call('getComponentProfileWithAuthLogin', array('login'=>$login, 'profName'=>$profile, 'authType'=>$authType, 'component'=>$component), '', 200, $positive, array('method'=>$method, 'order'=>$order, 'component'=>$component, 'body'=>$input, 'authType'=>$authType, 'login'=>$login, 'passwd'=>$passwd), 'Model::isRejected', array(), 'GateProfile');
         }
     }
 }
