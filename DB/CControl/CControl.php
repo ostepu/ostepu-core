@@ -769,15 +769,30 @@ class CControl
                                      TRUE
                                      );
 
+            $res = array();
+            
             $tempObjects = array();
-            foreach ( $objects as $object ){
+            foreach ( $objects as $key => $object ){
                 $object = Component::decodeComponent( json_encode( $object ) );
 
                 // prüfen, welche Komponente auf diesem Server ist
                 // es werden nur "lokale" Komponenten initialisiert
                 //if (strpos($object->getAddress().'/', $data['PL']['urlExtern'].'/')===false) continue;
+                
+                if ($object->getInitialization() == 'virtual'){
+                    $newObject = new Component();
+                    $newObject->setId($object->getId());
+                    $newObject->setName($object->getName());
+                    $newObject->setAddress($object->getAddress());
+                    $newObject->setDef($object->getDef());
+                    $newObject->setStatus(201);
+                    $res[] = $newObject;
+                    continue;
+                }
 
                 $URL = $object->getAddress();//$data['PL']['url'].substr($object->getAddress(),strlen($data['PL']['urlExtern']));
+               
+                
                 $result = Request_CreateRequest::createPost(
                                                             $URL . '/control',
                                                             array( ),
@@ -786,11 +801,11 @@ class CControl
                 $tempObjects[] = $object;
                 $request->addRequest($result);
             }
+            
             $results = $request->run();
             $objects = $tempObjects;
 
             $i=0;
-            $res = array();
             foreach ( $objects as $object){
                 $object = Component::decodeComponent( Component::encodeComponent( $object ) );
                 $result = $results[$i++];
@@ -800,6 +815,7 @@ class CControl
                 $newObject->setName($object->getName());
                 $newObject->setAddress($object->getAddress());
                 $newObject->setDef($object->getDef());
+                $newObject->setInitialization($object->getInitialization());
                 $newObject->setStatus($result['status']);
                 $res[] = $newObject;
 

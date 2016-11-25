@@ -150,6 +150,10 @@ class Komponenten {
                         $error = Installation::Get('components', 'componentCrashed', self::$langTemplate);
                     }
                 }
+                
+                if (isset($component['init']) && $component['init']->getInitialization() == 'virtual'){
+                    continue;
+                }
 
                 $countCommands = count(isset($component['commands']) ? $component['commands'] : array());
                 $tempText = '';
