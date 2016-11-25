@@ -277,7 +277,7 @@ class Model
             if ($this->getOption('addRequestToParams')){
                 $params['request'] = array('method'=>$matches->getHttpMethods()[0],
                                            'pattern'=>$matches->getPattern(),
-                                           'headers'=>array()); // TODO: hier fehlen noch die richtigen Header
+                                           'headers'=>\Slim\Http\Headers::extract($_SERVER)); // TODO: hier fehlen noch die richtigen Header
             }
             
             if ($this->getOption('cloneable')){
@@ -374,6 +374,11 @@ class Model
             } else {
                 // wenn keinen vorgegebenen Eingabetyp gibt, wird die Eingabe direkt an die Modulfunktion weitergegeben
                 $result = call_user_func_array($matches->getCallable(), array($selectedCommand['name'],"input"=>$rawInput,$params));
+            }
+            
+            // wenn wir das Feld headers in der Antwort haben, geben wir diese als header aus
+            if (isset($result['headers'])){
+                self::headers($result['headers']);
             }
 
             if ($selectedCommand['method']=='HEAD'){
@@ -1004,6 +1009,12 @@ class Model
     public static function header($name, $value)
     {
         header($name.': '.$value);
+    }
+    
+    public static function headers($headers){
+        foreach($headers as $name => $value){
+            self::header($name, $value);
+        }
     }
     
     // für die Tabellen werden oft postfixe benötigt, welche aus
