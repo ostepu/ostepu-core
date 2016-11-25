@@ -122,10 +122,6 @@
         {
             "name": "getDescFiles",
             "target": "TDocuView"
-        },
-        {
-            "name": "request",
-            "target": "CGate"
         }
     ]
 }

@@ -17,10 +17,6 @@
     {"name":"request", "target":"CLocalObjectRequest"},
     {"name":"postCourse", "target":"LCourse", "priority":150},
     {"name":"deleteCourse", "target":"LCourse", "priority":150},
-    {"name":"postPlatform", "target":"CInstall", "priority":150},
-        {
-            "name": "request",
-            "target": "CGate"
-        }
+    {"name":"postPlatform", "target":"CInstall", "priority":150}
   ]
 }

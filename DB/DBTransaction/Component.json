@@ -131,10 +131,6 @@
         {
             "name": "deleteClean",
             "target": "CInstall"
-        },
-        {
-            "name": "request",
-            "target": "CGate"
         }
     ]
 }

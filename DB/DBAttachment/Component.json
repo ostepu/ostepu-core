@@ -17,10 +17,6 @@
   ],
   "connector":[
         {"name": "request","target": "CLocalObjectRequest"},
-        {"name": "postPlatform","target": "CInstall"},
-        {
-            "name": "request",
-            "target": "CGate"
-        }
+        {"name": "postPlatform","target": "CInstall"}
   ]
 }

@@ -23,10 +23,6 @@
         {
             "name": "postPlatform",
             "target": "CInstall"
-        },
-        {
-            "name": "request",
-            "target": "CGate"
         }
     ]
 }

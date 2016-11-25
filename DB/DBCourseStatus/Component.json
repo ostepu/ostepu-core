@@ -124,10 +124,6 @@
         {"name": "request","target": "CLocalObjectRequest"},
         {"name": "postPlatform","target": "CInstall"},
         {"name": "postSamples","target": "CInstall", "priority":110},
-        { "name": "getDescFiles","target": "TDocuView"},
-        {
-            "name": "request",
-            "target": "CGate"
-        }
+        { "name": "getDescFiles","target": "TDocuView"}
     ]
 }
