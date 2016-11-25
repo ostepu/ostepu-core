@@ -55,6 +55,11 @@
             "name": "editProfile",
             "target": "DBGate",
             "links": []
+        },
+        {
+            "name": "gate",
+            "target": "CGate",
+            "links": []
         }
     ]
 }

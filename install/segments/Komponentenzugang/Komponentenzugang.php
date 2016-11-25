@@ -268,8 +268,45 @@ class Komponentenzugang {
                                                                                     true).
                                                        Design::erstelleSubmitButton(self::$onEvents['addRule']['event'][0], Installation::Get('accessComponents', 'addRule', self::$langTemplate)),
                                                        'v_c');
-                                                     
+                                             
                         $selectedRule = $data['COZ']['coz_selectedRule'];
+                        
+                        // zeigt, wie der Befehl aufgerufen werden kann
+                        if (isset($data['PL']['urlExtern'])){
+                            foreach($rules as $rule){
+                                // suche zunächst die aktuelle Regel (ausgewählt)
+                                if ($rule->getId() != $selectedRule){
+                                    continue;
+                                }
+                                
+                                // wir behandeln nur httpCall-Aufrufe
+                                if ($rule->getType() == 'httpCall'){
+                                    $call = $rule->getContent();
+                                    $call = explode(' ',$call);
+                                    
+                                    // der Aufbau muss sein: METHODE BEFEHL
+                                    if (count($call) != 2){
+                                        break;
+                                    }
+                                        
+                                    $list = Einstellungen::getLinks('gate', dirname(__FILE__), '/tapiconfiguration_cconfig.json');
+                                    
+                                    if (count($list)==0){
+                                        break;
+                                    }
+                                    
+                                    $list = $list[0];
+    
+                                    $text .= Design::erstelleZeileShort($console,
+                                                                        Installation::Get('accessComponents', 'ruleUrl', self::$langTemplate),
+                                                                        'e',
+                                                                        $call[0] . ' '. $list->getAddress() . '/interface/' . $profile->getName() . '/' . $rule->getComponent() . $call[1],
+                                                                        'v');
+                                }
+                                break;
+                            }
+                        }
+                                                     
                         foreach($rules as $rule){
                             if ($rule->getId() != $selectedRule){
                                 continue;
@@ -387,7 +424,7 @@ class Komponentenzugang {
                 $com = array('name'=>$name,
                              'type'=>'clone',
                              'base'=>'CGate',
-                             'baseURI'=>'/'.$profile->getName().'/'.$target,
+                             'baseURI'=>'/interface/'.$profile->getName().'/'.$target,
                              'initialization'=>'virtual');
                 
                 $components[] = $com;

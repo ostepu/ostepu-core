@@ -1,6 +1,6 @@
 {"accessComponents": {
     "title": "API-Profile",
-    "description": "Hier können interne Komponenten zugänglich gemacht werden. Die aktuelle Auswahl kann immer über \"Auswählen\" sichtbar gemacht werden.",
+    "description": "Hier können interne Komponenten zugänglich gemacht werden. Die aktuelle Auswahl kann immer über \"Auswählen\" sichtbar gemacht werden. <br> Dieses Segment verwendet die TApiConfiguration-Komponente. ",
     "addProfile": "Profil hinzufügen",
     "addAuth": "Zugang hinzufügen",
     "addRule": "Regel hinzufügen",
@@ -24,5 +24,6 @@
     "ruleContent": "Inhalt",
     "accessParams": "Zugangsparameter",
     "profileName": "Profilname",
-    "saveProfile": "speichern"
+    "saveProfile": "speichern",
+    "ruleUrl": "Aufruf"
 }}
