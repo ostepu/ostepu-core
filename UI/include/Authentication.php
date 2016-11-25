@@ -96,7 +96,7 @@ class Authentication extends AbstractAuthentication
             }
             
             if (isset($user['salt'])){
-                $password = $this->hashData('sha256',$password.$user['salt']);
+                $password = $this->hashPassword($password,$user['salt']);
 
                 if (isset($user['password']) && $password == $user['password']) {
 
