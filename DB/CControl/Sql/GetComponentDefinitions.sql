@@ -18,6 +18,7 @@ select
     CO.CO_address,
     CO.CO_option,
     CO.CO_def,
+    CO.CO_initialization,
     null as CO_prefix,
     CL.CL_id,
     CL.CL_name,

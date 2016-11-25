@@ -219,6 +219,16 @@ class Component extends Object implements JsonSerializable
         $this->def = $value;
     }
 
+    private $initialization = null;
+    public function getInitialization( )
+    {
+        return $this->initialization;
+    }
+    public function setInitialization( $value = null )
+    {
+        $this->initialization = $value;
+    }
+
     /**
      * Creates an Component object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -235,7 +245,8 @@ class Component extends Object implements JsonSerializable
                                            $name,
                                            $address,
                                            $option,
-                                           $def=null
+                                           $def=null,
+                                           $initialization=null
                                            )
     {
         return new Component( array(
@@ -243,7 +254,8 @@ class Component extends Object implements JsonSerializable
                                     'name' => $name,
                                     'address' => $address,
                                     'option' => $option,
-                                    'def' => $def
+                                    'def' => $def,
+                                    'initialization' => $initialization
                                     ) );
     }
 
@@ -263,7 +275,8 @@ class Component extends Object implements JsonSerializable
                      'CO_links' => 'links',
                      'CO_classFile' => 'classFile',
                      'CO_className' => 'className',
-                     'CO_def' => 'def'
+                     'CO_def' => 'def',
+                     'CO_initialization' => 'initialization'
                      );
     }
 
@@ -305,6 +318,12 @@ class Component extends Object implements JsonSerializable
                                  $values,
                                  'CO_def',
                                  DBJson::mysql_real_escape_string( $this->def )
+                                 );
+        if ( $this->initialization !== null && $this->initialization !== array() )
+            $this->addInsertData(
+                                 $values,
+                                 'CO_initialization',
+                                 DBJson::mysql_real_escape_string( $this->initialization )
                                  );
 
         if ( $values != '' ){
@@ -455,6 +474,8 @@ class Component extends Object implements JsonSerializable
             $list['localPath'] = $this->localPath;
         if ( $this->def !== null && $this->def !== array())
             $list['def'] = $this->def;
+        if ( $this->initialization !== null && $this->initialization !== array())
+            $list['initialization'] = $this->initialization;
 
         return array_merge($list,parent::jsonSerialize( ));
     }

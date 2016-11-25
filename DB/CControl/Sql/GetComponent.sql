@@ -13,7 +13,7 @@
 ?>
 
 select
-    CO_id, CO_name, CO_address, CO_option, CO.CO_def
+    CO_id, CO_name, CO_address, CO_option, CO.CO_def, CO.CO_initialization
 from
     Component
 where
