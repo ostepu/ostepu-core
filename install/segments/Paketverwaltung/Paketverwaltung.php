@@ -175,6 +175,13 @@ class Paketverwaltung {
         }
         return self::$selectedPluginFiles;
     }
+    
+    public static function isPackageSelected($data, $packageName){
+        if (!isset($data['PLUG']['plug_install_' . $packageName]) || $data['PLUG']['plug_install_' . $packageName] !== $packageName) {
+            return false;
+        }
+        return true;
+    }
 
     public static function getDescription($data, $descData) {
         if (isset($data['PL']['language'])) {
