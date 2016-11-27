@@ -28,7 +28,7 @@
         "method": "DELETE",
         "placeholder": [{
             "name": "gpname",
-            "regex": "%^([0-9_]+)$%"
+            "regex": "%^([a-zA-Z0-9_]+)$%"
         }],
         "path": "/gateprofile/name/:gpname"
     },
