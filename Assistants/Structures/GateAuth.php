@@ -58,7 +58,7 @@ class GateAuth extends Object implements JsonSerializable
     }
 
     /**
-     * @var string $params
+     * @var string $params (muss ein String sein, kein Array)
      */
     private $params = null;
 
