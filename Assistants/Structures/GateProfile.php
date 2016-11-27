@@ -82,6 +82,10 @@ class GateProfile extends Object implements JsonSerializable
         $this->rules = $value;
     }
     
+    public function addRule($newRule){
+        $this->rules[] = $newRule;
+    }
+    
     /**
      * @var string $auths
      */
@@ -105,6 +109,10 @@ class GateProfile extends Object implements JsonSerializable
     public function setAuths( $value = null )
     {
         $this->auths = $value;
+    }
+    
+    public function addAuth($newAuth){
+        $this->auths[] = $newAuth;
     }
         
     public static function createGateProfile(
