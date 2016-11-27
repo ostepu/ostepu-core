@@ -45,7 +45,10 @@ class Komponentenzugang {
                                                              'procedure' => 'deleteProfile'),
                                     'saveProfile' => array('name' => 'accessComponentsSaveProfile',
                                                            'event' => array('accessComponentsSaveProfile'),
-                                                           'procedure' => 'saveProfile'));
+                                                           'procedure' => 'saveProfile'),
+                                    'synchronizeDatabase' => array('name' => 'accessComponentsSynchronizeDatabase',
+                                                           'event' => array('accessComponentsSynchronizeDatabase', 'install', 'update'),
+                                                           'procedure' => 'synchronizeDatabase'));
 
     public static function getDefaults() {
         return array(
@@ -88,7 +91,7 @@ class Komponentenzugang {
         if (!$console) {
             $text .= Design::erstelleBeschreibung($console, Installation::Get('accessComponents', 'description', self::$langTemplate));
 
-            $text .= Design::erstelleZeile($console, '', '', Design::erstelleSubmitButton(self::$onEvents['selectProfile']['event'][0], Installation::Get('accessComponents', 'selectProfile', self::$langTemplate)), 'h');
+            $text .= Design::erstelleZeileShort($console, Design::erstelleSubmitButton(self::$onEvents['synchronizeDatabase']['event'][0], Installation::Get('accessComponents', 'synchronizeDatabase', self::$langTemplate)), 'h', Design::erstelleSubmitButton(self::$onEvents['selectProfile']['event'][0], Installation::Get('accessComponents', 'selectProfile', self::$langTemplate)), 'h');
 
             $profiles = self::getAllProfiles($data);
             
@@ -130,6 +133,7 @@ class Komponentenzugang {
                 $data['COZ']['coz_selectedProfile'] = $profiles[0]->getId();
             }
             
+            $selProfile = null;
             // zeichne die Profile
             $selectedProfile = $data['COZ']['coz_selectedProfile'];
             if ($selectedProfile !== null){
@@ -139,14 +143,17 @@ class Komponentenzugang {
                         continue;
                     }
                     
+                    $selProfile = $profile;
+                    
                     $text .= Design::erstelleZeile($console,
                                Installation::Get('accessComponents', 'profileName', self::$langTemplate),
                                'e',
-                               Design::erstelleEingabezeile($console,
+                               ($profile->getReadonly() ? $profile->getName() :
+                                    Design::erstelleEingabezeile($console,
                                                             $profile->getName(),
                                                             'data[COZ][coz_selectedProfileName]',
                                                             '',
-                                                            false),
+                                                            false)),
                                'v',
                                Design::erstelleSubmitButton(self::$onEvents['deleteProfile']['event'][0], Installation::Get('accessComponents', 'deleteProfile', self::$langTemplate)),
                                'h');
@@ -178,7 +185,8 @@ class Komponentenzugang {
                                                                                     'data[COZ][coz_selectedAuth]',
                                                                                     array_keys($authList)[0],
                                                                                     true).
-                                                       Design::erstelleSubmitButton(self::$onEvents['addAuth']['event'][0], Installation::Get('accessComponents', 'addAuth', self::$langTemplate)),
+                                                       ($profile->getReadonly() ? '' :
+                                                       Design::erstelleSubmitButton(self::$onEvents['addAuth']['event'][0], Installation::Get('accessComponents', 'addAuth', self::$langTemplate))),
                                                        'v_c');
                                                      
                         $selectedAuth = $data['COZ']['coz_selectedAuth'];
@@ -190,44 +198,49 @@ class Komponentenzugang {
                             $text .= Design::erstelleZeile($console,
                                                            Installation::Get('accessComponents', 'accessType', self::$langTemplate),
                                                            'e',
+                                                           ($profile->getReadonly() ? array('noAuth'=>'Frei', 'httpAuth'=>'HTTPAuth')[$auth->getType()] :
                                                            Design::erstelleAuswahlliste($console,
                                                                                         array('noAuth'=>'Frei', 'httpAuth'=>'HTTPAuth'),
                                                                                         $auth->getType(),
                                                                                         'data[COZ][coz_selectedAuthType]',
                                                                                         'noAuth',
-                                                                                        false),
+                                                                                        false)),
                                                            'v');
 
                             $text .= Design::erstelleZeile($console,
                                                            Installation::Get('accessComponents', 'accessLogin', self::$langTemplate),
                                                            'e',
+                                                           ($profile->getReadonly() ? $auth->getLogin() :
                                                            Design::erstelleEingabezeile($console,
                                                                                         $auth->getLogin(),
                                                                                         'data[COZ][coz_selectedAuthLogin]',
                                                                                         '',
-                                                                                        false),
+                                                                                        false)),
                                                            'v');
                                                            
                             $text .= Design::erstelleZeile($console,
                                                            Installation::Get('accessComponents', 'accessPasswd', self::$langTemplate),
                                                            'e',
+                                                           ($profile->getReadonly() ? $auth->getPasswd() :
                                                            Design::erstelleEingabezeile($console,
                                                                                         $auth->getPasswd(),
                                                                                         'data[COZ][coz_selectedAuthPasswd]',
                                                                                         '',
-                                                                                        false),
+                                                                                        false)),
                                                            'v');
 
                             $text .= Design::erstelleZeile($console,
                                                            Installation::Get('accessComponents', 'accessParams', self::$langTemplate),
                                                            'e',
+                                                           ($profile->getReadonly() ? $auth->getParams() :
                                                            Design::erstelleEingabezeile($console,
                                                                                         $auth->getParams(),
                                                                                         'data[COZ][coz_selectedAuthParams]',
                                                                                         '',
-                                                                                        false),
+                                                                                        false)),
                                                            'v',
-                                                           Design::erstelleSubmitButton(self::$onEvents['deleteAuth']['event'][0], Installation::Get('accessComponents', 'deleteAuth', self::$langTemplate)),
+                                                           ($profile->getReadonly() ? '' :
+                                                           Design::erstelleSubmitButton(self::$onEvents['deleteAuth']['event'][0], Installation::Get('accessComponents', 'deleteAuth', self::$langTemplate))),
                                                            'h' );
                         }
                     } else {
@@ -235,7 +248,8 @@ class Komponentenzugang {
                          $text .= Design::erstelleZeile($console,
                                                         Installation::Get('accessComponents', 'existingAuths', self::$langTemplate),
                                                         'e',
-                                                        Design::erstelleSubmitButton(self::$onEvents['addAuth']['event'][0], Installation::Get('accessComponents', 'addAuth', self::$langTemplate)),
+                                                        ($profile->getReadonly() ? '' :
+                                                        Design::erstelleSubmitButton(self::$onEvents['addAuth']['event'][0], Installation::Get('accessComponents', 'addAuth', self::$langTemplate))),
                                                         'v_c');                        
                     }
                     
@@ -266,7 +280,8 @@ class Komponentenzugang {
                                                                                     'data[COZ][coz_selectedRule]',
                                                                                     array_keys($ruleList)[0],
                                                                                     true).
-                                                       Design::erstelleSubmitButton(self::$onEvents['addRule']['event'][0], Installation::Get('accessComponents', 'addRule', self::$langTemplate)),
+                                                       ($profile->getReadonly() ? '' :
+                                                       Design::erstelleSubmitButton(self::$onEvents['addRule']['event'][0], Installation::Get('accessComponents', 'addRule', self::$langTemplate))),
                                                        'v_c');
                                              
                         $selectedRule = $data['COZ']['coz_selectedRule'];
@@ -301,7 +316,7 @@ class Komponentenzugang {
                                                                         Installation::Get('accessComponents', 'ruleUrl', self::$langTemplate),
                                                                         'e',
                                                                         $call[0] . ' '. $list->getAddress() . '/interface/' . $profile->getName() . '/' . $rule->getComponent() . $call[1],
-                                                                        'v');
+                                                                        'v break');
                                 }
                                 break;
                             }
@@ -315,34 +330,38 @@ class Komponentenzugang {
                             $text .= Design::erstelleZeile($console,
                                                            Installation::Get('accessComponents', 'ruleType', self::$langTemplate),
                                                            'e',
+                                                           ($profile->getReadonly() ? array('httpCall'=>'HTTPCall')[$rule->getType()] :
                                                            Design::erstelleAuswahlliste($console,
                                                                                         array('httpCall'=>'HTTPCall'),
                                                                                         $rule->getType(),
                                                                                         'data[COZ][coz_selectedRuleType]',
                                                                                         'httpCall',
-                                                                                        false),
+                                                                                        false)),
                                                            'v');
 
                             $text .= Design::erstelleZeile($console,
                                                            Installation::Get('accessComponents', 'ruleComponent', self::$langTemplate),
                                                            'e',
+                                                           ($profile->getReadonly() ? $rule->getComponent() :
                                                            Design::erstelleEingabezeile($console,
                                                                                         $rule->getComponent(),
                                                                                         'data[COZ][coz_selectedRuleComponent]',
                                                                                         '',
-                                                                                        false),
+                                                                                        false)),
                                                            'v');
 
                             $text .= Design::erstelleZeile($console,
                                                            Installation::Get('accessComponents', 'ruleContent', self::$langTemplate),
                                                            'e',
+                                                           ($profile->getReadonly() ? $rule->getContent() :
                                                            Design::erstelleEingabezeile($console,
                                                                                         $rule->getContent(),
                                                                                         'data[COZ][coz_selectedRuleContent]',
                                                                                         '',
-                                                                                        false),
+                                                                                        false)),
                                                            'v',
-                                                           Design::erstelleSubmitButton(self::$onEvents['deleteRule']['event'][0], Installation::Get('accessComponents', 'deleteRule', self::$langTemplate)),
+                                                           ($profile->getReadonly() ? '' :
+                                                           Design::erstelleSubmitButton(self::$onEvents['deleteRule']['event'][0], Installation::Get('accessComponents', 'deleteRule', self::$langTemplate))),
                                                            'h');
                         }
                     } else {
@@ -350,13 +369,16 @@ class Komponentenzugang {
                          $text .= Design::erstelleZeile($console,
                                                         Installation::Get('accessComponents', 'existingRules', self::$langTemplate),
                                                         'e',
-                                                        Design::erstelleSubmitButton(self::$onEvents['addRule']['event'][0], Installation::Get('accessComponents', 'addRule', self::$langTemplate)),
+                                                        ($profile->getReadonly() ? '' :
+                                                        Design::erstelleSubmitButton(self::$onEvents['addRule']['event'][0], Installation::Get('accessComponents', 'addRule', self::$langTemplate))),
                                                         'v_c');
                     }
+                    
+                    break;
                 }
             }
             
-            if (isset($data['COZ']['coz_selectedProfile'])){
+            if (isset($data['COZ']['coz_selectedProfile']) && isset($selProfile) && !$selProfile->getReadonly()){
                  $text .= Design::erstelleZeileShort($console,
                                                      Design::erstelleSubmitButton(self::$onEvents['saveProfile']['event'][0], Installation::Get('accessComponents', 'saveProfile', self::$langTemplate)),
                                                      'h_c');
@@ -368,20 +390,33 @@ class Komponentenzugang {
     }
     
     private static $cachedProfiles = null;
+    private static $cachedExternalProfiles = null;
+    
+    public static function getAllExternalProfiles($data, $refreshCachedData = false){
+        if (self::$cachedExternalProfiles !== null && !$refreshCachedData){
+            return self::$cachedExternalProfiles;
+        }
+
+        // sammelt Profildefinitionen von anderen Segmenten ein (diese stehen nicht in der Datenbank)
+        self::$cachedExternalProfiles = Installation::collect('getAllExternalProfiles',$data, array(__CLASS__));
+
+        return self::$cachedExternalProfiles;
+    }
+    
     public static function getAllProfiles($data, $refreshCachedData = false){
         // wenn die Profile bereits geladen wurden, müssen wir sie nicht nochmal ermitteln
         if (self::$cachedProfiles !== null && !$refreshCachedData){
             return self::$cachedProfiles;
         }
-        
+
         self::$cachedProfiles = array();
         
-        // sammelt Profildefinitionen von anderen Segmenten ein (diese stehen nicht in der Datenbank)
-        self::$cachedProfiles = Installation::collect('getAllProfiles',$data, array(__CLASS__));
-        
+        // die Profile von außen benötigen IDs
+        // TODO: die externen Profile korrekt in die Datenbank laden
+
         $list = Einstellungen::getLinks('getAllProfiles', dirname(__FILE__), '/tapiconfiguration_cconfig.json');
         // es darf nur eine Verbindung existieren, sonst wissen wir beim Ändern nicht, wo wir anfragen sollen
-        
+
         $multiRequestHandle = new Request_MultiRequest();
 
         for ($i = 0; $i < count($list); $i++) {
@@ -400,7 +435,7 @@ class Komponentenzugang {
                 self::$cachedProfiles = array_merge(self::$cachedProfiles, $new);
             }
         }
-        
+
         return self::$cachedProfiles;
     }
     
@@ -612,6 +647,103 @@ class Komponentenzugang {
 
             $answer = $multiRequestHandle->run();    
             // TODO: der Aufruf muss ausgewertet werden
+        }
+        
+        Installation::log(array('text' => Installation::Get('main', 'functionEnd')));
+        return null;
+    }
+    
+    public static function synchronizeDatabase($data, &$fail, &$errno, &$error) {
+        Installation::log(array('text' => Installation::Get('main', 'functionBegin')));
+        
+        $profiles = self::getAllExternalProfiles($data);
+        $deleteProfile = Einstellungen::getLinks('deleteProfileByName', dirname(__FILE__), '/tapiconfiguration_cconfig.json');
+        $addProfile = Einstellungen::getLinks('addProfile', dirname(__FILE__), '/tapiconfiguration_cconfig.json');
+        $addAuth = Einstellungen::getLinks('addAuth', dirname(__FILE__), '/tapiconfiguration_cconfig.json');
+        $addRule = Einstellungen::getLinks('addRule', dirname(__FILE__), '/tapiconfiguration_cconfig.json');
+        
+        foreach($profiles as $profile){
+            
+            // zunächst wollen wir das Profil in der Datenbank löschen
+            $multiRequestHandle = new Request_MultiRequest();
+            for ($i = 0; $i < count($deleteProfile); $i++) {
+                $handler = Request_CreateRequest::createDelete($deleteProfile[$i]->getAddress() . '/gateprofile/name/'.$profile->getName(), array(), '');
+                $multiRequestHandle->addRequest($handler);
+            }
+
+            $answer = $multiRequestHandle->run();
+            // TODO: der Aufruf muss ausgewertet werden
+            
+            // nun muss das Profil in der Datenbank angelegt werden
+            $multiRequestHandle = new Request_MultiRequest();
+            $newProfile = GateProfile::createGateProfile(null,
+                                                         $profile->getName(),
+                                                         '1');
+            $newProfile->setStatus(200);
+            for ($i = 0; $i < count($addProfile); $i++) {
+                $handler = Request_CreateRequest::createPost($addProfile[$i]->getAddress() . '/gateprofile', array(), GateProfile::encodeGateProfile($newProfile));
+                $multiRequestHandle->addRequest($handler);
+            }
+
+            $answers = $multiRequestHandle->run();    
+            $profileId = null;
+            foreach($answers as $answer){
+                if ($answer['status'] == 201 && isset($answer['content'])){
+                    $pro = GateProfile::decodeGateProfile($answer['content']);
+
+                    if ($pro->getStatus() == 201){
+                        $profileId = $pro->getId();
+                        break;
+                    } else {
+                        // ein Fehler beim Erstellen des Profils
+                    }
+                } else {
+                    // ein Fehler beim Aufruf
+                }
+            }
+
+            if ($profileId === null){
+                // es ist ein Fehler aufgetreten
+                continue;
+            }
+            
+            // jetzt können die Authentifizierungen und Regeln angelegt werden
+            
+            foreach($profile->getAuths() as $auth){
+                $multiRequestHandle = new Request_MultiRequest();
+
+                $newAuth = GateAuth::createGateAuth(null,
+                                                    $auth->getType(),
+                                                    $auth->getParams(),
+                                                    $auth->getLogin(),
+                                                    $auth->getPasswd(),
+                                                    $profileId);
+
+                for ($i = 0; $i < count($addAuth); $i++) {
+                    $handler = Request_CreateRequest::createPost($addAuth[$i]->getAddress() . '/gateauth', array(), GateAuth::encodeGateAuth($newAuth));
+                    $multiRequestHandle->addRequest($handler);
+                }
+
+                $answer = $multiRequestHandle->run();      
+                // TODO: der Aufruf muss ausgewertet werden 
+            }
+            
+            foreach($profile->getRules() as $rule){
+                $multiRequestHandle = new Request_MultiRequest();
+
+                $newRule = GateRule::createGateRule(null,
+                                                    $rule->getType(),
+                                                    $rule->getComponent(),
+                                                    $rule->getContent(),
+                                                    $profileId);
+                for ($i = 0; $i < count($addRule); $i++) {
+                    $handler = Request_CreateRequest::createPost($addRule[$i]->getAddress() . '/gaterule', array(), GateRule::encodeGateRule($newRule));
+                    $multiRequestHandle->addRequest($handler);
+                }
+
+                $answer = $multiRequestHandle->run();
+                // TODO: der Aufruf muss ausgewertet werden
+            }
         }
         
         Installation::log(array('text' => Installation::Get('main', 'functionEnd')));

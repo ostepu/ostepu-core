@@ -10,12 +10,10 @@
     "noAuth": "Frei",
     "httpauth": "HTTP-Authentifizierung",
     "existingProfiles": "existierende Profile",
-    "selectProfile": "Auswählen",
+    "selectProfile": "Auswahl aktualisieren",
     "existingAuths": "existierende Zugänge",
     "existingRules": "existierende Regeln",
     "authsList": "Zugänge",
-    "selectAuth": "Auswählen",
-    "selectRule": "Regeln",
     "accessType": "Zugangstyp",
     "accessLogin": "Benutzername",
     "accessPasswd": "Passwort",
@@ -25,5 +23,6 @@
     "accessParams": "Zugangsparameter",
     "profileName": "Profilname",
     "saveProfile": "speichern",
-    "ruleUrl": "Aufruf"
+    "ruleUrl": "Aufruf",
+    "synchronizeDatabase": "Datenbank synchronisieren"
 }}

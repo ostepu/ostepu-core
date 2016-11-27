@@ -42,6 +42,11 @@
             "links": []
         },
         {
+            "name": "deleteProfileByName",
+            "target": "DBGate",
+            "links": []
+        },
+        {
             "name": "editRule",
             "target": "DBGate",
             "links": []
