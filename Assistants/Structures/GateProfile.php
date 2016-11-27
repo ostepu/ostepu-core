@@ -58,6 +58,31 @@ class GateProfile extends Object implements JsonSerializable
     }
 
     /**
+     * @var string $name the name of the rule
+     */
+    private $readonly = null;
+
+    /**
+     * the $readonly setter
+     *
+     * @param string $value the new value for $readonly
+     */
+    public function getReadonly( )
+    {
+        return $this->readonly;
+    }
+
+    /**
+     * (description)
+     *
+     * @param $readonly (description)
+     */
+    public function setReadonly( $value = null )
+    {
+        $this->readonly = $value;
+    }
+
+    /**
      * @var string $rules
      */
     private $rules = array();
@@ -117,12 +142,14 @@ class GateProfile extends Object implements JsonSerializable
         
     public static function createGateProfile(
                                         $id,
-                                        $name
+                                        $name,
+                                        $readonly=0
                                         )
     {
         return new GateProfile( array(
                                  'id' => $id,
-                                 'name' => $name
+                                 'name' => $name,
+                                 'readonly' => $readonly
                                  ) );
     }
 
@@ -136,6 +163,7 @@ class GateProfile extends Object implements JsonSerializable
         return array(
                      'GP_id' => 'id',
                      'GP_name' => 'name',
+                     'GP_readonly' => 'readonly',
                      'GP_rules' => 'rules',
                      'GP_auths' => 'auths'
                      );
@@ -160,6 +188,12 @@ class GateProfile extends Object implements JsonSerializable
                                  $values,
                                  'GP_name',
                                  DBJson::mysql_real_escape_string( $this->name )
+                                 );
+        if ( $this->readonly !== null )
+            $this->addInsertData(
+                                 $values,
+                                 'GP_readonly',
+                                 DBJson::mysql_real_escape_string( $this->readonly )
                                  );
 
         if ( $values != '' ){
@@ -301,6 +335,8 @@ class GateProfile extends Object implements JsonSerializable
             $list['id'] = $this->id;
         if ( $this->name !== null )
             $list['name'] = $this->name;
+        if ( $this->readonly !== null )
+            $list['readonly'] = $this->readonly;
         if ( $this->rules !== array() )
             $list['rules'] = $this->rules;
         if ( $this->auths !== array() )
