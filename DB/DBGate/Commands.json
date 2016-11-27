@@ -22,6 +22,17 @@
         "path": "/gateprofile/gateprofile/:gpid"
     },
     {
+        "name": "deleteGateProfileByName",
+        "outputType": "GateProfile",
+        "inputType": "",
+        "method": "DELETE",
+        "placeholder": [{
+            "name": "gpname",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/gateprofile/name/:gpname"
+    },
+    {
         "name": "addGateProfile",
         "outputType": "GateProfile",
         "inputType": "GateProfile",

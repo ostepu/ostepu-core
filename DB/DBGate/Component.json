@@ -45,6 +45,14 @@
             }]
         },
         {
+            "name": "deleteGateProfileByName",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
             "name": "deleteGateRule",
             "target": "DBQueryWrite",
             "links": [{

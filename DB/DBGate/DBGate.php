@@ -50,6 +50,11 @@ class DBGate
         return $this->_component->callSqlTemplate('deleteGateProfile',dirname(__FILE__).'/Sql/DeleteGateProfile.sql',$params,201,'Model::isCreated',array(new GateProfile()),'Model::isProblem',array(new GateProfile()));
     }
 
+    public function deleteGateProfileByName( $callName, $input, $params = array() )
+    {
+        return $this->_component->callSqlTemplate('deleteGateProfileByName',dirname(__FILE__).'/Sql/DeleteGateProfileByName.sql',$params,201,'Model::isCreated',array(new GateProfile()),'Model::isProblem',array(new GateProfile()));
+    }
+
     public function addGateProfile( $callName, $input, $params = array() )
     {
         $positive = function($input) {
