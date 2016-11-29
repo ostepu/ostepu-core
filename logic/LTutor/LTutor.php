@@ -1109,6 +1109,15 @@ class LTutor
                 $this->app->response->setBody(json_encode($errors));
                 $this->app->stop();
             }
+            
+            if (!preg_match("%^([a-z0-9_]+)$%", $transactionId[0])){
+                fclose($csv);
+                $this->deleteDir($tempDir);
+                $this->app->response->setStatus(409);
+                $errors[] = Language::Get('main','invalidTransactionId', self::$langTemplate, array('transactionId'=>$transactionId[0]));
+                $this->app->response->setBody(json_encode($errors));
+                $this->app->stop();                
+            }
 
             $result = Request::routeRequest(
                                             'GET',
