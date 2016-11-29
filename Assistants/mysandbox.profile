@@ -1,4 +1,4 @@
-include /etc/firejail/generic.profile
+include /etc/firejail/default.profile
 
 private-etc alternatives
 
