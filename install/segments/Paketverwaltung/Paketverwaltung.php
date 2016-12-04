@@ -861,7 +861,7 @@ class Paketverwaltung {
             $componentFiles = array();
 
             foreach ($pluginFiles as $plug) {
-                $file = self::getPackagePath($data) . DIRECTORY_SEPARATOR . $plug;
+                $file = $plug;
                 if (substr($file, -5) == '.json' && file_exists($file) && is_readable($file)) {
                     $dat = file_get_contents($file);
                     $dat = json_decode($dat, true);
