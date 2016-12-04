@@ -63,6 +63,20 @@ begin
     END IF;
 end;
 
+DROP PROCEDURE IF EXISTS `execute_if_constraint_not_exists`;
+CREATE PROCEDURE `execute_if_constraint_not_exists` (in theTable varchar(255), in theForeignKey varchar(255), in theStatement varchar(255))
+begin
+    set @database = Database();
+    if((SELECT count(*) FROM information_schema.TABLE_CONSTRAINTS WHERE
+            CONSTRAINT_SCHEMA = @database AND
+            TABLE_NAME        = theTable AND
+            CONSTRAINT_NAME   = theForeignKey) = 0) THEN
+               SET @s = theStatement;
+               PREPARE stmt FROM @s;
+               EXECUTE stmt;
+    END IF;
+end;
+
 DROP PROCEDURE IF EXISTS `execute_if_column_not_exists`;
 CREATE PROCEDURE `execute_if_column_not_exists` (in theTable varchar(128), in theColumnName varchar(128), in theStatement varchar(255))
 begin
