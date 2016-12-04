@@ -45,7 +45,8 @@ ALTER TABLE `File<?php echo $profile;?>` MODIFY COLUMN F_timeStamp INT UNSIGNED 
 
 call drop_index_if_exists('File<?php echo $profile;?>','F_hash_UNIQUE');
 call drop_index_if_exists('File<?php echo $profile;?>','F_address_UNIQUE');
-ALTER IGNORE TABLE `File<?php echo $profile;?>` ADD CONSTRAINT `F_address_displayName_UNIQUE` UNIQUE (`F_address` ASC,`F_displayName` ASC);
+call execute_if_constraint_not_exists('File<?php echo $profile;?>','F_address_displayName_UNIQUE', 'ALTER TABLE `File<?php echo $profile;?>` ADD CONSTRAINT `F_address_displayName_UNIQUE` UNIQUE (`F_address` ASC,`F_displayName` ASC);');
+
 
 <?php if (is_dir($sqlPath.'/procedures')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/procedures/'.$inp);}},scandir($sqlPath.'/procedures'),array_pad(array(),count(scandir($sqlPath.'/procedures')),$sqlPath));?>
 <?php if (is_dir($sqlPath.'/migrations')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/migrations/'.$inp);}},scandir($sqlPath.'/migrations'),array_pad(array(),count(scandir($sqlPath.'/migrations')),$sqlPath));?>

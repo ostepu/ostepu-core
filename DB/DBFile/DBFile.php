@@ -118,6 +118,13 @@ class DBFile
         };
 
         $params = DBJson::mysql_real_escape_string( $params );
+        if (!isset($params['beginStamp'])){
+            $params['beginStamp'] = 0;
+        }
+        if (!isset($params['endStamp'])){
+            $params['endStamp'] = 0;
+        }
+        
         return $this->_component->call($linkName, $params, '', 200, $positive, array(), 'Model::isProblem', array(), 'Query');
     }
 
