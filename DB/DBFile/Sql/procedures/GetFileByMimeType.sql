@@ -36,7 +36,7 @@ where
     and
         ('",beginStamp,"'='0' or F_timeStamp>='",beginStamp,"')
         and
-        ('",endStamp,"'='0' or F_timeStamp>='",endStamp,"');");
+        ('",endStamp,"'='0' or F_timeStamp<='",endStamp,"');");
 PREPARE stmt1 FROM @s;
 EXECUTE stmt1;
 DEALLOCATE PREPARE stmt1;
