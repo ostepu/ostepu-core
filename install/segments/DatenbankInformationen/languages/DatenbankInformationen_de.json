@@ -9,7 +9,7 @@
     "databasePlatformUser": {
         "title": "Plattform-Datenbanknutzer",
         "db_passwd_operator": "Passwort",
-        "db_user_operator": "Plattform-Datenbanknutzer",
+        "db_user_operator": "Plattform-Datenbanknutzer<br/>(max. 11 Zeichen)",
         "description": "Geben Sie hier den Benutzernamen und das Passwort für den Datenbankzugang, der Komponenten, ein."
     },
     "databaseAdmin": {

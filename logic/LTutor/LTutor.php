@@ -794,31 +794,39 @@ class LTutor
                         $newFileData = new File();
                         $data="<h1>".str_replace('_',' ',strtoupper($namesOfExercises[$exerciseId]))."</h1><hr><p></p>";
 
-                        if (isset($marking['submission']['id']))
-                            $data.="Einsendungsnummer: {$marking['submission']['id']}\n";
-                        /*if (isset($marking['id']))
-                            $data.="Korrekturnummer: {$marking['id']}\n";*/
+                        //if (isset($marking['submission']['id']))
+                        //    $data.="Einsendungsnummer: {$marking['submission']['id']}\n";
+                        if (isset($marking['id']))
+                            $data.="Korrekturnummer: {$marking['id']}\n";
 
-                        foreach ($groups as $group){
-                            $user = array_merge(array($group['leader']),isset($group['members']) ? $group['members'] : array());
-                            $found=false;
-                            foreach ($user as $us){
-                                if ($us['id'] == $marking['submission']['studentId']){
-                                    $namen=array();
-                                    foreach ($user as $member){
-                                        $namen[] = (isset($member['firstName']) ? $member['firstName'] : '-').' '.(isset($member['lastName']) ? $member['lastName'] : '' ).' ('.(isset($member['userName']) ? $member['userName'] : '').')';
+                        // die Namen der Studenten sollen dort nur auftauchen, wenn withNames gewählt ist
+                        if ($withNames){
+                            foreach ($groups as $group){
+                                $user = array_merge(array($group['leader']),isset($group['members']) ? $group['members'] : array());
+                                $found=false;
+                                foreach ($user as $us){
+                                    if ($us['id'] == $marking['submission']['studentId']){
+                                        $namen=array();
+                                        foreach ($user as $member){
+                                            $namen[] = (isset($member['firstName']) ? $member['firstName'] : '-').' '.(isset($member['lastName']) ? $member['lastName'] : '' ).' ('.(isset($member['userName']) ? $member['userName'] : '').')';
+                                        }
+                                        $namen=implode(', ',$namen);
+                                        if (count($user) == 1){
+                                            $data.="Student: {$namen}\n";
+                                        } else {
+                                            $data.="Studenten: {$namen}\n";                                            
+                                        }
+                                        $found=true;
+                                        break;
                                     }
-                                    $namen=implode(', ',$namen);
-                                    $data.="Studenten: {$namen}\n";
-                                    $found=true;
-                                    break;
                                 }
+                                if ($found) break;
                             }
-                            if ($found) break;
                         }
 
-                        if (isset($marking['submission']['comment']) && trim($marking['submission']['comment']) != '')
+                        if (isset($marking['submission']['comment']) && trim($marking['submission']['comment']) != ''){
                             $data.="Kommentar: {$marking['submission']['comment']}\n";
+                        }
 
                         $data.="<pre>";
                         $newFileData->setBody($data, true);
