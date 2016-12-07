@@ -80,6 +80,11 @@ Aufbau:
 | txt  | text/*
 | img  | image/*
 
+> Man kann auch nur eine Dateiendung angeben, indem man schreibt .Dateiendung
+> <br/>Beispiel: .zip
+>
+>Erklärung: Es sind alle Dateien mit der Endung zip erlaubt
+
 ---
 #### Anhang festlegen #####
 

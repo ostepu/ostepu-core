@@ -42,7 +42,9 @@ class FILE_TYPE
         'css' => array('text/css'),
         'js' => array('text/javascript', 'application/x-javascript'),
         'txt' => array('text/*'),
-        'img' => array('image/*'));
+        'img' => array('image/*'),
+        '' => array('*/*'),
+        '*' => array('*/*'));
 
     /**
      * Check if FileType has a given MimeType.

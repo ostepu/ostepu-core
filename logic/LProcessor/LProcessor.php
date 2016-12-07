@@ -568,13 +568,13 @@ class LProcessor
                     $found = false;
                     $types = array();
                     $mimeType = MimeReader::get_mime($filePath);
-                    $foundExtension = (isset(pathinfo($filePath)['extension']) ? pathinfo($filePath)['extension'] : '-');
+                    $foundExtension = strtolower(isset(pathinfo($filePath)['extension']) ? pathinfo($filePath)['extension'] : '-');
 
                     foreach ($exerciseFileTypes as $type){
                         $types[] = $type->getText();
                         $type = explode(' ',str_replace('*','',$type->getText()));
 //echo MimeReader::get_mime($filePath);
-                        if (strpos($mimeType,$type[0])!==false && (!isset($type[1]) || (('.'.$foundExtension) == $type[1]))) {
+                        if (strpos($mimeType,$type[0])!==false && (!isset($type[1]) || (('.'.$foundExtension) == strtolower($type[1])))) {
                             $found = true;
                             break;
                         }
