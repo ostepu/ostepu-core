@@ -334,18 +334,24 @@ class Paketverwaltung {
                         // nun wollen wir jedes dieser repos pruefen
                         $name = '???';
                         $url = '';
+                        $entryPath = $entry['path'];
                         if (isset($entry['params']['name'])) {
                             $name = $entry['params']['name'];
                         }
                         if (isset($entry['params']['URL'])) {
                             $url = $entry['params']['URL'];
                         }
+                        
+                        if (isset($entry['params']['path'])) {
+                            $entryPath = $entry['params']['path'];
+                        }
 
                         $text .= Design::erstelleZeileShort($console, $name . ': ' . $url, 'info-color e');
                         $myerror = '';
                         $myfail = false;
                         $myerrno = 0;
-                        $collected = GitAktualisierung::collectGitChanges($data['PL']['localPath'] . DIRECTORY_SEPARATOR . $entry['path'], $data, $myfail, $myerrno, $myerror);
+                        $collected = GitAktualisierung::collectGitChanges($data['PL']['localPath'] . DIRECTORY_SEPARATOR . $entryPath, $data, $myfail, $myerrno, $myerror);
+
                         if ($myfail) {
                             // es ist ein Fehler aufgetreten
                             $text .= Design::erstelleZeileShort($console, $myerror, 'error v');
