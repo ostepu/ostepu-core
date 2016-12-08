@@ -5,11 +5,11 @@
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
  *
- * @package OSTEPU (https://github.com/ostepu/system)
+ * @package OSTEPU (https://github.com/ostepu/ostepu-core)
  * @since 0.1.0
  *
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
- * @date 2014-2015
+ * @date 2014-2016
  * @author Ralf Busch <ralfbusch92@gmail.com>
  * @date 2013-2014
  * @author Florian Lücke <florian.luecke@gmail.com>

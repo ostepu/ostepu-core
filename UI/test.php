@@ -1,4 +1,19 @@
 <?php
+/**
+ * @file test.php
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/ostepu-core)
+ * @since 0.3.6
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2015-2016
+ * @author Florian Lücke <florian.luecke2@gmail.com>
+ * @date 2015
+ *
+ */
+
 
 require_once(dirname(__FILE__).'/../install/segments/Anfragegraph/Anfragegraph.php');
 require_once(dirname(__FILE__).'/include/Helpers.php');
