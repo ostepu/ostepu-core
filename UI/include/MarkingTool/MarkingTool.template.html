@@ -178,7 +178,7 @@ if (isset($GroupNotificationElements)) {
                         print '<span class="left">';
                         print '<textarea  placeholder="'.Language::Get('main','tutorComment', $langTemplate).'" name="';
                         print 'exercises[' . $leaderID . '][' . $eid . '][tutorComment]';
-                        print '" class="" style="form-field text-input short" style="display: inline-block;" id="markingComment" rows="1" maxlength="255">';
+                        print '" class="short" style="display: inline-block;" id="markingComment" rows="1" maxlength="255">';
                         if (isset($exercise['submission']['marking']['tutorComment'])) print $exercise['submission']['marking']['tutorComment'];
                         print '</textarea>';
                         print '</span>';
