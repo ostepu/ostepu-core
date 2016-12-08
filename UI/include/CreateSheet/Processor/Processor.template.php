@@ -4,7 +4,7 @@
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
  *
- * @package OSTEPU (https://github.com/ostepu/system)
+ * @package OSTEPU (https://github.com/ostepu/ostepu-core)
  * @since 0.1.1
  *
  * @author Ralf Busch <ralfbusch92@gmail.com>
@@ -95,7 +95,14 @@ if (isset($processors)){
     <br><br>
     <?php
         if (isset($process) && isset($selectedComponent)){
-            $pro = Template::WithTemplateFile('include/CreateSheet/Processor/'.$selectedComponent->getName().'.template.php');
+            $templateName = $selectedComponent->getName().'.template.php';
+            
+            if (!file_exists(dirname(__FILE__).'/'.$templateName)){
+                $templateName = 'default.template.php';
+            }
+            
+            $pro = Template::WithTemplateFile('include/CreateSheet/Processor/'.$templateName);
+                        
             if (isset($cid))
                 $pro->bind(array('cid'=>$cid));
             if (isset($uid))
