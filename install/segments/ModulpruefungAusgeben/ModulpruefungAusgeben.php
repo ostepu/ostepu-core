@@ -129,9 +129,9 @@ class ModulpruefungAusgeben {
         $result['mod_php5'] = self::apache_module_exists('mod_php5');
         $result['mod_rewrite'] = self::apache_module_exists('mod_rewrite');
         $result['mod_deflate'] = self::apache_module_exists('mod_deflate');
-        $result['mod_headers(win)'] = self::apache_module_exists('mod_headers');
-        $result['mod_filter(win)'] = self::apache_module_exists('mod_filter');
-        $result['mod_expires(win)'] = self::apache_module_exists('mod_expires');
+        $result['mod_headers'] = self::apache_module_exists('mod_headers');
+        $result['mod_filter'] = self::apache_module_exists('mod_filter');
+        $result['mod_expires'] = self::apache_module_exists('mod_expires');
 
         Installation::log(array('text' => Installation::Get('modules', 'checkResult', self::$langTemplate, array('res' => json_encode($result)))));
         Installation::log(array('text' => Installation::Get('main', 'functionEnd')));

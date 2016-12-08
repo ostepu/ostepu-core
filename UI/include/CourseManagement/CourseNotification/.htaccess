@@ -5,7 +5,9 @@
         # Default directive
         ExpiresDefault "access plus 1 day"
     </IfModule>
-    Header set User-Cache-Control "max-age=86400, public"
-    Header set Cache-Control "max-age=86400, public"
-    Header set Pragma "cache"
+    <IfModule mod_headers.c>
+        Header set User-Cache-Control "max-age=86400, public"
+        Header set Cache-Control "max-age=86400, public"
+        Header set Pragma "cache"
+    </IfModule>
 </FilesMatch>
