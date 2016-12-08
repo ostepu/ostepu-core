@@ -39,6 +39,12 @@ class Paketverwaltung {
             'event' => array('actionUninstallPlugins'),
             'procedure' => 'installUninstallPackages',
             'enabledInstall' => false
+        ),
+        'executeFetch' => array(
+            'name' => 'executeFetch',
+            'event' => array('actionExecuteFetch'),
+            'procedure' => 'executeFetch',
+            'enabledInstall' => true
         )
     );
 
@@ -205,7 +211,7 @@ class Paketverwaltung {
         $pluginFiles = self::getPackageDefinitions($data);
         $text = '';
         $text .= Design::erstelleBeschreibung($console, Installation::Get('packages', 'description', self::$langTemplate));
-        $text .= Design::erstelleZeile($console, Installation::Get('packages', 'packageDetails', self::$langTemplate), 'e', Design::erstelleAuswahl($console, $data['PLUG']['details'], 'data[PLUG][details]', 'details', null, true), 'v_c');
+        $text .= Design::erstelleZeile($console, Installation::Get('packages', 'packageDetails', self::$langTemplate), 'e', Design::erstelleAuswahl($console, $data['PLUG']['details'], 'data[PLUG][details]', 'details', null, true), 'v_c', Design::erstelleSubmitButton(self::$onEvents['executeFetch']['event'][0], Installation::Get('packages', 'executeFetch', self::$langTemplate)), 'H');
 
         if (self::$onEvents['install']['enabledInstall']) {
             $text .= Design::erstelleZeile($console, Installation::Get('packages', 'installSelected', self::$langTemplate), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0], Installation::Get('packages', 'install', self::$langTemplate)), 'h');
@@ -215,12 +221,17 @@ class Paketverwaltung {
         }
 
         if (isset($result[self::$onEvents['check']['name']]) && $result[self::$onEvents['check']['name']] != null) {
-            $result = $result[self::$onEvents['check']['name']];
+            $installedPlugins = $result[self::$onEvents['check']['name']];
         } else {
-            $result = array('content' => null, 'fail' => false, 'errno' => null, 'error' => null);
+            $installedPlugins = array('content' => null, 'fail' => false, 'errno' => null, 'error' => null);
         }
 
-        $installedPlugins = $result['content'];
+        $installedPlugins = $installedPlugins['content'];       
+
+        $executeFetch = false;
+        if (isset($result[self::$onEvents['executeFetch']['name']]) && $result[self::$onEvents['executeFetch']['name']] != null) {
+            $executeFetch = true;
+        }
 
         // hier die möglichen Erweiterungen ausgeben, zudem noch die Daten dieser Erweiterungen
         foreach ($pluginFiles as $plug) {
@@ -350,7 +361,7 @@ class Paketverwaltung {
                         $myerror = '';
                         $myfail = false;
                         $myerrno = 0;
-                        $collected = GitAktualisierung::collectGitChanges($data['PL']['localPath'] . DIRECTORY_SEPARATOR . $entryPath, $data, $myfail, $myerrno, $myerror);
+                        $collected = GitAktualisierung::collectGitChanges($data['PL']['localPath'] . DIRECTORY_SEPARATOR . $entryPath, $data, $myfail, $myerrno, $myerror, $executeFetch);
 
                         if ($myfail) {
                             // es ist ein Fehler aufgetreten
@@ -889,6 +900,21 @@ class Paketverwaltung {
     }
 
     public static function installUninstallPackages($data, &$fail, &$errno,
+            &$error) {
+        Installation::log(array('text' => Installation::Get('main', 'functionBegin')));
+        $res = array();
+
+        if (!$fail) {
+            // Ausfüllen
+            // Ausfüllen
+            // Ausfüllen
+        }
+
+        Installation::log(array('text' => Installation::Get('main', 'functionEnd')));
+        return $res;
+    }
+
+    public static function executeFetch($data, &$fail, &$errno,
             &$error) {
         Installation::log(array('text' => Installation::Get('main', 'functionBegin')));
         $res = array();
