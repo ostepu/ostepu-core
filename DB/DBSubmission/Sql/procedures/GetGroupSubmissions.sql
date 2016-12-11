@@ -39,19 +39,19 @@ select SQL_CACHE
     S.E_id,
     S.ES_id
 from
-    `Group",groupProfile,"`` G
+    `Group",groupProfile,"` G
         join
-    `Group",groupProfile,"`` G2 ON (G.U_id_leader = '",userid,"'
+    `Group",groupProfile,"` G2 ON (G.U_id_leader = '",userid,"'
         and G.U_id_member = G2.U_id_member
         and G.ES_id = '",esid,"'
         and G2.ES_id = G.ES_id)
         join
     (`Submission",profile,"` S
-    join `Exercise",exerciseProfile,"`` E ON (S.E_id = E.E_id and E.ES_id = '",esid,"')) ON (G2.U_id_leader = S.U_id)
+    join `Exercise",exerciseProfile,"` E ON (S.E_id = E.E_id and E.ES_id = '",esid,"')) ON (G2.U_id_leader = S.U_id)
         left join
-    `File",fileProfile,"`` F ON (S.F_id_file = F.F_id)
+    `File",fileProfile,"` F ON (S.F_id_file = F.F_id)
         left join
-    `SelectedSubmission",selectedSubmissionProfile,"`` SS ON (S.S_id = SS.S_id_selected
+    `SelectedSubmission",selectedSubmissionProfile,"` SS ON (S.S_id = SS.S_id_selected
         and S.E_id = SS.E_id);");
 PREPARE stmt1 FROM @s;
 EXECUTE stmt1;
