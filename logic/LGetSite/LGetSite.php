@@ -1600,6 +1600,10 @@ class LGetSite
             }
         }
 
+        if (!is_array($submissions)){
+            $submissions = array();
+        }
+        
         // order submissions by exercise and user, only take latest
         $exerciseUserSubmissions = array();
         foreach ($submissions as $submission) {
