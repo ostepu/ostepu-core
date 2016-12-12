@@ -1125,6 +1125,7 @@ class LOOP
                     if (count($parameter)>=2){
                         $type = array_shift($parameter);
                         
+                        // veraltet
                         if ($type == 'cx'){
                             $this->xcopy(dirname(__FILE__) . '/start_cx', $filePath . '/start_cx',0777);
                             $this->xcopy(dirname(__FILE__) . '/compiler', $filePath . '/compiler',0777);
@@ -1143,11 +1144,6 @@ class LOOP
                              
                             // passt das Arbeitsverzeichnis an und führt das Skript für den
                             // cx Compiler aus
-                            /*$pathOld = getcwd();
-                            chdir($filePath);                             
-                            exec('(./start_cx '.$param.') 2>&1', $output, $return);
-                            chdir($pathOld);*/
-
                             $compileSandbox = new Sandbox();
                             $compileSandbox->setWorkingDir($filePath);
                             $compileSandbox->loadProfileFromFile(dirname(__FILE__) . '/../../Assistants/mysandbox.profile');

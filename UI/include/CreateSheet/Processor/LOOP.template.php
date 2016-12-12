@@ -37,7 +37,6 @@
                     <?php
                     $liste = array(
                                     'java' => 'Java',
-                                    'cx' => 'Cx',
                                     'custom' => Language::Get('main','custom', $langTemplate));
                     
                     $i=0;
