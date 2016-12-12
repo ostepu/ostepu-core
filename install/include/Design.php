@@ -190,7 +190,33 @@ class Design {
 
         return $result;
     }
+    
+    public static function erstelleDatumsfeld($console, &$variable,
+            $variablenName, $default, $save = false) {
+        if ($save == true && $variable === null) {
+            $variable = Einstellungen::Get($variablenName, $default);
+        }
 
+        if ($save == true && $variable !== null) {
+            Einstellungen::Set($variablenName, $variable);
+        }
+
+        if ($variable === null) {
+            $variable = $default;
+        }
+
+        $result = '';
+
+        if (!$console) {
+            $result = "<input style='width:100%' type='date' name='" .
+                    $variablenName .
+                    "' value='" .
+                    (isset($variable) ? $variable : $default) . "'>";
+        }
+
+        return $result;
+    }
+    
     /**
      * Erzeugt einen Eingabebereich
      *
