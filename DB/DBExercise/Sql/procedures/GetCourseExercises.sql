@@ -27,6 +27,7 @@ select SQL_CACHE
     E.E_id_link,
     E.E_linkName,
     E.E_submittable,
+    E.E_resultVisibility,
     F.F_id,
     F.F_displayName,
     F.F_address,

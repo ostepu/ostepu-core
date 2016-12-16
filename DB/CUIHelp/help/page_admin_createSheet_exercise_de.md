@@ -100,3 +100,12 @@ Sie können hier eine einzelne Datei pro Aufgabe anhängen. Wenn Sie mehr als ei
 Sie können diese Option wählen, wenn Sie eine Aufgabe ohne Einsendungsmöglichkeit benötigen.
 
 Beispiel: Präsenzübungen oder Ankündigungen für Aufgaben
+
+---
+#### Ergebnissichtbarkeit #####
+
+![](createExerciseI.png)
+
+Sie können diese Option wählen, wenn die Studenten den Korrekturstatus und die Korrekturdatei bereits vor dem Ende des Übungszeitraums sehen können sollen. (die Studenten können die Korrekturdatei dann auch herunterladen und trotzdem weiter einsenden)
+
+Beispiel: automatisch bewertete Einsendungen

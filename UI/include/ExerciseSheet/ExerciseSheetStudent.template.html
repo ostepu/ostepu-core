@@ -118,7 +118,7 @@ if (isset($notifications)){
                         <div class="exercise-points">
                             <?php // prints the achieved and the maximum points ?>
                             <?php if (isset($exercise['submission']['marking'])
-                                     && ($isExpired || $privileged)
+                                     && ($isExpired || $privileged || (isset($exercise['resultVisibility']) && $exercise['resultVisibility'] === '1'))
                                      && ($exercise['submission']['marking']['statusId'] >= 2 || $privileged)
                                      && (isset($exercise['submission']['accepted']) || $privileged)
                                      && ($exercise['submission']['accepted'] == 1 || $privileged)){
@@ -132,7 +132,7 @@ if (isset($notifications)){
                         <div class="exercise-status">
                             <?php if (isset($exercise['submission']) && (!isset($exercise['submission']['accepted']) || $exercise['submission']['accepted'] == 0) && (!$privileged)){ ?>
                                 <?php echo Language::Get('sheet','notAccepted', $langTemplate); ?>
-                            <?php } elseif (isset($exercise['submission']['marking']) && ($isExpired || $privileged)) { ?>
+                            <?php } elseif (isset($exercise['submission']['marking']) && ($isExpired || $privileged || (isset($exercise['resultVisibility']) && $exercise['resultVisibility'] === '1'))) { ?>
                                 <?php echo $exercise['submission']['marking']['status']; ?>
                             <?php } elseif (isset($exercise['submission']) || (isset($exercise['submission']['marking']) && !$isExpired)) { ?>
                                 <?php echo Language::Get('sheet','notCorrected', $langTemplate); ?>
@@ -177,7 +177,7 @@ if (isset($notifications)){
                             <?php endif; ?>
 
                             <?php // creates a downloadCorrection icon for the marking (if it exists) ?>
-                            <?php if(isset($exercise['submission']['marking']['file']) && $exercise['submission']['marking']['hideFile'] == "0" && ($isExpired || $privileged)): ?>
+                            <?php if(isset($exercise['submission']['marking']['file']) && $exercise['submission']['marking']['hideFile'] == "0" && ($isExpired || $privileged || (isset($exercise['resultVisibility']) && $exercise['resultVisibility'] === '1'))): ?>
                                 <?php $displayName = $exercise['submission']['marking']['file']['displayName']; ?>
                                 <?php $fileAddress = $exercise['submission']['marking']['file']['address']; ?>
                                 <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}";/*{$filesystemURI}*/ ?>
@@ -203,7 +203,7 @@ if (isset($notifications)){
                             
                             <?php if (isset($exercise['submission']['marking']['tutorComment']) && 
                                       trim($exercise['submission']['marking']['tutorComment']) != '' && 
-                                      ($isExpired || $privileged)) { 
+                                      ($isExpired || $privileged || (isset($exercise['resultVisibility']) && $exercise['resultVisibility'] === '1'))) { 
                             $comment = trim($exercise['submission']['marking']['tutorComment']); ?>
                             <div class="" style="margin-top:-10px;margin-bottom:0px;word-break: break-all;">
                             <table border="0" style="width:auto">

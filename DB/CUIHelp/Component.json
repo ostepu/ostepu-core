@@ -102,6 +102,7 @@
                 {"path": "/help/:language/page/admin/createSheet/createExerciseF.png"},
                 {"path": "/help/:language/page/admin/createSheet/createExerciseG.png"},
                 {"path": "/help/:language/page/admin/createSheet/createExerciseH.png"},
+                {"path": "/help/:language/page/admin/createSheet/createExerciseI.png"},
                 {"path": "/help/:language/page/admin/createSheet/exercise.md"},
                 {},
                 {"path": "/help/:language/page/admin/tutorAssign/automatically.md"},

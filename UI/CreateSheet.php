@@ -228,9 +228,14 @@ if ($correctExercise == true) {
             if (isset($exercise[$key2]['submittable']) && $exercise[$key2]['submittable'] == '0'){
                 $submittable = '0';
             }
+            
+            $resultVisibility = '0';
+            if (isset($exercise[$key2]['resultVisibility']) && $exercise[$key2]['resultVisibility'] == '1'){
+                $resultVisibility = '1';
+            }
 
             $subexerciseObj = Exercise::createExercise($exerciseId,$cid,$sheetId, $exercise[$key2]['maxPoints'],
-                                                       $exercise[$key2]['exerciseType'],$key1+1,$bonus,$key2+1, $submittable);
+                                                       $exercise[$key2]['exerciseType'],$key1+1,$bonus,$key2+1, $submittable, $resultVisibility);
 
             // set FileTypes (only as an array with strings in it)
             $subexerciseObj->setFileTypes($exercise[$key2]['mime-type']);

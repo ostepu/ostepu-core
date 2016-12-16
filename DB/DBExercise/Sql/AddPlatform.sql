@@ -57,6 +57,7 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 ALTER TABLE `Exercise` MODIFY COLUMN E_maxPoints SMALLINT UNSIGNED NULL DEFAULT 0;
 call execute_if_column_not_exists('Exercise','E_submittable','ALTER TABLE `Exercise` ADD COLUMN E_submittable TINYINT(1) NOT NULL DEFAULT 1;');
+call execute_if_column_not_exists('Exercise','E_resultVisibility','ALTER TABLE `Exercise` ADD COLUMN E_resultVisibility TINYINT(1) NOT NULL DEFAULT 0;');
 
 
 DROP TRIGGER IF EXISTS `Exercise_BINS`;

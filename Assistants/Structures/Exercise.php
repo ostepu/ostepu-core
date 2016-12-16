@@ -304,6 +304,16 @@ class Exercise extends Object implements JsonSerializable
         $this->submittable = $value;
     }
 
+    private $resultVisibility = null;
+    public function getResultVisibility( )
+    {
+        return $this->resultVisibility;
+    }
+    public function setResultVisibility( $value = null )
+    {
+        $this->resultVisibility = $value;
+    }
+
     /**
      * Creates an Exercise object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -328,7 +338,8 @@ class Exercise extends Object implements JsonSerializable
                                           $link,
                                           $bonus,
                                           $linkName = null,
-                                          $submittable = '1'
+                                          $submittable = '1',
+                                          $resultVisibility = '0'
                                           )
     {
         return new Exercise( array(
@@ -340,7 +351,8 @@ class Exercise extends Object implements JsonSerializable
                                    'link' => $link,
                                    'linkName' => $linkName,
                                    'bonus' => $bonus,
-                                   'submittable' => $submittable
+                                   'submittable' => $submittable,
+                                   'resultVisibility' =>  $resultVisibility
                                    ) );
     }
 
@@ -363,7 +375,8 @@ class Exercise extends Object implements JsonSerializable
                      'E_bonus' => 'bonus',
                      'E_attachments' => 'attachments',
                      'E_fileTypes' => 'fileTypes',
-                     'E_submittable' => 'submittable'
+                     'E_submittable' => 'submittable',
+                     'E_resultVisibility' => 'resultVisibility'
                      );
     }
 
@@ -423,6 +436,12 @@ class Exercise extends Object implements JsonSerializable
                                  $values,
                                  'E_submittable',
                                  DBJson::mysql_real_escape_string( $this->submittable )
+                                 );
+        if ( $this->resultVisibility !== null )
+            $this->addInsertData(
+                                 $values,
+                                 'E_resultVisibility',
+                                 DBJson::mysql_real_escape_string( $this->resultVisibility )
                                  );
 
 
@@ -599,6 +618,8 @@ class Exercise extends Object implements JsonSerializable
             $list['linkName'] = $this->linkName;
         if ( $this->submittable !== null )
             $list['submittable'] = $this->submittable;
+        if ( $this->resultVisibility !== null )
+            $list['resultVisibility'] = $this->resultVisibility;
         return array_merge($list,parent::jsonSerialize( ));
     }
 
