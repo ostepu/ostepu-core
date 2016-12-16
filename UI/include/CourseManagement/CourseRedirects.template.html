@@ -31,6 +31,7 @@ if (isset($CourseRedirectsNotifications)) {
         while (false !== ($entry = readdir($handle))) {
             if (trim($entry,'.') == '') continue;
             $path_parts = pathinfo($entry);
+            if (trim($path_parts['filename']) == '') continue;
             $templates[$path_parts['filename']] = $path_parts['filename'];
         }
         closedir($handle);
