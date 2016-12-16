@@ -340,7 +340,8 @@ class LProcessor
                                             $this->_processorDb,
                                             'process'
                                             );
-
+//echo $this->_processorDb[0]->getAddress().$URL;
+//echo Process::encodeProcess($process);
             if ( $result['status'] >= 200 &&
                  $result['status'] <= 299 ){
 
