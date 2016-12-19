@@ -1,0 +1,194 @@
+{
+    "name": "DBGate",
+    "version": "1.0",
+    "classFile": "DBGate.php",
+    "className": "DBGate",
+    "files": [
+        {"path": ".htaccess"},
+        {"path": "DBGate.php"},
+        {"path": "index.php"},
+        {"path": "Commands.json"},
+        {"path": "Sql/"},
+        {"path": "info/"}
+    ],
+    "links": [
+        {
+            "name": "editGateProfile",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "editGateAuth",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "editGateRule",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "deleteGateProfile",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "deleteGateProfileByName",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "deleteGateRule",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "deleteGateAuth",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "addGateProfile",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "addGateRule",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "addGateAuth",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "deletePlatform",
+            "target": "DBQuerySetup",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "addPlatform",
+            "target": "DBQuerySetup",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "getAllProfiles",
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBGateGetAllGateProfiles/:profile/:authProfile/:ruleProfile"
+            }]
+        },
+        {
+            "name": "getProfile",
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBGateGetGateProfile/:profile/:authProfile/:ruleProfile/:gpid"
+            }]
+        },
+        {
+            "name": "getProfileByName",
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBGateGetGateProfileByName/:profile/:authProfile/:ruleProfile/:name"
+            }]
+        },
+        {
+            "name": "getProfilesByAuth",
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBGateGetGateProfilesByAuth/:profile/:authProfile/:ruleProfile/:authType"
+            }]
+        },
+        {
+            "name": "getProfilesByComponent",
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBGateGetGateProfilesByComponent/:profile/:authProfile/:ruleProfile/:component"
+            }]
+        },
+        {
+            "name": "getProfileWithAuth",
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBGateGetGateProfileWithAuth/:profile/:authProfile/:ruleProfile/:gpid/:authType"
+            }]
+        },
+        {
+            "name": "getComponentProfileWithAuth",
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBGateGetComponentGateProfileWithAuth/:profile/:authProfile/:ruleProfile/:profName/:authType/:component"
+            }]
+        },
+        {
+            "name": "getComponentProfileWithAuthLogin",
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBGateGetComponentGateProfileWithAuthLogin/:profile/:authProfile/:ruleProfile/:profName/:authType/:component/:login"
+            }]
+        },
+        {
+            "name": "getExistsPlatform",
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBGateGetExistsPlatform/:profile"
+            }]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        },
+        {
+            "name": "postPlatform",
+            "target": "CInstall"
+        }
+    ]
+}

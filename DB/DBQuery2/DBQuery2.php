@@ -32,7 +32,7 @@ class DBQuery2
     private $_component = null;
     public function __construct( )
     {
-        $component = new Model('query', dirname(__FILE__), $this);
+        $component = new Model('query', dirname(__FILE__), $this, false, false, array('cloneable'=>true));
         $this->_component=$component;
         $component->run();
     }
@@ -57,6 +57,7 @@ class DBQuery2
     }
 
     private static $config = null;
+    private static $configName = null;
     public function postMultiGetRequest( $callName, $input, $par = array() )
     {
         $params=array();
@@ -65,9 +66,10 @@ class DBQuery2
                 EXTR_OVERWRITE
         );
 
-        if (self::$config === null){
+        $name = (isset($par['profileName']) && $par['profileName']!=='' ? '_'.$par['profileName'] : '');
+        if (self::$config === null || self::$configName !== $name){
             self::$config = parse_ini_file(
-                                            dirname(__FILE__).'/config.ini',
+                                            dirname(__FILE__).'/config'.$name.'.ini',
                                             TRUE
                                             );
         }
@@ -163,48 +165,49 @@ class DBQuery2
         return $result;
     }
 
+    // führt Prozeduren aus 
     public function getProcedureQuery( $callName, $input, $par = array() )
     {
         $par = DBJson::mysql_real_escape_string( $par );
-        $params=array();
-        extract(
-                $par,
-                EXTR_OVERWRITE
-        );
-        
-        if (self::$config === null){
+        $procedure = $par['procedure'];
+        $profileName = $par['profileName'];
+        $params = isset($par['params']) ? $par['params'] : array();
+
+        $name = (isset($profileName) && $profileName!=='' ? '_'.$profileName : '');
+        if (self::$config === null || self::$configName !== $name){
             self::$config = parse_ini_file(
-                                            dirname(__FILE__).'/config.ini',
+                                            dirname(__FILE__).'/config'.$name.'.ini',
                                             TRUE
                                             );
         }
 
         $result = Model::isOK();$result['content']=array();
-        $sql = $this->generateQuery($procedure,$params);
-        $answer = DBRequest::request2(
+        $sql = $this->generateQuery($procedure,$params); // einzelne Anweisung
+        $query_result = DBRequest::request2Single(
                                            $sql,
                                            false,
                                            self::$config
                                      );
 
-        $res = array();
         $hash=null;
 
-        foreach ($answer as $query_result){
-            $obj = new Query( );
+        $obj = new Query( );
 
         if ( $query_result['errno'] != 0 ){
-            if ( isset($query_result['errno']) && $query_result['errno'] != 0 )
+            if ( isset($query_result['errno']) && $query_result['errno'] != 0 ){
                 Logger::Log(
-                            'GET queryResult failed errno: ' . $query_result['errno'] . ' error: ' . $query_result['error'],
+                            'GET queryResult failed errno: ' . $query_result['errno'] . (isset($query_result['error']) ? ' error: ' . $query_result['error'] : ''),
                             LogLevel::ERROR
                             );
+                // der Fehler wird noch nicht zurückgegeben
+            }
 
-            if ( !isset($query_result['content']) || !$query_result['content'] )
+            if ( !isset($query_result['content']) || !$query_result['content'] ){
                 Logger::Log(
                             'GET queryResult failed, no content',
                             LogLevel::ERROR
                             );
+            }
 
             if ( isset($query_result['errno']) && $query_result['errno'] == 401 ){
                 $result = Model::isRejected();
@@ -246,11 +249,8 @@ class DBQuery2
 
             $result = Model::isOK();
         }
-        $res[]=$obj;
-        }
 
-        if (count($res)==1) $res = $res[0];
-        $result['content'] = $res;
+        $result['content'] = $obj;
 
         return $result;
     }
@@ -264,9 +264,10 @@ class DBQuery2
                 EXTR_OVERWRITE
         );
 
-        if (self::$config === null){
+        $name = (isset($par['profileName']) && $par['profileName']!=='' ? '_'.$par['profileName'] : '');
+        if (self::$config === null || self::$configName !== $name){
             self::$config = parse_ini_file(
-                                            dirname(__FILE__).'/config.ini',
+                                            dirname(__FILE__).'/config'.$name.'.ini',
                                             TRUE
                                             );
         }
@@ -364,7 +365,7 @@ class DBQuery2
      */
     public function getExistsPlatform( $callName, $input, $params = array() )
     {
-        if (!file_exists(dirname(__FILE__) . '/config.ini')){
+        if (!file_exists(dirname(__FILE__) . '/config'.(isset($params['profileName']) && $params['profileName']!=='' ? '_'.$params['profileName'] : '').'.ini')){
             return Model::isProblem();
         }
 
@@ -385,7 +386,7 @@ class DBQuery2
                     );
 
         $this->loadConfig($name);
-        $configFile = dirname(__FILE__) . '/config.ini';
+        $configFile = dirname(__FILE__) . '/config'.(isset($params['profileName']) && $params['profileName']!=='' ? '_'.$params['profileName'] : '').'.ini';
         if (file_exists($configFile) && !unlink($configFile)){
             return Model::isProblem();
         }
@@ -422,7 +423,7 @@ class DBQuery2
         $res = array( );
         foreach ( $insert as $in ){
 
-            $file = dirname(__FILE__) . '/config.ini';
+            $file = dirname(__FILE__) . '/config'.(isset($params['profileName']) && $params['profileName']!=='' ? '_'.$params['profileName'] : '').'.ini';
             $text = "[DB]\n".
                     "db_path = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getDatabaseUrl())."\"\n".
                     "db_user = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getDatabaseOperatorUser())."\"\n".

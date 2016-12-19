@@ -4,13 +4,13 @@
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
  *
- * @package OSTEPU (https://github.com/ostepu/system)
+ * @package OSTEPU (https://github.com/ostepu/ostepu-core)
  * @since 0.1.0
  *
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
  * @date 2014-2016
  * @author Ralf Busch <ralfbusch92@gmail.com>
- * @date 2014,2016
+ * @date 2013-2014,2016
  * @author Florian Lücke <florian.luecke@gmail.com>
  * @date 2013
  */
@@ -123,11 +123,22 @@ include_once dirname(__FILE__) . '/../Helpers.php';
         <?php } ?>
     </span>
     
-    <?php if (isset($submittable)){ ?>
-    <input type="hidden" name="exercises[0][subexercises][0][submittable]" value="<?php echo $submittable; ?>" />
-    <?php } ?>
-        <input type="checkbox" value="0" name="exercises[0][subexercises][0][submittable]"<?php echo (isset($submittable) && $submittable=='0' ? " checked" : ''); ?>/>
-        <?php echo Language::Get('main','notSubmittable', $langTemplate); ?>
+    <span style='display: inline-block;'>
+        <?php if (isset($submittable)){ ?>
+        <input type="hidden" name="exercises[0][subexercises][0][submittable]" value="<?php echo $submittable; ?>" />
+        <?php } ?>
+            <input type="checkbox" value="0" name="exercises[0][subexercises][0][submittable]"<?php echo (isset($submittable) && $submittable=='0' ? " checked" : ''); ?>/>
+            <?php echo Language::Get('main','notSubmittable', $langTemplate); ?>
+    </span>
+        
+    <span style='display: inline-block;'>
+        <?php if (isset($resultVisibility)){ ?>
+        <input type="hidden" name="exercises[0][subexercises][0][resultVisibility]" value="<?php echo $resultVisibility; ?>" />
+        <?php } ?>
+            <input type="checkbox" value="1" name="exercises[0][subexercises][0][resultVisibility]"<?php echo (isset($resultVisibility) && $resultVisibility=='1' ? " checked" : ''); ?>/>
+            <?php echo Language::Get('main','resultVisibility', $langTemplate); ?>
+    </span>
+    
     </span>
     
     <a href="javascript:void(0);" class="deny-button delete-subtask critical-color right"><?php echo Language::Get('main','removeSubtask', $langTemplate); ?><?php if (isset($id)){ ?><span class="right warning-simple"></span><?php } ?>  </a>

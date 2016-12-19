@@ -15,6 +15,11 @@
  */
 ?>
 
-DELETE FROM `Session`
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
+DELETE FROM `Session<?php echo $profile;?>`
 WHERE
     SE_sessionID = '<?php echo $seid; ?>'

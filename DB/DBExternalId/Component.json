@@ -14,69 +14,90 @@
     ],
     "links": [
         {
-            "name": "out",
-            "target": "DBQuery",
-            "links": [
-                {
-                    "method": "POST",
-                    "path": "/query"
-                }
-            ]
+            "name": "editExternalId",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
         },
         {
-            "name": "out2",
-            "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "POST",
-                    "path": "/query"
-                }
-            ]
+            "name": "deleteExternalId",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "addExternalId",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "deletePlatform",
+            "target": "DBQuerySetup",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "addPlatform",
+            "target": "DBQuerySetup",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
         },
         {
             "name": "getExternalId",
-            "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBExternalIdGetExternalId/:exid"
-                }
-            ]
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBExternalIdGetExternalId/:exid"
+            }]
         },
         {
             "name": "getAllExternalIds",
-            "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBExternalIdGetAllExternalIds"
-                }
-            ]
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBExternalIdGetAllExternalIds"
+            }]
         },
         {
             "name": "getCourseExternalIds",
-            "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBExternalIdGetCourseExternalIds/:courseid"
-                }
-            ]
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBExternalIdGetCourseExternalIds/:courseid"
+            }]
         },
         {
             "name": "getExistsPlatform",
-            "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBCourseGetExistsPlatform"
-                }
-            ]
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBCourseGetExistsPlatform"
+            }]
         }
     ],
     "connector": [
-        {"name": "request","target": "CLocalObjectRequest"},
-        {"name": "postPlatform","target": "CInstall"},
-        { "name": "getDescFiles","target": "TDocuView"}
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        },
+        {
+            "name": "postPlatform",
+            "target": "CInstall"
+        },
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView"
+        }
     ]
 }

@@ -4,11 +4,11 @@
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
  *
- * @package OSTEPU (https://github.com/ostepu/system)
+ * @package OSTEPU (https://github.com/ostepu/ostepu-core)
  * @since 0.3.6
  *
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
- * @date 2015
+ * @date 2015-2016
  */
 
 
@@ -62,7 +62,7 @@ $data = array('tutors' => array(),
                     }
                 }
             }
-        } elseif($fromTutor == 'u') { // unbekannter Kontrolleur
+        } elseif($fromTutor == 'u') { // unbekannter Kontrolleur (hier stecken auch die automatischen Korrekturen drin)
             foreach ($tutorAssign_data['tutorAssignments'] as $tutorAssignment) {
                 if (!isset($tutorAssignment['tutor']['id']) && $tutorAssignment['tutor']['userName'] !== 'unassigned') {
                     foreach ($tutorAssignment['submissions'] as $submission) {

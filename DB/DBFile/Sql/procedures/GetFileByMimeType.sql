@@ -13,7 +13,7 @@
 ?>
 
 DROP PROCEDURE IF EXISTS `DBFileGetFileByMimeType`;
-CREATE PROCEDURE `DBFileGetFileByMimeType` (IN base varchar(255),IN type varchar(255),IN beginStamp INT,IN endStamp INT)
+CREATE PROCEDURE `DBFileGetFileByMimeType` (IN profile varchar(30), IN base varchar(255),IN type varchar(255),IN beginStamp INT,IN endStamp INT)
 READS SQL DATA
 begin
 SET @s = concat("
@@ -27,7 +27,7 @@ select SQL_CACHE
     F_hash,
     F_mimeType
 from
-    File
+    `File",profile,"`
 where
     ((F_mimeType is null and '",base,"' = ':base') or
     (F_mimeType like '",base,"/%' and '",type,"'=':type') or
@@ -36,7 +36,7 @@ where
     and
         ('",beginStamp,"'='0' or F_timeStamp>='",beginStamp,"')
         and
-        ('",endStamp,"'='0' or F_timeStamp>='",endStamp,"');");
+        ('",endStamp,"'='0' or F_timeStamp<='",endStamp,"');");
 PREPARE stmt1 FROM @s;
 EXECUTE stmt1;
 DEALLOCATE PREPARE stmt1;

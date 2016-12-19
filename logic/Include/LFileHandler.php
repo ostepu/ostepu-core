@@ -81,7 +81,7 @@ class LFileHandler
     {
         if (!empty($file)){
             // requests to file-table of DB
-            $URL = $lURL.'/DB/file/'.$file['fileId'];
+            $URL = $lURL.'/DB/file/file/'.$file['fileId'];
             $answer = Request::custom('DELETE', $URL, $header, "");
             // even if file has been deleted from db file table delete it from fs
             if ($answer['status'] >= 200 and $answer['status'] < 300) {

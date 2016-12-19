@@ -14,22 +14,18 @@
         {
             "name": "out",
             "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "POST",
-                    "path": "/query/:abc"
-                }
-            ]
+            "links": [{
+                "method": "POST",
+                "path": "/query/:abc"
+            }]
         },
         {
-            "name": "getCourse",             
+            "name": "getCourse",
             "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBCourseGetCourse/:courseid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBCourseGetCourse/:courseid"
+            }]
         }
     ],
     "connector": [
@@ -37,6 +33,9 @@
             "name": "request",
             "target": "CLocalObjectRequest"
         },
-        { "name": "getDescFiles","target": "TDocuView"}
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView"
+        }
     ]
 }

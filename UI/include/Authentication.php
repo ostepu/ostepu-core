@@ -5,11 +5,11 @@
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
  *
- * @package OSTEPU (https://github.com/ostepu/system)
+ * @package OSTEPU (https://github.com/ostepu/ostepu-core)
  * @since 0.1.0
  *
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
- * @date 2014-2015
+ * @date 2014-2016
  * @author Ralf Busch <ralfbusch92@gmail.com>
  * @date 2014
  * @author Florian Lücke <florian.luecke@gmail.com>
@@ -71,11 +71,11 @@ class Authentication extends AbstractAuthentication
      */
     public function loginUser($username, $password )
     {
-        global $databaseURI;
-        $databaseURL = "{$databaseURI}/user/user/{$username}";
+        global $serverURI;
+        $databaseURL = "{$serverURI}/DB/DBUser/user/user/{$username}";
         $user = http_get($databaseURL, false, $message);
         $user = json_decode($user, true);
-        
+
         // prüfe den Wartungsmodus
         global $maintenanceMode;
         global $maintenanceText;
@@ -96,7 +96,7 @@ class Authentication extends AbstractAuthentication
             }
             
             if (isset($user['salt'])){
-                $password = $this->hashData('sha256',$password.$user['salt']);
+                $password = $this->hashPassword($password,$user['salt']);
 
                 if (isset($user['password']) && $password == $user['password']) {
 
@@ -106,7 +106,7 @@ class Authentication extends AbstractAuthentication
                     return $refresh;
                 } else {
                     $userid = $user['id'];
-                    $databaseURL = "{$databaseURI}/user/user/{$userid}/IncFailedLogin";
+                    $databaseURL = "{$serverURI}/DB/DBUser/user/user/{$userid}/IncFailedLogin";
                     $user = http_get($databaseURL, false, $message);
                 }
             }

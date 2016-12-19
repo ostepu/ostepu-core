@@ -1,0 +1,12 @@
+{
+    "name": "DBQuerySetup",
+    "version": "1.0",
+    "type": "clone",
+    "base": "DBQuery2",
+    "baseURI": "/profile/setup",
+    "connector": [{
+        "name": "postPlatformSetupUser",
+        "target": "CInstall",
+        "priority": "10"
+    }]
+}

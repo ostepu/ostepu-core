@@ -230,6 +230,10 @@ class LTutor
         //Get zip
         $this->app->get('/'.$this->getPrefix().'/user/:userid/exercisesheet/:sheetid(/status/:status)(/)',
                 array($this, 'getZip'));
+                
+        //Get zip
+        $this->app->get('/'.$this->getPrefix().'/user/:userid/exercisesheet/:sheetid(/status/:status)(/withnames)(/)',
+                array($this, 'getZipWithNames'));
 
         //Post zip
         $this->app->post('/'.$this->getPrefix().'/archive/user/:userid/exercisesheet/:sheetid(/)',
@@ -477,6 +481,10 @@ class LTutor
            /* $ExerciseData = array();
             $ExerciseData['userId'] = $userid;
             $ExerciseData['markings'] = array();*/
+            
+            // die Aufgaben müssen entsprechend sortiert sein, sonst werden die Namen falsch erzeugt,
+            // falls eine Aufgabe später hinzugefügt wurde
+            $exercises = LArraySorter::orderBy($exercises, 'link', SORT_ASC, 'linkName', SORT_ASC);
 
             $count=null;
             foreach ($exercises as $key => $exercise){
@@ -639,6 +647,11 @@ class LTutor
 
         $courseid=null;
         $count=null;
+        
+        // die Aufgaben müssen entsprechend sortiert sein, sonst werden die Namen falsch erzeugt,
+        // falls eine Aufgabe später hinzugefügt wurde
+        $exercises = LArraySorter::orderBy($exercises, 'link', SORT_ASC, 'linkName', SORT_ASC);
+        
         foreach ($exercises as $key => $exercise){
             if ($courseid===null){
                 $courseid = $exercise['courseId'];
@@ -658,7 +671,7 @@ class LTutor
         }
         
         $multiRequestHandle = new Request_MultiRequest();
-        $handler = Request_CreateRequest::createCustom('GET', $this->_getCourse[0]->getAddress().'/course/'.$courseid, array(),"");
+        $handler = Request_CreateRequest::createCustom('GET', $this->_getCourse[0]->getAddress().'/course/course/'.$courseid, array(),"");
         $multiRequestHandle->addRequest($handler);
         $answer = $multiRequestHandle->run();
         if (count($answer)< 1 || !isset($answer[0]['status']) || $answer[0]['status']!=200 || !isset($answer[0]['content'])){
@@ -781,31 +794,39 @@ class LTutor
                         $newFileData = new File();
                         $data="<h1>".str_replace('_',' ',strtoupper($namesOfExercises[$exerciseId]))."</h1><hr><p></p>";
 
-                        if (isset($marking['submission']['id']))
-                            $data.="Einsendungsnummer: {$marking['submission']['id']}\n";
-                        /*if (isset($marking['id']))
-                            $data.="Korrekturnummer: {$marking['id']}\n";*/
+                        //if (isset($marking['submission']['id']))
+                        //    $data.="Einsendungsnummer: {$marking['submission']['id']}\n";
+                        if (isset($marking['id']))
+                            $data.="Korrekturnummer: {$marking['id']}\n";
 
-                        foreach ($groups as $group){
-                            $user = array_merge(array($group['leader']),isset($group['members']) ? $group['members'] : array());
-                            $found=false;
-                            foreach ($user as $us){
-                                if ($us['id'] == $marking['submission']['studentId']){
-                                    $namen=array();
-                                    foreach ($user as $member){
-                                        $namen[] = (isset($member['firstName']) ? $member['firstName'] : '-').' '.(isset($member['lastName']) ? $member['lastName'] : '' ).' ('.(isset($member['userName']) ? $member['userName'] : '').')';
+                        // die Namen der Studenten sollen dort nur auftauchen, wenn withNames gewählt ist
+                        if ($withNames){
+                            foreach ($groups as $group){
+                                $user = array_merge(array($group['leader']),isset($group['members']) ? $group['members'] : array());
+                                $found=false;
+                                foreach ($user as $us){
+                                    if ($us['id'] == $marking['submission']['studentId']){
+                                        $namen=array();
+                                        foreach ($user as $member){
+                                            $namen[] = (isset($member['firstName']) ? $member['firstName'] : '-').' '.(isset($member['lastName']) ? $member['lastName'] : '' ).' ('.(isset($member['userName']) ? $member['userName'] : '').')';
+                                        }
+                                        $namen=implode(', ',$namen);
+                                        if (count($user) == 1){
+                                            $data.="Student: {$namen}\n";
+                                        } else {
+                                            $data.="Studenten: {$namen}\n";                                            
+                                        }
+                                        $found=true;
+                                        break;
                                     }
-                                    $namen=implode(', ',$namen);
-                                    $data.="Studenten: {$namen}\n";
-                                    $found=true;
-                                    break;
                                 }
+                                if ($found) break;
                             }
-                            if ($found) break;
                         }
 
-                        if (isset($marking['submission']['comment']) && trim($marking['submission']['comment']) != '')
+                        if (isset($marking['submission']['comment']) && trim($marking['submission']['comment']) != ''){
                             $data.="Kommentar: {$marking['submission']['comment']}\n";
+                        }
 
                         $data.="<pre>";
                         $newFileData->setBody($data, true);
@@ -1010,9 +1031,18 @@ class LTutor
              return array('status'=>409,'content'=>'');
 
     }
-
-    public function getZip($userid, $sheetid, $status=null)
+    
+    public function getZipWithNames($userid, $sheetid, $status=null)
     {
+        $this->getZip($userid, $sheetid, $status, true);
+    }
+
+    public function getZip($userid, $sheetid, $status=null, $withnames = false)
+    {
+        if (trim($status) == ''){
+            $status = null;
+        }
+        
         $multiRequestHandle = new Request_MultiRequest();
         $filesList=array();
 
@@ -1035,11 +1065,25 @@ class LTutor
                     $marks[] = $marking;
             $markings=$marks;
         }
+        
+        // nun werden die übrigen (erlaubten Korrekturen) noch aussortiert, sodass eine Einsendung
+        // nur eine Korrektur hat (wähle die letzte Korrektur)
+        $computedSubmissions=array();
+        $markings = LArraySorter::orderby($markings, 'id', SORT_DESC);
+        foreach($markings as $key => $marking){
+            $sid = $marking['submission']['id'];
+            if (isset($computedSubmissions[$sid])){
+                unset($markings[$key]);
+            } else {
+                $computedSubmissions[$sid] = $sid;
+            }
+        }
+        unset($computedSubmissions);
 
         // sortiere die Korrekturen innerhalb dieser Liste
         $markings = LArraySorter::orderby($markings, 'id', SORT_ASC);
 
-        $answer = $this->generateTutorArchive($userid, $sheetid, $markings);
+        $answer = $this->generateTutorArchive($userid, $sheetid, $markings, $withnames);
         $this->app->response->setStatus($answer['status']);
         $this->app->response->setBody($answer['content']);
     }
@@ -1089,6 +1133,15 @@ class LTutor
                 $errors[] = Language::Get('main','emptyCSV', self::$langTemplate, array('csvFile'=>$csvFile));
                 $this->app->response->setBody(json_encode($errors));
                 $this->app->stop();
+            }
+            
+            if (!preg_match("%^([a-z0-9_]+)$%", $transactionId[0])){
+                fclose($csv);
+                $this->deleteDir($tempDir);
+                $this->app->response->setStatus(409);
+                $errors[] = Language::Get('main','invalidTransactionId', self::$langTemplate, array('transactionId'=>$transactionId[0]));
+                $this->app->response->setBody(json_encode($errors));
+                $this->app->stop();                
             }
 
             $result = Request::routeRequest(

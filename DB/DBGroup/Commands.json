@@ -37,7 +37,7 @@
         "outputType": "Group",
         "inputType": "",
         "method": "GET",
-        "path": "/group(/group)"
+        "path": "/group"
     },
     {
         "name": "getUserSheetGroup",

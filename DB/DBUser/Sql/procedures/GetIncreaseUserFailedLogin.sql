@@ -13,11 +13,12 @@
 ?>
 
 DROP PROCEDURE IF EXISTS `DBUserGetIncreaseUserFailedLogin`;
-CREATE PROCEDURE `DBUserGetIncreaseUserFailedLogin` (IN userid varchar(120))
+CREATE PROCEDURE `DBUserGetIncreaseUserFailedLogin` (IN profile varchar(30), IN userid varchar(120))
 READS SQL DATA
 begin
-UPDATE `User` SET U_failed_logins=UNIX_TIMESTAMP(NOW())
-where U_id = userid or U_username = userid or U_externalId = userid;
+SET @s = concat("
+UPDATE `User",profile,"` SET U_failed_logins=UNIX_TIMESTAMP(NOW())
+where U_id = ",userid," or U_username = ",userid," or U_externalId = ",userid,";
 
 SELECT
     U.U_id,
@@ -39,11 +40,14 @@ SELECT
     C.C_semester,
     C.C_defaultGroupSize
 FROM
-    User U
+    `User",profile,"` U
         left join
-    CourseStatus CS ON (U.U_id = CS.U_id)
+    `CourseStatus` CS ON (U.U_id = CS.U_id)
         left join
-    Course C ON (CS.C_id = C.C_id)
+    `Course` C ON (CS.C_id = C.C_id)
 WHERE
-    U.U_id like userid or U_username = userid or U_externalId = userid;
+    U.U_id like ",userid," or U_username = ",userid," or U_externalId = ",userid,";");
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
 end;

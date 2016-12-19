@@ -15,7 +15,12 @@
  */
 ?>
 
-DELETE FROM `Redirect<?php echo $pre; ?>_<?php echo Redirect::getCourseFromRedirectId($redid); ?>`
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
+DELETE FROM `Redirect<?php echo $profile; ?>_<?php echo Redirect::getCourseFromRedirectId($redid); ?>`
 WHERE
     RED_id = '<?php echo Redirect::getIdFromRedirectId($redid); ?>'
 

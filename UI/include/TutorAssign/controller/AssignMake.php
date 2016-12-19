@@ -4,11 +4,11 @@
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
  *
- * @package OSTEPU (https://github.com/ostepu/system)
+ * @package OSTEPU (https://github.com/ostepu/ostepu-core)
  * @since 0.3.6
  *
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
- * @date 2015
+ * @date 2015-2016
  */
 
 set_time_limit(180);
@@ -18,7 +18,7 @@ $groups = http_get($URI, true, $message);
 $groups = Group::decodeGroup($groups);
 
 if ($message === 200) {
-    $URI = $databaseURI . "/exercisesheet/{$sid}/exercise";
+    $URI = $databaseURI . "/exercisesheet/exercisesheet/{$sid}/exercise";
     $exerciseSheet = http_get($URI, true, $message);
     $exerciseSheet = ExerciseSheet::decodeExerciseSheet($exerciseSheet);
     

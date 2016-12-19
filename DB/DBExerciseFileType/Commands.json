@@ -5,7 +5,7 @@
         "inputType": "ExerciseFileType",
         "method": "PUT",
         "placeholder":[{"name":"eftid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercisefiletype(/exercisefiletype)/:eftid"
+        "path": "/exercisefiletype/exercisefiletype/:eftid"
     },
     {
         "name": "deleteExerciseFileType",
@@ -13,7 +13,7 @@
         "inputType": "",
         "method": "DELETE",
         "placeholder":[{"name":"eftid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercisefiletype(/exercisefiletype)/:eftid"
+        "path": "/exercisefiletype/exercisefiletype/:eftid"
     },
     {
         "name": "deleteExerciseExerciseFileType",
@@ -46,7 +46,7 @@
         "inputType": "",
         "method": "GET",
         "placeholder":[{"name":"eftid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercisefiletype(/exercisefiletype)/:eftid"
+        "path": "/exercisefiletype/exercisefiletype/:eftid"
     },
     {
         "name": "getExerciseExerciseFileTypes",
@@ -55,7 +55,7 @@
         "inputType": "",
         "method": "GET",
         "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercisefiletype(/exercisefiletype)/exercise/:eid"
+        "path": "/exercisefiletype/exercise/:eid"
     },
     {
         "name": "getSheetExerciseFileTypes",
@@ -64,7 +64,7 @@
         "inputType": "",
         "method": "GET",
         "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercisefiletype(/exercisefiletype)/exercisesheet/:esid"
+        "path": "/exercisefiletype/exercisesheet/:esid"
     },
     {
         "name": "getAllExerciseFileTypes",
@@ -72,7 +72,7 @@
         "outputType": "ExerciseFileType",
         "inputType": "",
         "method": "GET",
-        "path": "/exercisefiletype(/exercisefiletype)"
+        "path": "/exercisefiletype"
     },
     {
         "name": "addPlatform",

@@ -12,6 +12,11 @@
  */
 ?>
 
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
 CREATE OR REPLACE VIEW generator AS
 SELECT 0 n
 UNION ALL
@@ -50,7 +55,7 @@ SET @row = 0;
 
 
 INSERT
-IGNORE INTO `File`
+IGNORE INTO `File<?php echo $profile;?>`
 SELECT @row := @row + 1,
                SUBSTRING(concat(md5(@row),md5(@row),md5(@row),'.txt'),-FLOOR(5 + (RAND() * 60))),
                concat('file/',md5(@row)),

@@ -46,7 +46,7 @@
         "outputType": "Invitation",
         "inputType": "",
         "method": "GET",
-        "path": "/invitation(/invitation)"
+        "path": "/invitation"
     },
     {
         "name": "getSheetLeaderInvitations",

@@ -13,7 +13,7 @@
 ?>
 
 DROP PROCEDURE IF EXISTS `DBSubmissionGetAllSubmissions`;
-CREATE PROCEDURE `DBSubmissionGetAllSubmissions` (IN selected varchar(8),IN beginStamp INT,IN endStamp INT)
+CREATE PROCEDURE `DBSubmissionGetAllSubmissions` (IN profile varchar(30), IN selectedSubmissionProfile varchar(30), IN fileProfile varchar(30), IN selected varchar(8),IN beginStamp INT,IN endStamp INT)
 READS SQL DATA
 begin
 SET @s = concat("
@@ -39,11 +39,11 @@ select SQL_CACHE
     S.E_id,
     S.ES_id
 from
-    Submission S
+    `Submission",profile,"` S
         left join
-    File F on (S.F_id_file = F.F_id)
+    `File",fileProfile,"` F on (S.F_id_file = F.F_id)
         left join
-    SelectedSubmission SS on (S.S_id = SS.S_id_selected)
+    `SelectedSubmission",selectedSubmissionProfile,"` SS on (S.S_id = SS.S_id_selected)
 where ('",selected,"'<>'selected' or  S.S_id = SS.S_id_selected)
 and ('",beginStamp,"'='0' or S.S_date>='",beginStamp,"')
 and ('",endStamp,"'='0' or S.S_date<='",endStamp,"');");

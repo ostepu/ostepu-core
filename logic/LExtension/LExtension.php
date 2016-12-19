@@ -132,7 +132,7 @@ class LExtension
 
                 $result = Request::routeRequest(
                                                 'DELETE',
-                                                '/course/'.$courseid,
+                                                '/course/course/'.$courseid,
                                                 $this->app->request->headers->all(),
                                                 '',
                                                 $link,
@@ -200,7 +200,7 @@ class LExtension
 
             $result = Request::routeRequest(
                                             'DELETE',
-                                            '/course/'.$courseid,
+                                            '/course/course/'.$courseid,
                                             $this->app->request->headers->all(),
                                             '',
                                             $link,

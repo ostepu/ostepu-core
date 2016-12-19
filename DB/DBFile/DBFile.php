@@ -34,7 +34,8 @@ class DBFile
     private $_component = null;
     public function __construct( )
     {
-        $component = new Model('file', dirname(__FILE__), $this);
+        $component = new Model('file', dirname(__FILE__), $this, false, false, array('cloneable'=>true,
+                                                                                     'addProfileToParametersAsPostfix'=>true));
         $this->_component=$component;
         $component->run();
     }
@@ -51,7 +52,7 @@ class DBFile
      */
     public function editFile( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/EditFile.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new File()),'Model::isProblem',array(new File()));
+        return $this->_component->callSqlTemplate('editFile',dirname(__FILE__).'/Sql/EditFile.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new File()),'Model::isProblem',array(new File()));
     }
 
     /**
@@ -76,7 +77,7 @@ class DBFile
             }
             return $result;
         };
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteFile.sql',$params,201,$positive,array(),'Model::isProblem',array(new File()), 'Query');
+        return $this->_component->callSqlTemplate('removeFile',dirname(__FILE__).'/Sql/DeleteFile.sql',$params,201,$positive,array(),'Model::isProblem',array(new File()), 'Query');
     }
 
     /**
@@ -97,7 +98,7 @@ class DBFile
             $obj->setFileId( $id );
             return array("status"=>201,"content"=>$obj);
         };
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddFile.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new File()));
+        return $this->_component->callSqlTemplate('addFile',dirname(__FILE__).'/Sql/AddFile.sql',array_merge($params,array( 'values' => $input->getInsertData( ))),201,$positive,array(),'Model::isProblem',array(new File()));
     }
 
     public function get( $functionName, $linkName, $params=array(), $checkSession = true )
@@ -117,6 +118,13 @@ class DBFile
         };
 
         $params = DBJson::mysql_real_escape_string( $params );
+        if (!isset($params['beginStamp'])){
+            $params['beginStamp'] = 0;
+        }
+        if (!isset($params['endStamp'])){
+            $params['endStamp'] = 0;
+        }
+        
         return $this->_component->call($linkName, $params, '', 200, $positive, array(), 'Model::isProblem', array(), 'Query');
     }
 
@@ -133,7 +141,7 @@ class DBFile
      */
     public function deletePlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('deletePlatform',dirname(__FILE__).'/Sql/DeletePlatform.sql',$params,201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 
     /**
@@ -144,7 +152,7 @@ class DBFile
      */
     public function addPlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('addPlatform',dirname(__FILE__).'/Sql/AddPlatform.sql',array_merge($params,array('object' => $input)),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 
     public function getSamplesInfo( $callName, $input, $params = array() )
@@ -170,6 +178,6 @@ class DBFile
     public function postSamples( $callName, $input, $params = array() )
     {
         set_time_limit(0);
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));
+        return $this->_component->callSqlTemplate('postSamples',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));
     }
 }

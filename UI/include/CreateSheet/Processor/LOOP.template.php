@@ -4,13 +4,13 @@
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
  *
- * @package OSTEPU (https://github.com/ostepu/system)
+ * @package OSTEPU (https://github.com/ostepu/ostepu-core)
  * @since 0.1.1
  *
  * @author Ralf Busch <ralfbusch92@gmail.com>
  * @date 2015-2016
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
- * @date 2014-2015
+ * @date 2014-2016
  */
 ?>
 
@@ -37,12 +37,12 @@
                     <?php
                     $liste = array(
                                     'java' => 'Java',
-                                    'cx' => 'Cx',
                                     'custom' => Language::Get('main','custom', $langTemplate));
                     
                     $i=0;
                     $params = array();
                     $errorsEnabled = true;
+                    $rejectSubmissionOnError = false;
 
                     if (isset($process['parameter'])){
                         //check if processparameter is json
@@ -53,6 +53,7 @@
                             {
                                 $params = explode(' ',$data[0]->getInput()[0]);
                             }
+                            
                             if (!is_null($data[0]->getErrorsEnabled()))
                             {
                                 if ($data[0]->getErrorsEnabled() == "1")
@@ -64,8 +65,21 @@
                                     $errorsEnabled = false;
                                 }
                             }
+                            
+                            if (!is_null($data[0]->getRejectSubmissionOnError()))
+                            {
+                                if ($data[0]->getRejectSubmissionOnError() == "1")
+                                {
+                                    $rejectSubmissionOnError = true;
+                                }
+                                else
+                                {
+                                    $rejectSubmissionOnError = false;
+                                }
+                            }
                         }
                     }
+                    
                     ?>
                     <td style="width: 24%;">
                         <label class="label bold" for=""><?php echo Language::Get('main','executable', $langTemplate); ?>:</label>
@@ -85,6 +99,14 @@
                     </td>
                     <td style="width: 76%;">
                         <input type="checkbox" class="parameter-choice" style="width: 100%;" name="exercises[0][subexercises][0][showErrorsParameter][0][]" value="1" <?php echo($errorsEnabled == true ? 'checked="checked"' : ''); ?>/>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 24%;">
+                        <label class="label bold" for=""><?php echo Language::Get('main','rejectOnErrors', $langTemplate); ?>:</label>
+                    </td>
+                    <td style="width: 76%;">
+                        <input type="checkbox" class="parameter-choice" style="width: 100%;" name="exercises[0][subexercises][0][rejectOnErrorsParameter][0][]" value="1" <?php echo($rejectSubmissionOnError == true ? 'checked="checked"' : ''); ?>/>
                     </td>
                 </tr>
                 <tr>

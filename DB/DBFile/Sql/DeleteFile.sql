@@ -14,12 +14,18 @@
  * @result -
  */
 ?>
-set @a = (select F_address from `File` where F_id = '<?php echo $fileid; ?>' limit 1);
 
-Delete from File
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
+set @a = (select F_address from `File<?php echo $profile;?>` where F_id = '<?php echo $fileid; ?>' limit 1);
+
+Delete from `File<?php echo $profile;?>`
     where F_id = '<?php echo $fileid; ?>';
 
-select A.`F_address` from (SELECT @a as F_address, count(*) as 'count' from `File` where F_address = @a) A where A.`count` = 0;
+select A.`F_address` from (SELECT @a as F_address, count(*) as 'count' from `File<?php echo $profile;?>` where F_address = @a) A where A.`count` = 0;
 
 
 

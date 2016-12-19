@@ -1,4 +1,17 @@
 <?php
+/**
+ * @file Redirect.template.php
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+ *
+ * @package OSTEPU (https://github.com/ostepu/ostepu-core)
+ * @since 0.5.0
+ *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2016
+ *
+ */
+
 ?>
 
 <?php include_once dirname(__FILE__) . '/../../../../Assistants/Language.php'; ?>

@@ -5,19 +5,19 @@
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
  *
- * @package OSTEPU (https://github.com/ostepu/system)
+ * @package OSTEPU (https://github.com/ostepu/ostepu-core)
  * @since 0.1.0
  *
+ * @author Max Brauer <ma.brauer@live.de>
+ * @date 2016
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
- * @date 2014-2015
+ * @date 2014-2016
  * @author Ralf Busch <ralfbusch92@gmail.com>
  * @date 2014
  * @author Felix Schmidt <Fiduz@Live.de>
  * @date 2014
  * @author Florian Lücke <florian.luecke@gmail.com>
  * @date 2013-2014
- * @author Max Brauer <ma.brauer@live.de>
- * @date 2016
  */
  
  
@@ -273,6 +273,7 @@ function MakeNotification($notificationType, $notificationText, $collapsible=fal
     }
 }
 
+//Erzeugt ein Knopf für Hilfemeldungen
 function MakeInfoButton($helpPath)
 {
     global $externalURI;
@@ -322,6 +323,7 @@ function cleanInput($input)
     return $input;
 }
 
+//Erzeugt ein Navigationselement (1. Leiste in der Übersicht unter dem Titel)
 function MakeNavigationElement($user,
                                $requiredPrivilege,
                                $switchDisabled = false,
@@ -359,6 +361,7 @@ function MakeNavigationElement($user,
     return $navigationElement;
 }
 
+//Erzeugt ein Navigationselement (2. Leiste für Studentenrolle etc.)
 function MakeUserNavigationElement($user,
                                $courseUser,
                                $privileged,
@@ -422,12 +425,12 @@ function MakeUserNavigationElement($user,
  *
  * @param string $databaseURI The url at which the database server is running.
  * @param int $leaderId The id of the the group's leader
- * @param int $submissionUd The new selected submission
+ * @param int $submissionId The new selected submission
  * @param int $exerciseId The submission's exercise id.
  * @param string &$message A reference to a variable that will contain the HTTP
  * status code on return.
  *
- * @return string On success rturns a json object, representing the selected
+ * @return string On success returns a json object, representing the selected
  * submission in the database. NULL otherwise.
  */
 function updateSelectedSubmission($databaseURI,
@@ -642,7 +645,7 @@ function saveMarking($points, $tutorComment, $status, $submissionID, $markingID,
                                              time());
 
         $newMarking = Marking::encodeMarking($newMarking);
-        $URI = $databaseURI . "/marking/{$markingID}";
+        $URI = $databaseURI . "/marking/marking/{$markingID}";
         http_put_data($URI, $newMarking, true, $message);
 
         if ($message != 201) {
@@ -683,6 +686,7 @@ function saveMarking($points, $tutorComment, $status, $submissionID, $markingID,
     }
 }
 
+//Aktualisiert den Status einer Einsendung
 function updateSubmission($submissionId, $accepted)
 {
     global $databaseURI;
@@ -698,7 +702,7 @@ function updateSubmission($submissionId, $accepted)
                                                     );
 
     $newSubmission = Submission::encodeSubmission($newSubmission);
-    $URI = $databaseURI . "/submission/{$submissionId}";
+    $URI = $databaseURI . "/submission/submission/{$submissionId}";
     http_put_data($URI, $newSubmission, true, $message);
 
     if ($message != 201) {

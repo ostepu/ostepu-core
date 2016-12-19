@@ -13,7 +13,7 @@
 ?>
 
 DROP PROCEDURE IF EXISTS `DBSessionGetSessionUser`;
-CREATE PROCEDURE `DBSessionGetSessionUser` (IN seid char(32))
+CREATE PROCEDURE `DBSessionGetSessionUser` (IN profile varchar(30), IN seid char(32))
 READS SQL DATA
 begin
 SET @s = concat("
@@ -21,7 +21,7 @@ select SQL_CACHE
     U_id,
     SE_sessionID
 from
-    `Session`
+    `Session",profile,"`
 where
     SE_sessionID = '",seid,"';");
 PREPARE stmt1 FROM @s;

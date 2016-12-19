@@ -16,6 +16,11 @@
  */
 ?>
 
-UPDATE Course
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
+UPDATE `Course<?php echo $profile;?>`
 SET <?php echo $values; ?>
 WHERE C_id = '<?php echo $courseid; ?>';

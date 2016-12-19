@@ -63,6 +63,20 @@ begin
     END IF;
 end;
 
+DROP PROCEDURE IF EXISTS `execute_if_constraint_not_exists`;
+CREATE PROCEDURE `execute_if_constraint_not_exists` (in theTable varchar(255), in theForeignKey varchar(255), in theStatement varchar(255))
+begin
+    set @database = Database();
+    if((SELECT count(*) FROM information_schema.TABLE_CONSTRAINTS WHERE
+            CONSTRAINT_SCHEMA = @database AND
+            TABLE_NAME        = theTable AND
+            CONSTRAINT_NAME   = theForeignKey) = 0) THEN
+               SET @s = theStatement;
+               PREPARE stmt FROM @s;
+               EXECUTE stmt;
+    END IF;
+end;
+
 DROP PROCEDURE IF EXISTS `execute_if_column_not_exists`;
 CREATE PROCEDURE `execute_if_column_not_exists` (in theTable varchar(128), in theColumnName varchar(128), in theStatement varchar(255))
 begin
@@ -179,6 +193,7 @@ call drop_index_if_exists('Component','CO_name_2');
 call execute_if_index_not_exists('Component','CO_name','ALTER TABLE `Component` ADD UNIQUE(`CO_name` ASC);');
 call execute_if_column_not_exists('Component','CO_def','ALTER TABLE `Component` ADD COLUMN CO_def VARCHAR(255) NOT NULL DEFAULT \'\';');
 call execute_if_column_not_exists('Component','CO_status','ALTER TABLE `Component` ADD COLUMN CO_status int NOT NULL DEFAULT 1;');
+call execute_if_column_not_exists('Component','CO_initialization','ALTER TABLE `Component` ADD COLUMN CO_initialization VARCHAR(10) NOT NULL DEFAULT \'basic\';');
 
 
 CREATE TABLE IF NOT EXISTS `ComponentLinkage` (

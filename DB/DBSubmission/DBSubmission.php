@@ -34,7 +34,16 @@ class DBSubmission
     private $_component = null;
     public function __construct( )
     {
-        $component = new Model('submission', dirname(__FILE__), $this);
+        $component = new Model('submission', dirname(__FILE__), $this, false, false, array('cloneable'=>true,
+                                                                                        'defaultParams'=>array('selectedSubmissionProfile'=>'',
+                                                                                                               'fileProfile'=>'',
+                                                                                                               'exerciseProfile'=>'',
+                                                                                                               'groupProfile'=>'',
+                                                                                                               'courseStatusProfile'=>'',
+                                                                                                               'userProfile'=>'',
+                                                                                                               'exerciseSheetProfile'=>''),
+                                                                                        'addOptionsToParametersAsPostfix'=>true,
+                                                                                        'addProfileToParametersAsPostfix'=>true));
         $this->_component=$component;
         $component->run();
     }
@@ -51,7 +60,7 @@ class DBSubmission
      */
     public function editSubmission( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/EditSubmission.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new Submission()),'Model::isProblem',array(new Submission()));
+        return $this->_component->callSqlTemplate('editSubmission',dirname(__FILE__).'/Sql/EditSubmission.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new Submission()),'Model::isProblem',array(new Submission()));
     }
 
     /**
@@ -64,7 +73,7 @@ class DBSubmission
      */
     public function deleteSubmission( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteSubmission.sql',$params,201,'Model::isCreated',array(new Submission()),'Model::isProblem',array(new Submission()));
+        return $this->_component->callSqlTemplate('deleteSubmission',dirname(__FILE__).'/Sql/DeleteSubmission.sql',$params,201,'Model::isCreated',array(new Submission()),'Model::isProblem',array(new Submission()));
     }
 
     /**
@@ -82,7 +91,7 @@ class DBSubmission
             $obj->setId( $input[0]->getInsertId( ) );
             return array("status"=>201,"content"=>$obj);
         };
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/AddSubmission.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new Submission()));
+        return $this->_component->callSqlTemplate('addSubmission',dirname(__FILE__).'/Sql/AddSubmission.sql',array_merge($params,array( 'values' => $input->getInsertData( ))),201,$positive,array(),'Model::isProblem',array(new Submission()));
     }
 
     public function get( $functionName, $linkName, $params=array(), $checkSession = true )
@@ -118,7 +127,7 @@ class DBSubmission
      */
     public function deletePlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('deletePlatform',dirname(__FILE__).'/Sql/DeletePlatform.sql',$params,201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 
     /**
@@ -129,7 +138,7 @@ class DBSubmission
      */
     public function addPlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('addPlatform',dirname(__FILE__).'/Sql/AddPlatform.sql',array_merge($params,array('object' => $input)),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 
     public function getSamplesInfo( $callName, $input, $params = array() )
@@ -155,7 +164,7 @@ class DBSubmission
     public function postSamples( $callName, $input, $params = array() )
     {
         set_time_limit(0);
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));
+        return $this->_component->callSqlTemplate('postSamples',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));
     }
 
 }

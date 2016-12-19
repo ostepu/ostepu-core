@@ -1,0 +1,13 @@
+<FilesMatch "\.(php|html)$">
+    <IfModule mod_expires.c>
+        # Enable expirations
+        ExpiresActive On 
+        # Default directive
+        ExpiresDefault "access plus 1 day"
+    </IfModule>
+    <IfModule mod_headers.c>
+        Header set User-Cache-Control "max-age=86400, public"
+        Header set Cache-Control "max-age=86400, public"
+        Header set Pragma "cache"
+    </IfModule>
+</FilesMatch>

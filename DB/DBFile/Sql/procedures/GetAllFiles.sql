@@ -13,7 +13,7 @@
 ?>
 
 DROP PROCEDURE IF EXISTS `DBFileGetAllFiles`;
-CREATE PROCEDURE `DBFileGetAllFiles` (IN beginStamp INT,IN endStamp INT)
+CREATE PROCEDURE `DBFileGetAllFiles` (IN profile varchar(30), IN beginStamp INT,IN endStamp INT)
 READS SQL DATA
 begin
 SET @s = concat("
@@ -27,11 +27,11 @@ select SQL_CACHE
     F_hash,
     F_mimeType
 from
-    File
+    `File",profile,"`
     where
         ('",beginStamp,"'='0' or F_timeStamp>='",beginStamp,"')
         and
-        ('",endStamp,"'='0' or F_timeStamp>='",endStamp,"');");
+        ('",endStamp,"'='0' or F_timeStamp<='",endStamp,"');");
 PREPARE stmt1 FROM @s;
 EXECUTE stmt1;
 DEALLOCATE PREPARE stmt1;

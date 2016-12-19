@@ -9,6 +9,7 @@
         "css/Header.css",
         "css/Forms.css",
         "css/Navigation.css",
+        "css/Navigation.css.php",
         "css/Notifications.css",
         "css/bootstrap-datetimepicker.css",
         "javascript/ckeditor/contents.css"

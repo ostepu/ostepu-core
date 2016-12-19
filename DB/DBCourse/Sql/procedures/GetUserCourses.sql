@@ -13,7 +13,7 @@
 ?>
 
 DROP PROCEDURE IF EXISTS `DBCourseGetUserCourses`;
-CREATE PROCEDURE `DBCourseGetUserCourses` (IN userid INT)
+CREATE PROCEDURE `DBCourseGetUserCourses` (IN profile varchar(30), IN exerciseSheetProfile varchar(30), IN userid INT)
 READS SQL DATA
 begin
 SET @s = concat("
@@ -24,10 +24,10 @@ select SQL_CACHE
     C.C_defaultGroupSize,
     ES.ES_id
 from
-    (Course C
-    NATURAL JOIN CourseStatus)
+    (`Course",profile,"` C
+    NATURAL JOIN `CourseStatus`)
         left join
-    ExerciseSheet ES ON C.C_id = ES.C_id
+    `ExerciseSheet",exerciseSheetProfile,"` ES ON C.C_id = ES.C_id
 where
     U_id = '",userid,"';");
 PREPARE stmt1 FROM @s;

@@ -4,11 +4,11 @@
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
  *
- * @package OSTEPU (https://github.com/ostepu/system)
+ * @package OSTEPU (https://github.com/ostepu/ostepu-core)
  * @since 0.1.0
  *
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
- * @date 2014-2015
+ * @date 2014-2016
  * @author Ralf Busch <ralfbusch92@gmail.com>
  * @date 2014
  * @author Florian Lücke <florian.luecke@gmail.com>
@@ -33,21 +33,9 @@ function checkPermission($permission){
     global $getSiteURI;
     global $cid;
     global $uid;
-    $URL = $getSiteURI . "/index/user/{$uid}";
-    $data = http_get($URL, true);
-    $data = json_decode($data,true);
-    $found=false;
-    foreach ($data['courses'] as $key=>$course){
-        if ($course['course']['id'] === $cid){
-            $data['courses']=array($course);
-            $found=true;
-            break;
-        }
-    }
-    if (!$found){
-        $data['courses']=array();
-    }
-    $user_course_data = $data;
+    $URL = $getSiteURI . "/accountsettings/user/{$uid}/course/{$cid}";
+    $user_course_data = http_get($URL, true);
+    $user_course_data = json_decode($user_course_data,true);
     Authentication::checkRights($permission, $cid, $uid, $user_course_data);
     return $user_course_data;
 }
@@ -64,9 +52,23 @@ foreach ($types as $type){
     }
 }
 if (isset($_GET['downloadCSV'])) {
-    checkPermission(PRIVILEGE_LEVEL::TUTOR);
+    $user_course_data = checkPermission(PRIVILEGE_LEVEL::TUTOR);
     $sid = $_GET['downloadCSV'];
-    $location = $logicURI . '/tutor/user/' . $uid . '/exercisesheet/' . $sid.(isset($status) ? '/status/'.$status : '');
+    $location = $logicURI . '/tutor/user/' . $uid . '/exercisesheet/' . $sid.(isset($status) ? '/status/'.$status : '');    
+    
+    if (Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $user_course_data)){
+        $location = $logicURI . '/tutor/user/' . $uid . '/exercisesheet/' . $sid.(isset($status) ? '/status/'.$status : '').'/withnames';  
+    } else
+    {
+        $obj = Course::decodeCourse(Course::encodeCourse($user_course_data['courses'][0]['course']));
+        if (Course::containsSetting($obj,'InsertStudentNamesIntoTutorArchives') !== null){
+            if (Course::containsSetting($obj,'InsertStudentNamesIntoTutorArchives') == 1){
+                // auch Tutoren sollen die Studentendaten bekommen
+                $location = $logicURI . '/tutor/user/' . $uid . '/exercisesheet/' . $sid.(isset($status) ? '/status/'.$status : '').'/withnames'; 
+            }
+        }
+    }
+    
     $result = http_get($location, true);
     echo $result;
     exit(0);
@@ -130,6 +132,10 @@ if (isset($_GET['downloadMarkings'])) {
     $count = 0;
     $namesOfExercises = array();
     $attachments = array();
+    
+    // die Aufgaben müssen entsprechend sortiert sein, sonst werden die Namen falsch erzeugt,
+    // falls eine Aufgabe später hinzugefügt wurde
+    $exercises = LArraySorter::orderBy($exercises, 'link', SORT_ASC, 'linkName', SORT_ASC);
 
     $count=null;
     foreach ($exercises as $key => $exercise){

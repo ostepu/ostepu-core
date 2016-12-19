@@ -1,0 +1,250 @@
+[
+    {
+        "name": "editGateProfile",
+        "outputType": "GateProfile",
+        "inputType": "GateProfile",
+        "method": "PUT",
+        "placeholder": [{
+            "name": "gpid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/gateprofile/gateprofile/:gpid"
+    },
+    {
+        "name": "deleteGateProfile",
+        "outputType": "GateProfile",
+        "inputType": "",
+        "method": "DELETE",
+        "placeholder": [{
+            "name": "gpid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/gateprofile/gateprofile/:gpid"
+    },
+    {
+        "name": "deleteGateProfileByName",
+        "outputType": "GateProfile",
+        "inputType": "",
+        "method": "DELETE",
+        "placeholder": [{
+            "name": "gpname",
+            "regex": "%^([a-zA-Z0-9_]+)$%"
+        }],
+        "path": "/gateprofile/name/:gpname"
+    },
+    {
+        "name": "addGateProfile",
+        "outputType": "GateProfile",
+        "inputType": "GateProfile",
+        "method": "POST",
+        "path": "/gateprofile"
+    },
+    {
+        "name": "editGateRule",
+        "outputType": "GateRule",
+        "inputType": "GateRule",
+        "method": "PUT",
+        "placeholder": [{
+            "name": "grid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/gaterule/gaterule/:grid"
+    },
+    {
+        "name": "deleteGateRule",
+        "outputType": "GateRule",
+        "inputType": "",
+        "method": "DELETE",
+        "placeholder": [{
+            "name": "grid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/gaterule/gaterule/:grid"
+    },
+    {
+        "name": "addGateRule",
+        "outputType": "GateRule",
+        "inputType": "GateRule",
+        "method": "POST",
+        "path": "/gaterule"
+    },
+    {
+        "name": "editGateAuth",
+        "outputType": "GateAuth",
+        "inputType": "GateAuth",
+        "method": "PUT",
+        "placeholder": [{
+            "name": "gaid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/gateauth/gateauth/:gaid"
+    },
+    {
+        "name": "deleteGateAuth",
+        "outputType": "GateAuth",
+        "inputType": "",
+        "method": "DELETE",
+        "placeholder": [{
+            "name": "gaid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/gateauth/gateauth/:gaid"
+    },
+    {
+        "name": "addGateAuth",
+        "outputType": "GateAuth",
+        "inputType": "GateAuth",
+        "method": "POST",
+        "path": "/gateauth"
+    },
+    {
+        "name": "addPlatform",
+        "outputType": "Platform",
+        "inputType": "Platform",
+        "method": "POST",
+        "path": "/platform"
+    },
+    {
+        "name": "deletePlatform",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/platform"
+    },
+    {
+        "name": "getExistsPlatform",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "GET",
+        "path": "/link/exists/platform"
+    },
+    {
+        "name": "getProfile",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
+        "outputType": "GateProfile",
+        "inputType": "",
+        "method": "GET",
+        "placeholder": [{
+            "name": "gpid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/gateprofile/gateprofile/:gpid"
+    },
+    {
+        "name": "getProfileByName",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
+        "outputType": "GateProfile",
+        "inputType": "",
+        "method": "GET",
+        "placeholder": [{
+            "name": "name",
+            "regex": "%^([a-zA-Z0-9_]+)$%"
+        }],
+        "path": "/gateprofile/name/:name"
+    },
+    {
+        "name": "getAllProfiles",
+        "callback": "getMatch",
+        "outputType": "GateProfile",
+        "inputType": "",
+        "method": "GET",
+        "path": "/gateprofile"
+    },
+    {
+        "name": "getProfilesByAuth",
+        "callback": "getMatch",
+        "outputType": "GateProfile",
+        "inputType": "",
+        "method": "GET",
+        "placeholder": [{
+            "name": "authType",
+            "regex": "%^([a-zA-Z0-9_]+)$%"
+        }],
+        "path": "/gateprofile/auth/:authType"
+    },
+    {
+        "name": "getProfilesByComponent",
+        "callback": "getMatch",
+        "outputType": "GateProfile",
+        "inputType": "",
+        "method": "GET",
+        "placeholder": [{
+            "name": "component",
+            "regex": "%^([a-zA-Z0-9_]+)$%"
+        }],
+        "path": "/gateprofile/component/:component"
+    },
+    {
+        "name": "getProfileWithAuth",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
+        "outputType": "GateProfile",
+        "inputType": "",
+        "method": "GET",
+        "placeholder": [
+            {
+                "name": "gpid",
+                "regex": "%^([0-9_]+)$%"
+            },
+            {
+                "name": "authType",
+                "regex": "%^([a-zA-Z0-9_]+)$%"
+            }
+        ],
+        "path": "/gateprofile/gateprofile/:gpid/auth/:authType"
+    },
+    {
+        "name": "getComponentProfileWithAuthLogin",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
+        "outputType": "GateProfile",
+        "inputType": "",
+        "method": "GET",
+        "placeholder": [
+            {
+                "name": "profName",
+                "regex": "%^([a-zA-Z0-9_]+)$%"
+            },
+            {
+                "name": "authType",
+                "regex": "%^([a-zA-Z0-9_]+)$%"
+            },
+            {
+                "name": "component",
+                "regex": "%^([a-zA-Z0-9_]+)$%"
+            },
+            {
+                "name": "login",
+                "regex": "%^([a-zA-Z0-9_]+)$%"
+            }
+        ],
+        "path": "/gateprofile/gateprofile/:profName/auth/:authType/component/:component/login/:login"
+    },
+    {
+        "name": "getComponentProfileWithAuth",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
+        "outputType": "GateProfile",
+        "inputType": "",
+        "method": "GET",
+        "placeholder": [
+            {
+                "name": "profName",
+                "regex": "%^([a-zA-Z0-9_]+)$%"
+            },
+            {
+                "name": "authType",
+                "regex": "%^([a-zA-Z0-9_]+)$%"
+            },
+            {
+                "name": "component",
+                "regex": "%^([a-zA-Z0-9_]+)$%"
+            }
+        ],
+        "path": "/gateprofile/gateprofile/:profName/auth/:authType/component/:component"
+    }
+]

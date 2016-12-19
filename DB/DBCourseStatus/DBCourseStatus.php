@@ -52,7 +52,7 @@ class DBCourseStatus
      */
     public function editMemberRight( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/EditMemberRight.sql',array_merge($params,array( 'values' => $input->getCourseStatusInsertData( ))),201,'Model::isCreated',array(new User()),'Model::isProblem',array(new User()));
+        return $this->_component->callSqlTemplate('editMemberRight',dirname(__FILE__).'/Sql/EditMemberRight.sql',array_merge($params,array( 'values' => $input->getCourseStatusInsertData( ))),201,'Model::isCreated',array(new User()),'Model::isProblem',array(new User()));
     }
 
     /**
@@ -66,7 +66,7 @@ class DBCourseStatus
      */
     public function removeCourseMember($callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/RemoveCourseMember.sql',array_merge($params,array()),201,'Model::isCreated',array(new User()),'Model::isProblem',array(new User()));
+        return $this->_component->callSqlTemplate('removeCourseMember',dirname(__FILE__).'/Sql/RemoveCourseMember.sql',array_merge($params,array()),201,'Model::isCreated',array(new User()),'Model::isProblem',array(new User()));
     }
 
     /**
@@ -85,7 +85,7 @@ class DBCourseStatus
             //$obj->setId( $input[0]->getInsertId( ) );
             return Model::isCreated();
         };
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/AddCourseMember.sql',array( 'values' => $input->getCourseStatusInsertData( )),201,$positive,array(),'Model::isProblem',array(new User()));
+        return $this->_component->callSqlTemplate('addCourseMember',dirname(__FILE__).'/Sql/AddCourseMember.sql',array( 'values' => $input->getCourseStatusInsertData( )),201,$positive,array(),'Model::isProblem',array(new User()));
     }
 
     public function get( $functionName, $linkName, $params=array(), $checkSession = true )
@@ -121,7 +121,7 @@ class DBCourseStatus
      */
     public function deletePlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('deletePlatform',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 
     /**
@@ -132,7 +132,7 @@ class DBCourseStatus
      */
     public function addPlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('addPlatform',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 
     public function getSamplesInfo( $callName, $input, $params = array() )
@@ -158,7 +158,7 @@ class DBCourseStatus
     public function postSamples( $callName, $input, $params = array() )
     {
         set_time_limit(0);
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));
+        return $this->_component->callSqlTemplate('postSamples',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));
     }
 }
 

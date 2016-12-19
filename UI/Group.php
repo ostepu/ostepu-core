@@ -5,11 +5,11 @@
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
  *
- * @package OSTEPU (https://github.com/ostepu/system)
+ * @package OSTEPU (https://github.com/ostepu/ostepu-core)
  * @since 0.1.0
  *
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
- * @date 2014-2015
+ * @date 2014-2016
  * @author Ralf Busch <ralfbusch92@gmail.com>
  * @date 2013-2014
  * @author Felix Schmidt <Fiduz@Live.de>
@@ -108,7 +108,7 @@ function removeUserFromGroup($uid, $sid)
 
 /**
  * Removes all selectedSubmissions of a user regarding
- * a particular sheet.
+ * a particular sheet. (es ist egal in welcher Gruppe er ist, es werden alle entfernt)
  *
  * @param $uid The id of the user
  * @param $sid The id of the sheet
@@ -124,6 +124,82 @@ function removeSelectedSubmission($uid, $sid)
         return true;
     } else {
         return false;
+    }
+}
+
+/**
+ * Ermittelt die Einsendungen welche vom Nutzer uid in seiner derzeitigen 
+ * Gruppe selektiert wurden (nur die von ihm eingesendeten)
+ *
+ * @param $uid The id of the user
+ * @param $sid The id of the sheet
+ */
+function collectSelectedSubmissions($uid, $sid){
+    global $serverURI;
+    
+    $URI = $serverURI . "/submission/group/user/{$uid}/exercisesheet/{$sid}/selected";
+    $selectedSubmissions = http_get($URI, true, $message);
+
+    if ($message === 200) {
+        $submissions = json_decode($submissions,true);
+        $res = array();
+        foreach($submissions as $sub){
+            if ($sub['studentId'] == $uid){
+                $res[] = $sub;
+            }
+        }
+        return $res;
+    }
+    
+    return array();
+}
+
+/**
+ * versucht mit den Einsendungen des Nutzer uid in seiner aktuellen Gruppe einen
+ * Beitrag zu leisten, indem seine Einsendungen dort selektiert werden, wenn noch
+ * keine für die jeweilige Aufgabe seletiert ist (wird durch constraints der DB gelöst)
+ *
+ * @param $uid The id of the user
+ * @param $sid The id of the sheet
+ */
+function contributeSelectedSubmissionsToCurrentGroup($uid, $sid, $selectedSubmissions = null){
+    global $serverURI;
+
+    $URI = $serverURI . "/DB/DBSubmission/submission/user/{$uid}/exercisesheet/{$sid}";
+    $submissions = http_get($URI, true, $message);
+
+    if ($message === 200) {
+        $submissions = json_decode($submissions,true);
+        
+        // sortiert die Einsendungen nach dem Zeitstempel (absteigend)
+        $sortedSubmissions = LArraySorter::orderby($submissions, 'date', SORT_DESC);
+        $computedExercises = array();
+        
+        if ($selectedSubmissions !== null){
+            $sortedSubmissions = array_merge($selectedSubmissions, $sortedSubmissions);
+        }
+        
+        // jetzt wird versucht die Einsendungen als selectedSubmission einzutragen
+        foreach($sortedSubmissions as $sub){
+            if (!isset($computedExercises[$sub['exerciseId']])){
+                $computedExercises[$sub['exerciseId']] = 1;
+                $newSelectedSubmission = SelectedSubmission::createSelectedSubmission(
+                                                                                      null,
+                                                                                      $sub['id'],
+                                                                                      $sub['exerciseId']
+                                                                                      );
+
+                $URI = $serverURI . "/DB/DBSelectedSubmission/selectedsubmission";
+                http_post_data($URI, SelectedSubmission::encodeSelectedSubmission($newSelectedSubmission), true, $message);
+            }
+        }
+        return true;
+    } else {
+        if ($message === 404){
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 
@@ -152,14 +228,22 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
         $postRemoveGroupMemberValidation->resetNotifications()->resetErrors();
 
         if ($postRemoveGroupMemberValidation->isValid()){
-            if (isset($foundValues['removeMember'])){
+            if (isset($foundValues['removeMember'])){                
                 // bool which is true if any error occured
                 $RequestError = false;
+                
+                $selectedSubmissions = collectSelectedSubmissions($foundValues['removeMember'], $sid);
 
                 // removes the user from the group
                 if (removeUserFromGroup($foundValues['removeMember'], $sid)) {
+                    
                     if (!removeSelectedSubmission($foundValues['removeMember'], $sid)) {
                         $RequestError = true;
+                    } else {
+                        // hier die letzten Einsendungen des Nutzers wieder Auswählen
+                        if (!contributeSelectedSubmissionsToCurrentGroup($foundValues['removeMember'], $sid, $selectedSubmissions)){
+                            $RequestError = true; 
+                        }
                     }
                 } else {
                     $RequestError = true;
@@ -218,11 +302,18 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                     if (!empty($group)) {
                         if (isset($group['members']) && !empty($group['members'])) {
                             foreach ($group['members'] as $member) {
+                                $selectedSubmissions = collectSelectedSubmissions($member['id'], $sid);
+                    
                                 if (!removeUserFromGroup($member['id'], $sid)) {
                                     $RequestError = true;
                                 }
-                                if (!removeSelectedSubmission($member['id'], $sid)) {
+                                if (!$RequestError && !removeSelectedSubmission($member['id'], $sid)) {
                                     $RequestError = true;
+                                } else {
+                                    // hier die letzten Einsendungen des Nutzers wieder Auswählen
+                                    if (!contributeSelectedSubmissionsToCurrentGroup($member['id'], $sid, $selectedSubmissions)){
+                                        $RequestError = true; 
+                                    }
                                 }
                             }
                         }
@@ -230,6 +321,11 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                         // removes the selectedSubmissions of the leader
                         if (!removeSelectedSubmission($group['leader']['id'], $sid)) {
                             $RequestError = true;
+                        } else {
+                            // hier die letzten Einsendungen des Nutzers wieder Auswählen
+                            if (!contributeSelectedSubmissionsToCurrentGroup($group['leader']['id'], $sid)){
+                                $RequestError = true; 
+                            }
                         }
 
                         // shows notification
@@ -247,11 +343,17 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                 } else {
                     // bool which is true if any error occured
                     $RequestError = false;
+                    $selectedSubmissions = collectSelectedSubmissions($selectedUser, $sid);
 
                     // removes the user from the group
                     if (removeUserFromGroup($selectedUser, $sid)) {
                         if (!removeSelectedSubmission($selectedUser, $sid)) {
                             $RequestError = true;
+                        } else {
+                            // hier die letzten Einsendungen des Nutzers wieder Auswählen
+                            if (!contributeSelectedSubmissionsToCurrentGroup($selectedUser, $sid, $selectedSubmissions)){
+                                $RequestError = true; 
+                            }
                         }
                     } else {
                         $RequestError = true;
@@ -364,6 +466,9 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                         $notifications[] = MakeNotification('success', Language::Get('main','successInviteMembers', $langTemplate));
                         // accept invitations
                         foreach ($foundValues['members'] as $member){
+                            
+                            
+                            $selectedSubmissions = collectSelectedSubmissions($member, $sid);
 
                             // adds the user to the group
                             $newGroupSettings = Group::encodeGroup(Group::createGroup($selectedUser, $member, $sid));
@@ -387,6 +492,10 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                             if (!removeSelectedSubmission($member, $sid)) {
                                 $RequestError = true;
                                 continue;
+                            } else {
+                                if (!contributeSelectedSubmissionsToCurrentGroup($member, $sid, $selectedSubmissions)){
+                                    $RequestError = true; 
+                                }
                             }
                         }
 
@@ -488,6 +597,8 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                 // bool which is true if any error occured
                 $RequestError = false;
 
+                $selectedSubmissions = collectSelectedSubmissions($selectedUser, $sid);
+                    
                 // adds the user to the group
                 if ($RequestError === false){
                     $newGroupSettings = Group::encodeGroup(Group::createGroup($foundValues['acceptInvitation'], $selectedUser, $sid));
@@ -511,8 +622,15 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
 
                 // deletes all selectedSubmissions
                 if ($RequestError === false){
+                    
                     if (!removeSelectedSubmission($selectedUser, $sid)) {
                         $RequestError = true;
+                    } else {
+                        // hier sollen die letzten Einsendungen des neuen Nutzers
+                        // in die neue Gruppe eingebracht werden
+                        if (!contributeSelectedSubmissionsToCurrentGroup($selectedUser, $sid, $selectedSubmissions)){
+                            $RequestError = true; 
+                        }
                     }
                 }
 

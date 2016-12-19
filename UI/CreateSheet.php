@@ -5,13 +5,13 @@
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
  *
- * @package OSTEPU (https://github.com/ostepu/system)
+ * @package OSTEPU (https://github.com/ostepu/ostepu-core)
  * @since 0.1.0
  *
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2014-2016
  * @author Ralf Busch <ralfbusch92@gmail.com>
  * @date 2014-2016
- * @author Till Uhlig <till.uhlig@student.uni-halle.de>
- * @date 2014-2015
  * @author Felix Schmidt <Fiduz@Live.de>
  * @date 2013-2014
  * @author Florian Lücke <florian.luecke@gmail.com>
@@ -228,9 +228,14 @@ if ($correctExercise == true) {
             if (isset($exercise[$key2]['submittable']) && $exercise[$key2]['submittable'] == '0'){
                 $submittable = '0';
             }
+            
+            $resultVisibility = '0';
+            if (isset($exercise[$key2]['resultVisibility']) && $exercise[$key2]['resultVisibility'] == '1'){
+                $resultVisibility = '1';
+            }
 
             $subexerciseObj = Exercise::createExercise($exerciseId,$cid,$sheetId, $exercise[$key2]['maxPoints'],
-                                                       $exercise[$key2]['exerciseType'],$key1+1,$bonus,$key2+1, $submittable);
+                                                       $exercise[$key2]['exerciseType'],$key1+1,$bonus,$key2+1, $submittable, $resultVisibility);
 
             // set FileTypes (only as an array with strings in it)
             $subexerciseObj->setFileTypes($exercise[$key2]['mime-type']);

@@ -15,13 +15,23 @@
  */
 ?>
 
+DROP PROCEDURE IF EXISTS `DBTransactionGetAmountOfExpiredTransactions`;
+CREATE PROCEDURE `DBTransactionGetAmountOfExpiredTransactions` (IN profile varchar(30), IN courseid INT)
+READS SQL DATA
+begin
+SET @s = concat("
 SELECT 
   'rows' as 'type',
   count(T.T_id) AS 'amount',
   round((SELECT (data_length+index_length)/table_rows
    FROM information_schema.TABLES
    WHERE table_schema = DATABASE()
-     AND TABLE_NAME LIKE 'Transaction<?php echo $name; ?>_<?php echo $courseid; ?>')*count(*),0) AS 'size',
-       'Transaction<?php echo $name; ?>_<?php echo $courseid; ?>' AS 'table'
-FROM `Transaction<?php echo $name; ?>_<?php echo $courseid; ?>` T
-WHERE T.T_durability < UNIX_TIMESTAMP()
+     AND TABLE_NAME LIKE 'Transaction",profile,"_",courseid,"')*count(*),0) AS 'size',
+       'Transaction",profile,"_",courseid,"' AS 'table'
+FROM `Transaction",profile,"_",courseid,"` T
+WHERE T.T_durability < UNIX_TIMESTAMP();");
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
+end;
+

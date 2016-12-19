@@ -13,7 +13,7 @@
 ?>
 
 DROP PROCEDURE IF EXISTS `DBCourseGetAllCourses`;
-CREATE PROCEDURE `DBCourseGetAllCourses` ()
+CREATE PROCEDURE `DBCourseGetAllCourses` (IN profile varchar(30), IN exerciseSheetProfile varchar(30))
 READS SQL DATA
 begin
 SET @s = concat("
@@ -24,9 +24,9 @@ select SQL_CACHE
     C.C_defaultGroupSize,
     ES.ES_id
 from
-    Course C
+    `Course",profile,"` C
         left join
-    ExerciseSheet ES ON C.C_id = ES.C_id;");
+    `ExerciseSheet",exerciseSheetProfile,"` ES ON C.C_id = ES.C_id;");
 PREPARE stmt1 FROM @s;
 EXECUTE stmt1;
 DEALLOCATE PREPARE stmt1;

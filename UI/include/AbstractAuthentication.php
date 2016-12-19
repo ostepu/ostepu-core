@@ -5,11 +5,11 @@
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
  *
- * @package OSTEPU (https://github.com/ostepu/system)
+ * @package OSTEPU (https://github.com/ostepu/ostepu-core)
  * @since 0.1.0
  *
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
- * @date 2014-2015
+ * @date 2014-2016
  * @author Ralf Busch <ralfbusch92@gmail.com>
  * @date 2014
  * @author Florian Lücke <florian.luecke@gmail.com>
@@ -79,14 +79,14 @@ abstract class AbstractAuthentication
      */
     protected function refreshSession()
     {
-        global $databaseURI;
+        global $serverURI;
         $_SESSION['SESSION'] = $this->hashData("md5", session_id() . $_SERVER['HTTP_USER_AGENT'] . $_SERVER['REMOTE_ADDR']);
 
         // create Session in DB
         $sessionbody = array('user' => $_SESSION['UID'],
                              'session' => $_SESSION['SESSION']);
         $sessionbody = json_encode($sessionbody);
-        $url = "{$databaseURI}/session";
+        $url = "{$serverURI}/DB/DBSession/session";
         http_post_data($url, $sessionbody, false, $message);
 
         // only true if session is created in DB
@@ -145,12 +145,12 @@ abstract class AbstractAuthentication
      */
     public static function logoutUser($noback = false)
     {
-        global $databaseURI;
+        global $serverURI;
 
         // delete session in DB
         if (isset($_SESSION['SESSION'])) {
             $session = $_SESSION['SESSION'];
-            http_delete("{$databaseURI}/session/{$session}",true,$message,true);
+            http_delete("{$serverURI}/DB/DBSession/session/{$session}",true,$message,true);
         }
 
         // delete session in UI

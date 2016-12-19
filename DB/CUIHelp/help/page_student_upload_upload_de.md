@@ -47,6 +47,7 @@ Wenn Sie dem Kontrolleur einen Hinweis zu Ihrer Einsendugn zukommen lassen möch
 
 ![](uploadG.png)
 
-Wenn hier Typen aufgelistet sind, dürfen Ihre Einsendungsdateien nur bestimmte Dateitypen aufweisen. Nähere Informationen zu diesen MIME-Typen erhalten Sie unter [https://de.wikipedia.org/wiki/Internet_Media_Type]
+Wenn hier Typen aufgelistet sind, dürfen Ihre Einsendungsdateien nur bestimmte Dateitypen aufweisen. Nähere Informationen zu diesen MIME-Typen erhalten Sie unter
+[https://de.wikipedia.org/wiki/Internet_Media_Type](https://de.wikipedia.org/wiki/Internet_Media_Type)
 
 

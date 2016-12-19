@@ -12,6 +12,11 @@
  */
 ?>
 
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
 CREATE OR REPLACE VIEW generator AS
 SELECT 0 n
 UNION ALL
@@ -53,7 +58,7 @@ SET @t = 0;
 
 
 INSERT
-IGNORE INTO `Course`
+IGNORE INTO `Course<?php echo $profile;?>`
 SELECT @row := @row + 1,
                SUBSTRING(concat(md5(@row),md5(@row),md5(@row)),-FLOOR(10 + (RAND() * 50))),
                concat('SS ',FLOOR(2014 + (RAND() * 10))),

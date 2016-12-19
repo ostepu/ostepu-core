@@ -27,6 +27,21 @@ Hier wählen Sie die Art der Anwendung aus. Es werden C0-C4, Java, sowie benutze
 > Die benutzerdefinierte Anwendung erfordert Erfahrung in Bash Scripting. Mehr dazu lesen Sie weiter unten.
 
 ---
+#### Rückmeldungen #####
+
+![](LOOPF.png)
+
+Wenn diese Option ausgewählt wurde, werden den Studenten die Rückmeldung des Kompiliervorganges direkt angezeigt.
+
+---
+#### fehlerhafte Einsendungen #####
+
+![](LOOPG.png)
+
+Wenn diese Option ausgewählt wurde, wird eine Einsendung, welche nicht durch den Kompilierprozess läuft abgelehnt, ansonsten wird
+die eine Einsendung immer akzeptiert (aber die Meldungen angezeigt).
+
+---
 #### Die Kompilierungsparameter #####
 
 ![](LOOPB.png)

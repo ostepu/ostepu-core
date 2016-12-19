@@ -13,8 +13,11 @@
 ?>
 
 DROP PROCEDURE IF EXISTS `DBSessionGetExistsPlatform`;
-CREATE PROCEDURE `DBSessionGetExistsPlatform` ()
+CREATE PROCEDURE `DBSessionGetExistsPlatform` (IN profile varchar(30))
 READS SQL DATA
 begin
-show tables like 'Session';
+SET @s = concat("show tables like 'Session",profile,"';");
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
 end;

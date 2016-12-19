@@ -336,23 +336,31 @@ class Request
 
             ////Logger::Log("--".$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', true, LogLevel::DEBUG);
 
-            $ch = Request_CreateRequest::createCustom($method,$target,$header,$content, $authbool, $sessiondelete)->get();
-            $content = curl_exec($ch);
+            
+            try{
+                $ch = Request_CreateRequest::createCustom($method,$target,$header,$content, $authbool, $sessiondelete)->get();
+                $content = curl_exec($ch);
+                // get the request result
+                $result = curl_getinfo($ch);
+                $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
 
-            // get the request result
-            $result = curl_getinfo($ch);
-            $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+                // splits the received header info, to create an entry
+                // in the $result['headers'] for each part of the header
+                $result['headers'] = self::http_parse_headers(substr($content, 0, $header_size));
 
-            // splits the received header info, to create an entry
-            // in the $result['headers'] for each part of the header
-            $result['headers'] = self::http_parse_headers(substr($content, 0, $header_size));
+                // seperates the content part
+                $result['content'] = substr($content, $header_size);
 
-            // seperates the content part
-            $result['content'] = substr($content, $header_size);
-
-            // sets the received status code
-            $result['status'] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
+                // sets the received status code
+                $result['status'] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                curl_close($ch);
+                
+            }catch(Exception $e){
+                $result = array();
+                $result['status'] = 408;
+                $result['content'] = '';
+                $result['headers'] = array();
+            }
         }
 
         ////Logger::Log($target . ' ' . (round((microtime(true) - $begin),2)). 's', LogLevel::DEBUG, false, dirname(__FILE__) . '/../executionTime.log');

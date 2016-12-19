@@ -3,8 +3,13 @@
  * @file LOOP.functions.php
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
  *
+ * @package OSTEPU (https://github.com/ostepu/ostepu-core)
+ * @since 0.4.4
+ *
  * @author Ralf Busch <ralfbusch92@gmail.com>
  * @date 2015-2016
+ * @author Till Uhlig <till.uhlig@student.uni-halle.de>
+ * @date 2016
  */
 
 function LOOP_createParameters(&$subexercise, $key, $exercisekey, $subexercisekey, $oldparameter = null, $filepaths, $filenames, $fileerrors, $filesystemURI, $databaseURI)
@@ -93,6 +98,15 @@ function LOOP_createParameters(&$subexercise, $key, $exercisekey, $subexerciseke
     else
     {
         $parameters[0]->setErrorsEnabled("0");
+    }
+
+    if (isset($subexercise['rejectOnErrorsParameter'][$key][0]) && $subexercise['rejectOnErrorsParameter'][$key][0] == "1")
+    {
+        $parameters[0]->setRejectSubmissionOnError("1");
+    }
+    else
+    {
+        $parameters[0]->setRejectSubmissionOnError("0");
     }
     
     

@@ -307,11 +307,11 @@ class LGetSite
                 $response['tutorAssignments'][$tutor['id']] = array('tutor' => $tutor, 'submissions' => array());
             }
         }
-        $response['tutorAssignments']['unkown'] = array('tutor' => json_decode(User::encodeUser(User::createUser(null,'','','','',null,null,null,null,null,null)),true), 'submissions' => array());
+        $response['tutorAssignments']['unknown'] = array('tutor' => json_decode(User::encodeUser(User::createUser(null,'','','','',null,null,null,null,null,null)),true), 'submissions' => array());
 
         // assign submissions for the markings to the right tutor
-        $computedSubmissions = array();
-        $reversedMarkings = array_reverse($markings);
+        $computedSubmissions = array();        
+        $reversedMarkings = LArraySorter::orderby($markings, 'id', SORT_DESC);
         unset($markings);
         foreach ($reversedMarkings as $marking ) {
 
@@ -320,31 +320,36 @@ class LGetSite
             if (isset($computedSubmissions[$marking['submission']['id']])) continue;
             $computedSubmissions[$marking['submission']['id']] = 1;
 
-            if (isset($response['tutorAssignments'][$marking['tutorId']])){
-                unset($marking['submission']['file']);
-                unset($marking['submission']['comment']);
-                unset($marking['submission']['accepted']);
-                unset($marking['submission']['date']);
-                unset($marking['submission']['flag']);
-                unset($marking['submission']['selectedForGroup']);
+            unset($marking['submission']['file']);
+            unset($marking['submission']['comment']);
+            unset($marking['submission']['accepted']);
+            unset($marking['submission']['date']);
+            unset($marking['submission']['flag']);
+            unset($marking['submission']['selectedForGroup']);
 
-                $marking['submission']['user']=null;
-                if (isset($students[$marking['submission']['leaderId']])){
-                    $marking['submission']['user']=$students[$marking['submission']['leaderId']];
-                }
-
-                $marking['submission']['markingId'] = $marking['id'];
-                $response['tutorAssignments'][$marking['tutorId']]['submissions'][] = $marking['submission'];
-
-                // save ids of all assigned submission
-                $assignedSubmissionIDs[] = $marking['submission']['id'];
+            $marking['submission']['user']=null;
+            if (isset($students[$marking['submission']['leaderId']])){
+                $marking['submission']['user']=$students[$marking['submission']['leaderId']];
             }
+
+            $marking['submission']['markingId'] = $marking['id'];
+                
+            // er nimmt hier nur Korrekturen von bekannten Kontrolleuren auf
+            if (isset($response['tutorAssignments'][$marking['tutorId']])){
+                $response['tutorAssignments'][$marking['tutorId']]['submissions'][] = $marking['submission'];                 
+            } else {
+                // wenn er den Kontrolleur nicht kennt, ist er "unbekannt"
+                $response['tutorAssignments']['unknown']['submissions'][] = $marking['submission'];                
+            }
+            
+            // collect the ids of all assigned submissions
+            $assignedSubmissionIDs[] = $marking['submission']['id'];
         }
         unset($reversedMarkings);
 
         // remove unknown lecturer if empty
-        if (count($response['tutorAssignments']['unkown']['submissions']) == 0)
-            unset($response['tutorAssignments']['unkown']);
+        if (count($response['tutorAssignments']['unknown']['submissions']) == 0)
+            unset($response['tutorAssignments']['unknown']);
 
         $response['tutorAssignments'] = array_values($response['tutorAssignments']);
 
@@ -507,6 +512,20 @@ class LGetSite
         if (!isset($markings)) {
             $markings = array();
         }
+        
+        // nun werden die Korrekturen noch aussortiert, sodass eine Einsendung
+        // nur eine Korrektur hat (wähle die letzte Korrektur)
+        $computedSubmissions=array();
+        $markings = LArraySorter::orderby($markings, 'id', SORT_DESC);
+        foreach($markings as $key => $marking){
+            $sid = $marking['submission']['id'];
+            if (isset($computedSubmissions[$sid])){
+                unset($markings[$key]);
+            } else {
+                $computedSubmissions[$sid] = $sid;
+            }
+        }
+        unset($computedSubmissions);
 
         $groups = json_decode($answer[3]['content'], true);
 
@@ -525,6 +544,9 @@ class LGetSite
         }
 
         // add markings to the submissions
+        // wenn er hier mehrere Korrekturaufträge zu einer Einsendung hätte, würde er beim Zuordnen,
+        // der Korrekturen zu den Einsendungen, submission['marking'] mit jeder weiteren immer wieder
+        // überschreiben
         foreach ($markings as &$marking) {
             $studentId = $marking['submission']['studentId'];
             $exerciseId = $marking['submission']['exerciseId'];
@@ -540,7 +562,7 @@ class LGetSite
                     // id of the marking match
 
                     // add marking status to the marking
-                    $status = $marking['status'];
+                    $status = $marking['status']; // wieso wird hier das Feld der StatusId einfach nur umbenannt?
                     $marking['statusId'] = $status;
 
                     // add marking status name to the marking
@@ -594,17 +616,20 @@ class LGetSite
                     if (isset($submissionsByExercise[$exerciseID])) {
                         $submission = &$submissionsByExercise[$exerciseID];
 
-                        if (!isset($submission['hideFile']) || !$submission['hideFile'])
+                        if (!isset($submission['hideFile']) || !$submission['hideFile']){
                             $hasSubmissions=true;
+                        }
 
                         if (isset($submission['marking'])) {
                             $marking = $submission['marking'];
 
-                        if (isset($submission['accepted']) && $submission['accepted'] == 1)
-                            $sheetPoints += isset($marking['points']) ? $marking['points'] : 0 ;
+                            if (isset($submission['accepted']) && $submission['accepted'] == 1){
+                                $sheetPoints += isset($marking['points']) ? $marking['points'] : 0 ;
+                            }
 
-                            if (!isset($submission['marking']['hideFile']) || !$submission['marking']['hideFile'])
+                            if (!isset($submission['marking']['hideFile']) || !$submission['marking']['hideFile']){
                                 $hasMarkings = true;
+                            }
                         }
 
                         $exercise['submission'] = $submission;
@@ -903,6 +928,10 @@ class LGetSite
             $group['exercises'] = $exercises;
         }
 
+        // kehrt die Korrekturen um, damit bei der Zuordnung zu den Einsendungen auch wirklich
+        // die letzte Korrektur gewählt wird
+        $markings = LArraySorter::orderby($markings, 'id', SORT_DESC);
+        
         foreach ($markings as $key => $marking) {
             $markings[$key]['submissionId'] = $markings[$key]['submission']['id'];
         }
@@ -1096,18 +1125,28 @@ class LGetSite
             $URL = $this->_getSubmission->getAddress().'/submission/group/user/'.$uploaduserid.'/exercisesheet/'.$sheetid;
             $answer = Request::custom('GET', $URL, array(), '');
             $answer = json_decode($answer['content'], true);
+            
             $URL = $this->_getMarking->getAddress().'/marking/exercisesheet/'.$sheetid.'/user/'.$uploaduserid;
             $answer2 = Request::custom('GET', $URL, array(), '');
             $answer2 = json_decode($answer2['content'], true);
+            
+            // kehrt die Korrekturen um, damit bei der Zuordnung zu den Einsendungen auch wirklich
+            // die letzte Korrektur gewählt wird
+            $answer2 = LArraySorter::orderby($answer2, 'id', SORT_DESC);
 
             if(!empty($answer)) {
+                // er geht nun alle Einsendungen durch und versucht ihnen eine Korrektur zuzuordnen
                 foreach ($answer as $submission){
                     if (isset($submission['exerciseId'])){
                         if (!empty($answer2)){
+                            
+                            // gehe alle Korrektureinträge durch und suche den letzten
                             foreach ($answer2 as $key => $marking){
                                 if (isset($marking['submission']['id']) && $marking['submission']['id'] == $submission['id']){
                                     unset($marking['submission']);
                                     $submission['marking'] = $marking;
+                                    
+                                    // der Korrektureintrag kann aus der Liste entfernt werden, er wurde bereits zugeordnet
                                     unset($answer2[$key]);
                                     break;
                                 }
@@ -1349,7 +1388,7 @@ class LGetSite
         unset($selectedSubs);
 
         $computedSubmissions = array();
-        $reversedMarkings = array_reverse($markings);
+        $reversedMarkings = LArraySorter::orderby($markings, 'id', SORT_DESC);
         unset($markings);
         foreach ($reversedMarkings as $marking){
             if (isset($marking['submission']['selectedForGroup']) && $marking['submission']['selectedForGroup']){
@@ -1561,6 +1600,10 @@ class LGetSite
             }
         }
 
+        if (!is_array($submissions)){
+            $submissions = array();
+        }
+        
         // order submissions by exercise and user, only take latest
         $exerciseUserSubmissions = array();
         foreach ($submissions as $submission) {
@@ -1771,6 +1814,9 @@ class LGetSite
         
         $exercisePoints = array();
         
+        // die exercises müssne hier nicht extra sortiert werden, weil sie von LExerciseSheet kommen,
+        // dort werden sie bereits vorsortiert (trotzdem vielleicht sortieren?)
+        
         $namesOfExercises = array();
         // find the current sheet and it's exercises
         foreach ($sheets as $sheet) {
@@ -1886,6 +1932,20 @@ class LGetSite
                 $allMarkings[] = $marking;
         }
         unset($markings);
+        
+        // nun werden die übrigen (erlaubten Korrekturen) noch aussortiert, sodass eine Einsendung
+        // nur eine Korrektur hat (wähle die letzte Korrektur)
+        $computedSubmissions=array();
+        $allMarkings = LArraySorter::orderby($allMarkings, 'id', SORT_DESC);
+        foreach($allMarkings as $key => $marking){
+            $sid = $marking['submission']['id'];
+            if (isset($computedSubmissions[$sid])){
+                unset($allMarkings[$key]);
+            } else {
+                $computedSubmissions[$sid] = $sid;
+            }
+        }
+        unset($computedSubmissions);
 
         $allGroups = array();
         foreach ($groups as $group){
@@ -2050,7 +2110,7 @@ class LGetSite
     public function courseManagement($userid, $courseid)
     {
         // returns basic course information
-        $URL = $this->_getCourse->getAddress() . '/course/'.$courseid;
+        $URL = $this->_getCourse->getAddress() . '/course/course/'.$courseid;
         $answer = Request::custom('GET', $URL, array(), '');
         $response['course'] = json_decode($answer['content'], true);
 

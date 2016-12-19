@@ -1,0 +1,70 @@
+{
+    "name": "TApiConfiguration",
+    "version": "1.0",
+    "type": "clone",
+    "base": "CAbstract",
+    "baseURI": "/tapiconfiguration",
+    "option": "confPath=install/segments/Komponentenzugang/tapiconfiguration_cconfig.json",
+    "links": [
+        {
+            "name": "getAllProfiles",
+            "target": "DBGate",
+            "links": []
+        },
+        {
+            "name": "addProfile",
+            "target": "DBGate",
+            "links": []
+        },
+        {
+            "name": "addAuth",
+            "target": "DBGate",
+            "links": []
+        },
+        {
+            "name": "addRule",
+            "target": "DBGate",
+            "links": []
+        },
+        {
+            "name": "deleteRule",
+            "target": "DBGate",
+            "links": []
+        },
+        {
+            "name": "deleteAuth",
+            "target": "DBGate",
+            "links": []
+        },
+        {
+            "name": "deleteProfile",
+            "target": "DBGate",
+            "links": []
+        },
+        {
+            "name": "deleteProfileByName",
+            "target": "DBGate",
+            "links": []
+        },
+        {
+            "name": "editRule",
+            "target": "DBGate",
+            "links": []
+        },
+        {
+            "name": "editAuth",
+            "target": "DBGate",
+            "links": []
+        },
+        {
+            "name": "editProfile",
+            "target": "DBGate",
+            "links": []
+        },
+        {
+            "name": "gate",
+            "target": "CGate",
+            "links": []
+        }
+    ]
+}

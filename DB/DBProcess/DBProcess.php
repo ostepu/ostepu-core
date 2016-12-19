@@ -93,7 +93,7 @@ class DBProcess
 
         // POST AddCourse
         $this->_app->post(
-                         '(/:pre)/course(/)',
+                         '(/:pre)/course',
                          array(
                                $this,
                                'addCourse'
@@ -102,7 +102,7 @@ class DBProcess
 
         // DELETE DeleteCourse
         $this->_app->delete(
-                         '(/:pre)/course(/course)/:courseid(/)',
+                         '(/:pre)/course/:courseid',
                          array(
                                $this,
                                'deleteCourse'
@@ -111,7 +111,7 @@ class DBProcess
 
         // PUT EditProcess
         $this->_app->put(
-                         '(/:pre)/' . $this->getPrefix( ) . '(/process)/:processid(/)',
+                         '(/:pre)/' . $this->getPrefix( ) . '/process/:processid',
                          array(
                                $this,
                                'editProcess'
@@ -120,7 +120,7 @@ class DBProcess
 
         // DELETE DeleteProcess
         $this->_app->delete(
-                            '(/:pre)/' . $this->getPrefix( ) . '(/process)/:processid(/)',
+                            '(/:pre)/' . $this->getPrefix( ) . '/process/:processid',
                             array(
                                   $this,
                                   'deleteProcess'
@@ -129,7 +129,7 @@ class DBProcess
 
         // POST AddProcess
         $this->_app->post(
-                          '(/:pre)/' . $this->getPrefix( ) . '(/)',
+                          '(/:pre)/' . $this->getPrefix( ),
                           array(
                                 $this,
                                 'addProcess'
@@ -138,7 +138,7 @@ class DBProcess
 
         // GET GetProcess
         $this->_app->get(
-                         '(/:pre)/' . $this->getPrefix( ) . '(/process)/:processid(/)',
+                         '(/:pre)/' . $this->getPrefix( ) . '/process/:processid',
                          array(
                                $this,
                                'getProcess'
@@ -147,7 +147,7 @@ class DBProcess
 
         // GET GetCourseProcesses
         $this->_app->get(
-                         '(/:pre)/' . $this->getPrefix( ) . '/course/:courseid(/)',
+                         '(/:pre)/' . $this->getPrefix( ) . '/course/:courseid',
                          array(
                                $this,
                                'getCourseProcesses'
@@ -156,7 +156,7 @@ class DBProcess
 
         // GET GetExistsCourseProcesses
         $this->_app->get(
-                         '(/:pre)/link/exists/course/:courseid(/)',
+                         '(/:pre)/link/exists/course/:courseid',
                          array(
                                $this,
                                'getExistsCourseProcesses'
@@ -165,7 +165,7 @@ class DBProcess
 
         // GET GetSheetProcesses
         $this->_app->get(
-                         '(/:pre)/' . $this->getPrefix( ) . '/exercisesheet/:esid(/)',
+                         '(/:pre)/' . $this->getPrefix( ) . '/exercisesheet/:esid',
                          array(
                                $this,
                                'getSheetProcesses'
@@ -174,7 +174,7 @@ class DBProcess
 
         // GET GetExerciseProcesses
         $this->_app->get(
-                         '(/:pre)/' . $this->getPrefix( ) . '/exercise/:eid(/)',
+                         '(/:pre)/' . $this->getPrefix( ) . '/exercise/:eid',
                          array(
                                $this,
                                'getExerciseProcesses'
@@ -183,7 +183,7 @@ class DBProcess
 
         // GET GetCourseComponentProcesses
         $this->_app->get(
-                         '(/:pre)/' . $this->getPrefix( ) . '/course/:courseid/component/:comid(/)',
+                         '(/:pre)/' . $this->getPrefix( ) . '/course/:courseid/component/:comid',
                          array(
                                $this,
                                'getCourseComponentProcesses'

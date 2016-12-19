@@ -15,7 +15,12 @@
  */
 ?>
 
-DELETE FROM `Setting<?php echo $pre; ?>_<?php echo Setting::getCourseFromSettingId($setid); ?>`
+<?php $profile = '';
+    if (isset($profileName) && trim($profileName) !== ''){
+        $profile = '_'.$profileName;
+    }?>
+
+DELETE FROM `Setting<?php echo $profile; ?>_<?php echo Setting::getCourseFromSettingId($setid); ?>`
 WHERE
     SET_id = '<?php echo Setting::getIdFromSettingId($setid); ?>'
 

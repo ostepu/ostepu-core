@@ -4,7 +4,7 @@
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
  *
- * @package OSTEPU (https://github.com/ostepu/system)
+ * @package OSTEPU (https://github.com/ostepu/ostepu-core)
  * @since 0.5.0
  *
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
@@ -31,6 +31,7 @@ if (isset($CourseRedirectsNotifications)) {
         while (false !== ($entry = readdir($handle))) {
             if (trim($entry,'.') == '') continue;
             $path_parts = pathinfo($entry);
+            if (trim($path_parts['filename']) == '') continue;
             $templates[$path_parts['filename']] = $path_parts['filename'];
         }
         closedir($handle);

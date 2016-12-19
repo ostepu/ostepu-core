@@ -5,7 +5,7 @@
         "inputType": "binary",
         "seqInput": "FALSE",
         "callback": "request",
-        "method": "PUT,GET,POST,DELETE",
-        "path": "/:path+"
+        "method": "PUT,GET,HEAD,OPTIONS,POST,DELETE",
+        "path": "/interface/:profile/:component/:path+"
     }
 ]

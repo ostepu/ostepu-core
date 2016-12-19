@@ -4,11 +4,11 @@
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
  *
- * @package OSTEPU (https://github.com/ostepu/system)
+ * @package OSTEPU (https://github.com/ostepu/ostepu-core)
  * @since 0.3.6
  *
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
- * @date 2015
+ * @date 2015-2016
  */
 
 
@@ -42,7 +42,9 @@ class FILE_TYPE
         'css' => array('text/css'),
         'js' => array('text/javascript', 'application/x-javascript'),
         'txt' => array('text/*'),
-        'img' => array('image/*'));
+        'img' => array('image/*'),
+        '' => array('*/*'),
+        '*' => array('*/*'));
 
     /**
      * Check if FileType has a given MimeType.

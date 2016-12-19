@@ -1,0 +1,12 @@
+{
+    "name": "DBQueryWrite",
+    "version": "1.0",
+    "type": "clone",
+    "base": "DBQuery2",
+    "baseURI": "/profile/write",
+    "connector": [{
+        "name": "postPlatformWriteUser",
+        "target": "CInstall",
+        "priority": "10"
+    }]
+}

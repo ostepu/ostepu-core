@@ -1,24 +1,109 @@
 {
-  "name":"DBSetting",
-  "version":"1.0",
-  "classFile":"DBSetting.php",
-  "className":"DBSetting",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"DBSetting.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"},
-    {"path":"SettingSample.json"},
-    {"path":"Sql/"},
-    {"path":"info/"}
-  ],
-  "links":[
-    {"name":"out", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
-  ],
-  "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"},
-    {"name":"postCourse", "target":"LCourse", "priority":150},
-    {"name":"deleteCourse", "target":"LCourse", "priority":150},
-    { "name": "getDescFiles","target": "TDocuView"}
-  ]
+    "name": "DBSetting",
+    "version": "1.0",
+    "classFile": "DBSetting.php",
+    "className": "DBSetting",
+    "files": [
+        {"path": ".htaccess"},
+        {"path": "DBSetting.php"},
+        {"path": "index.php"},
+        {"path": "Commands.json"},
+        {"path": "SettingSample.json"},
+        {"path": "Sql/"},
+        {"path": "info/"}
+    ],
+    "links": [
+        {
+            "name": "editSetting",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "deleteSetting",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "addSetting",
+            "target": "DBQueryWrite",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "deleteCourse",
+            "target": "DBQuerySetup",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "addCourse",
+            "target": "DBQuerySetup",
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
+        },
+        {
+            "name": "getSetting",
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSettingGetSetting/:profile/:courseid/:setid"
+            }]
+        },
+        {
+            "name": "getSettingByName",
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSettingGetSettingByName/:profile/:courseid/:setname"
+            }]
+        },
+        {
+            "name": "getExistsCourseSettings",
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSettingGetExistsPlatform/:profile/:courseid"
+            }]
+        },
+        {
+            "name": "getCourseSettings",
+            "target": "DBQueryRead",
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBSettingGetCourseSettings/:profile/:courseid"
+            }]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        },
+        {
+            "name": "postCourse",
+            "target": "LCourse",
+            "priority": 150
+        },
+        {
+            "name": "deleteCourse",
+            "target": "LCourse",
+            "priority": 150
+        },
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView"
+        }
+    ]
 }

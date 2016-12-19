@@ -41,7 +41,7 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
         $this->testcaseType = $value;
     }
 
-    // Typ: beschreibt die zu testende Programmiersprache
+    // Typ: gibt an, ob Fehlermeldungen ausgegeben werden sollen
     private $errorsEnabled = null;
     public function getErrorsEnabled( )
     {
@@ -50,6 +50,17 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
     public function setErrorsEnabled( $value = null )
     {
         $this->errorsEnabled = $value;
+    }
+
+    // Typ: wenn eine Fehler auftritt, soll die Einsendung abgelehnt werden
+    private $rejectSubmissionOnError = null;
+    public function getRejectSubmissionOnError( )
+    {
+        return $this->rejectSubmissionOnError;
+    }
+    public function setRejectSubmissionOnError( $value = null )
+    {
+        $this->rejectSubmissionOnError = $value;
     }
 
     // input beschreibt die Eingabeparameter
@@ -398,6 +409,8 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
             $list['submissionId'] = $this->submissionId;
         if ( $this->errorsEnabled !== null )
             $list['errorsEnabled'] = $this->errorsEnabled;
+        if ( $this->rejectSubmissionOnError !== null )
+            $list['rejectSubmissionOnError'] = $this->rejectSubmissionOnError;
         
         // ruft auch die Serialisierung des darüber liegenden Objekts auf (Object.php)
         return array_merge($list,parent::jsonSerialize( ));

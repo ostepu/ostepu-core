@@ -14,8 +14,35 @@
     ],
     "links": [
         {
-            "name": "out",
-            "target": "DBQuery",
+            "name": "editMemberRight",
+            "target": "DBQueryWrite",
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "/query"
+                }
+            ]
+        },{
+            "name": "removeCourseMember",
+            "target": "DBQueryWrite",
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "/query"
+                }
+            ]
+        },{
+            "name": "addCourseMember",
+            "target": "DBQueryWrite",
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "/query"
+                }
+            ]
+        },{
+            "name": "postSamples",
+            "target": "DBQueryWrite",
             "links": [
                 {
                     "method": "POST",
@@ -24,8 +51,17 @@
             ]
         },
         {
-            "name": "out2",
-            "target": "DBQuery2",
+            "name": "deletePlatform",
+            "target": "DBQuerySetup",
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "/query"
+                }
+            ]
+        },{
+            "name": "addPlatform",
+            "target": "DBQuerySetup",
             "links": [
                 {
                     "method": "POST",
@@ -35,7 +71,7 @@
         },
         {
             "name": "getMemberRight",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [
                 {
                     "method": "GET",
@@ -45,7 +81,7 @@
         },
         {
             "name": "getMemberRights",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [
                 {
                     "method": "GET",
@@ -55,7 +91,7 @@
         },
         {
             "name": "getCourseRights",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [
                 {
                     "method": "GET",
@@ -65,7 +101,7 @@
         },
         {
             "name": "getExistsPlatform",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [
                 {
                     "method": "GET",
@@ -75,7 +111,7 @@
         },
         {
             "name": "getSamplesInfo",
-            "target": "DBQuery2",
+            "target": "DBQueryRead",
             "links": [
                 {
                     "method": "GET",

@@ -464,7 +464,7 @@ class LOOP
 
             $result2 = Request::routeRequest( 
                                             'DELETE',
-                                            '/course/' . $courseid,
+                                            '/course/course/' . $courseid,
                                             $this->app->request->headers->all( ),
                                             '',
                                             $this->_deleteCourse,
@@ -1092,6 +1092,7 @@ class LOOP
             $timestamp = $file->getTimeStamp();
 
             $showErrorsEnabled = Testcase::decodeTestcase($pro->getParameter())[0]->getErrorsEnabled();
+            $rejectSubmissionOnError = Testcase::decodeTestcase($pro->getParameter())[0]->getRejectSubmissionOnError();
             
             // der Eingangsstempel müsste natürlich schon existieren, ansonsten gilt dieser als Eingangszeitpunkt (wird nicht verwendet)
             if ($timestamp === null) 
@@ -1124,6 +1125,7 @@ class LOOP
                     if (count($parameter)>=2){
                         $type = array_shift($parameter);
                         
+                        // veraltet
                         if ($type == 'cx'){
                             $this->xcopy(dirname(__FILE__) . '/start_cx', $filePath . '/start_cx',0777);
                             $this->xcopy(dirname(__FILE__) . '/compiler', $filePath . '/compiler',0777);
@@ -1142,11 +1144,6 @@ class LOOP
                              
                             // passt das Arbeitsverzeichnis an und führt das Skript für den
                             // cx Compiler aus
-                            /*$pathOld = getcwd();
-                            chdir($filePath);                             
-                            exec('(./start_cx '.$param.') 2>&1', $output, $return);
-                            chdir($pathOld);*/
-
                             $compileSandbox = new Sandbox();
                             $compileSandbox->setWorkingDir($filePath);
                             $compileSandbox->loadProfileFromFile(dirname(__FILE__) . '/../../Assistants/mysandbox.profile');
@@ -1164,7 +1161,7 @@ class LOOP
                                 $pro->setStatus(409);
                                 
                                 // die Antwort des Compilers wird nun noch für die Ausgabe der Fehlermeldung angepasst
-                                if (count($output)>0){
+                                if (trim($output) != ''){
                                     $text = '';
                                     $outputList = array();
                                     $output = explode(PHP_EOL, $output);
@@ -1198,7 +1195,10 @@ class LOOP
                                     
                                     $this->createMarking($pro, $text, null, 4);
                                 }
-                                //$this->app->response->setStatus( 409 );
+                                
+                                if (!is_null($rejectSubmissionOnError) && $rejectSubmissionOnError == "1"){
+                                    $this->app->response->setStatus( 409 );
+                                }
                             }
                         } elseif ($type == 'java'){
                             // behandelt Einsendungen für den Java Compiler
@@ -1226,7 +1226,7 @@ class LOOP
                             $return = $compileSandbox->sandbox_exec('javac',$param,$output);
                             //exec('(javac '.$param.') 2>&1', $output, $return);
                             //chdir($pathOld);
-                            
+
                             if ($return == 0){
                                 // wenn wir als Antwort eine 0 erhalten, konnte alles problemlos 
                                 // kompiliert werden
@@ -1238,7 +1238,7 @@ class LOOP
                                 
                                 // die Antwort des Compilers muss nun noch Studentengerecht zusammengebaut werden
                                 // für die Fehlermeldung
-                                if (count($output)>0){
+                                if (trim($output) != ''){
                                     $text = '';
                                     $outputList = array();
                                     $output = explode(PHP_EOL, $output);
@@ -1272,7 +1272,10 @@ class LOOP
                                     }
                                     $this->createMarking($pro, $text, null, 4);
                                 }
-                                //$this->app->response->setStatus( 409 );
+                                
+                                if (!is_null($rejectSubmissionOnError) && $rejectSubmissionOnError == "1"){
+                                    $this->app->response->setStatus( 409 );
+                                }
                             }
                             
                         } elseif ($type == 'custom'){
@@ -1317,7 +1320,7 @@ class LOOP
                             }
                             else{
                                 $pro->setStatus(409);
-                                if (count($output)>0){
+                                if (trim($output) != ''){
                                     $text = '';
                                     $outputList = array();
                                     $output = explode(PHP_EOL, $output);
@@ -1350,6 +1353,10 @@ class LOOP
                                         $pro->addMessage($text);
                                     }
                                     $this->createMarking($pro, $text, null, 4);
+                                }
+                                
+                                if (!is_null($rejectSubmissionOnError) && $rejectSubmissionOnError == "1"){
+                                    $this->app->response->setStatus( 409 );
                                 }
                             }
                         }

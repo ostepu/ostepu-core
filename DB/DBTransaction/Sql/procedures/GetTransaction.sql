@@ -16,17 +16,28 @@
  */
 ?>
 
+DROP PROCEDURE IF EXISTS `DBTransactionGetTransaction`;
+CREATE PROCEDURE `DBTransactionGetTransaction` (IN profile varchar(30), IN courseid INT, IN auid varchar(30), IN tid INT, IN random varchar(32))
+READS SQL DATA
+begin
+SET @s = concat("
 select
-    concat('<?php echo Transaction::getCourseFromTransactionId($tid); ?>','_',T.T_id,'_',T.T_random) as T_id,
+    concat('",courseid,"','_',T.T_id,'_',T.T_random) as T_id,
     T.T_durability,
     T.T_authentication,
     T.T_content
 from
-    `Transaction<?php echo $name; ?>_<?php echo Transaction::getCourseFromTransactionId($tid); ?>` T
+    `Transaction",profile,"_",courseid,"` T
 where
-    T.T_id = '<?php echo Transaction::getIdFromTransactionId($tid); ?>'
-    and ((T.T_authentication is null and '<?php echo $auid; ?>' = '') or T.T_authentication = '<?php echo $auid; ?>')
-    and T.T_random = '<?php echo Transaction::getRandomFromTransactionId($tid); ?>'
-    and UNIX_TIMESTAMP() <= T.T_durability;
+    T.T_id = '",tid,"'
+    and T.T_authentication = '",auid,"'
+    and T.T_random = '",random,"'
+    and UNIX_TIMESTAMP() <= T.T_durability;");
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
+end;
+
+
 
     

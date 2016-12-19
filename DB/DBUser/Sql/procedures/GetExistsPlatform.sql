@@ -13,8 +13,11 @@
 ?>
 
 DROP PROCEDURE IF EXISTS `DBUserGetExistsPlatform`;
-CREATE PROCEDURE `DBUserGetExistsPlatform` ()
+CREATE PROCEDURE `DBUserGetExistsPlatform` (IN profile varchar(30))
 READS SQL DATA
 begin
-show tables like 'User';
+SET @s = concat("show tables like 'User",profile,"';");
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
 end;
