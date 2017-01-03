@@ -39,6 +39,24 @@ function parse_size($size) {
   }
 }
 
+// erzeuge einen Downloadlink aus einer Dateiadresse
+function generateDownloadURL($fileObject){
+    global $serverURI;
+    
+    if (!isset($fileObject['address']) || !isset($fileObject['displayName'])){
+        return '';
+    }
+    
+    // gibt die Gültigkeitsdauer in Sekunden an
+    $duration = time()+60*30; // 30 Minuten
+    
+    // jetzt wird die Signatur erzeugt, bestehend aus
+    // aktuellerZeitstempel_Gültigkeitsdauer_Hash
+    $auth = new Authentication(false);
+    $signature = $duration.'_'.$auth->hashData("sha256", $duration.'_'.$fileObject['address'].'/'.$fileObject['displayName']);
+    return $serverURI.'/FS/FSBinder/'.$signature.'/'.$fileObject['address'].'/'.$fileObject['displayName'];
+}
+
 // erzeugt eine Umleitungsschaltfläche
 function createRedirectButton($redirect,$esid=null){
     $text = '';

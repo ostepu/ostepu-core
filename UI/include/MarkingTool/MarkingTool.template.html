@@ -191,8 +191,7 @@ if (isset($GroupNotificationElements)) {
                                 if (!isset($exercise['submission']['hideFile']) || $exercise['submission']['hideFile'] == "0") {
                                     if (isset($exercise['submission']['file']['displayName']) && isset($exercise['submission']['file']['address'])){
                                         $displayName = $exercise['submission']['file']['displayName'];
-                                        $fileAddress = $exercise['submission']['file']['address'];
-                                        $fileURL = '../FS/FSBinder/' . $fileAddress . '/' . $displayName; //$filesystemURI
+                                        $fileURL = generateDownloadURL($exercise['submission']['file']);
 
                                         print '<a href="';
                                         print $fileURL;
@@ -216,8 +215,7 @@ if (isset($GroupNotificationElements)) {
                                 if (!isset($exercise['submission']['marking']['hideFile']) || $exercise['submission']['marking']['hideFile'] == "0") {
                                     if (isset($exercise['submission']['marking']['file']['displayName']) && isset($exercise['submission']['marking']['file']['address'])){
                                         $displayName = $exercise['submission']['marking']['file']['displayName'];
-                                        $fileAddress = $exercise['submission']['marking']['file']['address'];
-                                        $fileURL = '../FS/FSBinder/' . $fileAddress . '/' . $displayName; //$filesystemURI
+                                        $fileURL = generateDownloadURL($exercise['submission']['marking']['file']);
                                         
                                         print '<span class="">';
                                         print '<a href="';

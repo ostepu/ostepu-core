@@ -44,7 +44,7 @@ abstract class AbstractAuthentication
      * @param int $length The length of the random string, 8 by default.
      * @return string
      */
-    protected function randomBytes($length = 8)
+    public function randomBytes($length = 8)
     {
         $result = openssl_random_pseudo_bytes($length);
 
@@ -58,7 +58,7 @@ abstract class AbstractAuthentication
      * @param string $data The string which should be hashed.
      * @return string
      */
-    protected function hashData($method, $data)
+    public function hashData($method, $data)
     {
         global $globalSiteKey;
         

@@ -25,6 +25,12 @@
         "path": "/:folder/:a/:b/:c/:file/:filename"
     },
     {
+        "name": "getFileDocumentWithSignature",
+        "outputType": "binary",
+        "method": "GET",
+        "path": "/:signature/:folder/:a/:b/:c/:file/:filename"
+    },
+    {
         "name": "addPlatform",
         "outputType": "Platform",
         "inputType": "Platform",

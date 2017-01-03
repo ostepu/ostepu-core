@@ -94,9 +94,8 @@
                             <?php $sub = $exercise['selectedSubmission']; ?>
                             <?php $file = (isset($sub['file']) ? $sub['file'] : null); ?>
                             <?php $displayName = (isset($file['displayName']) ? $file['displayName'] : ''); ?>
-                            <?php $fileAddress = (isset($file['address']) ? $file['address'] : ''); ?>
                             <?php $date = $sub['date']; ?>
-                            <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
+                            <?php $fileURL = generateDownloadURL($file);?>
 
                             <?php if (isset($file)){ ?>
                             <a href="<?php echo $fileURL; ?>"

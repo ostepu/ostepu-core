@@ -117,7 +117,7 @@
                                 $date = $submission['date'];
 
                                 // prints a link for downloading the submission
-                                $fileURL = '../FS/FSBinder/' . $fileAddress . '/' . $displayName;
+                                $fileURL = generateDownloadURL($submission['file']);
                                 print '<div class="plain exercise-sheet-images">';
                                 print '<span class="body-option-color">';
                                 print '<a href="'.$fileURL.'" title="'.$displayName.'" class="plain" target="_blank">';

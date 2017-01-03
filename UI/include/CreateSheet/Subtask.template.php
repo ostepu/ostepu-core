@@ -99,7 +99,7 @@ include_once dirname(__FILE__) . '/../Helpers.php';
         <input class="fileButton button" type="file" name="exercises[0][subexercises][0][attachment]" value="<?php echo Language::Get('main','selectAttachment', $langTemplate); ?> ..." <?php echo (isset($attachments[0]) ? 'style="display:none";' : '') ;?>/>
         <?php
         if (isset($attachments[0])){
-            $fileURL = "../FS/FSBinder/{$attachments[0]['address']}/{$attachments[0]['displayName']}";?>
+            $fileURL = generateDownloadURL($attachments[0]);?>
         <span class='divFile'>
             <?php if (isset($attachments[0]['fileId'])){ ?>
             <input type="hidden" name="exercises[0][subexercises][0][attachment][fileId]" value="<?php echo $attachments[0]['fileId']; ?>" />
