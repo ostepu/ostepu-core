@@ -14,6 +14,7 @@
         "sampleSolution": "Musterlösung",
         "selectFile": "Datei auswählen",
         "removeSolutionFile": "Musterlösung löschen",
-        "groupSize": "Gruppenstärke"
+        "groupSize": "Gruppenstärke",
+        "disclaimer": "Sie müssen beachten, dass Sie für den Inhalt der hochgeladenen Dateien selbst verantworlich sind. Dazu erhalten Sie weitere Informationen auf den Seiten der <a href='http://www.vgwort.de/einnahmen-tarife/wiedergabe-im-internet-intranet/hochschulen.html'>VG WORT</a> oder bei Ihrem zuständigen Betreuer."
     }
 }

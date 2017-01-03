@@ -90,6 +90,8 @@ Aufbau:
 
 ![](createExerciseE.png)
 
+> Sie müssen dabei beachten, dass Sie für den Inhalt selbst verantworlich sind. Beachten Sie dazu den [externen Hinweis](http://www.vgwort.de/einnahmen-tarife/wiedergabe-im-internet-intranet/hochschulen.html).
+
 Sie können hier eine einzelne Datei pro Aufgabe anhängen. Wenn Sie mehr als eine Datei benötigen, können Sie diese in einem zip-Archiv sammeln und anhängen.
 
 ---
