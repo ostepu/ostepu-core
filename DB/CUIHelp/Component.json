@@ -324,7 +324,16 @@
                 {"path": "/help/:language/page/common/courseSelect/courseSelect.md"},
                 {"path": "/help/:language/page/common/courseSelect/courseSelectA.png"},
                 {"path": "/help/:language/page/common/courseSelect/courseSelectB.png"},
-                {"path": "/help/:language/page/common/courseSelect/courseSelectC.png"}
+                {"path": "/help/:language/page/common/courseSelect/courseSelectC.png"},
+                {},
+                {"path": "/help/:language/page/admin/faq/faq.md"},
+                {"path": "/help/:language/page/admin/faq/faqA.png"},
+                {"path": "/help/:language/page/admin/faq/faqB.png"},
+                {"path": "/help/:language/page/admin/faq/faqC.png"},
+                {},
+                {"path": "/help/:language/page/student/faq/faq.md"},
+                {},
+                {"path": "/help/:language/page/tutor/faq/faq.md"}
             ]
         }
     ]

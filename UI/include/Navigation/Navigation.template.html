@@ -56,6 +56,36 @@
         <a href="TutorUpload.php?cid=<?php echo $cid; ?>"><?php echo Language::Get('main','tutorUpload', $langTemplate); ?></a>
     </li>
 <?php } ?>
+    <?php if ($courseStatus <= 1 && !$forIndex) { 
+        // hier wird die FAQ-Schaltfläche der Studenten und Tutoren gezeichnet?>
+    <li>
+        <?php
+        global $externalURI;
+        $faqPage = 'student';
+        if ($courseStatus == 1){
+            $faqPage = 'tutor';        
+        }
+        
+        $URL = "{$externalURI}/DB/CHelp/help/".Language::$selectedLanguage."/page/".$faqPage."/faq/faq.md";
+        echo "<a href='{$URL}' class='plain image-button exercise-sheet-images' target='popup' onclick=\"window.open('{$URL}', 'popup', 'width=700,height=600,scrollbars=yes,location=no,directories=no,menubar=no,toolbar=no,status=no,resizable=yes')\" title='info' target='_blank'>FAQ</a>";
+        ?>
+    </li>
+    <?php } elseif ($courseStatus >= 2 && !$forIndex) { 
+        // hier soll die FAQ-Schaltfläche der Admins gezeichnet werden
+        global $externalURI;?>
+    <li>
+        <?php
+            $URL = "{$externalURI}/DB/CHelp/help/".Language::$selectedLanguage."/page/admin/faq/faq.md";
+            echo "<a href='{$URL}' class='plain image-button exercise-sheet-images' target='popup' onclick=\"window.open('{$URL}', 'popup', 'width=700,height=600,scrollbars=yes,location=no,directories=no,menubar=no,toolbar=no,status=no,resizable=yes')\" title='info' target='_blank'>FAQ (Admin)</a>";
+        ?>
+    </li>
+    <li>
+        <?php
+            $URL = "{$externalURI}/DB/CHelp/help/".Language::$selectedLanguage."/page/tutor/faq/faq.md";
+            echo "<a href='{$URL}' class='plain image-button exercise-sheet-images' target='popup' onclick=\"window.open('{$URL}', 'popup', 'width=700,height=600,scrollbars=yes,location=no,directories=no,menubar=no,toolbar=no,status=no,resizable=yes')\" title='info' target='_blank'>FAQ (Tutor)</a>";
+        ?>
+    </li>
+    <?php } ?>
                         
 <?php if (count($links)>0){
         echo '<span class="new-line left">';
