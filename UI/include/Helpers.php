@@ -26,6 +26,7 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Language.php' );
 include_once ( dirname(__FILE__) . '/Helpers/FILE_TYPE.php' );
 include_once ( dirname(__FILE__) . '/Helpers/PRIVILEGE_LEVEL.php' );
 
+// wandelt einen Wert (in Byte) in eine lesbare Form um
 function parse_size($size) {
   $unit = preg_replace('/[^bkmgtpezy]/i', '', $size); // Remove the non-unit characters from the size.
   $size = preg_replace('/[^0-9\.]/', '', $size); // Remove the non-numeric characters from the size.
@@ -38,6 +39,7 @@ function parse_size($size) {
   }
 }
 
+// erzeugt eine Umleitungsschaltfläche
 function createRedirectButton($redirect,$esid=null){
     $text = '';
     $text.= '<button title="'.$redirect['title'].'" name="redirect" value="'.(isset($esid) ? $esid.'_' : '_').$redirect['id'].'" class="text-button body-option-color">';
@@ -46,6 +48,7 @@ function createRedirectButton($redirect,$esid=null){
     return $text;
 }
 
+// erzeugt eine Umleitungsschaltfläche (für den Bereich der Navigationsleiste)
 function createRedirectButtonHeader($redirect,$esid=null){
     $text = '';
     $text.= '<button formaction="" style="text-decoration: none;color: #2B648F;" title="'.$redirect['url'].'" name="redirect" value="'.(isset($esid) ? $esid.'_' : '_').$redirect['id'].'" class="text-button-simple">';
@@ -273,7 +276,7 @@ function MakeNotification($notificationType, $notificationText, $collapsible=fal
     }
 }
 
-//Erzeugt ein Knopf für Hilfemeldungen
+// Erzeugt ein Knopf für Hilfemeldungen
 function MakeInfoButton($helpPath)
 {
     global $externalURI;
