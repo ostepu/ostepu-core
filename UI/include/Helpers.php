@@ -51,8 +51,10 @@ function generateDownloadURL($fileObject){
     $duration = time()+60*30; // 30 Minuten
     
     // jetzt wird die Signatur erzeugt, bestehend aus
-    // aktuellerZeitstempel_Gültigkeitsdauer_Hash
+    // Ablaufzeitpunkt_URL
     $auth = new Authentication(false);
+    
+    // die FSBinder nutzt diese Methode beim verifizieren der eingehenden Dateianfrage
     $signature = $duration.'_'.$auth->hashData("sha256", $duration.'_'.$fileObject['address'].'/'.$fileObject['displayName']);
     return $serverURI.'/FS/FSBinder/'.$signature.'/'.$fileObject['address'].'/'.$fileObject['displayName'];
 }
@@ -77,7 +79,6 @@ function createRedirectButtonHeader($redirect,$esid=null){
 
 // führt eine Umleitung aus (Typ: Redirect)
 function executeRedirect($redirect, $uid, $cid, $esid){
-    //var_dump($redirect);
     $auth = $redirect->getAuthentication();
     if ($auth === 'none' or $auth === ''){
         // wir müssen nur umleiten
