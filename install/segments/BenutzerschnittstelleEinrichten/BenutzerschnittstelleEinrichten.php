@@ -130,6 +130,8 @@ class BenutzerschnittstelleEinrichten {
         $text[] = '$maintenanceMode' . " = '{$data['UI']['maintenanceMode']}';";
         $text[] = '$maintenanceText' . " = '{$data['UI']['maintenanceText']}';";
         $text[] = '$maintenanceAllowedUsers' . " = '{$data['UI']['maintenanceAllowedUsers']}';";
+        $text[] = '$filesPath' . " = '{$data['PL']['files']}';";
+        $text[] = '$tempPath' . " = '{$data['PL']['temp']}';";
 
         $text = implode("\n", $text);
         Installation::log(array('text' => Installation::Get('userInterface', 'confContent', self::$langTemplate, array('content' => json_encode($text)))));
