@@ -1,4 +1,4 @@
-<FilesMatch "\.(php|html)$">
+<FilesMatch "(LFormPredecessor.template.php|LFormProcessor.template.php|LOOP.functions.php)$">
     <IfModule mod_expires.c>
         # Enable expirations
         ExpiresActive On 
