@@ -70,9 +70,42 @@ class Reference extends Object implements JsonSerializable
         $this->globalRef = $value;
     }
 
+    /**
+     * @var string $ownerExternalUrl
+     */
+    private $ownerExternalUrl = null;
+
+    /**
+     * the $ownerExternalUrl getter
+     *
+     * @return the value of $ownerExternalUrl
+     */
+    private function getOwnerExternalUrl( )
+    {
+        return $this->ownerExternalUrl;
+    }
+
+    /**
+     * the $ownerExternalUrl setter
+     *
+     * @param string $value the new value for $ownerExternalUrl
+     */
+    private function setOwnerExternalUrl( $value = null )
+    {
+        $this->ownerExternalUrl = $value;
+    }
+
     public function getContent( )
     {
-        // dieser Bereich muss noch ausgebaut werden, die externe Referenz muss aufgelöst werden
+        // eine externe URL muss aufgelöst werden
+        if ($this->ownerExternalUrl !== null){
+            global $externalURI; // kommt aus UI/include/Config.php
+            if ($this->ownerExternalUrl != $externalURI){
+                // TODO: wir müssen die Datei beim Ziel abfragen
+                // TODO: wir müssen die Datei beim Ziel abfragen
+                // TODO: wir müssen die Datei beim Ziel abfragen
+            }
+        }
         
         return file_get_contents($this->localRef);
     }
@@ -88,7 +121,8 @@ class Reference extends Object implements JsonSerializable
      */
     public static function createReference(
                                          $localReference,
-                                         $globalReference=null
+                                         $globalReference=null,
+                                         $ownerExternalUrl=null
                                          )
     {
         $localReference = realpath($localReference);
@@ -110,9 +144,16 @@ class Reference extends Object implements JsonSerializable
             }
         }
         
+        global $externalURI; // kommt aus UI/include/Config.php
+        
+        if ($ownerExternalUrl === null){
+            $ownerExternalUrl = $externalURI;
+        }
+        
         return new Reference( array(
                                   'localRef' => $localReference,
-                                  'globalRef' => $globalReference
+                                  'globalRef' => $globalReference,
+                                  'ownerExternalUrl' => $ownerExternalUrl
                                   ) );
     }
 
@@ -216,6 +257,8 @@ class Reference extends Object implements JsonSerializable
             $list['localRef'] = $this->localRef;
         if ( $this->globalRef !== null )
             $list['globalRef'] = $this->globalRef;
+        if ( $this->ownerExternalUrl !== null )
+            $list['ownerExternalUrl'] = $this->ownerExternalUrl;
         return array_merge($list,parent::jsonSerialize( ));
     }
 }
