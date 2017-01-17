@@ -174,10 +174,8 @@
                 {"path": "/help/:language/page/admin/courseManagement/courseRedirectsB.png"},
                 {"path": "/help/:language/page/admin/courseManagement/courseRedirectsC.png"},
                 {"path": "/help/:language/page/admin/courseManagement/courseRedirectsD.png"},
-                {"path": "/help/:language/page/admin/courseManagement/courseRedirectsE.png"},
-                {"path": "/help/:language/page/admin/courseManagement/courseRedirectsF.png"},
-                {"path": "/help/:language/page/admin/courseManagement/courseRedirectsG.png"},
-                {"path": "/help/:language/page/admin/courseManagement/courseRedirectsH.png"},
+                {"path": "/help/:language/page/admin/courseManagement/courseRedirectsE.png"}
+                {"path": "/help/:language/page/admin/courseManagement/courseRedirectsF.png"}
                 {},
                 {"path": "/help/:language/page/admin/courseManagement/addExternalId.md"},
                 {"path": "/help/:language/page/admin/courseManagement/addExternalIdA.png"},
