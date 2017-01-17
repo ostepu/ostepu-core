@@ -103,7 +103,7 @@ class Komponenten {
                     if (in_array("Slim\\Slim", get_declared_classes())) {
                         $router = new \Slim\Router();
                         foreach ($component['commands'] as $command) {
-                            $route = new \Slim\Route($command['path'], 'is_array');  // is_array wird hier benötigt, weil Route eine Funktion die er auf callable prüfen kann
+                            $route = new \Slim\Route($command['path'], 'is_array');  // is_array wird hier benötigt, weil Route eine Funktion will die er auf callable prüfen kann
                             $route->via((isset($command['method']) ? strtoupper($command['method']) : 'GET'));
                             $router->map($route);
                         }
@@ -229,19 +229,19 @@ class Komponenten {
                                                 Installation::log(array('text' => Installation::Get('components', 'callIsNotSupported', self::$langTemplate, array('component' => $link->getTargetName(), 'call' => strtoupper($call['method']) . ' ' . $call['path']))));
                                                 $errorMessage = Installation::Get('components', 'notRoutable2', self::$langTemplate, array('component' => $link->getTargetName(), 'method' => strtoupper($call['method']), 'path' => $call['path']));
                                                 $notRoutable = true;
+                                                $fail = true;
                                                 break;
                                             }
                                         }
                                     }
                                     if ($notRoutable) {
-                                        $fail = true;
                                         break;
                                     }
                                 }
 
                                 if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate) {
                                     if ($notRoutable) {
-                                        $tempTextList[] = "<tr><td class='v'>{$link->getName()}</td><td class='e'><div align ='center'>" . (!$notRoutable ? Installation::Get('main', 'ok') : '<font color="red">' . $errorMessage . '</font>') . "</align></td></tr>";
+                                        $tempTextList[] = "<tr><td class='v'>{$link->getName()}</td><td class='e'><div align ='center'>" . (!$notRoutable ? Installation::Get('main', 'ok') : ($fail ? '<font color="red">' . $errorMessage . '</font>' : '<font color="#DF7401">' . $errorMessage . '</font>')) . "</align></td></tr>";
                                     }
                                 }
                             }
@@ -423,9 +423,10 @@ class Komponenten {
                 $result3 = new Request_MultiRequest();
                 $tempDef = array();
                 foreach ($definitions as $definition) {
-                    if (strpos($definition->getAddress() . '/', $data['PL']['urlExtern'] . '/') === false) {
+                    /*if (strpos($definition->getAddress() . '/', $data['PL']['urlExtern'] . '/') === false) { // nur interne?
                         continue;
-                    }
+                    }*/
+                    //var_dump($definition);
 
                     $components[$definition->getName()]['definition'] = $definition;
                     $tempDef[] = $definition;

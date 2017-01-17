@@ -9,7 +9,7 @@
     "installedLinks": "installierte Verbindungen",
     "unallocated": "nicht belegt",
     "unknown": "unbekannt",
-    "notRoutable": "Fehler",
+    "notRoutable": "keine Befehlsdaten",
     "notRoutable2": " $component: unterstützt den Aufruf $method $path nicht",
     "noComponents": "Es wurden keine Komponenten installiert",
     "noLinks": "Es wurden keine Verbindungen installiert",
