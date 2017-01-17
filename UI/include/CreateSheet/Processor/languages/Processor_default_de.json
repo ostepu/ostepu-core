@@ -1,0 +1,9 @@
+{
+    "main": {
+        "params": "Parameter",
+        "processAttachment": "Anhang",
+        "processWorkFiles":"Arbeitsdateien",
+        "selectFile": "Datei auswählen",
+        "removeFile": "Datei entfernen"
+    }
+}

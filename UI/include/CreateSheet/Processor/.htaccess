@@ -1,0 +1,11 @@
+Order Allow,Deny
+Allow from all
+
+#DirectoryIndex default.template.php
+<IfModule mod_rewrite.c>
+ RewriteEngine on
+ # wenn das template nicht existiert, dann soll auf default.template.php umgeleitet werden
+ RewriteCond %{REQUEST_FILENAME} !-f
+ RewriteCond %{REQUEST_FILENAME} !-d
+ RewriteRule ([a-zA-Z]+).template.php$ %{REQUEST_URI}/../default.template.php?name=$1 [L,R=301]
+</ifModule>
