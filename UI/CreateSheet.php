@@ -380,7 +380,8 @@ if ($correctExercise == true) {
                         $displayName = $_FILES['exercises']['name'][$key1]['subexercises'][$key2]['processAttachment'][$tempKey];
                         $attachments = array();
 
-                        foreach ($filePath as $attachKey => $attachPath){                       
+                        foreach ($filePath as $attachKey => $attachPath){  
+                            if ($attachPath == "") continue;
                             $attachment = new Attachment();
                             $attachementFile = File::createFile(NULL,$displayName[$attachKey],NULL,$timestamp,NULL,NULL,NULL);
                             $attachementFile->setBody( Reference::createReference($attachPath) );

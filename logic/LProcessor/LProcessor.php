@@ -357,12 +357,23 @@ class LProcessor
             }
 
             // create attachment
-            $attachments = $process->getAttachment();
+            $attachments = array_merge(array(), $process->getAttachment());
             $process->setAttachment(array());
+
             foreach ( $attachments as $attachment ){
                 if ($attachment->getId() === null){
                     $attachment->setExerciseId($process->getExercise()->getId());
                     $attachment->setProcessId($process->getProcessId());
+                    
+                    // ein Anhang muss eine Datei besitzen
+                    if ($attachment->getFile() == null){
+                        continue;
+                    }
+                    
+                    // eine Datei benötigt einen gültigen Namen
+                    if ($attachment->getFile()->getDisplayName() == ""){
+                        continue;
+                    }
 
                     // upload file
                     $result = Request::routeRequest(
@@ -622,14 +633,15 @@ class LProcessor
 //echo $result['content'].'_______';
                     if ( $result['status'] >= 200 &&
                          $result['status'] <= 299 ){
-                         $process = Process::decodeProcess( $result['content'] );
-
-                         if (isset($result['content'])){
+                         if (isset($result['content']) && trim($result['content']) != ""){
+                            //$process = Process::decodeProcess( $result['content'] );
+                         
                             $content = Process::decodeProcess($result['content']); 
                             //$submission->setStatus($content->getStatus());
-                            $submission = $process->getSubmission();
-                            if ($submission===null)$submission = $process->getRawSubmission();
-                            $submission->addMessages($content->getMessages());
+                            $submission = $content->getSubmission();
+                         if ($submission===null){$submission = $process->getRawSubmission();}
+                         if ($submission!==null){$submission->addMessages($content->getMessages());}
+                            $process = $content;
                         } 
 
                     } else {
