@@ -12,6 +12,7 @@
  */
 
 include_once ( dirname( __FILE__ ) . '/Object.php' );
+include_once dirname(__FILE__) . '/../fileUtils.php';
 
 /**
  * the reference structure
@@ -71,6 +72,8 @@ class Reference extends Object implements JsonSerializable
 
     public function getContent( )
     {
+        // dieser Bereich muss noch ausgebaut werden, die externe Referenz muss aufgelöst werden
+        
         return file_get_contents($this->localRef);
     }
 
@@ -88,6 +91,25 @@ class Reference extends Object implements JsonSerializable
                                          $globalReference=null
                                          )
     {
+        $localReference = realpath($localReference);
+        if ($globalReference === null){
+            // wir müssen die Datei nun zusätzlich in einen reference Ordner im Dateisystem verschieben
+            if (file_exists($localReference)){
+                $targetHash = sha1($localReference);
+                $target = fileUtils::generateFilePath('reference',$targetHash);
+                
+                global $filesPath; // kommt aus UI/include/Config.php
+                
+                // der Pfad muss existieren, damit wir dort unsere Datei hin verschieben können
+                fileUtils::generatepath($filesPath.'/'.dirname($target));
+
+                if (copy($localReference, $filesPath.'/'.$target)){
+                    $globalReference = $target;
+                    $localReference = $filesPath.'/'.$target;
+                }
+            }
+        }
+        
         return new Reference( array(
                                   'localRef' => $localReference,
                                   'globalRef' => $globalReference

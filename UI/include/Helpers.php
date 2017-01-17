@@ -40,23 +40,8 @@ function parse_size($size) {
 }
 
 // erzeuge einen Downloadlink aus einer Dateiadresse
-function generateDownloadURL($fileObject){
-    global $serverURI;
-    
-    if (!isset($fileObject['address']) || !isset($fileObject['displayName'])){
-        return '';
-    }
-    
-    // gibt die Gültigkeitsdauer in Sekunden an
-    $duration = time()+60*30; // 30 Minuten
-    
-    // jetzt wird die Signatur erzeugt, bestehend aus
-    // Ablaufzeitpunkt_URL
-    $auth = new Authentication(false);
-    
-    // die FSBinder nutzt diese Methode beim verifizieren der eingehenden Dateianfrage
-    $signature = $duration.'_'.$auth->hashData("sha256", $duration.'_'.$fileObject['address'].'/'.$fileObject['displayName']);
-    return $serverURI.'/FS/FSBinder/'.$signature.'/'.$fileObject['address'].'/'.$fileObject['displayName'];
+function generateDownloadURL($fileObject, $dur = 1800){
+    return fileUtils::generateDownloadURL($fileObject, $dur);
 }
 
 // erzeugt eine Umleitungsschaltfläche
