@@ -71,9 +71,9 @@ class StudIPAuthentication extends AbstractAuthentication
 ///Logger::Log("uid: ".$this->uid , LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
         }
         
-        if (isset($_GET['uid'])) {
-            $this->uid = cleanInput($_GET['uid']);
-        }
+        // if (isset($_GET['uid'])) {
+            // $this->uid = cleanInput($_GET['uid']);
+        // }
         if (isset($_GET['sid'])) {
             $this->sid = cleanInput($_GET['sid']);
 ///Logger::Log("sid: ".$this->sid , LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
