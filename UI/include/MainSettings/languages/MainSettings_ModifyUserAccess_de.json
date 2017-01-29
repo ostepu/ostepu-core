@@ -1,0 +1,10 @@
+{
+    "main": {
+        "title": "Nutzerzugang ändern",
+        "execute": "ändern",
+        "description": "Geben Sie hier das neue Passwort ein und das K&uuml;rzel des Nutzers, dessen Zugang geändert werden soll. Beachten Sie, dass das Passwort eine Mindestl&auml;nge von 6 Zeichen haben sollte. Achtung: Diese Aktion kann nicht widerrufen werden! </br></br> Wenn Sie ein leeres Passwort eingeben, wird der direkte Zugang des Nutzers gesperrt, sodass er die Plattform jedoch weiterhin über externe Zugänge (beispielsweise StudIP) betreten kann.",
+        "userName": "K&uuml;rzel des Nutzers",
+        "password": "Passwort",
+        "passwordRepeat": "Passwort wiederholen"
+    }
+}

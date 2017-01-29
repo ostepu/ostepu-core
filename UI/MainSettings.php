@@ -42,7 +42,7 @@ $plugins_data = json_decode($temp, true);
 $postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
   ->addSet('action',
            ['set_default'=>'noAction',
-            'satisfy_in_list'=>['noAction', 'CreateCourse', 'SetAdmin', 'CreateUser', 'DeleteUser', ''],
+            'satisfy_in_list'=>['noAction', 'CreateCourse', 'SetAdmin', 'CreateUser', 'DeleteUser', 'ModifyUserAccess', ''],
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','invalidAction', $langTemplate)]]);
 $postResults = $postValidation->validate();
@@ -260,7 +260,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                    ['satisfy_exists',
                     'satisfy_not_empty',
                     'valid_userName',
-                         'satisfy_min_len'=>6,
+                    'satisfy_min_len'=>6,
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidPassword', $langTemplate)]])
           ->addSet('passwordRepeat',
@@ -311,6 +311,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
         }
     }
 
+    
     // deletes an user
     if ($postResults['action'] === 'DeleteUser') {
         $deleteUserNotifications = array();
@@ -353,6 +354,75 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
             }
         }
     }
+    
+      // this area changes or reverts a user's password
+    if ($postResults['action'] === 'ModifyUserAccess') {
+        $modifyUserAccessNotifications = array();
+        
+        $postModifyUserAccessValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
+           ->addSet('userName',
+                   ['satisfy_exists',
+                    'satisfy_not_empty',
+                    'valid_userName',
+                    'on_error'=>['type'=>'error',
+                                 'text'=>Language::Get('main','invalidUserName', $langTemplate)]])
+          ->addSet('password',
+                   ['valid_userName',
+                    'on_error'=>['type'=>'error',
+                                 'text'=>Language::Get('main','invalidPassword', $langTemplate)]])
+          ->addSet('passwordRepeat',
+                   ['valid_userName',
+                    'on_error'=>['type'=>'error',
+                                 'text'=>Language::Get('main','invalidPasswordRepeat', $langTemplate)]])
+          ->addSet('passwordRepeat',
+                   array('satisfy_equals_field'=>'password',
+                         'on_error'=>array('type'=>'error',
+                                           'text'=>Language::Get('main','differentPasswords', $langTemplate))));
+
+        $foundValues = $postModifyUserAccessValidation->validate();
+        $modifyUserAccessNotifications = array_merge($modifyUserAccessNotifications,$postModifyUserAccessValidation->getPrintableNotifications('MakeNotification'));
+        $postModifyUserAccessValidation->resetNotifications()->resetErrors();
+
+        if($postModifyUserAccessValidation->isValid()) {
+            
+            if ($foundValues['password'] == ''){
+                // wir setzten den Zugang zurück, sodass der Nutzer sein Passwort also selbst neu setzen muss
+                $salt = 'noSalt';
+                $passwordHash = 'noPassword';
+            } else {
+                // es wurde ein gültiges Passwort eingegeben
+                $salt = $auth->generateSalt();
+                $passwordHash = $auth->hashPassword($foundValues['password'], $salt);
+            }
+
+            $newUser = User::createUser(null,
+                                        null,
+                                        null,
+                                        null,
+                                        null,
+                                        null,
+                                        1,
+                                        $passwordHash,
+                                        $salt,
+                                        0);
+
+            $newUserSettings = User::encodeUser($newUser);
+
+            $URI = $databaseURI . '/user/user/'.$foundValues['userName'];
+            $answer=http_put_data($URI, $newUserSettings, true, $message);
+
+            if ($message === 201) {
+                $user = User::decodeUser($answer);
+                if ($user->getStatus() == '201'){
+                    $modifyUserAccessNotifications[] = MakeNotification('success', Language::Get('main','successModifyUserAccess', $langTemplate, array('userName'=>$foundValues['userName'])));
+                } else
+                    $modifyUserAccessNotifications[] = MakeNotification('error', Language::Get('main','errorModifyUserAccess', $langTemplate, array('userName'=>$foundValues['userName'])));
+            } else {
+                $modifyUserAccessNotifications[] = MakeNotification('error', Language::Get('main','errorModifyUserAccess', $langTemplate, array('userName'=>$foundValues['userName'])));
+            }
+        }
+    }
+
 }
 
 // load mainSettings data from GetSite
@@ -398,12 +468,18 @@ $deleteUser = Template::WithTemplateFile('include/MainSettings/DeleteUser.templa
 if (isset($deleteUserNotifications))
     $deleteUser->bind(array('DeleteUserNotificationElements' => $deleteUserNotifications));
 
+// construct a content element to modify users
+$modifyUserAccess = Template::WithTemplateFile('include/MainSettings/ModifyUserAccess.template.html');
+if (isset($modifyUserAccessNotifications))
+    $modifyUserAccess->bind(array('ModifyUserAccessNotificationElements' => $modifyUserAccessNotifications));
+
 // wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, $createCourse, $setAdmin, $createUser, $deleteUser);
+$w = new HTMLWrapper($h, $createCourse, $setAdmin, $createUser, $deleteUser, $modifyUserAccess);
 $w->defineForm(basename(__FILE__), false, $createCourse);
 $w->defineForm(basename(__FILE__), false, $setAdmin);
 $w->defineForm(basename(__FILE__), false, $createUser);
 $w->defineForm(basename(__FILE__), false, $deleteUser);
+$w->defineForm(basename(__FILE__), false, $modifyUserAccess);
 $w->set_config_file('include/configs/config_default.json');
 if (isset($maintenanceMode) && $maintenanceMode === '1'){
     $w->add_config_file('include/configs/config_maintenanceMode.json');
