@@ -588,13 +588,14 @@ class FSPdf
    
     public static function createPdf($data)
     {
-        require_once(dirname(__FILE__).'/_tcpdf_6.0.095/tcpdf_autoconfig.php');
-        require_once(dirname(__FILE__).'/_tcpdf_6.0.095/tcpdf.php');
+        require_once(dirname(__FILE__).'/tcpdf/tcpdf.php');
 
         $pdf = new TCPDF(
                        ($data->getOrientation()!==null ? $data->getOrientation() : 'P'),
                        'mm',
-                       ($data->getFormat()!==null ? $data->getFormat() : 'A4')
+                       ($data->getFormat()!==null ? $data->getFormat() : 'A4'),
+                       'UTF-8',
+                       true
                        );
                       
         $pdf->SetAutoPageBreak( true );
@@ -606,9 +607,14 @@ class FSPdf
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
         $pdf->setPrintHeader(false);
         $pdf->setPrintFooter(false);
-
+        
+        $html = $data->getText();
+        $html=str_replace("\r\n",'<br>',$html);
+        $html=str_replace("\n",'<br>',$html);
+        $html=str_replace("\t",'    ',$html);
+        
         $pdf->AddPage( );
-        $text=htmlspecialchars_decode($data->getText());
+        $text=htmlspecialchars_decode($html);
 
         $pdf->WriteHTML($text);
 
