@@ -607,10 +607,12 @@ class FSPdf
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
         $pdf->setPrintHeader(false);
         $pdf->setPrintFooter(false);
+        $pdf->SetFont($data->getFont());
+        //$pdf->SetCompression(false);
         
         $html = $data->getText();
-        $html=str_replace("\r\n",'<br>',$html);
-        $html=str_replace("\n",'<br>',$html);
+        $html=str_replace("\r\n",'<br/>',$html);
+        $html=str_replace("\n",'<br/>',$html);
         $html=str_replace("\t",'    ',$html);
         
         $pdf->AddPage( );
