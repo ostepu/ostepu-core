@@ -2,7 +2,7 @@
     "name": "GOURCE",
     "version": "1.0",
     "description":{"de":"Der Installationsassistent wird im Bereich 'Entwicklung' um den Abschnitt 'Gource' erweitert. Hier kann über das Programm Gource eine Visualisierung von Paketen erstellt werden (wenn diese Git nutzen)."},
-    "descUrl":"https://github.com/tilluhlig/ostepu-gource",
+    "descUrl":"https://github.com/ostepu/ostepu-gource",
     "files": [
         {
             "path": "install/segments/ext_Gource/",
@@ -10,7 +10,7 @@
             "params": {
                 "name": "gource",
                 "branch": "master",
-                "URL": "https://github.com/tilluhlig/ostepu-gource.git",
+                "URL": "https://github.com/ostepu/ostepu-gource.git",
                 "path": "install/segments/ext_Gource/"
             }
         }
