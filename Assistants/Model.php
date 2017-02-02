@@ -16,7 +16,7 @@ require_once ( dirname(__FILE__) . '/vendor/Slim/Slim/Router.php' );
 require_once ( dirname(__FILE__) . '/vendor/Slim/Slim/Environment.php' );
 include_once ( dirname(__FILE__) . '/Structures.php' );
 include_once ( dirname(__FILE__) . '/Request.php' );
-include_once ( dirname(__FILE__) . '/../UI/Include/Authentication.php' );
+include_once ( dirname(__FILE__) . '/../UI/include/Authentication.php' );
 include_once ( dirname(__FILE__) . '/Logger.php' );
 include_once ( dirname(__FILE__) . '/CConfig.php' );
 include_once ( dirname(__FILE__) . '/DBRequest.php' );
