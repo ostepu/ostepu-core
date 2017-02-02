@@ -785,9 +785,11 @@ class LTutor
 
                     $generateDummyForAllMimeTypes = Course::containsSetting($course,'GenerateDummyCorrectionsForTutorArchives');
                     if (!isset($generateDummyForAllMimeTypes)) $generateDummyForAllMimeTypes = 0;
+                    file_put_contents("a.txt",$generateDummyForAllMimeTypes);
                     
-                    if ($selectedFile == 'submission')
-                    if (!isset($newFile['mimeType']) || strpos($newFile['mimeType'],'text/')!==false || $generateDummyForAllMimeTypes){
+                    // nur wenn wir die Einsendung umwandeln wollen oder für alle eine PDF erzeugt werden soll (ausser es existiert bereits eine Korrektur)
+                    if ($selectedFile == 'submission' || ($generateDummyForAllMimeTypes && $selectedFile === null))
+                    if (!isset($newFile['mimeType']) || strpos($newFile['mimeType'],'text/')!==false || $generateDummyForAllMimeTypes ){
 
                         // convert file to pdf
                         $newFileSend = array();
@@ -833,17 +835,24 @@ class LTutor
                         $newFileData->setBody($data, true);
                         $newFileSend[] = $newFileData;
 
-                        if (isset($newFile)){
+                        if (isset($newFile) || $generateDummyForAllMimeTypes){
                             
                             // die Umwandlung der Datei wird nur durchgeführt, wenn sie mindestens den mimeType text/
                             // besitzt und nicht über 20kb groß ist.
-                            if (strpos($newFile['mimeType'],'text/')!==false && $newFile['fileSize']<=20000){
-                                $newFileSend[] = $newFile;
+                            if (isset($newFile)){
+                                if (strpos($newFile['mimeType'],'text/')!==false && $newFile['fileSize']<=20000){
+                                    $newFileSend[] = $newFile;
+                                } else {
+                                    // wenn die Datei zu groß ist, wollen wir einen Hinweis
+                                    $newFileData = new File();
+                                    $newFileData->setBody(Language::Get('main','submissionSizeError', self::$langTemplate, array('maxSize'=>20)), true);
+                                    $newFileSend[] = $newFileData;
+                                }
                             } else {
-                                // wenn die Datei zu groß ist, wollen wir einen Hinweis
-                                $newFileData = new File();
-                                $newFileData->setBody(Language::Get('main','submissionSizeError', self::$langTemplate, array('maxSize'=>20)), true);
-                                $newFileSend[] = $newFileData;
+                                // wenn keine konkrete Datei festgelegt wurde, dann muss eine leere existieren,
+                                // für die Rückgabe des POST /pdf
+                                $newFile = array();
+                                $fileInfo['filename'] = "Korrektur";
                             }
                             
                             $newFileData = new File();
