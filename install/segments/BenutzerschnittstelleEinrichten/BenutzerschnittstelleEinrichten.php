@@ -28,7 +28,8 @@ class BenutzerschnittstelleEinrichten {
         Installation::log(array('text' => Installation::Get('main', 'functionBegin')));
         $defs = self::getDefaults();
         $res = array(
-            'siteKey' => array(Installation::Get('userInterface', 'siteKey', self::$langTemplate), $data['UI']['siteKey'], $defs['siteKey'][1])
+            'siteKey' => array(Installation::Get('userInterface', 'siteKey', self::$langTemplate), $data['UI']['siteKey'], $defs['siteKey'][1]),
+            'downloadSiteKey' => array(Installation::Get('userInterface', 'downloadSiteKey', self::$langTemplate), $data['UI']['downloadSiteKey'], $defs['downloadSiteKey'][1])
         );
         Installation::log(array('text' => Installation::Get('userInterface', 'barResult', self::$langTemplate, array('res' => json_encode($res)))));
         Installation::log(array('text' => Installation::Get('main', 'functionEnd')));
@@ -39,6 +40,7 @@ class BenutzerschnittstelleEinrichten {
         return array(
             'conf' => array('data[UI][conf]', '../UI/include/Config.php'),
             'siteKey' => array('data[UI][siteKey]', 'b67dc54e7d03a9afcd16915a55edbad2d20a954562c482de3863456f01a0dee4'),
+            'downloadSiteKey' => array('data[UI][downloadSiteKey]', 'b67dc54e7d03a9afcd16915a55edbad2d20a954562c482de3863456f01a0dee4'),
             'maintenanceMode' => array('data[UI][maintenanceMode]', '0'),
             'maintenanceText' => array('data[UI][maintenanceText]', ''),
             'maintenanceAllowedUsers' => array('data[UI][maintenanceAllowedUsers]', '')
@@ -63,6 +65,7 @@ class BenutzerschnittstelleEinrichten {
         $text = '';
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['UI']['conf'], 'data[UI][conf]', $def['conf'][1], true);
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['UI']['siteKey'], 'data[UI][siteKey]', $def['siteKey'][1], true);
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['UI']['downloadSiteKey'], 'data[UI][downloadSiteKey]', $def['downloadSiteKey'][1], true);
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['UI']['maintenanceMode'], 'data[UI][maintenanceMode]', $def['maintenanceMode'][1], true);
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['UI']['maintenanceText'], 'data[UI][maintenanceText]', $def['maintenanceText'][1], true);
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['UI']['maintenanceAllowedUsers'], 'data[UI][maintenanceAllowedUsers]', $def['maintenanceAllowedUsers'][1], true);
@@ -89,6 +92,7 @@ class BenutzerschnittstelleEinrichten {
             }
 
             $text .= Design::erstelleZeile($console, Installation::Get('userInterface', 'siteKey', self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['UI']['siteKey'], 'data[UI][siteKey]', 'b67dc54e7d03a9afcd16915a55edbad2d20a954562c482de3863456f01a0dee4', true), 'v');
+            $text .= Design::erstelleZeile($console, Installation::Get('userInterface', 'downloadSiteKey', self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['UI']['downloadSiteKey'], 'data[UI][downloadSiteKey]', 'b67dc54e7d03a9afcd16915a55edbad2d20a954562c482de3863456f01a0dee4', true), 'v');
             $text .= Design::erstelleZeile($console, Installation::Get('userInterface', 'maintenanceMode', self::$langTemplate), 'e', Design::erstelleAuswahl($console, $data['UI']['maintenanceMode'], 'data[UI][maintenanceMode]', '1', null, true), 'v_c');
             $text .= Design::erstelleZeile($console, Installation::Get('userInterface', 'maintenanceText', self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['UI']['maintenanceText'], 'data[UI][maintenanceText]', '', true), 'v');
             $text .= Design::erstelleZeile($console, Installation::Get('userInterface', 'maintenanceAllowedUsers', self::$langTemplate), 'e', Design::erstelleEingabezeile($console, $data['UI']['maintenanceAllowedUsers'], 'data[UI][maintenanceAllowedUsers]', '', true), 'v');
@@ -126,6 +130,7 @@ class BenutzerschnittstelleEinrichten {
         $text[] = '$filesystemURI = $serverURI . "/FS/FSControl";';
         $text[] = '$getSiteURI = $serverURI . "/logic/LGetSite";';
         $text[] = '$globalSiteKey' . " = '{$data['UI']['siteKey']}';";
+        $text[] = '$downloadSiteKey' . " = '{$data['UI']['downloadSiteKey']}';";
         $text[] = '$externalURI' . " = '{$data['PL']['urlExtern']}';";
         $text[] = '$maintenanceMode' . " = '{$data['UI']['maintenanceMode']}';";
         $text[] = '$maintenanceText' . " = '{$data['UI']['maintenanceText']}';";

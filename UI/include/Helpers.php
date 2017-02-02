@@ -23,6 +23,7 @@
  
 include_once ( dirname(__FILE__) . '/../../Assistants/Request.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Language.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/fileUtils.php' );
 include_once ( dirname(__FILE__) . '/Helpers/FILE_TYPE.php' );
 include_once ( dirname(__FILE__) . '/Helpers/PRIVILEGE_LEVEL.php' );
 

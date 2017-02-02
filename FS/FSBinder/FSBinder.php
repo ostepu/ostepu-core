@@ -170,7 +170,14 @@ class FSBinder
             return Model::isEmpty();
         }
         
+        global $downloadSiteKey; // dieser Eintrag wird aus der Config.php der UI benötigt
         $auth = new Authentication(false);
+        if (trim($downloadSiteKey) == ''){
+            $downloadSiteKey = null;
+        }
+        
+        $auth->siteKey = $downloadSiteKey;
+        
         $path = array($params['folder'],$params['a'],$params['b'],$params['c'], $params['file'], $params['filename']);        
         $filePath = implode(
                             '/',

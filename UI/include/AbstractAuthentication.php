@@ -35,7 +35,7 @@ abstract class AbstractAuthentication
      * @var SiteKey as Password for all Hashfunctions
      * TODO make configurable
      */
-    protected $siteKey = null;
+    public $siteKey = null;
     protected $defaultSiteKey = "b67dc54e7d03a9afcd16915a55edbad2d20a954562c482de3863456f01a0dee4";
 
     /**

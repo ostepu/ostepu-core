@@ -6,6 +6,7 @@ class fileUtils
 {
     public static function generateDownloadURL($fileObject, $dur = 1800){
         global $serverURI; // kommt aus UI/include/Config.php
+        global $downloadSiteKey;
         
         if (!isset($fileObject['address']) || !isset($fileObject['displayName'])){
             return '';
@@ -17,6 +18,12 @@ class fileUtils
         // jetzt wird die Signatur erzeugt, bestehend aus
         // Ablaufzeitpunkt_URL
         $auth = new Authentication(false);
+        
+        if (trim($downloadSiteKey) == ''){
+            $downloadSiteKey = null;
+        }
+        
+        $auth->siteKey = $downloadSiteKey;
         
         // die FSBinder nutzt diese Methode beim verifizieren der eingehenden Dateianfrage
         $signature = $duration.'_'.$auth->hashData("sha256", $duration.'_'.$fileObject['address'].'/'.$fileObject['displayName']);
