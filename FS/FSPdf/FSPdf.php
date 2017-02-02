@@ -140,7 +140,17 @@ class FSPdf
            
             FSPdf::generatepath( $this->config['DIR']['files'].'/'.dirname( $targetPath ) );
             $body = file_get_contents($this->config['DIR']['files'].'/'.$sourcePath);
-           
+            $res = str_split ( $body,1000 );
+            $body = array();
+                        
+            foreach($res as $key=>$r){
+                if ($key < count($res)-1){
+                    $body[]= array(false,$r);
+                } else {
+                    $body[]= array(false,$r."\n");
+                }
+            }
+                        
             $data = new Pdf();
             $data->setText($body);
             $result = FSPdf::createPdf($data);
@@ -214,11 +224,11 @@ class FSPdf
 
         if (!file_exists( $this->config['DIR']['files'].'/'.$targetPath ) ){
        
-            $body="";
+            $body=array();
             foreach($files as $part){
                 if ( $part->getBody( ) !== null ){
-                    // use body
-                    $body.=$part->getBody( true ).'<br>';
+                    // use body, soll als HTML gedruckt werden
+                    $body[]=array(true,$part->getBody( true ).'<br>');
                 } else {
                     $file = $this->config['DIR']['files']. '/' . $part->getAddress( );
                     if (file_exists($file)){
@@ -227,7 +237,18 @@ class FSPdf
                             $text = utf8_encode($text);
                         }
                         $text = htmlentities(htmlentities($text));
-                        $body.= $text.'<br>';
+                        
+                        // eine Datei wird nicht als HTML gedruckt und wir benötigen kleine Stücke
+                        // denn die können schneller gerendert werden
+                        $res = str_split ( $text,1000 );
+                        
+                        foreach($res as $key=>$r){
+                            if ($key < count($res)-1){
+                                $body[]= array(false,$r);
+                            } else {
+                                $body[]= array(false,$r."\n");
+                            }
+                        }
                     } else {
                         // failure
                     }
@@ -275,6 +296,7 @@ class FSPdf
             $hash = sha1(file_get_contents($this->config['DIR']['files'].'/'.$targetPath));  
             $pdfFile->setHash( $hash );
         }
+
         return Model::isCreated($pdfFile);
     }
     /**
@@ -608,17 +630,29 @@ class FSPdf
         $pdf->setPrintHeader(false);
         $pdf->setPrintFooter(false);
         $pdf->SetFont($data->getFont());
+        $pdf->setFontSubsetting(false);
         //$pdf->SetCompression(false);
         
         $html = $data->getText();
-        $html=str_replace("\r\n",'<br/>',$html);
-        $html=str_replace("\n",'<br/>',$html);
-        $html=str_replace("\t",'    ',$html);
+        if (!is_array($html)){
+            $html = array(true, $html);
+        }
         
         $pdf->AddPage( );
-        $text=htmlspecialchars_decode($html);
-
-        $pdf->WriteHTML($text);
+        
+        for($i=0;$i<count($html);$i++){
+            
+            if ($html[$i][0] === false || ($data->getSimpleWrite() === true)){
+               $text=htmlspecialchars_decode($html[$i][1]);
+               $pdf->Write(0,$text);
+            } else {
+                $text=str_replace("\r\n",'<br/>',$html[$i][1]);
+                $text=str_replace("\n",'<br/>',$text);
+                $text=str_replace("\t",'    ',$text);
+                $text=htmlspecialchars_decode($text);
+                $pdf->WriteHTML($text);
+            }
+        }
 
         // stores the pdf binary data to $result
         $result = $pdf->Output(

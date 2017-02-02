@@ -28,6 +28,16 @@ class Pdf extends Object implements JsonSerializable
     {
         $this->text = $value;
     }
+    
+    private $simpleWrite = null;
+    public function getSimpleWrite( )
+    {
+        return $this->simpleWrite;
+    }
+    public function setSimpleWrite( $value = null )
+    {
+        $this->simpleWrite = $value;
+    }
 
     private $orientation = null;
     public function getOrientation( )
@@ -154,7 +164,8 @@ class Pdf extends Object implements JsonSerializable
                                           $title=null,
                                           $author=null,
                                           $format=null,
-                                          $creator=null
+                                          $creator=null,
+                                          $simpleWrite=null
                                           )
     {
         return new Pdf( array(
@@ -167,7 +178,8 @@ class Pdf extends Object implements JsonSerializable
                                    'title' => $title,
                                    'author' => $author,
                                    'format' => $format,
-                                   'creator' => $creator
+                                   'creator' => $creator,
+                                   'simpleWrite' => $simpleWrite
                                    ) );
     }
 
@@ -289,6 +301,8 @@ class Pdf extends Object implements JsonSerializable
             $list['format'] = $this->format;
         if ( $this->creator !== null )
             $list['creator'] = $this->creator;
+        if ( $this->simpleWrite !== null )
+            $list['simpleWrite'] = $this->simpleWrite;
         return array_merge($list,parent::jsonSerialize( ));
     }
 }
