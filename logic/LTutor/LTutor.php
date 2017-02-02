@@ -828,14 +828,24 @@ class LTutor
                             $data.="Kommentar: {$marking['submission']['comment']}\n";
                         }
 
+                        // hier wird der vordere Teil der generierten PDF eingefügt
                         $data.="<pre>";
                         $newFileData->setBody($data, true);
                         $newFileSend[] = $newFileData;
 
                         if (isset($newFile)){
-                            if (strpos($newFile['mimeType'],'text/')!==false){
+                            
+                            // die Umwandlung der Datei wird nur durchgeführt, wenn sie mindestens den mimeType text/
+                            // besitzt und nicht über 20kb groß ist.
+                            if (strpos($newFile['mimeType'],'text/')!==false && $newFile['fileSize']<=20000){
                                 $newFileSend[] = $newFile;
+                            } else {
+                                // wenn die Datei zu groß ist, wollen wir einen Hinweis
+                                $newFileData = new File();
+                                $newFileData->setBody(Language::Get('main','submissionSizeError', self::$langTemplate, array('maxSize'=>20)), true);
+                                $newFileSend[] = $newFileData;
                             }
+                            
                             $newFileData = new File();
                             $newFileData->setBody("</pre>", true);
                             $newFileSend[] = $newFileData;
