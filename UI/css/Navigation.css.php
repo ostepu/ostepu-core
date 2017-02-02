@@ -34,11 +34,11 @@
         echo "background-size: 168px 100px;";
         echo "background-image: url('../Images/events/easter.jpg');";
         echo "background-position: 99% 5px;";
-     } elseif ($month == 2 && $day <= 14) { 
+     } elseif ($month == 2 && $day == 14) {
         echo "background-size: 168px 100px;";
         echo "background-image: url('../Images/events/heart.jpg');";
         echo "background-position: 99% 5px;";
-     } elseif ($month == 10 && $day <= 31) { 
+     } elseif ($month == 10 && $day == 31) {
         echo "background-size: 168px 100px;";
         echo "background-image: url('../Images/events/halloween3.jpg');";
         echo "background-position: 99% 5px;";
