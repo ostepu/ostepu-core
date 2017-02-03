@@ -843,10 +843,12 @@ class LTutor
                                 if (strpos($newFile['mimeType'],'text/')!==false && $newFile['fileSize']<=20000){
                                     $newFileSend[] = $newFile;
                                 } else {
-                                    // wenn die Datei zu groß ist, wollen wir einen Hinweis
-                                    $newFileData = new File();
-                                    $newFileData->setBody(Language::Get('main','submissionSizeError', self::$langTemplate, array('maxSize'=>20)), true);
-                                    $newFileSend[] = $newFileData;
+                                    if( $newFile['fileSize']>20000){
+                                        // wenn die Datei zu groß ist, wollen wir einen Hinweis
+                                        $newFileData = new File();
+                                        $newFileData->setBody(Language::Get('main','submissionSizeError', self::$langTemplate, array('maxSize'=>20)), true);
+                                        $newFileSend[] = $newFileData;
+                                    }
                                 }
                             } else {
                                 // wenn keine konkrete Datei festgelegt wurde, dann muss eine leere existieren,
