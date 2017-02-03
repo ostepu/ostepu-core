@@ -61,15 +61,12 @@ class DBSetting
     {
         $positive = function($input) {
             // sets the new auto-increment id
-            $id = 0;
-            $queryResult = $input[count($input)-1];
-            $resp =$queryResult->getResponse();
-            if (isset($resp[0]['@a']))
-                $id = $resp[0]['@a'];
+           $course = Course::ExtractCourse($input[count($input)-1]->getResponse(),true);
 
             // sets the new auto-increment id
-            $obj = new Setting( );
-            $obj->setId( ($input[0]->getInsertId( )==0 ? $id : $input[0]->getInsertId( )) );
+            $obj = new Setting( );                
+            $obj->setId( $course->getId() . '_' . $input[count($input)-2]->getInsertId( ) );
+            
             return array("status"=>201,"content"=>$obj);
         };
         return $this->_component->callSqlTemplate('addSetting',dirname(__FILE__).'/Sql/AddSetting.sql',array_merge($params,array( 'in' => $input)),201,$positive,array(),'Model::isProblem',array(new Setting()),false);

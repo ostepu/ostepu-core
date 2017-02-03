@@ -61,15 +61,11 @@ class DBRedirect
     { 
         $positive = function($input) {
             // sets the new auto-increment id
-            $id = 0;
-            $queryResult = $input[count($input)-1];
-            $resp =$queryResult->getResponse();
-            if (isset($resp[0]['@a']))
-                $id = $resp[0]['@a'];
+           $course = Course::ExtractCourse($input[count($input)-1]->getResponse(),true);
 
             // sets the new auto-increment id
-            $obj = new Redirect( );
-            $obj->setId( ($input[0]->getInsertId( )==0 ? $id : $input[0]->getInsertId( )) );
+            $obj = new Redirect( );                
+            $obj->setId( $course->getId() . '_' . $input[count($input)-2]->getInsertId( ) );
             return array("status"=>201,"content"=>$obj);
         };
         return $this->_component->callSqlTemplate('addRedirect',dirname(__FILE__).'/Sql/AddRedirect.sql',array_merge($params,array( 'in' => $input)),201,$positive,array(),'Model::isProblem',array(new Redirect()),false);
