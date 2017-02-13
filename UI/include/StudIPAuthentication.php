@@ -210,8 +210,9 @@ class StudIPAuthentication extends AbstractAuthentication
             $getUserData = cleanInput($getUserData);
 
             $user = User::createUser(NULL,$getUserData[4],$getUserData[2],$getUserData[0],$getUserData[1],NULL,"1","noPassword","noSalt","0",$uid);
-        } else
+        } else {
             $user = "not found";
+        }
         return $user;
     }
     
