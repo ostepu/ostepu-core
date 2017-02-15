@@ -771,6 +771,8 @@ class LTutor
                     // file
                     $newFile = null;
                     $selectedFile = null;
+                    
+                    // wenn eine Einsendung existiert, soll diese gewählt werden (für die FILE auswahl)
                     if (isset($marking['submission']['file']['displayName'])){
                         $fileInfo = pathinfo($marking['submission']['file']['displayName']);
                         $newFile = array_merge(array(),$marking['submission']['file']);
@@ -778,6 +780,7 @@ class LTutor
                     }
                     $converted=false;
 
+                    // wenn bereits eine Korrektur existiert, dann soll diese in FILE eingetragen werden
                     if (isset($marking['file']) && $marking['file']!==array()) {
                         $newFile = array_merge(array(),$marking['file']);
                         $selectedFile='marking';
@@ -785,7 +788,6 @@ class LTutor
 
                     $generateDummyForAllMimeTypes = Course::containsSetting($course,'GenerateDummyCorrectionsForTutorArchives');
                     if (!isset($generateDummyForAllMimeTypes)) $generateDummyForAllMimeTypes = 0;
-                    file_put_contents("a.txt",$generateDummyForAllMimeTypes);
                     
                     // nur wenn wir die Einsendung umwandeln wollen oder für alle eine PDF erzeugt werden soll (ausser es existiert bereits eine Korrektur)
                     if ($selectedFile == 'submission' || ($generateDummyForAllMimeTypes && $selectedFile === null))
@@ -808,6 +810,8 @@ class LTutor
                                 $found=false;
                                 foreach ($user as $us){
                                     if ($us['id'] == $marking['submission']['studentId']){
+                                        
+                                        // hier werden die Namen der Gruppenmitglieder erzeugt
                                         $namen=array();
                                         foreach ($user as $member){
                                             $namen[] = (isset($member['firstName']) ? $member['firstName'] : '-').' '.(isset($member['lastName']) ? $member['lastName'] : '' ).' ('.(isset($member['userName']) ? $member['userName'] : '').')';
@@ -826,6 +830,7 @@ class LTutor
                             }
                         }
 
+                        // der Kommentar des Studenten
                         if (isset($marking['submission']['comment']) && trim($marking['submission']['comment']) != ''){
                             $data.="Kommentar: {$marking['submission']['comment']}\n";
                         }
@@ -890,15 +895,16 @@ class LTutor
                     //$row[] = $namesOfExercises[$exerciseId].'/'.($converted ? 'K_' :'').$marking['id'].($fileInfo['extension']!='' ? '.'.$fileInfo['extension']:'');
                     //if (!$converted)
                     if (isset($newFile['displayName'])){
+                        // es ist wichtig, dass die Einsendung und Korrektur nicht den selben Namen haben
                         if (isset($selectedFile) && isset($marking['submission']['file']['displayName']) &&
                             ($selectedFile == 'marking' || $selectedFile == 'converted') &&
                               $newFile['displayName'] == $marking['submission']['file']['displayName']
                            ){
-
+                                // also wird ein K_ vorne angehangen
                                 $newFile['displayName'] = 'K_'.$newFile['displayName'];
-
                             }
 
+                        // hier wird der Pfadeintrag in der CSV erzeugt (FILE-Spalte)
                         $row['FILE'] = $namesOfExercises[$exerciseId].'/'.$marking['id'].'/'.$newFile['displayName'];
                     }
                     unset($newFile);
@@ -945,6 +951,8 @@ class LTutor
                                                       'TutorCSV_'.$userid.'_'.$courseid,
                                                       json_encode($ExerciseData)
                                                       );
+        // in dieser Transaktion werden alle Daten des Korrekturarchivs hinterlegt (sodass man es beim Upload damit
+        // überprüfen kann
         $result = Request::routeRequest(
                                         'POST',
                                         '/transaction/exercisesheet/'.$sheetid,
