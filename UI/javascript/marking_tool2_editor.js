@@ -17,14 +17,13 @@ MarkingTool.Editor.HTML = (function(){
 			var element = data.element || "div";
 			data.content = undefined;
 			data.element = undefined;
-			var result = '<' + element;
+			var obj = $("<"+element+"/>");
 			foreach (var key in data)
 				if (data.hasOwnProperty(key)) {
-					result += ' ' + key + '="' + data[key] + '"';
+					obj.attr(key, data[key]);
 				}
-			if (content != "") result += '>' + content + '</' + element + '>';
-			else result += '/>';
-			return result;
+			obj.innerHTML(content);
+			return obj;
 		},
 		//Erstellt ein neues HTML-Element
 		//element: String - der Typ des Elements
