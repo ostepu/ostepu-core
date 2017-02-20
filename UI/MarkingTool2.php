@@ -35,7 +35,7 @@ $h->bind(array('name' => $user_course_data['courses'][0]['course']['name'],
 
 $w = new HTMLWrapper($h);
 
-$w->set_config_file('include/configs/config_marking_tool.json');
+$w->set_config_file('include/configs/config_marking_tool2.json');
 if (isset($maintenanceMode) && $maintenanceMode === '1')
     $w->add_config_file('include/configs/config_maintenanceMode.json');
 $w->show();
