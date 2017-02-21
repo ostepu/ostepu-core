@@ -43,40 +43,121 @@ MarkingTool.Event = function() {
 
 
 //=== HTML Bibliothek um einen HTML Körper zu erstellen ===
-MarkingTool.Editor.HTML = (function(){
-	//private static
-	
-	//public static
-	return {
-		//Erstellt aus Rohdaten ein neues HTML-Element
-		//data: Objekt - Ein Objekt mit den Attributen, den Namen (element) und den Inhalt (content) des neuen Elements
-		CreateElementRaw : function(data) {
-			var content = data.content || "";
-			var element = data.element || "div";
-			data.content = undefined;
-			data.element = undefined;
-			var obj = $("<"+element+"/>");
-			for (var key in data)
-				if (data.hasOwnProperty(key)) {
-					obj.attr(key, data[key]);
-				}
-			obj.innerHTML(content);
-			return obj;
-		},
-		//Erstellt ein neues HTML-Element
-		//element: String - der Typ des Elements
-		//content: String - der Inhalt des Elements
-		//data:    Objekt - Schlüssel-Werte-Paare mit den Attributwerten
-		CreateElement : function(element, content, data) {
-			data.element = element;
-			data.content = content;
-			return MarkingTool.Editor.HTML.CreateElementRaw(data);
-		}
-		
-		//TODO: Implementierung des Visuellen Inhalts
-		
+MarkingTool.Editor.HTML = new function(){
+	var thisref = this;
+	//Erstellt aus Rohdaten ein neues HTML-Element
+	//data:      Objekt - Ein Objekt mit den Attributen, den Namen (element) und den Inhalt (content) des neuen Elements
+	//-content:  String - Der HTML Inhalt des Elements
+	//-element:  String - Der Name des neuen Elements
+	//-css:      Array  - Eine Liste aus CSS Klassen, die diesem Element hinzugefügt werden sollen
+	//-children: Array  - Eine Liste aus HTML Elementen, die diesem Element als Kinder hinzugefügt werden sollen.
+	//-...:		 Werte  - zusätzliche Attribute für das neue Element als Schlüssel-Werte-Paare
+	//return:	 jQuery - Das neue erzeugte HTML Element
+	this.CreateElementRaw = function(data) {
+		var content = data.content || "";
+		var element = data.element || "div";
+		var css = data.css || [];
+		var children = data.children || [];
+		data.content = undefined;
+		data.element = undefined;
+		data.css = undefined;
+		data.children = undefined;
+		var obj = $("<"+element+"/>");
+		for (var key in data)
+			if (data.hasOwnProperty(key)) {
+				obj.attr(key, data[key]);
+			}
+		for (var i = 0; i<css.length; ++i)
+			obj.addClass(css[i]);
+		for (var i = 0; i<children.length; ++i)
+			obj.append(children[i]);
+		obj.innerHTML(content);
+		return obj;
 	};
-})();
+	//Erstellt ein neues HTML-Element
+	//element: String - der Typ des Elements
+	//content: String - der Inhalt des Elements
+	//[data]:  Objekt - Zusätzliche Daten für CreateElementRaw
+	//return:  jQuery - Das neue erzeugte HTML Element
+	this.CreateElement = function(element, content, data) {
+		data = data || {};
+		data.element = element;
+		data.content = content;
+		return MarkingTool.Editor.HTML.CreateElementRaw(data);
+	};
+	//Erstellt einen neuen klickbaren Button
+	//content:  String  - Der Text der angezeigt wird
+	//[method]: Fuktion - Die Methode die beim Klicken ausgelöst wird.
+	//[data]:   Objekt  - Zusätzliche Daten für CreateElementRaw
+	//return:   jQuery  - Das neu erzeugte Element
+	this.CreateButton = function(content, method, data) {
+		data = data || {};
+		data.css = data.css || [];
+		data.css.push("ui-button");
+		var element = thisref.CreateElement("div", content, data);
+		if (method != undefined) element.click(method);
+		return element;
+	};
+	//Erstellt ein Aufklappmenü
+	//header:   jQuery        - Der Button der das Aufklappmenü aufklappt
+	//elements: Array<jQuery> - Die Elemente die angezeigt werden sollen, wenn das Aufklappmenü offen ist.
+	//[data]:   Objekt        - Zusätzliche Daten für das Objekt welches das Aufklappmenü beherbergt
+	//return:   jQuery        - Das neu erzeugte Element
+	this.CreateButtonMenu = function(header, elements, data) {
+		data = data || {};
+		data.css = data.css || [];
+		data.css.push("ui-foldable");
+		data.children = data.children || [];
+		data.children.push(header);
+		data.children.push(thisref.CreateElementRaw({
+			css: ["ui-foldable-box"],
+			children: elements
+		}));
+		header.click(function() {
+			$(this).parent().toggleClass("ui-open");
+		});
+		return thisref.CreateElementRaw(data);
+	};
+	//Erstellt ein neues Eingabeelement
+	//[type]:   String   - der Typ des Eingabeelements (Standart: "text")
+	//[method]: Funktion - Die Methode die aufgerufen wird, wenn sich das Objekt ändert
+	//[data]:   Objekt   - Zusätzliche Daten für das Eingabeelement
+	//return:   jQuery   - Das neu erzeugte Element
+	this.CreateInput = function(type, method, data) {
+		type = type || "text";
+		data = data || {};
+		data.element = "input";
+		data.type = type;
+		data.css = data.css || [];
+		data.css.push("ui-input");
+		var element = thisref.CreateElementRaw(data);
+		if (method != undefined) element.change(method);
+		return element;
+	}
+	
+	//TODO: Implementierung des Visuellen Inhalts
+	
+};
+
+//=== Bibliothek um die Updates nachzuvollziehen
+MarkingTool.Editor.UpdateIndicator = new function() {
+	var thisref = this;
+	var display = undefined;
+	$(function(){ display = $(".loading-box"); });
+	//Zeigt die Ladeanzeige an
+	this.ShowBox = function() {
+		if (display != undefined) display.show();
+	};
+	//Versteckt die Ladeanzeige
+	this.HideBox = function() {
+		if (display != undefined) display.hide();
+	};
+	//Setzt die Beschreibung der Ladeanzeige
+	//text: String - Der Text der gesetzt werden soll.
+	this.SetText = function(text) {
+		if (display != undefined) display.find(".loading-description").html(text);
+	};
+};
 
 //=== Update Bibliothek um immer den aktuellen Zustand von Objekten verfolgen zu können. ===
 
