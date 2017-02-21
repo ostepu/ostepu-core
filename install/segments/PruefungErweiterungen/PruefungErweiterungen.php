@@ -87,6 +87,7 @@ class PruefungErweiterungen {
         $result['fileinfo'] = self::apache_extension_exists('fileinfo');
         $result['sockets'] = self::apache_extension_exists('sockets');
         $result['gd'] = self::apache_extension_exists('gd');
+        $result['ldap'] = self::apache_extension_exists('ldap');
 
         Installation::log(array('text' => Installation::Get('extensions', 'checkResult', self::$langTemplate, array('res' => json_encode($result)))));
         Installation::log(array('text' => Installation::Get('main', 'functionEnd')));

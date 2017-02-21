@@ -10,5 +10,10 @@
     "failureAccessConfFile": "Fehler: $message",
     "maintenanceMode": "Wartungsmodus",
     "maintenanceText": "Wartungstext",
-    "maintenanceAllowedUsers": "erlaubte Nutzerkonten während der Wartung (NutzerA, NutzerB, ....)"
+    "maintenanceAllowedUsers": "erlaubte Nutzerkonten während der Wartung (NutzerA, NutzerB, ....)",
+    "ldapServer":"LDAP-Server",
+    "ldapBase":"Basis",
+    "ldapAdmin":"Admin-Nutzername",
+    "ldapPasswd":"Admin-Passwort",
+    "ldapFilter":"dn-Suchfilter(\\$username = der Nutzername)"
 }}

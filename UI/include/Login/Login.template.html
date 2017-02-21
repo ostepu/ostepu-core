@@ -39,6 +39,12 @@
             <label class="form-field left label bold new-line" for="password"><?php echo Language::Get('main','password', $langTemplate); ?>:</label>
             <input class="form-field left text-input" type="password" name="password" id="password" />
 
+            <label class="form-field left label bold new-line" for="loginType"><?php echo Language::Get('main','loginType', $langTemplate); ?>:</label>
+            <select class="left" name="loginType" id="loginType" size="1">
+               <option value="default"><?php echo Language::Get('main','defaultLogin', $langTemplate); ?></option>
+               <option value="ldap"><?php echo Language::Get('main','ldapLogin', $langTemplate); ?></option>
+            </select>
+                                 
             <!--<label class="form-field left label bold new-line" for="permanentLogin"><?php echo Language::Get('main','permanentLogin', $langTemplate); ?>:</label>
             <input class="form-field left" type="checkbox" name="permanentLogin" id="permanentLogin" />-->
         </div>

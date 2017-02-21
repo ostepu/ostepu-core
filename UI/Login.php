@@ -22,6 +22,7 @@ ob_start();
 $notifications = array();
 
 include_once dirname(__FILE__) . '/include/Authentication.php';
+include_once dirname(__FILE__) . '/include/LDAPAuthentication.php';
 include_once dirname(__FILE__) . '/include/HTMLWrapper.php';
 include_once dirname(__FILE__) . '/include/Template.php';
 include_once dirname(__FILE__) . '/../Assistants/Logger.php';
@@ -72,7 +73,12 @@ if ($postValidation->isValid() && $getValidation->isValid() && $postResults['act
           ->addSet('password',
                    array('satisfy_exists',
                          'on_error'=>array('type'=>'error',
-                                           'text'=>Language::Get('main','invalidPassword', $langTemplate))));
+                                           'text'=>Language::Get('main','invalidPassword', $langTemplate))))
+          ->addSet('loginType',
+                   array('satisfy_exists',
+                         'satisfy_in_list'=>array('default', 'ldap'),
+                         'on_error'=>array('type'=>'error',
+                                           'text'=>Language::Get('main','invalidLoginType', $langTemplate))));
 
         $foundValues = $postLoginValidation->validate();
         $notifications = array_merge($notifications, $postLoginValidation->getPrintableNotifications('MakeNotification'));
@@ -85,18 +91,36 @@ if ($postValidation->isValid() && $getValidation->isValid() && $postResults['act
             } else {
                 $postResults['back'] = 'index.php';
             }
+            
+            if ($foundValues['loginType'] === 'default'){
 
-            // log in user and return result
-            $signed = $auth->loginUser($foundValues['username'], $foundValues['password']);
+                // log in user and return result
+                $signed = $auth->loginUser($foundValues['username'], $foundValues['password']);
 
-            if ($signed===true) {
-                header('Location: ' . $postResults['back']);
-                exit();
-            } else {
-                if ($signed!==false){
-                    $notifications[] = $signed;
-                } else
-                    $notifications[] = MakeNotification('error', Language::Get('main','errorLogin', $langTemplate));
+                if ($signed===true) {
+                    header('Location: ' . $postResults['back']);
+                    exit();
+                } else {
+                    if ($signed!==false){
+                        $notifications[] = $signed;
+                    } else
+                        $notifications[] = MakeNotification('error', Language::Get('main','errorLogin', $langTemplate));
+                }
+            } elseif($foundValues['loginType'] === 'ldap'){
+                $ldapAuth = new LDAPAuthentication();
+                
+                // log in user and return result
+                $signed = $ldapAuth->loginUser($foundValues['username'], $foundValues['password']);
+
+                if ($signed===true) {
+                    header('Location: ' . $postResults['back']);
+                    exit();
+                } else {
+                    if ($signed!==false){
+                        $notifications[] = $signed;
+                    } else
+                        $notifications[] = MakeNotification('error', Language::Get('main','errorLogin', $langTemplate));
+                }
             }
         }
     }
