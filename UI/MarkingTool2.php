@@ -28,16 +28,16 @@ $user_course_data = $markingTool_data['user'];
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::TUTOR,true);
 
-$h = Template::WithTemplateFile('include/Header/Header.template.html');
-$h->bind($user_course_data);
-$h->bind(array('name' => $user_course_data['courses'][0]['course']['name'],
-               'navigationElement' => $menu));
+// $h = Template::WithTemplateFile('include/Header/Header.template.html');
+// $h->bind($user_course_data);
+// $h->bind(array('name' => $user_course_data['courses'][0]['course']['name'],
+               // 'navigationElement' => $menu));
 			   
 $c = Template::WithTemplateFile('include/MarkingTool2/MarkingTool2.template.html');
 $c->bind($markingTool_data);
 
 
-$w = new HTMLWrapper($h, $c);
+$w = new HTMLWrapper(/*$h, */$c);
 
 $w->set_config_file('include/configs/config_marking_tool2.json');
 if (isset($maintenanceMode) && $maintenanceMode === '1')

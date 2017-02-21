@@ -69,9 +69,9 @@ MarkingTool.Editor.HTML = new function(){
 			}
 		for (var i = 0; i<css.length; ++i)
 			obj.addClass(css[i]);
+		obj.html(content);
 		for (var i = 0; i<children.length; ++i)
 			obj.append(children[i]);
-		obj.innerHTML(content);
 		return obj;
 	};
 	//Erstellt ein neues HTML-Element
@@ -110,8 +110,13 @@ MarkingTool.Editor.HTML = new function(){
 		data.children = data.children || [];
 		data.children.push(header);
 		data.children.push(thisref.CreateElementRaw({
-			css: ["ui-foldable-box"],
-			children: elements
+			css: ["ui-foldable-marker"],
+			children: [
+				thisref.CreateElementRaw({
+					css: ["ui-foldable-box"],
+					children: elements
+				})
+			]
 		}));
 		header.click(function() {
 			$(this).parent().toggleClass("ui-open");
@@ -134,9 +139,46 @@ MarkingTool.Editor.HTML = new function(){
 		if (method != undefined) element.change(method);
 		return element;
 	}
+		
+};
+
+//Stellt die Oberfläche und ihre Funktionen bereit.
+MarkingTool.Editor.View = new function() {
+	var thisref = this;
+	var createCommandBar = function() {
+		var hc = MarkingTool.Editor.HTML;
+		var optionsBar = hc.CreateElementRaw({
+			css: ["ui-commandbar"],
+			children: [
+				hc.CreateButton("Optionen"),
+				hc.CreateElementRaw({
+					css: ["ui-commandbar-container"],
+					children: [
+						hc.CreateButtonMenu(hc.CreateButton("Ansicht"), [
+							hc.CreateButton("Tabelle"),
+							hc.CreateButton("Editor")
+						]),
+						hc.CreateButton("Aktualisieren", function() {
+							MarkingTool.Editor.UpdateIndicator.ShowBox();
+							document.location.reload();
+						}),
+						hc.CreateButton("Speichern"),
+						hc.CreateButton("Filter"),
+						hc.CreateButton("Änderungen")
+					]
+				})
+			]
+		});
+		optionsBar.appendTo($(".content-box"));
+	};
 	
-	//TODO: Implementierung des Visuellen Inhalts
-	
+	var _init = function(){
+		createCommandBar();
+	};
+	//Initialisiert die Oberfläche
+	this.Init = function() {
+		_init.call(thisref);
+	}
 };
 
 //=== Bibliothek um die Updates nachzuvollziehen
@@ -334,3 +376,9 @@ MarkingTool.Editor.UpdateFactory = new function() {
 };
 
 
+$(function() {
+	//Diese Funktion wird aufgerufen, wenn die Webseite bereit ist. Nun kann alles geladen 
+	//und aufgebaut werden.
+	MarkingTool.Editor.View.Init();
+	MarkingTool.Editor.UpdateIndicator.HideBox();
+});

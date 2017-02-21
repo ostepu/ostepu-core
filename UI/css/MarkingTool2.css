@@ -1,3 +1,6 @@
+
+
+/*Ladebox*/
 .loading-box {
   position: fixed;
   top: 0;
@@ -8,6 +11,7 @@
   height: 100%;
   display: table;
   background-color: rgba(128, 128, 128, 0.92);
+  z-index: 100000;
 }
 .loading-box > div {
   display: table-row;
@@ -68,3 +72,75 @@
   40% { background-color: rgb(7, 83, 7); }
   100% { background-color: rgb(7, 83, 7); }
 }
+
+
+
+/*Optionsleiste*/
+body {
+    font-family: "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+}
+.ui-button {
+  display: block;
+  border: 1px solid black;
+  border-radius: 0.2em;
+  margin: 0.1em;
+  padding: 0.2em 0.4em;
+  text-align: center;
+  box-shadow: 0.05em 0.05em 0.15em black;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.ui-button:hover {
+  background-color: rgba(192, 192, 192, 0.4);
+}
+.ui-button:active,
+.ui-button.active,
+.ui-foldable.ui-open > .ui-button {
+  box-shadow: none;
+  color: white;
+  transform: translate(0.05em, 0.05em);
+}
+.ui-foldable {
+  position: relative;
+}
+.ui-foldable-marker {
+  height: 0;
+  position: absolute;
+  top: 100%;
+  display: none;
+}
+.ui-foldable-box {
+  background-color: lightgray;
+  margin-top: 0.1em;
+  padding: 0.1em;
+  z-index: 100;
+}
+.ui-foldable.ui-open .ui-foldable-marker {
+  display: block;
+}
+.ui-commandbar {
+  block;
+  background-color: gray;
+  padding: 0.2em;
+  font-size: 1.4em;
+  overflow-x: visible;
+  overflow-y: visible;
+}
+.ui-commandbar > *,
+.ui-commandbar-container > * {
+  display: inline-block;
+}
+
+.ui-commandbar {
+	-ms-user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+
+
+
+
+
+
