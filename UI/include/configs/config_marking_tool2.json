@@ -10,7 +10,8 @@
         "css/Forms.css",
         "css/Navigation.css",
         "css/Navigation.css.php",
-        "css/Notifications.css"
+        "css/Notifications.css",
+		"css/MarkingTool2.css"
     ],
     "javascripts":[
         "javascript/jquery.js",
