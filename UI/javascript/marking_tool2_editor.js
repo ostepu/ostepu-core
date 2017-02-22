@@ -145,6 +145,9 @@ MarkingTool.Editor.HTML = new function(){
 //Stellt die Oberfläche und ihre Funktionen bereit.
 MarkingTool.Editor.View = new function() {
 	var thisref = this;
+	var createWrapper = function(element) {
+		return MarkingTool.Editor.HTML.CreateElementRaw({children: [element]});
+	}
 	var createCommandBar = function() {
 		var hc = MarkingTool.Editor.HTML;
 		var optionsBar = hc.CreateElementRaw({
@@ -155,25 +158,81 @@ MarkingTool.Editor.View = new function() {
 					css: ["ui-commandbar-container"],
 					children: [
 						hc.CreateButtonMenu(hc.CreateButton("Ansicht"), [
-							hc.CreateButton("Tabelle"),
-							hc.CreateButton("Editor")
-						]),
+							hc.CreateButton("Filter", function() {
+								$(this).toggleClass("active");
+								if ($(this).hasClass("active")) $(".ui-layout-left").addClass("ui-open");
+								else $(".ui-layout-left").removeClass("ui-open");
+								$(".ui-ref-view-button").removeClass("ui-open");
+							}, {css:["active"]} ),
+							hc.CreateButton("Änderungen", function() {
+								$(this).toggleClass("active");
+								if ($(this).hasClass("active")) $(".ui-layout-right").addClass("ui-open");
+								else $(".ui-layout-right").removeClass("ui-open");
+								$(".ui-ref-view-button").removeClass("ui-open");
+							}, {css:["active"]} )
+						], { css: ["ui-ref-view-button"] }),
 						hc.CreateButton("Aktualisieren", function() {
 							MarkingTool.Editor.UpdateIndicator.ShowBox();
 							document.location.reload();
 						}),
-						hc.CreateButton("Speichern"),
-						hc.CreateButton("Filter"),
-						hc.CreateButton("Änderungen")
+						hc.CreateButton("Speichern")
 					]
 				})
 			]
 		});
-		optionsBar.appendTo($(".content-box"));
+		createWrapper(optionsBar).appendTo($(".content-box"));
+	};
+	var createLayoutWindow = function(name, content) {
+		var hc = MarkingTool.Editor.HTML;
+		var window = hc.CreateElementRaw({
+			css: ["ui-layout-window-outer"],
+			children: [
+				hc.CreateElementRaw({
+					css: ["ui-layout-window-inner"],
+					children: [
+						createWrapper(hc.CreateElementRaw({
+							content: name,
+							css: ["ui-layout-window-title"]
+						})),
+						createWrapper(hc.CreateElementRaw({
+							css: ["ui-layout-window-content"],
+							children: content
+						}))
+					]
+				})
+			]
+		});
+		return window;
+	};
+	var createLayoutContainer = function() {
+		var hc = MarkingTool.Editor.HTML;
+		var container = hc.CreateElementRaw({
+			css: ["ui-layout-container"],
+			children: [
+				hc.CreateElementRaw({
+					css: ["ui-layout-left", "ui-layout-dock", "ui-open"],
+					children: [
+						createLayoutWindow("Filter", [])
+					]
+				}),
+				hc.CreateElementRaw({
+					css: ["ui-layout-main"],
+					children: []
+				}),
+				hc.CreateElementRaw({
+					css: ["ui-layout-right", "ui-layout-dock", "ui-open"],
+					children: [
+						createLayoutWindow("Änderungen", [])
+					]
+				})
+			]
+		});
+		createWrapper(container).appendTo($(".content-box"));
 	};
 	
 	var _init = function(){
 		createCommandBar();
+		createLayoutContainer();
 	};
 	//Initialisiert die Oberfläche
 	this.Init = function() {

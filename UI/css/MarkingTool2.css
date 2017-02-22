@@ -119,7 +119,7 @@ body {
   display: block;
 }
 .ui-commandbar {
-  block;
+  display: block;
   background-color: gray;
   padding: 0.2em;
   font-size: 1.4em;
@@ -130,8 +130,93 @@ body {
 .ui-commandbar-container > * {
   display: inline-block;
 }
+.ui-foldable > .ui-button:after {
+  content: ' ';
+  display: inline-block;
+  background-color: transparent;
+  width: 0;
+  height: 0;
+  border-top: 0.6em solid black;
+  border-left: 0.4em solid transparent;
+  border-right: 0.4em solid transparent;
+  border-bottom: 0 solid transparent;
+  margin-left: 0.5em;
+}
+.ui-foldable.ui-open > .ui-button:after {
+  border-top: 0 solid transparent;
+  border-bottom: 0.6em solid white;
+}
 
-.ui-commandbar {
+
+
+/*Layout-Container*/
+.content-box {
+	display: table;
+	width: 100vw;
+	height: 100vh;
+}
+.content-box > * {
+	display: table-row;
+}
+.content-box > *:nth-child(1) {
+	height: 1px;
+}
+.content-box > * > * {
+	display: table-cell;
+}
+.ui-layout-container {
+	display:table;
+	width: 100%;
+	height: 100%;
+}
+.ui-layout-container > * {
+	display: table-cell;
+}
+.ui-layout-dock:not(.ui-open) {
+	display: none;
+}
+.ui-layout-dock.ui-open {
+	width: 25%;
+	height: 100%;
+}
+.ui-layout-left {
+	border-right: 1px solid lightgray;
+}
+.ui-layout-right {
+	border-left: 1px solid lightgray;
+}
+.ui-layout-window-outer,
+.ui-layout-window-inner {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+.ui-layout-window-inner {
+	display: table;
+}
+.ui-layout-window-inner > * {
+	display: table-row;
+}
+.ui-layout-window-inner > * > * {
+	display: table-cell;
+}
+.ui-layout-window-title {
+	background-color: lightgray;
+	font-size: 1.4em;
+	height: 1px;
+	padding: 0.3em 0;
+	text-align: center;
+}
+.ui-layout-window-content,
+.ui-layout-main {
+	overflow-y: auto;
+}
+
+
+
+/*Keine Benutzerauswahl*/
+.ui-commandbar,
+.ui-layout-dock {
 	-ms-user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
