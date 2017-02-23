@@ -99,7 +99,14 @@ END if;
 if (NEW.ES_id is NULL) then
 SET NEW.ES_id = (select S.ES_id from Submission S where S.S_id = NEW.S_id limit 1);
 if (NEW.ES_id is NULL) then
-SIGNAL sqlstate '45001' set message_text = 'no corresponding submission';
+SIGNAL sqlstate '45001' set message_text = 'no corresponding submission 2';
+END if;
+END if;
+
+if (NEW.U_id_tutor = '') then
+SET NEW.U_id_tutor = (select S.U_id from Submission S where S.S_id = NEW.S_id limit 1);
+if (NEW.U_id_tutor is NULL) then
+SIGNAL sqlstate '45001' set message_text = 'no corresponding submission 3';
 END if;
 END if;
 END;
