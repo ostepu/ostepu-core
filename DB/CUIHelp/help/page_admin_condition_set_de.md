@@ -23,7 +23,7 @@ Sie können hier die Schwellenwerte für Punktearten festlegen, welche Sie zuvor
 
 ![](setD.png)
 
-Sie sehen neben dem Eingabefeld die Mindestpunkzahl, welche die Studenten für diese Punkteart erreichen müssen, um die Bedingung zu erfüllen.
+Sie sehen neben dem Eingabefeld die Mindestpunktzahl, welche die Studenten für diese Punkteart erreichen müssen, um die Bedingung zu erfüllen.
 
 > ##### 2. Aktion auslösen #####
 
