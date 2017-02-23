@@ -24,3 +24,30 @@
 <div class="content-box">
 
 </div>
+
+<!--Alle Daten, die zur Oberfläche übermittelt werden-->
+<script type="text/javascript">
+	MarkingTool.Editor.View.StateCodes = <?php
+		$d = array();
+		$d[] = array("key"=>"all", "value"=>"Alle");
+		$d[] = array("key"=>"nogAccepted", "value"=>"nicht akzeptiert");
+		foreach ($markingStatus as $ms) {
+			$d[] = array("key"=>intval($ms["id"]), "value"=>$ms["longName"]);
+		}
+		echo json_encode($d);
+	?>;
+	MarkingTool.Editor.View.SheetCodes = <?php
+		$d = array();
+		foreach ($exerciseSheets as $sheet)
+			$d[] = array("key"=>$sheet["id"], "value"=>$sheet["sheetName"]);
+		echo json_encode($d);
+	?>;
+	MarkingTool.Editor.View.TutorCodes = <?php
+		$d = array();
+		$d[] = array("key"=>"all", "value"=>"Alle");
+		foreach ($tutors as $tutor)
+			$d[] = array("key"=>$tutor["id"], "value"=>$tutor['firstName'] . 
+				' ' . $tutor['lastName'] . ' ('.$tutor['userName'].')');
+		echo json_encode($d);
+	?>;
+</script>

@@ -108,12 +108,12 @@ body {
   position: absolute;
   top: 100%;
   display: none;
+  z-index: 100;
 }
 .ui-foldable-box {
   background-color: lightgray;
   margin-top: 0.1em;
   padding: 0.1em;
-  z-index: 100;
 }
 .ui-foldable.ui-open .ui-foldable-marker {
   display: block;
@@ -171,6 +171,7 @@ body {
 }
 .ui-layout-container > * {
 	display: table-cell;
+	position: relative;
 }
 .ui-layout-dock:not(.ui-open) {
 	display: none;
@@ -199,6 +200,7 @@ body {
 }
 .ui-layout-window-inner > * > * {
 	display: table-cell;
+	position: relative;
 }
 .ui-layout-window-title {
 	background-color: lightgray;
@@ -210,6 +212,58 @@ body {
 .ui-layout-window-content,
 .ui-layout-main {
 	overflow-y: auto;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+}
+
+/*Filterbox*/
+.ui-foldable-group {
+	margin: 0.2em;
+}
+.ui-foldable-group-header {
+	display: block;
+	border-bottom: 1px solid lightgreen;
+	color: green;
+	font-size: 1.2em;
+	padding: 0.2em 0.4em;
+	cursor: pointer;
+	transition: background-color 0.3s;
+	border-radius: 0.15em 0.15em 0 0;
+}
+.ui-foldable-group-header:hover {
+	background-color: lightgreen;
+}
+.ui-foldable-group-content {
+	display: none;
+	margin: 0.2em 0.4em;
+}
+.ui-foldable-group.ui-open .ui-foldable-group-content {
+	display: block;
+}
+.ui-foldable-group-header:after {
+	content: " ";
+	background-color: transparent;
+	width: 0;
+	height: 0;
+	display: inline-block;
+	float: right;
+	border-top: 0.6em solid green;
+	border-left: 0.4em solid transparent;
+	border-right: 0.4em solid transparent;
+	border-bottom: 0 solid transparent;
+	margin-top: 0.2em;
+}
+.ui-foldable-group.ui-open .ui-foldable-group-header:after {
+  border-top: 0 solid transparent;
+  border-bottom: 0.6em solid green;
+}
+.ui-foldable-group input,
+.ui-foldable-group select {
+	display: block;
+	width: 100%;
+	margin: 0.2em 0 0.4em 0;
 }
 
 

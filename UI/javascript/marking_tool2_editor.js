@@ -46,13 +46,13 @@ MarkingTool.Event = function() {
 MarkingTool.Editor.HTML = new function(){
 	var thisref = this;
 	//Erstellt aus Rohdaten ein neues HTML-Element
-	//data:      Objekt - Ein Objekt mit den Attributen, den Namen (element) und den Inhalt (content) des neuen Elements
-	//-content:  String - Der HTML Inhalt des Elements
-	//-element:  String - Der Name des neuen Elements
-	//-css:      Array  - Eine Liste aus CSS Klassen, die diesem Element hinzugefügt werden sollen
-	//-children: Array  - Eine Liste aus HTML Elementen, die diesem Element als Kinder hinzugefügt werden sollen.
-	//-...:		 Werte  - zusätzliche Attribute für das neue Element als Schlüssel-Werte-Paare
-	//return:	 jQuery - Das neue erzeugte HTML Element
+	//data:        Objekt - Ein Objekt mit den Attributen, den Namen (element) und den Inhalt (content) des neuen Elements
+	//-[content]:  String - Der HTML Inhalt des Elements
+	//-[element]:  String - Der Name des neuen Elements
+	//-[css]:      Array  - Eine Liste aus CSS Klassen, die diesem Element hinzugefügt werden sollen
+	//-[children]: Array  - Eine Liste aus HTML Elementen, die diesem Element als Kinder hinzugefügt werden sollen.
+	//-[...]:      Werte  - zusätzliche Attribute für das neue Element als Schlüssel-Werte-Paare
+	//return:	   jQuery - Das neue erzeugte HTML Element
 	this.CreateElementRaw = function(data) {
 		var content = data.content || "";
 		var element = data.element || "div";
@@ -138,8 +138,60 @@ MarkingTool.Editor.HTML = new function(){
 		var element = thisref.CreateElementRaw(data);
 		if (method != undefined) element.change(method);
 		return element;
+	};
+	//Erstellt ein Element, welches andere Elemente gruppiert und sie zusammenfalten (verstecken) kann.
+	//title:      String        - Der Name der Gruppe
+	//[elements]: Array<jQuery> - Die Elemente, die zu dieser Gruppe gehören
+	//[data]:     Objekt        - Zusätzliche Daten für dieses Gruppenelement
+	//return:     jQuery        - Das neu erzeugte Element
+	this.CreateFoldingGroup = function(title, elements, data) {
+		data = data || {};
+		title = title || "";
+		elements = elements || [];
+		var button = thisref.CreateElementRaw({
+			content: title,
+			css: ["ui-foldable-group-header"]
+		});
+		button.click(function() {
+			$(this).parent().toggleClass("ui-open");
+		});
+		data.css = data.css || [];
+		data.css.push("ui-foldable-group");
+		data.children = data.children || [];
+		data.children.push(button);
+		data.children.push(thisref.CreateElementRaw({
+			css: ["ui-foldable-group-content"],
+			children: elements
+		}));
+		return thisref.CreateElementRaw(data);
+	};	
+	//Erstellt ein neues HTML Select Element
+	//[values]:  Objekt/Array - Ein Objekt oder eine Array mit den Werten für das neue Element.
+	//                          Der values-Schlüssel wird als Optionswert und der values-Wert 
+	//                          wird als Darstellungstext verwendet.
+	//[current]: Wert         - Der aktuelle Wert (Schlüssel in values) der ausgewählt ist.
+	//[method]:  Funktion     - Diese Methode wird aufgerufen, wenn sich der Wert ändert.
+	//[data]:    Objekt       - Zusätzliche Daten für das neue Element
+	//return:    jQuery       - Das neu erzeugte Element
+	this.CreateSelect = function(values, current, method, data) {
+		values = values || [];
+		data = data || {};
+		data.element = "select";
+		data.children = data.children || [];
+		for (var key in values)
+			if (values.hasOwnProperty(key)) {
+				var value = values[key];
+				if (value.key != undefined && value.value != undefined) {
+					key = value.key;
+					value = value.value;
+				}
+				data.children.push(thisref.CreateElement("option", value, { value: key }));
+			}
+		var sel = thisref.CreateElementRaw(data);
+		if (current != undefined) sel.val(current);
+		if (method != undefined) sel.change(method);
+		return sel;
 	}
-		
 };
 
 //Stellt die Oberfläche und ihre Funktionen bereit.
@@ -147,7 +199,7 @@ MarkingTool.Editor.View = new function() {
 	var thisref = this;
 	var createWrapper = function(element) {
 		return MarkingTool.Editor.HTML.CreateElementRaw({children: [element]});
-	}
+	};
 	var createCommandBar = function() {
 		var hc = MarkingTool.Editor.HTML;
 		var optionsBar = hc.CreateElementRaw({
@@ -182,6 +234,30 @@ MarkingTool.Editor.View = new function() {
 		});
 		createWrapper(optionsBar).appendTo($(".content-box"));
 	};
+	var createFilterBox = function() {
+		var hc = MarkingTool.Editor.HTML;
+		return [
+			hc.CreateFoldingGroup("Filter", [
+				hc.CreateElement("div", "Serie:", { css: ["ui-filter-title"] }),
+				hc.CreateSelect(MarkingTool.Editor.View.SheetCodes, undefined, undefined, { css: ["ui-select"] }),
+				hc.CreateElement("div", "Kontrolleur:", { css: ["ui-filter-title"] }),
+				hc.CreateSelect(MarkingTool.Editor.View.TutorCodes, undefined, undefined, { css: ["ui-select"] }),
+				hc.CreateElement("div", "Status:", { css: ["ui-filter-title"] }),
+				hc.CreateSelect(MarkingTool.Editor.View.StateCodes, undefined, undefined, { css: ["ui-select"] })
+			], { css: ["ui-open"] }),
+			hc.CreateFoldingGroup("Sortierung", [
+				hc.CreateElement("div", "Sortiere nach:", { css: ["ui-filter-title"] }),
+				hc.CreateSelect({
+					"name": "Nach Namen",
+					"task": "Nach Aufgaben"
+				}, "name", undefined, { css: ["ui-select"] })
+			], { css: ["ui-open"] }),
+			hc.CreateFoldingGroup("Suche", [
+				hc.CreateInput(),
+				hc.CreateInput("button", undefined, { value: "Suche" })
+			], { css: ["ui-open"] })
+		];
+	};
 	var createLayoutWindow = function(name, content) {
 		var hc = MarkingTool.Editor.HTML;
 		var window = hc.CreateElementRaw({
@@ -195,8 +271,12 @@ MarkingTool.Editor.View = new function() {
 							css: ["ui-layout-window-title"]
 						})),
 						createWrapper(hc.CreateElementRaw({
-							css: ["ui-layout-window-content"],
-							children: content
+							children: [
+								hc.CreateElementRaw({ 
+									css: ["ui-layout-window-content"],
+									children: content 
+								})
+							]
 						}))
 					]
 				})
@@ -212,13 +292,13 @@ MarkingTool.Editor.View = new function() {
 				hc.CreateElementRaw({
 					css: ["ui-layout-left", "ui-layout-dock", "ui-open"],
 					children: [
-						createLayoutWindow("Filter", [])
+						createLayoutWindow("Filter", createFilterBox())
 					]
 				}),
-				hc.CreateElementRaw({
+				createWrapper(hc.CreateElementRaw({
 					css: ["ui-layout-main"],
 					children: []
-				}),
+				})),
 				hc.CreateElementRaw({
 					css: ["ui-layout-right", "ui-layout-dock", "ui-open"],
 					children: [
@@ -237,7 +317,7 @@ MarkingTool.Editor.View = new function() {
 	//Initialisiert die Oberfläche
 	this.Init = function() {
 		_init.call(thisref);
-	}
+	};
 };
 
 //=== Bibliothek um die Updates nachzuvollziehen
