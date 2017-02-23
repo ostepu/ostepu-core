@@ -27,6 +27,7 @@
 <input type="hidden" name="action" value="login">
 <div class="content-element">
     <div class="content-header">
+        <?php echo MakeInfoButton('page/common/login','login.md'); ?>
         <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
         <button class="right text-button info-color bold"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
     </div>
@@ -38,12 +39,22 @@
 
             <label class="form-field left label bold new-line" for="password"><?php echo Language::Get('main','password', $langTemplate); ?>:</label>
             <input class="form-field left text-input" type="password" name="password" id="password" />
-
-            <label class="form-field left label bold new-line" for="loginType"><?php echo Language::Get('main','loginType', $langTemplate); ?>:</label>
-            <select class="left" name="loginType" id="loginType" size="1">
-               <option value="default"><?php echo Language::Get('main','defaultLogin', $langTemplate); ?></option>
-               <option value="ldap"><?php echo Language::Get('main','ldapLogin', $langTemplate); ?></option>
-            </select>
+            
+            <?php if (isset($ldapServer) && trim($ldapServer) != ""){
+                // wenn ein LDAP-Server definiert ist, dann wird eine Auswahl für den Login hinzugefügt
+                ?>
+                <label class="form-field left label bold new-line" for="loginType"><?php echo Language::Get('main','loginType', $langTemplate); ?>:</label>
+                <select class="left" name="loginType" id="loginType" size="1">
+                   <option value="default"><?php echo Language::Get('main','defaultLogin', $langTemplate); ?></option>
+                   <option value="ldap"><?php echo Language::Get('main','ldapLogin', $langTemplate); ?></option>
+                </select>
+            <?php } else { ?>
+                <input type="hidden" name="loginType" value="default"/>
+            <?php } ?>
+            
+            <span class="left">
+            <?php echo MakeInfoButton('page/common/login','login.md'); ?>
+            </span>
                                  
             <!--<label class="form-field left label bold new-line" for="permanentLogin"><?php echo Language::Get('main','permanentLogin', $langTemplate); ?>:</label>
             <input class="form-field left" type="checkbox" name="permanentLogin" id="permanentLogin" />-->

@@ -10,7 +10,7 @@
   - @date 2016
  -->
  
-Diese Einstellung legt fest, ob die Tutoren (Kontrolleure) in dem heruntergeladenen Korrekturarchiv (Liste.csv) auch die Namen und NUtzernamen der Studenten sehen können.
+Diese Einstellung legt fest, ob die Tutoren (Kontrolleure) in dem heruntergeladenen Korrekturarchiv (Liste.csv) auch die Namen und Nutzernamen der Studenten sehen können.
  
 Das Korrekturarchiv eines Tutoren (wenn die Studentendaten eingefügt werden sollen)
 ![](insertStudentNamesIntoTutorArchivesA.png)

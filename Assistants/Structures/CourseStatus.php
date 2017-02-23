@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file CourseStatus.php contains the CourseStatus class
  *
@@ -10,14 +11,12 @@
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
  * @date 2013-2015
  */
-
-include_once ( dirname( __FILE__ ) . '/Object.php' );
+include_once ( dirname(__FILE__) . '/Object.php' );
 
 /**
  * the course status structure
  */
-class CourseStatus extends Object implements JsonSerializable
-{
+class CourseStatus extends Object implements JsonSerializable {
 
     /**
      * @var Course $course A course.
@@ -29,8 +28,7 @@ class CourseStatus extends Object implements JsonSerializable
      *
      * @return the value of $course
      */
-    public function getCourse( )
-    {
+    public function getCourse() {
         return $this->course;
     }
 
@@ -39,8 +37,7 @@ class CourseStatus extends Object implements JsonSerializable
      *
      * @param string $value the new value for $course
      */
-    public function setCourse( $value = null )
-    {
+    public function setCourse($value = null) {
         $this->course = $value;
     }
 
@@ -54,8 +51,7 @@ class CourseStatus extends Object implements JsonSerializable
      *
      * @return the value of $status
      */
-    public function getStatus( )
-    {
+    public function getStatus() {
         return $this->status;
     }
 
@@ -64,8 +60,7 @@ class CourseStatus extends Object implements JsonSerializable
      *
      * @param string $value the new value for $status
      */
-    public function setStatus( $value = null )
-    {
+    public function setStatus($value = null) {
         $this->status = $value;
     }
 
@@ -74,12 +69,11 @@ class CourseStatus extends Object implements JsonSerializable
      *
      * @return the mapping array
      */
-    public static function getDbConvert( )
-    {
+    public static function getDbConvert() {
         return array(
-                     'CS_course' => 'course',
-                     'CS_status' => 'status'
-                     );
+            'CS_course' => 'course',
+            'CS_status' => 'status'
+        );
     }
 
     /**
@@ -87,29 +81,25 @@ class CourseStatus extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData( $doubleEscaped=false )
-    {
+    public function getInsertData($doubleEscaped = false) {
         $values = '';
 
-        if ( $this->status != null )
+        if ($this->status != null) {
             $this->addInsertData(
-                                 $values,
-                                 'CS_status',
-                                 DBJson::mysql_real_escape_string( $this->status )
-                                 );
-        if ( $this->course != null &&
-             $this->course->getId( ) != null )
+                    $values, 'CS_status', DBJson::mysql_real_escape_string($this->status)
+            );
+        }
+        if ($this->course != null &&
+                $this->course->getId() != null) {
             $this->addInsertData(
-                                 $values,
-                                 'C_id',
-                                 DBJson::mysql_real_escape_string( $this->course->getId( ) )
-                                 );
+                    $values, 'C_id', DBJson::mysql_real_escape_string($this->course->getId())
+            );
+        }
 
-        if ( $values != '' ){
+        if ($values != '') {
             $values = substr(
-                             $values,
-                             1
-                             );
+                    $values, 1
+            );
         }
         return ($doubleEscaped ? DBJson::mysql_real_escape_string($values) : $values);
     }
@@ -119,57 +109,63 @@ class CourseStatus extends Object implements JsonSerializable
      *
      * @return the primary key/keys
      */
-    public static function getDbPrimaryKey( )
-    {
+    public static function getDbPrimaryKey() {
         return array(
-                     'C_id',
-                     'U_id'
-                     );
+            'C_id',
+            'U_id'
+        );
     }
 
     /**
      * returns an array to get the course status defintions
      */
-    public static function getStatusDefinition( $flip=false )
-    {
+    public static function getStatusDefinition($flip = false) {
         $arr = array(
-                     '0' => 'student',
-                     '1' => 'tutor',
-                     '2' => 'lecturer',
-                     '3' => 'administrator',
-                     '4' => 'super-administrator'
-                     );
+            '0' => 'student',
+            '1' => 'tutor',
+            '2' => 'lecturer',
+            '3' => 'administrator',
+            '4' => 'super-administrator'
+        );
         return (!$flip ? $arr : array_flip($arr));
     }
+
+    /*
+     * die Konstanten der Nutzerstatus (entsprechen getStatusDefinition)
+     */
+    const STUDENT = 0;
+    const TUTOR = 1;
+    const LECTURER = 2;
+    const ADMIN = 3;
+    const SUPERADMIN = 4;
 
     /**
      * the constructor
      *
      * @param $data an assoc array with the object informations
      */
-    public function __construct( $data = array( ) )
-    {
-        if ( $data === null )
-            $data = array( );
+    public function __construct($data = array()) {
+        if ($data === null) {
+            $data = array();
+        }
 
-        foreach ( $data AS $key => $value ){
-            if ( isset( $key ) ){
-                if ( $key == 'course' ){
+        foreach ($data AS $key => $value) {
+            if (isset($key)) {
+                if ($key == 'course') {
                     $this->{
-                        $key
+                            $key
 
-                    } = Course::decodeCourse(
-                                             $value,
-                                             false
-                                             );
-
+                            } = Course::decodeCourse(
+                                    $value, false
+                    );
                 } else {
-                    $func = 'set' . strtoupper($key[0]).substr($key,1);
+                    $func = 'set' . strtoupper($key[0]) . substr($key, 1);
                     $methodVariable = array($this, $func);
-                    if (is_callable($methodVariable)){
+                    if (is_callable($methodVariable)) {
                         $this->$func($value);
-                    } else
+                    } else {
                         $this->{$key} = $value;
+                    }
                 }
             }
         }
@@ -182,21 +178,20 @@ class CourseStatus extends Object implements JsonSerializable
      *
      * @return the json encoded object
      */
-    public static function encodeCourseStatus( $data )
-    {
-        /*if (is_array($data))reset($data);
-        if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
-            $e = new Exception();
-            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());           
-            ///return null;
-        }
-        if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
-            $e = new Exception();
-            $class = (is_array($data) && is_array(current($data)) ? 'array' : (is_array($data) ? (current($data)!==false ? get_class(current($data)) : 'array') : get_class($data)));
-            error_log(__FILE__.':'.__LINE__.' wrong type, '.$class.' given, '.get_called_class()." expected\n".$e->getTraceAsString());
-            ///return null;
-        }*/
-        return json_encode( $data );
+    public static function encodeCourseStatus($data) {
+        /* if (is_array($data))reset($data);
+          if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
+          $e = new Exception();
+          error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());
+          ///return null;
+          }
+          if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
+          $e = new Exception();
+          $class = (is_array($data) && is_array(current($data)) ? 'array' : (is_array($data) ? (current($data)!==false ? get_class(current($data)) : 'array') : get_class($data)));
+          error_log(__FILE__.':'.__LINE__.' wrong type, '.$class.' given, '.get_called_class()." expected\n".$e->getTraceAsString());
+          ///return null;
+          } */
+        return json_encode($data);
     }
 
     /**
@@ -209,52 +204,51 @@ class CourseStatus extends Object implements JsonSerializable
      * @return the object
      */
     public static function decodeCourseStatus(
-                                              $data,
-                                              $decode = true
-                                              )
-    {
-        if ( $decode &&
-             $data == null )
+    $data, $decode = true
+    ) {
+        if ($decode && $data == null) {
             $data = '{}';
+        }
 
-        if ( $decode )
-            $data = json_decode( $data );
+        if ($decode) {
+            $data = json_decode($data);
+        }
 
         $isArray = true;
-        if ( !$decode ){
-            if ($data !== null){
+        if (!$decode) {
+            if ($data !== null) {
                 reset($data);
-                if (current($data)!==false && !is_int(key($data))) {
+                if (current($data) !== false && !is_int(key($data))) {
                     $isArray = false;
                 }
             } else {
-               $isArray = false;
+                $isArray = false;
             }
         }
 
-        if ( $isArray && is_array( $data ) ){
-            $result = array( );
-            foreach ( $data AS $key => $value ){
-                $result[] = new CourseStatus( $value );
+        if ($isArray && is_array($data)) {
+            $result = array();
+            foreach ($data AS $key => $value) {
+                $result[] = new CourseStatus($value);
             }
             return $result;
-
-        } else
-            return new CourseStatus( $data );
+        } else {
+            return new CourseStatus($data);
+        }
     }
 
     /**
      * the json serialize function
      */
-    public function jsonSerialize( )
-    {
-        $list = array( );
-        if ( $this->course !== null )
+    public function jsonSerialize() {
+        $list = array();
+        if ($this->course !== null) {
             $list['course'] = $this->course;
-        if ( $this->status !== null )
+        }
+        if ($this->status !== null) {
             $list['status'] = $this->status;
-        return array_merge($list,parent::jsonSerialize( ));
+        }
+        return array_merge($list, parent::jsonSerialize());
     }
-}
 
- 
+}
