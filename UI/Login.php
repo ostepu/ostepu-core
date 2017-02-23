@@ -158,6 +158,11 @@ if ($getValidation->isValid() && isset($getResults['back']) && file_exists(parse
 
 $userLogin->bind($backdata);
 
+// wenn eine LDAP-Server definiert ist, dann wollen wir dessen URL an das login-Template geben
+if (isset($ldapServer) && trim($ldapServer) != ""){
+    $userLogin->bind(array('ldapServer'=>$ldapServer));
+}
+
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $userLogin);
 $w->set_config_file('include/configs/config_default.json');
