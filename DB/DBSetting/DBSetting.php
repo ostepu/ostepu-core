@@ -107,7 +107,7 @@ class DBSetting
     */
     public function deleteCourse( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('deleteCourse',dirname(__FILE__).'/Sql/DeleteCourse.sql',array($params),201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()),false);
+        return $this->_component->callSqlTemplate('deleteCourse',dirname(__FILE__).'/Sql/DeleteCourse.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()),false);
     }
 
     /**
