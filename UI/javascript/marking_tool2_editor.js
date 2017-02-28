@@ -12,6 +12,7 @@ MarkingTool.Event = function() {
 	//Fügt eine neue Eventmethode zu diesem Event hinzu.
 	//method: function - die Methode, die beim Auslösen des Events aufgerufen wird.
 	this.add = function(method) {
+		if (method == undefined) throw new Error("no method given");
 		for (var i = 0; i<list.length; ++i)
 			if (list[i] == method) return;
 		list.push(method);
@@ -309,12 +310,240 @@ MarkingTool.Editor.View = new function() {
 		});
 		createWrapper(container).appendTo($(".content-box"));
 	};
+	var createTaskSingleBar = function(task, useTaskNum) {
+		var hc = MarkingTool.Editor.HTML;
+		var changeState = 0;
+		var inpPoints, inpState;
+		var bar = hc.CreateElementRaw({
+			css: ["ui-task-bar"],
+			children: [
+				hc.CreateElement("div", task.path[1], { css: ["ui-task-num"] }),
+				hc.CreateElementRaw({
+					children: [
+						inpPoints = hc.CreateInput("text", function(){
+							changeState++;
+							if (changeState == 1) {
+								var val = $(this).val();
+								try { task.points = val == "" || val == undefined ? undefined : val * 1.0; }
+								catch (e) {
+									if ($(this).val() == "" || $(this).val() == undefined) task.points = undefined;
+									else $(this).focus();
+								}
+							}
+							changeState--;
+						}, {css: ["ui-task-points small"], value: (task.points == undefined ? "": task.points), placeholder: "leer" } ),
+						hc.CreateElement("span", "/" + task.maxPoints + (task.isBonus ? "<span title=\"Bonus\"> (B)</span>" : ""), {
+							title: "Punkte"
+						})
+					]
+				}),
+				hc.CreateElementRaw({
+					children: [
+						inpState = hc.CreateSelect(MarkingTool.Editor.View.SimpleStateCodes , task.status, function() {
+							changeState++;
+							if (changeState == 1) {
+								var val = $(this).val();
+								task.status = val == -1 ? undefined : val;
+							}
+							changeState--;
+						}, {css: ["ui-task-status small"]})
+					]
+				}),
+				hc.CreateElement("div", "Bem."),
+				hc.CreateElement("div", "file1"),
+				hc.CreateElement("div", "file2")
+			]
+		});
+		task.UpdatedEvent.add(function() {
+			changeState++;
+			if (changeState == 1) {
+				inpPoints.val(task.points == undefined ? "": task.points);
+				inpState.val(task.status);
+			}
+			changeState--;
+		});
+		return bar;
+	};
+	var createSimpleTaskBox = function(key, isTaskNum) {
+		var hc = MarkingTool.Editor.HTML;
+		var content;
+		var header;
+		if (isTaskNum) header = hc.CreateElement("div", "Aufgabe "+key);
+		else {
+			var user = MarkingTool.Editor.Logic.bName[key].user;
+			var names = [];
+			for (var i = 0; i<user.length; ++i)
+				names.push(user[i].name);
+			header = hc.CreateElement("div", names.join(", "));
+		}
+		var box = hc.CreateElementRaw({
+			css: ["ui-task-big-box"],
+			children: [
+				header,
+				content = hc.CreateElementRaw({ css: ["ui-task-content"] })
+			],
+			"data-status": "normal"
+		});
+		return {
+			box: box,
+			content: content
+		};
+	};
 	
+	
+	this.createTasksView = function(task, useTaskNum) {
+		var hc = MarkingTool.Editor.HTML;
+		var box = hc.CreateElementRaw({
+			css: ["ui-task-box"],
+			children: [
+				hc.CreateElementRaw({
+					css: ["ui-task-header"],
+					children: [
+						createWrapper(createWrapper(createTaskSingleBar(task, useTaskNum))),
+						createWrapper(hc.CreateButton("open", function(){
+							$(this).parent().parent().parent().parent().toggleClass("ui-open");
+						}))
+					]
+				})
+			]
+		});
+		return box;
+	};
+	this.createTaskBox = function(key, useTaskNum) {
+		var items = [];
+		if (useTaskNum)
+			items = MarkingTool.Editor.Logic.bTask[key];
+		else items = MarkingTool.Editor.Logic.bName[key].tasks;
+		var b = createSimpleTaskBox(key, useTaskNum);
+		var box = {
+			control: b.box,
+			show: function() {
+				b.box.show();
+			},
+			hide: function() {
+				b.box.hide();
+			},
+			tasks: [],
+			setChanged: function() {
+				b.box.attr("data-status", "changed");
+			},
+			setUploading: function() {
+				b.box.attr("data-status", "uploading");
+			},
+			setError: function() {
+				b.box.attr("data-status", "error");
+			},
+			setNormal: function() {
+				b.box.attr("data-status", "normal");
+			}
+		};
+		for (var i = 0; i<items.length; ++i) {
+			var task = thisref.createTasksView(items[i].task, !useTaskNum);
+			task.appendTo(b.content);
+			box.tasks.push(task);
+			items[i].task.UpdatedEvent.add((function(task, box) {
+				return function() {
+					if (task.isValueChanged()) {
+						if (box.control.attr("data-status") == "normal")
+							box.setChanged();
+					}
+					else {
+						if (box.control.attr("data-status") != "uploading")
+							box.setNormal();
+					}
+				};
+			})(items[i].task, box));
+		}
+		return box;
+	};
+	this.createCompleteTaskView = function(useTaskNum) {
+		var boxes = [], box;
+		var container = $(".ui-layout-main");
+		container.html("");
+		if (useTaskNum) {
+			for (var task in MarkingTool.Editor.Logic.bTask)
+				if (MarkingTool.Editor.Logic.bTask.hasOwnProperty(task)) {
+					boxes.push(box = thisref.createTaskBox(task, useTaskNum));
+					box.control.appendTo(container);
+				}
+		}
+		else {
+			for (var i = 0; i<MarkingTool.Editor.Logic.bName.length; ++i) {
+				boxes.push(box = thisref.createTaskBox(i, useTaskNum));
+				box.control.appendTo(container);
+			}
+		}
+		thisref.Boxes = boxes;
+	}
 	var _init = function(){
 		createCommandBar();
 		createLayoutContainer();
 	};
 	//Initialisiert die Oberfläche
+	this.Init = function() {
+		_init.call(thisref); 
+	};
+};
+
+//Stellt die Programmlogik bereit
+MarkingTool.Editor.Logic = new function() {
+	var thisref = this;
+	var bName = []; //Sortiert nach Name
+	var bTask = {}; //Sortiert nach Aufgabennummer
+	var createTaskObject = function(raw, path) {
+		var data = new MarkingTool.Editor.UpdateFactory.AddObject(raw, path); //Erzeugt das Objekt über die Verwaltung
+		//Falls der Wert auf null gesetzt wurde, so wurde seine Property nicht erzeugt.
+		//Hier wird gegengeprüft, ob alle Propertys angelegt wurden (nur die die auf null gesetzt werden können).
+		data.checkProperty("submissionId", null);
+		data.checkProperty("markingId", null);
+		data.checkProperty("points", null);
+		data.checkProperty("accepted", true);
+		data.checkProperty("isBonus", false);
+		data.checkProperty("status", null);
+		data.checkProperty("tutorComment", "");
+		data.checkProperty("userFile", null);
+		data.checkProperty("tutorFile", null);
+		data.checkProperty("studentComment", "");
+		data.checkProperty("date", 0);
+		data.checkProperty("tutor", null);
+		//Setze alle Werte als Default
+		data.setAllValuesAsDefault();
+		//Das Objekt ist jetzt fertig und zur Überwachung hinzugefügt
+		return data;
+	};
+	var getTaskNum = function(primary, secondary) {
+		if (secondary == 0) return "" + primary;
+		else return "" + primary + ("abcdefghijklmnopqrstuvwxyz")[secondary - 1];
+	};
+	var getAllTasks = function() {
+		var data = MarkingTool.Editor.Data;
+		for (var i1 = 0; i1<data.length; ++i1) {
+			var user = data[i1].group;
+			var primary = 0, secondary = 0;
+			var tasklist = [];
+			for (var i2 = 0; i2<data[i1].tasks.length; ++i2) {
+				var task = data[i1].tasks[i2];
+				if (task.isMainTask) {
+					primary++;
+					secondary = 0;
+				}
+				else secondary++;
+				var num = getTaskNum(primary, secondary);
+				task = createTaskObject(task, [user, num]);
+				if (bTask[num] == undefined) bTask[num] = [];
+				bTask[num].push({user: user, task: task});
+				tasklist.push({num: num, task: task});
+			}
+			bName.push({user : user, tasks: tasklist});
+		}
+	}
+	
+	var _init = function() {
+		getAllTasks();
+		thisref.bName = bName;
+		thisref.bTask = bTask;
+	};
+	//Initialisiert die Logik
 	this.Init = function() {
 		_init.call(thisref);
 	};
@@ -362,24 +591,25 @@ MarkingTool.Editor.UpdateProperty = function(owner, key, path) {
 	//value: Wert - Der Standartwert
 	this.setDefaultValue = function(value) {
 		defaultValue = value;
+		thisref.UpdatedEvent.invoke(thisref);
 	};
 	//Überprüft ob der aktuelle Wert der Property mit dem Standartwert übereinstimmt. Es erfolgt keine
 	//Typprüfung.
 	//return: Boolean - Ergebnis der Überprüfung
 	this.isValueChanged = function() {
-		var value = owner[key];
-		return value == defaultValue;
+		var value = owner[thisref.key];
+		return value != defaultValue;
 	};
 	//Verändert den Wert der Property
 	//newValue: Wert - Der neue Wert der Property
 	this.changeValue = function(newValue) {
 		owner[key] = newValue;
-		updatedEvent.invoke(thisref);
+		thisref.UpdatedEvent.invoke(thisref);
 	};
 	//Setzt den Wert auf den Standart zurück
 	this.resetValue = function() {
 		owner[key] = defaultValue;
-		updatedEvent.invoke(thisref);
+		thisref.UpdatedEvent.invoke(thisref);
 	};
 	
 };
@@ -393,19 +623,34 @@ MarkingTool.Editor.UpdateObject = function (data, path) {
 	var thisref = this;
 	var updadedEvent = new MarkingTool.Event();
 	var raiseHandler = function(sender) {
-		updatedEvent.invoke(thisref);
+		thisref.UpdatedEvent.invoke(thisref);
 	};
 	for (var key in data) {
 		if (data.hasOwnProperty(key)) {
 			propertys[key] = new MarkingTool.Editor.UpdateProperty(data, key, path);
 			Object.defineProperty(this, key, {
-				get: function() { return data[key]; },
-				set: function(value) { thisref.propertys[key].changeValue(value); }
+				get: (function(data, key) { return function() { return data[key]; }; })(data, key),
+				set: (function(data, key, propertys) { return function(value) { propertys[key].changeValue(value); }; })(data, key, propertys)
 			});
 			propertys[key].UpdatedEvent.add(raiseHandler);
 		}
 		else this[key] = data[key];
 	}
+	//Überprüft ob eine Property schon exisitiert und fügt sie gegebenfalls hinzu.
+	//key:          String - Der Name der Property
+	//defaultValue: Wert   - Der Wert den die Property annehmen soll, falls sie noch nicht existierte.
+	this.checkProperty = function(key, defaultValue) {
+		if (propertys[key] == undefined) {
+			propertys[key] = new MarkingTool.Editor.UpdateProperty(data, key, path);
+			propertys[key].changeValue(defaultValue);
+			propertys[key].setDefaultValue(defaultValue);
+			Object.defineProperty(this, key, {
+				get: (function(data, key) { return function() { return data[key]; }; })(data, key),
+				set: (function(data, key, propertys) { return function(value) { propertys[key].changeValue(value); }; })(data, key, propertys)
+			});
+			propertys[key].UpdatedEvent.add(raiseHandler);
+		}
+	};
 	//Objekt - Die eindeitige Information, die dieses Objekt identifiziert.
 	this.path = path;
 	//[EVENT] Dieses Event wird ausgelöst, wenn sich der Wert einer Variable ändert.
@@ -417,6 +662,7 @@ MarkingTool.Editor.UpdateObject = function (data, path) {
 		for (var key in propertys)
 			if (propertys.hasOwnProperty(key))
 				propertys[key].resetValue();
+		thisref.UpdatedEvent.invoke(thisref);
 	};
 	//Überprüft ob die aktuellen Werte aller Propertys mit dem Standartwerten übereinstimmen. Es erfolgt keine
 	//Typprüfung.
@@ -424,7 +670,7 @@ MarkingTool.Editor.UpdateObject = function (data, path) {
 	this.isValueChanged = function() {
 		for (var key in propertys)
 			if (propertys.hasOwnProperty(key))
-				if (propertys[key].IsValueChanged())
+				if (propertys[key].isValueChanged())
 					return true;
 		return false;
 	};
@@ -433,13 +679,14 @@ MarkingTool.Editor.UpdateObject = function (data, path) {
 	//value: Wert   - Der neue Standartwert der Property
 	this.setDefaultValue = function(key, value) {
 		propertys[key].setDefaultValue(value);
+		thisref.UpdatedEvent.invoke(thisref);
 	};
 	//Setzt die aktuellen Werte aller Propertys als Standartwerte
 	this.setAllValuesAsDefault = function() {
 		for (var key in propertys)
 			if (propertys.hasOwnProperty(key))
 				propertys[key].setDefaultValue(data[key]);
-		updatedEvent.invoke(thisref);
+		thisref.UpdatedEvent.invoke(thisref);
 	};
 	//Ruft die Liste alle Propertys zu diesen Objekt ab
 	//return: Objekt - Eine Liste aus Schlüssel-Werte-Paaren mit UpdateProperty als Werten.
@@ -489,8 +736,8 @@ MarkingTool.Editor.UpdateFactory = new function() {
 	//return: UpdateObject - Das zur Überwachung hinzugefügte UpdateObject
 	this.AddObject = function(data, path) {
 		var obj = new MarkingTool.Editor.UpdateObject(data, path);
-		obj.addUpdateHandler(changedHandler);
-		WatchList.push(obj);
+		obj.UpdatedEvent.add(changedHandler);
+		thisref.WatchList.push(obj);
 		return obj;
 	};
 	//Entfernt ein UpdateObject wieder aus der Überwachung.
@@ -498,7 +745,7 @@ MarkingTool.Editor.UpdateFactory = new function() {
 	this.RemoveObject = function(path) {
 		for (var i = 0; i<this.WatchList.length; ++i)
 			if (this.WatchList[i].path == path) {
-				this.WatchList.splice(i,1)[0].removeUpdateHandler(changedHandler);
+				this.WatchList.splice(i,1)[0].UpdatedEvent.remove(changedHandler);
 				return;
 			}
 	};
@@ -519,5 +766,7 @@ $(function() {
 	//Diese Funktion wird aufgerufen, wenn die Webseite bereit ist. Nun kann alles geladen 
 	//und aufgebaut werden.
 	MarkingTool.Editor.View.Init();
+	MarkingTool.Editor.Logic.Init();
+	MarkingTool.Editor.View.createCompleteTaskView(false);
 	MarkingTool.Editor.UpdateIndicator.HideBox();
 });

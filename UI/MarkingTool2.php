@@ -43,4 +43,4 @@ $w->set_config_file('include/configs/config_marking_tool2.json');
 if (isset($maintenanceMode) && $maintenanceMode === '1')
     $w->add_config_file('include/configs/config_maintenanceMode.json');
 $w->show();
-//echo "<pre>"; var_dump($markingTool_data); echo "</pre>";
+//echo "<pre>"; echo json_encode($markingTool_data, JSON_PRETTY_PRINT); echo "</pre>";
