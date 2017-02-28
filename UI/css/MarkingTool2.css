@@ -352,6 +352,52 @@ body {
 }
 
 
+/*Updatebox*/
+.ui-upd-box {
+	position: relative;
+	border: 1px solid black;
+	border-radius: 0.25em;
+	padding: 0.25em;
+	margin: 0.25em;
+}
+.ui-upd-box > div {
+	display: table;
+	width: 100%;
+}
+.ui-upd-box > div > div {
+	display: table-cell;
+}
+.ui-upd-header > div:nth-child(1) {
+	font-size: 1.3em;
+	font-weight: bold;
+}
+.ui-upd-header > div:nth-child(2),
+.ui-upd-body > div:nth-child(1) {
+	width: 1px;
+}
+.ui-upd-line {
+	display: none;
+}
+.ui-upd-line.ui-open {
+	display: block;
+}
+.ui-upd-line.ui-open:before {
+	content: " ";
+	display: inline-block;
+	margin: 0 0.5em 0 1em;
+	border: 1px solid black;
+	width: 0.25em;
+	height: 0.25em;
+	border-radius: 1em;
+	background-color: black;
+	position: relative;
+	top: -0.225em;
+}
+.ui-upd-points > span + span {
+	margin-left: 0.25em;
+}
+
+
 /*Keine Benutzerauswahl*/
 .ui-commandbar,
 .ui-layout-dock {

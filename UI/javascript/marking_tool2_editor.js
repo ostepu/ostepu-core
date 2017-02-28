@@ -390,7 +390,106 @@ MarkingTool.Editor.View = new function() {
 		};
 	};
 	
-	
+	this.createChangeInfo = function(task, closeMethod) {
+		var hc = MarkingTool.Editor.HTML;
+		var user = task.path[0];
+		var names = [];
+		for (var i = 0; i<user.length; ++i)
+			names.push(user[i].name);
+		var oldP, newP, newState;
+		var lineP, lineS, lineC, lineSF, lineTF;
+		var update = function() {
+			var def = task.getPropertys()["points"].getDefaultValue();
+			oldP.html(def == undefined ? 0 : def);
+			newP.html(task.points);
+			var found = false;
+			for (var i = 0; i<MarkingTool.Editor.View.SimpleStateCodes.length; ++i)
+				if (MarkingTool.Editor.View.SimpleStateCodes[i].key == task.status) {
+					newState.html(MarkingTool.Editor.View.SimpleStateCodes[i].value);
+					found = true;
+					break;
+				}
+			if (!found) newState.html("-");
+			if (task.getPropertys()["points"].isValueChanged()) lineP.addClass("ui-open"); else lineP.removeClass("ui-open");
+			if (task.getPropertys()["status"].isValueChanged()) lineS.addClass("ui-open"); else lineS.removeClass("ui-open");
+			if (task.getPropertys()["tutorComment"].isValueChanged()) lineC.addClass("ui-open"); else lineC.removeClass("ui-open");
+			if (task.getPropertys()["userFile"].isValueChanged()) lineSF.addClass("ui-open"); else lineSF.removeClass("ui-open");
+			if (task.getPropertys()["tutorFile"].isValueChanged()) lineTF.addClass("ui-open"); else lineTF.removeClass("ui-open");
+		};
+		var close = function() {
+			content.remove();
+			task.UpdatedEvent.remove(update);
+			closeMethod();
+		};
+		var children = [
+			lineP = hc.CreateElementRaw({
+				css: ["ui-upd-line", "ui-upd-points"],
+				children: [
+					oldP = hc.CreateElement("span", 0),
+					hc.CreateElement("span", "Punkte"),
+					hc.CreateElement("span", "&#10142;"),
+					newP = hc.CreateElement("span", 0),
+					hc.CreateElement("span", "Punkte")
+				]
+			}),
+			lineS = hc.CreateElementRaw({
+				css: ["ui-upd-line", "ui-upd-state"],
+				children: [
+					hc.CreateElement("span", "Neuer Status: "),
+					newState = hc.CreateElement("span", "-")
+				]
+			}),
+			lineC = hc.CreateElementRaw({
+				css: ["ui-upd-line", "ui-upd-comment"],
+				children: [
+					hc.CreateElement("span", "Neue Bemerkung")
+				]
+			}),
+			lineSF = hc.CreateElementRaw({
+				css: ["ui-upd-line", "ui-upd-student-file"],
+				children: [
+					hc.CreateElement("span", "Neue Einsendung")
+				]
+			}),
+			lineTF = hc.CreateElementRaw({
+				css: ["ui-upd-line", "ui-upd-tutor-file"],
+				children: [
+					hc.CreateElement("span", "Neue Korrektur")
+				]
+			})
+		];
+		var content = hc.CreateElementRaw({
+			css: ["ui-upd-box"],
+			children: [
+				hc.CreateElementRaw({
+					css: ["ui-upd-header"],
+					children: [
+						hc.CreateElement("div", names.join(", ")),
+						createWrapper(hc.CreateButton("X", function() {
+							task.resetValues();
+							close();
+						}, { title: "Alle Werte aus diesem Eintrag zurücksetzen"}))
+					]
+				}),
+				hc.CreateElementRaw({
+					css: ["ui-upd-body"],
+					children: [
+						hc.CreateElement("div", task.path[1]),
+						hc.CreateElementRaw({
+							css: ["ui-upd-content"],
+							children: children
+						})
+					]
+				})
+			]
+		});
+		task.UpdatedEvent.add(update);
+		update();
+		return {
+			content: content,
+			close: close
+		};
+	};
 	this.createTasksView = function(task, useTaskNum) {
 		var hc = MarkingTool.Editor.HTML;
 		var box = hc.CreateElementRaw({
@@ -537,11 +636,27 @@ MarkingTool.Editor.Logic = new function() {
 			bName.push({user : user, tasks: tasklist});
 		}
 	}
+	var updObjectList = {};
+	var updAddHandler = function(task) {
+		if (updObjectList[task.path] != undefined) return;
+		var vo = MarkingTool.Editor.View.createChangeInfo(task, function() {
+			updObjectList[task.path] = undefined;
+		});
+		updObjectList[task.path] = vo;
+		$(".ui-layout-right").find(".ui-layout-window-content").append(vo.content);
+	};
+	var updRemoveHandler = function(task) {
+		if (updObjectList[task.path] == undefined) return;
+		updObjectList[task.path].close();
+		updObjectList[task.path] = undefined;
+	};
 	
 	var _init = function() {
 		getAllTasks();
 		thisref.bName = bName;
 		thisref.bTask = bTask;
+		MarkingTool.Editor.UpdateFactory.AddedEvent.add(updAddHandler);
+		MarkingTool.Editor.UpdateFactory.RemovedEvent.add(updRemoveHandler);
 	};
 	//Initialisiert die Logik
 	this.Init = function() {
@@ -611,7 +726,11 @@ MarkingTool.Editor.UpdateProperty = function(owner, key, path) {
 		owner[key] = defaultValue;
 		thisref.UpdatedEvent.invoke(thisref);
 	};
-	
+	//Ruft den Standartwert ab
+	//return: Wert - der Standartwert dieser Property
+	this.getDefaultValue = function() {
+		return defaultValue;
+	}
 };
 //Ein Objekt welches selbst verfolgen kann, ob sich sein Zustand ändert.
 //data: Objekt - Ein Objekt welches durch Schlüssel- und Wertepaare alle Daten enthält. Alle Daten aus 
@@ -699,14 +818,14 @@ MarkingTool.Editor.UpdateFactory = new function() {
 	var thisref = this;
 	var changedHandler = function(sender) {
 		if (sender.isValueChanged()) {
-			for (var i = 0; i<thisref.UpdateList; ++i)
+			for (var i = 0; i<thisref.UpdateList.length; ++i)
 				if (thisref.UpdateList[i] == sender)
 					return;
 			thisref.UpdateList.push(sender);
 			addedEvent.invoke(sender);
 		}
 		else {
-			for (var i = 0; i<thisref.UpdateList; ++i)
+			for (var i = 0; i<thisref.UpdateList.length; ++i)
 				if (thisref.UpdateList[i] == sender) {
 					thisref.UpdateList.splice(i, 1);
 					removedEvent.invoke(sender);
@@ -725,7 +844,7 @@ MarkingTool.Editor.UpdateFactory = new function() {
 	//        deshalb nicht mehr in UpdateList steht.
 	//[function(sender)]
 	//    sender: Objekt - das nun unveränderte Objekt
-	Object.defineProperty(this, "RemovedEvent", {get: function() { return addedEvent; } });
+	Object.defineProperty(this, "RemovedEvent", {get: function() { return removedEvent; } });
 	//[UpdateObject] - Eine Liste aller aktuell geänderter Werte
 	this.UpdateList = [];
 	//[UpdateObject] - Eine Liste aller Objekte die von dieser Facoty überwacht werden.
