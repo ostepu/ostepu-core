@@ -11,7 +11,9 @@ Martin-Luther-University Halle-Wittenberg, Institute of Computer Science
 Osnabrück University, Institute of Computer Science
 
 # Installation
-Sie benötigen für die Installation einen Apache mit PHP 5.6, MySQL und Git. Die Dateien der Plattform müssen Sie in das Hauptverzeichnis Ihres Webservers entpacken oder mittels Git dort einrichten. Nun finden Sie die Installationsroutine in diesem Verzeichnis, unter ``install/install.php``, welche Sie über einen Browser aufrufen müssen.
+Sie benötigen für die Installation einen Apache mit PHP 5.6, MySQL und Git. Die Dateien der Plattform müssen Sie in das Hauptverzeichnis Ihres Webservers entpacken oder mittels Git (empfohlen) dort einrichten. Nun finden Sie die Installationsroutine in diesem Verzeichnis, unter ``install/install.php``, welche Sie über einen Browser aufrufen müssen.
+
+Bei der Installation werden externe Inhalte nachgeladen, sodass Sie insgesamt mit einem Umfang von maximal 200MB rechnen sollten.
 
 Zur Unterstützung steht eine veraltete [Installationsanleitung](https://github.com/ostepu/ostepu-core-documentation/raw/master/install/Dokumentation/Installation_08_2014.pdf) bereit. (Stand: August 2014)
 
