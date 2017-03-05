@@ -6,6 +6,7 @@
         "invalidAction": "Die Aktion konnte nicht ausgeführt werden.",
         "invalidUserName": "Ungültiger Benutzername.",
         "invalidPassword": "Ungültiges Passwort.",
-        "invalidBackURL": "Ungültige Rücksprungadresse"
+        "invalidBackURL": "Ungültige Rücksprungadresse",
+        "invalidLoginType": "Unbekannte Loginmethode"
     }
 }

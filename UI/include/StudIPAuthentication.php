@@ -71,9 +71,6 @@ class StudIPAuthentication extends AbstractAuthentication
 ///Logger::Log("uid: ".$this->uid , LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
         }
         
-        if (isset($_GET['uid'])) {
-            $this->uid = cleanInput($_GET['uid']);
-        }
         if (isset($_GET['sid'])) {
             $this->sid = cleanInput($_GET['sid']);
 ///Logger::Log("sid: ".$this->sid , LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
@@ -213,8 +210,9 @@ class StudIPAuthentication extends AbstractAuthentication
             $getUserData = cleanInput($getUserData);
 
             $user = User::createUser(NULL,$getUserData[4],$getUserData[2],$getUserData[0],$getUserData[1],NULL,"1","noPassword","noSalt","0",$uid);
-        } else
+        } else {
             $user = "not found";
+        }
         return $user;
     }
     
@@ -292,6 +290,25 @@ class StudIPAuthentication extends AbstractAuthentication
             $user = User::decodeUser($answer);
             if ($user->getStatus()== '201')
                 return true;
+        } else {
+            // wenn der Nutzer nicht angelegt werden konnte, dann existiert er vielleicht schon
+            $username = $data->getUserName();
+            $url = "{$databaseURI}/user/user/{$username}";
+            $message=null;
+            $user = http_get($url, false, $message);
+            $user = json_decode($user, true);
+            // check if user exists in our system
+            if ($message != "404" && empty($user) == false) {
+                // der Nutzer existiert schon (also updaten wir ihn)
+                $userUpdate = User::createUser(null,null,null,null,null,NULL,null,null,null,null,$data->getExternalId());
+                $url = "{$databaseURI}/user/user/".$user['id'];
+                $message = null;
+                $answer = http_put_data($url, User::encodeUser($userUpdate), false, $message);
+                
+                if ($message=='201'){
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -348,7 +365,7 @@ class StudIPAuthentication extends AbstractAuthentication
         // prüfe den Wartungsmodus
         global $maintenanceMode;
         global $maintenanceText;
-        global $maintenanceAllowedUsers;
+        global $maintenanceAllowedUsers; // hier bezieht sich unsername aber auf die externe Bezeichnung von Studip
         if ($maintenanceMode === '1' && !in_array($username,explode(',',str_replace(' ', '', $maintenanceAllowedUsers)))){
             $text = $maintenanceText;
             if (trim($maintenanceText) == '') $text = "Wartungsarbeiten!!!";

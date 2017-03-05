@@ -41,8 +41,12 @@ Je nach Konfiguration können Studenten ab dem Bearbeitungsende keine Einsendung
 
 Diese optionale Datei soll den Studenten ihre Aufgabe erklären.
 
+> Sie müssen dabei beachten, dass Sie für den Inhalt selbst verantworlich sind. Beachten Sie dazu den [externen Hinweis](http://www.vgwort.de/einnahmen-tarife/wiedergabe-im-internet-intranet/hochschulen.html).
+
 #### Musterlösung
 ![](sheetSettingsE.png)
+
+> Sie müssen dabei beachten, dass Sie für den Inhalt selbst verantworlich sind. Beachten Sie dazu den [externen Hinweis](http://www.vgwort.de/einnahmen-tarife/wiedergabe-im-internet-intranet/hochschulen.html).
 
 Studenten sehen die Musterlösung nach Ablauf des Bearbeitungsendes automatisch.
 

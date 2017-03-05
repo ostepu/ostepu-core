@@ -35,7 +35,7 @@ abstract class AbstractAuthentication
      * @var SiteKey as Password for all Hashfunctions
      * TODO make configurable
      */
-    protected $siteKey = null;
+    public $siteKey = null;
     protected $defaultSiteKey = "b67dc54e7d03a9afcd16915a55edbad2d20a954562c482de3863456f01a0dee4";
 
     /**
@@ -44,7 +44,7 @@ abstract class AbstractAuthentication
      * @param int $length The length of the random string, 8 by default.
      * @return string
      */
-    protected function randomBytes($length = 8)
+    public function randomBytes($length = 8)
     {
         $result = openssl_random_pseudo_bytes($length);
 
@@ -58,7 +58,7 @@ abstract class AbstractAuthentication
      * @param string $data The string which should be hashed.
      * @return string
      */
-    protected function hashData($method, $data)
+    public function hashData($method, $data)
     {
         global $globalSiteKey;
         
@@ -115,7 +115,7 @@ abstract class AbstractAuthentication
             return false;
         }
 
-        // check for timeout (after 10 minutes of inactivity)
+        // check for timeout (after 45 minutes of inactivity)
         if (!isset($_SESSION['LASTACTIVE'])
             || (($_SESSION['LASTACTIVE'] + 45*60) <= $_SERVER['REQUEST_TIME'])) {
             return false;

@@ -771,6 +771,8 @@ class LTutor
                     // file
                     $newFile = null;
                     $selectedFile = null;
+                    
+                    // wenn eine Einsendung existiert, soll diese gewählt werden (für die FILE auswahl)
                     if (isset($marking['submission']['file']['displayName'])){
                         $fileInfo = pathinfo($marking['submission']['file']['displayName']);
                         $newFile = array_merge(array(),$marking['submission']['file']);
@@ -778,6 +780,7 @@ class LTutor
                     }
                     $converted=false;
 
+                    // wenn bereits eine Korrektur existiert, dann soll diese in FILE eingetragen werden
                     if (isset($marking['file']) && $marking['file']!==array()) {
                         $newFile = array_merge(array(),$marking['file']);
                         $selectedFile='marking';
@@ -786,8 +789,9 @@ class LTutor
                     $generateDummyForAllMimeTypes = Course::containsSetting($course,'GenerateDummyCorrectionsForTutorArchives');
                     if (!isset($generateDummyForAllMimeTypes)) $generateDummyForAllMimeTypes = 0;
                     
-                    if ($selectedFile == 'submission')
-                    if (!isset($newFile['mimeType']) || strpos($newFile['mimeType'],'text/')!==false || $generateDummyForAllMimeTypes){
+                    // nur wenn wir die Einsendung umwandeln wollen oder für alle eine PDF erzeugt werden soll (ausser es existiert bereits eine Korrektur)
+                    if ($selectedFile == 'submission' || ($generateDummyForAllMimeTypes && $selectedFile === null))
+                    if (!isset($newFile['mimeType']) || strpos($newFile['mimeType'],'text/')!==false || $generateDummyForAllMimeTypes ){
 
                         // convert file to pdf
                         $newFileSend = array();
@@ -806,6 +810,8 @@ class LTutor
                                 $found=false;
                                 foreach ($user as $us){
                                     if ($us['id'] == $marking['submission']['studentId']){
+                                        
+                                        // hier werden die Namen der Gruppenmitglieder erzeugt
                                         $namen=array();
                                         foreach ($user as $member){
                                             $namen[] = (isset($member['firstName']) ? $member['firstName'] : '-').' '.(isset($member['lastName']) ? $member['lastName'] : '' ).' ('.(isset($member['userName']) ? $member['userName'] : '').')';
@@ -824,18 +830,38 @@ class LTutor
                             }
                         }
 
+                        // der Kommentar des Studenten
                         if (isset($marking['submission']['comment']) && trim($marking['submission']['comment']) != ''){
                             $data.="Kommentar: {$marking['submission']['comment']}\n";
                         }
 
+                        // hier wird der vordere Teil der generierten PDF eingefügt
                         $data.="<pre>";
                         $newFileData->setBody($data, true);
                         $newFileSend[] = $newFileData;
 
-                        if (isset($newFile)){
-                            if (strpos($newFile['mimeType'],'text/')!==false){
-                                $newFileSend[] = $newFile;
+                        if (isset($newFile) || $generateDummyForAllMimeTypes){
+                            
+                            // die Umwandlung der Datei wird nur durchgeführt, wenn sie mindestens den mimeType text/
+                            // besitzt und nicht über 20kb groß ist.
+                            if (isset($newFile)){
+                                if (strpos($newFile['mimeType'],'text/')!==false && $newFile['fileSize']<=20000){
+                                    $newFileSend[] = $newFile;
+                                } else {
+                                    if( $newFile['fileSize']>20000){
+                                        // wenn die Datei zu groß ist, wollen wir einen Hinweis
+                                        $newFileData = new File();
+                                        $newFileData->setBody(Language::Get('main','submissionSizeError', self::$langTemplate, array('maxSize'=>20)), true);
+                                        $newFileSend[] = $newFileData;
+                                    }
+                                }
+                            } else {
+                                // wenn keine konkrete Datei festgelegt wurde, dann muss eine leere existieren,
+                                // für die Rückgabe des POST /pdf
+                                $newFile = array();
+                                $fileInfo['filename'] = "Korrektur";
                             }
+                            
                             $newFileData = new File();
                             $newFileData->setBody("</pre>", true);
                             $newFileSend[] = $newFileData;
@@ -869,15 +895,16 @@ class LTutor
                     //$row[] = $namesOfExercises[$exerciseId].'/'.($converted ? 'K_' :'').$marking['id'].($fileInfo['extension']!='' ? '.'.$fileInfo['extension']:'');
                     //if (!$converted)
                     if (isset($newFile['displayName'])){
+                        // es ist wichtig, dass die Einsendung und Korrektur nicht den selben Namen haben
                         if (isset($selectedFile) && isset($marking['submission']['file']['displayName']) &&
                             ($selectedFile == 'marking' || $selectedFile == 'converted') &&
                               $newFile['displayName'] == $marking['submission']['file']['displayName']
                            ){
-
+                                // also wird ein K_ vorne angehangen
                                 $newFile['displayName'] = 'K_'.$newFile['displayName'];
-
                             }
 
+                        // hier wird der Pfadeintrag in der CSV erzeugt (FILE-Spalte)
                         $row['FILE'] = $namesOfExercises[$exerciseId].'/'.$marking['id'].'/'.$newFile['displayName'];
                     }
                     unset($newFile);
@@ -924,6 +951,8 @@ class LTutor
                                                       'TutorCSV_'.$userid.'_'.$courseid,
                                                       json_encode($ExerciseData)
                                                       );
+        // in dieser Transaktion werden alle Daten des Korrekturarchivs hinterlegt (sodass man es beim Upload damit
+        // überprüfen kann
         $result = Request::routeRequest(
                                         'POST',
                                         '/transaction/exercisesheet/'.$sheetid,

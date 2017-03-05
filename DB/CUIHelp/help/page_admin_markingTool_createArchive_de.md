@@ -36,7 +36,7 @@ Sie können eine zusätzliche Auswahl im Korrekturassistenten treffen.
 ![](pathE.png)
 
 
-#### Korrigieren ####
+#### Korrigieren #### {#korrigieren}
 
 **Jedes Korrekturarchiv ist ab dessen Erstellung 30 Tage gültig, danach kann es nicht mehr hochgeladen werden.**
 

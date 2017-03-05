@@ -30,14 +30,16 @@ class Authentication extends AbstractAuthentication
     /**
      * The default contructor which sets our sitekey. Sitekey have to be the same all the time!!
      */
-    public function __construct()
+    public function __construct($handleSession = true)
     {
-        // force to use session-cookies and to transmit SID over URL
-        ini_set('session.use_only_cookies', '1');
-        ini_set('session.use_trans_sid', '0');
+        if ($handleSession){
+            // force to use session-cookies and to transmit SID over URL
+            ini_set('session.use_only_cookies', '1');
+            ini_set('session.use_trans_sid', '0');
 
-        // start session
-        session_start();
+            // start session
+            session_start();
+        }
     }
 
     /**

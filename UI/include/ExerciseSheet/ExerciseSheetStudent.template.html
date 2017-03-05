@@ -145,8 +145,7 @@ if (isset($notifications)){
                             <?php // creates a downloadAttachment icon for the exercise (if it exists) ?>
                             <?php if(isset($exercise['attachment'])) { ?>
                                 <?php $displayName = $exercise['attachment']['displayName']; ?>
-                                <?php $fileAddress = $exercise['attachment']['address']; ?>
-                                <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}";/*{$filesystemURI}*/ ?>
+                                <?php $fileURL = generateDownloadURL($exercise['attachment']);?>
 
                                 <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain" target="_blank">
                                     <img src="Images/Attachment.png" />
@@ -155,9 +154,8 @@ if (isset($notifications)){
 
                             <?php // creates a download icon for the submission (if it exists) ?>
                             <?php if(isset($exercise['submission']) && $exercise['submission']['hideFile'] == "0"): ?>
-                                <?php $displayName = (isset($exercise['submission']['file']['displayName']) ? $exercise['submission']['file']['displayName'] : ''); ?>
-                                <?php $fileAddress = (isset($exercise['submission']['file']['address']) ? $exercise['submission']['file']['address'] : ''); ?>
-                                <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}";/*{$filesystemURI}*/ ?>
+                                <?php $displayName = $exercise['submission']['file']['displayName']; ?>
+                                <?php $fileURL = generateDownloadURL($exercise['submission']['file']);?>
 
                                 <?php if (isset($exercise['submission']['file'])){ ?>
                                     <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain" target="_blank">
@@ -178,9 +176,9 @@ if (isset($notifications)){
 
                             <?php // creates a downloadCorrection icon for the marking (if it exists) ?>
                             <?php if(isset($exercise['submission']['marking']['file']) && $exercise['submission']['marking']['hideFile'] == "0" && ($isExpired || $privileged || (isset($exercise['resultVisibility']) && $exercise['resultVisibility'] === '1'))): ?>
+                                
                                 <?php $displayName = $exercise['submission']['marking']['file']['displayName']; ?>
-                                <?php $fileAddress = $exercise['submission']['marking']['file']['address']; ?>
-                                <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}";/*{$filesystemURI}*/ ?>
+                                <?php $fileURL = generateDownloadURL($exercise['submission']['marking']['file']);?>
 
                                 <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain image-button" target="_blank">
                                     <img src="Images/DownloadCorrection.png" />
@@ -233,8 +231,7 @@ if (isset($notifications)){
                     <?php // creates a downloadSampleSolution icon for the exercise (if it exists) ?>
                     <?php if(($isExpired || $privileged) && isset($sheet['sampleSolution'])): ?>
                         <?php $displayName = $sheet['sampleSolution']['displayName']; ?>
-                        <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
-                        <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
+                        <?php $fileURL = generateDownloadURL($sheet['sampleSolution']);?>
                         <li>
                             <a class="text-button" href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
                                 <?php echo Language::Get('sheetMenu','sampleSolution', $langTemplate); ?>
@@ -250,8 +247,7 @@ if (isset($notifications)){
                         </li>-->
                     <?php } else { ?>
                         <?php $displayName = $sheet['sheetFile']['displayName']; ?>
-                        <?php $fileAddress = $sheet['sheetFile']['address']; ?>
-                        <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>     
+                        <?php $fileURL = generateDownloadURL($sheet['sheetFile']);?>     
                         <li>
                             <a class="text-button" href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
                                 <?php echo Language::Get('sheetMenu','sheetFile', $langTemplate); ?>

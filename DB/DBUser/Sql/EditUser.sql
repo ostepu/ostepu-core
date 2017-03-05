@@ -23,4 +23,4 @@
 
 UPDATE `User<?php echo $profile;?>`
 SET <?php echo $values; ?>
-WHERE U_id like '<?php echo $userid; ?>' or U_username = '<?php echo $userid; ?>' or U_externalId = '<?php echo $userid; ?>'
+WHERE U_id = '<?php echo $userid; ?>' or U_username = '<?php echo $userid; ?>' or U_externalId = '<?php echo $userid; ?>'

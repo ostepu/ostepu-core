@@ -21,6 +21,10 @@
 
 Sie können hier die Schwellenwerte für Punktearten festlegen, welche Sie zuvor in der **Kursverwaltung**, für diese Veranstaltung, ausgewählt haben.
 
+![](setD.png)
+
+Sie sehen neben dem Eingabefeld die Mindestpunktzahl, welche die Studenten für diese Punkteart erreichen müssen, um die Bedingung zu erfüllen.
+
 > ##### 2. Aktion auslösen #####
 
 Sie müssen hier den Vorgang bestätigen.

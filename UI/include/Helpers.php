@@ -23,9 +23,11 @@
  
 include_once ( dirname(__FILE__) . '/../../Assistants/Request.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Language.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/fileUtils.php' );
 include_once ( dirname(__FILE__) . '/Helpers/FILE_TYPE.php' );
 include_once ( dirname(__FILE__) . '/Helpers/PRIVILEGE_LEVEL.php' );
 
+// wandelt einen Wert (in Byte) in eine lesbare Form um
 function parse_size($size) {
   $unit = preg_replace('/[^bkmgtpezy]/i', '', $size); // Remove the non-unit characters from the size.
   $size = preg_replace('/[^0-9\.]/', '', $size); // Remove the non-numeric characters from the size.
@@ -38,14 +40,21 @@ function parse_size($size) {
   }
 }
 
+// erzeuge einen Downloadlink aus einer Dateiadresse
+function generateDownloadURL($fileObject, $dur = 1800){
+    return fileUtils::generateDownloadURL($fileObject, $dur);
+}
+
+// erzeugt eine Umleitungsschaltfläche
 function createRedirectButton($redirect,$esid=null){
     $text = '';
-    $text.= '<button title="'.$redirect['title'].'" name="redirect" value="'.(isset($esid) ? $esid.'_' : '_').$redirect['id'].'" class="text-button body-option-color">';
+    $text.= '<button formaction="" title="'.$redirect['title'].'" name="redirect" value="'.(isset($esid) ? $esid.'_' : '_').$redirect['id'].'" class="text-button body-option-color">';
     $text.= $redirect['title'];
     $text.= '</button>';
     return $text;
 }
 
+// erzeugt eine Umleitungsschaltfläche (für den Bereich der Navigationsleiste)
 function createRedirectButtonHeader($redirect,$esid=null){
     $text = '';
     $text.= '<button formaction="" style="text-decoration: none;color: #2B648F;" title="'.$redirect['url'].'" name="redirect" value="'.(isset($esid) ? $esid.'_' : '_').$redirect['id'].'" class="text-button-simple">';
@@ -56,7 +65,6 @@ function createRedirectButtonHeader($redirect,$esid=null){
 
 // führt eine Umleitung aus (Typ: Redirect)
 function executeRedirect($redirect, $uid, $cid, $esid){
-    //var_dump($redirect);
     $auth = $redirect->getAuthentication();
     if ($auth === 'none' or $auth === ''){
         // wir müssen nur umleiten
@@ -273,7 +281,7 @@ function MakeNotification($notificationType, $notificationText, $collapsible=fal
     }
 }
 
-//Erzeugt ein Knopf für Hilfemeldungen
+// Erzeugt ein Knopf für Hilfemeldungen
 function MakeInfoButton($helpPath)
 {
     global $externalURI;

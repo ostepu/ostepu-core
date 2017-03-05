@@ -1,0 +1,19 @@
+{
+    "name": "SQaLibur",
+    "version": "1.0",
+    "versionDate": "31.12.2016",
+    "description":{"de":"Dieses Paket erweitert den Installationsassistenten um die Installationselemente für SQaLibur."},
+    "descUrl":"https://github.com/tilluhlig/ostepu-sqalibur",
+    "files": [
+        {
+            "path": "install/segments/ext_SQaLibur/",
+            "type": "git",
+            "params": {
+                "name": "sqalibur",
+                "branch": "master",
+                "URL": "https://github.com/tilluhlig/ostepu-sqalibur.git",
+                "path": "install/segments/ext_SQaLibur/"
+            }
+        }
+    ]
+}

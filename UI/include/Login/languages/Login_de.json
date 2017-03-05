@@ -4,6 +4,9 @@
         "execute": "anmelden",
         "userName": "Nutzername",
         "password": "Passwort",
-        "permanentLogin": "Eingeloggt bleiben"
+        "permanentLogin": "Eingeloggt bleiben",
+        "defaultLogin": "Standardanmeldung",
+        "ldapLogin": "LDAP",
+        "loginType": "Anmeldeart"
     }
 }

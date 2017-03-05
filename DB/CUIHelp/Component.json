@@ -176,8 +176,6 @@
                 {"path": "/help/:language/page/admin/courseManagement/courseRedirectsD.png"},
                 {"path": "/help/:language/page/admin/courseManagement/courseRedirectsE.png"},
                 {"path": "/help/:language/page/admin/courseManagement/courseRedirectsF.png"},
-                {"path": "/help/:language/page/admin/courseManagement/courseRedirectsG.png"},
-                {"path": "/help/:language/page/admin/courseManagement/courseRedirectsH.png"},
                 {},
                 {"path": "/help/:language/page/admin/courseManagement/addExternalId.md"},
                 {"path": "/help/:language/page/admin/courseManagement/addExternalIdA.png"},
@@ -236,6 +234,11 @@
                 {"path": "/help/:language/page/common/accountSettings/passwordB.png"},
                 {"path": "/help/:language/page/common/accountSettings/passwordC.png"},
                 {},
+                {"path": "/help/:language/page/common/login/login.md"},
+                {"path": "/help/:language/page/common/login/loginA.png"},
+                {"path": "/help/:language/page/common/login/loginB.png"},
+                {"path": "/help/:language/page/common/login/loginC.png"},
+                {},
                 {"path": "/help/:language/page/common/accountSettings/user.md"},
                 {"path": "/help/:language/page/common/accountSettings/userA.png"},
                 {"path": "/help/:language/page/common/accountSettings/userB.png"},
@@ -255,6 +258,7 @@
                 {"path": "/help/:language/page/admin/condition/setA.png"},
                 {"path": "/help/:language/page/admin/condition/setB.png"},
                 {"path": "/help/:language/page/admin/condition/setC.png"},
+                {"path": "/help/:language/page/admin/condition/setD.png"},
                 {},
                 {"path": "/help/:language/page/admin/condition/summary.md"},
                 {"path": "/help/:language/page/admin/condition/summaryA.png"},
@@ -324,7 +328,16 @@
                 {"path": "/help/:language/page/common/courseSelect/courseSelect.md"},
                 {"path": "/help/:language/page/common/courseSelect/courseSelectA.png"},
                 {"path": "/help/:language/page/common/courseSelect/courseSelectB.png"},
-                {"path": "/help/:language/page/common/courseSelect/courseSelectC.png"}
+                {"path": "/help/:language/page/common/courseSelect/courseSelectC.png"},
+                {},
+                {"path": "/help/:language/page/admin/faq/faq.md"},
+                {"path": "/help/:language/page/admin/faq/faqA.png"},
+                {"path": "/help/:language/page/admin/faq/faqB.png"},
+                {"path": "/help/:language/page/admin/faq/faqC.png"},
+                {},
+                {"path": "/help/:language/page/student/faq/faq.md"},
+                {},
+                {"path": "/help/:language/page/tutor/faq/faq.md"}
             ]
         }
     ]

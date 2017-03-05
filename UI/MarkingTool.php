@@ -26,12 +26,14 @@ include_once dirname(__FILE__) . '/../Assistants/Structures.php';
 include_once dirname(__FILE__) . '/include/FormEvaluator.php';
 
 global $globalUserData;
+//Überprüft ob mindestens ein Tutor diese Seite abruft.
 Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $globalUserData);
 
 $langTemplate='MarkingTool_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 $timestamp = time();
 
+//-- Verarbeitet die Anfragen vom Browser --
 // changes search settings
 if (isset($_POST['action']) && $_POST['action'] == 'ShowMarkingTool') {
     //if (isset($_POST['sheetID']) && isset($_POST['tutorID']) && isset($_POST['statusID'])) {
@@ -298,8 +300,10 @@ if (isset($_GET['downloadCSV'])) {
             }
         }
     }
-    $csvFile = http_post_data($URI, Marking::encodeMarking($markings), true);
-    echo $csvFile;
+    $csvFileData = http_post_data($URI, Marking::encodeMarking($markings), true);
+    $csvFile = fileUtils::prepareFileObject(json_decode($csvFileData, true));
+    
+    echo json_encode($csvFile);
     exit(0);
 }
 

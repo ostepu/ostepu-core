@@ -59,6 +59,16 @@
                 "path": "Assistants/vendor/Markdown/"
             }
         },
+        {
+            "path": "FS/FSPdf/tcpdf/",
+            "type": "git",
+            "params": {
+                "name": "tcpdf",
+                "branch": "master",
+                "URL": "https://github.com/ostepu/TCPDF",
+                "path": "FS/FSPdf/tcpdf/"
+            }
+        },
         {"path": "DB/.htaccess"},
         {"path": "FS/.htaccess"},
         {"path": "logic/Include/"},

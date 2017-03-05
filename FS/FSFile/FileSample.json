@@ -1,12 +1,8 @@
-/**
- * @file FileSample.json This file represents a valid JSON object of type File for FSFile.
- * 
- * @author Till Uhlig
- */
- 
-    {
-       "address": "file/757097c90146e7ad82aceb68015943ac090ca6b4",
-       "fileSize": 1643,
-       "hash": "757097c90146e7ad82aceb68015943ac090ca6b4"
-    }
+{
+    "__commentFile": "@file FileSample.json This file represents a valid JSON object of type File for FSFile.",
+    "__commentAuthor": "@author Till Uhlig",
+    "address": "file/757097c90146e7ad82aceb68015943ac090ca6b4",
+    "fileSize": 1643,
+    "hash": "757097c90146e7ad82aceb68015943ac090ca6b4"
+}
 

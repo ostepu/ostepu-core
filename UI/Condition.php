@@ -321,13 +321,17 @@ if (isset($getResults['downloadConditionCsv']) || isset($getResults['downloadCon
         $file = http_post_data($filesystemURI . '/pdf',  Pdf::encodePdf($pdf), true);
         $file = File::decodeFile($file);
         $file->setDisplayName('conditions.pdf');
-        $file = File::encodeFile($file);
+        $fileData = File::encodeFile($file);
+        $file = fileUtils::prepareFileObject(json_decode($fileData, true));
+        $file = json_encode($file);
     } elseif (isset($getResults['downloadConditionCsv'])){       
         $csv = Csv::createCsv($rows);
         $file = http_post_data($filesystemURI . '/csv',  Csv::encodeCsv($csv), true);
         $file = File::decodeFile($file);
         $file->setDisplayName('conditions.csv');
-        $file = File::encodeFile($file);
+        $fileData = File::encodeFile($file);
+        $file = fileUtils::prepareFileObject(json_decode($fileData, true));
+        $file = json_encode($file);
     }
 
     echo $file;

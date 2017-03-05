@@ -544,7 +544,7 @@ class Paketverwaltung {
                         Installation::log(array('text' => Installation::Get('packages', 'execClone', self::$langTemplate, array('cmd' => '(git clone --single-branch --branch ' . $branch . ' ' . $repo . ' .) 2>&1'))));
                         if (@chdir($location)) {
                             // klont das Repo
-                            self::execWithUmask('(git clone --single-branch --branch ' . $branch . ' ' . $repo . ' .) 2>&1', $output, $return);
+                            self::execWithUmask('(git clone --depth 1 --single-branch --branch ' . $branch . ' ' . $repo . ' .) 2>&1', $output, $return);
                             @chdir($pathOld);
                         } else {
                             $return = 1;

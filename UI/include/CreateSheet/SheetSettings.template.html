@@ -82,7 +82,7 @@
                 <input class="fileButton left button" type="file" name="sheetPDF" value="<?php echo Language::Get('main','selectFile', $langTemplate); ?> ..." <?php echo (isset($sheetFile) ? 'style="display:none";' : '') ;?>/> 
                 <?php
                 if (isset($sheetFile['address']) && isset($sheetFile['displayName'])){
-                    $fileURL = "../FS/FSBinder/{$sheetFile['address']}/{$sheetFile['displayName']}";?>
+                    $fileURL = generateDownloadURL($sheetFile);?>
                 <span class='content-body left divFile'>
                     <?php if (isset($sheetFile['fileId'])){ ?>
                     <input type="hidden" name="sheetPDFId" value="<?php echo $sheetFile['fileId']; ?>" />
@@ -114,7 +114,7 @@
                 <input class="fileButton left button" type="file" name="sheetSolution" value="<?php echo Language::Get('main','selectFile', $langTemplate); ?> ..." <?php echo (isset($sampleSolution['address']) && isset($sampleSolution['displayName']) ? 'style="display:none";' : '') ;?>/>
                 <?php
                 if (isset($sampleSolution['address']) && isset($sampleSolution['displayName'])){
-                    $fileURL = "../FS/FSBinder/{$sampleSolution['address']}/{$sampleSolution['displayName']}";?>
+                    $fileURL = generateDownloadURL($sampleSolution);?>
                 <div class='content-body left divFile'>
                     <?php if (isset($sampleSolution['fileId'])){ ?>
                     <input type="hidden" name="sheetSolutionId" value="<?php echo $sampleSolution['fileId']; ?>" />
@@ -159,6 +159,9 @@
                     }
                 ?>
             </select>
+            
+            <label class="left"><?php echo Language::Get('main','disclaimer', $langTemplate); ?></label>
+
         </div>
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->

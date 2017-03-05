@@ -146,6 +146,55 @@ class FSBinder
             return Model::isProblem();
         }
     }
+    
+    public function getFileDocumentWithSignature( $callName, $input, $params = array() )
+    {
+    	set_time_limit(600);
+        $signature = $params['signature'];
+        $signatureData = explode('_',$signature);
+        if (count($signatureData)<2){
+            // wenn die eingehende Signatur fehlerhaft ist, soll eine 404 erfolgen
+            return Model::isEmpty();
+        }
+        
+        $timestamp = $signatureData[0];
+        $signature = $signatureData[1];
+        
+        // es müssen korrekte Daten existieren
+        if (trim($timestamp) == '' || trim($signature) == '' || strlen($signature) < 64){
+            return Model::isEmpty();
+        }
+        
+        // wenn die erlaubte Zeit abgelaufen ist, gibt es keine Datei mehr
+        if (intval($timestamp) < time()){
+            return Model::isEmpty();
+        }
+        
+        global $downloadSiteKey; // dieser Eintrag wird aus der Config.php der UI benötigt
+        $auth = new Authentication(false);
+        if (trim($downloadSiteKey) == ''){
+            $downloadSiteKey = null;
+        }
+        
+        $auth->siteKey = $downloadSiteKey;
+        
+        $path = array($params['folder'],$params['a'],$params['b'],$params['c'], $params['file'], $params['filename']);        
+        $filePath = implode(
+                            '/',
+                             $path
+                            );
+
+        $requiredSignature = $auth->hashData("sha256", $timestamp.'_'.$filePath);
+        
+        if ($signature !== $requiredSignature){
+            // wenn die eingehende Signatur nicht korrekt ist, gibts eine 404
+            return Model::isEmpty();
+        }
+        
+        
+    
+        return $this->getFileDocument($callName, $input, $params);
+    }
 
     /**
      * Returns the file infos as a JSON file object.

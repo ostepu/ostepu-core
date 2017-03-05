@@ -1,0 +1,13 @@
+{
+    "title" : "Übungsplattform",
+    "content":"text/html",
+    "charset":"utf-8",
+    "stylesheets":[
+        "css/CSSReset.css",
+		"css/MarkingTool2.css"
+    ],
+    "javascripts":[
+        "javascript/jquery.js",
+		"javascript/marking_tool2_editor.js"
+    ]
+}

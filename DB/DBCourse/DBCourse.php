@@ -129,7 +129,7 @@ class DBCourse
      */
     public function deletePlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('deletePlatform',dirname(__FILE__).'/Sql/DeletePlatform.sql',array($params),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('deletePlatform',dirname(__FILE__).'/Sql/DeletePlatform.sql',$params,201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 
     /**

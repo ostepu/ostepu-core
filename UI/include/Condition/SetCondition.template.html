@@ -66,7 +66,17 @@ if (isset($SetConditionNotificationElements)) {
                        value="<?php echo $percentage['minimumPercentage']; ?>"
                        id="approvalCondition[<?php echo $percentage['approvalConditionId']; ?>]"
                        min="0" max="100" type="number" size="2"
+					   onchange="javascript:document.getElementById('info_approvalCondition[<?php echo $percentage['approvalConditionId']; 
+					   ?>]').innerHTML=Math.ceil(this.value * <?php echo  $percentage['maxPoints']; ?> / 10)/10"
                 >
+				
+				<i class="form-field left label" style="margin-left:20px;" title="<?php echo Language::Get('main','minPoints', $langTemplate);?>">
+					&ge; 
+					<span id="info_approvalCondition[<?php echo $percentage['approvalConditionId']; ?>]">
+						<?php echo ceil($percentage["minimumPercentage"] * $percentage['maxPoints'] / 10)/10; ?>
+					</span> 
+					<?php echo Language::Get('main','points', $langTemplate);;?>
+				</i>
             <?php 
                 endforeach; 
             }

@@ -129,10 +129,9 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                         // creates a downloadAttachment icon for the exercise (if it exists)
                         if(isset($exercise['attachments'][0])) {
                             print '<div class="exercise-sheet-images">';
-
+                            
                             $displayName = $exercise['attachments'][0]['displayName'];
-                            $fileAddress = $exercise['attachments'][0]['address'];
-                            $fileURL = '../FS/FSBinder/' . $fileAddress . '/' . $displayName; /*$filesystemURI*/
+                            $fileURL = generateDownloadURL($exercise['attachments'][0]);
 
                             print '<a href="';
                             print $fileURL;
@@ -209,10 +208,8 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                     <?php if (isset($sheet['sheetFile']['address'])){?>
                 <li>
                     <?php $displayName = $sheet['sheetFile']['displayName']; ?>
-                    <?php $fileAddress = $sheet['sheetFile']['address']; ?>
-                    <?php $fileURL = '../FS/FSBinder/' . $fileAddress
-                                                    . '/' . $displayName; ?>
-                    <a class="text-button" href="<?php echo $fileURL; ?>" title="<?php echo $displayName; /*{$filesystemURI}*/ ?>"
+                    <?php $fileURL = generateDownloadURL($sheet['sheetFile']); ?>
+                    <a class="text-button" href="<?php echo $fileURL; ?>" title="<?php echo $displayName;?>"
                         target="_blank">
                         <?php echo Language::Get('sheetMenu','sheetFile', $langTemplate); ?>
                     </a>
@@ -222,8 +219,7 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                 <?php if (isset($sheet['sampleSolution'])): ?>
                     <li>
                         <?php $displayName = $sheet['sampleSolution']['displayName']; ?>
-                        <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
-                        <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/ ?>
+                        <?php $fileURL = generateDownloadURL($sheet['sampleSolution']); ?>
                         <a class="text-button" href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
                             <?php echo Language::Get('sheetMenu','sampleSolution', $langTemplate); ?>
                         </a>

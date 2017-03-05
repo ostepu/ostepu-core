@@ -200,7 +200,7 @@ class KomponentenErstellen {
                         if (!isset($tempList[$key2])) {
                             $tempList[$key2] = array();
                         }
-                        $tempList[$key2][] = $input;
+                        $tempList[$key2][$key] = $input;
                     } elseif (isset($input['type']) && $input['type'] == 'clone') {
                         // Komponente basiert auf einer bestehenden
                         if (!isset($input['base'])) {
@@ -274,7 +274,7 @@ class KomponentenErstellen {
                                 }
                                 
                                 $input2 = self::extendComponentDefinition($input2, $installComponentDefsResult['defExtensions']);
-                                $tempList[$key2][] = $input2;
+                                $tempList[$key2][$key] = $input2;
                             }
                         }
                     }
@@ -304,6 +304,7 @@ class KomponentenErstellen {
 
         $sql = "START TRANSACTION;SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;";
         $sql .= implode('', $setDBNames);
+        //var_dump($setDBNames);
         unset($setDBNames);
         $links = array();
         
@@ -337,6 +338,8 @@ class KomponentenErstellen {
                                     if (!isset($target['dbName'])) {
                                         continue;
                                     }
+                                    $target['link_availability'] = 'full';
+                                    
                                     if (!isset($input['link_type']) || $input['link_type'] == 'local' || $input['link_type'] == '') {
                                         if ($input['urlExtern'] == $target['urlExtern']) {
 
@@ -347,7 +350,7 @@ class KomponentenErstellen {
                                         }
                                     } elseif ($input['link_type'] == 'full') {
                                         if ($input['urlExtern'] == $target['urlExtern'] || (isset($target['link_availability']) && $target['link_availability'] == 'full')) {
-
+                                
                                             $priority = (isset($input['priority']) ? ", CL_priority = {$input['priority']}" : '');
                                             $relevanz = (isset($input['relevanz']) ? $input['relevanz'] : '');
                                             $sql .= " INSERT INTO `ComponentLinkage` SET CO_id_owner = @{$input['dbName']}, CL_name = '{$link['name']}', CL_relevanz = '{$relevanz}', CO_id_target = @{$target['dbName']} {$priority};";
@@ -415,6 +418,7 @@ class KomponentenErstellen {
         $res = DBRequest::request2($sql, false, $data, true);
         Installation::log(array('text' => Installation::Get('generateComponents', 'insertLinksQueryResult', self::$langTemplate, array('res' => json_encode($res)))));
         $installComponentDefsResult['components'] = $ComponentListInput;
+        //var_dump($sql);
 
         Installation::log(array('text' => Installation::Get('main', 'functionEnd')));
         return $installComponentDefsResult;
@@ -455,10 +459,6 @@ class KomponentenErstellen {
                 }
 
                 $res['components'][] = self::evaluateComponentData($data, $input, $comFile, $mainPath);
-
-                 /*if ($input['name'] == 'LSQLGrader'){
-                  var_dump($input);
-                  } */
             }
             
             // sammle externe Komponenten ein

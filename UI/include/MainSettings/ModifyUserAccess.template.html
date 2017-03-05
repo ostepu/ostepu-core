@@ -1,0 +1,36 @@
+
+<?php $langTemplate='MainSettings_ModifyUserAccess';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
+<?php
+if (isset($ModifyUserAccessNotificationElements)) {
+    foreach ($ModifyUserAccessNotificationElements as $notificationElement) {
+        print $notificationElement;
+    }
+}
+?>
+
+<input type="hidden" name="action" value="ModifyUserAccess">
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <div class="info-color bold right">
+            <button class="text-button critical-color bold right"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
+        </div>
+    </div>
+
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            <div class="content-description">
+                <?php echo Language::Get('main','description', $langTemplate); ?>
+            </div>
+            <label class="form-field left label bold" for="userName"><?php echo Language::Get('main','userName', $langTemplate); ?>:</label>
+            <input class="form-field text-input" name="userName" id="userName" />
+
+            <label class="form-field left label bold new-line" for="password"><?php echo Language::Get('main','password', $langTemplate); ?>:</label>
+            <input class="form-field left text-input" type="password" name="password" id="password" />
+
+            <label class="form-field left label bold new-line" for="passwordRepeat"><?php echo Language::Get('main','passwordRepeat', $langTemplate); ?>:</label>
+            <input class="form-field left text-input" type="password" name="passwordRepeat" id="passwordRepeat" />
+        </div>
+    </div> <!-- end: content-body -->
+</div> <!-- end: content-wrapper -->

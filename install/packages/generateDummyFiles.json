@@ -2,7 +2,7 @@
     "name": "GENERATE_DUMMY_FILES",
     "version": "1.0",
     "description":{"de":"Für Beispieldatenbanken, welchen die Einsendungsdateien im Dateisystem fehlen, können hiermit Dummy-Dateien hinzugefügt werden. Dazu wird die 'File'-Tabelle der Datenbank ausgelesen und fehlende Dateien durch Vorlagen ausgeglichen. Dabei wird die Komponente TGenerateDummyFiles angelegt, welche initialisiert werden muss."},
-    "descUrl":"https://github.com/tilluhlig/ostepu-generateDummyFiles",
+    "descUrl":"https://github.com/ostepu/ostepu-generateDummyFiles",
     "files": [
         {
             "path": "install/segments/ext_GenerateDummyFiles/",
@@ -10,7 +10,7 @@
             "params": {
                 "name": "generatedummyfiles",
                 "branch": "master",
-                "URL": "https://github.com/tilluhlig/ostepu-generateDummyFiles.git",
+                "URL": "https://github.com/ostepu/ostepu-generateDummyFiles.git",
                 "path": "install/segments/ext_GenerateDummyFiles/"
             }
         }

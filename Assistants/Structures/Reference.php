@@ -12,6 +12,7 @@
  */
 
 include_once ( dirname( __FILE__ ) . '/Object.php' );
+include_once dirname(__FILE__) . '/../fileUtils.php';
 
 /**
  * the reference structure
@@ -69,8 +70,43 @@ class Reference extends Object implements JsonSerializable
         $this->globalRef = $value;
     }
 
+    /**
+     * @var string $ownerExternalUrl
+     */
+    private $ownerExternalUrl = null;
+
+    /**
+     * the $ownerExternalUrl getter
+     *
+     * @return the value of $ownerExternalUrl
+     */
+    private function getOwnerExternalUrl( )
+    {
+        return $this->ownerExternalUrl;
+    }
+
+    /**
+     * the $ownerExternalUrl setter
+     *
+     * @param string $value the new value for $ownerExternalUrl
+     */
+    private function setOwnerExternalUrl( $value = null )
+    {
+        $this->ownerExternalUrl = $value;
+    }
+
     public function getContent( )
     {
+        // eine externe URL muss aufgelöst werden
+        if ($this->ownerExternalUrl !== null){
+            global $externalURI; // kommt aus UI/include/Config.php
+            if ($this->ownerExternalUrl != $externalURI){
+                // TODO: wir müssen die Datei beim Ziel abfragen
+                // TODO: wir müssen die Datei beim Ziel abfragen
+                // TODO: wir müssen die Datei beim Ziel abfragen
+            }
+        }
+        
         return file_get_contents($this->localRef);
     }
 
@@ -85,12 +121,39 @@ class Reference extends Object implements JsonSerializable
      */
     public static function createReference(
                                          $localReference,
-                                         $globalReference=null
+                                         $globalReference=null,
+                                         $ownerExternalUrl=null
                                          )
     {
+        $localReference = realpath($localReference);
+        if ($globalReference === null){
+            // wir müssen die Datei nun zusätzlich in einen reference Ordner im Dateisystem verschieben
+            if (file_exists($localReference)){
+                $targetHash = sha1($localReference);
+                $target = fileUtils::generateFilePath('reference',$targetHash);
+                
+                global $filesPath; // kommt aus UI/include/Config.php
+                
+                // der Pfad muss existieren, damit wir dort unsere Datei hin verschieben können
+                fileUtils::generatepath($filesPath.'/'.dirname($target));
+
+                if (copy($localReference, $filesPath.'/'.$target)){
+                    $globalReference = $target;
+                    $localReference = $filesPath.'/'.$target;
+                }
+            }
+        }
+        
+        global $externalURI; // kommt aus UI/include/Config.php
+        
+        if ($ownerExternalUrl === null){
+            $ownerExternalUrl = $externalURI;
+        }
+        
         return new Reference( array(
                                   'localRef' => $localReference,
-                                  'globalRef' => $globalReference
+                                  'globalRef' => $globalReference,
+                                  'ownerExternalUrl' => $ownerExternalUrl
                                   ) );
     }
 
@@ -194,6 +257,8 @@ class Reference extends Object implements JsonSerializable
             $list['localRef'] = $this->localRef;
         if ( $this->globalRef !== null )
             $list['globalRef'] = $this->globalRef;
+        if ( $this->ownerExternalUrl !== null )
+            $list['ownerExternalUrl'] = $this->ownerExternalUrl;
         return array_merge($list,parent::jsonSerialize( ));
     }
 }

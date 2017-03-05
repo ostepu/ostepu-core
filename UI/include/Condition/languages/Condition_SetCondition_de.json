@@ -4,6 +4,8 @@
         "execute": "speichern",
         "description": "Geben Sie die Zahlenangaben in Prozent pro m&ouml;glicher Punkteart an, welche für die Zulassung notwendig sind.",
         "noApprovalConditions": "Dem Kurs wurden noch keine Punktearten zugewiesen.",
-        "inPercent": "Angabe in %"
+        "inPercent": "Angabe in %",
+		"points": "Punkte",
+		"minPoints": "Die minimale Anzahl an Punkten die erreicht werden m&uuml;ssen, um dieses Modul zu bestehen."
     }
 }

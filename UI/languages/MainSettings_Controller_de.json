@@ -1,5 +1,6 @@
 {
     "main": {
+        "invalidAction": "Die Aktion konnte nicht ausgeführt werden.",
         "invalidCourseName": "Ungültiger Veranstaltungsname.",
         "invalidSemester": "Ungültiges Semester.",
         "invalidGroupSize": "Ungültige Gruppengröße.",
@@ -20,6 +21,8 @@
         "differentPasswords": "Die Passwörter stimmen nicht überein!",
         "successCreateUser": "Der Nutzer wurde erstellt!",
         "errorCreateUser": "Der Nutzer wurde nicht erstellt!",
+        "successModifyUserAccess": "Der Nutzer '$userName' wurde bearbeitet!",
+        "errorModifyUserAccess": "Der Nutzer '$userName' konnte nicht bearbeitet werden!",
         "successDeleteUser": "Der Nutzer wurde erfolgreich gelöscht.",
         "errorDeleteUser": "Beim Löschen ist ein Fehler aufgetreten.",
         "settings": "Einstellungen",
