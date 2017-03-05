@@ -5,7 +5,7 @@ if (file_exists(dirname(__FILE__) . '/../UI/include/Config.php')) include_once d
 class fileUtils
 {
     public static function generateDownloadURL($fileObject, $dur = 1800){
-        global $serverURI; // kommt aus UI/include/Config.php
+        global $externalURI; // kommt aus UI/include/Config.php
         global $downloadSiteKey;
         
         if (!isset($fileObject['address']) || !isset($fileObject['displayName'])){
@@ -27,7 +27,7 @@ class fileUtils
         
         // die FSBinder nutzt diese Methode beim verifizieren der eingehenden Dateianfrage
         $signature = $duration.'_'.$auth->hashData("sha256", $duration.'_'.$fileObject['address'].'/'.$fileObject['displayName']);
-        return $serverURI.'/FS/FSBinder/'.$signature.'/'.$fileObject['address'].'/'.$fileObject['displayName'];
+        return $externalURI.'/FS/FSBinder/'.$signature.'/'.$fileObject['address'].'/'.$fileObject['displayName'];
     }
     
     /**
