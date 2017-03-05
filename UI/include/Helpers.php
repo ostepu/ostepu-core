@@ -48,7 +48,7 @@ function generateDownloadURL($fileObject, $dur = 1800){
 // erzeugt eine Umleitungsschaltfläche
 function createRedirectButton($redirect,$esid=null){
     $text = '';
-    $text.= '<button title="'.$redirect['title'].'" name="redirect" value="'.(isset($esid) ? $esid.'_' : '_').$redirect['id'].'" class="text-button body-option-color">';
+    $text.= '<button formaction="" title="'.$redirect['title'].'" name="redirect" value="'.(isset($esid) ? $esid.'_' : '_').$redirect['id'].'" class="text-button body-option-color">';
     $text.= $redirect['title'];
     $text.= '</button>';
     return $text;
