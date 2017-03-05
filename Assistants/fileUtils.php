@@ -4,7 +4,7 @@ if (file_exists(dirname(__FILE__) . '/../UI/include/Config.php')) include_once d
 
 class fileUtils
 {
-    public static function generateDownloadURL($fileObject, $dur = 1800){
+    public static function generateDownloadAddress($fileObject, $dur = 1800){
         global $externalURI; // kommt aus UI/include/Config.php
         global $downloadSiteKey;
         
@@ -12,7 +12,7 @@ class fileUtils
             return '';
         }
         
-        // gibt die G�ltigkeitsdauer in Sekunden an
+        // gibt die Gültigkeitsdauer in Sekunden an
         $duration = time()+$dur; // 1800s = 30 Minuten
         
         // jetzt wird die Signatur erzeugt, bestehend aus
@@ -27,7 +27,21 @@ class fileUtils
         
         // die FSBinder nutzt diese Methode beim verifizieren der eingehenden Dateianfrage
         $signature = $duration.'_'.$auth->hashData("sha256", $duration.'_'.$fileObject['address'].'/'.$fileObject['displayName']);
-        return $externalURI.'/FS/FSBinder/'.$signature.'/'.$fileObject['address'].'/'.$fileObject['displayName'];
+        return $signature.'/'.$fileObject['address'];
+    }
+    
+    public static function prepareFileObject($fileObject, $dur = 1800){
+        if (!isset($fileObject['address']) || !isset($fileObject['displayName'])){
+            // wenn das Objekt ungültig ist, dann verändere es nicht
+            return $fileObject;
+        }
+        $fileObject['address'] = self::generateDownloadAddress($fileObject, $dur);
+        return $fileObject;
+    }
+    
+    public static function generateDownloadURL($fileObject, $dur = 1800){
+        global $externalURI; // kommt aus UI/include/Config.php
+        return $externalURI.'/FS/FSBinder/'.self::generateDownloadAddress($fileObject, $dur).'/'.$fileObject['displayName'];
     }
     
     /**
