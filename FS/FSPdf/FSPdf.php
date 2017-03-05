@@ -635,13 +635,13 @@ class FSPdf
         
         $html = $data->getText();
         if (!is_array($html)){
-            $html = array(true, $html);
+            $html = array(array(true, $html));
         }
         
         $pdf->AddPage( );
         
         for($i=0;$i<count($html);$i++){
-            
+
             if ($html[$i][0] === false || ($data->getSimpleWrite() === true)){
                $text=htmlspecialchars_decode($html[$i][1]);
                $pdf->Write(0,$text);
