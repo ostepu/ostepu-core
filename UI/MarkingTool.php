@@ -300,8 +300,10 @@ if (isset($_GET['downloadCSV'])) {
             }
         }
     }
-    $csvFile = http_post_data($URI, Marking::encodeMarking($markings), true);
-    echo $csvFile;
+    $csvFileData = http_post_data($URI, Marking::encodeMarking($markings), true);
+    $csvFile = fileUtils::prepareFileObject(json_decode($csvFileData, true));
+    
+    echo json_encode($csvFile);
     exit(0);
 }
 

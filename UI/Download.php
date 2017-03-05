@@ -52,6 +52,7 @@ foreach ($types as $type){
     }
 }
 if (isset($_GET['downloadCSV'])) {
+    // es werden alle zugewiesenen Korrekturaufträge eines Kontrolleurs heruntergeladen
     $user_course_data = checkPermission(PRIVILEGE_LEVEL::TUTOR);
     $sid = $_GET['downloadCSV'];
     $location = $logicURI . '/tutor/user/' . $uid . '/exercisesheet/' . $sid.(isset($status) ? '/status/'.$status : '');    
@@ -69,12 +70,15 @@ if (isset($_GET['downloadCSV'])) {
         }
     }
     
-    $result = http_get($location, true);
-    echo $result;
+    $resultData = http_get($location, true);
+    $result = fileUtils::prepareFileObject(json_decode($resultData, true));
+    
+    echo json_encode($result);
     exit(0);
 }
 
 if (isset($_GET['downloadAttachments'])) {
+    // hier werden alle Anhänge einer Übungsserie heruntergeladen
     $user_course_data = checkPermission(PRIVILEGE_LEVEL::STUDENT);
 
     $selectedUser = $uid;
@@ -97,13 +101,17 @@ if (isset($_GET['downloadAttachments'])) {
     $zipfile = http_post_data($filesystemURI . '/zip',  $fileString, true);
     $zipfile = File::decodeFile($zipfile);
     $zipfile->setDisplayName('attachments.zip');
-    $zipfile = File::encodeFile($zipfile);
-    echo $zipfile;
+    $zipfileData = File::encodeFile($zipfile);
+    
+    $zipfile = fileUtils::prepareFileObject(json_decode($zipfileData, true));
+    
+    echo json_encode($zipfile);
     exit(0);
 
 }
 
 if (isset($_GET['downloadMarkings'])) {
+    // hier werden alle Dateien eines Studenten zu einer Einsendung heruntergeladen
     $user_course_data = checkPermission(PRIVILEGE_LEVEL::STUDENT);
     $sid = $_GET['downloadMarkings'];    
 
@@ -201,8 +209,10 @@ if (isset($_GET['downloadMarkings'])) {
     $zipfile = http_post_data($filesystemURI . '/zip',  $fileString, true);
     $zipfile = File::decodeFile($zipfile);
     $zipfile->setDisplayName('markings.zip');
-    $zipfile = File::encodeFile($zipfile);
-    echo $zipfile;
+    $zipfileData = File::encodeFile($zipfile);
+    $zipfile = fileUtils::prepareFileObject(json_decode($zipfileData, true));
+    
+    echo json_encode($zipfile);
     exit(0);
 }
 
