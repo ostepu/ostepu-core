@@ -1,0 +1,6 @@
+RewriteEngine On
+RewriteCond %{HTTP_HOST} !^localhost(:\d+)?$
+RewriteCond %{REQUEST_METHOD} !^POST$ [OR]
+RewriteCond %{THE_REQUEST} !(.)*\/LGitLab\/submit\/course\/[0-9_]+
+RewriteRule ^ - [F,L]
+RewriteRule ^ index.php [QSA,L]

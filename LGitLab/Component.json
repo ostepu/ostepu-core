@@ -1,0 +1,31 @@
+{
+    "name": "LGitLab",
+    "version": "1.0",
+    "classFile": "LGitLab.php",
+    "className": "LGitLab",
+    "files": [
+        {"path": ".htaccess"},
+        {"path": "LGitLab.php"},
+        {"path": "index.php"},
+        {"path": "Commands.json"},
+        {"path": "info/"}
+    ],
+    "links": [
+        {
+            "name": "getUser",
+            "target": "DBUser",
+            "links": [{
+                "method": "GET",
+                "path": "/user/user/:userid"
+            }]
+        },
+        {
+            "name": "postSubmission",
+            "target": "LSubmission",
+            "links": [{
+                "method": "POST",
+                "path": "/submission"
+            }]
+        }
+    ]
+}

@@ -1,0 +1,12 @@
+[
+    {
+        "name": "submit",
+        "callback": "submit",
+        "singleOutput": "TRUE",
+        "outputType": "",
+        "inputType": "",
+        "method": "POST",
+        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],
+        "path": "/submit/course/:courseid"
+    }
+]
