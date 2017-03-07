@@ -30,7 +30,7 @@
 	MarkingTool.Editor.View.StateCodes = <?php
 		$d = array();
 		$d[] = array("key"=>"all", "value"=>"Alle");
-		$d[] = array("key"=>"nogAccepted", "value"=>"nicht akzeptiert");
+		$d[] = array("key"=>"notAccepted", "value"=>"nicht akzeptiert");
 		foreach ($markingStatus as $ms) {
 			$d[] = array("key"=>intval($ms["id"]), "value"=>$ms["longName"]);
 		}

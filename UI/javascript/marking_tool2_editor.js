@@ -242,9 +242,15 @@ MarkingTool.Editor.View = new function() {
 				hc.CreateElement("div", "Serie:", { css: ["ui-filter-title"] }),
 				hc.CreateSelect(MarkingTool.Editor.View.SheetCodes, undefined, undefined, { css: ["ui-select"] }),
 				hc.CreateElement("div", "Kontrolleur:", { css: ["ui-filter-title"] }),
-				hc.CreateSelect(MarkingTool.Editor.View.TutorCodes, undefined, undefined, { css: ["ui-select"] }),
+				hc.CreateSelect(MarkingTool.Editor.View.TutorCodes, undefined, function() {
+					MarkingTool.Editor.Logic.Filter.lecture = $(this).val();
+					MarkingTool.Editor.Logic.ApplyFilter();
+				}, { css: ["ui-select"] }),
 				hc.CreateElement("div", "Status:", { css: ["ui-filter-title"] }),
-				hc.CreateSelect(MarkingTool.Editor.View.StateCodes, undefined, undefined, { css: ["ui-select"] })
+				hc.CreateSelect(MarkingTool.Editor.View.StateCodes, undefined, function() {
+					MarkingTool.Editor.Logic.Filter.state = $(this).val();
+					MarkingTool.Editor.Logic.ApplyFilter();
+				}, { css: ["ui-select"] })
 			], { css: ["ui-open"] }),
 			hc.CreateFoldingGroup("Sortierung", [
 				hc.CreateElement("div", "Sortiere nach:", { css: ["ui-filter-title"] }),
@@ -254,8 +260,13 @@ MarkingTool.Editor.View = new function() {
 				}, "name", undefined, { css: ["ui-select"] })
 			], { css: ["ui-open"] }),
 			hc.CreateFoldingGroup("Suche", [
-				hc.CreateInput(),
-				hc.CreateInput("button", undefined, { value: "Suche" })
+				hc.CreateInput("text", function() {
+					MarkingTool.Editor.Logic.Filter.text = $(this).val();
+					MarkingTool.Editor.Logic.ApplyFilter();
+				})/*,
+				hc.CreateInput("button", function() {
+					MarkingTool.Editor.Logic.ApplyFilter();
+				}, { value: "Suche" })*/
 			], { css: ["ui-open"] })
 		];
 	};
@@ -389,6 +400,14 @@ MarkingTool.Editor.View = new function() {
 			content: content
 		};
 	};
+	var createEmptyTaskBox = function(show) {
+		var hc = MarkingTool.Editor.HTML;
+		var box = hc.CreateElementRaw({
+			css: show ? ["ui-task-big-box", "empty"] : ["ui-task-big-box", "empty", "ui-hide"],
+			content: "Keine Elemente zur Anzeige vorhanden"
+		});
+		return box;
+	};
 	
 	this.createChangeInfo = function(task, closeMethod) {
 		var hc = MarkingTool.Editor.HTML;
@@ -506,7 +525,35 @@ MarkingTool.Editor.View = new function() {
 				})
 			]
 		});
-		return box;
+		return {
+			box: box,
+			filter: function(filter) {
+				var show = true;
+				if (filter.lecture != "all") {
+					show &= task.tutor != undefined && task.tutor.id == filter.lecture;
+				}
+				if (filter.state != "all") {
+					if (filter.state == "notAccepted")
+						show &= task.accepted != true; // false | null
+					else show &= task.status == filter.state;
+				}
+				if (show && filter.text != "") {
+					show = false;
+					var includes = function(value, text) {
+						return value == null ? false : String(value).toLowerCase().includes(text);
+					}
+					show |= includes(task.maxPoints, filter.text);
+					show |= includes(task.points, filter.text);
+					show |= includes(MarkingTool.Editor.View.StateCodes[task.status], filter.text);
+					show |= includes(task.tutorComment, filter.text);
+					show |= includes(task.studentComment, filter.text);
+					show |= includes(task.date, filter.text);
+				}
+				if (show) box.removeClass("ui-hide");
+				else box.addClass("ui-hide");
+				return show;
+			}
+		};
 	};
 	this.createTaskBox = function(key, useTaskNum) {
 		var items = [];
@@ -516,6 +563,7 @@ MarkingTool.Editor.View = new function() {
 		var b = createSimpleTaskBox(key, useTaskNum);
 		var box = {
 			control: b.box,
+			filterlist: [],
 			show: function() {
 				b.box.show();
 			},
@@ -534,12 +582,44 @@ MarkingTool.Editor.View = new function() {
 			},
 			setNormal: function() {
 				b.box.attr("data-status", "normal");
+			},
+			filter: function(filter) {
+				var groupfilter = function(group) {
+					if (filter.text == "") return false;
+					for (var i = 0; i<group.length; ++i) {
+						if (String(group[i].name).toLowerCase().includes(filter.text))
+							return true;
+						if (String(group[i].user).toLowerCase().includes(filter.text))
+							return true;
+					}
+					return false;
+				};
+				var taskfilter = function(tasknum) {
+					return filter.text != "" && String(tasknum).toLowerCase().includes(filter.text);
+				};
+				var show;
+				if (useTaskNum) show = taskfilter(key);
+				else show = groupfilter(MarkingTool.Editor.Logic.bName[key].user);
+				if (show) {
+					for (var i = 0; i<box.tasks.length; ++i)
+						box.tasks[i].removeClass("ui-hide");
+					b.box.removeClass("ui-hide");
+				}
+				else {
+					for (var i = 0; i<box.filterlist.length; ++i)
+						show |= box.filterlist[i](filter);
+					if (show) b.box.removeClass("ui-hide");
+					else b.box.addClass("ui-hide");
+				}
+				return show;
 			}
 		};
 		for (var i = 0; i<items.length; ++i) {
-			var task = thisref.createTasksView(items[i].task, !useTaskNum);
+			var _task = thisref.createTasksView(items[i].task, !useTaskNum);
+			var task = _task.box;
 			task.appendTo(b.content);
 			box.tasks.push(task);
+			box.filterlist.push(_task.filter);
 			items[i].task.UpdatedEvent.add((function(task, box) {
 				return function() {
 					if (task.isValueChanged()) {
@@ -559,19 +639,23 @@ MarkingTool.Editor.View = new function() {
 		var boxes = [], box;
 		var container = $(".ui-layout-main");
 		container.html("");
+		var show = false;
 		if (useTaskNum) {
 			for (var task in MarkingTool.Editor.Logic.bTask)
 				if (MarkingTool.Editor.Logic.bTask.hasOwnProperty(task)) {
 					boxes.push(box = thisref.createTaskBox(task, useTaskNum));
 					box.control.appendTo(container);
+					show = true;
 				}
 		}
 		else {
 			for (var i = 0; i<MarkingTool.Editor.Logic.bName.length; ++i) {
 				boxes.push(box = thisref.createTaskBox(i, useTaskNum));
 				box.control.appendTo(container);
+				show = true;
 			}
 		}
+		container.append(createEmptyTaskBox(!show));
 		thisref.Boxes = boxes;
 	}
 	var _init = function(){
@@ -606,6 +690,7 @@ MarkingTool.Editor.Logic = new function() {
 		data.checkProperty("date", 0);
 		data.checkProperty("tutor", null);
 		//Setze alle Werte als Default
+		if (data.status == null) data.status = -1;
 		data.setAllValuesAsDefault();
 		//Das Objekt ist jetzt fertig und zur Überwachung hinzugefügt
 		return data;
@@ -651,6 +736,35 @@ MarkingTool.Editor.Logic = new function() {
 		if (updObjectList[path] == undefined) return;
 		updObjectList[path].close();
 		updObjectList[path] = undefined;
+	};
+	//Bestimmt den Filter, der auf alle angezeigten Aufgaben angewandt wird.
+	this.Filter = {
+		//Der ausgewählte zugewiesene Kontrolleur. 'all' für alle Kontrolleure.
+		lecture: "all",
+		//Der Status. 'all' für alle Statusmodi
+		state: "all",
+		//Der Text der zusätzlich irgendwo enthalten sein soll.
+		text: ""
+	};
+	var filterChangedEventKey = 0;
+	var filterChangedEvent = new MarkingTool.Event();
+	Object.defineProperty(this, "FilterChanged", {get: function(){ return filterChangedEvent; } });
+	//Wendet den ausgewählten Filter auf alle angezeigten Boxen an.
+	//[filter]: Objekt - Der Filter. (default: this.Filter)
+	this.ApplyFilter = function(filter) {
+		MarkingTool.Editor.UpdateIndicator.ShowBox();
+		if (filter == undefined) filter = thisref.Filter;
+		else thisref.Filter = filter;
+		thisref.FilterChanged.invoke(thisref);
+		var key = ++filterChangedEventKey;
+		var show = false;
+		for (var i = 0; i<MarkingTool.Editor.View.Boxes.length; ++i) {
+			if (filterChangedEventKey != key) return; //Es gibt einen neueren Prozess
+			show |= MarkingTool.Editor.View.Boxes[i].filter(filter);
+		}
+		if (show) $(".ui-task-big-box.empty").addClass("ui-hide");
+		else $(".ui-task-big-box.empty").removeClass("ui-hide");
+		MarkingTool.Editor.UpdateIndicator.HideBox();
 	};
 	
 	var _init = function() {

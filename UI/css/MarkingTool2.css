@@ -292,6 +292,14 @@ body {
 	font-size: 1.3em;
 	font-weight: bold;
 }
+.ui-task-big-box.empty {
+	border: lightgray;
+	box-shadow: 0.06em .06em 0.2em lightgray;
+	color: gray;
+	text-align: center;
+	font-style: italic;
+	background-color: #F3F3F3;
+}
 .ui-task-box {
 	position: relative;
 }
@@ -349,6 +357,10 @@ body {
 	border: none;
 	margin: 1px 0;
 	padding: 0 1px;
+}
+.ui-task-box.ui-hide,
+.ui-task-big-box.ui-hide {
+	display: none;
 }
 
 
