@@ -638,17 +638,19 @@ MarkingTool.Editor.Logic = new function() {
 	}
 	var updObjectList = {};
 	var updAddHandler = function(task) {
-		if (updObjectList[task.path] != undefined) return;
+		var path = JSON.stringify(task.path);
+		if (updObjectList[path] != undefined) return;
 		var vo = MarkingTool.Editor.View.createChangeInfo(task, function() {
-			updObjectList[task.path] = undefined;
+			updObjectList[path] = undefined;
 		});
-		updObjectList[task.path] = vo;
+		updObjectList[path] = vo;
 		$(".ui-layout-right").find(".ui-layout-window-content").append(vo.content);
 	};
 	var updRemoveHandler = function(task) {
-		if (updObjectList[task.path] == undefined) return;
-		updObjectList[task.path].close();
-		updObjectList[task.path] = undefined;
+		var path = JSON.stringify(task.path);
+		if (updObjectList[path] == undefined) return;
+		updObjectList[path].close();
+		updObjectList[path] = undefined;
 	};
 	
 	var _init = function() {
