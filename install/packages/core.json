@@ -82,7 +82,6 @@
         {"path": ".htaccess"}
     ],
     "components": [
-        {"conf": "LGitLab/Component.json"},
         {"conf": "DB/DBApprovalCondition/Component.json"},
         {"conf": "DB/DBAttachment/Component.json"},
         {"conf": "DB/DBAttachment2/Component.json"},
