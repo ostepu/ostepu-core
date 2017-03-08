@@ -4,7 +4,7 @@ include_once ( dirname(__FILE__) . '/../Assistants/Model.php' );
 /**
  * 
  */
-class LGitLab
+class LGitLab extends Model
 {
 
     /**
@@ -26,11 +26,8 @@ class LGitLab
                                            );
         }
         
-        $component = new Model('', dirname(__FILE__), $this, false, false, array('cloneable'=>true,
-                                                                                 'addProfileToParametersAsPostfix'=>true,
-                                                                                 'addRequestToParams'=>true));
-        $this->_component=$component;
-        $component->run();
+        parent::__construct('', dirname(__FILE__), $this, false, false, array('addRequestToParams'=>true));
+        $this->run();
     }
 
     public function submit( $callName, $input, $params = array() )
@@ -58,37 +55,186 @@ class LGitLab
             return Model::isError("die Veranstaltungsnummer fehlt!");            
         }
         
-        file_put_contents("aa.txt",json_encode($params));
+        if (!isset($data['project']['namespace'])){
+            return Model::isError("der Nutzername fehlt!");            
+        }
         
-        $courseId = $params['courseid'];
-        $user = null;
+        if (!isset($data['commits'][0]['timestamp'])){
+            return Model::isError("es fehlt ein gültiger Zeitstempel (Commit)!");            
+        }
         
-        // "ref":"refs/tags/SHEETID_EXERCISEID",
+        $courseIdRaw = $params['courseid']; // die ID der Veranstaltung (muss geprüft werden)
+        $userName = $data['project']['namespace']; // das ist der Nutzername (muss geprüft werden)
+        $timestampRaw = $data['commits'][0]['timestamp']; // das ist der Einsendezeitpunkt. Format: 2017-02-22T14:10:25+01:00
+        $timestamp = strtotime($timestampRaw);
+        
+        // "ref":"refs/tags/SUBMIT_SHEETID_EXERCISEID",
         $tag = $data['ref'];
         $tagRaw = explode("/",$tag);
         end($tagRaw);
-        $tagRaw = current($tagRaw); // SHEETID_EXERCISEID
-        $tagRaw = explode("_",$tagRaw); // [SHEETID, EXERCISEID]
+        $tagRaw = current($tagRaw); // SUBMIT_SHEETID_EXERCISEID
+        $tagRaw = explode("_",$tagRaw); // [SUBMIT, SHEETID, EXERCISEID]
         
-        if (count($tagRaw)!=2){
+        if (count($tagRaw)!=3){
             return Model::isError("der Tagname ist ungültig");            
         }
         
-        $sheetId = $tagRaw[0];
-        $exerciseId = $tagRaw[1];
+        $tagType = $tagRaw[0];
+        $sheetName = $tagRaw[1]; // die Übungsserie-ID (muss geprüft werden)
+        $exerciseName = $tagRaw[2]; // die Aufgaben-ID (muss geprüft werden)
         $projectId = $data['project_id'];
         $checkoutSha = $data['checkout_sha'];
         
-        // Konfiguration: URL + private_token
+        // der TAG muss mit SUBMIT beginnen
+        if (strtoupper($tagType) != 'SUBMIT'){
+            return Model::isOk("dieses TAG soll nichts einsenden");
+        }
         
-        $url = $this->config['GITLAB']['gitLabUrl'].'/api/v3/projects/'.$projectId.'/repository/archive?private_token='.$this->config['GITLAB']['private_token'].'&sha='.$checkoutSha;
-        $res = Request::get($url, array(),  '');
-        
-        if ($res['status'] == 200 && isset($res['content'])){
-            $content = $res['content']; // das ist bereits die Datei
-            
+        // jetzt müssen courseIdRaw, userName, sheetName und exerciseName noch validiert werden
+        $testMe = array('checkoutSha'=>$checkoutSha,'projectId'=>$projectId,'courseIdRaw'=>$courseIdRaw, 'userName'=>$userName, 'sheetName'=>$sheetName, 'exerciseName'=>$exerciseName);
+        $val = Validation::open($testMe)
+          ->addSet('courseIdRaw',
+                   array('satisfy_exists',
+                         'valid_identifier',
+                         'on_error'=>array('type'=>'error',
+                                           'text'=>'Fehler')))
+          ->addSet('userName',
+                   array('satisfy_exists',
+                         'valid_userName',
+                         'on_error'=>array('type'=>'error',
+                                           'text'=>'Fehler')))          
+          ->addSet('sheetName',
+                   array('satisfy_exists',
+                         'satisfy_regex'=>'%^([0-9a-zA-Z_]+)$%',
+                         'on_error'=>array('type'=>'error',
+                                           'text'=>'Fehler')))
+          ->addSet('exerciseName',
+                   array('satisfy_exists',
+                         'valid_alpha_space_numeric',
+                         'on_error'=>array('type'=>'error',
+                                           'text'=>'Fehler')))
+          ->addSet('checkoutSha',
+                   array('satisfy_exists',
+                         'valid_sha1',
+                         'on_error'=>array('type'=>'error',
+                                           'text'=>'Fehler')))
+          ->addSet('projectId',
+                   array('satisfy_exists',
+                         'valid_integer',
+                         'on_error'=>array('type'=>'error',
+                                           'text'=>'Fehler'))); 
+
+        $result = $val->validate(); // liefert die Ergebnismenge
+
+        if ($val->isValid()){
+            // die Eingabe des Nutzers passt zu unseren Vorgaben
+            $sheetName = $result['sheetName'];
+            $exerciseName = $result['exerciseName'];
+            $userName = $result['userName'];
+            $courseIdRaw = $result['courseIdRaw'];
+            $projectId = $result['projectId'];
+            $checkoutSha = $result['checkoutSha'];
         } else {
+              // wenn die Eingabe nicht validiert werden konnte, können hier die
+              // Fehlermeldungen behandelt werden
+            return Model::isError("fehlerhafte Eingabe"); 
+        }
+        
+        // wenn die Form stimmt, dann können wir die Daten gegenprüfen
+        $exerciseSheets = Model::call('getCourseExerciseSheets', array('courseid'=>$courseIdRaw), '', 200, 'Model::isOk', array(), 'Model::isProblem', array(), null);
+        
+        if ($exerciseSheets['status'] == 200){
+            $exerciseSheets = ExerciseSheet::decodeExerciseSheet($exerciseSheets['content']);
+        } else {
+            return Model::isError("die Übungsserien konnten nicht abgerufen werden!"); 
+        }
+        
+        // ab hier werden die Kursnummer, Seriennummer und Aufgabennummer bestimmt, sowie die Aufgabennamen berechnet
+        $sheetId = null;
+        $exerciseId = null;
+        $courseId = null;
+        foreach($exerciseSheets as $sheet){
+            $currentSheetName = strtoupper($sheet->getSheetName());
+            $currentSheetName = str_replace(array(' ', "\t"), array('',''), $currentSheetName);
+            if ($currentSheetName === strtoupper($sheetName)){
+                $sheetId = $sheet->getId();
+                $courseId = $sheet->getCourseId();
+                
+                // nun müssen wir noch die Aufgabe finden
+                $namesOfExercises = array();
+                $count=null;
+                $exercises = json_decode(json_encode($sheet->getExercises()),true);
+                foreach ($exercises as $key => $exercise){
+                    $exerciseId = $exercise['id'];
+
+                    if ($count===null || $exercises[$count]['link'] != $exercise['link']){
+                        $count=$key;
+                        $namesOfExercises[$exercise['link']] = $exerciseId;
+                        $subtask = 0;
+                    }else{
+                        $subtask++;
+                        $namesOfExercises[$exercise['link'].$alphabet[$subtask]] = $exerciseId;
+                        $namesOfExercises[$exercises[$count]['link'].$alphabet[0]] = $exercises[$count]['id'];
+                    }
+                }
+                
+                if (isset($namesOfExercises[$exerciseName])){
+                    $exerciseId = $namesOfExercises[$exerciseName];
+                } else {    
+                    return Model::isError("die Aufgabe existiert nicht!");                     
+                }
+                break;
+            }
+        }
+        
+        if ($sheetId === null){    
+            return Model::isError("die Übungsserie existiert nicht!");  
+        }
+        
+        if ($courseIdRaw != $courseId){
+            return Model::isError("die übergebene Veranstaltungsnummer passt nicht zur Veranstaltung der Übungsserie!"); 
+        }
+        
+        // der Nutzername muss noch aufgelöst werden
+        $userData = Model::call('getUser', array('userid'=>$userName), '', 200, 'Model::isOk', array(), 'Model::isProblem', array(), null);
+        
+        if ($userData['status'] == 200){
+            $userData = User::decodeUser($userData['content']);
+        } else {
+            return Model::isError("ungültiger Nutzer!"); 
+        }
+        $userId = $userData->getId();
+        
+        // ab diesem Punkt besitzen wir die korrekte courseId, sheetId, exerciseId, userId, projectId, checkoutSha
+        //var_dump(array('courseId'=>$courseId,'sheetId'=>$sheetId,'exerciseId'=>$exerciseId,'userId'=>$userId, 'timestamp'=>$timestamp, 'projectId'=>$projectId, 'checkoutSha'=>$checkoutSha));
+        
+        // wenn alles stimmt, dann rufen wir nun ein Archiv des aktuellen Repo ab
+        $url = $this->config['GITLAB']['gitLabUrl'].'/api/v3/projects/'.$projectId.'/repository/archive?'.'private_token='.$this->config['GITLAB']['private_token'].'&sha='.$checkoutSha;
+        $tempFile = $this->config['DIR']['temp'].'/'.sha1($url);
+
+        $res = Request::download($tempFile, $url, true);
+
+        if ($res['status'] == 200 && isset($res['content'])){
+            // die Datei befindet sich nun in $tempFile
+
+            // Quelle: http://stackoverflow.com/questions/17830276/run-windows-command-in-php
+            $disp = $res['headers']['Content-Disposition'];
+            $filename=null; // das soll der Dateiname werden
+                // this catches filenames between Quotes
+            if(preg_match('/.*filename=[\'\"]([^\'\"]+)/', $disp, $matches))
+            { $filename = $matches[1]; }
+                // if filename is not quoted, we take all until the next space
+            else if(preg_match("/.*filename=([^ ]+)/", $disp, $matches))
+            { $filename = $matches[1]; }
             
+            if ($filename !== null){
+                // jetzt können wir das Ding als Einsendung speichern
+                // TODO: ???
+            } else {
+                return Model::isError("ich konnte den Dateinamen nicht bestimmen"); 
+            }
+        } else {
+            return Model::isError("das Repo konnte nicht bei GitLab abgerufen werden"); 
         }
     }
     

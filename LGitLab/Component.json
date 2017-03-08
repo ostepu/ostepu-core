@@ -26,6 +26,14 @@
                 "method": "POST",
                 "path": "/submission"
             }]
+        },
+        {
+            "name": "getCourseExerciseSheets",
+            "target": "LExerciseSheet",
+            "links": [{
+                "method": "GET",
+                "path": "/exercisesheet/course/:courseid/exercise"
+            }]
         }
     ],
     "connector":[
