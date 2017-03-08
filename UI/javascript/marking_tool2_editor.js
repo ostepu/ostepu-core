@@ -232,9 +232,11 @@ MarkingTool.Editor.HTML = new function(){
 //Stellt die Oberfläche und ihre Funktionen bereit.
 MarkingTool.Editor.View = new function() {
 	var thisref = this;
+	//verpackt das Element in ein <div/> Element
 	var createWrapper = function(element) {
 		return MarkingTool.Editor.HTML.CreateElementRaw({children: [element]});
 	};
+	//erzeugt die Optionsleiste ganz oben
 	var createCommandBar = function() {
 		var hc = MarkingTool.Editor.HTML;
 		var optionsBar = hc.CreateElementRaw({
@@ -269,6 +271,7 @@ MarkingTool.Editor.View = new function() {
 		});
 		createWrapper(optionsBar).appendTo($(".content-box"));
 	};
+	//erzeugt die Inhalte für die Filterbox auf der linken seite
 	var createFilterBox = function() {
 		var hc = MarkingTool.Editor.HTML;
 		return [
@@ -312,6 +315,8 @@ MarkingTool.Editor.View = new function() {
 			], { css: ["ui-open"] })
 		];
 	};
+	//erzeugt eine Sidebar, die auch als Fenster geöffnet werden kann. Sie wird für 
+	//den Filter genutzt.
 	var createLayoutWindow = function(name, content) {
 		var hc = MarkingTool.Editor.HTML;
 		var window = hc.CreateElementRaw({
@@ -338,6 +343,8 @@ MarkingTool.Editor.View = new function() {
 		});
 		return window;
 	};
+	//erzeugt den Hauptcontainer in dem sich dann der Filter, die Änderungen und die
+	//Hauptelemente befinden.
 	var createLayoutContainer = function() {
 		var hc = MarkingTool.Editor.HTML;
 		var container = hc.CreateElementRaw({
@@ -363,6 +370,8 @@ MarkingTool.Editor.View = new function() {
 		});
 		createWrapper(container).appendTo($(".content-box"));
 	};
+	//erzeugt den dünnen Streifen mit den schnellen Optionseinstellungen für die 
+	//ganzen Einträge
 	var createTaskSingleBar = function(task, useTaskNum) {
 		var hc = MarkingTool.Editor.HTML;
 		var changeState = 0;
@@ -448,6 +457,7 @@ MarkingTool.Editor.View = new function() {
 		});
 		return bar;
 	};
+	//erzeugt das Rohgerüst für die Box in der alle Einsendungen aufgelistet sind.
 	var createSimpleTaskBox = function(key, isTaskNum) {
 		var hc = MarkingTool.Editor.HTML;
 		var content;
@@ -473,6 +483,7 @@ MarkingTool.Editor.View = new function() {
 			content: content
 		};
 	};
+	//erzeugt eine Box zur Signalisation, dass keine Einträge sichtbar sind.
 	var createEmptyTaskBox = function(show) {
 		var hc = MarkingTool.Editor.HTML;
 		var box = hc.CreateElementRaw({
@@ -482,6 +493,8 @@ MarkingTool.Editor.View = new function() {
 		return box;
 	};
 	
+	//erzeugt den Eintrag für die Änderungsliste in der genau aufgelistet ist, 
+	//was geändert wurde.
 	this.createChangeInfo = function(task, closeMethod) {
 		var hc = MarkingTool.Editor.HTML;
 		var user = task.path[0];
@@ -582,6 +595,8 @@ MarkingTool.Editor.View = new function() {
 			close: close
 		};
 	};
+	//Erzeugt den Container und Ansicht für eine Einsendung. Hier wird alles zu
+	//dieser bearbeitet und angezeigt.
 	this.createTasksView = function(task, useTaskNum) {
 		var hc = MarkingTool.Editor.HTML;
 		var box = hc.CreateElementRaw({
@@ -631,6 +646,8 @@ MarkingTool.Editor.View = new function() {
 			}
 		};
 	};
+	//Erzeugt einen Container für alle Einsendungen einer Rubrik. Alle Elemente
+	//sind schon eingetragen.
 	this.createTaskBox = function(key, useTaskNum) {
 		var items = [];
 		if (useTaskNum)
@@ -711,6 +728,7 @@ MarkingTool.Editor.View = new function() {
 		}
 		return box;
 	};
+	//Erzeugt alle Container für Einsendungen.
 	this.createCompleteTaskView = function(useTaskNum) {
 		var boxes = [], box;
 		var container = $(".ui-layout-main");
@@ -734,6 +752,8 @@ MarkingTool.Editor.View = new function() {
 		container.append(createEmptyTaskBox(!show));
 		thisref.Boxes = boxes;
 	}
+	
+	//private Init()
 	var _init = function(){
 		createCommandBar();
 		createLayoutContainer();
@@ -749,6 +769,7 @@ MarkingTool.Editor.Logic = new function() {
 	var thisref = this;
 	var bName = []; //Sortiert nach Name
 	var bTask = {}; //Sortiert nach Aufgabennummer
+	//erzeugt ein neues überwachtes Objekt aus den Rohdaten der Aufgabe.
 	var createTaskObject = function(raw, path) {
 		var data = new MarkingTool.Editor.UpdateFactory.AddObject(raw, path); //Erzeugt das Objekt über die Verwaltung
 		//Falls der Wert auf null gesetzt wurde, so wurde seine Property nicht erzeugt.
@@ -771,6 +792,7 @@ MarkingTool.Editor.Logic = new function() {
 		//Das Objekt ist jetzt fertig und zur Überwachung hinzugefügt
 		return data;
 	};
+	//Verarbeitet alle Rohdaten und befüllt bName und bTask.
 	var getAllTasks = function() {
 		var data = MarkingTool.Editor.Data;
 		for (var i1 = 0; i1<data.length; ++i1) {
@@ -787,7 +809,9 @@ MarkingTool.Editor.Logic = new function() {
 			bName.push({user : user, tasks: tasklist});
 		}
 	}
+	//Eine Liste mit allen Referenzen für Objekte die unter Änderungen angezeigt werden.
 	var updObjectList = {};
+	//Ein Handler wenn ein Objekt den Zustand geändert erhält.
 	var updAddHandler = function(task) {
 		var path = JSON.stringify(task.path);
 		if (updObjectList[path] != undefined) return;
@@ -797,6 +821,7 @@ MarkingTool.Editor.Logic = new function() {
 		updObjectList[path] = vo;
 		$(".ui-layout-right").find(".ui-layout-window-content").append(vo.content);
 	};
+	//Ein Handler wenn ein Objekt der Zustand geändert entfernt wird.
 	var updRemoveHandler = function(task) {
 		var path = JSON.stringify(task.path);
 		if (updObjectList[path] == undefined) return;
@@ -814,8 +839,11 @@ MarkingTool.Editor.Logic = new function() {
 		//Der Text der zusätzlich irgendwo enthalten sein soll.
 		text: ""
 	};
+	//Ein Schlüssel zur Erkennung neuerer Filtermethoden
 	var filterChangedEventKey = 0;
+	//private Event für FilterChanged
 	var filterChangedEvent = new MarkingTool.Event();
+	//Dieses Event wird ausgelöst, sobald ApplyFilter() aufgerufen wurde.
 	Object.defineProperty(this, "FilterChanged", {get: function(){ return filterChangedEvent; } });
 	//Wendet den ausgewählten Filter auf alle angezeigten Boxen an.
 	//[filter]: Objekt - Der Filter. (default: this.Filter)
@@ -835,6 +863,7 @@ MarkingTool.Editor.Logic = new function() {
 		MarkingTool.Editor.UpdateIndicator.HideBox();
 	};
 	
+	//private Init()
 	var _init = function() {
 		getAllTasks();
 		thisref.bName = bName;
