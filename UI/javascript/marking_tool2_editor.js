@@ -192,7 +192,17 @@ MarkingTool.Editor.HTML = new function(){
 		if (current != undefined) sel.val(current);
 		if (method != undefined) sel.change(method);
 		return sel;
-	}
+	};
+	//Erstellt ein neue Anzeige für ein Bild
+	//src:    String - die relative URL zum Bild
+	//[data]: Objekt - Zusätzliche Daten für das neue Element
+	//return: jQuery - Das neu erzeugte Element
+	this.CreateSimpleImage = function(src, data) {
+		data = data || {};
+		data.element = "img";
+		data.src = src;
+		return thisref.CreateElementRaw(data);
+	};
 };
 
 //Stellt die Oberfläche und ihre Funktionen bereit.
@@ -360,9 +370,11 @@ MarkingTool.Editor.View = new function() {
 						}, {css: ["ui-task-status small"]})
 					]
 				}),
-				hc.CreateElement("div", "Bem."),
-				hc.CreateElement("div", "file1"),
-				hc.CreateElement("div", "file2")
+				hc.CreateButtonMenu(hc.CreateSimpleImage("Images/Text.png"), [
+					hc.CreateInput()
+				], {}),
+				hc.CreateSimpleImage("Images/Download.png"),
+				hc.CreateSimpleImage("Images/Download.png")
 			]
 		});
 		task.UpdatedEvent.add(function() {

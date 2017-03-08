@@ -101,6 +101,7 @@
 							"url" => generateDownloadURL($exercise['submission']['file'])
 						) : null,
 					"tutorFile" => isset($exercise["submission"]["marking"]) &&
+						isset($exercise["submission"]["marking"]["file"]) &&
 						(!isset($exercise['submission']['marking']['hideFile']) || 
 						$exercise['submission']['marking']['hideFile'] == "0") ?
 						array (
