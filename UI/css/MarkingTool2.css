@@ -362,6 +362,43 @@ body {
 .ui-task-big-box.ui-hide {
 	display: none;
 }
+.ui-complex-button {
+	display: inline-block;
+	position: relative;
+	font-size: 1.2em;
+	cursor: pointer;
+	padding: 1px;
+	transition: background-color 0.3s;
+}
+.ui-complex-button:hover {
+	background-color: lightblue;
+	border: 1px solid blue;
+	padding: 0;
+}
+img.ui-complex-button-background {
+	width: 1em;
+	height: 1em;
+}
+.ui-complex-button-info,
+.ui-complex-button-mode {
+	position: absolute;
+	width: 1em;
+	height: 1em;
+	font-size: 0.5em;
+	color: blue;
+}
+.ui-complex-button-mode {
+	top: 0;
+	left: -0.5em;
+}
+.ui-complex-button-info {
+	bottom: 0;
+	right: 0;
+	display: none;
+}
+.ui-complex-button-info.ui-show {
+	display: block;
+}
 
 
 /*Updatebox*/

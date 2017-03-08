@@ -203,6 +203,30 @@ MarkingTool.Editor.HTML = new function(){
 		data.src = src;
 		return thisref.CreateElementRaw(data);
 	};
+	//Erstellt einen erweiterten Button, der unten rechts eine Info und oben links 
+	//einen Modus anzeigen kann.
+	//background: jQuery   - Das Objekt, welches den Hintergrund darstellt.
+	//                       Gleichzeitig bestimmt es die Größe des Buttons
+	//info:       jQuery   - Das Objekt, welches unten rechts angezeigt wird.
+	//mode:       jQuery   - Das Objekt, welches oben links angezeigt wird.
+	//[method]:   Funktion - Die Methode die aufgerufen wird, wenn auf diesem Button geklickt wird.
+	//[data]:     Objekt   - Zusätzliche Daten für das neue Element
+	//return:     jQuery   - Das neu erzeugte Element
+	this.CreateComplexButton = function(background, info, mode, method, data) {
+		data = data || {};
+		data.children = data.children || [];
+		data.css = data.css || [];
+		data.css.push("ui-complex-button");
+		background.addClass("ui-complex-button-background");
+		info.addClass("ui-complex-button-info");
+		mode.addClass("ui-complex-button-mode");
+		data.children.push(background);
+		data.children.push(info);
+		data.children.push(mode);
+		var button = thisref.CreateElementRaw(data);
+		if (method != undefined) button.click(method);
+		return button;
+	};
 };
 
 //Stellt die Oberfläche und ihre Funktionen bereit.
@@ -370,11 +394,40 @@ MarkingTool.Editor.View = new function() {
 						}, {css: ["ui-task-status small"]})
 					]
 				}),
-				hc.CreateButtonMenu(hc.CreateSimpleImage("Images/Text.png"), [
-					hc.CreateInput()
-				], {}),
-				hc.CreateSimpleImage("Images/Download.png"),
-				hc.CreateSimpleImage("Images/Download.png")
+				hc.CreateComplexButton(
+					hc.CreateSimpleImage("Images/Text.png"),
+					hc.CreateSimpleImage("Images/Error.png", 
+						task.studentComment == null || task.studentComment == "" ? 
+						{ css: [ "ui-show" ] } : undefined),
+					hc.CreateElement("div", "S"),
+					undefined,
+					{ title: "Studentenkommentar" }
+				),
+				hc.CreateComplexButton(
+					hc.CreateSimpleImage("Images/Text.png"),
+					hc.CreateSimpleImage("Images/Error.png", 
+						task.tutorComment == null || task.tutorComment == "" ? 
+						{ css: [ "ui-show" ] } : undefined),
+					hc.CreateElement("div", "K"),
+					undefined,
+					{ title: "Kontrolleurkommentar" }
+				),
+				hc.CreateComplexButton(
+					hc.CreateSimpleImage("Images/Download.png"),
+					hc.CreateSimpleImage("Images/Error.png", 
+						task.userFile == null ? { css: [ "ui-show" ] } : undefined),
+					hc.CreateElement("div", "S"),
+					undefined,
+					{ title: "Studenteneinsendung" }
+				),
+				hc.CreateComplexButton(
+					hc.CreateSimpleImage("Images/Download.png"),
+					hc.CreateSimpleImage("Images/Error.png", 
+						task.tutorFile == null ? { css: [ "ui-show" ] } : undefined),
+					hc.CreateElement("div", "K"),
+					undefined,
+					{ title: "Kontrolleureinsendung" }
+				)
 			]
 		});
 		task.UpdatedEvent.add(function() {
@@ -707,24 +760,14 @@ MarkingTool.Editor.Logic = new function() {
 		//Das Objekt ist jetzt fertig und zur Überwachung hinzugefügt
 		return data;
 	};
-	var getTaskNum = function(primary, secondary) {
-		if (secondary == 0) return "" + primary;
-		else return "" + primary + ("abcdefghijklmnopqrstuvwxyz")[secondary - 1];
-	};
 	var getAllTasks = function() {
 		var data = MarkingTool.Editor.Data;
 		for (var i1 = 0; i1<data.length; ++i1) {
 			var user = data[i1].group;
-			var primary = 0, secondary = 0;
 			var tasklist = [];
 			for (var i2 = 0; i2<data[i1].tasks.length; ++i2) {
 				var task = data[i1].tasks[i2];
-				if (task.isMainTask) {
-					primary++;
-					secondary = 0;
-				}
-				else secondary++;
-				var num = getTaskNum(primary, secondary);
+				var num = task.tasknum;
 				task = createTaskObject(task, [user, num]);
 				if (bTask[num] == undefined) bTask[num] = [];
 				bTask[num].push({user: user, task: task});
