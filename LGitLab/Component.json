@@ -27,5 +27,9 @@
                 "path": "/submission"
             }]
         }
+    ],
+    "connector":[
+        {"name": "request","target": "CLocalObjectRequest"},
+        {"name": "postPlatform","target": "CInstall"}
     ]
 }

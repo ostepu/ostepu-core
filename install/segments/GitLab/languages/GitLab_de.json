@@ -1,0 +1,6 @@
+{"gitLabIntegration": {
+    "title": "GitLab Integration",
+    "description": "Sie können hier den Zugang zu einer GitLab-Plattform definieren, sodass die Studenten ihre Git-Repositories als Einsendung einreichen können.",
+    "gitLabUrl": "Serveradresse",
+    "private_token": "<a href='https://docs.gitlab.com/ce/api/README.html#personal-access-tokens'>Personal Access Tokens</a>"
+}}
