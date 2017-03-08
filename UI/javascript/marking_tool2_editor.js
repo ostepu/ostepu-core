@@ -284,7 +284,15 @@ MarkingTool.Editor.View = new function() {
 				hc.CreateSelect(MarkingTool.Editor.View.StateCodes, undefined, function() {
 					MarkingTool.Editor.Logic.Filter.state = $(this).val();
 					MarkingTool.Editor.Logic.ApplyFilter();
-				}, { css: ["ui-select"] })
+				}, { css: ["ui-select"] }),
+				hc.CreateElement("div", "Ohne Einsendung", { css: ["ui-filter-title"] }),
+				hc.CreateInput("checkbox", function() {
+					MarkingTool.Editor.Logic.Filter.showTaskWithoutUserFiles = $(this).is(":checked");
+					MarkingTool.Editor.Logic.ApplyFilter();
+				}),
+				hc.CreateElement("label", "Einträge ohne Einsendungen anzeigen", {
+					style: "font-size: 0.8em"
+				})
 			], { css: ["ui-open"] }),
 			hc.CreateFoldingGroup("Sortierung", [
 				hc.CreateElement("div", "Sortiere nach:", { css: ["ui-filter-title"] }),
@@ -602,6 +610,9 @@ MarkingTool.Editor.View = new function() {
 						show &= task.accepted != true; // false | null
 					else show &= task.status == filter.state;
 				}
+				if (!filter.showTaskWithoutUserFiles) {
+					show &= task.userFile != null;
+				}
 				if (show && filter.text != "") {
 					show = false;
 					var includes = function(value, text) {
@@ -710,14 +721,14 @@ MarkingTool.Editor.View = new function() {
 				if (MarkingTool.Editor.Logic.bTask.hasOwnProperty(task)) {
 					boxes.push(box = thisref.createTaskBox(task, useTaskNum));
 					box.control.appendTo(container);
-					show = true;
+					show |= box.filter(MarkingTool.Editor.Logic.Filter);
 				}
 		}
 		else {
 			for (var i = 0; i<MarkingTool.Editor.Logic.bName.length; ++i) {
 				boxes.push(box = thisref.createTaskBox(i, useTaskNum));
 				box.control.appendTo(container);
-				show = true;
+				show |= box.filter(MarkingTool.Editor.Logic.Filter);
 			}
 		}
 		container.append(createEmptyTaskBox(!show));
@@ -798,6 +809,8 @@ MarkingTool.Editor.Logic = new function() {
 		lecture: "all",
 		//Der Status. 'all' für alle Statusmodi
 		state: "all",
+		//Bestimmt ob Aufgaben ohne Dateien von Nutzern angezeigt werden sollen.
+		showTaskWithoutUserFiles: false,
 		//Der Text der zusätzlich irgendwo enthalten sein soll.
 		text: ""
 	};

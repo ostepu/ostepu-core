@@ -260,7 +260,7 @@ body {
   border-top: 0 solid transparent;
   border-bottom: 0.6em solid green;
 }
-.ui-foldable-group input,
+.ui-foldable-group input:not([type="checkbox"]),
 .ui-foldable-group select {
 	display: block;
 	width: 100%;
