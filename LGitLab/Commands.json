@@ -3,7 +3,7 @@
         "name": "submit",
         "callback": "submit",
         "singleOutput": "TRUE",
-        "outputType": "",
+        "outputType": "binary",
         "inputType": "",
         "method": "POST",
         "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],

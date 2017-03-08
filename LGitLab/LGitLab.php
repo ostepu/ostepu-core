@@ -153,12 +153,14 @@ class LGitLab extends Model
         $sheetId = null;
         $exerciseId = null;
         $courseId = null;
+        $mySheet=null;
         foreach($exerciseSheets as $sheet){
             $currentSheetName = strtoupper($sheet->getSheetName());
             $currentSheetName = str_replace(array(' ', "\t"), array('',''), $currentSheetName);
             if ($currentSheetName === strtoupper($sheetName)){
                 $sheetId = $sheet->getId();
                 $courseId = $sheet->getCourseId();
+                $mySheet = $sheet;
                 
                 // nun müssen wir noch die Aufgabe finden
                 $namesOfExercises = array();
@@ -205,7 +207,29 @@ class LGitLab extends Model
         }
         $userId = $userData->getId();
         
-        // ab diesem Punkt besitzen wir die korrekte courseId, sheetId, exerciseId, userId, projectId, checkoutSha
+        // Ich benötige noch die Gruppe des Nutzers
+        $groupData = Model::call('getGroup', array('userid'=>$userId, 'sheetid'=>$sheetId), '', 200, 'Model::isOk', array(), 'Model::isProblem', array(), null);
+        if ($groupData['status'] == 200){
+            $groupData = Group::decodeGroup($groupData['content']);
+        } else {
+            return Model::isError("ungültige Gruppe!"); 
+        }
+        
+        // hier müssen wir noch die Veranstaltung extrahieren
+        $course = null;
+        foreach($userData->getCourses() as $courseStatus){
+            $subCourse = $courseStatus->getCourse();
+            if ($subCourse->getId() == $courseId){
+                $course = $subCourse;
+                break;
+            }
+        }
+        
+        if ($course === null){
+            return Model::isError("ich konnte keine passende Veranstaltung zu diesem Nutzer finden!"); 
+        }
+        
+        // ab diesem Punkt besitzen wir die korrekte courseId, sheetId, exerciseId, userId, timestamp, projectId, checkoutSha
         //var_dump(array('courseId'=>$courseId,'sheetId'=>$sheetId,'exerciseId'=>$exerciseId,'userId'=>$userId, 'timestamp'=>$timestamp, 'projectId'=>$projectId, 'checkoutSha'=>$checkoutSha));
         
         // wenn alles stimmt, dann rufen wir nun ein Archiv des aktuellen Repo ab
@@ -229,9 +253,61 @@ class LGitLab extends Model
             
             if ($filename !== null){
                 // jetzt können wir das Ding als Einsendung speichern
-                // TODO: ???
+                
+                // wir müssen aber noch prüfen, ob der Übungszeitraum abgelaufen ist
+                $isExpired=null;
+                $hasStarted=null;
+
+                if ($mySheet->getEndDate() !== null && $mySheet->getStartDate() !== null){
+                    // bool if endDate of sheet is greater than the actual date
+                    $isExpired = $timestamp > intval($mySheet->getEndDate()); 
+
+                    // bool if startDate of sheet is greater than the actual date
+                    $hasStarted = $timestamp > intval($mySheet->getStartDate());
+
+                    if ($isExpired){
+                        $allowed = Course::containsSetting($course,'AllowLateSubmissions');
+
+                        ///set_error("Der Übungszeitraum ist am ".date('d.m.Y  -  H:i', $upload_data['exerciseSheet']['endDate'])." abgelaufen!");
+                        if ($allowed  === null || $allowed==1){
+                            return Model::isError("der Übungszeitraum ist abgelaufen, am ".date('d.m.Y  -  H:i', $mySheet->getEndDate()));
+                        } else {
+                            return Model::isError("der Übungszeitraum ist abgelaufen, am ".date('d.m.Y  -  H:i', $mySheet->getEndDate()));
+                        }
+
+                    } elseif (!$hasStarted){
+                        return Model::isError("der Übungszeitraum hat noch nicht begonnen"); 
+                    }
+
+                } else {
+                    return Model::isError("kein Übungszeitraum gefunden"); 
+                }
+
+                $uploadFile = File::createFile(null,$filename,null,$timestamp,null,null);
+                $uploadFile->setBody(Reference::createReference($tempFile));
+
+                $uploadSubmission = Submission::createSubmission(null,$userId,null,$exerciseId,'von '.$this->config['GITLAB']['gitLabUrl'],1,$timestamp,null, $groupData->getLeader()->getId());
+                $uploadSubmission->setFile($uploadFile);
+                $uploadSubmission->setExerciseName($exerciseName);
+                $uploadSubmission->setSelectedForGroup('1');
+                
+                if ($isExpired){
+                    $uploadSubmission->setAccepted(0);
+                }
+                
+                $positive = function($input){
+                    // die Einsendung konnte erfolgreich abgelegt werden
+                    return Model::isOk($input); 
+                };
+                
+                $negative = function(){
+                    return Model::isError("Die Einsendung konnte nicht gespeichert werden!"); 
+                };
+                
+                // jetzt wird die Einsendung gespeichert
+                return Model::call('postSubmission', array('courseid'=>$courseId), Submission::encodeSubmission($uploadSubmission), 201, $positive, array(), $negative, array(), null);
             } else {
-                return Model::isError("ich konnte den Dateinamen nicht bestimmen"); 
+                return Model::isError("ich konnte den Dateinamen der Einsendung nicht ermitteln"); 
             }
         } else {
             return Model::isError("das Repo konnte nicht bei GitLab abgerufen werden"); 

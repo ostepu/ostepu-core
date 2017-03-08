@@ -20,8 +20,16 @@
             }]
         },
         {
+            "name": "getGroup",
+            "target": "DBGroup",
+            "links": [{
+                "method": "GET",
+                "path": "/group/user/:userid/exercisesheet/:sheetid"
+            }]
+        },
+        {
             "name": "postSubmission",
-            "target": "LSubmission",
+            "target": "LProcessor",
             "links": [{
                 "method": "POST",
                 "path": "/submission"
