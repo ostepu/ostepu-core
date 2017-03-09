@@ -119,6 +119,13 @@
                 "method": "POST",
                 "path": "/marking"
             }]
+        },
+        {
+            "name": "external",
+            "links": [{
+                "method": "POST",
+                "path": "/process"
+            }]
         }
     ],
     "connector": [

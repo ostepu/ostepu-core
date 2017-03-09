@@ -88,6 +88,7 @@ class LOOP
     private $_getTestcase = array( );
     private $_getExercise = array( );
     private $_marking = array( );
+    private $_external = array( );
     
     /**
      * REST actions
@@ -135,6 +136,7 @@ class LOOP
         $this->_getTestcase = CConfig::getLinks($conf->getLinks(),"getTestcase");
         $this->_getExercise = CConfig::getLinks($conf->getLinks(),"getExercise");
         $this->_marking = CConfig::getLinks($conf->getLinks(),"marking");
+        $this->_external = CConfig::getLinks($conf->getLinks(),"external");
         
 
         // POST PostProcess
@@ -823,7 +825,13 @@ class LOOP
             $myOutput = json_decode($testcase->getOutput());
 
             if (isset($myInputs) && !empty($myInputs) && isset($myOutput) && !empty($myOutput)) {
-                if ($testcase->getTestcaseType() == "java" || $testcase->getTestcaseType() == "cx" || $testcase->getTestcaseType() == "custom") {
+                if ($testcase->getTestcaseType() == "external"){
+                    // es soll ein externer Aufruf ausgeführt werden
+                    // die Component: $myInputs['Component']
+                    $targetCommponent = $myInputs['Component'];
+                    
+                    
+                }elseif ($testcase->getTestcaseType() == "java" || $testcase->getTestcaseType() == "cx" || $testcase->getTestcaseType() == "custom") {
                     $execFilename = $this->scanForExecutables($myWorkDir);
 
                     $params = "";
@@ -1125,8 +1133,9 @@ class LOOP
                     if (count($parameter)>=2){
                         $type = array_shift($parameter);
                         
-                        // veraltet
                         if ($type == 'cx'){
+                            // dieser Bereich ist veraltet
+                        
                             $this->xcopy(dirname(__FILE__) . '/start_cx', $filePath . '/start_cx',0777);
                             $this->xcopy(dirname(__FILE__) . '/compiler', $filePath . '/compiler',0777);
 
