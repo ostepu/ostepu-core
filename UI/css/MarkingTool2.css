@@ -399,6 +399,41 @@ img.ui-complex-button-background {
 .ui-complex-button-info.ui-show {
 	display: block;
 }
+.ui-task-detail-container {
+	position: relative;
+	border-top: 2px solid gray;
+	border-bottom: 2px solid gray;
+	margin: 0.4em 0;
+	padding: 0.4em 0;
+}
+.ui-task-box:last-child .ui-task-detail-container {
+	margin-bottom: 0;
+}
+.ui-task-detail-container > div {
+	display: table;
+	width: 100%;
+}
+.ui-task-detail-container > div > div {
+	display: table-cell;
+	position: relative;
+}
+.ui-task-detail-container > div > div:nth-child(2) {
+	width: 100%;
+}
+.ui-task-points > div:nth-child(2) {
+	width: 100%;
+	padding: 0.2em 1em 0.2em 0.8em;
+}
+.ui-task-points > div:nth-child(2) > div {
+	top: 0.15em;
+}
+.ui-task-points > div:nth-child(3) {
+	white-space: nowrap;
+}
+.ui-task-points > div:nth-child(3) input {
+	width: 3em;
+}
+
 
 
 /*Updatebox*/
@@ -446,6 +481,36 @@ img.ui-complex-button-background {
 	margin-left: 0.25em;
 }
 
+/*jQuery UI - Slider*/
+.ui-slider {
+	border: 1px solid #c5c5c5;
+	border-radius: 3px;
+	height: 0.8em;
+	position: relative;
+	text-align: left;
+}
+.ui-slider-range {
+	left: 0;
+	top: 0;
+	height: 100%;
+	position: absolute;
+	z-index: 1;
+	font-size: .7em;
+	border-radius: 3px;
+	background: #e9e9e9;
+}
+.ui-slider-handle {
+	border: 1px solid #c5c5c5;
+    background: #f6f6f6;
+	top: -0.3em;
+    margin-left: -0.6em;
+	position: absolute;
+    z-index: 2;
+    width: 1.2em;
+    height: 1.2em;
+    cursor: default;
+	border-radius: 3px;
+}
 
 /*Keine Benutzerauswahl*/
 .ui-commandbar,

@@ -227,6 +227,31 @@ MarkingTool.Editor.HTML = new function(){
 		if (method != undefined) button.click(method);
 		return button;
 	};
+	//Erstellt eine Leiste mit einem Balken wo man einen Wert einstellen kann. Er 
+	//geht von 0 bis max mit einer Schritteweite von 0,1
+	//value:    Zahl           - Der aktuelle Wert
+	//max:      Zahl           - Der maximale Wert der Leiste (value darf größer sein)
+	//[method]: Funktion(Zahl) - Die Methode die aufgerufen wird, wenn sich der Wert ändert.
+	//                           Zusätzlich wird der aktuelle Wert übergeben.
+	//[data]:   Objekt         - Zusätzliche Daten für das neue Element
+	//return:   jQuery         - Das neu erzeugte Element
+	this.CreateTrackBar = function(value, max, method, data) {
+		data = data || {};
+		data.css = data.css || [];
+		data.css.push("ui-trackbar");
+		var slider = thisref.CreateElementRaw(data);
+		slider.slider({
+			range: "min",
+			value: value,
+			min: 0,
+			max: max,
+			step: 0.1,
+			slide: function(event, ui) {
+				if (method != undefined) method(ui.value);
+			}
+		});
+		return slider;
+	};
 };
 
 //Stellt die Oberfläche und ihre Funktionen bereit.
@@ -492,6 +517,118 @@ MarkingTool.Editor.View = new function() {
 		});
 		return box;
 	};
+	//Erzeugt den Inhalt für die erweiterten Funktionen
+	var createTaskDetailContent = function(task) {
+		var hc = MarkingTool.Editor.HTML;
+		var changeState = 0;
+		var slider, pointInput, stategroup;
+		var states = [];
+		var stateobj = {};
+		for (var i = 0; i<MarkingTool.Editor.View.SimpleStateCodes.length; ++i) {
+			var id = "state-" + task.id + "-" + task.submissionId + "-" +
+				MarkingTool.Editor.View.SimpleStateCodes[i].key;
+			states.push(stateobj[MarkingTool.Editor.View.SimpleStateCodes[i].key] = 
+				hc.CreateInput("radio", function() {
+					changeState++;
+					if (changeState == 1) {
+						task.status = stategroup.find(":checked").val();
+					}
+					changeState--;
+				}, {
+					value: MarkingTool.Editor.View.SimpleStateCodes[i].key,
+					name: "state-"+task.id+"-"+task.submissionId,
+					id: id
+				}));
+			if (MarkingTool.Editor.View.SimpleStateCodes[i].key == task.status) {
+				//Leider muss das zeitverzögert gemacht werden, da die Browser
+				//keiner Änderung der checked Eigenschaft erlauben solange es 
+				//nicht zum DOM gehört. :(
+				setTimeout(function(){ 
+					//alert ("now "+id+"\n"+$("#"+id).length);
+					changeState++;
+					var e = stateobj[task.status];
+					//e.addClass("hi");
+					//e.attr("checked", "checked");
+					//e.prop("checked", true);
+					e[0].checked = true;
+					changeState--;
+				}, 1000);
+			}
+			states.push(hc.CreateElement("label", 
+				MarkingTool.Editor.View.SimpleStateCodes[i].value, {
+					"for": id
+				}));
+			states.push(hc.CreateElement("div", "")); //<br/>
+		}
+		var cont = [
+			//Punkteauswahl
+			hc.CreateElementRaw({
+				css: ["ui-task-points"],
+				children: [
+					hc.CreateElement("div", "Punkte:"),
+					createWrapper(slider = hc.CreateTrackBar(task.points == null ? 0 : task.points, 
+						task.maxPoints, function(value) {
+							changeState++;
+							if (changeState == 1) {
+								task.points = value;
+								pointInput.val(task.points == null ? "" : task.points);
+							}
+							changeState--;
+						})),
+					hc.CreateElementRaw({
+						children: [
+							pointInput = hc.CreateInput("text", function() {
+								changeState++;
+								if (changeState == 1) {
+									var val = $(this).val();
+									try {
+										task.points = val == "" || val == undefined ? undefined : val * 1.0; 
+									}
+									catch (e) {
+										if ($(this).val() == "" || $(this).val() == undefined) task.points = undefined;
+										else $(this).focus();
+									}
+									slider.slider("value", task.points == null ? 0 : task.points);
+								}
+								changeState--;
+							}, {
+								value: task.points == null ? "" : task.points,
+								placeholder: "leer"
+							}),
+							hc.CreateElement("span", "/" + task.maxPoints + (task.isBonus ? "<span title=\"Bonus\"> (B)</span>" : ""), {
+								title: "Punkte"
+							})
+						]
+					})
+				]
+			}),
+			//Statusauswahl
+			hc.CreateElementRaw({
+				children: [
+					hc.CreateElement("div", "Status:"),
+					createWrapper(stategroup = hc.CreateElementRaw({
+						children: states,
+						element: "fieldset"
+					}))
+				]
+			})
+			//Akzeptiert
+			
+			//Bemerkung
+			
+			//Einsendungen
+		];
+		task.UpdatedEvent.add(function() {
+			changeState++;
+			if (changeState == 1) {
+				slider.slider("value", task.points == null ? 0 : task.points);
+				pointInput.val(task.points == null ? "" : task.points);
+				stateobj[task.status][0].checked = true;
+			}
+			changeState--;
+		});
+		return cont;
+	};
 	
 	//erzeugt den Eintrag für die Änderungsliste in der genau aufgelistet ist, 
 	//was geändert wurde.
@@ -610,6 +747,10 @@ MarkingTool.Editor.View = new function() {
 							$(this).parent().parent().parent().parent().toggleClass("ui-open");
 						}))
 					]
+				}),
+				hc.CreateElementRaw({
+					css: ["ui-task-detail-container"],
+					children: createTaskDetailContent(task)
 				})
 			]
 		});
