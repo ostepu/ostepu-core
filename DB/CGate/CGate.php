@@ -48,6 +48,11 @@ class CGate extends Model
             $login = $headers['PHP_AUTH_USER'];
             $passwd = (isset($headers['PHP_AUTH_PW']) ? $headers['PHP_AUTH_PW'] : '');
             $authType = 'httpAuth';
+        } elseif (isset($headers['HTTP_PRIVATE_TOKEN'])){
+            // wir prüfen nun ob eine Authentifizierung über einen Token gewollt ist
+            $login = $headers['HTTP_PRIVATE_TOKEN'];
+            $passwd = null;
+            $authType = 'tokenAuth';
         }
         
         $positive = function($gateProfile, $method, $order, $component, $body, $authType, $login, $passwd) {
@@ -60,18 +65,16 @@ class CGate extends Model
 
             foreach($auths as $auth){
                 $authType = $auth->getType();
-                if ($authType == 'noAuth'){
+                if ($authType == 'tokenAuth'){
+                    // wir gelangen nur an diesen Punkt, wenn es den entsprechenden Token in der Datenbank als
+                    // 'login' gibt, daher ist der Zugang dann erlaubt
+                    $accepted = true;
+                    break;
+                } elseif ($authType == 'noAuth'){
                     $accepted = true;
                     break;
                 } elseif ($authType == 'httpAuth'){
-                    $params = $auth->getParams();
-                    
-                    /*$salt = '';
-                    if (isset($params['salt'])){
-                        $salt = $params['salt'];
-                    }
-                    
-                    $hashedPasswd = $authentication->hashPassword($passwd, $salt);*/
+                    //$params = $auth->getParams();
             
                     if ($auth->getLogin() == $login && $auth->getPasswd() == $passwd){
                         $accepted = true;
