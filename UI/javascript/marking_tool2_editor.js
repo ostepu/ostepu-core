@@ -95,7 +95,7 @@ MarkingTool.Editor.HTML = new function(){
 		data = data || {};
 		data.css = data.css || [];
 		data.css.push("ui-button");
-		var element = thisref.CreateElement("div", content, data);
+		var element = thisref.CreateElement(data.element || "div", content, data);
 		if (method != undefined) element.click(method);
 		return element;
 	};
@@ -257,6 +257,23 @@ MarkingTool.Editor.HTML = new function(){
 //Stellt die Oberfläche und ihre Funktionen bereit.
 MarkingTool.Editor.View = new function() {
 	var thisref = this;
+	//Dies löscht die Eingabe in einem html input file Element
+	//thx to: <http://stackoverflow.com/a/24608023>
+	var clearFileInput = function(f) {
+		if (f.value) {
+			try { f.value = ""; }
+			catch(err) {
+				if (f.value) {
+					var form = document.createElement("form");
+					var parentNode = f.parentNode;
+					var ref = f.nextSibling;
+					form.appendChild(f);
+					form.reset();
+					parentNode.insertBefore(f, ref);
+				}
+			}
+		}
+	};
 	//verpackt das Element in ein <div/> Element
 	var createWrapper = function(element) {
 		return MarkingTool.Editor.HTML.CreateElementRaw({children: [element]});
@@ -521,7 +538,8 @@ MarkingTool.Editor.View = new function() {
 	var createTaskDetailContent = function(task) {
 		var hc = MarkingTool.Editor.HTML;
 		var changeState = 0;
-		var slider, pointInput, stategroup, tutorComment;
+		var slider, pointInput, stategroup, tutorComment, studFileBut, studFileInput,
+			tutorFileBut, tutorFileInput, acceptedInput;
 		var states = [];
 		var stateobj = {};
 		for (var i = 0; i<MarkingTool.Editor.View.SimpleStateCodes.length; ++i) {
@@ -614,7 +632,25 @@ MarkingTool.Editor.View = new function() {
 				]
 			}),
 			//Akzeptiert
-			
+			hc.CreateElementRaw({
+				children: [
+					hc.CreateElement("div", "Akzeptiert:"),
+					hc.CreateElementRaw({
+						children: [
+							acceptedInput = hc.CreateInput("checkbox", function(){
+								changeState++;
+								if (changeState == 1) {
+									task.accepted = $(this).is(":checked");
+								}
+								changeState--;
+							}, task.accepted != false ? { checked: "checked" } : {}),
+							hc.CreateElement("label", "Diese Einsendung akzeptieren", {
+								style: "font-size: 0.9em"
+							})
+						]
+					})
+				]
+			}),
 			//Bemerkung
 			hc.CreateElementRaw({
 				css: ["ui-task-comment"],
@@ -635,9 +671,80 @@ MarkingTool.Editor.View = new function() {
 						]
 					})
 				]
-			})
-			
+			}),
 			//Einsendungen
+			hc.CreateElementRaw({
+				children: [
+					hc.CreateElement("div", "Dateien:"),
+					hc.CreateElementRaw({
+						css: ["ui-task-files"],
+						children: [
+							hc.CreateElementRaw({
+								"data-has-file": task.userFile != null,
+								children: [
+									hc.CreateElement("div", "Student:", {css: ["ui-task-files-header"]}),
+									hc.CreateElement("div", "Keine Einsendung vorhanden"),
+									studFileBut = hc.CreateButton(
+										"Öffnen", undefined, {
+											element: "a",
+											target: "_blank",
+											href: task.userFile==null ? "" : task.userFile.url,
+											title: task.userFile==null ? "" : task.userFile.name
+										}
+									),
+									studFileInput = hc.CreateInput("file", function(evt) {
+										changeState++;
+										if (changeState == 1) {
+											if (evt.target.files.length == 0)
+												task.getPropertys()["userFile"].resetValue();
+											else task.userFile = {
+												file: evt.target.files[0]
+											};
+											var info = cont[0].parent().parent().children().eq(0)
+												.find(".ui-complex-button-info").eq(2);
+											if (task.userFile != null)
+												info.removeClass("ui-show");
+											else info.addClass("ui-show");
+										}
+										changeState--;
+									})
+								]
+							}),
+							hc.CreateElementRaw({
+								"data-has-file": task.tutorFile != null,
+								children: [
+									hc.CreateElement("div", "Kontrolleur:", {css: ["ui-task-files-header"]}),
+									hc.CreateElement("div", "Keine Einsendung vorhanden"),
+									tutorFileBut = hc.CreateButton(
+										"Öffnen", undefined, {
+											element: "a",
+											target: "_blank",
+											href: task.tutorFile==null ? "" : task.tutorFile.url,
+											title: task.tutorFile==null ? "" : task.tutorFile.name
+										}
+									),
+									tutorFileInput = hc.CreateInput("file", function(evt) {
+										changeState++;
+										if (changeState == 1) {
+											if (evt.target.files.length == 0)
+												task.getPropertys()["tutorFile"].resetValue();
+											else task.tutorFile = {
+												file: evt.target.files[0]
+											};
+											var info = cont[0].parent().parent().children().eq(0)
+												.find(".ui-complex-button-info").eq(3);
+											if (task.tutorFile != null)
+												info.removeClass("ui-show");
+											else info.addClass("ui-show");
+										}
+										changeState--;
+									})
+								]
+							})
+						]
+					})
+				]
+			})
 		];
 		tutorComment.change(function() {
 			changeState++;
@@ -654,14 +761,43 @@ MarkingTool.Editor.View = new function() {
 		task.UpdatedEvent.add(function() {
 			changeState++;
 			if (changeState == 1) {
+				//Points
 				slider.slider("value", task.points == null ? 0 : task.points);
 				pointInput.val(task.points == null ? "" : task.points);
+				//Status
 				stateobj[task.status][0].checked = true;
+				//Accepted
+				acceptedInput.prop("checked", task.accepted);
+				//Comment
 				tutorComment.val(task.tutorComment);
 				var info = cont[0].parent().parent().children().eq(0)
 					.find(".ui-complex-button-info").eq(1);
 				if (task.tutorComment == null) info.addClass("ui-show");
 				else info.removeClass("ui-show");
+				//StudentFile
+				info = cont[0].parent().parent().children().eq(0)
+					.find(".ui-complex-button-info").eq(2);
+				if (task.userFile == null)
+					info.addClass("ui-show");
+				else {
+					info.removeClass("ui-show");
+					studFileBut.attr("href", task.userFile.url);
+					studFileBut.attr("title", task.userFile.name);
+				}
+				clearFileInput(studFileInput[0]);
+				studFileBut.parent().attr("data-has-file", task.userFile != null);
+				//TutorFile
+				info = cont[0].parent().parent().children().eq(0)
+					.find(".ui-complex-button-info").eq(3);
+				if (task.tutorFile == null)
+					info.addClass("ui-show");
+				else {
+					info.removeClass("ui-show");
+					tutorFileBut.attr("href", task.tutorFile.url);
+					tutorFileBut.attr("title", task.tutorFile.name);
+				}
+				clearFileInput(tutorFileInput[0]);
+				tutorFileBut.parent().attr("data-has-file", task.tutorFile != null);
 			}
 			changeState--;
 		});
@@ -676,12 +812,18 @@ MarkingTool.Editor.View = new function() {
 		var names = [];
 		for (var i = 0; i<user.length; ++i)
 			names.push(user[i].name);
-		var oldP, newP, newState;
-		var lineP, lineS, lineC, lineSF, lineTF;
+		var oldP, newP, newState, newAccepted, newStudentFile, newTutorFile;
+		var lineP, lineS, lineA, lineC, lineSF, lineTF;
 		var update = function() {
 			var def = task.getPropertys()["points"].getDefaultValue();
 			oldP.html(def == undefined ? 0 : def);
 			newP.html(task.points);
+			newAccepted.html(task.accepted ? "Einsendung wird nun akzeptiert" :
+				"Einsendung wird nicht mehr akzeptiert");
+			newStudentFile.html(task.userFile != null && task.userFile.file != null ?
+				Math.round(task.userFile.file.size/1024) + " KB" : "0 KB");
+			newTutorFile.html(task.tutorFile != null && task.tutorFile.file != null ?
+				Math.round(task.tutorFile.file.size/1024) + " KB" : "0 KB");
 			var found = false;
 			for (var i = 0; i<MarkingTool.Editor.View.SimpleStateCodes.length; ++i)
 				if (MarkingTool.Editor.View.SimpleStateCodes[i].key == task.status) {
@@ -692,6 +834,7 @@ MarkingTool.Editor.View = new function() {
 			if (!found) newState.html("-");
 			if (task.getPropertys()["points"].isValueChanged()) lineP.addClass("ui-open"); else lineP.removeClass("ui-open");
 			if (task.getPropertys()["status"].isValueChanged()) lineS.addClass("ui-open"); else lineS.removeClass("ui-open");
+			if (task.getPropertys()["accepted"].isValueChanged()) lineA.addClass("ui-open"); else lineA.removeClass("ui-open");
 			if (task.getPropertys()["tutorComment"].isValueChanged()) lineC.addClass("ui-open"); else lineC.removeClass("ui-open");
 			if (task.getPropertys()["userFile"].isValueChanged()) lineSF.addClass("ui-open"); else lineSF.removeClass("ui-open");
 			if (task.getPropertys()["tutorFile"].isValueChanged()) lineTF.addClass("ui-open"); else lineTF.removeClass("ui-open");
@@ -719,6 +862,12 @@ MarkingTool.Editor.View = new function() {
 					newState = hc.CreateElement("span", "-")
 				]
 			}),
+			lineA = hc.CreateElementRaw({
+				css: ["ui-upd-line", "ui-upd-accepted"],
+				children: [
+					newAccepted = hc.CreateElement("span", "Akzeptiert")
+				]
+			}),
 			lineC = hc.CreateElementRaw({
 				css: ["ui-upd-line", "ui-upd-comment"],
 				children: [
@@ -728,13 +877,15 @@ MarkingTool.Editor.View = new function() {
 			lineSF = hc.CreateElementRaw({
 				css: ["ui-upd-line", "ui-upd-student-file"],
 				children: [
-					hc.CreateElement("span", "Neue Einsendung")
+					hc.CreateElement("span", "Neue Einsendung: "),
+					newStudentFile = hc.CreateElement("span", "0 KB")
 				]
 			}),
 			lineTF = hc.CreateElementRaw({
 				css: ["ui-upd-line", "ui-upd-tutor-file"],
 				children: [
-					hc.CreateElement("span", "Neue Korrektur")
+					hc.CreateElement("span", "Neue Korrektur: "),
+					newTutorFile = hc.CreateElement("span", "0 KB")
 				]
 			})
 		];
@@ -781,8 +932,11 @@ MarkingTool.Editor.View = new function() {
 					css: ["ui-task-header"],
 					children: [
 						createWrapper(createWrapper(createTaskSingleBar(task, useTaskNum))),
-						createWrapper(hc.CreateButton("open", function(){
-							$(this).parent().parent().parent().parent().toggleClass("ui-open");
+						createWrapper(hc.CreateButton("", function(){
+							$(this).parent().parent().parent().toggleClass("ui-open");
+						}, {
+							css: ["ui-task-header-switch"],
+							title: "detailierte Ansicht"
 						}))
 					]
 				}),

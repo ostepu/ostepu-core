@@ -89,6 +89,8 @@ body {
   box-shadow: 0.05em 0.05em 0.15em black;
   cursor: pointer;
   transition: background-color 0.3s;
+  text-decoration: none;
+  color: inherit;
 }
 .ui-button:hover {
   background-color: rgba(192, 192, 192, 0.4);
@@ -322,6 +324,20 @@ body {
 	left: 0;
 	right: 1em;
 }
+.ui-task-header-switch:after {
+	content: " ";
+	display: inline-block;
+	width: 0;
+	height: 0;
+	border-left: 0.4em solid transparent;
+	border-right: 0.4em solid transparent;
+	border-top: 0.6em solid gray;
+	border-bottom: none;
+}
+.ui-task-box.ui-open .ui-task-header-switch:after {
+	border-bottom: 0.6em solid gray;
+	border-top: none;
+}
 .ui-task-bar {
 	width: auto;
 }
@@ -406,6 +422,9 @@ img.ui-complex-button-background {
 	margin: 0.4em 0;
 	padding: 0.4em 0;
 }
+.ui-task-box:not(.ui-open) .ui-task-detail-container {
+	display: none;
+}
 .ui-task-box:last-child .ui-task-detail-container {
 	margin-bottom: 0;
 }
@@ -435,7 +454,8 @@ img.ui-complex-button-background {
 .ui-task-points > div:nth-child(3) input {
 	width: 3em;
 }
-.ui-task-comment > div:nth-child(2) > div {
+.ui-task-comment > div:nth-child(2) > div
+ {
 	font-size: 0.8em;
 	font-weight: bold;
 }
@@ -445,6 +465,18 @@ img.ui-complex-button-background {
 	min-width: 100%;
 	font-family: inherit;
 	font-size: 0.8em;
+}
+.ui-task-files > div > * {
+	display: inline-block;
+	font-size: 0.9em;
+}
+.ui-task-files .ui-task-files-header {
+	font-weight: bold;
+	margin-right: 1em;
+}
+.ui-task-files > div[data-has-file="true"] > *:nth-child(2),
+.ui-task-files > div[data-has-file="false"] > *:nth-child(3) {
+	display: none;
 }
 
 
