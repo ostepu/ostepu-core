@@ -804,221 +804,276 @@ class LOOP
 
             // check if workdir is available, if not copy it from portal temp directory
             $myWorkDir = $testcase->getWorkDir();
-            $foldername = basename($myWorkDir);
-            $myWorkDir = $myWorkDir . "_" . $testcase->getTestcaseId();
-            $backupPath = $this->iniconfig['DIR']['temp'].'/'.$foldername;
+            
+            if (!empty($myWorkDir)){
+                $foldername = basename($myWorkDir);
+                $myWorkDir = $myWorkDir . "_" . $testcase->getTestcaseId();
+                $backupPath = $this->iniconfig['DIR']['temp'].'/'.$foldername;
 
-            if(!empty($myWorkDir) && !is_dir($myWorkDir)){
-                if(is_dir($backupPath)){
-                    $this->xcopy($backupPath, $myWorkDir,0777);
-                } else {
+                if(!empty($myWorkDir) && !is_dir($myWorkDir)){
+                    if(is_dir($backupPath)){
+                        $this->xcopy($backupPath, $myWorkDir,0777);
+                    } else {
+                        $this->app->response->setStatus( 409 );
+                        $this->app->stop();
+                    }
+                } elseif (empty($myWorkDir)) {
                     $this->app->response->setStatus( 409 );
                     $this->app->stop();
                 }
-            } elseif (empty($myWorkDir)) {
-                $this->app->response->setStatus( 409 );
-                $this->app->stop();
             }
 
             // decode Input and Output Params
-            $myInputs = json_decode($testcase->getInput());
-            $myOutput = json_decode($testcase->getOutput());
+            $myInputs = json_decode($testcase->getInput(), true);
+            $myOutput = json_decode($testcase->getOutput(), true);
 
-            if (isset($myInputs) && !empty($myInputs) && isset($myOutput) && !empty($myOutput)) {
-                if ($testcase->getTestcaseType() == "external"){
-                    // es soll ein externer Aufruf ausgeführt werden
-                    // die Component: $myInputs['Component']
-                    $targetCommponent = $myInputs['Component'];
-                    
-                    
-                }elseif ($testcase->getTestcaseType() == "java" || $testcase->getTestcaseType() == "cx" || $testcase->getTestcaseType() == "custom") {
-                    $execFilename = $this->scanForExecutables($myWorkDir);
+            if (isset($myInputs) && isset($myInputs['Component']) && $testcase->getTestcaseType() == "external"){
+                // es soll ein externer Aufruf ausgeführt werden
+                // die Component: $myInputs['Component']
 
-                    $params = "";
-                    $inputfiles = array();
+                $targetComponent = $myInputs['Component'];
+                $targetLink = null;
 
-                    // parse input parameters
-                    foreach ($myInputs as $input) {
-                        if (isset($input[0]) && $input[0] == "Text" && isset($input[1])) {
-                            // simple Text
-                            $params .= escapeshellarg($input[1])." ";
-                        } elseif (isset($input[0]) && $input[0] == "Data" && isset($input[1]) && !empty($input[1])) {
-                            // copy input files in workdir and set the path in params
-                            $inputfile = File::decodeFile($input[1],false);
-                            $inputfilePath = $inputfile->getAddress();
-
-                            if(!empty($inputfilePath) && !in_array($inputfilePath, $inputfiles)) {
-                                $this->xcopy($this->iniconfig['DIR']['files'].'/'.$inputfilePath, $myWorkDir.'/'.$inputfile->getDisplayName(),0777);
-                                $inputfiles[] = $inputfilePath;
-                            }
-
-                            if(!empty($inputfilePath)) {
-                                $params .= escapeshellarg($myWorkDir.'/'.$inputfile->getDisplayName())." ";
-                            }
-                        }
+                foreach($this->_external as $extern){
+                    if ($extern->getTargetName() == $targetComponent){
+                        $targetLink = $extern;
+                        break;
                     }
-
-                    $params = trim($params);
-
-                    if ($testcase->getTestcaseType() == "custom") {
-                        $compileconfig = Testcase::decodeTestcase($testcase->getProcess()[0]->getParameter())[0]->getInput();
-
-                        $param = "";
-
-                        // get aufruf von Process und füge Inputparameter ein
-                        if (isset($compileconfig[2]) && !empty($compileconfig[2])) {
-                            $param = $compileconfig[2];
-                            $param = str_replace('$parameters',$params,$param);
-                        }
-
-                        if (isset($submission) && !empty($submission) && $submission->getFile() !== null && !empty($submission->getFile())) {
-                            $param = str_replace('$file',escapeshellarg($myWorkDir.'/'.$submission->getFile()->getDisplayName()),$param);
-                        } else {
-                            $param = str_replace('$file','',$param);
-                        }
-
-                        if (isset($compileconfig[3]) && !empty($compileconfig[3])) {
-                            // copy compile script to workdir
-                            $compilefile = File::decodeFile($compileconfig[3],false);
-                            $compilefilePath = $compilefile->getAddress();
-
-                            if(!empty($compilefilePath)) {
-                                $this->xcopy($this->iniconfig['DIR']['files'].'/'.$compilefilePath, $myWorkDir .'/'.$compilefile->getDisplayName(),0777);
-                                $param = str_replace('$script',$myWorkDir .'/'.$compilefile->getDisplayName(),$param);
-                            }
-
-                        } else {
-                            $param = str_replace('$script','',$param);
-                        }
-                        $params = $param;
-                    }
-
-                    // execute program in sandbox
-                    $compileSandbox = new Sandbox();
-                    $compileSandbox->setWorkingDir($myWorkDir);
-                    $compileSandbox->loadProfileFromFile(dirname(__FILE__) . '/../../Assistants/mysandbox.profile');
-
-                    $return = 0;
-                    $output = "";
-                    $ValidationOK = false;
-
-
-
-                    if ($testcase->getTestcaseType() == "java") {
-                        $return = $compileSandbox->sandbox_exec('java',$execFilename." ".$params,$output);
-                    } elseif ($testcase->getTestcaseType() == "cx") {
-                        $return = $compileSandbox->sandbox_exec('./'.$execFilename,$params,$output);
-                    } elseif ($testcase->getTestcaseType() == "custom") {
-                        $return = $compileSandbox->sandbox_exec('',$params,$output,true);
-                    }
-                    
-                    $output = trim($output,"\t\n\r\0\x0B");
-
-                    // validate output
-                    $correctOutput = "";
-                    $mytype = "";
-
-                    if (isset($myOutput[0]) && $myOutput[0] == "Text" && isset($myOutput[1])) {
-                        $correctOutput = trim($myOutput[1],"\t\n\r\0\x0B");
-                        $mytype = "Text";
-                    } elseif (isset($myOutput[0]) && $myOutput[0] == "Data" && isset($myOutput[1]) && !empty($myOutput[1])) {
-
-                        $outputfile = File::decodeFile($myOutput[1],false);
-                        $outputfilePath = $outputfile->getAddress();
-
-                        $correctOutput = file_get_contents($this->iniconfig['DIR']['files'].'/'.$outputfilePath);
-                        if ($correctOutput !== false) {
-                            $correctOutput = trim($correctOutput,"\t\n\r\0\x0B");
-                        } else {
-                            $correctOutput = "";
-                        }
-                        $mytype = "Data";
-
-                    } elseif (isset($myOutput[0]) && $myOutput[0] == "Regex" && isset($myOutput[1])) {
-                        //$delimiterRegex = substr(stripslashes(trim($myOutput[1])), 0, 1);
-
-                        $correctOutput = preg_quote(stripcslashes(trim($myOutput[1])));
-                        $mytype = "Regex";
-                    }
-
-                    if ($mytype == "Text" || $mytype == "Data") {
-                        if (strcmp($output, $correctOutput) == 0) {
-                            $ValidationOK = true;
-                        }
-                    } elseif ($mytype == "Regex") {
-                        if ($correctOutput == "") {
-                            $correctOutput = "/.*/";
-                        }
-                        $rexexMatch = preg_match($correctOutput, $output);
-
-                        if ($rexexMatch === 1) {
-                            $ValidationOK = true;
-                        }
-                    }
-
+                }
+                
+                if ($targetLink !== null){
                     if (isset($submission) && !empty($submission)){
                         $testcase->setSubmission($submission);
+                    }
+                                    
+                    // jetzt wird die Anfrage weitergeleitet
+                    $result = Request::routeRequest( 
+                                                    'POST',
+                                                    '/testcase/compute',
+                                                    array(),
+                                                    json_encode($testcase),
+                                                    $targetLink
+                                                    );
 
-                        if(is_array($testcase->getProcess())) {
-                            $testcase->setProcess($testcase->getProcess()[0]);
-                        }
+                    if ( $result['status'] >= 200 && $result['status'] <= 299 && isset($result['content']) ){
+                        $testcase2 = Testcase::decodeTestcase($result['content']); 
+                        $testcase->setStatus($testcase2->getStatus());                       
                         
-                        if ($ValidationOK == true) {
-                            $testcase->setStatus(2);
-                        } else {
-                            $testcase->setStatus(3);
-                        }
-
-                        $testcase->setRunOutput($output);
-
                         // update Testcase
                         $resultPut = Request::routeRequest( 
-                                                        'POST',
-                                                        '/testcase/testcase/'.$testcase->getTestcaseId(),
-                                                        array(),
-                                                        Testcase::encodeTestcase($testcase),
-                                                        $this->_editTestcase
-                                                       );
-
-                        // checks the correctness of the query
-                        if ( $resultPut['status'] >= 200 && $resultPut['status'] <= 299 ){
-                            // get Testcases
-                            $resultGet = Request::routeRequest( 
-                                                            'GET',
-                                                            '/testcase/submission/'.$testcase->getSubmissionId().'/course/'.$testcase->getProcess()->getObjectCourseFromProcessIdId(),
+                                                            'POST',
+                                                            '/testcase/testcase/'.$testcase->getTestcaseId(),
                                                             array(),
                                                             Testcase::encodeTestcase($testcase),
-                                                            $this->_getTestcase
+                                                            $this->_editTestcase
                                                            );
+                                                           
+                        // checks the correctness of the query
+                        if ( $resultPut['status'] >= 200 && $resultPut['status'] <= 299 ){
+                            // der Testcase wurde aktualisiert
+                        } else {
+                            // es gab ein Problem beim Aktualisieren des testcase
+                            $this->app->response->setStatus( $resultPut['status'] );
+                            $this->app->stop();                               
+                        }
+                    } else {
+                        // der Testcase wurde nicht korrekt bearbeitet
+                        $this->app->response->setStatus( $result['status'] );
+                        $this->app->stop();            
+                    }
+                } else {
+                    // die Zielkomponente existiert nicht
+                    $this->app->response->setStatus( 500 );
+                    $this->app->stop();        
+                }
+                
+            }elseif ((isset($myInputs) && isset($myOutput) && isset($myInputs) && !empty($myInputs) && isset($myOutput) && !empty($myOutput)) && ($testcase->getTestcaseType() == "java" || $testcase->getTestcaseType() == "cx" || $testcase->getTestcaseType() == "custom")) {
+                $execFilename = $this->scanForExecutables($myWorkDir);
 
-                            // test all testcases if ok then create marking
-                            if ( $resultPut['status'] >= 200 && $resultPut['status'] <= 299 ){
-                                $allTestcases = Testcase::decodeTestcase($resultGet['content']);
+                $params = "";
+                $inputfiles = array();
 
-                                if(!empty($allTestcases)) {
-                                    $StatusForTestcases = 2;
-                                    foreach ($allTestcases as $singleTestcase) {
-                                        if ($singleTestcase->getStatus() == 2) {continue;}
-                                        if ($singleTestcase->getStatus() == 3) {$StatusForTestcases = 3; continue;}
-                                        if ($singleTestcase->getStatus() < 2) {$StatusForTestcases = $singleTestcase->getStatus(); break;}
-                                    }
+                // parse input parameters
+                foreach ($myInputs as $input) {
+                    if (isset($input[0]) && $input[0] == "Text" && isset($input[1])) {
+                        // simple Text
+                        $params .= escapeshellarg($input[1])." ";
+                    } elseif (isset($input[0]) && $input[0] == "Data" && isset($input[1]) && !empty($input[1])) {
+                        // copy input files in workdir and set the path in params
+                        $inputfile = File::decodeFile($input[1],false);
+                        $inputfilePath = $inputfile->getAddress();
 
-                                    // create Marking
-                                    if($StatusForTestcases >= 2) {
-                                        $createdResult = $this->createMarkingViaPost($allTestcases, $submission, $StatusForTestcases);
+                        if(!empty($inputfilePath) && !in_array($inputfilePath, $inputfiles)) {
+                            $this->xcopy($this->iniconfig['DIR']['files'].'/'.$inputfilePath, $myWorkDir.'/'.$inputfile->getDisplayName(),0777);
+                            $inputfiles[] = $inputfilePath;
+                        }
 
-                                        if($createdResult == true) {
-                                            //$this->deleteDir($backupPath);
-                                        }
+                        if(!empty($inputfilePath)) {
+                            $params .= escapeshellarg($myWorkDir.'/'.$inputfile->getDisplayName())." ";
+                        }
+                    }
+                }
+
+                $params = trim($params);
+
+                if ($testcase->getTestcaseType() == "custom") {
+                    $compileconfig = Testcase::decodeTestcase($testcase->getProcess()[0]->getParameter())[0]->getInput();
+
+                    $param = "";
+
+                    // get aufruf von Process und füge Inputparameter ein
+                    if (isset($compileconfig[2]) && !empty($compileconfig[2])) {
+                        $param = $compileconfig[2];
+                        $param = str_replace('$parameters',$params,$param);
+                    }
+
+                    if (isset($submission) && !empty($submission) && $submission->getFile() !== null && !empty($submission->getFile())) {
+                        $param = str_replace('$file',escapeshellarg($myWorkDir.'/'.$submission->getFile()->getDisplayName()),$param);
+                    } else {
+                        $param = str_replace('$file','',$param);
+                    }
+
+                    if (isset($compileconfig[3]) && !empty($compileconfig[3])) {
+                        // copy compile script to workdir
+                        $compilefile = File::decodeFile($compileconfig[3],false);
+                        $compilefilePath = $compilefile->getAddress();
+
+                        if(!empty($compilefilePath)) {
+                            $this->xcopy($this->iniconfig['DIR']['files'].'/'.$compilefilePath, $myWorkDir .'/'.$compilefile->getDisplayName(),0777);
+                            $param = str_replace('$script',$myWorkDir .'/'.$compilefile->getDisplayName(),$param);
+                        }
+
+                    } else {
+                        $param = str_replace('$script','',$param);
+                    }
+                    $params = $param;
+                }
+
+                // execute program in sandbox
+                $compileSandbox = new Sandbox();
+                $compileSandbox->setWorkingDir($myWorkDir);
+                $compileSandbox->loadProfileFromFile(dirname(__FILE__) . '/../../Assistants/mysandbox.profile');
+
+                $return = 0;
+                $output = "";
+                $ValidationOK = false;
+
+
+
+                if ($testcase->getTestcaseType() == "java") {
+                    $return = $compileSandbox->sandbox_exec('java',$execFilename." ".$params,$output);
+                } elseif ($testcase->getTestcaseType() == "cx") {
+                    $return = $compileSandbox->sandbox_exec('./'.$execFilename,$params,$output);
+                } elseif ($testcase->getTestcaseType() == "custom") {
+                    $return = $compileSandbox->sandbox_exec('',$params,$output,true);
+                }
+                
+                $output = trim($output,"\t\n\r\0\x0B");
+
+                // validate output
+                $correctOutput = "";
+                $mytype = "";
+
+                if (isset($myOutput[0]) && $myOutput[0] == "Text" && isset($myOutput[1])) {
+                    $correctOutput = trim($myOutput[1],"\t\n\r\0\x0B");
+                    $mytype = "Text";
+                } elseif (isset($myOutput[0]) && $myOutput[0] == "Data" && isset($myOutput[1]) && !empty($myOutput[1])) {
+
+                    $outputfile = File::decodeFile($myOutput[1],false);
+                    $outputfilePath = $outputfile->getAddress();
+
+                    $correctOutput = file_get_contents($this->iniconfig['DIR']['files'].'/'.$outputfilePath);
+                    if ($correctOutput !== false) {
+                        $correctOutput = trim($correctOutput,"\t\n\r\0\x0B");
+                    } else {
+                        $correctOutput = "";
+                    }
+                    $mytype = "Data";
+
+                } elseif (isset($myOutput[0]) && $myOutput[0] == "Regex" && isset($myOutput[1])) {
+                    //$delimiterRegex = substr(stripslashes(trim($myOutput[1])), 0, 1);
+
+                    $correctOutput = preg_quote(stripcslashes(trim($myOutput[1])));
+                    $mytype = "Regex";
+                }
+
+                if ($mytype == "Text" || $mytype == "Data") {
+                    if (strcmp($output, $correctOutput) == 0) {
+                        $ValidationOK = true;
+                    }
+                } elseif ($mytype == "Regex") {
+                    if ($correctOutput == "") {
+                        $correctOutput = "/.*/";
+                    }
+                    $rexexMatch = preg_match($correctOutput, $output);
+
+                    if ($rexexMatch === 1) {
+                        $ValidationOK = true;
+                    }
+                }
+
+                if (isset($submission) && !empty($submission)){
+                    $testcase->setSubmission($submission);
+
+                    if(is_array($testcase->getProcess())) {
+                        $testcase->setProcess($testcase->getProcess()[0]);
+                    }
+                    
+                    if ($ValidationOK == true) {
+                        $testcase->setStatus(2);
+                    } else {
+                        $testcase->setStatus(3);
+                    }
+
+                    $testcase->setRunOutput($output);
+
+                    // update Testcase
+                    $resultPut = Request::routeRequest( 
+                                                    'POST',
+                                                    '/testcase/testcase/'.$testcase->getTestcaseId(),
+                                                    array(),
+                                                    Testcase::encodeTestcase($testcase),
+                                                    $this->_editTestcase
+                                                   );
+
+                    // checks the correctness of the query
+                    if ( $resultPut['status'] >= 200 && $resultPut['status'] <= 299 ){
+                        // get Testcases
+                        $resultGet = Request::routeRequest( 
+                                                        'GET',
+                                                        '/testcase/submission/'.$testcase->getSubmissionId().'/course/'.$testcase->getProcess()->getObjectCourseFromProcessIdId(),
+                                                        array(),
+                                                        Testcase::encodeTestcase($testcase),
+                                                        $this->_getTestcase
+                                                       );
+
+                        // test all testcases if ok then create marking
+                        if ( $resultPut['status'] >= 200 && $resultPut['status'] <= 299 ){
+                            $allTestcases = Testcase::decodeTestcase($resultGet['content']);
+
+                            if(!empty($allTestcases)) {
+                                $StatusForTestcases = 2;
+                                foreach ($allTestcases as $singleTestcase) {
+                                    if ($singleTestcase->getStatus() == 2) {continue;}
+                                    if ($singleTestcase->getStatus() == 3) {$StatusForTestcases = 3; continue;}
+                                    if ($singleTestcase->getStatus() < 2) {$StatusForTestcases = $singleTestcase->getStatus(); break;}
+                                }
+
+                                // create Marking
+                                if($StatusForTestcases >= 2) {
+                                    $createdResult = $this->createMarkingViaPost($allTestcases, $submission, $StatusForTestcases);
+
+                                    if($createdResult == true) {
+                                        //$this->deleteDir($backupPath);
                                     }
                                 }
                             }
-
-                        } else {
-                            $this->deleteDir($myWorkDir);
-                            $this->app->response->setStatus( $resultPut['status'] );
-                            $this->app->stop();
                         }
+
+                    } else {
+                        $this->deleteDir($myWorkDir);
+                        $this->app->response->setStatus( $resultPut['status'] );
+                        $this->app->stop();
                     }
                 }
             }
