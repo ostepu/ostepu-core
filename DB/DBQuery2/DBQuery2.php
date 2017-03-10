@@ -450,6 +450,28 @@ class DBQuery2
         $return['content'] = $res;
         return $return;
     }
+
+    public function getApiProfiles( $callName, $input, $params = array() )
+    {   
+        $myName = $this->_component->_conf->getName();
+        $profiles = array();
+        ///$profiles['readonly'] = GateProfile::createGateProfile(null,'readonly');
+
+        
+        $profiles['general'] = GateProfile::createGateProfile(null,'general');
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'POST /query',null));
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'POST /multiGetRequest',null));
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'GET /query/procedure/:procedure(/:params+)',null));
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'DELETE /platform',null));
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'POST /platform',null));
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'GET /link/exists/platform',null));
+        
+        $profiles['develop'] = GateProfile::createGateProfile(null,'develop');
+        $profiles['develop']->setRules(array_merge($profiles['general']->getRules(), $this->_component->_com->apiRulesDevelop($myName)));
+
+        ////$profiles['public'] = GateProfile::createGateProfile(null,'public');
+        return Model::isOk(array_values($profiles));
+    }
 }
 
 

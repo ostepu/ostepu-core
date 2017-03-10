@@ -330,6 +330,20 @@ class CConfig
             }
         }
     }
+    
+    // liefert die API-Regeln für das develop-Profil
+    public function apiRulesDevelop($myComponentName){
+        $rules = array();
+        
+        $rules[] = GateRule::createGateRule(null,'httpCall',$myComponentName,'GET ((/profile)/:pre)/info/commands(/)',null);
+        $rules[] = GateRule::createGateRule(null,'httpCall',$myComponentName,'GET ((/profile)/:pre)/info/links(/)',null);
+        if (!$this->_noInfo) $rules[] = GateRule::createGateRule(null,'httpCall',$myComponentName,'GET ((/profile)/:pre)/info/:language(/)',null);
+        ////$rules[] = GateRule::createGateRule(null,'httpCall',$myComponentName,'POST ((/profile)/:pre)/control',null);
+        $rules[] = GateRule::createGateRule(null,'httpCall',$myComponentName,'GET ((/profile)/:pre)/control',null);
+        if (!$this->_noHelp) $rules[] = GateRule::createGateRule(null,'httpCall',$myComponentName,'GET ((/profile)/:pre)/help/:language/path+',null);
+        
+        return $rules;
+    }
 
     public function component( $pre = '', $nativeOnly=false, $returnData=false )
     {
