@@ -425,6 +425,11 @@ class Komponentenzugang {
         }
         
         self::$cachedExternalProfiles = self::mergeProfiles(self::$cachedExternalProfiles);
+        
+        // für public soll ein Auth installiert werden
+        if (isset(self::$cachedExternalProfiles['public'])){
+            self::$cachedExternalProfiles['public']->addAuth(GateAuth::createGateAuth(null,'noAuth',null,null,null,null));
+        }
 
         return self::$cachedExternalProfiles;
     }
