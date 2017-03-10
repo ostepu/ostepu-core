@@ -1,6 +1,6 @@
 {"accessComponents": {
     "title": "API-Profile",
-    "description": "Hier können interne Komponenten zugänglich gemacht werden. Die aktuelle Auswahl kann immer über \"Auswählen\" sichtbar gemacht werden. <br> Dieses Segment verwendet die TApiConfiguration-Komponente. <br/><br/> Wenn es Änderungen der Profile nach dem synchronisieren der Datenbank gab (beispielsweise nach einem Update), dann sollte der Bereich der Komponenten (Komponenten eintragen+Komponenten verbinden) erneut ausgeführt werden.",
+    "description": "<span class='error_light'>Achtung: beim synchronisieren der Datenbank werden existierende Profile vor dem neuen Schreiben zunächst komplett gelöscht, sodass eingerichtete Authentifizierungen in der Tabelle gateAuth ebenfalls verloren gehen.</span><br/><br/>Hier können interne Komponenten zugänglich gemacht werden. Die aktuelle Auswahl kann immer über \"Auswählen\" sichtbar gemacht werden. <br> Dieses Segment verwendet die TApiConfiguration-Komponente. <br/><br/> Wenn es Änderungen der Profile nach dem synchronisieren der Datenbank gab (beispielsweise nach einem Update), dann sollte der Bereich der Komponenten (Komponenten eintragen+Komponenten verbinden) erneut ausgeführt werden.",
     "addProfile": "Profil hinzufügen",
     "addAuth": "Zugang hinzufügen",
     "addRule": "Regel hinzufügen",
