@@ -41,6 +41,43 @@ MarkingTool.Event = function() {
 			list[i].apply(thisArg, arguments);
 	};
 };
+//Implementiert eine einfache Queue
+MarkingTool.Queue = function() {
+	var first = null, last = null;
+	//Legt ein Element an das Ende der Queue
+	//element: Wert - das neue Element
+	this.push = function(element) {
+		var entry = {
+			element: element,
+			prev: last
+		};
+		if (last == null) first = last = entry;
+		else {
+			last.next = entry;
+			last = entry;
+		}
+	};
+	//Ruft das erste Element von der Queue ab und entfernt dieses
+	//return: Wert - der erste Eintrag
+	this.pop = function() {
+		if (first == null) return null;
+		var element = first.element;
+		if (first.next) first = first.next;
+		else first = last = null;
+		return element;
+	};
+	//Fragt ab, ob diese Queue leer ist.
+	//return: Bool - true wenn Queue leer
+	this.isEmpty = function() {
+		return first == null;
+	};
+	//Ruft das erste Element von der Queue ab ohne es zu entfernen
+	//return: Wert - der erste Eintrag
+	this.pick = function() {
+		if (first == null) return null;
+		else return first.element;
+	};
+};
 
 
 //=== HTML Bibliothek um einen HTML Körper zu erstellen ===
@@ -643,7 +680,7 @@ MarkingTool.Editor.View = new function() {
 									task.accepted = $(this).is(":checked");
 								}
 								changeState--;
-							}, task.accepted != false ? { checked: "checked" } : {}),
+							}, task.accepted ? { checked: "checked" } : {}),
 							hc.CreateElement("label", "Diese Einsendung akzeptieren", {
 								style: "font-size: 0.9em"
 							})
@@ -1121,6 +1158,7 @@ MarkingTool.Editor.Logic = new function() {
 		data.checkProperty("tutor", null);
 		//Setze alle Werte als Default
 		if (data.status == null) data.status = -1;
+		if (data.accepted == null) data.accepted = false;
 		data.setAllValuesAsDefault();
 		//Das Objekt ist jetzt fertig und zur Überwachung hinzugefügt
 		return data;
