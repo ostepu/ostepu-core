@@ -525,7 +525,7 @@ MarkingTool.Editor.View = new function() {
 		var states = [];
 		var stateobj = {};
 		for (var i = 0; i<MarkingTool.Editor.View.SimpleStateCodes.length; ++i) {
-			var id = "state-" + task.id + "-" + task.submissionId + "-" +
+			var id = "state-" + task.id + "-" + task.groupIndex + "-" +
 				MarkingTool.Editor.View.SimpleStateCodes[i].key;
 			states.push(stateobj[MarkingTool.Editor.View.SimpleStateCodes[i].key] = 
 				hc.CreateInput("radio", function() {
@@ -536,10 +536,11 @@ MarkingTool.Editor.View = new function() {
 					changeState--;
 				}, {
 					value: MarkingTool.Editor.View.SimpleStateCodes[i].key,
-					name: "state-"+task.id+"-"+task.submissionId,
+					name: "state-"+task.id+"-"+task.groupIndex ,
 					id: id
 				}));
-			if (MarkingTool.Editor.View.SimpleStateCodes[i].key == task.status) {
+			if (MarkingTool.Editor.View.SimpleStateCodes[i].key == task.status ||
+				(task.status == null && i == 0)) {
 				//Leider muss das zeitverzögert gemacht werden, da die Browser
 				//keiner Änderung der checked Eigenschaft erlauben solange es 
 				//nicht zum DOM gehört. :(
