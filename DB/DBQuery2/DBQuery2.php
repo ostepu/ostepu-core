@@ -53,6 +53,7 @@ class DBQuery2
     }
     public function generateQuery($procedure, $params)
     {
+        if ($params == "") $params = array("");
         return "CALL `{$procedure}`(".implode(',',array_map(array($this,'generateParam'), $params)).");";
     }
 
