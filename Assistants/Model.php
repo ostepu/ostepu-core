@@ -49,7 +49,7 @@ class Model
     /**
      * @var Component $_com Die Definition der Ausgänge
      */
-    private $_com = null;
+    public $_com = null;
 
 
     private $_noInfo = null;
