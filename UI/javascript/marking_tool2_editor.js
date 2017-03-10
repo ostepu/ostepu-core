@@ -521,7 +521,7 @@ MarkingTool.Editor.View = new function() {
 	var createTaskDetailContent = function(task) {
 		var hc = MarkingTool.Editor.HTML;
 		var changeState = 0;
-		var slider, pointInput, stategroup;
+		var slider, pointInput, stategroup, tutorComment;
 		var states = [];
 		var stateobj = {};
 		for (var i = 0; i<MarkingTool.Editor.View.SimpleStateCodes.length; ++i) {
@@ -611,19 +611,56 @@ MarkingTool.Editor.View = new function() {
 						element: "fieldset"
 					}))
 				]
-			})
+			}),
 			//Akzeptiert
 			
 			//Bemerkung
+			hc.CreateElementRaw({
+				css: ["ui-task-comment"],
+				children: [
+					hc.CreateElement("div", "Bemerkung:"),
+					hc.CreateElementRaw({
+						children: [
+							hc.CreateElement("div", "Student:"),
+							task.studentComment == null ?
+							hc.CreateElement("div", "kein Kommentar", {
+								style: "font-style: italic; font-weight: normal;"
+							}) :
+							hc.CreateElement("textarea", task.studentComment, {
+								readonly: "readonly"
+							}),
+							hc.CreateElement("div", "Kontrolleur:"),
+							tutorComment = hc.CreateElement("textarea", task.tutorComment)
+						]
+					})
+				]
+			})
 			
 			//Einsendungen
 		];
+		tutorComment.change(function() {
+			changeState++;
+			if (changeState == 1) {
+				var val = $(this).val() == "" ? null : $(this).val();
+				task.tutorComment = val;
+				var info = cont[0].parent().parent().children().eq(0)
+					.find(".ui-complex-button-info").eq(1);
+				if (val == null) info.addClass("ui-show");
+				else info.removeClass("ui-show");
+			}
+			changeState--;
+		});
 		task.UpdatedEvent.add(function() {
 			changeState++;
 			if (changeState == 1) {
 				slider.slider("value", task.points == null ? 0 : task.points);
 				pointInput.val(task.points == null ? "" : task.points);
 				stateobj[task.status][0].checked = true;
+				tutorComment.val(task.tutorComment);
+				var info = cont[0].parent().parent().children().eq(0)
+					.find(".ui-complex-button-info").eq(1);
+				if (task.tutorComment == null) info.addClass("ui-show");
+				else info.removeClass("ui-show");
 			}
 			changeState--;
 		});

@@ -419,10 +419,12 @@ img.ui-complex-button-background {
 }
 .ui-task-detail-container > div > div:nth-child(2) {
 	width: 100%;
+	padding: 0 0.5em;
+	position: relative;
 }
 .ui-task-points > div:nth-child(2) {
 	width: 100%;
-	padding: 0.2em 1em 0.2em 0.8em;
+	padding: 0.2em 1em 0.2em 0.8em !important;
 }
 .ui-task-points > div:nth-child(2) > div {
 	top: 0.15em;
@@ -433,7 +435,17 @@ img.ui-complex-button-background {
 .ui-task-points > div:nth-child(3) input {
 	width: 3em;
 }
-
+.ui-task-comment > div:nth-child(2) > div {
+	font-size: 0.8em;
+	font-weight: bold;
+}
+.ui-task-comment > div:nth-child(2) textarea {
+	width: 100%;
+	max-width: 100%;
+	min-width: 100%;
+	font-family: inherit;
+	font-size: 0.8em;
+}
 
 
 /*Updatebox*/
