@@ -396,7 +396,7 @@ MarkingTool.Editor.View = new function() {
 	};
 	//erzeugt eine Sidebar, die auch als Fenster geöffnet werden kann. Sie wird für 
 	//den Filter genutzt.
-	var createLayoutWindow = function(name, content) {
+	var createLayoutWindow = function(name, content, viewIndex) {
 		var hc = MarkingTool.Editor.HTML;
 		var window = hc.CreateElementRaw({
 			css: ["ui-layout-window-outer"],
@@ -405,8 +405,18 @@ MarkingTool.Editor.View = new function() {
 					css: ["ui-layout-window-inner"],
 					children: [
 						createWrapper(hc.CreateElementRaw({
-							content: name,
-							css: ["ui-layout-window-title"]
+							css: ["ui-layout-window-title"],
+							children: [
+								hc.CreateElement("span", name),
+								hc.CreateButton("X", function() {
+									window.parent().removeClass("ui-open");
+									$(".ui-ref-view-button .ui-foldable-marker .ui-button")
+										.eq(viewIndex).removeClass("active");
+								}, {
+									element: "span",
+									css: ["ui-close"]
+								})
+							]
 						})),
 						createWrapper(hc.CreateElementRaw({
 							children: [
@@ -432,7 +442,7 @@ MarkingTool.Editor.View = new function() {
 				hc.CreateElementRaw({
 					css: ["ui-layout-left", "ui-layout-dock", "ui-open"],
 					children: [
-						createLayoutWindow("Filter", createFilterBox())
+						createLayoutWindow("Filter", createFilterBox(), 0)
 					]
 				}),
 				createWrapper(hc.CreateElementRaw({
@@ -442,7 +452,7 @@ MarkingTool.Editor.View = new function() {
 				hc.CreateElementRaw({
 					css: ["ui-layout-right", "ui-layout-dock", "ui-open"],
 					children: [
-						createLayoutWindow("Änderungen", [])
+						createLayoutWindow("Änderungen", [], 1)
 					]
 				})
 			]

@@ -220,6 +220,9 @@ body {
 	top: 0;
 	overflow-wrap: break-word;
 }
+.ui-layout-window-title .ui-button.ui-close {
+	display: none;
+}
 
 /*Filterbox*/
 .ui-foldable-group {
@@ -565,7 +568,40 @@ img.ui-complex-button-background {
     user-select: none;
 }
 
-
+/*Media Querys*/
+@media (max-width: 900px) {
+	.ui-layout-dock {
+		width: 0 !important;
+	}
+	.ui-layout-window-outer {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: rgba(0,0,0,0.8);
+		z-index: 1000;
+	}
+	.ui-layout-window-inner {
+		position: absolute;
+		max-width: 300px;
+		max-height: 450px;
+		background-color: white;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+	.ui-layout-window-title .ui-button.ui-close {
+		display: block;
+		position: absolute;
+		right: 0.25em;
+		top: 0.08em;
+		font-size: 0.8em;
+	}
+	.ui-layout-window-title .ui-button.ui-close:hover {
+		background-color: rgba(255,0,0,0.2);
+	}
+}
 
 
 
