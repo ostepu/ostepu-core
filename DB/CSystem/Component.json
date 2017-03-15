@@ -13,6 +13,10 @@
         {
             "name": "request",
             "target": "CLocalObjectRequest"
+        },
+        {
+            "name": "getComponentProfiles",
+            "target": "TApiConfiguration"
         }
     ]
 }

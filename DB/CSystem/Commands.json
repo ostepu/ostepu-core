@@ -3,5 +3,12 @@
         "name": "getTimestamp",
         "method": "GET",
         "path": "/timestamp"
+    },
+    {
+        "name": "getApiProfiles",
+        "outputType": "GateProfile",
+        "inputType": "",
+        "method": "GET",
+        "path": "/api/profiles"
     }
 ]

@@ -7,6 +7,13 @@
     "option": "confPath=install/segments/Komponentenzugang/tapiconfiguration_cconfig.json",
     "links": [
         {
+            "name": "getComponentProfiles",
+            "links": [{
+                "method": "GET",
+                "path": "/api/profiles"
+            }]
+        },
+        {
             "name": "getAllProfiles",
             "target": "DBGate",
             "links": []
