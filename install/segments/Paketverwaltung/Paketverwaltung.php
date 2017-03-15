@@ -124,7 +124,7 @@ class Paketverwaltung {
         self::$pluginFiles = Installation::collect('getPackageDefinitions',$data, array(__CLASS__));
         
         try {
-            $handle = opendir(self::getPackagePath($data));
+            $handle = @opendir(self::getPackagePath($data));
         } catch (Exception $e) {
             // der Ordner konnte nicht zugegriffen werden
             Installation::log(array('text' => self::getPackagePath($data) . ' existiert nicht oder es fehlt die Zugriffsberechtigung.', 'logLevel' => LogLevel::ERROR));
