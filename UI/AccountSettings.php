@@ -85,7 +85,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                 // both passwords are equal
                 $newUserSettings = User::encodeUser(User::createUser($uid, null, null, null, null, null, null,
                                                     $newPasswordHash, $newSalt));
-                $URI = $databaseURI . "/user/" . $uid;
+                $URI = $serverURI . '/DB/DBUser/user/user/' . $uid;
                 http_put_data($URI, $newUserSettings, true, $message);
 
                 if ($message === 201) {
@@ -117,7 +117,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
 
             $newUserSettings = User::encodeUser(User::createUser($uid, null, null, null, null, null, null,
                                                 null, null, null, null, null, null, null, $language));
-            $URI = $databaseURI . '/user/' . $uid;
+            $URI = $serverURI . '/DB/DBUser/user/user/' . $uid;
 
             http_put_data($URI, $newUserSettings, true, $message);
 

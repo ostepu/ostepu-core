@@ -704,7 +704,7 @@ if (isset($_POST['action'])) {// && $_POST['action'] == "new"
                 $result = array_udiff($form_data_old, $forms,"comp_func2");
                 // remove exercises
                 foreach ($result as $ex){
-                    $URL = $databaseURI . "/form/{$ex['formId']}";
+                    $URL = $databaseURI . "/form/form/{$ex['formId']}";
                     $removed = http_delete($URL, true);
                     if (isset($removed['status']) && $removed['status']==201){
                         // removed
@@ -747,7 +747,7 @@ if (isset($_POST['action'])) {// && $_POST['action'] == "new"
                 $result = array_udiff($process_data_old, $processes,"comp_func3");
                 // remove exercises
                 foreach ($result as $ex){
-                    $URL = $databaseURI . "/process/{$ex['processId']}";
+                    $URL = $databaseURI . "/process/process/{$ex['processId']}";
                     $removed = http_delete($URL, true);
                     if (isset($removed['status']) && $removed['status']==201){
                         // removed
