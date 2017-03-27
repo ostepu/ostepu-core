@@ -23,7 +23,7 @@
 <div id="header" class="header" style="">
     <div class="course-info left" style="">
         <div class="course-title uppercase" style="">
-            <?php print $name; ?>
+            <?php print $name; ?><span class="tiny">(<?php echo Language::Get('main','id', $langTemplate); ?>: <?php echo $courses[0]['course']['id'];?>)</span>
         </div>
         <?php $titleState=0; ?>
         <?php if (isset($backURL) && isset($backTitle) && !is_null($backURL)

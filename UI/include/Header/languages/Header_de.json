@@ -1,6 +1,7 @@
 {
     "main": {
         "change-course": "zur Veranstaltung",
-        "pointsInfo": "*kann vom Schlussergebnis<br>abweichen"
+        "pointsInfo": "*kann vom Schlussergebnis<br>abweichen",
+        "id": "ID"
     }
 }

@@ -8,6 +8,7 @@
         "defaultGroupSize": "Max. Gruppengr&ouml;&szlig;e (Standardwert)",
         "defaultExerciseTypes": "Zugelassene Punktearten",
         "yes": "Ja",
-        "no": "Nein"
+        "no": "Nein",
+        "courseid": "Kursnummer"
     }
 }
