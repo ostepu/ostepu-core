@@ -43,7 +43,7 @@ MarkingTool.Event = function() {
 };
 //Implementiert eine einfache Queue
 MarkingTool.Queue = function() {
-	var first = null, last = null;
+	var first = null, last = null, count = 0;
 	//Legt ein Element an das Ende der Queue
 	//element: Wert - das neue Element
 	this.push = function(element) {
@@ -56,6 +56,7 @@ MarkingTool.Queue = function() {
 			last.next = entry;
 			last = entry;
 		}
+		count++;
 	};
 	//Ruft das erste Element von der Queue ab und entfernt dieses
 	//return: Wert - der erste Eintrag
@@ -64,6 +65,7 @@ MarkingTool.Queue = function() {
 		var element = first.element;
 		if (first.next) first = first.next;
 		else first = last = null;
+		count--;
 		return element;
 	};
 	//Fragt ab, ob diese Queue leer ist.
@@ -80,7 +82,12 @@ MarkingTool.Queue = function() {
 	//Löscht alle Elemente in der Queue
 	this.clear = function() {
 		first = last = null;
-	}
+		count = 0;
+	};
+	//Ermittelt die Anzahl in der Queue
+	this.size = function() {
+		return count;
+	};
 };
 
 
@@ -359,6 +366,13 @@ MarkingTool.Editor.View = new function() {
 	var createFilterBox = function() {
 		var hc = MarkingTool.Editor.HTML;
 		return [
+			hc.CreateElementRaw({
+				css: ["warning", "ui-hide"],
+				children: [
+					hc.CreateElement("div", "Warnung", {css: ["warning-header"]}),
+					hc.CreateElement("div", "Da diese Serie sehr groß ist, kann es zu Verzögerungen in der Verarbeitung kommen.")
+				] 
+			}),
 			hc.CreateFoldingGroup("Filter", [
 				hc.CreateElement("div", "Serie:", { css: ["ui-filter-title"] }),
 				hc.CreateSelect(MarkingTool.Editor.View.SheetCodes, undefined, undefined, { css: ["ui-select"] }),
@@ -1208,8 +1222,12 @@ MarkingTool.Editor.View = new function() {
 				$(".ui-task-big-box.loader").removeClass("ui-hide");
 				if (!thisref.createFunctions.pop()())
 					$(".ui-task-big-box.empty").addClass("ui-hide");
-				thisref.Loader.check();
+				thisref.Loader.checkNext();
 			}
+		},
+		checkNext: function() {
+			if (thisref.Loader.canLoad(thisref.Loader.loaderBox))
+				thisref.Loader.loadNext();
 		},
 		check: function() {
 			if (thisref.Loader.lazyLoadList.length != 0) {
@@ -1220,8 +1238,8 @@ MarkingTool.Editor.View = new function() {
 							i--;
 						}
 			}
-			if (thisref.Loader.canLoad(thisref.Loader.loaderBox))
-				thisref.Loader.loadNext();
+			thisref.Loader.checkNext();
+			MarkingTool.Editor.Logic.UpdateTaskCounter();
 		},
 		canLoad: function(element) {
 			var cont = element.parent();
@@ -1358,6 +1376,18 @@ MarkingTool.Editor.Logic = new function() {
 		else $(".ui-task-big-box.empty").removeClass("ui-hide");
 		MarkingTool.Editor.View.Loader.check();
 		MarkingTool.Editor.UpdateIndicator.HideBox();
+	};
+	//Die Anzahl der noch zu erstellenden Tasks
+	this.TaskLeftCounter = 0;
+	
+	this.UpdateTaskCounter = function() {
+		var c = MarkingTool.Editor.View.createFunctions.size();
+		c += MarkingTool.Editor.View.Loader.lazyLoadList.length;
+		thisref.TaskLeftCounter = c;
+		if (c > 50) {
+			$(".warning").removeClass("ui-hide");
+		}
+		else $(".warning").addClass("ui-hide");
 	};
 	
 	//private Init()
@@ -1594,9 +1624,11 @@ MarkingTool.Editor.UpdateFactory = new function() {
 $(function() {
 	//Diese Funktion wird aufgerufen, wenn die Webseite bereit ist. Nun kann alles geladen 
 	//und aufgebaut werden.
+	MarkingTool.Editor.Logic.UpdateTaskCounter();
 	MarkingTool.Editor.View.Init();
 	MarkingTool.Editor.Logic.Init();
 	MarkingTool.Editor.View.createCompleteTaskView(false);
 	MarkingTool.Editor.Logic.ApplyFilter();
+	MarkingTool.Editor.Logic.UpdateTaskCounter();
 	MarkingTool.Editor.UpdateIndicator.HideBox();
 });

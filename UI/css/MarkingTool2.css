@@ -271,6 +271,24 @@ body {
 	width: 100%;
 	margin: 0.2em 0 0.4em 0;
 }
+.warning {
+  border: 1px solid #EACF07;
+  padding: 0.4em;
+  margin: 0.4em;
+  border-radius: 0.4em;
+  font-size: 0.8em;
+  text-align: center;
+  background-color: #FFFBE1;
+}
+.warning.ui-hide {
+	display: none;
+}
+.warning-header {
+  font-size: 1.4em;
+  margin-bottom: 0.2em;
+  color: #EACF07;
+}
+
 
 /*Contentbox*/
 .ui-task-big-box {
