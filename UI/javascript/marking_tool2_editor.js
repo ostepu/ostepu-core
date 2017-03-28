@@ -1049,6 +1049,7 @@ MarkingTool.Editor.View = new function() {
 		var list = [];
 		var box = {
 			control: b.box,
+			show: false,
 			filterlist: [],
 			tasks: [],
 			setChanged: function() {
@@ -1063,8 +1064,9 @@ MarkingTool.Editor.View = new function() {
 			setNormal: function() {
 				b.box.attr("data-status", "normal");
 			},
-			createTasks: function() {
+			createTasks: function(lazy) {
 				if (list.length == 0) return;
+				if ((lazy || false) && !thisref.Loader.checkLazy(b.box)) return;
 				for (var i = 0; i<list.length; ++i) {
 					list[i].create();
 					list[i].box.appendTo(b.content);
@@ -1090,7 +1092,7 @@ MarkingTool.Editor.View = new function() {
 				if (useTaskNum) show = taskfilter(key);
 				else show = groupfilter(MarkingTool.Editor.Logic.bName[key].user);
 				if (show) {
-					box.createTasks();
+					//box.createTasks(true);
 					for (var i = 0; i<box.tasks.length; ++i)
 						box.tasks[i].removeClass("ui-hide");
 					b.box.removeClass("ui-hide");
@@ -1099,12 +1101,12 @@ MarkingTool.Editor.View = new function() {
 					for (var i = 0; i<box.filterlist.length; ++i)
 						show |= box.filterlist[i](filter);
 					if (show) {
-						box.createTasks();
+						//box.createTasks(true);
 						b.box.removeClass("ui-hide");
 					}
 					else b.box.addClass("ui-hide");
 				}
-				return show;
+				return box.show = show;
 			}
 		};
 		for (var i = 0; i<items.length; ++i) {
@@ -1124,6 +1126,10 @@ MarkingTool.Editor.View = new function() {
 				};
 			})(items[i].task, box));
 		}
+		thisref.Loader.addLazy(b.box, function() {
+			if (box.show) box.createTasks();
+			return box.show;
+		});
 		return box;
 	};
 	//Erzeugt alle Container für Einsendungen.
@@ -1175,6 +1181,7 @@ MarkingTool.Editor.View = new function() {
 	//Ein paar Methoden, die das Nachladen von Boxen unterstützen.
 	this.Loader = {
 		loaderBox: undefined,
+		lazyLoadList: [],
 		createLoaderContainer: function() {
 			var hc = MarkingTool.Editor.HTML;
 			var content = "";
@@ -1195,7 +1202,7 @@ MarkingTool.Editor.View = new function() {
 		loadNext: function() {
 			if (thisref.createFunctions.isEmpty()) {
 				$(".ui-task-big-box.loader").addClass("ui-hide");
-				MarkingTool.Editor.Logic.ApplyFilter();
+				//MarkingTool.Editor.Logic.ApplyFilter();
 			}
 			else {
 				$(".ui-task-big-box.loader").removeClass("ui-hide");
@@ -1205,14 +1212,38 @@ MarkingTool.Editor.View = new function() {
 			}
 		},
 		check: function() {
-			var cont = $(".ui-layout-main");
-			var scrollPos = cont[0].scrollTop;
-			var offset = thisref.Loader.loaderBox[0].offsetTop - 
-				cont[0].offsetTop;
-			var height = cont.outerHeight(true);
-			
-			if (scrollPos + height >= offset)
+			if (thisref.Loader.lazyLoadList.length != 0) {
+				for (var i = 0; i<thisref.Loader.lazyLoadList.length; ++i)
+					if (thisref.Loader.canLoad(thisref.Loader.lazyLoadList[i][0]) &&
+						thisref.Loader.lazyLoadList[i][1]()) {
+							thisref.Loader.lazyLoadList.splice(i, 1);
+							i--;
+						}
+			}
+			if (thisref.Loader.canLoad(thisref.Loader.loaderBox))
 				thisref.Loader.loadNext();
+		},
+		canLoad: function(element) {
+			var cont = element.parent();
+			var scrollPos = cont[0].scrollTop;
+			var offset = element[0].offsetTop - cont[0].offsetTop;
+			var height = cont.outerHeight(true);
+			return scrollPos + height >= offset;
+		},
+		addLazy: function(element, create) {
+			thisref.Loader.lazyLoadList.push([element, create]);
+		},
+		checkLazy: function(element) {
+			var ind = 0;
+			for (; ind < thisref.Loader.lazyLoadList.length; ++ind)
+				if (thisref.Loader.lazyLoadList[ind][0] == element)
+					break;
+			if (ind >= thisref.Loader.lazyLoadList.length) return true;
+			if (!thisref.Loader.canLoad(element)) return false;
+			if (thisref.Loader.lazyLoadList[ind][1]())
+				thisref.Loader.lazyLoadList.splice(ind, 1);
+			else return false;
+			return true;
 		}
 	};
 	
@@ -1325,6 +1356,7 @@ MarkingTool.Editor.Logic = new function() {
 		}
 		if (show) $(".ui-task-big-box.empty").addClass("ui-hide");
 		else $(".ui-task-big-box.empty").removeClass("ui-hide");
+		MarkingTool.Editor.View.Loader.check();
 		MarkingTool.Editor.UpdateIndicator.HideBox();
 	};
 	
@@ -1565,5 +1597,6 @@ $(function() {
 	MarkingTool.Editor.View.Init();
 	MarkingTool.Editor.Logic.Init();
 	MarkingTool.Editor.View.createCompleteTaskView(false);
+	MarkingTool.Editor.Logic.ApplyFilter();
 	MarkingTool.Editor.UpdateIndicator.HideBox();
 });
