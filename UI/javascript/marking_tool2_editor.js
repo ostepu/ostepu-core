@@ -977,29 +977,33 @@ MarkingTool.Editor.View = new function() {
 	//dieser bearbeitet und angezeigt.
 	this.createTasksView = function(task, useTaskNum) {
 		var hc = MarkingTool.Editor.HTML;
-		var box = hc.CreateElementRaw({
-			css: ["ui-task-box"],
-			children: [
-				hc.CreateElementRaw({
-					css: ["ui-task-header"],
+		var result = {
+			box: null,
+			show: false,
+			create: function() {
+				result.box = hc.CreateElementRaw({
+					css: ["ui-task-box"],
 					children: [
-						createWrapper(createWrapper(createTaskSingleBar(task, useTaskNum))),
-						createWrapper(hc.CreateButton("", function(){
-							$(this).parent().parent().parent().toggleClass("ui-open");
-						}, {
-							css: ["ui-task-header-switch"],
-							title: "detailierte Ansicht"
-						}))
+						hc.CreateElementRaw({
+							css: ["ui-task-header"],
+							children: [
+								createWrapper(createWrapper(createTaskSingleBar(task, useTaskNum))),
+								createWrapper(hc.CreateButton("", function(){
+									$(this).parent().parent().parent().toggleClass("ui-open");
+								}, {
+									css: ["ui-task-header-switch"],
+									title: "detailierte Ansicht"
+								}))
+							]
+						}),
+						hc.CreateElementRaw({
+							css: ["ui-task-detail-container"],
+							children: createTaskDetailContent(task)
+						})
 					]
-				}),
-				hc.CreateElementRaw({
-					css: ["ui-task-detail-container"],
-					children: createTaskDetailContent(task)
-				})
-			]
-		});
-		return {
-			box: box,
+				});
+				if (!result.show) result.box.addClass("ui-hide");
+			},
 			filter: function(filter) {
 				var show = true;
 				if (filter.lecture != "all") {
@@ -1025,11 +1029,14 @@ MarkingTool.Editor.View = new function() {
 					show |= includes(task.studentComment, filter.text);
 					show |= includes(task.date, filter.text);
 				}
-				if (show) box.removeClass("ui-hide");
-				else box.addClass("ui-hide");
-				return show;
+				if (result.box != null) {
+					if (show) result.box.removeClass("ui-hide");
+					else result.box.addClass("ui-hide");
+				}
+				return result.show = show;
 			}
 		};
+		return result;
 	};
 	//Erzeugt einen Container für alle Einsendungen einer Rubrik. Alle Elemente
 	//sind schon eingetragen.
@@ -1039,15 +1046,10 @@ MarkingTool.Editor.View = new function() {
 			items = MarkingTool.Editor.Logic.bTask[key];
 		else items = MarkingTool.Editor.Logic.bName[key].tasks;
 		var b = createSimpleTaskBox(key, useTaskNum);
+		var list = [];
 		var box = {
 			control: b.box,
 			filterlist: [],
-			show: function() {
-				b.box.show();
-			},
-			hide: function() {
-				b.box.hide();
-			},
 			tasks: [],
 			setChanged: function() {
 				b.box.attr("data-status", "changed");
@@ -1060,6 +1062,15 @@ MarkingTool.Editor.View = new function() {
 			},
 			setNormal: function() {
 				b.box.attr("data-status", "normal");
+			},
+			createTasks: function() {
+				if (list.length == 0) return;
+				for (var i = 0; i<list.length; ++i) {
+					list[i].create();
+					list[i].box.appendTo(b.content);
+					box.tasks.push(list[i]);
+				}
+				list = [];
 			},
 			filter: function(filter) {
 				var groupfilter = function(group) {
@@ -1079,6 +1090,7 @@ MarkingTool.Editor.View = new function() {
 				if (useTaskNum) show = taskfilter(key);
 				else show = groupfilter(MarkingTool.Editor.Logic.bName[key].user);
 				if (show) {
+					box.createTasks();
 					for (var i = 0; i<box.tasks.length; ++i)
 						box.tasks[i].removeClass("ui-hide");
 					b.box.removeClass("ui-hide");
@@ -1086,7 +1098,10 @@ MarkingTool.Editor.View = new function() {
 				else {
 					for (var i = 0; i<box.filterlist.length; ++i)
 						show |= box.filterlist[i](filter);
-					if (show) b.box.removeClass("ui-hide");
+					if (show) {
+						box.createTasks();
+						b.box.removeClass("ui-hide");
+					}
 					else b.box.addClass("ui-hide");
 				}
 				return show;
@@ -1094,9 +1109,7 @@ MarkingTool.Editor.View = new function() {
 		};
 		for (var i = 0; i<items.length; ++i) {
 			var _task = thisref.createTasksView(items[i].task, !useTaskNum);
-			var task = _task.box;
-			task.appendTo(b.content);
-			box.tasks.push(task);
+			list.push(_task);
 			box.filterlist.push(_task.filter);
 			items[i].task.UpdatedEvent.add((function(task, box) {
 				return function() {
