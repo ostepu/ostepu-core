@@ -325,7 +325,7 @@ MarkingTool.Editor.View = new function() {
 		var optionsBar = hc.CreateElementRaw({
 			css: ["ui-commandbar"],
 			children: [
-				hc.CreateButton("Optionen"),
+				hc.CreateButton("Zurück"),
 				hc.CreateElementRaw({
 					css: ["ui-commandbar-container"],
 					children: [
@@ -347,7 +347,8 @@ MarkingTool.Editor.View = new function() {
 							MarkingTool.Editor.UpdateIndicator.ShowBox();
 							document.location.reload();
 						}),
-						hc.CreateButton("Speichern")
+						hc.CreateButton("Speichern"),
+						hc.CreateButton("Optionen")
 					]
 				})
 			]
