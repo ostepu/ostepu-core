@@ -77,6 +77,10 @@ MarkingTool.Queue = function() {
 		if (first == null) return null;
 		else return first.element;
 	};
+	//Löscht alle Elemente in der Queue
+	this.clear = function() {
+		first = last = null;
+	}
 };
 
 
@@ -1112,31 +1116,97 @@ MarkingTool.Editor.View = new function() {
 	this.createCompleteTaskView = function(useTaskNum) {
 		var boxes = [], box;
 		var container = $(".ui-layout-main");
-		container.html("");
-		var show = false;
+		container.children().filter(":not(.loader):not(.empty)").remove();
+		//container.html("");
+		thisref.createFunctions.clear();
+		//var show = false;
 		if (useTaskNum) {
 			for (var task in MarkingTool.Editor.Logic.bTask)
 				if (MarkingTool.Editor.Logic.bTask.hasOwnProperty(task)) {
-					boxes.push(box = thisref.createTaskBox(task, useTaskNum));
-					box.control.appendTo(container);
-					show |= box.filter(MarkingTool.Editor.Logic.Filter);
+					thisref.createFunctions.push((function(task, boxes, loader) {
+						return function() {
+							var box;
+							boxes.push(box = thisref.createTaskBox(task, useTaskNum));
+							box.control.insertBefore(loader);
+							return box.filter(MarkingTool.Editor.Logic.Filter);
+						};
+					})(task, boxes, thisref.Loader.loaderBox));
+					//boxes.push(box = thisref.createTaskBox(task, useTaskNum));
+					//box.control.appendTo(container);
+					//show |= box.filter(MarkingTool.Editor.Logic.Filter);
 				}
 		}
 		else {
 			for (var i = 0; i<MarkingTool.Editor.Logic.bName.length; ++i) {
-				boxes.push(box = thisref.createTaskBox(i, useTaskNum));
-				box.control.appendTo(container);
-				show |= box.filter(MarkingTool.Editor.Logic.Filter);
+				thisref.createFunctions.push((function(i, boxes, loader) {
+					return function() {
+						var box;
+						boxes.push(box = thisref.createTaskBox(i, useTaskNum));
+						box.control.insertBefore(loader);
+						return box.filter(MarkingTool.Editor.Logic.Filter);
+					};
+				})(i, boxes, thisref.Loader.loaderBox));
+				//boxes.push(box = thisref.createTaskBox(i, useTaskNum));
+				//box.control.appendTo(container);
+				//show |= box.filter(MarkingTool.Editor.Logic.Filter);
 			}
 		}
-		container.append(createEmptyTaskBox(!show));
+		container.append(createEmptyTaskBox(false));
+		//container.append(createEmptyTaskBox(!show));
 		thisref.Boxes = boxes;
+		thisref.Loader.check();
 	}
+	//Eine Schlange an Funktionen, die neue Boxen erzeugen können.
+	this.createFunctions = new MarkingTool.Queue();
+	//Ein paar Methoden, die das Nachladen von Boxen unterstützen.
+	this.Loader = {
+		loaderBox: undefined,
+		createLoaderContainer: function() {
+			var hc = MarkingTool.Editor.HTML;
+			var content = "";
+			for (var i = 0; i<12; ++i) content+="<div/>";
+			var box = hc.CreateElementRaw({
+				css: ["ui-task-big-box", "loader"],
+				children: [
+					hc.CreateElementRaw({
+						css: ["loading-rotator"],
+						content: content
+					})
+				]
+			});
+			box.appendTo($(".ui-layout-main"));
+			$(".ui-layout-main").scroll(thisref.Loader.check);
+			thisref.Loader.loaderBox = box;
+		},
+		loadNext: function() {
+			if (thisref.createFunctions.isEmpty()) {
+				$(".ui-task-big-box.loader").addClass("ui-hide");
+				MarkingTool.Editor.Logic.ApplyFilter();
+			}
+			else {
+				$(".ui-task-big-box.loader").removeClass("ui-hide");
+				if (!thisref.createFunctions.pop()())
+					$(".ui-task-big-box.empty").addClass("ui-hide");
+				thisref.Loader.check();
+			}
+		},
+		check: function() {
+			var cont = $(".ui-layout-main");
+			var scrollPos = cont[0].scrollTop;
+			var offset = thisref.Loader.loaderBox[0].offsetTop - 
+				cont[0].offsetTop;
+			var height = cont.outerHeight(true);
+			
+			if (scrollPos + height >= offset)
+				thisref.Loader.loadNext();
+		}
+	};
 	
 	//private Init()
 	var _init = function(){
 		createCommandBar();
 		createLayoutContainer();
+		thisref.Loader.createLoaderContainer();
 	};
 	//Initialisiert die Oberfläche
 	this.Init = function() {

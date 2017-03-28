@@ -305,6 +305,16 @@ body {
 	font-style: italic;
 	background-color: #F3F3F3;
 }
+.ui-task-big-box.loader {
+	border: gray;
+	box-shadow: 0.06em .06em 0.2em gray, 0.06em 0.06em 1em white inset;
+	background-color: #E7E4E4;
+	text-align: center;
+	padding: 0;
+}
+.ui-task-big-box.loader > div {
+	display: inline-block;
+}
 .ui-task-box {
 	position: relative;
 }
