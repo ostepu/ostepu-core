@@ -368,7 +368,16 @@ MarkingTool.Editor.View = new function() {
 		var hc = MarkingTool.Editor.HTML;
 		return [
 			hc.CreateElementRaw({
-				css: ["warning", "ui-hide"],
+				css: ["warning", "devmode"],
+				children: [
+					hc.CreateElement("div", "Warnung", {css: ["warning-header"]}),
+					hc.CreateElement("div", "Dieser Bestandteil der Plattform befindet sich noch im aktiven Entwicklungsstadium, "+
+					"weshalb einige Dinge unter Umständen noch nicht funktionieren oder sich in Zukunft sehr stark "+
+					"verändern werden.")
+				] 
+			}),
+			hc.CreateElementRaw({
+				css: ["warning", "many-items", "ui-hide"],
 				children: [
 					hc.CreateElement("div", "Warnung", {css: ["warning-header"]}),
 					hc.CreateElement("div", "Da diese Serie sehr groß ist, kann es zu Verzögerungen in der Verarbeitung kommen.")
@@ -1405,9 +1414,9 @@ MarkingTool.Editor.Logic = new function() {
 		c += MarkingTool.Editor.View.Loader.lazyLoadList.length;
 		thisref.TaskLeftCounter = c;
 		if (c > 50) {
-			$(".warning").removeClass("ui-hide");
+			$(".warning.many-items").removeClass("ui-hide");
 		}
-		else $(".warning").addClass("ui-hide");
+		else $(".warning.many-items").addClass("ui-hide");
 	};
 	
 	//private Init()
