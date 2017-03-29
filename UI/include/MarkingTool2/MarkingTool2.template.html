@@ -130,7 +130,6 @@
 						) : null,
 					"tasknum" => isset($namesOfExercises[$exercise["id"]]) ? 
 						$namesOfExercises[$exercise["id"]] : null
-					//"isMainTask" => intval($exercise["linkName"]) != 0
 				);
 			}
 			$d[] = array(
@@ -141,4 +140,5 @@
 		echo json_encode($d);
 	?>;
 	MarkingTool.Editor.Logic.TaskLeftCounter = <?php echo $c; ?>;
+	MarkingTool.Editor.Settings.RestrictedMode = <?php echo $restricted == 1 ? "false" : "true"; ?>;
 </script>

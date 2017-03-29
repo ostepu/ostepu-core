@@ -120,7 +120,8 @@ MarkingTool.Editor.HTML = new function(){
 			obj.addClass(css[i]);
 		obj.html(content);
 		for (var i = 0; i<children.length; ++i)
-			obj.append(children[i]);
+			if (children[i] != null)
+				obj.append(children[i]);
 		return obj;
 	};
 	//Erstellt ein neues HTML-Element
@@ -386,22 +387,35 @@ MarkingTool.Editor.View = new function() {
 					MarkingTool.Editor.Logic.Filter.state = $(this).val();
 					MarkingTool.Editor.Logic.ApplyFilter();
 				}, { css: ["ui-select"] }),
-				hc.CreateElement("div", "Ohne Einsendung", { css: ["ui-filter-title"] }),
-				hc.CreateInput("checkbox", function() {
-					MarkingTool.Editor.Logic.Filter.showTaskWithoutUserFiles = $(this).is(":checked");
-					MarkingTool.Editor.Logic.ApplyFilter();
-				}),
-				hc.CreateElement("label", "Einträge ohne Einsendungen anzeigen", {
-					style: "font-size: 0.8em"
-				})
+				MarkingTool.Editor.Settings.RestrictedMode ? null :
+					hc.CreateElement("div", "Ohne Einsendung", { css: ["ui-filter-title"] }),
+				MarkingTool.Editor.Settings.RestrictedMode ? null :
+					hc.CreateInput("checkbox", function() {
+						MarkingTool.Editor.Logic.Filter.showTaskWithoutUserFiles = $(this).is(":checked");
+						MarkingTool.Editor.Logic.ApplyFilter();
+					}),
+				MarkingTool.Editor.Settings.RestrictedMode ? null :
+					hc.CreateElement("label", "Einträge ohne Einsendungen anzeigen", {
+						style: "font-size: 0.8em"
+					})
 			], { css: ["ui-open"] }),
-			hc.CreateFoldingGroup("Sortierung", [
-				hc.CreateElement("div", "Sortiere nach:", { css: ["ui-filter-title"] }),
-				hc.CreateSelect({
-					"name": "Nach Namen",
-					"task": "Nach Aufgaben"
-				}, "name", undefined, { css: ["ui-select"] })
-			], { css: ["ui-open"] }),
+			MarkingTool.Editor.Settings.RestrictedMode ? null :
+				hc.CreateFoldingGroup("Sortierung", [
+					hc.CreateElement("div", "Sortiere nach:", { css: ["ui-filter-title"] }),
+					hc.CreateSelect({
+						"name": "Nach Namen",
+						"task": "Nach Aufgaben"
+					}, "name", function() {
+						var useTaskNum = $(this).val() == "task";
+						MarkingTool.Editor.UpdateIndicator.ShowBox();
+						MarkingTool.Editor.View.createFunctions.clear();
+						MarkingTool.Editor.View.Loader.lazyLoadList = [];
+						MarkingTool.Editor.View.createCompleteTaskView(useTaskNum);
+						MarkingTool.Editor.Logic.ApplyFilter();
+						MarkingTool.Editor.Logic.UpdateTaskCounter();
+						MarkingTool.Editor.UpdateIndicator.HideBox();
+					}, { css: ["ui-select"] })
+				], { css: ["ui-open"] }),
 			hc.CreateFoldingGroup("Suche", [
 				hc.CreateInput("text", function() {
 					MarkingTool.Editor.Logic.Filter.text = $(this).val();
@@ -487,7 +501,8 @@ MarkingTool.Editor.View = new function() {
 		var bar = hc.CreateElementRaw({
 			css: ["ui-task-bar"],
 			children: [
-				hc.CreateElement("div", task.path[1], { css: ["ui-task-num"] }),
+				(useTaskNum ? hc.CreateElement("div", task.path[1], { css: ["ui-task-num"] }) :
+					hc.CreateElement("div", "#"+task.markingId, { css: ["ui-task-sub"], title: "Einsendungs-ID" })),
 				hc.CreateElementRaw({
 					children: [
 						inpPoints = hc.CreateInput("text", function(){
@@ -552,7 +567,9 @@ MarkingTool.Editor.View = new function() {
 					hc.CreateElement("div", "K"),
 					undefined,
 					{ title: "Kontrolleureinsendung" }
-				)
+				),
+				!useTaskNum ? null :
+					hc.CreateElement("div", "#"+task.markingId, { css: ["ui-task-sub"], title: "Einsendungs-ID" })
 			]
 		});
 		task.UpdatedEvent.add(function() {
@@ -1185,7 +1202,8 @@ MarkingTool.Editor.View = new function() {
 				//show |= box.filter(MarkingTool.Editor.Logic.Filter);
 			}
 		}
-		container.append(createEmptyTaskBox(false));
+		if ($(".ui-task-big-box.empty").length == 0)
+			container.append(createEmptyTaskBox(false));
 		//container.append(createEmptyTaskBox(!show));
 		thisref.Boxes = boxes;
 		thisref.Loader.check();
@@ -1314,6 +1332,8 @@ MarkingTool.Editor.Logic = new function() {
 			var tasklist = [];
 			for (var i2 = 0; i2<data[i1].tasks.length; ++i2) {
 				var task = data[i1].tasks[i2];
+				if (MarkingTool.Editor.Settings.RestrictedMode && task.submissionId == null)
+					continue; //Performance Optimierung
 				var num = task.tasknum;
 				task = createTaskObject(task, [user, num]);
 				if (bTask[num] == undefined) bTask[num] = [];
@@ -1402,6 +1422,13 @@ MarkingTool.Editor.Logic = new function() {
 	this.Init = function() {
 		_init.call(thisref);
 	};
+};
+
+//Stellt alle Einstellungsfunktionen bereit
+MarkingTool.Editor.Settings = new function() {
+	var thisref = this;
+	//Bool - Bestimmt, ob der Nutzer nur eingeschränkte Rechte hat.
+	this.RestrictedMode = false;
 };
 
 //=== Bibliothek um die Updates nachzuvollziehen
@@ -1627,7 +1654,7 @@ $(function() {
 	MarkingTool.Editor.Logic.UpdateTaskCounter();
 	MarkingTool.Editor.View.Init();
 	MarkingTool.Editor.Logic.Init();
-	MarkingTool.Editor.View.createCompleteTaskView(false);
+	MarkingTool.Editor.View.createCompleteTaskView(MarkingTool.Editor.Settings.RestrictedMode);
 	MarkingTool.Editor.Logic.ApplyFilter();
 	MarkingTool.Editor.Logic.UpdateTaskCounter();
 	MarkingTool.Editor.UpdateIndicator.HideBox();

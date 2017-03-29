@@ -35,6 +35,9 @@ $menu = MakeNavigationElement($user_course_data,
 			   
 $c = Template::WithTemplateFile('include/MarkingTool2/MarkingTool2.template.html');
 $c->bind($markingTool_data);
+$c->bind(array(
+	"restricted" => Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUserData)
+));
 
 
 $w = new HTMLWrapper(/*$h, */$c);
