@@ -635,7 +635,6 @@ MarkingTool.Editor.View = new function() {
 	var createTaskDetailContent = function(task) {
 		var hc = MarkingTool.Editor.HTML;
 		task.changeState_detailContent = 0;
-		task.token = Math.random();
 		var slider, pointInput, stategroup, tutorComment, studFileBut, studFileInput,
 			tutorFileBut, tutorFileInput, acceptedInput;
 		var states = [];

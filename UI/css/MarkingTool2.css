@@ -12,6 +12,7 @@
   display: table;
   background-color: rgba(128, 128, 128, 0.92);
   z-index: 100000;
+  cursor: wait;
 }
 .loading-box > div {
   display: table-row;
@@ -563,6 +564,7 @@ img.ui-complex-button-background {
 	height: 0.8em;
 	position: relative;
 	text-align: left;
+	cursor: pointer;
 }
 .ui-slider-range {
 	left: 0;
@@ -585,6 +587,7 @@ img.ui-complex-button-background {
     height: 1.2em;
     cursor: default;
 	border-radius: 3px;
+	cursor: ew-resize;
 }
 
 /*Keine Benutzerauswahl*/
@@ -594,6 +597,7 @@ img.ui-complex-button-background {
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
+	cursor: default;
 }
 
 /*Media Querys*/
