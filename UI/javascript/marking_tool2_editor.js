@@ -297,6 +297,11 @@ MarkingTool.Editor.HTML = new function(){
 			step: 0.1,
 			slide: function(event, ui) {
 				if (method != undefined) method(ui.value);
+			},
+			create: function(event, ui) {
+				slider[0].initTest = 1;
+				try { slider.slider("value", value); }
+				catch (e) { console.log(e); }
 			}
 		});
 		return slider;
@@ -629,7 +634,8 @@ MarkingTool.Editor.View = new function() {
 	//Erzeugt den Inhalt für die erweiterten Funktionen
 	var createTaskDetailContent = function(task) {
 		var hc = MarkingTool.Editor.HTML;
-		var changeState = 0;
+		task.changeState_detailContent = 0;
+		task.token = Math.random();
 		var slider, pointInput, stategroup, tutorComment, studFileBut, studFileInput,
 			tutorFileBut, tutorFileInput, acceptedInput;
 		var states = [];
@@ -639,11 +645,11 @@ MarkingTool.Editor.View = new function() {
 				MarkingTool.Editor.View.SimpleStateCodes[i].key;
 			states.push(stateobj[MarkingTool.Editor.View.SimpleStateCodes[i].key] = 
 				hc.CreateInput("radio", function() {
-					changeState++;
-					if (changeState == 1) {
+					task.changeState_detailContent++;
+					if (task.changeState_detailContent == 1) {
 						task.status = stategroup.find(":checked").val();
 					}
-					changeState--;
+					task.changeState_detailContent--;
 				}, {
 					value: MarkingTool.Editor.View.SimpleStateCodes[i].key,
 					name: "state-"+task.id+"-"+task.groupIndex ,
@@ -656,13 +662,13 @@ MarkingTool.Editor.View = new function() {
 				//nicht zum DOM gehört. :(
 				setTimeout(function(){ 
 					//alert ("now "+id+"\n"+$("#"+id).length);
-					changeState++;
+					task.changeState_detailContent++;
 					var e = stateobj[task.status];
 					//e.addClass("hi");
 					//e.attr("checked", "checked");
 					//e.prop("checked", true);
 					e[0].checked = true;
-					changeState--;
+					task.changeState_detailContent--;
 				}, 1000);
 			}
 			states.push(hc.CreateElement("label", 
@@ -679,18 +685,18 @@ MarkingTool.Editor.View = new function() {
 					hc.CreateElement("div", "Punkte:"),
 					createWrapper(slider = hc.CreateTrackBar(task.points == null ? 0 : task.points, 
 						task.maxPoints, function(value) {
-							changeState++;
-							if (changeState == 1) {
+							task.changeState_detailContent++;
+							if (task.changeState_detailContent == 1) {
 								task.points = value;
 								pointInput.val(task.points == null ? "" : task.points);
 							}
-							changeState--;
+							task.changeState_detailContent--;
 						})),
 					hc.CreateElementRaw({
 						children: [
 							pointInput = hc.CreateInput("text", function() {
-								changeState++;
-								if (changeState == 1) {
+								task.changeState_detailContent++;
+								if (task.changeState_detailContent == 1) {
 									var val = $(this).val();
 									try {
 										task.points = val == "" || val == undefined ? undefined : val * 1.0; 
@@ -701,7 +707,7 @@ MarkingTool.Editor.View = new function() {
 									}
 									slider.slider("value", task.points == null ? 0 : task.points);
 								}
-								changeState--;
+								task.changeState_detailContent--;
 							}, {
 								value: task.points == null ? "" : task.points,
 								placeholder: "leer"
@@ -730,11 +736,11 @@ MarkingTool.Editor.View = new function() {
 					hc.CreateElementRaw({
 						children: [
 							acceptedInput = hc.CreateInput("checkbox", function(){
-								changeState++;
-								if (changeState == 1) {
+								task.changeState_detailContent++;
+								if (task.changeState_detailContent == 1) {
 									task.accepted = $(this).is(":checked");
 								}
-								changeState--;
+								task.changeState_detailContent--;
 							}, task.accepted ? { checked: "checked" } : {}),
 							hc.CreateElement("label", "Diese Einsendung akzeptieren", {
 								style: "font-size: 0.9em"
@@ -785,8 +791,8 @@ MarkingTool.Editor.View = new function() {
 										}
 									),
 									studFileInput = hc.CreateInput("file", function(evt) {
-										changeState++;
-										if (changeState == 1) {
+										task.changeState_detailContent++;
+										if (task.changeState_detailContent == 1) {
 											if (evt.target.files.length == 0)
 												task.getPropertys()["userFile"].resetValue();
 											else task.userFile = {
@@ -798,7 +804,7 @@ MarkingTool.Editor.View = new function() {
 												info.removeClass("ui-show");
 											else info.addClass("ui-show");
 										}
-										changeState--;
+										task.changeState_detailContent--;
 									})
 								]
 							}),
@@ -816,8 +822,8 @@ MarkingTool.Editor.View = new function() {
 										}
 									),
 									tutorFileInput = hc.CreateInput("file", function(evt) {
-										changeState++;
-										if (changeState == 1) {
+										task.changeState_detailContent++;
+										if (task.changeState_detailContent == 1) {
 											if (evt.target.files.length == 0)
 												task.getPropertys()["tutorFile"].resetValue();
 											else task.tutorFile = {
@@ -829,7 +835,7 @@ MarkingTool.Editor.View = new function() {
 												info.removeClass("ui-show");
 											else info.addClass("ui-show");
 										}
-										changeState--;
+										task.changeState_detailContent--;
 									})
 								]
 							})
@@ -839,8 +845,8 @@ MarkingTool.Editor.View = new function() {
 			})
 		];
 		tutorComment.change(function() {
-			changeState++;
-			if (changeState == 1) {
+			task.changeState_detailContent++;
+			if (task.changeState_detailContent == 1) {
 				var val = $(this).val() == "" ? null : $(this).val();
 				task.tutorComment = val;
 				var info = cont[0].parent().parent().children().eq(0)
@@ -848,13 +854,14 @@ MarkingTool.Editor.View = new function() {
 				if (val == null) info.addClass("ui-show");
 				else info.removeClass("ui-show");
 			}
-			changeState--;
+			task.changeState_detailContent--;
 		});
 		task.UpdatedEvent.add(function() {
-			changeState++;
-			if (changeState == 1) {
+			task.changeState_detailContent++;
+			if (task.changeState_detailContent == 1) {
 				//Points
-				slider.slider("value", task.points == null ? 0 : task.points);
+				try { slider.slider("value", task.points == null ? 0 : task.points); }
+				catch (e) {} //ignore this shit
 				pointInput.val(task.points == null ? "" : task.points);
 				//Status
 				stateobj[task.status][0].checked = true;
@@ -891,7 +898,7 @@ MarkingTool.Editor.View = new function() {
 				clearFileInput(tutorFileInput[0]);
 				tutorFileBut.parent().attr("data-has-file", task.tutorFile != null);
 			}
-			changeState--;
+			task.changeState_detailContent--;
 		});
 		return cont;
 	};
@@ -1177,6 +1184,7 @@ MarkingTool.Editor.View = new function() {
 		var boxes = [], box;
 		var container = $(".ui-layout-main");
 		container.children().filter(":not(.loader):not(.empty)").remove();
+		container.find(".ui-trackbar").slider("destroy");
 		//container.html("");
 		thisref.createFunctions.clear();
 		//var show = false;
