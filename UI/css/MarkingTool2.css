@@ -149,7 +149,14 @@ body {
   border-top: 0 solid transparent;
   border-bottom: 0.6em solid white;
 }
-
+.ui-change-counter {
+	display: inline-block;
+	font-size: 0.5em;
+	background-color: lightyellow;
+	padding: 0.1em 0.4em;
+	margin: 0 0 0 0.5em;
+	border-radius: 1em;
+}
 
 
 /*Layout-Container*/

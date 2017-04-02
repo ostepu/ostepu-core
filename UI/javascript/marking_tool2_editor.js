@@ -335,6 +335,7 @@ MarkingTool.Editor.View = new function() {
 	//erzeugt die Optionsleiste ganz oben
 	var createCommandBar = function() {
 		var hc = MarkingTool.Editor.HTML;
+		var counter;
 		var optionsBar = hc.CreateElementRaw({
 			css: ["ui-commandbar"],
 			children: [
@@ -360,13 +361,22 @@ MarkingTool.Editor.View = new function() {
 							MarkingTool.Editor.UpdateIndicator.ShowBox();
 							document.location.reload();
 						}),
-						hc.CreateButton("Speichern"),
+						hc.CreateButton("Speichern", undefined, {
+							children: [
+								counter = hc.CreateElement("div", "0", {css:["ui-change-counter"]})
+							]
+						}),
 						hc.CreateButton("Optionen")
 					]
 				})
 			]
 		});
 		createWrapper(optionsBar).appendTo($(".content-box"));
+		var upd = function() {
+			counter.html(MarkingTool.Editor.UpdateFactory.UpdateList.length);
+		};
+		MarkingTool.Editor.UpdateFactory.AddedEvent.add(upd);
+		MarkingTool.Editor.UpdateFactory.RemovedEvent.add(upd);
 	};
 	//erzeugt die Inhalte für die Filterbox auf der linken seite
 	var createFilterBox = function() {
