@@ -1346,6 +1346,7 @@ MarkingTool.Editor.Logic = new function() {
 		//Setze alle Werte als Default
 		if (data.status == null) data.status = -1;
 		if (data.accepted == null) data.accepted = false;
+		data.changeTime = Number.MAX_SAFE_INTEGER;
 		data.setAllValuesAsDefault();
 		//Das Objekt ist jetzt fertig und zur Überwachung hinzugefügt
 		return data;
@@ -1611,6 +1612,7 @@ MarkingTool.Editor.UpdateFactory = new function() {
 	var thisref = this;
 	var changedHandler = function(sender) {
 		if (sender.isValueChanged()) {
+			sender.changeTime = Date.now(); //Zeit in ms
 			for (var i = 0; i<thisref.UpdateList.length; ++i)
 				if (thisref.UpdateList[i] == sender)
 					return;
@@ -1618,6 +1620,7 @@ MarkingTool.Editor.UpdateFactory = new function() {
 			addedEvent.invoke(sender);
 		}
 		else {
+			sender.changeTime = Number.MAX_SAFE_INTEGER;
 			for (var i = 0; i<thisref.UpdateList.length; ++i)
 				if (thisref.UpdateList[i] == sender) {
 					thisref.UpdateList.splice(i, 1);
