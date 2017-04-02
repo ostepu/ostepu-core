@@ -62,6 +62,7 @@
 	?>;
 	MarkingTool.Editor.Data = <?php
 		$d = array();
+		$c = 0;
 		foreach ($groups as $group) {
 			$user = array();
 			$user[] = array(
@@ -77,7 +78,8 @@
 						"user" => $member["userName"]
 					);
 			$tasks = array();
-			foreach ($group["exercises"] as $exercise) 
+			foreach ($group["exercises"] as $exercise) {
+				$c++;
 				$tasks[] = array(
 					"groupIndex" => count($d),
 					"id" => intval($exercise["id"]),
@@ -128,8 +130,8 @@
 						) : null,
 					"tasknum" => isset($namesOfExercises[$exercise["id"]]) ? 
 						$namesOfExercises[$exercise["id"]] : null
-					//"isMainTask" => intval($exercise["linkName"]) != 0
 				);
+			}
 			$d[] = array(
 				"group" => $user,
 				"tasks" => $tasks
@@ -137,4 +139,6 @@
 		}
 		echo json_encode($d);
 	?>;
+	MarkingTool.Editor.Logic.TaskLeftCounter = <?php echo $c; ?>;
+	MarkingTool.Editor.Settings.RestrictedMode = <?php echo $restricted == 1 ? "false" : "true"; ?>;
 </script>
