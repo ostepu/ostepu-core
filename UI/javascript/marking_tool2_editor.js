@@ -388,7 +388,8 @@ MarkingTool.Editor.View = new function() {
 					hc.CreateElement("div", "Warnung", {css: ["warning-header"]}),
 					hc.CreateElement("div", "Dieser Bestandteil der Plattform befindet sich noch im aktiven Entwicklungsstadium, "+
 					"weshalb einige Dinge unter Umständen noch nicht funktionieren oder sich in Zukunft sehr stark "+
-					"verändern werden.")
+					"verändern werden.<br/>Probleme und Anmerkungen hier melden: <a href=\"http://www3.informatik.uni-halle.de/mantis/\""+
+					">Mantis</a>")
 				] 
 			}),
 			hc.CreateElementRaw({
@@ -1078,7 +1079,7 @@ MarkingTool.Editor.View = new function() {
 					var includes = function(value, text) {
 						return value == null ? false : String(value).toLowerCase().includes(text);
 					}
-					show |= includes(task.maxPoints, filter.text);
+					//show |= includes(task.maxPoints, filter.text);
 					show |= includes(task.points, filter.text);
 					show |= includes(MarkingTool.Editor.View.StateCodes[task.status], filter.text);
 					show |= includes(task.tutorComment, filter.text);
