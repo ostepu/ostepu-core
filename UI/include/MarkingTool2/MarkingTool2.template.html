@@ -1,6 +1,8 @@
 
 <?php //$langTemplate='MarkingTool';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <div class="loading-box">
 	<div></div>
 	<div>
@@ -20,6 +22,7 @@
 	</div>
 	<div></div>
 </div>
+<!--<?php //var_dump($GLOBALS); ?>-->
 
 <div class="content-box">
 
@@ -30,7 +33,7 @@
 	MarkingTool.Editor.View.StateCodes = <?php
 		$d = array();
 		$d[] = array("key"=>"all", "value"=>"Alle");
-		$d[] = array("key"=>"nogAccepted", "value"=>"nicht akzeptiert");
+		$d[] = array("key"=>"notAccepted", "value"=>"nicht akzeptiert");
 		foreach ($markingStatus as $ms) {
 			$d[] = array("key"=>intval($ms["id"]), "value"=>$ms["longName"]);
 		}
@@ -59,6 +62,7 @@
 	?>;
 	MarkingTool.Editor.Data = <?php
 		$d = array();
+		$c = 0;
 		foreach ($groups as $group) {
 			$user = array();
 			$user[] = array(
@@ -74,8 +78,10 @@
 						"user" => $member["userName"]
 					);
 			$tasks = array();
-			foreach ($group["exercises"] as $exercise) 
+			foreach ($group["exercises"] as $exercise) {
+				$c++;
 				$tasks[] = array(
+					"groupIndex" => count($d),
 					"id" => intval($exercise["id"]),
 					"maxPoints" => floatval($exercise["maxPoints"]),
 					"submissionId" => isset($exercise["submission"]) ? 
@@ -101,6 +107,7 @@
 							"url" => generateDownloadURL($exercise['submission']['file'])
 						) : null,
 					"tutorFile" => isset($exercise["submission"]["marking"]) &&
+						isset($exercise["submission"]["marking"]["file"]) &&
 						(!isset($exercise['submission']['marking']['hideFile']) || 
 						$exercise['submission']['marking']['hideFile'] == "0") ?
 						array (
@@ -121,8 +128,10 @@
 								" " . $tutors[$exercise["submission"]["marking"]["tutorId"]]["lastName"],
 							"user" => $tutors[$exercise["submission"]["marking"]["tutorId"]]["userName"]
 						) : null,
-					"isMainTask" => intval($exercise["linkName"]) != 0
+					"tasknum" => isset($namesOfExercises[$exercise["id"]]) ? 
+						$namesOfExercises[$exercise["id"]] : null
 				);
+			}
 			$d[] = array(
 				"group" => $user,
 				"tasks" => $tasks
@@ -130,4 +139,6 @@
 		}
 		echo json_encode($d);
 	?>;
+	MarkingTool.Editor.Logic.TaskLeftCounter = <?php echo $c; ?>;
+	MarkingTool.Editor.Settings.RestrictedMode = <?php echo $restricted == 1 ? "false" : "true"; ?>;
 </script>

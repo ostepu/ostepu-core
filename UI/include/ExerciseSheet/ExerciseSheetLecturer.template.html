@@ -255,6 +255,13 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                         <?php echo Language::Get('sheetMenu','markingTool', $langTemplate); ?>
                     </a>
                 </li>
+				<li>
+                    <a class="text-button" href="MarkingTool2.php?cid=<?php echo $user['courses'][0]['course']['id'],
+                                                     '&sid=',
+                                                     $sheet['id']; ?>">
+                        <?php echo Language::Get('sheetMenu','markingTool2', $langTemplate); ?>
+                    </a>
+                </li>
                 <li>
                 </li>
                 <li>
