@@ -1078,7 +1078,7 @@ MarkingTool.Editor.View = new function() {
 					var includes = function(value, text) {
 						return value == null ? false : String(value).toLowerCase().includes(text);
 					}
-					show |= includes(task.maxPoints, filter.text);
+					//show |= includes(task.maxPoints, filter.text);
 					show |= includes(task.points, filter.text);
 					show |= includes(MarkingTool.Editor.View.StateCodes[task.status], filter.text);
 					show |= includes(task.tutorComment, filter.text);
