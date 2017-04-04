@@ -389,7 +389,7 @@ MarkingTool.Editor.View = new function() {
 					hc.CreateElement("div", "Dieser Bestandteil der Plattform befindet sich noch im aktiven Entwicklungsstadium, "+
 					"weshalb einige Dinge unter Umständen noch nicht funktionieren oder sich in Zukunft sehr stark "+
 					"verändern werden.<br/>Probleme und Anmerkungen hier melden: <a href=\"http://www3.informatik.uni-halle.de/mantis/\""+
-					">Mantis</a>")
+					" target=\"_blank\">Mantis</a>")
 				] 
 			}),
 			hc.CreateElementRaw({
