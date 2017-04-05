@@ -116,7 +116,7 @@
 							"url" => generateDownloadURL($exercise['submission']['marking']['file'])
 						) : null,
 					"studentComment" => isset($exercise["submission"]["comment"]) ?
-						$exercise["submission"]["comment"].'</textarea>' : null,
+						$exercise["submission"]["comment"] : null,
 					"date" => isset($exercise["submission"]["date"]) ? 
 						intval($exercise["submission"]["date"]) : null,
 					"endDate" => intval($exerciseSheets[0]["endDate"]),
