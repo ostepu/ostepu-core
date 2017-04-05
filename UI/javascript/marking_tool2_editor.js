@@ -107,10 +107,12 @@ MarkingTool.Editor.HTML = new function(){
 		var element = data.element || "div";
 		var css = data.css || [];
 		var children = data.children || [];
+		var text = data.text;
 		data.content = undefined;
 		data.element = undefined;
 		data.css = undefined;
 		data.children = undefined;
+		data.text = undefined;
 		var obj = $("<"+element+"/>");
 		for (var key in data)
 			if (data.hasOwnProperty(key)) {
@@ -119,6 +121,7 @@ MarkingTool.Editor.HTML = new function(){
 		for (var i = 0; i<css.length; ++i)
 			obj.addClass(css[i]);
 		obj.html(content);
+		if (text) obj.text(text);
 		for (var i = 0; i<children.length; ++i)
 			if (children[i] != null)
 				obj.append(children[i]);
@@ -771,11 +774,16 @@ MarkingTool.Editor.View = new function() {
 							hc.CreateElement("div", "kein Kommentar", {
 								style: "font-style: italic; font-weight: normal;"
 							}) :
-							hc.CreateElement("textarea", task.studentComment, {
+							hc.CreateElementRaw({
+								element: "textarea",
+								text: task.studentComment,
 								readonly: "readonly"
 							}),
 							hc.CreateElement("div", "Kontrolleur:"),
-							tutorComment = hc.CreateElement("textarea", task.tutorComment)
+							tutorComment = hc.CreateElementRaw({
+								element: "textarea",
+								text: task.tutorComment
+							})
 						]
 					})
 				]
