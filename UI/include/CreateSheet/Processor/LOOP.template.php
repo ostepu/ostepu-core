@@ -126,7 +126,7 @@
                         <label class="label bold" for=""><?php echo Language::Get('main','runparameters', $langTemplate); ?>:</label>
                     </td>
                     <td style="width: 76%;">
-                        <input type="text" class="parameter-choice runParameter" style="width: 100%;" name="exercises[0][subexercises][0][runParameter][0]" value="<?php echo(isset($data[0]) && isset($data[0]->getInput()[2]) ? $data[0]->getInput()[2] : "\$script \$parameters");?>" <?php echo(isset($data[0]) && isset($data[0]->getInput()[2]) ? "" : "disabled='disabled'"); ?>/>
+                        <input type="text" class="runParameter" style="width: 100%;" name="exercises[0][subexercises][0][runParameter]" value="<?php echo(isset($data[0]) && isset($data[0]->getInput()[2]) ? $data[0]->getInput()[2] : "\$script \$parameters");?>" <?php echo(isset($data[0]) && isset($data[0]->getInput()[2]) ? "" : "disabled='disabled'"); ?>/>
                         <input class="runFile fileButton" style="width:104px;" type="file" name="exercises[0][subexercises][0][runFileParameter][0]" value="<?php echo Language::Get('main','selectFile', $langTemplate); ?> ..." <?php echo(isset($data[0]) && isset($data[0]->getInput()[3]) ? "" : "disabled='disabled'"); ?>/>
                         <span class="runFile"><?php echo (isset($data[0]) && isset($data[0]->getInput()[3]) && !empty($data[0]->getInput()[3]) ? $data[0]->getInput()[3]->displayName : Language::Get('main','noScript', $langTemplate)); ?></span>
                         <input type="hidden" name="exercises[0][subexercises][0][runFileParameter][0]" value="<?php echo (isset($data[0]) && isset($data[0]->getInput()[3]) && !empty($data[0]->getInput()[3]) ? $data[0]->getInput()[3]->fileId : ''); ?>"/>
