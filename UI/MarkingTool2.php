@@ -38,7 +38,8 @@ $c->bind($markingTool_data);
 $c->bind(array(
 	"restricted" => Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUserData),
 	"userLevel" => $userLevel = Authentication::getUserLevel($cid, $uid, $globalUserData),
-	"backUrl" => "$serverURI/UI/".PRIVILEGE_LEVEL::$SITES[$userLevel]."?cid=$cid"
+	"backUrl" => "$serverURI/UI/".PRIVILEGE_LEVEL::$SITES[$userLevel]."?cid=$cid",
+	"uid" => $uid
 ));
 
 

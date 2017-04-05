@@ -57,10 +57,18 @@ $restricted = !($restricted == 1);
 	?>;
 	MarkingTool.Editor.View.TutorCodes = <?php
 		$d = array();
-		$d[] = array("key"=>"all", "value"=>"Alle");
-		foreach ($tutors as $tutor)
-			$d[] = array("key"=>$tutor["id"], "value"=>$tutor['firstName'] . 
-				' ' . $tutor['lastName'] . ' ('.$tutor['userName'].')');
+		if ($restricted) {
+			foreach ($tutors as $tutor)
+				if ($tutor["id"] == $uid)
+					$d[] = array("key"=>$tutor["id"], "value"=>$tutor['firstName'] . 
+						' ' . $tutor['lastName'] . ' ('.$tutor['userName'].')');
+		}
+		else {
+			$d[] = array("key"=>"all", "value"=>"Alle");
+			foreach ($tutors as $tutor)
+				$d[] = array("key"=>$tutor["id"], "value"=>$tutor['firstName'] . 
+					' ' . $tutor['lastName'] . ' ('.$tutor['userName'].')');
+		}
 		echo json_encode($d);
 	?>;
 	MarkingTool.Editor.Data = <?php
