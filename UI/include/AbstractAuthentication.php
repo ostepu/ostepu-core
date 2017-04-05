@@ -246,6 +246,35 @@ abstract class AbstractAuthentication
         
         return true;
     }
+	
+	/**
+     * Gibt den Nutzerlevel vom aktuellen Nutzer zurück.
+     *
+     * @param int $cid Is the courseid.
+     * @param int $uid Is the userid.
+     * @param array $data An associative array that contains the coursestatus.
+	 * @return PRIVILEGE_LEVEL (INT) Die Berechtigungsstufe, falls Nutzer im Kurs
+	 *         BOOL false, falls der Nutzer nicht im Kurs
+     */
+	public static function getUserLevel($cid, $uid, $data) {
+		if (isset($data['isSuperAdmin']) && $data['isSuperAdmin']=='1') 
+			return PRIVILEGE_LEVEL::SUPER_ADMIN;
+		
+		if ($data !== array() && $data !== null) {
+            // find the right course
+            $status = -1;
+            if ($data!==null)
+                foreach ($data['courses'] as $element)
+                    if ($element['course']['id'] == $cid) {
+                        $status = $element['status'];
+                        break;
+                    }
+
+			if ($status == -1) return false;
+			else return $status;
+        } 
+		else return false;
+	}
 
     /**
      * Generates a random Salt hashed with sha1.

@@ -342,7 +342,9 @@ MarkingTool.Editor.View = new function() {
 		var optionsBar = hc.CreateElementRaw({
 			css: ["ui-commandbar"],
 			children: [
-				hc.CreateButton("Zurück"),
+				hc.CreateButton("Zurück", function() {
+					document.location.href = MarkingTool.Editor.Settings.BackUrl;
+				}),
 				hc.CreateElementRaw({
 					css: ["ui-commandbar-container"],
 					children: [
@@ -1465,6 +1467,11 @@ MarkingTool.Editor.Settings = new function() {
 	var thisref = this;
 	//Bool - Bestimmt, ob der Nutzer nur eingeschränkte Rechte hat.
 	this.RestrictedMode = false;
+	//Int - Bestimmt den Nutzerlevel, der diese Seite betrachtet.
+	//0 = Student, 1 = Tutor, 2 = Dozent, 3 = Admin, 4 = Super-Admin
+	this.UserLevel = 0;
+	//String - Gibt eine Rücksprung-URL an, wo die Serienübersicht ist.
+	this.BackUrl = "";
 };
 
 //=== Bibliothek um die Updates nachzuvollziehen
