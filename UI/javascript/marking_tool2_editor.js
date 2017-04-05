@@ -1091,10 +1091,13 @@ MarkingTool.Editor.View = new function() {
 					}
 					//show |= includes(task.maxPoints, filter.text);
 					show |= includes(task.points, filter.text);
-					show |= includes(MarkingTool.Editor.View.StateCodes[task.status], filter.text);
+					for (var i = 0; i<MarkingTool.Editor.View.StateCodes.length; ++i)
+						if (MarkingTool.Editor.View.StateCodes[i].key == task.status)
+							show |= includes(MarkingTool.Editor.View.StateCodes[i].value, filter.text);
 					show |= includes(task.tutorComment, filter.text);
 					show |= includes(task.studentComment, filter.text);
 					show |= includes(task.date, filter.text);
+					show |= includes(task.path[1], filter.text);
 				}
 				if (result.box != null) {
 					if (show) result.box.removeClass("ui-hide");
