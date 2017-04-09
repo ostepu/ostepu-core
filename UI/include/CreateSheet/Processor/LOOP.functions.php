@@ -20,10 +20,10 @@ function LOOP_createParameters(&$subexercise, $key, $exercisekey, $subexerciseke
     // custom Aufruf verarbeiten
     if ($testcaseType == "custom") {
         // compileFile verarbeiten
-        if (isset($_FILES['exercises']['tmp_name'][$exercisekey]['subexercises'][$subexercisekey]['compileFileParameter'][$key]) && !empty($_FILES['exercises']['tmp_name'][$exercisekey]['subexercises'][$subexercisekey]['compileFileParameter'][$key])) {
+        if (isset($_FILES['exercises']['tmp_name'][$exercisekey]['subexercises'][$subexercisekey]['compileFileParameter'][0]) && !empty($_FILES['exercises']['tmp_name'][$exercisekey]['subexercises'][$subexercisekey]['compileFileParameter'][0])) {
             $timestamp = time();
-            $TempFile = File::createFile(NULL,$_FILES['exercises']['name'][$exercisekey]['subexercises'][$subexercisekey]['compileFileParameter'][$key],NULL,$timestamp,NULL,NULL,NULL);
-            $TempFile->setBody( Reference::createReference($_FILES['exercises']['tmp_name'][$exercisekey]['subexercises'][$subexercisekey]['compileFileParameter'][$key]) );
+            $TempFile = File::createFile(NULL,$_FILES['exercises']['name'][$exercisekey]['subexercises'][$subexercisekey]['compileFileParameter'][0],NULL,$timestamp,NULL,NULL,NULL);
+            $TempFile->setBody( Reference::createReference($_FILES['exercises']['tmp_name'][$exercisekey]['subexercises'][$subexercisekey]['compileFileParameter'][0]) );
 
             $TempFileJSON = File::encodeFile($TempFile);
             $output = http_post_data($filesystemURI."/file", $TempFileJSON, true, $message);
@@ -36,8 +36,8 @@ function LOOP_createParameters(&$subexercise, $key, $exercisekey, $subexerciseke
             {
                 $compileinput[] = "";
             }
-        } elseif (isset($subexercise['compileFileParameter'][$key]) && $subexercise['compileFileParameter'][$key] != "" && is_numeric($subexercise['compileFileParameter'][$key])) {
-            $response = http_get($databaseURI."/file/file/".$subexercise['compileFileParameter'][$key], true, $message);
+        } elseif (isset($subexercise['compileFileParameter'][0]) && $subexercise['compileFileParameter'][0] != "" && is_numeric($subexercise['compileFileParameter'][0])) {
+            $response = http_get($databaseURI."/file/file/".$subexercise['compileFileParameter'][0], true, $message);
 
             if($message == 200)
             {
@@ -52,15 +52,15 @@ function LOOP_createParameters(&$subexercise, $key, $exercisekey, $subexerciseke
         }
 
         // runParameter speichern
-        if (isset($subexercise['runParameter'][$key])) {
-            $compileinput[] = $subexercise['runParameter'][$key];
+        if (isset($subexercise['runParameter'])) {
+            $compileinput[] = $subexercise['runParameter'];
         }
 
         // runFile verarbeiten
-        if (isset($_FILES['exercises']['tmp_name'][$exercisekey]['subexercises'][$subexercisekey]['runFileParameter'][$key]) && !empty($_FILES['exercises']['tmp_name'][$exercisekey]['subexercises'][$subexercisekey]['runFileParameter'][$key])) {
+        if (isset($_FILES['exercises']['tmp_name'][$exercisekey]['subexercises'][$subexercisekey]['runFileParameter'][0]) && !empty($_FILES['exercises']['tmp_name'][$exercisekey]['subexercises'][$subexercisekey]['runFileParameter'][0])) {
             $timestamp = time();
-            $TempFile = File::createFile(NULL,$_FILES['exercises']['name'][$exercisekey]['subexercises'][$subexercisekey]['runFileParameter'][$key],NULL,$timestamp,NULL,NULL,NULL);
-            $TempFile->setBody( Reference::createReference($_FILES['exercises']['tmp_name'][$exercisekey]['subexercises'][$subexercisekey]['runFileParameter'][$key]) );
+            $TempFile = File::createFile(NULL,$_FILES['exercises']['name'][$exercisekey]['subexercises'][$subexercisekey]['runFileParameter'][0],NULL,$timestamp,NULL,NULL,NULL);
+            $TempFile->setBody( Reference::createReference($_FILES['exercises']['tmp_name'][$exercisekey]['subexercises'][$subexercisekey]['runFileParameter'][0]) );
 
             $TempFileJSON = File::encodeFile($TempFile);
             $output = http_post_data($filesystemURI."/file", $TempFileJSON, true, $message);
@@ -73,8 +73,8 @@ function LOOP_createParameters(&$subexercise, $key, $exercisekey, $subexerciseke
             {
                 $compileinput[] = "";
             }
-        } elseif (isset($subexercise['runFileParameter'][$key]) && $subexercise['runFileParameter'][$key] != "" && is_numeric($subexercise['runFileParameter'][$key])) {
-            $response = http_get($databaseURI."/file/file/".$subexercise['runFileParameter'][$key], true, $message);
+        } elseif (isset($subexercise['runFileParameter'][0]) && $subexercise['runFileParameter'][0] != "" && is_numeric($subexercise['runFileParameter'][0])) {
+            $response = http_get($databaseURI."/file/file/".$subexercise['runFileParameter'][0], true, $message);
 
             if($message == 200)
             {
