@@ -538,7 +538,7 @@ MarkingTool.Editor.View = new function() {
 						inpPoints = hc.CreateInput("text", function(){
 							changeState++;
 							if (changeState == 1) {
-								var val = $(this).val();
+								var val = String($(this).val()).replace(/,/g, ".");
 								try { task.points = val == "" || val == undefined ? undefined : val * 1.0; }
 								catch (e) {
 									if ($(this).val() == "" || $(this).val() == undefined) task.points = undefined;
@@ -546,7 +546,11 @@ MarkingTool.Editor.View = new function() {
 								}
 							}
 							changeState--;
-						}, {css: ["ui-task-points small"], value: (task.points == undefined ? "": task.points), placeholder: "leer" } ),
+						}, {
+							css: ["ui-task-points small"], 
+							value: String(task.points == undefined ? "": task.points).replace(/\./g, ","), 
+							placeholder: "leer" 
+						} ),
 						hc.CreateElement("span", "/" + task.maxPoints + (task.isBonus ? "<span title=\"Bonus\"> (B)</span>" : ""), {
 							title: "Punkte"
 						})
@@ -605,7 +609,7 @@ MarkingTool.Editor.View = new function() {
 		task.UpdatedEvent.add(function() {
 			changeState++;
 			if (changeState == 1) {
-				inpPoints.val(task.points == undefined ? "": task.points);
+				inpPoints.val(String(task.points == undefined ? "": task.points).replace(/\./g, ","));
 				inpState.val(task.status);
 			}
 			changeState--;
@@ -703,7 +707,7 @@ MarkingTool.Editor.View = new function() {
 							task.changeState_detailContent++;
 							if (task.changeState_detailContent == 1) {
 								task.points = value;
-								pointInput.val(task.points == null ? "" : task.points);
+								pointInput.val(String(task.points == null ? "" : task.points).replace(/\./g, ","));
 							}
 							task.changeState_detailContent--;
 						})),
@@ -712,7 +716,7 @@ MarkingTool.Editor.View = new function() {
 							pointInput = hc.CreateInput("text", function() {
 								task.changeState_detailContent++;
 								if (task.changeState_detailContent == 1) {
-									var val = $(this).val();
+									var val = String($(this).val()).replace(/,/g, ".");
 									try {
 										task.points = val == "" || val == undefined ? undefined : val * 1.0; 
 									}
@@ -724,7 +728,7 @@ MarkingTool.Editor.View = new function() {
 								}
 								task.changeState_detailContent--;
 							}, {
-								value: task.points == null ? "" : task.points,
+								value: String(task.points == null ? "" : task.points).replace(/\./g, ","),
 								placeholder: "leer"
 							}),
 							hc.CreateElement("span", "/" + task.maxPoints + (task.isBonus ? "<span title=\"Bonus\"> (B)</span>" : ""), {
@@ -882,7 +886,7 @@ MarkingTool.Editor.View = new function() {
 				//Points
 				try { slider.slider("value", task.points == null ? 0 : task.points); }
 				catch (e) {} //ignore this shit
-				pointInput.val(task.points == null ? "" : task.points);
+				pointInput.val(String(task.points == null ? "" : task.points).replace(/\./g, ","));
 				//Status
 				stateobj[task.status][0].checked = true;
 				//Accepted
