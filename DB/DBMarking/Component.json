@@ -183,6 +183,10 @@
         {
             "name": "getDescFiles",
             "target": "TDocuView"
+        },
+        {
+            "name": "getComponentProfiles",
+            "target": "TApiConfiguration"
         }
     ]
 }

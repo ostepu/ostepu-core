@@ -49,4 +49,22 @@ class CSystem
         // returns the currect timestamp
         return Model::isOk(array('timestamp'=>microtime(true)));
     }
+
+    public function getApiProfiles( $callName, $input, $params = array() )
+    {   
+        $myName = $this->_component->_conf->getName();
+        $profiles = array();
+        $profiles['readonly'] = GateProfile::createGateProfile(null,'readonly');
+        $profiles['readonly']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'GET /timestamp',null));
+        
+        $profiles['general'] = GateProfile::createGateProfile(null,'general');
+        $profiles['general']->setRules($profiles['readonly']->getRules());
+        
+        $profiles['develop'] = GateProfile::createGateProfile(null,'develop');
+        $profiles['develop']->setRules(array_merge($profiles['general']->getRules(), $this->_component->_com->apiRulesDevelop($myName)));
+
+        $profiles['public'] = GateProfile::createGateProfile(null,'public');
+        $profiles['public']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'GET /timestamp',null));
+        return Model::isOk(array_values($profiles));
+    }
 }

@@ -8,6 +8,7 @@
     ],
     "javascripts":[
         "javascript/jquery.js",
+		"javascript/jquery-ui.min.js",
 		"javascript/marking_tool2_editor.js"
     ]
 }

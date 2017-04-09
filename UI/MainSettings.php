@@ -343,7 +343,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                 $userID = $user_data['id'];
 
                 // deletes the user
-                $url = $databaseURI . "/user/{$userID}";
+                $url = $databaseURI . "/user/user/{$userID}";
                 http_delete($url, true, $message);
 
                 if ($message === 201) {

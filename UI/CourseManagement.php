@@ -692,7 +692,7 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
                 if (isset($currentExerciseTypesByApprovalId)){
                     foreach($etDelete as $exerciseType2) {
                         if ($exerciseType2 === '')continue;
-                        $URI = $databaseURI . '/approvalcondition/' . $currentExerciseTypesByApprovalId[$exerciseType2];
+                        $URI = $databaseURI . '/approvalcondition/approvalcondition/' . $currentExerciseTypesByApprovalId[$exerciseType2];
                         http_delete($URI, true, $message);
 
                         if ($message !== 201) {
@@ -801,12 +801,12 @@ if ($postValidation->isValid() && $postResults['actionSortUsers'] === 'noAction'
         $postEditExerciseTypeValidation->resetNotifications()->resetErrors();
 
         // check if POST data is send
-        if($postEditExerciseTypeValidation->Valid()) {
+        if($postEditExerciseTypeValidation->isValid()) {
 
             // create new exerciseType
             $data = ExerciseType::encodeExerciseType(ExerciseType::createExerciseType($foundValues['exerciseTypeID'], $foundValues['exerciseTypeName']));
 
-            $url = $databaseURI . '/exercisetype/' . $foundValues['exerciseTypeID'];
+            $url = $databaseURI . '/exercisetype/exercisetype/' . $foundValues['exerciseTypeID'];
             http_put_data($url, $data, true, $message);
 
             // show notification

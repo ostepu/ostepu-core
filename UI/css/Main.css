@@ -284,6 +284,8 @@ ol.full-width-exercise-list .secondLevel li:before {
     float: right;
 }
 
+.tiny {font-size: 50%;}
+
 .stats-block {
     list-style: none;
     font-size: 80%;

@@ -171,6 +171,29 @@ class DBApprovalCondition
 
         return Model::isCreated();
     }
+
+    public function getApiProfiles( $callName, $input, $params = array() )
+    {   
+        $myName = $this->_component->_conf->getName();
+        $profiles = array();
+        $profiles['readonly'] = GateProfile::createGateProfile(null,'readonly');
+        $profiles['readonly']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'GET /approvalcondition/:path+',null));
+        
+        $profiles['general'] = GateProfile::createGateProfile(null,'general');
+        $profiles['general']->setRules($profiles['readonly']->getRules());
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'DELETE /approvalcondition/:path+',null));
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'PUT /approvalcondition/:path+',null));
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'POST /approvalcondition/:path+',null));
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'DELETE /platform/:path+',null));
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'POST /platform/:path+',null));
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'GET /link/exists/platform',null));
+        
+        $profiles['develop'] = GateProfile::createGateProfile(null,'develop');
+        $profiles['develop']->setRules(array_merge($profiles['general']->getRules(), $this->_component->_com->apiRulesDevelop($myName)));
+
+        ////$profiles['public'] = GateProfile::createGateProfile(null,'public');
+        return Model::isOk(array_values($profiles));
+    }
 }
 
 

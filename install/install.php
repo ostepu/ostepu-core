@@ -158,7 +158,7 @@ class Installer {
         Einstellungen::generatepath($p);
 
         try {
-            $handle = opendir($p);
+            $handle = @opendir($p);
         } catch (Exception $e) {
             // der Ordner konnte nicht zugegriffen werden
             Installation::log(array('text' => $p . ' existiert nicht oder es fehlt die Zugriffsberechtigung.', 'logLevel' => LogLevel::ERROR));

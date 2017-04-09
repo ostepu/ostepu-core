@@ -40,5 +40,12 @@
         "inputType": "",
         "method": "GET",
         "path": "/link/exists/platform"
+    },
+    {
+        "name": "getApiProfiles",
+        "outputType": "GateProfile",
+        "inputType": "",
+        "method": "GET",
+        "path": "/api/profiles"
     }
 ]

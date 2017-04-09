@@ -26,8 +26,8 @@ include_once dirname(__FILE__) . '/../Assistants/LArraySorter.php';
 $langTemplate='index_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 // load user data from the database
-$databaseURI = $databaseURI . "/user/user/{$uid}";
-$user = http_get($databaseURI, false);
+$databaseURI2 = $databaseURI . "/user/user/{$uid}";
+$user = http_get($databaseURI2, false);
 $user = json_decode($user, true);
 
 if (is_null($user)) {

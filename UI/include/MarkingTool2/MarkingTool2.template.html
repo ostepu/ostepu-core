@@ -1,6 +1,8 @@
 
 <?php //$langTemplate='MarkingTool';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <div class="loading-box">
 	<div></div>
 	<div>
@@ -20,17 +22,21 @@
 	</div>
 	<div></div>
 </div>
+<!--<?php //var_dump($GLOBALS); ?>-->
 
 <div class="content-box">
 
 </div>
 
+<?php
+$restricted = !($restricted == 1);
+?>
 <!--Alle Daten, die zur Oberfläche übermittelt werden-->
 <script type="text/javascript">
 	MarkingTool.Editor.View.StateCodes = <?php
 		$d = array();
 		$d[] = array("key"=>"all", "value"=>"Alle");
-		$d[] = array("key"=>"nogAccepted", "value"=>"nicht akzeptiert");
+		$d[] = array("key"=>"notAccepted", "value"=>"nicht akzeptiert");
 		foreach ($markingStatus as $ms) {
 			$d[] = array("key"=>intval($ms["id"]), "value"=>$ms["longName"]);
 		}
@@ -51,22 +57,33 @@
 	?>;
 	MarkingTool.Editor.View.TutorCodes = <?php
 		$d = array();
-		$d[] = array("key"=>"all", "value"=>"Alle");
-		foreach ($tutors as $tutor)
-			$d[] = array("key"=>$tutor["id"], "value"=>$tutor['firstName'] . 
-				' ' . $tutor['lastName'] . ' ('.$tutor['userName'].')');
+		if ($restricted) {
+			foreach ($tutors as $tutor)
+				if ($tutor["id"] == $uid)
+					$d[] = array("key"=>$tutor["id"], "value"=>$tutor['firstName'] . 
+						' ' . $tutor['lastName'] . ' ('.$tutor['userName'].')');
+		}
+		else {
+			$d[] = array("key"=>"all", "value"=>"Alle");
+			foreach ($tutors as $tutor)
+				$d[] = array("key"=>$tutor["id"], "value"=>$tutor['firstName'] . 
+					' ' . $tutor['lastName'] . ' ('.$tutor['userName'].')');
+		}
 		echo json_encode($d);
 	?>;
 	MarkingTool.Editor.Data = <?php
 		$d = array();
+		$c = 0;
 		foreach ($groups as $group) {
 			$user = array();
-			$user[] = array(
+			if ($restricted)
+				$user[] = array("id" => 0, "name" => "", "user" => "");
+			else $user[] = array(
 				"id" => intval($group["leader"]["id"]), 
 				"name" => $group["leader"]["firstName"] . " " . $group["leader"]["lastName"],
 				"user" => $group["leader"]["userName"]
 			);
-			if (isset($group["member"]))
+			if (!$restricted && isset($group["member"]))
 				foreach($group["member"] as $member)
 					$user[] = array(
 						"id" => intval($member["id"]), 
@@ -74,8 +91,11 @@
 						"user" => $member["userName"]
 					);
 			$tasks = array();
-			foreach ($group["exercises"] as $exercise) 
+			foreach ($group["exercises"] as $exercise) {
+				if ($restricted && !isset($exercise["submission"])) continue;
+				$c++;
 				$tasks[] = array(
+					"groupIndex" => count($d),
 					"id" => intval($exercise["id"]),
 					"maxPoints" => floatval($exercise["maxPoints"]),
 					"submissionId" => isset($exercise["submission"]) ? 
@@ -101,6 +121,7 @@
 							"url" => generateDownloadURL($exercise['submission']['file'])
 						) : null,
 					"tutorFile" => isset($exercise["submission"]["marking"]) &&
+						isset($exercise["submission"]["marking"]["file"]) &&
 						(!isset($exercise['submission']['marking']['hideFile']) || 
 						$exercise['submission']['marking']['hideFile'] == "0") ?
 						array (
@@ -121,8 +142,10 @@
 								" " . $tutors[$exercise["submission"]["marking"]["tutorId"]]["lastName"],
 							"user" => $tutors[$exercise["submission"]["marking"]["tutorId"]]["userName"]
 						) : null,
-					"isMainTask" => intval($exercise["linkName"]) != 0
+					"tasknum" => isset($namesOfExercises[$exercise["id"]]) ? 
+						$namesOfExercises[$exercise["id"]] : null
 				);
+			}
 			$d[] = array(
 				"group" => $user,
 				"tasks" => $tasks
@@ -130,4 +153,8 @@
 		}
 		echo json_encode($d);
 	?>;
+	MarkingTool.Editor.Logic.TaskLeftCounter = <?php echo $c; ?>;
+	MarkingTool.Editor.Settings.RestrictedMode = <?php echo $restricted ? "true" : "false"; ?>;
+	MarkingTool.Editor.Settings.UserLevel = <?php echo $userLevel; ?>;
+	MarkingTool.Editor.Settings.BackUrl = "<?php echo $backUrl; ?>";
 </script>
