@@ -28,6 +28,9 @@
 
 </div>
 
+<?php
+$restricted = !($restricted == 1);
+?>
 <!--Alle Daten, die zur Oberfläche übermittelt werden-->
 <script type="text/javascript">
 	MarkingTool.Editor.View.StateCodes = <?php
@@ -54,10 +57,18 @@
 	?>;
 	MarkingTool.Editor.View.TutorCodes = <?php
 		$d = array();
-		$d[] = array("key"=>"all", "value"=>"Alle");
-		foreach ($tutors as $tutor)
-			$d[] = array("key"=>$tutor["id"], "value"=>$tutor['firstName'] . 
-				' ' . $tutor['lastName'] . ' ('.$tutor['userName'].')');
+		if ($restricted) {
+			foreach ($tutors as $tutor)
+				if ($tutor["id"] == $uid)
+					$d[] = array("key"=>$tutor["id"], "value"=>$tutor['firstName'] . 
+						' ' . $tutor['lastName'] . ' ('.$tutor['userName'].')');
+		}
+		else {
+			$d[] = array("key"=>"all", "value"=>"Alle");
+			foreach ($tutors as $tutor)
+				$d[] = array("key"=>$tutor["id"], "value"=>$tutor['firstName'] . 
+					' ' . $tutor['lastName'] . ' ('.$tutor['userName'].')');
+		}
 		echo json_encode($d);
 	?>;
 	MarkingTool.Editor.Data = <?php
@@ -65,12 +76,14 @@
 		$c = 0;
 		foreach ($groups as $group) {
 			$user = array();
-			$user[] = array(
+			if ($restricted)
+				$user[] = array("id" => 0, "name" => "", "user" => "");
+			else $user[] = array(
 				"id" => intval($group["leader"]["id"]), 
 				"name" => $group["leader"]["firstName"] . " " . $group["leader"]["lastName"],
 				"user" => $group["leader"]["userName"]
 			);
-			if (isset($group["member"]))
+			if (!$restricted && isset($group["member"]))
 				foreach($group["member"] as $member)
 					$user[] = array(
 						"id" => intval($member["id"]), 
@@ -79,6 +92,7 @@
 					);
 			$tasks = array();
 			foreach ($group["exercises"] as $exercise) {
+				if ($restricted && !isset($exercise["submission"])) continue;
 				$c++;
 				$tasks[] = array(
 					"groupIndex" => count($d),
@@ -140,5 +154,7 @@
 		echo json_encode($d);
 	?>;
 	MarkingTool.Editor.Logic.TaskLeftCounter = <?php echo $c; ?>;
-	MarkingTool.Editor.Settings.RestrictedMode = <?php echo $restricted == 1 ? "false" : "true"; ?>;
+	MarkingTool.Editor.Settings.RestrictedMode = <?php echo $restricted ? "true" : "false"; ?>;
+	MarkingTool.Editor.Settings.UserLevel = <?php echo $userLevel; ?>;
+	MarkingTool.Editor.Settings.BackUrl = "<?php echo $backUrl; ?>";
 </script>

@@ -107,10 +107,12 @@ MarkingTool.Editor.HTML = new function(){
 		var element = data.element || "div";
 		var css = data.css || [];
 		var children = data.children || [];
+		var text = data.text;
 		data.content = undefined;
 		data.element = undefined;
 		data.css = undefined;
 		data.children = undefined;
+		data.text = undefined;
 		var obj = $("<"+element+"/>");
 		for (var key in data)
 			if (data.hasOwnProperty(key)) {
@@ -119,6 +121,7 @@ MarkingTool.Editor.HTML = new function(){
 		for (var i = 0; i<css.length; ++i)
 			obj.addClass(css[i]);
 		obj.html(content);
+		if (text) obj.text(text);
 		for (var i = 0; i<children.length; ++i)
 			if (children[i] != null)
 				obj.append(children[i]);
@@ -339,7 +342,9 @@ MarkingTool.Editor.View = new function() {
 		var optionsBar = hc.CreateElementRaw({
 			css: ["ui-commandbar"],
 			children: [
-				hc.CreateButton("Zurück"),
+				hc.CreateButton("Zurück", function() {
+					document.location.href = MarkingTool.Editor.Settings.BackUrl;
+				}),
 				hc.CreateElementRaw({
 					css: ["ui-commandbar-container"],
 					children: [
@@ -389,7 +394,7 @@ MarkingTool.Editor.View = new function() {
 					hc.CreateElement("div", "Dieser Bestandteil der Plattform befindet sich noch im aktiven Entwicklungsstadium, "+
 					"weshalb einige Dinge unter Umständen noch nicht funktionieren oder sich in Zukunft sehr stark "+
 					"verändern werden.<br/>Probleme und Anmerkungen hier melden: <a href=\"http://www3.informatik.uni-halle.de/mantis/\""+
-					">Mantis</a>")
+					" target=\"_blank\">Mantis</a>")
 				] 
 			}),
 			hc.CreateElementRaw({
@@ -533,7 +538,7 @@ MarkingTool.Editor.View = new function() {
 						inpPoints = hc.CreateInput("text", function(){
 							changeState++;
 							if (changeState == 1) {
-								var val = $(this).val();
+								var val = String($(this).val()).replace(/,/g, ".");
 								try { task.points = val == "" || val == undefined ? undefined : val * 1.0; }
 								catch (e) {
 									if ($(this).val() == "" || $(this).val() == undefined) task.points = undefined;
@@ -541,7 +546,11 @@ MarkingTool.Editor.View = new function() {
 								}
 							}
 							changeState--;
-						}, {css: ["ui-task-points small"], value: (task.points == undefined ? "": task.points), placeholder: "leer" } ),
+						}, {
+							css: ["ui-task-points small"], 
+							value: String(task.points == undefined ? "": task.points).replace(/\./g, ","), 
+							placeholder: "leer" 
+						} ),
 						hc.CreateElement("span", "/" + task.maxPoints + (task.isBonus ? "<span title=\"Bonus\"> (B)</span>" : ""), {
 							title: "Punkte"
 						})
@@ -600,7 +609,7 @@ MarkingTool.Editor.View = new function() {
 		task.UpdatedEvent.add(function() {
 			changeState++;
 			if (changeState == 1) {
-				inpPoints.val(task.points == undefined ? "": task.points);
+				inpPoints.val(String(task.points == undefined ? "": task.points).replace(/\./g, ","));
 				inpState.val(task.status);
 			}
 			changeState--;
@@ -698,7 +707,7 @@ MarkingTool.Editor.View = new function() {
 							task.changeState_detailContent++;
 							if (task.changeState_detailContent == 1) {
 								task.points = value;
-								pointInput.val(task.points == null ? "" : task.points);
+								pointInput.val(String(task.points == null ? "" : task.points).replace(/\./g, ","));
 							}
 							task.changeState_detailContent--;
 						})),
@@ -707,7 +716,7 @@ MarkingTool.Editor.View = new function() {
 							pointInput = hc.CreateInput("text", function() {
 								task.changeState_detailContent++;
 								if (task.changeState_detailContent == 1) {
-									var val = $(this).val();
+									var val = String($(this).val()).replace(/,/g, ".");
 									try {
 										task.points = val == "" || val == undefined ? undefined : val * 1.0; 
 									}
@@ -719,7 +728,7 @@ MarkingTool.Editor.View = new function() {
 								}
 								task.changeState_detailContent--;
 							}, {
-								value: task.points == null ? "" : task.points,
+								value: String(task.points == null ? "" : task.points).replace(/\./g, ","),
 								placeholder: "leer"
 							}),
 							hc.CreateElement("span", "/" + task.maxPoints + (task.isBonus ? "<span title=\"Bonus\"> (B)</span>" : ""), {
@@ -771,11 +780,16 @@ MarkingTool.Editor.View = new function() {
 							hc.CreateElement("div", "kein Kommentar", {
 								style: "font-style: italic; font-weight: normal;"
 							}) :
-							hc.CreateElement("textarea", task.studentComment, {
+							hc.CreateElementRaw({
+								element: "textarea",
+								text: task.studentComment,
 								readonly: "readonly"
 							}),
 							hc.CreateElement("div", "Kontrolleur:"),
-							tutorComment = hc.CreateElement("textarea", task.tutorComment)
+							tutorComment = hc.CreateElementRaw({
+								element: "textarea",
+								text: task.tutorComment
+							})
 						]
 					})
 				]
@@ -872,7 +886,7 @@ MarkingTool.Editor.View = new function() {
 				//Points
 				try { slider.slider("value", task.points == null ? 0 : task.points); }
 				catch (e) {} //ignore this shit
-				pointInput.val(task.points == null ? "" : task.points);
+				pointInput.val(String(task.points == null ? "" : task.points).replace(/\./g, ","));
 				//Status
 				stateobj[task.status][0].checked = true;
 				//Accepted
@@ -1081,10 +1095,13 @@ MarkingTool.Editor.View = new function() {
 					}
 					//show |= includes(task.maxPoints, filter.text);
 					show |= includes(task.points, filter.text);
-					show |= includes(MarkingTool.Editor.View.StateCodes[task.status], filter.text);
+					for (var i = 0; i<MarkingTool.Editor.View.StateCodes.length; ++i)
+						if (MarkingTool.Editor.View.StateCodes[i].key == task.status)
+							show |= includes(MarkingTool.Editor.View.StateCodes[i].value, filter.text);
 					show |= includes(task.tutorComment, filter.text);
 					show |= includes(task.studentComment, filter.text);
 					show |= includes(task.date, filter.text);
+					show |= includes(task.path[1], filter.text);
 				}
 				if (result.box != null) {
 					if (show) result.box.removeClass("ui-hide");
@@ -1457,6 +1474,11 @@ MarkingTool.Editor.Settings = new function() {
 	var thisref = this;
 	//Bool - Bestimmt, ob der Nutzer nur eingeschränkte Rechte hat.
 	this.RestrictedMode = false;
+	//Int - Bestimmt den Nutzerlevel, der diese Seite betrachtet.
+	//0 = Student, 1 = Tutor, 2 = Dozent, 3 = Admin, 4 = Super-Admin
+	this.UserLevel = 0;
+	//String - Gibt eine Rücksprung-URL an, wo die Serienübersicht ist.
+	this.BackUrl = "";
 };
 
 //=== Bibliothek um die Updates nachzuvollziehen
