@@ -24,6 +24,9 @@
     <div class="course-info left" style="">
         <div class="course-title uppercase" style="">
             <?php print $name; ?>
+            <?php if (isset($courses[0]['course']['id']) && isset($courses[0]['status']) && count($courses) === 1) {?>
+            <span class="tiny">(<?php echo Language::Get('main','id', $langTemplate); ?>: <?php echo $courses[0]['course']['id'];?>)</span>
+            <?php } ?>
         </div>
         <?php $titleState=0; ?>
         <?php if (isset($backURL) && isset($backTitle) && !is_null($backURL)

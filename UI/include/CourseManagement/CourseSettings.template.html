@@ -52,6 +52,11 @@ if (isset($CourseSettingsNotificationElements)) {
                        id="courseName"
                        maxlength="255" />
                 </span>
+                
+                <span style='display:block'>
+                <label class="form-field label bold top" for="courseid"><?php echo Language::Get('main','courseid', $langTemplate); ?>:</label>
+                <span class="bold"><?php echo $course['id']; ?></span>
+                </span>
 
                 <span style='display:block'>
                 <label class="form-field label bold top" for="semester"><?php echo Language::Get('main','semester', $langTemplate); ?>:</label>
