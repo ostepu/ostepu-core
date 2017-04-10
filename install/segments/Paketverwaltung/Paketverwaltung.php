@@ -25,12 +25,12 @@ class Paketverwaltung {
     public static $onEvents = array(
         'check' => array(
             'name' => 'checkPlugins',
-            'event' => array('page'),
+            'event' => array('page', 'install', 'update'),
             'procedure' => 'getPackageContents'
         ),
         'install' => array(
             'name' => 'installPlugins',
-            'event' => array('actionInstallPlugins', 'update'),
+            'event' => array('actionInstallPlugins', 'install', 'update'),
             'procedure' => 'installInstallPackages',
             'enabledInstall' => true
         ),

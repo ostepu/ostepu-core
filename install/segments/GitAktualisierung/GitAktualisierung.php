@@ -21,8 +21,8 @@ class GitAktualisierung {
     public static $page = 0;
     private static $initialized = false;
     private static $langTemplate = 'GitAktualisierung';
-    public static $onEvents = array('collect' => array('procedure' => 'collect', 'name' => 'collectGitUpdates', 'event' => array('actionCollectGitUpdates')),
-        'install' => array('procedure' => 'install', 'name' => 'installGitUpdates', 'event' => array('actionInstallGitUpdates')));
+    public static $onEvents = array('collect' => array('procedure' => 'collect', 'name' => 'collectGitUpdates', 'event' => array('actionCollectGitUpdates', 'install', 'update')),
+        'install' => array('procedure' => 'install', 'name' => 'installGitUpdates', 'event' => array('actionInstallGitUpdates', 'install', 'update')));
 
     public static function show($console, $result, $data) {
         // das Segment soll nur gezeichnet werden, wenn der Nutzer eingeloggt ist
