@@ -569,8 +569,8 @@ MarkingTool.Editor.View = new function() {
 					]
 				}),
 				hc.CreateComplexButton(
-					hc.CreateSimpleImage("Images/Text.png"),
-					hc.CreateSimpleImage("Images/Error.png", 
+					hc.CreateSimpleImage("../Images/Text.png"),
+					hc.CreateSimpleImage("../Images/Error.png", 
 						task.studentComment == null || task.studentComment == "" ? 
 						{ css: [ "ui-show" ] } : undefined),
 					hc.CreateElement("div", "S"),
@@ -578,8 +578,8 @@ MarkingTool.Editor.View = new function() {
 					{ title: "Studentenkommentar" }
 				),
 				hc.CreateComplexButton(
-					hc.CreateSimpleImage("Images/Text.png"),
-					hc.CreateSimpleImage("Images/Error.png", 
+					hc.CreateSimpleImage("../Images/Text.png"),
+					hc.CreateSimpleImage("../Images/Error.png", 
 						task.tutorComment == null || task.tutorComment == "" ? 
 						{ css: [ "ui-show" ] } : undefined),
 					hc.CreateElement("div", "K"),
@@ -587,16 +587,16 @@ MarkingTool.Editor.View = new function() {
 					{ title: "Kontrolleurkommentar" }
 				),
 				hc.CreateComplexButton(
-					hc.CreateSimpleImage("Images/Download.png"),
-					hc.CreateSimpleImage("Images/Error.png", 
+					hc.CreateSimpleImage("../Images/Download.png"),
+					hc.CreateSimpleImage("../Images/Error.png", 
 						task.userFile == null ? { css: [ "ui-show" ] } : undefined),
 					hc.CreateElement("div", "S"),
 					undefined,
 					{ title: "Studenteneinsendung" }
 				),
 				hc.CreateComplexButton(
-					hc.CreateSimpleImage("Images/Download.png"),
-					hc.CreateSimpleImage("Images/Error.png", 
+					hc.CreateSimpleImage("../Images/Download.png"),
+					hc.CreateSimpleImage("../Images/Error.png", 
 						task.tutorFile == null ? { css: [ "ui-show" ] } : undefined),
 					hc.CreateElement("div", "K"),
 					undefined,

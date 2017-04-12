@@ -1,8 +1,8 @@
 <?php
-include_once dirname(__FILE__) . '/include/Boilerplate.php';
-include_once dirname(__FILE__) . '/../Assistants/LArraySorter.php';
-include_once dirname(__FILE__) . '/../Assistants/Structures.php';
-include_once dirname(__FILE__) . '/include/FormEvaluator.php';
+include_once dirname(__FILE__) . '/../include/Boilerplate.php';
+include_once dirname(__FILE__) . '/../../Assistants/LArraySorter.php';
+include_once dirname(__FILE__) . '/../../Assistants/Structures.php';
+//include_once dirname(__FILE__) . '/../include/FormEvaluator.php';
 
 global $globalUserData;
 //Überprüft ob mindestens ein Tutor diese Seite abruft.
@@ -33,7 +33,7 @@ $user_course_data = $markingTool_data['user'];
 // $h->bind(array('name' => $user_course_data['courses'][0]['course']['name'],
                // 'navigationElement' => $menu));
 			   
-$c = Template::WithTemplateFile('include/MarkingTool2/MarkingTool2.template.html');
+$c = Template::WithTemplateFile('templates/MarkingTool2.template.html');
 $c->bind($markingTool_data);
 $c->bind(array(
 	"restricted" => Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUserData),
@@ -45,8 +45,8 @@ $c->bind(array(
 
 $w = new HTMLWrapper(/*$h, */$c);
 
-$w->set_config_file('include/configs/config_marking_tool2.json');
+$w->set_config_file('config_marking_tool2.json');
 if (isset($maintenanceMode) && $maintenanceMode === '1')
-    $w->add_config_file('include/configs/config_maintenanceMode.json');
+    $w->add_config_file('../include/configs/config_maintenanceMode.json');
 $w->show();
 //echo "<pre>"; echo json_encode($markingTool_data, JSON_PRETTY_PRINT); echo "</pre>";
