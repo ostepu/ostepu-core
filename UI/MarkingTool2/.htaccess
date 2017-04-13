@@ -1,3 +1,3 @@
 RewriteEngine On
-RewriteRule ^$ MarkingTool2.php [QSA,L]
-RewriteRule ^/$ MarkingTool2.php [QSA,L]
+RewriteRule ^/?$ MarkingTool2.php [QSA,L]
+RewriteRule ^api/(.*)/$ api.php?mode=$1 [QSA,L]

@@ -366,7 +366,9 @@ MarkingTool.Editor.View = new function() {
 							MarkingTool.Editor.UpdateIndicator.ShowBox();
 							document.location.reload();
 						}),
-						hc.CreateButton("Speichern", undefined, {
+						hc.CreateButton("Speichern", function() {
+							MarkingTool.Editor.Logic.CheckForUploadableTasks();
+						}, {
 							children: [
 								counter = hc.CreateElement("div", "0", {css:["ui-change-counter"]})
 							]
@@ -819,9 +821,15 @@ MarkingTool.Editor.View = new function() {
 										if (task.changeState_detailContent == 1) {
 											if (evt.target.files.length == 0)
 												task.getPropertys()["userFile"].resetValue();
-											else task.userFile = {
-												file: evt.target.files[0]
-											};
+											else {
+												var obj = { file: evt.target.files[0] };
+												var reader = new FileReader();
+												reader.onload = function(e) {
+													obj.blob = e.target.result;
+												};
+												reader.readAsDataURL(obj.file);
+												task.userFile = obj;
+											}
 											var info = cont[0].parent().parent().children().eq(0)
 												.find(".ui-complex-button-info").eq(2);
 											if (task.userFile != null)
@@ -850,9 +858,15 @@ MarkingTool.Editor.View = new function() {
 										if (task.changeState_detailContent == 1) {
 											if (evt.target.files.length == 0)
 												task.getPropertys()["tutorFile"].resetValue();
-											else task.tutorFile = {
-												file: evt.target.files[0]
-											};
+											else {
+												var obj = { file: evt.target.files[0] };
+												var reader = new FileReader();
+												reader.onload = function(e) {
+													obj.blob = e.target.result;
+												};
+												reader.readAsDataURL(obj.file);
+												task.tutorFile = obj;
+											}
 											var info = cont[0].parent().parent().children().eq(0)
 												.find(".ui-complex-button-info").eq(3);
 											if (task.tutorFile != null)
@@ -1342,6 +1356,7 @@ MarkingTool.Editor.View = new function() {
 //Stellt die Programmlogik bereit
 MarkingTool.Editor.Logic = new function() {
 	var thisref = this;
+	var checking = 0;
 	var bName = []; //Sortiert nach Name
 	var bTask = {}; //Sortiert nach Aufgabennummer
 	//erzeugt ein neues überwachtes Objekt aus den Rohdaten der Aufgabe.
@@ -1407,6 +1422,7 @@ MarkingTool.Editor.Logic = new function() {
 		updObjectList[path].close();
 		updObjectList[path] = undefined;
 	};
+		
 	//Bestimmt den Filter, der auf alle angezeigten Aufgaben angewandt wird.
 	this.Filter = {
 		//Der ausgewählte zugewiesene Kontrolleur. 'all' für alle Kontrolleure.
@@ -1454,6 +1470,80 @@ MarkingTool.Editor.Logic = new function() {
 		}
 		else $(".warning.many-items").addClass("ui-hide");
 	};
+	//Überprüft ob Tasks nun hochgeladen werden können und führt diesen Upload durch.
+	this.CheckForUploadableTasks = function() {
+		checking++;
+		if (checking == 1) {
+			//Phase 1 - Suche nach Uploadbarem und packe es zusammen
+			var list = [];
+			var time = Date.now() - MarkingTool.Editor.Settings.IntervallTime * 60000;
+			for (var i = 0; i<MarkingTool.Editor.UpdateFactory.UpdateList.length; ++i)
+				if (MarkingTool.Editor.UpdateFactory.UpdateList[i].changeTime >= time) {
+					var task = MarkingTool.Editor.UpdateFactory.UpdateList[i];
+					var changeObj = { 
+						data: {
+							id: task.id,
+							submissionId: task.submissionId,
+							markingId: task.markingId
+						},
+						count: 3
+					};
+					var props = task.getPropertys();
+					var setProp = function(name) {
+						if (props[name].isValueChanged()) {
+							changeObj.data[name+"_old"] = props[name].getDefaultValue();
+							changeObj.data[name+"_new"] = task[name];
+							changeObj.count += 2;
+						}
+					};
+					var setPropFile = function(name) {
+						if (props[name].isValueChanged()) {
+							if (task[name].blob == undefined) return false;
+							changeObj.data[name+"_old"] = props[name].getDefaultValue().id;
+							changeObj.data[name+"_new_name"] = task[name].file.name;
+							changeObj.data[name+"_new_blob"] = task[name].blob;
+							changeObj.count += 3;
+						}
+						return true;
+					};
+					setProp("points");
+					setProp("accepted");
+					setProp("status");
+					setProp("tutorComment");
+					setProp("studentComment");
+					if (!setPropFile("userFile")) continue; //Datei wurde noch nicht geladen
+					if (!setPropFile("tutorFile")) continue;
+					task.setAllValuesAsDefault();
+					list.push(changeObj);
+				}
+			//Phase 2 - Verpacke die kleinen Datenpakete zu großen
+			var upl = [], cur = [];
+			var left = MarkingTool.Editor.Settings.MaxUploadVariablesCount;
+			for (var i = 0; i<list.length; ++i) {
+				if (list[i].count > left) {
+					upl.push(cur);
+					cur = [];
+					left = MarkingTool.Editor.Settings.MaxUploadVariablesCount;
+				}
+				cur.push(JSON.stringify(list[i].data));
+				left -= list[i].count;
+			}
+			if (cur.length > 0) upl.push(cur);
+			//Phase 3 - Lade die Änderungen hoch
+			for (var i = 0; i<upl.length; ++i) {
+				$.post({
+					url: "api/upload/",
+					cache: false,
+					data: { "tasks[]": upl[i] },
+					success: function(data) {
+						console.log(data);
+						alert(data);
+					}
+				});
+			}
+		}
+		checking--;
+	};
 	
 	//private Init()
 	var _init = function() {
@@ -1462,6 +1552,11 @@ MarkingTool.Editor.Logic = new function() {
 		thisref.bTask = bTask;
 		MarkingTool.Editor.UpdateFactory.AddedEvent.add(updAddHandler);
 		MarkingTool.Editor.UpdateFactory.RemovedEvent.add(updRemoveHandler);
+		var loop = function() {
+			thisref.CheckForUploadableTasks();
+			setTimeout(loop, 60000); //1 Minute
+		};
+		setTimeout(loop, 60000);
 	};
 	//Initialisiert die Logik
 	this.Init = function() {
@@ -1479,6 +1574,10 @@ MarkingTool.Editor.Settings = new function() {
 	this.UserLevel = 0;
 	//String - Gibt eine Rücksprung-URL an, wo die Serienübersicht ist.
 	this.BackUrl = "";
+	//Int - Die Zeit in Minuten bis ein Task hochgeladen werden kann.
+	this.IntervallTime = 5;
+	//Int - die maximale Anzahl an Variablen die per HTTP-POST gesendet werden können.
+	this.MaxUploadVariablesCount = 1000;
 };
 
 //=== Bibliothek um die Updates nachzuvollziehen
