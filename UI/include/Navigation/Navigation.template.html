@@ -90,10 +90,10 @@
             echo "<a href='{$URL}' class='plain image-button exercise-sheet-images' target='popup' onclick=\"window.open('{$URL}', 'popup', 'width=700,height=600,scrollbars=yes,location=no,directories=no,menubar=no,toolbar=no,status=no,resizable=yes')\" title='info' target='_blank'>FAQ (Tutor)</a>";
         ?>
     </li>
+    <?php } ?>
 
     <?php // gibt den Inhalt der getContent-Ausgänge aus
         echo pageLib::getContent('getContent', $this->content, $confFile); ?>
-    <?php } ?>
                         
     <?php if (count($links)>0){
         echo '<span class="new-line left">';
