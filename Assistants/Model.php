@@ -466,6 +466,10 @@ class Model
 
         $result = array();
         
+        if ($links === null || count($links) === 0){
+            return $result;
+        }
+        
         foreach($links as $key => $link){
             $method = 'GET';
             if ($link->getPath()!==null && $link->getPath()!==''){

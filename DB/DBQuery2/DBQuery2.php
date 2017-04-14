@@ -106,13 +106,13 @@ class DBQuery2
             if ( isset($query_result['errno']) && $query_result['errno'] != 0 )
                 Logger::Log(
                             'GET queryResult failed errno: ' . $query_result['errno'] . ' error: ' . $query_result['error'],
-                            LogLevel::ERROR
+                            LogLevel::INFO
                             );
 
             if ( !isset($query_result['content']) || !$query_result['content'] )
                 Logger::Log(
                             'GET queryResult failed, no content',
-                            LogLevel::ERROR
+                            LogLevel::INFO
                             );
 
             if ( isset($query_result['errno']) && $query_result['errno'] == 401 ){
@@ -198,7 +198,7 @@ class DBQuery2
             if ( isset($query_result['errno']) && $query_result['errno'] != 0 ){
                 Logger::Log(
                             'GET queryResult failed errno: ' . $query_result['errno'] . (isset($query_result['error']) ? ' error: ' . $query_result['error'] : ''),
-                            LogLevel::ERROR
+                            LogLevel::INFO
                             );
                 // der Fehler wird noch nicht zurückgegeben
             }
@@ -206,7 +206,7 @@ class DBQuery2
             if ( !isset($query_result['content']) || !$query_result['content'] ){
                 Logger::Log(
                             'GET queryResult failed, no content',
-                            LogLevel::ERROR
+                            LogLevel::INFO
                             );
             }
 
@@ -291,13 +291,13 @@ class DBQuery2
             if ( isset($query_result['errno']) && $query_result['errno'] != 0 )
                 Logger::Log(
                             'GET queryResult failed errno: ' . $query_result['errno'] . ' error: ' . $query_result['error'],
-                            LogLevel::ERROR
+                            LogLevel::INFO
                             );
 
             if ( !isset($query_result['content']) || !$query_result['content'] )
                 Logger::Log(
                             'GET queryResult failed, no content',
-                            LogLevel::ERROR
+                            LogLevel::INFO
                             );
 
             if ( isset($query_result['errno']) && $query_result['errno'] == 401 ){
