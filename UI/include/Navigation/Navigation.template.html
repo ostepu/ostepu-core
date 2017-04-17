@@ -16,8 +16,6 @@
  */
 ?>
 
-<?php include_once ( dirname(__FILE__) . '/../../../Assistants/pageLib.php' ); ?>
-
 <?php $langTemplate='Navigation';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 <?php $confFile=dirname(__FILE__).'/uinavigation_cconfig.json'; ?>
 
@@ -92,7 +90,7 @@
     </li>
     <?php } ?>
 
-    <?php // gibt den Inhalt der getContent-Ausgänge aus
+    <?php // gibt den Inhalt des getContent-Eingangs aus
         echo pageLib::getContent('getContent', $this->content, $confFile); ?>
                         
     <?php if (count($links)>0){
