@@ -1583,6 +1583,11 @@ MarkingTool.Editor.Logic = new function() {
 						if (data.error != "outdatetData") {
 							var message = "Fehler: "+data.error;
 							if (data.hint) message += "<br/>Hinweis: "+data.hint;
+							message += "<br/>Kurs-ID: "+MarkingTool.Editor.Settings.Get.cid;
+							message += "<br/>Serien-ID: "+MarkingTool.Editor.Settings.sid;
+							message += "<br/>Bitte melden Sie diesen Fehler auf <a href=\""+
+								"http://www3.informatik.uni-halle.de/mantis/\" target=\"_blank\""
+								">Mantis</a>.";
 							var frame = MarkingTool.Editor.HTML.CreateWindow(
 								"Fehler in der Übertragung", "small", [
 									MarkingTool.Editor.HTML.CreateElementRaw({
@@ -1633,6 +1638,23 @@ MarkingTool.Editor.Settings = new function() {
 	this.IntervallTime = 5;
 	//Int - die maximale Anzahl an Variablen die per HTTP-POST gesendet werden können.
 	this.MaxUploadVariablesCount = 1000;
+	//Die Variablen, die über HTTP-GET in der URL definiert wurden
+	this.Get = {};
+	
+	//private Init()
+	var _init = function() {
+		var query = window.location.search.substring(1);
+		var vars = query.split('&');
+		for (var i = 0; i<vars.length; ++i) {
+			var pair = vars[i].split('=');
+			this.Get[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+		}
+		console.log("Get Parameter: "+JSON.stringify(this.Get);
+	};
+	//Initialisiert die Einstellungen
+	this.Init = function() {
+		_init.call(thisref);
+	};
 };
 
 //=== Bibliothek um die Updates nachzuvollziehen
@@ -1857,6 +1879,7 @@ MarkingTool.Editor.UpdateFactory = new function() {
 $(function() {
 	//Diese Funktion wird aufgerufen, wenn die Webseite bereit ist. Nun kann alles geladen 
 	//und aufgebaut werden.
+	MarkingTool.Editor.Settings.Init();
 	MarkingTool.Editor.Logic.UpdateTaskCounter();
 	MarkingTool.Editor.View.Init();
 	MarkingTool.Editor.Logic.Init();
