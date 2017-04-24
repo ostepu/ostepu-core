@@ -564,6 +564,64 @@ img.ui-complex-button-background {
 	margin-left: 0.25em;
 }
 
+/*Fenster*/
+.ui-window-outer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  background-color: rgba(0,0,0,0.5);
+  width: 100%;
+  height: 100%;
+}
+.ui-window-frame {
+  margin-left: 50%;
+  margin-top: 50vh;
+  transform: translate(-50%,-50%);
+  display: block;
+  position: absolute;
+  background-color: white;
+  box-shadow: 2px 2px 3px black;
+}
+.ui-window-frame.small .ui-window-content {
+	width: 40vw;
+	height: 30vh;
+	overflow: auto;
+}
+.ui-window-frame.large .ui-window-content {
+	width: 80vw;
+	height: 80vh;
+	overflow: auto;
+}
+.ui-window-header {
+  background-color: darkgray;
+  padding: 0.2em;
+  position: relative;
+  font-size: 1.4em;
+}
+.ui-window-title {
+  margin-right: 1.5em;
+}
+.ui-window-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+  background-color: rgba(255, 0, 0, 0.4);
+  width: 1em;
+  text-align: center;
+  padding: 0.2em;
+  transition: background-color 0.3s;
+}
+.ui-window-close:hover {
+  background-color: rgba(255, 0, 0, 0.7);
+}
+.ui-window-content {
+  padding: 0.2em;
+}
+
 /*jQuery UI - Slider*/
 .ui-slider {
 	border: 1px solid #c5c5c5;

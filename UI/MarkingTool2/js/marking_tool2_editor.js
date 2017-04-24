@@ -309,6 +309,46 @@ MarkingTool.Editor.HTML = new function(){
 		});
 		return slider;
 	};
+	//Erzeugt ein neues Fenster, welches sich dann über alles andere legen kann.
+	//title:         String   - Der Titel dieses Fensters
+	//[sizeClass]:   String   - "large" um ein großes Fenster zu erzeugen
+	//                          "small" (default) um ein kleineres Dialogfenster zu erzeugen
+	//[content]:     Array    - Die Liste an Elementen, die als Content hinzugefügt wird
+	//[closeMethod]: Funktion - Die Methode, die aufgerufen wird, wenn dieses Fenster 
+	//                          geschlossen wurde
+	//[data]:        Objekt   - Zusätzliche Daten für den Fensterrahmen
+	//return:        jQuery   - Das neu erzeugte Element
+	this.CreateWindow = function(title, sizeClass, content, closeMethod, data) {
+		var closeButton;
+		data = data || {};
+		data.css = data.css || [];
+		data.css.push("ui-window-frame");
+		data.css.push(sizeClass || "small");
+		data.children = data.children || [];
+		data.children.push(thisref.CreateElementRaw({
+			css: ["ui-window-header"],
+			children: [
+				thisref.CreateElementRaw({
+					css: ["ui-window-title"],
+					text: title
+				}),
+				closeButton = thisref.CreateElementRaw({
+					css: ["ui-window-close"],
+					text: "x"
+				})
+			]
+		}));
+		data.children.push(thisref.CreateElementRaw({
+			css: ["ui-window-content"],
+			children: content
+		}));
+		var frame = thisref.CreateElementRaw(data);
+		if (closeMethod != undefined) closeButton.click(closeMethod);
+		return thisref.CreateElementRaw({
+			css: ["ui-window-outer"],
+			children: [ frame ]
+		});
+	}
 };
 
 //Stellt die Oberfläche und ihre Funktionen bereit.
@@ -1538,6 +1578,21 @@ MarkingTool.Editor.Logic = new function() {
 					data: { "tasks[]": upl[i] },
 					success: function(data) {
 						console.log(data);
+						//data = JSON.parse(data);
+						if (data.success) return;
+						if (data.error != "outdatetData") {
+							var message = "Fehler: "+data.error;
+							if (data.hint) message += "<br/>Hinweis: "+data.hint;
+							var frame = MarkingTool.Editor.HTML.CreateWindow(
+								"Fehler in der Übertragung", "small", [
+									MarkingTool.Editor.HTML.CreateElementRaw({
+										content: message
+									})
+								], function() {
+									frame.remove();
+								});
+							frame.appendTo($(document.body));
+						}
 					}
 				});
 			}

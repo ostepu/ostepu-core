@@ -63,6 +63,13 @@ if ($_GET["mode"] == "upload") {
 			"hint" => 'add POST variable $tasks with some data'
 		);
 	}
+	elseif (!isset($_GET["cid"]) || !isset($_GET["sid"])) {
+		$response = array(
+			"success" => false,
+			"error" => "noCourseOrSheetSetted",
+			"hint" => 'GET variables $cid and/or $sid not setted'
+		);
+	}
 	else {
 		$cid = $_GET["cid"];
 		$sid = $_GET["sid"];
@@ -156,8 +163,8 @@ if ($_GET["mode"] == "upload") {
 			//Schritt 4.2 - Speichere Daten zum Marking (Korrektur)
 		}
 	}
-	if (!$response["success"] && !isset($response["hint"]))
-		$response["hint"] = 'look in $smalStates for more details';
+	// if (!$response["success"] && !isset($response["hint"]))
+		// $response["hint"] = 'look in $smalStates for more details';
 	echo json_encode($response, JSON_PRETTY_PRINT);
 	return;
 }
