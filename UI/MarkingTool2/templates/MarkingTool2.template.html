@@ -96,6 +96,7 @@ $restricted = !($restricted == 1);
 				$c++;
 				$tasks[] = array(
 					"groupIndex" => count($d),
+					"leaderId" => intval($group["leader"]["id"]),
 					"id" => intval($exercise["id"]),
 					"maxPoints" => floatval($exercise["maxPoints"]),
 					"submissionId" => isset($exercise["submission"]) ? 

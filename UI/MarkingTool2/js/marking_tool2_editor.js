@@ -1482,7 +1482,8 @@ MarkingTool.Editor.Logic = new function() {
 					var task = MarkingTool.Editor.UpdateFactory.UpdateList[i];
 					var changeObj = { 
 						data: {
-							id: task.id,
+							leaderId: task.leaderId,
+							exerciseId: task.id,
 							submissionId: task.submissionId,
 							markingId: task.markingId
 						},
@@ -1537,7 +1538,6 @@ MarkingTool.Editor.Logic = new function() {
 					data: { "tasks[]": upl[i] },
 					success: function(data) {
 						console.log(data);
-						alert(data);
 					}
 				});
 			}
