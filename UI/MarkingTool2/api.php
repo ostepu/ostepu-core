@@ -81,18 +81,18 @@ if ($_GET["mode"] == "upload") {
 		$response = array(
 			"success" => true,
 			"smalStates" => array(),
-			"files" => array(),			//Eine Liste der neuen Dateiinfos, die hochgeladen wurden
-			"test" => $dbData
+			"files" => array()//,			//Eine Liste der neuen Dateiinfos, die hochgeladen wurden
+			//"test" => $dbData
 		);
 		foreach ($_POST["tasks"] as $task) {
 			$task  = json_decode($task, true);
 			//Schritt 1 - Hole das aktuelle Objekt
 			for ($i = 0; $i<count($dbData); ++$i)
-				if ($dbData[i]["leaderId"] == $task["leaderId"]) {
-					$exercise = &$dbData[i]["exercises"];
+				if ($dbData[$i]["leaderId"] == $task["leaderId"]) {
+					$exercise = &$dbData[$i]["exercises"];
 					for ($i = 0; $i<count($exercise); ++$i) 
-						if ($exercise[i]["id"] == $task["exerciseId"]) {
-							$exercise = $exercise[i];
+						if ($exercise[$i]["id"] == $task["exerciseId"]) {
+							$exercise = $exercise[$i];
 							break;
 						}
 					break;
@@ -151,9 +151,9 @@ if ($_GET["mode"] == "upload") {
 			//Schritt 3 - Sende existierende Unstimmigkeiten zurück
 			if (!$valid) {
 				$response["success"] = false;
+				$response["error"] = "outdatetData";
 				$response["smalStates"][] = array(
 					"task" => $task,
-					"error" => "outdatetData",
 					"newData" => $newData
 				);
 				continue;

@@ -1573,7 +1573,8 @@ MarkingTool.Editor.Logic = new function() {
 			//Phase 3 - Lade die Änderungen hoch
 			for (var i = 0; i<upl.length; ++i) {
 				$.post({
-					url: "api/upload/",
+					url: "api/upload/?cid=" + MarkingTool.Editor.Settings.Get.cid +
+						"&sid=" + MarkingTool.Editor.Settings.Get.sid,
 					cache: false,
 					data: { "tasks[]": upl[i] },
 					success: function(data) {
@@ -1596,6 +1597,18 @@ MarkingTool.Editor.Logic = new function() {
 								], function() {
 									frame.remove();
 								});
+							frame.appendTo($(document.body));
+						}
+						else {
+							var frame = MarkingTool.Editor.HTML.CreateWindow(
+								"Es existiert ein neuerer Zustand auf dem Server", "large", [
+									MarkingTool.Editor.HTML.CreateElementRaw({
+										content: JSON.stringify(data.smalStates)
+									})
+								], function() {
+									frame.remove();
+								}
+							);
 							frame.appendTo($(document.body));
 						}
 					}
