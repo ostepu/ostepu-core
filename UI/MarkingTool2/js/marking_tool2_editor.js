@@ -1584,9 +1584,9 @@ MarkingTool.Editor.Logic = new function() {
 							var message = "Fehler: "+data.error;
 							if (data.hint) message += "<br/>Hinweis: "+data.hint;
 							message += "<br/>Kurs-ID: "+MarkingTool.Editor.Settings.Get.cid;
-							message += "<br/>Serien-ID: "+MarkingTool.Editor.Settings.sid;
+							message += "<br/>Serien-ID: "+MarkingTool.Editor.Settings.Get.sid;
 							message += "<br/>Bitte melden Sie diesen Fehler auf <a href=\""+
-								"http://www3.informatik.uni-halle.de/mantis/\" target=\"_blank\""
+								"http://www3.informatik.uni-halle.de/mantis/\" target=\"_blank\""+
 								">Mantis</a>.";
 							var frame = MarkingTool.Editor.HTML.CreateWindow(
 								"Fehler in der Übertragung", "small", [
@@ -1649,7 +1649,7 @@ MarkingTool.Editor.Settings = new function() {
 			var pair = vars[i].split('=');
 			this.Get[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
 		}
-		console.log("Get Parameter: "+JSON.stringify(this.Get);
+		console.log("Get Parameter: "+JSON.stringify(this.Get));
 	};
 	//Initialisiert die Einstellungen
 	this.Init = function() {
