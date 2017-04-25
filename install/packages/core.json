@@ -69,6 +69,16 @@
                 "path": "FS/FSPdf/tcpdf/"
             }
         },
+        {
+            "path": "Assistants/vendor/phpwee/",
+            "type": "git",
+            "params": {
+                "name": "phpwee",
+                "branch": "master",
+                "URL": "https://github.com/searchturbine/phpwee-php-minifier.git",
+                "path": "Assistants/vendor/phpwee/"
+            }
+        },
         {"path": "DB/.htaccess"},
         {"path": "FS/.htaccess"},
         {"path": "logic/Include/"},
