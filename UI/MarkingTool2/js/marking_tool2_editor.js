@@ -349,6 +349,27 @@ MarkingTool.Editor.HTML = new function(){
 			children: [ frame ]
 		});
 	}
+	//Erzeugt einen Rahmen, in dem in den unteren Bereich Buttons nebeneinander angeordnet werden
+	//können. Im großen Bereich erfolgt dann der Inhalt.
+	//[buttons]: Array<jQuery> - Die Buttons für den unteren Bereich
+	//[content]: Array<jQuery> - Der Inhalt für den oberen Bereich
+	//[data]:    Object        - Zusätzliche Daten für den Rahmen
+	//return:    jQuery        - Das neu erzeugte Element
+	this.CreateButtonFrame = function(buttons, content, data) {
+		data = data || [];
+		data.css = data.css || [];
+		data.css.push("ui-button-frame");
+		data.children = data.children || [];
+		data.children.push(thisref.CreateElementRaw({
+			css: ["ui-button-frame-content"],
+			children: content
+		}));
+		data.children.push(thisref.CreateElementRaw({
+			css: ["ui-button-frame-buttons"],
+			children: buttons
+		}));
+		return thisref.CreateElementRaw(data);
+	};
 };
 
 //Stellt die Oberfläche und ihre Funktionen bereit.
@@ -980,7 +1001,171 @@ MarkingTool.Editor.View = new function() {
 		});
 		return cont;
 	};
+	//Erzeugt die Info für die Auspaltung der Zustände
+	var createForkInfo = function(baseState, serverState, localState, changed) {
+		var hc = MarkingTool.Editor.HTML;
+		var server = hc.CreateElementRaw({
+			css: ["ui-fork-button", "large", "server"],
+			children: [
+				hc.CreateElementRaw({
+					children: [ serverState ]
+				}),
+				hc.CreateElementRaw({
+					css: ["ui-fork-arrow", "checked"]
+				})
+			]
+		});
+		var local = hc.CreateElementRaw({
+			css: ["ui-fork-button", "large", "local"],
+			children: [
+				hc.CreateElementRaw({
+					children: [ localState ]
+				}),
+				hc.CreateElementRaw({
+					css: ["ui-fork-arrow", "checked"]
+				})
+			]
+		});
+		var state = null; //undefined
+		var handler = function() {
+			if ($(this).hasClass("server")) state = false;
+			if ($(this).hasClass("local")) state = true;
+			var sa = server.find(".ui-fork-arrow");
+			var la = local.find(".ui-fork-arrow");
+			if (state === true) sa.addClass("checked");
+			else sa.removeClass("checked");
+			if (state === false) la.addClass("checked");
+			else sa.removeClass("checked");
+			if (changed != undefined) changed(state);
+		};
+		server.click(handler);
+		local.click(handler);
+		var fork = hc.CreateElementRaw({
+			css: [ "ui-fork-element" ],
+			children: [
+				createWrapper(hc.CreateElementRaw({
+					css: ["ui-fork-button"],
+					children: [ baseState ]
+				})),
+				createWrapper(hc.CreateElementRaw({
+					children: [
+						hc.CreateElementRaw({ css: [ "ui-fork-util-line", "horz", "middle" ] }),
+						hc.CreateElementRaw({ css: [ "ui-fork-util-line", "horz", "top" ] }),
+						hc.CreateElementRaw({ css: [ "ui-fork-util-line", "horz", "bottom" ] }),
+						hc.CreateElementRaw({ css: [ "ui-fork-util-line", "vert", "up" ] }),
+						hc.CreateElementRaw({ css: [ "ui-fork-util-line", "vert", "down" ] }),
+						hc.CreateElementRaw({ css: [ "ui-fork-util-arrow", "up" ] }),
+						hc.CreateElementRaw({ css: [ "ui-fork-util-arrow", "down" ] })
+					]
+				})),
+				hc.CreateElementRaw({
+					children: [ server, local ]
+				})
+			]
+		});
+		return fork;
+	};
 	
+	var createForkTaskInfo = function(task, fullsetted) {
+		var hc = MarkingTool.Editor.HTML;
+		if (task.error != null) {
+		}
+		else {
+			task.use = {};
+			var content = [];
+			var setted;
+			var createFork = function(param, createView) {
+				var fork = createForkInfo(createView(task.task[param+"_old"]), 
+					createView(task.newData[param]),
+					createView(task.task[param+"_new"]), 
+					function(state) {
+						if (task.use[param] == undefined) {
+							setted--;
+							if (setted == 0 && fullsetted != undefined) fullsetted();
+						}
+						task.use[param] = state;
+					});
+				return fork;
+			};
+			if (task.newData.points != undefined)
+				content.push(createFork("points", function(value) {
+					return hc.CreateElementRaw({ text: "Punkte: " + value });
+				}));
+			if (task.newData.accepted != undefined)
+				content.push(createFork("accepted", function(value) {
+					return hc.CreateElementRaw({ text: value ? "Akzeptiert" : "nicht Akzeptiert" });
+				}));
+			if (task.newData.status != undefined)
+				content.push(createFork("status", function(value) {
+					for (var i = 0; i<MarkingTool.Editor.View.StateCodes.length; ++i)
+						if (MarkingTool.Editor.View.StateCodes[i].key == value)
+							return hc.CreateElementRaw({ text: "Status: " + MarkingTool.Editor.View.StateCodes[i].value });
+					return hc.CreateElementRaw({ text: "Status: unbekannt" });
+				}));
+			if (task.newData.tutorComment != undefined)
+				content.push(createFork("tutorComment", function(value) {
+					return hc.CreateElementRaw({
+						css: ["comment-box"],
+						children: [
+							hc.CreateElementRaw({ title: "Tutorkommentar:" }),
+							hc.CreateElementRaw({ element: "textarea", text: value })
+						]
+					});
+				}));
+			if (task.newData.studentComment != undefined)
+				content.push(createFork("studentComment", function(value) {
+					return hc.CreateElementRaw({
+						css: ["comment-box"],
+						children: [
+							hc.CreateElementRaw({ title: "Studentenkommentar:" }),
+							hc.CreateElementRaw({ element: "textarea", text: value })
+						]
+					});
+				}));
+			
+			//Dateien
+			
+			setted = content.length;
+			if (setted == 0) {
+				fullsetted();
+				return null;
+			}
+			return hc.CreateElementRaw({
+				css: ["ui-fork-task-box"],
+				children: [
+					hc.CreateElementRaw({
+						css: [ "ui-fork-task-header" ],
+						text: "Studenten"
+					}),
+					hc.CreateElementRaw({
+						children: content
+					})
+				]
+			});
+		}
+	};
+	
+	//Erzeugt eine Übersicht zu allen Änderungen
+	this.createForkInfo = function(tasks, fullsetted) {
+		var left = tasks.length;
+		var submitted = false;
+		var content = [];
+		for (var i = 0; i<tasks.length; ++i)
+			content.push(createForkTaskInfo(tasks[i], function() {
+				left--;
+				if (left == 0) {
+					submitted = true;
+					fullsetted();
+				}
+			}));
+		if (left == 0) {
+			if (!submitted) fullsetted();
+			return;
+		}
+		return MarkingTool.Editor.HTML.CreateElementRaw({
+			children: content
+		});
+	};
 	//erzeugt den Eintrag für die Änderungsliste in der genau aufgelistet ist, 
 	//was geändert wurde.
 	this.createChangeInfo = function(task, closeMethod) {
@@ -1603,7 +1788,16 @@ MarkingTool.Editor.Logic = new function() {
 							var frame = MarkingTool.Editor.HTML.CreateWindow(
 								"Es existiert ein neuerer Zustand auf dem Server", "large", [
 									MarkingTool.Editor.HTML.CreateElementRaw({
-										content: JSON.stringify(data.smalStates)
+										//content: JSON.stringify(data.smalStates)
+										content: [MarkingTool.Editor.HTML.CreateButtonFrame([
+											MarkingTool.Editor.HTML.CreateButton("Alles vom Server auswählen"),
+											MarkingTool.Editor.HTML.CreateButton("Alles eigene auswählen"),
+											MarkingTool.Editor.HTML.CreateButton("Änderungen übernehmen")
+										], [
+											MarkingTool.Editor.View.createForkInfo(data.smalStates, function() {
+											})
+										]										
+										)]
 									})
 								], function() {
 									frame.remove();

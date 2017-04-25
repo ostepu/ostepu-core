@@ -3,12 +3,10 @@
 
 //include_once dirname(__FILE__) . '/../include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../include/Authentication.php';
-include_once dirname(__FILE__) . '/../include/StudIPAuthentication.php';
 include_once dirname(__FILE__) . '/../../Assistants/LArraySorter.php';
 include_once dirname(__FILE__) . '/../../Assistants/Structures.php';
 
 $auth = new Authentication();
-$StudIPauth = new StudIPAuthentication();
 
 $invalidLogin = Authentication::checkLogin() == false;
 
@@ -43,7 +41,7 @@ if ($_GET["mode"] == "ping") {
 		"ping" => "pong"
 	);
 	//echo json_encode($response, JSON_PRETTY_PRINT);
-	json_encode($response);
+	echo json_encode($response, JSON_PRETTY_PRINT);
 	return;
 }
 if ($_GET["mode"] == "test") {

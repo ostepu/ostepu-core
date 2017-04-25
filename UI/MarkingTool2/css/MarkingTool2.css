@@ -620,6 +620,55 @@ img.ui-complex-button-background {
 }
 .ui-window-content {
   padding: 0.2em;
+  position: relative;
+}
+
+/*Fenster - Buttongruppe*/
+.ui-button-frame-content {
+	padding-bottom: 2em;
+	overflow: auto;
+	max-width: 100%;
+	max-height: 100%;
+}
+.ui-button-frame-buttons {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-color: darkgray;
+	text-align: center;
+	padding: 0.2em;
+}
+.ui-button-frame-buttons > * {
+	display: inline-block;
+}
+
+/*Fork - Info*/
+.ui-fork-task-box {
+	border: 1px solid green;
+	padding: 0.3em;
+	border-radius: 0.3em;
+	position: relative;
+}
+.ui-fork-task-header {
+	font-size: 1.2em;
+	font-weight: bold;
+}
+.ui-fork-element {
+	display: table;
+	width: 100%;
+}
+.ui-fork-element > div {
+	display: table-cell;
+}
+.ui-fork-element > div:nth-child(2) {
+	width: 4em;
+}
+.ui-fork-button {
+	display: block;
+	border: 1px solid orange;
+	cursor: pointer;
+	
 }
 
 /*jQuery UI - Slider*/
@@ -657,7 +706,8 @@ img.ui-complex-button-background {
 
 /*Keine Benutzerauswahl*/
 .ui-commandbar,
-.ui-layout-dock {
+.ui-layout-dock,
+.ui-button-frame-buttons {
 	-ms-user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
