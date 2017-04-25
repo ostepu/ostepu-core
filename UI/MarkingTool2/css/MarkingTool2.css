@@ -660,16 +660,124 @@ img.ui-complex-button-background {
 }
 .ui-fork-element > div {
 	display: table-cell;
+	vertical-align: middle;
+}
+.ui-fork-element > div:nth-child(1) {
+	width: 40%;
 }
 .ui-fork-element > div:nth-child(2) {
-	width: 4em;
+	width: 3em;
+	position: relative;
+	height: 100%;
+	vertical-align: top;
+}
+.ui-fork-element > div:nth-child(2) > div {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+.ui-fork-util-line, .ui-fork-util-arrow {
+	position: absolute;
+}
+.ui-fork-util-line.horz {
+	height: 0.1em;
+	width: 1em;
+}
+.ui-fork-util-line.horz.top {
+	left: 1em;
+	top: 25%;
+	background-color: blue;
+}
+.ui-fork-util-line.horz.middle {
+	left: 0;
+	top: 50%;
+	background-color: green;
+}
+.ui-fork-util-line.horz.bottom {
+	left: 1em;
+	top: 75%;
+	background-color: orange;
+}
+.ui-fork-util-line.vert {
+	width: 0.1em;
+	height: 25%;
+	left: 1em;
+}
+.ui-fork-util-line.vert.up {
+	top: 25%;
+	background-color: blue;
+}
+.ui-fork-util-line.vert.down {
+	top: 50%;
+	background-color: orange;
+}
+.ui-fork-util-arrow {
+	width: 0;
+	height: 0;
+	left: 2em;
+	transform: translate(0, -0.5em);
+}
+.ui-fork-util-arrow.up {
+	top: 25%;
+	border-left: 1em solid blue;
+	border-top: 0.5em solid transparent;
+	border-bottom: 0.5em solid transparent;
+	border-right: none;
+}
+.ui-fork-util-arrow.down {
+	top: 75%;
+	border-left: 1em solid orange;
+	border-top: 0.5em solid transparent;
+	border-bottom: 0.5em solid transparent;
+	border-right: none;
 }
 .ui-fork-button {
 	display: block;
-	border: 1px solid orange;
+	border: 1px solid green;
+	background-color: lightgreen;
 	cursor: pointer;
-	
+	margin: 0.4em;
+	padding: 0.5em;
+	position: relative;
 }
+.ui-fork-button.server {
+	border: 1px solid blue;
+	background-color: lightblue;
+	box-shadow: 0.2em 0.2em 0.3em blue;
+}
+.ui-fork-button.server:hover {
+	background-color: blue;
+}
+.ui-fork-button.local {
+	border: 1px solid #ffa500;
+	background-color: #ffda97;
+	box-shadow: 0.2em 0.2em 0.3em #ffa500;
+}
+.ui-fork-button.local:hover {
+	background-color: #ffa500;
+}
+.ui-fork-button.large > div {
+	display: table;
+	width: 100%;
+}
+.ui-fork-button.large > div > div {
+	display: table-cell;
+	vertical-align: middle;
+}
+.ui-fork-button.large > div > div:nth-child(1),
+.ui-fork-button.large > div > div:nth-child(3) {
+	width: 1px;
+}
+.ui-fork-button.large > div > div:nth-child(1) > img {
+	margin-right: 1em;
+}
+.ui-fork-button.large > div  img {
+	width: 2.5em;
+}
+.ui-fork-arrow:not(.checked) {
+	visibility: hidden;
+}
+
 
 /*jQuery UI - Slider*/
 .ui-slider {

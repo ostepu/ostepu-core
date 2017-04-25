@@ -1008,23 +1008,41 @@ MarkingTool.Editor.View = new function() {
 			css: ["ui-fork-button", "large", "server"],
 			children: [
 				hc.CreateElementRaw({
-					children: [ serverState ]
-				}),
-				hc.CreateElementRaw({
-					css: ["ui-fork-arrow", "checked"]
+					children: [
+						createWrapper(hc.CreateElementRaw({
+							element: "img",
+							src: "img/server-icon.png"
+						})),
+						createWrapper(serverState),
+						createWrapper(hc.CreateElementRaw({
+							css: ["ui-fork-arrow"],
+							element: "img",
+							src: "img/ok-icon.png"
+						}))
+					]
 				})
-			]
+			],
+			title: "Der aktuelle Zustand auf dem Server"
 		});
 		var local = hc.CreateElementRaw({
 			css: ["ui-fork-button", "large", "local"],
 			children: [
 				hc.CreateElementRaw({
-					children: [ localState ]
-				}),
-				hc.CreateElementRaw({
-					css: ["ui-fork-arrow", "checked"]
+					children: [
+						createWrapper(hc.CreateElementRaw({
+							element: "img",
+							src: "img/computer-icon.png"
+						})),
+						createWrapper(localState),
+						createWrapper(hc.CreateElementRaw({
+							css: ["ui-fork-arrow"],
+							element: "img",
+							src: "img/ok-icon.png"
+						}))
+					]
 				})
-			]
+			],
+			title: "Der zu speichernde Zustand"
 		});
 		var state = null; //undefined
 		var handler = function() {
@@ -1032,10 +1050,10 @@ MarkingTool.Editor.View = new function() {
 			if ($(this).hasClass("local")) state = true;
 			var sa = server.find(".ui-fork-arrow");
 			var la = local.find(".ui-fork-arrow");
-			if (state === true) sa.addClass("checked");
+			if (state === false) sa.addClass("checked");
 			else sa.removeClass("checked");
-			if (state === false) la.addClass("checked");
-			else sa.removeClass("checked");
+			if (state === true) la.addClass("checked");
+			else la.removeClass("checked");
 			if (changed != undefined) changed(state);
 		};
 		server.click(handler);
@@ -1045,15 +1063,16 @@ MarkingTool.Editor.View = new function() {
 			children: [
 				createWrapper(hc.CreateElementRaw({
 					css: ["ui-fork-button"],
-					children: [ baseState ]
+					children: [ baseState ],
+					title: "Der ursprüngliche Zustand"
 				})),
 				createWrapper(hc.CreateElementRaw({
 					children: [
-						hc.CreateElementRaw({ css: [ "ui-fork-util-line", "horz", "middle" ] }),
-						hc.CreateElementRaw({ css: [ "ui-fork-util-line", "horz", "top" ] }),
-						hc.CreateElementRaw({ css: [ "ui-fork-util-line", "horz", "bottom" ] }),
 						hc.CreateElementRaw({ css: [ "ui-fork-util-line", "vert", "up" ] }),
 						hc.CreateElementRaw({ css: [ "ui-fork-util-line", "vert", "down" ] }),
+						hc.CreateElementRaw({ css: [ "ui-fork-util-line", "horz", "top" ] }),
+						hc.CreateElementRaw({ css: [ "ui-fork-util-line", "horz", "bottom" ] }),
+						hc.CreateElementRaw({ css: [ "ui-fork-util-line", "horz", "middle" ] }),
 						hc.CreateElementRaw({ css: [ "ui-fork-util-arrow", "up" ] }),
 						hc.CreateElementRaw({ css: [ "ui-fork-util-arrow", "down" ] })
 					]
@@ -1130,12 +1149,22 @@ MarkingTool.Editor.View = new function() {
 				fullsetted();
 				return null;
 			}
+			var name = "";
+			if (!MarkingTool.Editor.Settings.RestrictedMode)
+				for (var i = 0; i<MarkingTool.Editor.Logic.bName.length; ++i)
+					if (MarkingTool.Editor.Logic.bName[i].user[0].id == task.task.leaderId) {
+						var group = MarkingTool.Editor.Logic.bName[i].user;
+						for (i = 0; i<group.length; ++i)
+							name += group[i].name + ", ";
+						break;
+					}
+			name += "#"+task.task.markingId;
 			return hc.CreateElementRaw({
 				css: ["ui-fork-task-box"],
 				children: [
 					hc.CreateElementRaw({
 						css: [ "ui-fork-task-header" ],
-						text: "Studenten"
+						text: name
 					}),
 					hc.CreateElementRaw({
 						children: content

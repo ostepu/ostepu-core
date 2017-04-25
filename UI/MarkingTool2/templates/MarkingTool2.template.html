@@ -77,7 +77,7 @@ $restricted = !($restricted == 1);
 		foreach ($groups as $group) {
 			$user = array();
 			if ($restricted)
-				$user[] = array("id" => 0, "name" => "", "user" => "");
+				$user[] = array("id" => intval($group["leader"]["id"]), "name" => "", "user" => "");
 			else $user[] = array(
 				"id" => intval($group["leader"]["id"]), 
 				"name" => $group["leader"]["firstName"] . " " . $group["leader"]["lastName"],
