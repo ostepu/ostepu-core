@@ -38,9 +38,9 @@ class CContent
 
     public function getContent($callName, $input, $params = array())
     {
-        if (!isset($this->config['MAIN']['externalUrl'])){
+        /*if (!isset($this->config['MAIN']['externalUrl'])){
             return Model::isProblem();
-        }
+        }*/
         
         $fileName = array_pop($params['path']);
         $path_parts = pathinfo($fileName);
