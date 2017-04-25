@@ -399,8 +399,65 @@ class Komponentenzugang {
 
         // sammelt Profildefinitionen von anderen Segmenten ein (diese stehen nicht in der Datenbank)
         self::$cachedExternalProfiles = Installation::collect('getAllExternalProfiles',$data, array(__CLASS__));
+        
+        // wir müssen noch die Definitionen von den Komponenten einsammeln
+        $list = Einstellungen::getLinks('getComponentProfiles', dirname(__FILE__), '/tapiconfiguration_cconfig.json');
+
+        $multiRequestHandle = new Request_MultiRequest();
+
+        for ($i = 0; $i < count($list); $i++) {
+            $handler = Request_CreateRequest::createGet($list[$i]->getAddress() . '/api/profiles', array(), '');
+            $multiRequestHandle->addRequest($handler);
+        }
+
+        $answer = $multiRequestHandle->run();
+        for ($i = 0; $i < count($list); $i++) {
+            $result = $answer[$i];
+            if (isset($result['content']) && isset($result['status']) && $result['status'] === 200) {
+                $new = GateProfile::decodeGateProfile($result['content']);
+                if (!is_array($new)){
+                    $new = array($new);
+                }
+                self::$cachedExternalProfiles = array_merge(self::$cachedExternalProfiles, $new);
+            } else {
+                Installation::log(array('text' => Installation::Get('accessComponents', 'errorGetApiProfiles', self::$langTemplate, array('component'=>$list[$i]->getTargetName())), 'logLevel' => LogLevel::ERROR));
+            }
+        }
+        
+        self::$cachedExternalProfiles = self::mergeProfiles(self::$cachedExternalProfiles);
+        
+        // für public soll ein Auth installiert werden
+        if (isset(self::$cachedExternalProfiles['public'])){
+            self::$cachedExternalProfiles['public']->addAuth(GateAuth::createGateAuth(null,'noAuth',null,null,null,null));
+        }
 
         return self::$cachedExternalProfiles;
+    }
+    
+    // vereint die Menge der Regeln und Auths aller Profile mit dem selben Namen in $profileList
+    public static function mergeProfiles($profileList){
+        $newProfiles = array();
+        foreach($profileList as $profile){
+            $name = $profile->getName();
+            if ($name === null) continue; // das Profil muss einen Namen haben
+            if (!isset($newProfiles[$name])){
+                if ($profile->getRules() === null)$profile->setRules(array());
+                if ($profile->getAuths() === null)$profile->setAuths(array());
+                $newProfiles[$name] = $profile;
+            } else {
+                if ($profile->getRules() !== null){
+                    $rules = $newProfiles[$name]->getRules();
+                    $rules = array_merge($rules, $profile->getRules());
+                    $newProfiles[$name]->setRules($rules);
+                }
+                if ($profile->getAuths() !== null){
+                    $auths = $newProfiles[$name]->getAuths();
+                    $auths = array_merge($auths, $profile->getAuths());
+                    $newProfiles[$name]->setAuths($auths);
+                }
+            }
+        }
+        return $newProfiles;
     }
     
     public static function getAllProfiles($data, $refreshCachedData = false){
@@ -455,18 +512,21 @@ class Komponentenzugang {
             $targets = array_keys($targets);
             
             foreach($targets as $target){
+                $comName = $profile->getName().'/'.$target;
+                if (isset($components[$comName])) continue;
+                
                 $name = ucfirst($profile->getName()).'Interface'.$target;
                 $com = array('name'=>$name,
                              'type'=>'clone',
                              'base'=>'CGate',
-                             'baseURI'=>'/interface/'.$profile->getName().'/'.$target,
+                             'baseURI'=>'/interface/'.$comName,
                              'initialization'=>'virtual');
                 
-                $components[] = $com;
+                $components[$comName] = $com;
             }
         }
         
-        return $components;
+        return array_values($components);
     }
     
     public static function getComponentDefinitionExtension($data){

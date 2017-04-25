@@ -14,26 +14,34 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
 include_once ( dirname(__FILE__) . '/../../UI/include/Authentication.php' );
 
 /**
- * ???
+ * die Klasse CGate stellt gesicherte Zugriffe auf interne Komponenten bereit
+ * hierzu gehört die Komponente DBGate, deren Tabellen die Profile, Benutzer und Regeln definieren
+ *
+ * Es gibt die Zugangsarten
+ * -> noAuth = keine Authentifizierung
+ * -> httpAuth = die HTTP-Standardanmeldung im Header unter "Authorization"
+ *      siehe https://de.wikipedia.org/wiki/HTTP-Authentifizierung
+ * -> tokenAuth = die Angabe eines Tokens im Header unter "PRIVATE-TOKEN" (ist in der gateauth-Tabelle dann der "GA_login")
  */
 class CGate extends Model
 {
 
     /**
-     * ???
+     * Konstruktor
      */
     public function __construct( )
     {
+        // hier wird die Model-Klasse gestartet
         parent::__construct('', dirname(__FILE__), $this, false, false, array('addRequestToParams'=>true));
         $this->run();
     }
 
     /**
-     * ???
+     * diese Methode bearbeitet die Anfragen
      */
     public function request( $callName, $input, $params = array() )
     {
-        $authType = 'noAuth';        
+        $authType = 'noAuth'; // das ist der default-Anmeldetyp, wenn kein anderer erkannt wird     
         $profile = $params['profile'];
         $component = $params['component'];
         $order = '/'.implode('/',$params['path']);
@@ -48,30 +56,36 @@ class CGate extends Model
             $login = $headers['PHP_AUTH_USER'];
             $passwd = (isset($headers['PHP_AUTH_PW']) ? $headers['PHP_AUTH_PW'] : '');
             $authType = 'httpAuth';
+        } elseif (isset($headers['HTTP_PRIVATE_TOKEN'])){
+            // wir prüfen nun ob eine Authentifizierung über einen Token gewollt ist
+            $login = $headers['HTTP_PRIVATE_TOKEN'];
+            $passwd = null;
+            $authType = 'tokenAuth';
         }
         
         $positive = function($gateProfile, $method, $order, $component, $body, $authType, $login, $passwd) {
-            $gateProfile = $gateProfile[0];
+            // wenn diese Funktion aufgerufen wird, dann existiert das Profil und dazu der Login.
+            // Wir wissen aber noch nicht, ob er sich wirklich korrekt angemeldet hat, sofern noch ein Passwort
+            // erforderlich ist
+            
+            $gateProfile = $gateProfile[0]; // dieses Profil entstammt der Datenbank, wenn dort Profil und Nutzername gefunden wurden
             
             $auths = $gateProfile->getAuths();
-            $accepted = false;
+            $accepted = false; // dieses Flag gibt an, ob der Zugang erfolgreich gewährt wurde
             
-            $authentication = new Authentication();
-
             foreach($auths as $auth){
                 $authType = $auth->getType();
-                if ($authType == 'noAuth'){
+                if ($authType == 'tokenAuth'){
+                    // wir gelangen nur an diesen Punkt, wenn es den entsprechenden Token in der Datenbank als
+                    // 'login' gibt, daher ist der Zugang dann erlaubt
+                    $accepted = true;
+                    break;
+                } elseif ($authType == 'noAuth'){
+                    // es ist keine weitere Prüfung erforderlich
                     $accepted = true;
                     break;
                 } elseif ($authType == 'httpAuth'){
-                    $params = $auth->getParams();
-                    
-                    /*$salt = '';
-                    if (isset($params['salt'])){
-                        $salt = $params['salt'];
-                    }
-                    
-                    $hashedPasswd = $authentication->hashPassword($passwd, $salt);*/
+                    //$params = $auth->getParams();
             
                     if ($auth->getLogin() == $login && $auth->getPasswd() == $passwd){
                         $accepted = true;
@@ -95,6 +109,9 @@ class CGate extends Model
 
             // nun muss geprüft werden, ob der Aufruf auch erlaubt ist
             if (in_array("Slim\\Slim", get_declared_classes())) {
+                
+                // hier wird slim vorbereitet, um später für uns zu prüfen, ob eine der Regelpfade auf
+                // unsere Anfrage passt
                 $router = new \Slim\Router();
                 foreach($rules as $rule){
                     if ($rule->getType() == 'httpCall' && $rule->getComponent() == $component){
@@ -153,6 +170,7 @@ class CGate extends Model
         if ($authType == 'noAuth'){
             return Model::call('getComponentProfileWithAuth', array('profName'=>$profile, 'authType'=>$authType, 'component'=>$component), '', 200, $positive, array('method'=>$method, 'order'=>$order, 'component'=>$component, 'body'=>$input, 'authType'=>$authType, 'login'=>$login, 'passwd'=>$passwd), 'Model::isRejected', array(), 'GateProfile');
         } else {
+            // es ist eine andere Zugangsart, sodass auch geprüft wird, ob es eine Anmeldung mit dem entsprechenden Nutzernamen gibt
             return Model::call('getComponentProfileWithAuthLogin', array('login'=>$login, 'profName'=>$profile, 'authType'=>$authType, 'component'=>$component), '', 200, $positive, array('method'=>$method, 'order'=>$order, 'component'=>$component, 'body'=>$input, 'authType'=>$authType, 'login'=>$login, 'passwd'=>$passwd), 'Model::isRejected', array(), 'GateProfile');
         }
     }

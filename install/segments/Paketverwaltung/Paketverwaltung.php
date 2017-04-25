@@ -25,12 +25,12 @@ class Paketverwaltung {
     public static $onEvents = array(
         'check' => array(
             'name' => 'checkPlugins',
-            'event' => array('page'),
+            'event' => array('page', 'install', 'update'),
             'procedure' => 'getPackageContents'
         ),
         'install' => array(
             'name' => 'installPlugins',
-            'event' => array('actionInstallPlugins', 'update'),
+            'event' => array('actionInstallPlugins', 'install', 'update'),
             'procedure' => 'installInstallPackages',
             'enabledInstall' => true
         ),
@@ -124,7 +124,7 @@ class Paketverwaltung {
         self::$pluginFiles = Installation::collect('getPackageDefinitions',$data, array(__CLASS__));
         
         try {
-            $handle = opendir(self::getPackagePath($data));
+            $handle = @opendir(self::getPackagePath($data));
         } catch (Exception $e) {
             // der Ordner konnte nicht zugegriffen werden
             Installation::log(array('text' => self::getPackagePath($data) . ' existiert nicht oder es fehlt die Zugriffsberechtigung.', 'logLevel' => LogLevel::ERROR));

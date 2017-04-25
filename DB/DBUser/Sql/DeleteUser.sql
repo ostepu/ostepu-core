@@ -24,4 +24,4 @@ update `User<?php echo $profile;?>`
 set
     U_flag = 0
 where
-    U_id = '<?php echo $userid; ?>' or U_username = '<?php echo $userid; ?>' or U_externalId = '<?php echo $userid; ?>'
+    U_id like '<?php echo $userid; ?>' or U_username = '<?php echo $userid; ?>' or U_externalId = '<?php echo $userid; ?>'

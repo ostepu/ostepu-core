@@ -1,0 +1,33 @@
+{
+    "name": "GIT_LAB_INTEGRATION",
+    "version": "0.1.0",
+    "versionDate": "08.03.2017",
+    "requirements": [],
+    "description":{"de":"Die Studenten können mit dieser Erweiterung auch über eine GitLab-Plattform ihre Einsendungen einreichen. Dazu müssen sie ein Tag-Push-Event für ihr Repo einrichten und auf http://usereURL/vendor/LGitLab/submit/course/&lt;Kursnummer&gt; verweisen. Wenn sie nun etwas einsenden wollen, dann können sie einen Commit mit einem Tag SUBMIT_&lt;Serienname&gt;_&lt;Aufgabennummer&gt; versehen. (beim Serienname müssen Leerzeichen entfernt sein, nur a-zA-Z0-9 sind erlaubt)<br/>Als Einsendung wird dann der Zustand des Repos zum Zeitpunkt des Commits als Archiv von GitLab heruntergeladen (der Einsendezeitpunkt ist der Zeitstempel des Commits)."},
+    "descUrl":"https://github.com/tilluhlig/ostepu-LGitLab-core.git",
+    "files": [
+        {
+            "path": "install/segments/ext_LGitLab/",
+            "type": "git",
+            "params": {
+                "name": "LGitLab-install",
+                "branch": "master",
+                "URL": "https://github.com/tilluhlig/ostepu-LGitLab-install.git",
+                "path": "install/segments/ext_LGitLab/"
+            }
+        },
+        {
+            "path": "vendor/LGitLab/",
+            "type": "git",
+            "params": {
+                "name": "LGitLab-core",
+                "branch": "master",
+                "URL": "https://github.com/tilluhlig/ostepu-LGitLab-core.git",
+                "path": "vendor/LGitLab/"
+            }
+        }
+    ],
+    "components": [
+        {"conf": "vendor/LGitLab/Component.json"}
+    ]
+}

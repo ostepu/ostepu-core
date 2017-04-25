@@ -119,4 +119,27 @@ class DBRedirect
         };
         return $this->_component->callSqlTemplate('addCourse',dirname(__FILE__).'/Sql/AddCourse.sql',array_merge($params,array('object' => $input)),201,$positive,array('course'=>$input),'Model::isProblem',array(new Course()),false);
     }
+
+    public function getApiProfiles( $callName, $input, $params = array() )
+    {   
+        $myName = $this->_component->_conf->getName();
+        $profiles = array();
+        $profiles['readonly'] = GateProfile::createGateProfile(null,'readonly');
+        $profiles['readonly']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'GET /redirect/:path+',null));
+        
+        $profiles['general'] = GateProfile::createGateProfile(null,'general');
+        $profiles['general']->setRules($profiles['readonly']->getRules());
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'DELETE /redirect/:path+',null));
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'PUT /redirect/:path+',null));
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'POST /redirect/:path+',null));
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'DELETE /course/:courseid',null));
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'POST /course',null));
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'GET /link/exists/course/:courseid',null));
+        
+        $profiles['develop'] = GateProfile::createGateProfile(null,'develop');
+        $profiles['develop']->setRules(array_merge($profiles['general']->getRules(), $this->_component->_com->apiRulesDevelop($myName)));
+
+        ////$profiles['public'] = GateProfile::createGateProfile(null,'public');
+        return Model::isOk(array_values($profiles));
+    }
 }

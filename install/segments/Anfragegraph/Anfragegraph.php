@@ -136,7 +136,7 @@ class Anfragegraph {
 
         if (file_exists($location)) {
             try {
-                $handle = opendir($location);
+                $handle = @opendir($location);
             } catch (Exception $e) {
                 // der Ordner konnte nicht zugegriffen werden
                 Installation::log(array('text' => $location . ' existiert nicht oder es fehlt die Zugriffsberechtigung.', 'logLevel' => LogLevel::ERROR));

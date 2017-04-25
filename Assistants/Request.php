@@ -109,6 +109,79 @@ class Request
         }
         return $target;
     }
+    
+    public static function download($tempTarget, $target, $responseHeader=true, $header=array())
+    {   
+        $target = self::normalizeURL($target);
+        
+        $result = array();
+        try{
+            $fp = fopen($tempTarget.'_2', 'w+');
+            
+            if ($fp === false){
+                $result = array();
+                $result['status'] = 408;
+                $result['content'] = '';
+                $result['headers'] = array();
+                return;
+            }
+            
+            $ch = curl_init($target);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($ch, CURLOPT_FILE, $fp);
+            
+            if ($responseHeader){
+                curl_setopt($ch, CURLOPT_HEADER, true);
+            }
+            
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            //curl_setopt($ch, CURLOPT_USERAGENT,'Codular Sample cURL Request');
+            curl_setopt($ch, CURLOPT_TIMEOUT, 120); // 120 Sekunden
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 120); // 120 Sekunden
+            
+            curl_setopt($ch, CURLOPT_ENCODING, 'gzip,deflate');
+            
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+
+            $content = curl_exec($ch);
+            // get the request result
+            $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+            
+            if ($header_size > 0){
+                fseek($fp,0);
+                $result['headers'] = self::http_parse_headers(fread($fp, $header_size));
+            }
+            fseek($fp,$header_size);
+            $fp2 = fopen($tempTarget, 'w+');
+            if ($fp2 === false){
+                $result = array();
+                $result['status'] = 408;
+                $result['content'] = '';
+                $result['headers'] = array();
+                return;
+            }
+            
+            while (!feof($fp)) fwrite($fp2, fread($fp, 8192));
+            fclose($fp2);
+            fclose($fp);
+            unlink($tempTarget.'_2');
+
+            // seperates the content part
+            $result['content'] = "";
+
+            // sets the received status code
+            $result['status'] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+            
+        }catch(Exception $e){
+            $result = array();
+            $result['status'] = 408;
+            $result['content'] = '';
+            $result['headers'] = array();
+        }
+        return $result;
+    }
 
     /**
      * performs a custom request

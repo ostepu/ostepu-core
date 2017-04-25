@@ -94,5 +94,12 @@
         "inputType": "",
         "method": "POST",
         "path": "/samples/course/:courseAmount/user/:userAmount"
+    },
+    {
+        "name": "getApiProfiles",
+        "outputType": "GateProfile",
+        "inputType": "",
+        "method": "GET",
+        "path": "/api/profiles"
     }
 ]

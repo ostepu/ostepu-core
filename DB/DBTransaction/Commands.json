@@ -140,5 +140,12 @@
             "regex": "%^([0-9_]+)$%"
         }],
         "path": "/transaction/exercise/:eid"
+    },
+    {
+        "name": "getApiProfiles",
+        "outputType": "GateProfile",
+        "inputType": "",
+        "method": "GET",
+        "path": "/api/profiles"
     }
 ]

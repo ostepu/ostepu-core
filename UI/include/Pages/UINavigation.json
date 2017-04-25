@@ -1,0 +1,11 @@
+{
+  "name":"UINavigation",
+  "version":"1.0",
+  "type":"clone",
+  "base":"CAbstract",
+  "baseURI":"/uinavigation",
+  "option":"confPath=UI/include/Navigation/uinavigation_cconfig.json",
+  "links":[
+    {"name":"getContent","target":"","links":[]}
+  ]
+}

@@ -53,6 +53,7 @@ class DBQuery2
     }
     public function generateQuery($procedure, $params)
     {
+        if ($params == "") $params = array("");
         return "CALL `{$procedure}`(".implode(',',array_map(array($this,'generateParam'), $params)).");";
     }
 
@@ -105,13 +106,13 @@ class DBQuery2
             if ( isset($query_result['errno']) && $query_result['errno'] != 0 )
                 Logger::Log(
                             'GET queryResult failed errno: ' . $query_result['errno'] . ' error: ' . $query_result['error'],
-                            LogLevel::ERROR
+                            LogLevel::INFO
                             );
 
             if ( !isset($query_result['content']) || !$query_result['content'] )
                 Logger::Log(
                             'GET queryResult failed, no content',
-                            LogLevel::ERROR
+                            LogLevel::INFO
                             );
 
             if ( isset($query_result['errno']) && $query_result['errno'] == 401 ){
@@ -197,7 +198,7 @@ class DBQuery2
             if ( isset($query_result['errno']) && $query_result['errno'] != 0 ){
                 Logger::Log(
                             'GET queryResult failed errno: ' . $query_result['errno'] . (isset($query_result['error']) ? ' error: ' . $query_result['error'] : ''),
-                            LogLevel::ERROR
+                            LogLevel::INFO
                             );
                 // der Fehler wird noch nicht zurückgegeben
             }
@@ -205,7 +206,7 @@ class DBQuery2
             if ( !isset($query_result['content']) || !$query_result['content'] ){
                 Logger::Log(
                             'GET queryResult failed, no content',
-                            LogLevel::ERROR
+                            LogLevel::INFO
                             );
             }
 
@@ -290,13 +291,13 @@ class DBQuery2
             if ( isset($query_result['errno']) && $query_result['errno'] != 0 )
                 Logger::Log(
                             'GET queryResult failed errno: ' . $query_result['errno'] . ' error: ' . $query_result['error'],
-                            LogLevel::ERROR
+                            LogLevel::INFO
                             );
 
             if ( !isset($query_result['content']) || !$query_result['content'] )
                 Logger::Log(
                             'GET queryResult failed, no content',
-                            LogLevel::ERROR
+                            LogLevel::INFO
                             );
 
             if ( isset($query_result['errno']) && $query_result['errno'] == 401 ){
@@ -449,6 +450,28 @@ class DBQuery2
         }
         $return['content'] = $res;
         return $return;
+    }
+
+    public function getApiProfiles( $callName, $input, $params = array() )
+    {   
+        $myName = $this->_component->_conf->getName();
+        $profiles = array();
+        ///$profiles['readonly'] = GateProfile::createGateProfile(null,'readonly');
+
+        
+        $profiles['general'] = GateProfile::createGateProfile(null,'general');
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'POST /query',null));
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'POST /multiGetRequest',null));
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'GET /query/procedure/:procedure(/:params+)',null));
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'DELETE /platform',null));
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'POST /platform',null));
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'GET /link/exists/platform',null));
+        
+        $profiles['develop'] = GateProfile::createGateProfile(null,'develop');
+        $profiles['develop']->setRules(array_merge($profiles['general']->getRules(), $this->_component->_com->apiRulesDevelop($myName)));
+
+        ////$profiles['public'] = GateProfile::createGateProfile(null,'public');
+        return Model::isOk(array_values($profiles));
     }
 }
 

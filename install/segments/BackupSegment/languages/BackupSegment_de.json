@@ -1,6 +1,6 @@
 {
     "main": {
-        "title": "Backup",
+        "title": "Backup (unvollständig)",
         "description": "Es wird ein komprimiertes Archiv mit der Datenbank und dem Dateiverzeichnis (Einsendungen etc.) befüllt.<br>Achtung: die erstellten Abbilder können noch nicht direkt über den Installationsassistenten eingespielt werden.",
         "errorOnChangeDir": "Verzeichnis konnte nicht gewechselt werden >> $path"
     },

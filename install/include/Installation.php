@@ -177,7 +177,7 @@ class Installation {
         if (is_dir(Einstellungen::$path)) {
             Installation::log(array('text' => 'lese Konfigurationen'));
             try {
-                $handle = opendir(Einstellungen::$path);
+                $handle = @opendir(Einstellungen::$path);
             } catch (Exception $e) {
                 // der Ordner konnte nicht zugegriffen werden
                 Installation::log(array('text' => Einstellungen::$path . ' existiert nicht oder es fehlt die Zugriffsberechtigung.', 'logLevel' => LogLevel::ERROR));
@@ -237,7 +237,7 @@ class Installation {
             $dir = array_pop($directories);
 
             try {
-                $handle = opendir($dir);
+                $handle = @opendir($dir);
             } catch (Exception $e) {
                 // der Ordner konnte nicht zugegriffen werden
                 Installation::log(array('text' => $dir . ' existiert nicht oder es fehlt die Zugriffsberechtigung.', 'logLevel' => LogLevel::ERROR));

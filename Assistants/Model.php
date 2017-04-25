@@ -14,6 +14,7 @@
 require_once ( dirname(__FILE__) . '/vendor/Slim/Slim/Route.php' );
 require_once ( dirname(__FILE__) . '/vendor/Slim/Slim/Router.php' );
 require_once ( dirname(__FILE__) . '/vendor/Slim/Slim/Environment.php' );
+require_once ( dirname(__FILE__) . '/vendor/Validation/Validation.php' );
 include_once ( dirname(__FILE__) . '/Structures.php' );
 include_once ( dirname(__FILE__) . '/Request.php' );
 include_once ( dirname(__FILE__) . '/../UI/include/Authentication.php' );
@@ -48,7 +49,7 @@ class Model
     /**
      * @var Component $_com Die Definition der Ausgänge
      */
-    private $_com = null;
+    public $_com = null;
 
 
     private $_noInfo = null;
@@ -465,6 +466,10 @@ class Model
 
         $result = array();
         
+        if ($links === null || count($links) === 0){
+            return $result;
+        }
+        
         foreach($links as $key => $link){
             $method = 'GET';
             if ($link->getPath()!==null && $link->getPath()!==''){
@@ -608,7 +613,7 @@ class Model
     {
         $link=CConfig::getLink($this->_conf->getLinks( ),$linkName);
         $instructions = $this->_com->instruction('',true);
-
+        
         // ermittle den zutreffenden Ausgang
         $selectedInstruction=null;
         foreach($instructions as $instruction){

@@ -282,6 +282,29 @@ class DBExerciseSheet
         set_time_limit(0);
         return $this->_component->callSqlTemplate('postSamples',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));
     }
+
+    public function getApiProfiles( $callName, $input, $params = array() )
+    {   
+        $myName = $this->_component->_conf->getName();
+        $profiles = array();
+        $profiles['readonly'] = GateProfile::createGateProfile(null,'readonly');
+        $profiles['readonly']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'GET /exercisesheet/:path+',null));
+        
+        $profiles['general'] = GateProfile::createGateProfile(null,'general');
+        $profiles['general']->setRules($profiles['readonly']->getRules());
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'DELETE /exercisesheet/:path+',null));
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'PUT /exercisesheet/:path+',null));
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'POST /exercisesheet/:path+',null));
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'DELETE /platform/:path+',null));
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'POST /platform/:path+',null));
+        $profiles['general']->addRule(GateRule::createGateRule(null,'httpCall',$myName,'GET /link/exists/platform',null));
+        
+        $profiles['develop'] = GateProfile::createGateProfile(null,'develop');
+        $profiles['develop']->setRules(array_merge($profiles['general']->getRules(), $this->_component->_com->apiRulesDevelop($myName)));
+
+        ////$profiles['public'] = GateProfile::createGateProfile(null,'public');
+        return Model::isOk(array_values($profiles));
+    }
 }
 
 

@@ -1,0 +1,10 @@
+{
+    "main": {
+        "noValidPage": "Es wurde keine gültige Seite angegeben!",
+        "noValidPage2": "Es wurde keine gültige Seite angegeben! (2)",
+        "noValidPage3": "Der Seitenname hat eine ungültige Struktur!",
+        "noValidPage4": "Der Seitenname hat eine ungültige Struktur! (2)",
+        "course": "Veranstaltungen",
+        "noValidContent": "Diese Seite existiert nicht!"
+    }
+}

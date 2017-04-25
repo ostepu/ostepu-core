@@ -20,6 +20,8 @@
 
 include_once ( dirname(__FILE__) . '/Helpers.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
+if (file_exists(dirname(__FILE__) . '/Config.php')) include_once dirname(__FILE__) . '/Config.php';
+
 
 /**
  * Template class.
@@ -94,6 +96,24 @@ class Template
      */
     public function __toString()
     {
+        global $serverURI;
+        global $downloadSiteKey;
+        global $externalURI;
+        global $maintenanceMode;
+        global $maintenanceText;
+        global $maintenanceAllowedUsers;
+        global $filesPath;
+        global $tempPath;
+        
+        $this->content['serverURI'] = $serverURI;
+        $this->content['downloadSiteKey'] = $downloadSiteKey;
+        $this->content['externalURI'] = $externalURI;
+        $this->content['maintenanceMode'] = $maintenanceMode;
+        $this->content['maintenanceText'] = $maintenanceText;
+        $this->content['maintenanceAllowedUsers'] = $maintenanceAllowedUsers;
+        $this->content['filesPath'] = $filesPath;
+        $this->content['tempPath'] = $tempPath;
+        
         // make the content available as if variables with the names of its
         // attributes had been declared
         $extractedCount = extract($this->content);
@@ -101,7 +121,7 @@ class Template
         if ($extractedCount != count($this->content)) {
             Logger::Log("Unable to extract all content.", LogLevel::WARNING);
         }
-
+        
         // buffer the output
         ob_start();
 

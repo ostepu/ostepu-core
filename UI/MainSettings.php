@@ -343,7 +343,7 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                 $userID = $user_data['id'];
 
                 // deletes the user
-                $url = $databaseURI . "/user/{$userID}";
+                $url = $databaseURI . "/user/user/{$userID}";
                 http_delete($url, true, $message);
 
                 if ($message === 201) {
@@ -434,12 +434,14 @@ $mainSettings_data['plugins'] = $plugins_data;
 
 $user_course_data = $mainSettings_data['user'];
 
-$menu = MakeNavigationElement($user_course_data,
+$user_course_data2 = $user_course_data;
+unset($user_course_data2['courses']); // damit der Header+Navigation nicht denkt er sei in einer Veranstaltung
+$menu = MakeNavigationElement($user_course_data2,
                               PRIVILEGE_LEVEL::SUPER_ADMIN,true);
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
-$h->bind($user_course_data);
+$h->bind($user_course_data2);
 $h->bind(array('name' => Language::Get('main','settings', $langTemplate),
                'backTitle' => Language::Get('main','courses', $langTemplate),
                'backURL' => 'index.php',

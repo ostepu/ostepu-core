@@ -246,5 +246,12 @@
             }
         ],
         "path": "/gateprofile/gateprofile/:profName/auth/:authType/component/:component"
+    },
+    {
+        "name": "getApiProfiles",
+        "outputType": "GateProfile",
+        "inputType": "",
+        "method": "GET",
+        "path": "/api/profiles"
     }
 ]
