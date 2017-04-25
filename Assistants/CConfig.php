@@ -117,7 +117,7 @@ class CConfig
         $pregE = @preg_match("%^((/[a-zA-Z0-9_\x7f-\xff]*)?|(/profile/[a-zA-Z0-9_\x7f-\xff]*)?)/help/([a-zA-Z0-9_\x7f-\xff]*)/%", $path);
         $pregF = @preg_match("%^((/[a-zA-Z0-9_\x7f-\xff]*)?|(/profile/[a-zA-Z0-9_\x7f-\xff]*)?)/content/([a-zA-Z0-9_\x7f-\xff]*)/%", $path);
 
-        if ( $pregA || $pregB || $pregC || (!$noInfo && $pregD )  || (!$noHelp && $pregE ) || (!$this->_getContent && $pregF) ) {
+        if ( $pregA || $pregB || $pregC || (!$noInfo && $pregD )  || (!$noHelp && $pregE ) || ($this->_getContent && $pregF) ) {
 
             $this->_app = new \Slim\Slim( array('debug' => true) );
 
