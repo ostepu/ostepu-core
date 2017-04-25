@@ -193,7 +193,7 @@ class CConfig
                                  );
             }
 
-            if (!$this->_getContent){
+            if ($this->_getContent){
                 // GET Content
                 $this->_app->get(
                                  '((/profile)/:pre)/content/:contentPath+',
@@ -271,11 +271,11 @@ class CConfig
         $fileName = array_pop($contentPath);
         $path_parts = pathinfo($fileName);
         $extension = (isset($path_parts['extension']) ? ('.'.strtolower($path_parts['extension'])) : '');
-        $contentPath[] = $path_parts['filename'].'.'.$extension;
+        $contentPath[] = $path_parts['filename'].$extension;
 
         if (file_exists($path.implode('/',$contentPath))){
             $this->_app->response->setStatus( 200 );
-            $this->_app->response->setBody( file_get_contents($path.$helpPathString) );
+            $this->_app->response->setBody( file_get_contents($path.implode('/',$contentPath)) );
         }else{
             $this->_app->response->setStatus( 404 );
             $this->_app->response->setBody( '' );

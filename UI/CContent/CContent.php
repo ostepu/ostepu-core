@@ -83,11 +83,16 @@ class CContent
                 return call_user_func_array($negativeMethod, array());
             }            
             
-            Model::header('Content-Length',strlen($input));
-            
             // die Hilfedatei wird lokal gespeichert
             @file_put_contents($cachePath,$input);
             
+            $preparedPath = $this->prepareFileForResponse($cachePath);
+            
+            if ($preparedPath !== $cachePath){
+                $input = file_get_contents($preparedPath );
+            }
+            
+            Model::header('Content-Length',strlen($input));
             $mime = MimeReader::get_mime($cachePath);
             Model::header('Content-Type',$mime);
             return Model::isOk($input);
@@ -98,8 +103,8 @@ class CContent
             Model::header('Content-Length',strlen($input));
             return Model::isProblem($input);
         };
-        
-        return $this->_component->callByURI('request', $order, array(), '', 200, $positive, array('cachePath'=>$cachePath, 'realExtension'=>$realExtension, 'negativeMethod'=>$negative, 'cacheFilename'=>$path_parts['filename'].$cacheExtension), $negative, array());
+
+        return $this->_component->callByURI('getContent', $order, array(), '', 200, $positive, array('cachePath'=>$cachePath, 'realExtension'=>$realExtension, 'negativeMethod'=>$negative, 'cacheFilename'=>$path_parts['filename'].$cacheExtension), $negative, array());
     }
 
     /**

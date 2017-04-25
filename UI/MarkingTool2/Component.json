@@ -17,6 +17,17 @@
         {
             "name": "request",
             "target": "CLocalObjectRequest"
+        },
+        {
+            "name": "getContent",
+            "target": "CContent",
+            "links": [
+                {"path": "/content/markingtool2/css/MarkingTool2.css"},
+                {"path": "/content/markingtool2/img/computer-icon.png"},
+                {"path": "/content/markingtool2/img/ok-icon.png"},
+                {"path": "/content/markingtool2/img/server-icon.png"},
+                {"path": "/content/markingtool2/js/marking_tool2_editor.js"}
+            ]
         }
     ]
 }
