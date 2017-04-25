@@ -153,6 +153,7 @@
         {"conf": "DB/DBQuery2/Component.json"},
         {"conf": "Assistants/Request.json"},
         {"conf": "UI/include/Pages/UINavigation.json"},
-        {"conf": "UI/CContent/Component.json"}
+        {"conf": "UI/CContent/Component.json"},
+        {"conf": "UI/MarkingTool2/Component.json"}
     ]
 }

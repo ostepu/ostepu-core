@@ -1,0 +1,22 @@
+{
+    "name": "UIMarkingTool2",
+    "version": "1.0",
+    "classFile": "MarkingTool2.php",
+    "className": "UIMarkingTool2",
+    "links": [        
+        {
+            "name": "getMarkingToolData",
+            "target": "LGetSite",
+            "links": [{
+                "method": "GET",
+                "path": "/markingtool/course/:cid/sheet/:sid"
+            }]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        }
+    ]
+}

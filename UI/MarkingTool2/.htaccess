@@ -1,3 +1,4 @@
 RewriteEngine On
-RewriteRule ^/?$ MarkingTool2.php [QSA,L]
-RewriteRule ^api/(.*)/$ api.php?mode=$1 [QSA,L]
+RewriteCond %{HTTP_HOST} !^localhost$
+RewriteRule ^ - [F]
+RewriteRule ^ index.php [QSA,L]
