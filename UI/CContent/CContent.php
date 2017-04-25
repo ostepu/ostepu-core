@@ -3,6 +3,7 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/vendor/Markdown/Michelf/MarkdownInterface.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/vendor/Markdown/Michelf/Markdown.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/vendor/Markdown/Michelf/MarkdownExtra.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/MimeReader.php' );
 
 /**
  * ???
@@ -40,7 +41,6 @@ class CContent
             return Model::isProblem();
         }
         
-        array_unshift($params['path'],$params['language']);
         $fileName = array_pop($params['path']);
         $path_parts = pathinfo($fileName);
         
@@ -51,16 +51,20 @@ class CContent
         $params['path'][] = $path_parts['filename'].$realExtension;
         $cacheExtension = $realExtension;
         
-        $cachePath = dirname(__FILE__).'/cache/'.implode('/',$params['path']).$cacheExtension;
+        $cachePath = dirname(__FILE__).'/cache/'.implode('/',$params['path']);
         //Überprüft ob die Daten schon im Cache existieren und maximal 1 Woche (604800 Sekunden) alt sind.
         if (file_exists($cachePath) && filemtime($cachePath) >= time() - 604800){
             Model::header('Content-Length',filesize($cachePath));
+            $mime = MimeReader::get_mime($cachePath);
+            Model::header('Content-Type',$mime);
             return Model::isOk(file_get_contents($cachePath));
         }
         
-        $localPath = dirname(__FILE__).'/content/'.implode('/',$params['path']).$cacheExtension;
+        $localPath = dirname(__FILE__).'/content/'.implode('/',$params['path']);
         if (file_exists($localPath)){
             Model::header('Content-Length',filesize($localPath));
+            $mime = MimeReader::get_mime($localPath);
+            Model::header('Content-Type',$mime);
             return Model::isOk(file_get_contents($localPath));
         }
         
@@ -77,6 +81,9 @@ class CContent
             
             // die Hilfedatei wird lokal gespeichert
             @file_put_contents($cachePath,$input);
+            
+            $mime = MimeReader::get_mime($cachePath);
+            Model::header('Content-Type',$mime);
             return Model::isOk($input);
         };
         
@@ -86,7 +93,7 @@ class CContent
             return Model::isProblem($input);
         };
         
-        return $this->_component->callByURI('request', $order, array('language'=>$params['language']), '', 200, $positive, array('cachePath'=>$cachePath, 'realExtension'=>$realExtension, 'negativeMethod'=>$negative, 'cacheFilename'=>$path_parts['filename'].$cacheExtension), $negative, array());
+        return $this->_component->callByURI('request', $order, array(), '', 200, $positive, array('cachePath'=>$cachePath, 'realExtension'=>$realExtension, 'negativeMethod'=>$negative, 'cacheFilename'=>$path_parts['filename'].$cacheExtension), $negative, array());
     }
     
     /**

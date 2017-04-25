@@ -8,7 +8,7 @@
                 "regex": "%^([a-zA-Z0-9\\.\\-_]+)$%"
             }
         ],
-        "path": "/content/:path+"
+        "path": "/public/:path+"
     },
     {
         "name": "addPlatform",
