@@ -63,6 +63,7 @@ class CContent
             return Model::isOk(file_get_contents($preparedPath));
         }
         
+        // jetzt soll geprüft werden, ob die Datei zu CContent gehört und sich im /content Ordner befindet
         $localPath = dirname(__FILE__).'/content/'.implode('/',$params['path']);
         if (file_exists($localPath)){
             Model::header('Content-Length',filesize($localPath));
@@ -112,6 +113,8 @@ class CContent
         $hashFilePath = sha1($localFilePath);
         $cacheFolder = dirname(__FILE__).'/cache/minified';
         $minifiedPath = $cacheFolder.'/'.$hashFilePath;
+        
+        // wenn die Datei bereits lokal gecached wurde, dann müssen wir sie nicht nochmal verkleinern
         if (file_exists($minifiedPath) && filemtime($minifiedPath) >= time() - 604800){
             return $minifiedPath;
         }
