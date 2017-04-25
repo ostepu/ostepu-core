@@ -1,0 +1,25 @@
+{
+    "name": "CContent",
+    "version": "1.0",
+    "classFile": "CContent.php",
+    "className": "CContent",
+    "files": [
+        {"path": ".htaccess"},
+        {"path": "CContent.php"},
+        {"path": "index.php"},
+        {"path": "Commands.json"}
+    ],
+    "links": [
+        {"name": "getContent"}
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        },
+        {
+            "name": "postPlatform",
+            "target": "CInstall"
+        }
+    ]
+}

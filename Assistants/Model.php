@@ -62,7 +62,8 @@ class Model
                               'addProfileToParameters'=>false,
                               'addProfileToParametersAsPostfix'=>false,
                               'addRequestToParams'=>false,
-                              'defaultParams' => array());
+                              'defaultParams' => array(),
+                              'getContent' => true); // für den Befehl GET /content/path+ aus der CConfig.php
 
     /**
      * Der Konstruktor
@@ -97,7 +98,7 @@ class Model
     public function run()
     {
         // runs the CConfig
-        $com = new CConfig( $this->_prefix, $this->_path, $this->_noInfo, $this->_noHelp, 'de', array('getAndHead'=>true, 'allowOptions'=>true) );
+        $com = new CConfig( $this->_prefix, $this->_path, $this->_noInfo, $this->_noHelp, 'de', array('getContent'=>$this->getOption('getContent'), 'getAndHead'=>true, 'allowOptions'=>true) );
 
         // lädt die Konfiguration des Moduls
         if ($com->used()) {

@@ -69,6 +69,16 @@
                 "path": "FS/FSPdf/tcpdf/"
             }
         },
+        {
+            "path": "UI/CContent/phpwee/",
+            "type": "git",
+            "params": {
+                "name": "phpwee",
+                "branch": "master",
+                "URL": "https://github.com/ostepu/phpwee-php-minifier",
+                "path": "UI/CContent/phpwee/"
+            }
+        },
         {"path": "DB/.htaccess"},
         {"path": "FS/.htaccess"},
         {"path": "logic/Include/"},
@@ -142,6 +152,7 @@
         {"conf": "DB/DBQuery2/DBQuerySetup.json"},
         {"conf": "DB/DBQuery2/Component.json"},
         {"conf": "Assistants/Request.json"},
-        {"conf": "UI/include/Pages/UINavigation.json"}
+        {"conf": "UI/include/Pages/UINavigation.json"},
+        {"conf": "UI/CContent/Component.json"}
     ]
 }

@@ -1,0 +1,35 @@
+[
+    {
+        "name": "getContent",
+        "outputType": "binary",
+        "placeholder": [
+            {
+                "name": "path",
+                "regex": "%^([a-zA-Z0-9\\.\\-_]+)$%"
+            }
+        ],
+        "path": "/content/:path+"
+    },
+    {
+        "name": "addPlatform",
+        "outputType": "Platform",
+        "inputType": "Platform",
+        "method": "POST",
+        "path": "/platform"
+    },
+    {
+        "name": "deletePlatform",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/platform"
+    },
+    {
+        "name": "getExistsPlatform",
+        "singleOutput": "TRUE",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "GET",
+        "path": "/link/exists/platform"
+    }
+]
