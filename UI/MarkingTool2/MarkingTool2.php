@@ -1,8 +1,5 @@
 <?php
 include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
-include_once dirname(__FILE__) . '/../include/Authentication.php';
-include_once dirname(__FILE__) . '/../../Assistants/LArraySorter.php';
-include_once dirname(__FILE__) . '/../../Assistants/Structures.php';
 
 /**
  * ???
