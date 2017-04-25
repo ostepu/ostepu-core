@@ -151,6 +151,7 @@
         {"conf": "DB/DBQuery2/DBQueryWrite.json"},
         {"conf": "DB/DBQuery2/DBQuerySetup.json"},
         {"conf": "DB/DBQuery2/Component.json"},
-        {"conf": "Assistants/Request.json"}
+        {"conf": "Assistants/Request.json"},
+        {"conf": "UI/CContent/Component.json"}
     ]
 }
