@@ -31,7 +31,7 @@ class CContent
                                            );
         }
         
-        $component = new Model('', dirname(__FILE__), $this, false, true);
+        $component = new Model('', dirname(__FILE__), $this, false, true, array('getContent'=>false));
         $this->_component=$component;
         $component->run();
     }

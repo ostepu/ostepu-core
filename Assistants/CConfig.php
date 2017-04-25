@@ -79,6 +79,7 @@ class CConfig
     private $_defaultLanguage = null;
     private $_getAndHead = false;
     private $_allowOptions = false;
+    private $_getContent = true;
 
     /**
      * the CConfig constructor
@@ -93,6 +94,7 @@ class CConfig
         
         if (isset($options['getAndHead'])) $this->_getAndHead = $options['getAndHead'];
         if (isset($options['allowOptions'])) $this->_allowOptions = $options['allowOptions'];
+        if (isset($options['getContent'])) $this->_getContent = $options['getContent'];
 
         $this->_noInfo = $noInfo;
         $this->_noHelp = $noHelp;
@@ -113,8 +115,9 @@ class CConfig
         $pregC = @preg_match("%^((/[a-zA-Z0-9_\x7f-\xff]*)?|(/profile/[a-zA-Z0-9_\x7f-\xff]*)?)/info/links(/?)$%", $path);
         $pregD = @preg_match("%^((/[a-zA-Z0-9_\x7f-\xff]*)?|(/profile/[a-zA-Z0-9_\x7f-\xff]*)?)/info/([a-zA-Z0-9_\x7f-\xff]*)(/?)$%", $path);
         $pregE = @preg_match("%^((/[a-zA-Z0-9_\x7f-\xff]*)?|(/profile/[a-zA-Z0-9_\x7f-\xff]*)?)/help/([a-zA-Z0-9_\x7f-\xff]*)/%", $path);
+        $pregF = @preg_match("%^((/[a-zA-Z0-9_\x7f-\xff]*)?|(/profile/[a-zA-Z0-9_\x7f-\xff]*)?)/content/([a-zA-Z0-9_\x7f-\xff]*)/%", $path);
 
-        if ( $pregA || $pregB || $pregC || (!$noInfo && $pregD )  || (!$noHelp && $pregE ) ) {
+        if ( $pregA || $pregB || $pregC || (!$noInfo && $pregD )  || (!$noHelp && $pregE ) || (!$this->_getContent && $pregF) ) {
 
             $this->_app = new \Slim\Slim( array('debug' => true) );
 
@@ -190,6 +193,17 @@ class CConfig
                                  );
             }
 
+            if (!$this->_getContent){
+                // GET Content
+                $this->_app->get(
+                                 '((/profile)/:pre)/content/:contentPath+',
+                                 array(
+                                       $this,
+                                       'getContent'
+                                       )
+                                 );
+            }
+
         // run Slim
         $this->_used = true;
         $this->_app->run( );
@@ -245,6 +259,26 @@ class CConfig
                 $this->_app->response->setStatus( 404 );
                 $this->_app->response->setBody( '' );
             }
+        }
+    }
+
+    public function getContent( $pre = '', $contentPath)
+    {
+        $path = ($this->callPath!=null ? $this->callPath.'/' : '');
+        $path = str_replace("\\",'/',$path);
+        $path .= 'content/';
+
+        $fileName = array_pop($contentPath);
+        $path_parts = pathinfo($fileName);
+        $extension = (isset($path_parts['extension']) ? ('.'.strtolower($path_parts['extension'])) : '');
+        $contentPath[] = $path_parts['filename'].'.'.$extension;
+
+        if (file_exists($path.implode('/',$contentPath))){
+            $this->_app->response->setStatus( 200 );
+            $this->_app->response->setBody( file_get_contents($path.$helpPathString) );
+        }else{
+            $this->_app->response->setStatus( 404 );
+            $this->_app->response->setBody( '' );
         }
     }
 
