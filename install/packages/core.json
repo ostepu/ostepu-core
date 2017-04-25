@@ -70,13 +70,13 @@
             }
         },
         {
-            "path": "Assistants/vendor/phpwee/",
+            "path": "UI/CContent/phpwee/",
             "type": "git",
             "params": {
                 "name": "phpwee",
                 "branch": "master",
-                "URL": "https://github.com/searchturbine/phpwee-php-minifier.git",
-                "path": "Assistants/vendor/phpwee/"
+                "URL": "https://github.com/ostepu/phpwee-php-minifier",
+                "path": "UI/CContent/phpwee/"
             }
         },
         {"path": "DB/.htaccess"},

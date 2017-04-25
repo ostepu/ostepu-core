@@ -3,6 +3,7 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/vendor/Markdown/Michelf/MarkdownInterface.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/vendor/Markdown/Michelf/Markdown.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/vendor/Markdown/Michelf/MarkdownExtra.php' );
+include_once ( dirname(__FILE__) . '/phpwee/phpwee.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/MimeReader.php' );
 
 /**
@@ -57,7 +58,9 @@ class CContent
             Model::header('Content-Length',filesize($cachePath));
             $mime = MimeReader::get_mime($cachePath);
             Model::header('Content-Type',$mime);
-            return Model::isOk(file_get_contents($cachePath));
+            
+            $preparedPath = $this->prepareFileForResponse($cachePath);
+            return Model::isOk(file_get_contents($preparedPath));
         }
         
         $localPath = dirname(__FILE__).'/content/'.implode('/',$params['path']);
@@ -65,7 +68,9 @@ class CContent
             Model::header('Content-Length',filesize($localPath));
             $mime = MimeReader::get_mime($localPath);
             Model::header('Content-Type',$mime);
-            return Model::isOk(file_get_contents($localPath));
+            
+            $preparedPath = $this->prepareFileForResponse($localPath);
+            return Model::isOk(file_get_contents($preparedPath));
         }
         
         $order = implode('/',$params['path']);
@@ -94,6 +99,45 @@ class CContent
         };
         
         return $this->_component->callByURI('request', $order, array(), '', 200, $positive, array('cachePath'=>$cachePath, 'realExtension'=>$realExtension, 'negativeMethod'=>$negative, 'cacheFilename'=>$path_parts['filename'].$cacheExtension), $negative, array());
+    }
+
+    /**
+     * prepares a local existing file.
+     * for that the file extension is used to decide if a compression is required or not
+     */
+    private function prepareFileForResponse($localFilePath){
+        $path_parts = pathinfo($localFilePath);
+        $extension = (isset($path_parts['extension']) ? ('.'.strtolower($path_parts['extension'])) : '');
+        
+        $hashFilePath = sha1($localFilePath);
+        $cacheFolder = dirname(__FILE__).'/cache/minified';
+        $minifiedPath = $cacheFolder.'/'.$hashFilePath;
+        if (file_exists($minifiedPath) && filemtime($minifiedPath) >= time() - 604800){
+            return $minifiedPath;
+        }
+
+        if ($extension == '.js'){
+            $minifiedContent = \PHPWee\Minify::js(file_get_contents($localFilePath));
+            if ($minifiedContent === ''){
+                // bei der Umwandlung gab es einen Fehler
+                return $localFilePath;
+            }
+            
+            self::generatepath( $cacheFolder );
+            file_put_contents($minifiedPath, $minifiedContent);
+            return $minifiedPath;
+        } elseif ($extension == '.css'){
+            $minifiedContent = \PHPWee\Minify::css(file_get_contents($localFilePath));
+            if ($minifiedContent === ''){
+                // bei der Umwandlung gab es einen Fehler
+                return $localFilePath;
+            }
+                       
+            self::generatepath( $cacheFolder );
+            file_put_contents($minifiedPath, $minifiedContent);
+            return $minifiedPath;
+        }
+        return $localFilePath;
     }
     
     /**
