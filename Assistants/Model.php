@@ -102,6 +102,7 @@ class Model
 
         // lädt die Konfiguration des Moduls
         if ($com->used()) {
+            Logger::Log('cconfig was used',LogLevel::INFO);
             return;
         }
         ///var_dump($conf);
@@ -187,6 +188,7 @@ class Model
 
             if ($selectedCommand == null){
                 http_response_code(500);
+                Logger::Log('no possible command: '.json_encode($matches),LogLevel::ERROR);
                 return;
             }
 
@@ -222,11 +224,13 @@ class Model
             foreach ($selectedCommand['placeholder'] as $holder){
                 if (!isset($holder['name'])) {
                     // der Eintrag muss sich auf einen Platzhalter beziehen
+                    Logger::Log('missing name-attribute in placeholder: '.json_encode($holder),LogLevel::ERROR);
                     continue;
                 }
                 if (!isset($holder['regex'])) {
                     // der Eintrag muss einen regulären Ausdruck besitzen, der 
                     // getestet werden kann
+                    Logger::Log('missing regex-attribute in placeholder: '.json_encode($holder),LogLevel::ERROR);
                     continue;
                 }
                 $placeholder[$holder['name']] = $holder['regex'];
@@ -241,11 +245,11 @@ class Model
                         foreach($value as $val){
                             $pregRes = @preg_match($placeholder[$key], $val);
                             if ($pregRes === false){
-                                error_log(__FILE__.':'.__LINE__.' '.$placeholder[$key].' konnte nicht interpretiert werden');
+                                Logger::Log(__FILE__.':'.__LINE__.' "'.$placeholder[$key].'" konnte nicht interpretiert werden'." in \n".strtoupper($_SERVER['REQUEST_METHOD']).' '.$path,LogLevel::ERROR);
                                 $this->finishRequest(self::isError());
                                 return;
                             } else if ($pregRes === 0){
-                                error_log(__FILE__.':'.__LINE__.' '.$val.' passt nicht zu '.$placeholder[$key]);
+                                Logger::Log(__FILE__.':'.__LINE__.' "'.$val.'" passt nicht zu '.$placeholder[$key]." in \n".strtoupper($_SERVER['REQUEST_METHOD']).' '.$path,LogLevel::ERROR);
                                 $this->finishRequest(self::isPreconditionError());
                                 return;
                             }
@@ -254,11 +258,11 @@ class Model
                         // einzelnes Element für Slim verwendet :Element
                         $pregRes = @preg_match($placeholder[$key], $value);
                         if ($pregRes === false){
-                            error_log(__FILE__.':'.__LINE__.' '.$placeholder[$key].' konnte nicht interpretiert werden');
+                            Logger::Log(__FILE__.':'.__LINE__.' "'.$placeholder[$key].'" konnte nicht interpretiert werden'." in \n".strtoupper($_SERVER['REQUEST_METHOD']).' '.$path,LogLevel::ERROR);
                             $this->finishRequest(self::isError());
                             return;
                         } else if ($pregRes === 0){
-                            error_log(__FILE__.':'.__LINE__.' '.$value.' passt nicht zu '.$placeholder[$key]);
+                            Logger::Log(__FILE__.':'.__LINE__.' "'.$value.'" passt nicht zu '.$placeholder[$key]." in \n".strtoupper($_SERVER['REQUEST_METHOD']).' '.$path,LogLevel::ERROR);
                             $this->finishRequest(self::isPreconditionError());
                             return;
                         }
@@ -346,7 +350,7 @@ class Model
                         }
                     } catch(Exception $e) {
                         header_remove();
-                        error_log($e->getMessage());
+                        Logger::Log($e->getMessage(),LogLevel::ERROR);
                         $this->finishRequest(self::isError());
                         return;
                     }
@@ -368,7 +372,7 @@ class Model
                         }
                     } catch(Exception $e) {
                         header_remove();
-                        error_log($e->getMessage());
+                        Logger::Log($e->getMessage(),LogLevel::ERROR);
                         $this->finishRequest(self::isError());
                         return;
                     }
@@ -417,6 +421,7 @@ class Model
             }
         } else {
             // es wurde kein zutreffender Befehl gefunden, also gibt es eine leere Antwort
+            Logger::Log('i can\'t handle the request:'.strtoupper($_SERVER['REQUEST_METHOD']).' '.$path,LogLevel::ERROR);
             $this->finishRequest(self::isError());
             return;
         }

@@ -32,7 +32,7 @@ class pageLib
             // -> ignorieren
             Logger::Log( 
                 'error on calling link: '.$linkName,
-                LogLevel::ERROR
+                LogLevel::WARNING
                         );
         };
 
