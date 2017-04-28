@@ -79,8 +79,8 @@ $restricted = !($restricted == 1);
 			if ($restricted)
 				$user[] = array("id" => intval($group["leader"]["id"]), "name" => "", "user" => "");
 			else $user[] = array(
-				"id" => intval($group["leader"]["id"]), 
-				"name" => $group["leader"]["firstName"] . " " . $group["leader"]["lastName"],
+				"id" => intval($group["leader"]["id"]),
+				"name" => (isset($group["leader"]["firstName"])?$group["leader"]["firstName"]:'???') . " " . (isset($group["leader"]["lastName"]) ? $group["leader"]["lastName"] : '???'),
 				"user" => $group["leader"]["userName"]
 			);
 			if (!$restricted && isset($group["member"]))
