@@ -95,10 +95,10 @@
                     <?php } ?>
                     <div class="exercise-sheet-images">
                         <a href="<?php echo $fileURL; ?>" title="<?php echo $sheetFile['displayName']; ?>" class="plain" target="_blank">
-                            <img src="Images/Download.png" />
+                            <img src="<?php echo generateCommonFileUrl('img/Download.png');?>" />
                         </a>
                         <a href="javascript:void(0);" title="<?php echo Language::Get('main','removeSheetFile', $langTemplate); ?>" name="deleteSheetFile'" class="plain deleteFile">                                      
-                            <img src="Images/Delete.png">
+                            <img src="<?php echo generateCommonFileUrl('img/Delete.png');?>">
                             <?php if (isset($sheetFile)){ ?><span class="right warning-simple"></span><?php } ?>
                         </a>
                     </div>
@@ -127,10 +127,10 @@
                     <?php } ?>
                     <div class="exercise-sheet-images">
                         <a href="<?php echo $fileURL; ?>" title="<?php echo $sampleSolution['displayName']; ?>" class="plain" target="_blank">
-                            <img src="Images/Download.png" />
+                            <img src="<?php echo generateCommonFileUrl('img/Download.png');?>" />
                         </a>
                         <a href="javascript:void(0);" title="<?php echo Language::Get('main','removeSolutionFile', $langTemplate); ?>" name="deleteSampleFile'" class="plain deleteFile">     
-                            <img src="Images/Delete.png">
+                            <img src="<?php echo generateCommonFileUrl('img/Delete.png');?>">
                             <?php if (isset($sampleSolution)){ ?><span class="right warning-simple"></span><?php } ?>
                         </a>
                     </div>

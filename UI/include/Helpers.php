@@ -281,13 +281,19 @@ function MakeNotification($notificationType, $notificationText, $collapsible=fal
     }
 }
 
+// wandelt eine relative URL auf eine allgemeine Datei aus UI/CContent/content/ in eine aufrufbare URL um
+function generateCommonFileUrl($path){
+    global $externalURI;
+    return $externalURI.'/UI/CContent/content/common/'.$path;
+}
+
 // Erzeugt ein Knopf für Hilfemeldungen
 function MakeInfoButton($helpPath)
 {
     global $externalURI;
     $helpPath = implode('/',func_get_args());
     $URL = "{$externalURI}/DB/CHelp/help/".Language::$selectedLanguage."/{$helpPath}";
-    return "<a href='{$URL}' class='plain image-button exercise-sheet-images' target='popup' onclick=\"window.open('{$URL}', 'popup', 'width=700,height=600,scrollbars=yes,location=no,directories=no,menubar=no,toolbar=no,status=no,resizable=yes')\" title='info' target='_blank'><img src='Images/Info.png' /></a>";
+    return "<a href='{$URL}' class='plain image-button exercise-sheet-images' target='popup' onclick=\"window.open('{$URL}', 'popup', 'width=700,height=600,scrollbars=yes,location=no,directories=no,menubar=no,toolbar=no,status=no,resizable=yes')\" title='info' target='_blank'><img src='".generateCommonFileUrl('img/Info.png')."' /></a>";
 }
 
 /**

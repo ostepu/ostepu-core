@@ -148,7 +148,7 @@ if (isset($notifications)){
                                 <?php $fileURL = generateDownloadURL($exercise['attachment']);?>
 
                                 <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain" target="_blank">
-                                    <img src="Images/Attachment.png" />
+                                    <img src="<?php echo generateCommonFileUrl('img/Attachment.png');?>" />
                                 </a>
                             <?php } ?>
 
@@ -159,11 +159,11 @@ if (isset($notifications)){
 
                                 <?php if (isset($exercise['submission']['file'])){ ?>
                                     <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain" target="_blank">
-                                        <img src="Images/Download.png" />
+                                        <img src="<?php echo generateCommonFileUrl('img/Download.png');?>" />
                                     </a>
                                 <?php } else { ?>
                                     <span>
-                                        <img src="Images/Error.png" title="<?php echo Language::Get('sheet','invalidSubmission', $langTemplate);?>"/>
+                                        <img src="<?php echo generateCommonFileUrl('img/Error.png');?>" title="<?php echo Language::Get('sheet','invalidSubmission', $langTemplate);?>"/>
                                     </span>
                                 <?php } ?>
                             <?php if (count($groupMember)>1){
@@ -181,7 +181,7 @@ if (isset($notifications)){
                                 <?php $fileURL = generateDownloadURL($exercise['submission']['marking']['file']);?>
 
                                 <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain image-button" target="_blank">
-                                    <img src="Images/DownloadCorrection.png" />
+                                    <img src="<?php echo generateCommonFileUrl('img/DownloadCorrection.png');?>" />
                                 </a>
                             <?php endif; ?>
 
@@ -191,7 +191,7 @@ if (isset($notifications)){
                                       && (!$isExpired || $privileged)
                                       && $exercise['submission']['hideFile'] == "0"): ?>    
                                     <button title="Einsendung löschen" name="<?php echo (!isset($_POST['deleteSubmissionWarning']) || (isset($_POST['deleteSubmission']) && $_POST['deleteSubmission'] != $exercise['submission']['id'])) ? 'deleteSubmissionWarning' : 'deleteSubmission';?>" value="<?php echo $exercise['submission']['id']; ?>"class="image-button<?php echo (!isset($_POST['deleteSubmissionWarning']) || (isset($_POST['deleteSubmissionWarning']) && $_POST['deleteSubmissionWarning'] != $exercise['submission']['id'])) ? ' ' : '-simple  error-simple' ;?>">                                      
-                                        <img src="Images/Delete.png">
+                                        <img src="<?php echo generateCommonFileUrl('img/Delete.png');?>">
                                     </button>
                             <?php endif; ?>
                             

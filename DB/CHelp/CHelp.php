@@ -120,7 +120,7 @@ class CHelp
                     $contact = '<a href="'.$contact.'">Kontakt</a>';
                 }
                 
-                $input = '<html><head></head><body><link rel="stylesheet" href="'.$this->config['MAIN']['externalUrl'].'/UI/css/github-markdown.css" type="text/css"><span class="markdown-body">'.$my_html.$contact.'</span></body></html>';
+                $input = '<html><head></head><body><link rel="stylesheet" href="'.$this->config['MAIN']['externalUrl'].'/UI/CContent/content/common/css/github-markdown.css" type="text/css"><span class="markdown-body">'.$my_html.$contact.'</span></body></html>';
             }
             
             
@@ -137,7 +137,7 @@ class CHelp
             $parser = new \Michelf\MarkdownExtra;
             $input = $this->umlaute($input);
             $my_html = $parser->transform($input);
-            $input = '<html><head></head><body><link rel="stylesheet" href="'.$this->config['MAIN']['externalUrl'].'/UI/css/github-markdown.css" type="text/css"><span class="markdown-body">'.$my_html.'</span></body></html>';
+            $input = '<html><head></head><body><link rel="stylesheet" href="'.$this->config['MAIN']['externalUrl'].'/UI/CContent/content/common/css/github-markdown.css" type="text/css"><span class="markdown-body">'.$my_html.'</span></body></html>';
 
             Model::header('Content-Length',strlen($input));
             return Model::isOk($input);

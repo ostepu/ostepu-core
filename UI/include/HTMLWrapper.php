@@ -155,6 +155,8 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
          */
         public function show()
         {
+            global $externalURI;
+        
             $default = array('content'=>'text/html','charset'=>'utf-8','title'=>'','stylesheets'=>array(),'javascripts'=>array());
             if (!isset($this->config)) $this->config = $default;
             foreach($default as $defKey => $def){
@@ -170,22 +172,22 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
                 // print content-type (content-dev,charset)
                 print "content=\"{$this->config['content']};";
                 print " charset={$this->config['charset']}\">\n";
-
+                            
                 // print stylesheets
                 foreach ($this->config['stylesheets'] as $stylesheet) {
                     print "<link rel=\"stylesheet\" type=\"text/css\"";
-                    print " href=\"$stylesheet\">\n";
+                    print " href=\"".$externalURI.'/'.$stylesheet."\">\n";
                 }
 
                 // print javascripts
                 foreach ($this->config['javascripts'] as $javascript) {
-                    print "<script src=\"$javascript\"></script>\n";
+                    print "<script src=\"".$externalURI.'/'.$javascript."\"></script>\n";
                 }
 
                 // print title
                 print "<title>{$this->config['title']}</title>
-            </head>
-            <body>
+                </head>
+                <body>
                 <div id=\"body-wrapper\" class=\"body-wrapper\">";
 
                     foreach($this->header as $head){

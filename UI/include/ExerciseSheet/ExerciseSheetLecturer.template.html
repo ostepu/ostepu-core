@@ -138,7 +138,7 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                             print '" title="';
                             print $displayName;
                             print '" class="plain" target="_blank">';
-                            print '<img src="Images/Attachment.png" />';
+                            print '<img src="'.generateCommonFileUrl('img/Attachment.png').'" />';
                             print '</a>';
 
                             print '</div>';
@@ -256,8 +256,8 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                     </a>
                 </li>
 				<li>
-                    <a class="text-button" href="MarkingTool2/?cid=<?php echo $user['courses'][0]['course']['id'],
-                                                     '&sid=',
+                    <a class="text-button" href="MarkingTool2/page/markingtool2/course/<?php echo $user['courses'][0]['course']['id'],
+                                                     '/exercisesheet/',
                                                      $sheet['id']; ?>">
                         <?php echo Language::Get('sheetMenu','markingTool2', $langTemplate); ?>
                     </a>

@@ -3,12 +3,12 @@
     "content":"text/html",
     "charset":"utf-8",
     "stylesheets":[
-        "../css/CSSReset.css",
-		"css/MarkingTool2.css"
+        "UI/CContent/content/common/css/CSSReset.css",
+		"UI/CContent/content/markingtool2/css/MarkingTool2.css"
     ],
     "javascripts":[
-        "../javascript/jquery.js",
-		"../javascript/jquery-ui.min.js",
-		"js/marking_tool2_editor.js"
+        "UI/CContent/content/common/js/jquery.js",
+		"UI/CContent/content/common/js/jquery-ui.min.js",
+		"UI/CContent/content/markingtool2/js/marking_tool2_editor.js"
     ]
 }

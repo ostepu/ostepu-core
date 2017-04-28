@@ -110,7 +110,7 @@ if (isset($notifications)){
                             <?php $fileURL = generateDownloadURL($exercise['attachment']); ?>
 
                             <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain" target="_blank">
-                                <img src="Images/Attachment.png" />
+                                <img src="<?php echo generateCommonFileUrl('img/Attachment.png');?>" />
                             </a>
                         <?php endif; ?>
                         </div>

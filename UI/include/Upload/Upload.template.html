@@ -109,7 +109,7 @@
                             </a>
                             <?php } else { ?>
                             <span class ="left error-color">
-                                <img src="Images/Error.png" class='exercise-sheet-images' title="<?php echo Language::Get('submission','invalidSubmission', $langTemplate);?>"/>
+                                <img src="<?php echo generateCommonFileUrl('img/Error.png');?>" class='exercise-sheet-images' title="<?php echo Language::Get('submission','invalidSubmission', $langTemplate);?>"/>
                                 <?php echo Language::Get('submission','invalidSubmission', $langTemplate); ?> (
                                 <?php echo date('d.m.Y  -  H:i', $date); ?>
                                 )
