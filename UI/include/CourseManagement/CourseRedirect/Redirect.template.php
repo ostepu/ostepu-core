@@ -46,7 +46,7 @@
                for="title"><?php echo Language::Get('main','title', $langTemplate); ?>:</label>
         <input class="form-field text-input RedirectName"
                     <?php if (isset($title)) {?> value="<?php echo $title; ?>" <?php } ?>
-                    type="text" id="title; ?>" name="data[0][title]"/>
+                    type="text" id="title" name="data[0][title]"/>
     </span>
     
     <span class="left element-block">
