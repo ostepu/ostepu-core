@@ -1018,6 +1018,28 @@ class Model
         return self::createAnswer(401,$params);
     }
 
+    /**
+     * Liefert eine Rückgabe (ein Problem ist aufgetreten)
+     *
+     * @param int $status Der Status
+     * @param string $content Der optionale Inhalt
+     * @return array('status'=>..,'content'=>..) Die Antwort
+     */
+    public static function isTemporarilyMoved($content=null)
+    {
+        if (func_num_args()>1){
+            return self::isTemporarilyMovedAnswer(func_get_arg(0),func_get_arg(1));
+        }
+        return self::createAnswer(301,$content);
+    }
+    private static function isTemporarilyMovedAnswer($input, $params)
+    {
+        if ($params===null){
+            return self::createAnswer(301,$content);
+        }
+        return self::createAnswer(301,$params);
+    }
+
     public static function header($name, $value)
     {
         header($name.': '.$value);
