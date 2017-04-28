@@ -39,12 +39,15 @@ class UIMarkingTool2
         ob_start();
         
         global $globalUserData;
-        global $uid;
         global $serverURI;
         global $getSiteURI;
         
         //Überprüft ob mindestens ein Tutor diese Seite abruft.
         Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $globalUserData);
+        if (isset($globalUserData['id'])){
+            $uid = $globalUserData['id'];
+        }
+        
         $URI = $getSiteURI . "/markingtool/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
         if (isset($tutorID)) {
             $URI .= "/tutor/{$tutorID}";
