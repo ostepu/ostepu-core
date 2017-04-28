@@ -46,48 +46,46 @@ class CContent
         $path_parts = pathinfo($fileName);
         
         $cacheFolder = dirname(__FILE__).'/content/cache/'.implode('/',$params['path']);
-        self::generatepath( $cacheFolder );
         
         $realExtension = (isset($path_parts['extension']) ? ('.'.strtolower($path_parts['extension'])) : '');
         $params['path'][] = $path_parts['filename'].$realExtension;
         $contentPath = implode('/',$params['path']);
         $cacheExtension = $realExtension;
         
-        $cachePath = 'cache/'.$contentPath ;
-        //Überprüft ob die Daten schon im Cache existieren und maximal 1 Tag (86400) alt sind.
-        if (false && file_exists(dirname(__FILE__).'/content/'.$cachePath) && filemtime(dirname(__FILE__).'/content/'.$cachePath) >= time() - 86400){ // temporär abgeschalten
+        $cachePath = 'cache/'.$contentPath;
+
+        // überprüft, ob die Daten schon im Cache existieren und maximal 1 Tag (86400) alt sind.
+        if (file_exists(dirname(__FILE__).'/content/'.$cachePath) && filemtime(dirname(__FILE__).'/content/'.$cachePath) >= time() - 86400){ // temporär abgeschalten
             $preparedPath = $this->prepareFileForResponse($cachePath, $contentPath);
             Model::header('Location',$this->config['MAIN']['externalUrl'].'/UI/CContent/content/'.$preparedPath);
-            return Model::isOk(file_get_contents($preparedPath));
+            return Model::isTemporarilyMoved('');
         }
         
         // jetzt soll geprüft werden, ob die Datei zu CContent gehört und sich im /content Ordner befindet
-        $localPath = $contentPath ;
-        if (file_exists(dirname(__FILE__).'/content'.$localPath)){            
-            $preparedPath = $this->prepareFileForResponse($localPath, $contentPath);
+        $localPath = $contentPath;
+        if (file_exists(dirname(__FILE__).'/content/'.$localPath)){
+            self::generatepath( dirname(dirname(__FILE__).'/content/'.$cachePath) );
+            file_put_contents(dirname(__FILE__).'/content/'.$cachePath, file_get_contents(dirname(__FILE__).'/content/'.$localPath));
+            $preparedPath = $this->prepareFileForResponse($cachePath, $contentPath);
             Model::header('Location',$this->config['MAIN']['externalUrl'].'/UI/CContent/content/'.$preparedPath);
-            return Model::isOk('');
+            return Model::isTemporarilyMoved('');
         }
         
         $order = '/content/'.$contentPath;     
         
-        $positive = function($input, $cachePath, $realExtension, $negativeMethod, $cacheFilename) {
+        $positive = function($input, $cachePath, $contentPath, $realExtension, $negativeMethod, $cacheFilename) {
             if (empty($input)){
                 // wenn die zurückgegebene Datei leer ist, wird nicht gecached und die negative Methode aufgerufen
                 return call_user_func_array($negativeMethod, array());
             }            
             
-            // die Hilfedatei wird lokal gespeichert
+            // die Datei wird lokal gespeichert
             @file_put_contents(dirname(__FILE__).'/content/'.$cachePath,$input);
             
             $preparedPath = $this->prepareFileForResponse($cachePath, $contentPath);
-            
-            if ($preparedPath !== $cachePath){
-                $input = file_get_contents($preparedPath );
-            }
-            
+
             Model::header('Location',$this->config['MAIN']['externalUrl'].'/UI/CContent/content/'.$preparedPath);
-            return Model::isOk($input);
+            return Model::isTemporarilyMoved('');
         };
         
         $negative = function() {
@@ -96,7 +94,7 @@ class CContent
             return Model::isProblem($input);
         };
 
-        return $this->_component->callByURI('getContent', $order, array(), '', 200, $positive, array('cachePath'=>$cachePath, 'realExtension'=>$realExtension, 'negativeMethod'=>$negative, 'cacheFilename'=>$path_parts['filename'].$cacheExtension), $negative, array());
+        return $this->_component->callByURI('getContent', $order, array(), '', 200, $positive, array('cachePath'=>$cachePath, 'contentPath'=>$contentPath,'realExtension'=>$realExtension, 'negativeMethod'=>$negative, 'cacheFilename'=>$path_parts['filename'].$cacheExtension), $negative, array());
     }
 
     /**
@@ -104,39 +102,39 @@ class CContent
      * for that the file extension is used to decide if a compression is required or not
      */
     private function prepareFileForResponse($localFilePath, $order){
-        return $localFilePath; // temporär abgeschalten
-        
-        $path_parts = pathinfo($localFilePath);
+        return $localFilePath;
+        $realLocalPath = dirname(__FILE__).'/content/'.$localFilePath;
+        $path_parts = pathinfo($realLocalPath);
         $extension = (isset($path_parts['extension']) ? ('.'.strtolower($path_parts['extension'])) : '');
         
-        $cacheFolder = dirname(__FILE__).'/cache/minified';
+        $cacheFolder = dirname(__FILE__).'/content/cache/minified';
         $minifiedPath = $cacheFolder.'/'.$order;
         
         // wenn die Datei bereits lokal gecached wurde, dann müssen wir sie nicht nochmal verkleinern
-        if (file_exists($minifiedPath) && filemtime($minifiedPath) >= time() - 604800){
-            return $minifiedPath;
+        if (file_exists($minifiedPath) && filemtime($minifiedPath) >= time() - 86400){ // 1 Tag
+            return 'cache/minified/'.$order;
         }
 
         if ($extension == '.js'){
-            $minifiedContent = \PHPWee\Minify::js(file_get_contents($localFilePath));
+            $minifiedContent = \PHPWee\Minify::js(file_get_contents($realLocalPath));
             if ($minifiedContent === ''){
                 // bei der Umwandlung gab es einen Fehler
                 return $localFilePath;
             }
             
-            self::generatepath( $cacheFolder );
+            self::generatepath( dirname($minifiedPath) );
             file_put_contents($minifiedPath, $minifiedContent);
             return $minifiedPath;
         } elseif ($extension == '.css'){
-            $minifiedContent = \PHPWee\Minify::css(file_get_contents($localFilePath));
+            $minifiedContent = \PHPWee\Minify::css(file_get_contents($realLocalPath));
             if ($minifiedContent === ''){
                 // bei der Umwandlung gab es einen Fehler
                 return $localFilePath;
             }
                        
-            self::generatepath( $cacheFolder );
+            self::generatepath( dirname($minifiedPath) );
             file_put_contents($minifiedPath, $minifiedContent);
-            return '/cache/minified/'.$order;
+            return 'cache/minified/'.$order;
         }
         return $localFilePath;
     }
@@ -149,7 +147,7 @@ class CContent
      */
     public function deletePlatform( $callName, $input, $params = array())
     {
-        self::deleteDir( dirname(__FILE__).'/cache' );
+        self::deleteDir( dirname(__FILE__).'/content/cache' );
         return Model::isCreated();
     }
     
