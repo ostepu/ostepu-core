@@ -1,4 +1,6 @@
 RewriteEngine On
 RewriteCond %{HTTP_HOST} !^localhost$
 RewriteRule ^ - [F]
+
+RewriteCond %{THE_REQUEST} !(.)*\/CContent\/content
 RewriteRule ^ index.php [QSA,L]
