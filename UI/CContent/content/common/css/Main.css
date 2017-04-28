@@ -1,0 +1,299 @@
+/**
+ * @file Main.css
+ * General layout styles.
+ *
+ * @author Felix Schmidt
+ * @author Florian Lücke
+ */
+
+body {
+    font-size: 100%;
+    font-family: "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: #2B648F;
+}
+
+.course-list {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    //width: 607px;
+    display: inline;
+}
+
+a.plain:after {
+    content: none;
+}
+
+a.button:after {
+    content: ' >';
+}
+
+.inline:after {
+    content: ' ';
+}
+
+.body-wrapper {
+    width: 960px;
+    margin-left:auto;
+    margin-right:auto;
+    color: #6f6f6f;
+}
+
+.content-wrapper {
+    display: block;
+    overflow: auto;
+    margin-top: 10px;
+}
+
+.content-element {
+    margin-bottom: 30px;
+    font-size: 90%;
+    background-color: #f2f0f0;
+    display: block;
+    overflow: auto;
+    border-radius: 5px;
+}
+
+.content-header {
+    padding: 15px 40px;
+    overflow: auto;
+    height: auto;
+    line-height: 19px;
+    background-color: #b9b8b8;
+}
+
+.content-body-wrapper {
+    display: block;
+    overflow: auto;
+    margin-top: 20px;
+    padding: 0 40px 20px 40px;
+}
+
+.content-description {
+    padding-bottom: 30px;
+    line-height: 150%;
+}
+
+.content-footer {
+    padding: 30px 40px 25px 40px;
+    overflow: auto;
+    height: auto;
+    float: left;
+}
+
+.content-body {
+    display: table;
+}
+
+.content-body > div > div{
+    display: table-cell;
+    table-layout: fixed;
+}
+
+.content-title {
+    font-size: 130%;
+}
+
+.collapsible .content-header {
+    background-image: url(../img/Arrow.png);
+    background-repeat: no-repeat;
+    background-position: 14px 0;
+    background-size: 16px 98px;
+}
+
+.collapsible .inactive {
+    background-position: 14px -49px;
+    background-size: 16px 98px;
+}
+
+.interactive.add .content-header {
+    background-image: url(../img/plus.png);
+    background-repeat: no-repeat;
+    background-position: 14px 0;
+    background-size: 16px 49px;
+}
+
+.footer-text {
+    list-style: none;
+    font-size: 80%;
+    display: inline;
+    margin-right: 10px;
+    color: #6F6F6F;
+}
+
+ol {
+    list-style-type: none;
+}
+
+li {
+    padding-bottom: 7px;
+}
+
+li:before {
+    display: inline-block;
+    width:  20px;
+}
+
+table {
+    width: 850px;
+}
+
+table th {
+    text-align: left;
+    padding-bottom: 20px;
+}
+
+table td {
+    text-align: left;
+    padding-bottom: 10px;
+}
+
+.body-options {
+    text-align: right;
+}
+
+.body-options:li {
+    height: 21px;
+}
+
+.accept-button, .deny-button {
+    padding-left: 40px;
+}
+
+.group-member-name {
+    width: 300px;
+    height: 20px;
+    padding-left: 20px;
+}
+
+.group-exercise-title {
+    padding: 15px 0 15px 0;
+}
+
+.invitation-list {
+    width: 880px;
+}
+
+.tutor-name {
+    margin-left: 10px;
+}
+
+.element-block {
+    margin-left: 10px;
+    display:inline-block;
+}
+
+.lower-alpha li:before {
+    content: counter(item, lower-alpha) ")";
+    counter-increment: item;
+}
+
+.decimal li:before {
+    content: counter(item, decimal);
+    counter-increment: item;
+}
+
+.full-width-list {
+    counter-reset: item;
+    width: 880px;
+}
+
+.full-width-list li:not(.skip-item):before {
+    display: inline-block;
+    width: 24px;
+    counter-increment: item;
+}
+
+.full-width-list .skip-item:before {
+    content:"\a0\a0\a0";
+}
+
+ol.full-width-exercise-list {
+    counter-reset: item;
+    width: 880px;
+}
+
+ol.full-width-exercise-list li:before {
+    content: counter(item, decimal);
+    counter-increment: item;
+    padding-right: 25px;
+    font-weight: bold;
+    color: #6f6f6f;
+}
+
+ol.full-width-exercise-list .secondLevel {
+    counter-reset: secondLevel;
+    width: 880px;
+    margin-bottom: -7px;
+    margin-top: -13px;
+}
+
+ol.full-width-exercise-list .secondLevel li:before {
+    content: counter(firstLevel) " " counter(secondLevel,lower-alpha);
+    counter-increment: secondLevel;
+}
+
+.full-width-exercise-list .skip-item:before {
+    content:"\a0\a0\a0";
+}
+
+.tutor-assign-element {
+    width: 270px;
+    margin-right: 10px;
+}
+
+.tutor-assign-element-title {
+    margin-bottom: 10px;
+    margin-top: 15px;
+    margin-left: 2px;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.critical-color, .critical-color a {
+    color: #DE3838;
+}
+
+.info-color, .info-color a {
+    color: #2b648f;
+}
+
+.body-option-color, .body-option-color a {
+    color: #6b9cc1;
+}
+
+.normal {
+    font-weight: normal;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+.tiny {font-size: 50%;}
+
+.stats-block {
+    list-style: none;
+    font-size: 80%;
+    display: block;
+    color: #6F6F6F;
+    padding: 0 40px 20px 40px;
+}
+
+.top    { display:table-cell;vertical-align:top; }
+.middle  { display:table-cell; vertical-align:middle;}
+.bottom   { display:table-cell;vertical-align:bottom; }

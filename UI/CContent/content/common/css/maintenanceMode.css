@@ -1,0 +1,31 @@
+/**
+ * das Logo wurde verändert
+ */
+
+.header {
+    overflow: auto;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    /* color 1 */
+    background-color: #FFF;
+    color: #000;
+    border: 3px dotted #f4ad32;
+    border-radius: 5px;
+    padding: 20px 40px;
+    display: block;
+    background-position: 99% 10%;
+    background-image: url('../img/maurer.png');
+    background-repeat: no-repeat;
+    background-size: 88px 88px;
+}
+
+ul.navigation {
+    border-radius: 5px;
+    margin-top: 5px;
+    overflow: auto;
+    padding: 7px 40px;
+    /* color 1, var 1 */
+    background-color: #FFF;
+    border: 3px dotted #f4ad32;
+    border-radius: 5px;
+}
