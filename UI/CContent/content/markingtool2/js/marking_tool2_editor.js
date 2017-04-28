@@ -632,8 +632,8 @@ MarkingTool.Editor.View = new function() {
 					]
 				}),
 				hc.CreateComplexButton(
-					hc.CreateSimpleImage("../../common/img/Text.png"),
-					hc.CreateSimpleImage("../../common/img/Error.png", 
+					hc.CreateSimpleImage("../../../../../../CContent/content/common/img/Text.png"),
+					hc.CreateSimpleImage("../../../../../../CContent/content/common/img/Error.png", 
 						task.studentComment == null || task.studentComment == "" ? 
 						{ css: [ "ui-show" ] } : undefined),
 					hc.CreateElement("div", "S"),
@@ -641,8 +641,8 @@ MarkingTool.Editor.View = new function() {
 					{ title: "Studentenkommentar" }
 				),
 				hc.CreateComplexButton(
-					hc.CreateSimpleImage("../../common/img/Text.png"),
-					hc.CreateSimpleImage("../../common/img/Error.png", 
+					hc.CreateSimpleImage("../../../../../../CContent/content/common/img/Text.png"),
+					hc.CreateSimpleImage("../../../../../../CContent/content/common/img/Error.png", 
 						task.tutorComment == null || task.tutorComment == "" ? 
 						{ css: [ "ui-show" ] } : undefined),
 					hc.CreateElement("div", "K"),
@@ -650,16 +650,16 @@ MarkingTool.Editor.View = new function() {
 					{ title: "Kontrolleurkommentar" }
 				),
 				hc.CreateComplexButton(
-					hc.CreateSimpleImage("../../common/img/Download.png"),
-					hc.CreateSimpleImage("../../common/img/Error.png", 
+					hc.CreateSimpleImage("../../../../../../CContent/content/common/img/Download.png"),
+					hc.CreateSimpleImage("../../../../../../CContent/content/common/img/Error.png", 
 						task.userFile == null ? { css: [ "ui-show" ] } : undefined),
 					hc.CreateElement("div", "S"),
 					undefined,
 					{ title: "Studenteneinsendung" }
 				),
 				hc.CreateComplexButton(
-					hc.CreateSimpleImage("../../common/img/Download.png"),
-					hc.CreateSimpleImage("../../common/img/Error.png", 
+					hc.CreateSimpleImage("../../../../../../CContent/content/common/img/Download.png"),
+					hc.CreateSimpleImage("../../../../../../CContent/content/common/img/Error.png", 
 						task.tutorFile == null ? { css: [ "ui-show" ] } : undefined),
 					hc.CreateElement("div", "K"),
 					undefined,
@@ -1011,13 +1011,13 @@ MarkingTool.Editor.View = new function() {
 					children: [
 						createWrapper(hc.CreateElementRaw({
 							element: "img",
-							src: "img/server-icon.png"
+							src: "../../../../../../CContent/content/markingtool2/img/server-icon.png"
 						})),
 						createWrapper(serverState),
 						createWrapper(hc.CreateElementRaw({
 							css: ["ui-fork-arrow"],
 							element: "img",
-							src: "img/ok-icon.png"
+							src: "../../../../../../CContent/content/markingtool2/img/ok-icon.png"
 						}))
 					]
 				})
@@ -1031,13 +1031,13 @@ MarkingTool.Editor.View = new function() {
 					children: [
 						createWrapper(hc.CreateElementRaw({
 							element: "img",
-							src: "img/computer-icon.png"
+							src: "../../../../../../CContent/content/markingtool2/img/computer-icon.png"
 						})),
 						createWrapper(localState),
 						createWrapper(hc.CreateElementRaw({
 							css: ["ui-fork-arrow"],
 							element: "img",
-							src: "img/ok-icon.png"
+							src: "../../../../../../CContent/content/markingtool2/img/ok-icon.png"
 						}))
 					]
 				})
