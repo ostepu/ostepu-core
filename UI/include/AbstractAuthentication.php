@@ -178,7 +178,7 @@ abstract class AbstractAuthentication
             }
 
             // redirect to Loginpage and save current page in GET param
-            header('Location: '.$externalURI.'/Login.php?back=' . $backurl . $urlparameters);
+            header('Location: '.$externalURI.'/UI/Login.php?back=' . $backurl . $urlparameters);
         }
 
         exit();
