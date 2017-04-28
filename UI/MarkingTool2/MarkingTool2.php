@@ -48,6 +48,7 @@ class UIMarkingTool2
             $uid = $globalUserData['id'];
         }
         
+        // turorid und statusid gibt es hier natürlich nicht
         $URI = $getSiteURI . "/markingtool/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
         if (isset($tutorID)) {
             $URI .= "/tutor/{$tutorID}";
