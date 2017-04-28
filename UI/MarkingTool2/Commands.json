@@ -1,5 +1,20 @@
 [
     {
+        "name": "getMarkingTool2Page",
+        "outputType": "binary",
+        "inputType": "",
+        "method": "GET",
+        "placeholder": [{
+            "name": "cid",
+            "regex": "%^([0-9_]+)$%"
+        },
+        {
+            "name": "sid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/page/markingtool2/course/:cid/exercisesheet/:sid"
+    },
+    {
         "name": "getPing",
         "outputType": "binary",
         "inputType": "",

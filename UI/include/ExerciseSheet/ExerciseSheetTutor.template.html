@@ -225,8 +225,8 @@ if (isset($notifications)){
                         </a>
                     </li>
                     <li>
-                        <a class="text-button" href="MarkingTool2/?cid=<?php echo $user['courses'][0]['course']['id'],
-                                                         '&sid=',
+                        <a class="text-button" href="MarkingTool2/course/<?php echo $user['courses'][0]['course']['id'],
+                                                         '/exercisesheet/',
                                                          $sheet['id']; ?>">
                             <?php echo Language::Get('sheetMenu','markingTool2', $langTemplate); ?>
                         </a>
