@@ -20,12 +20,11 @@ a {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    //width: 607px;
     display: inline;
 }
 
 a.plain:after {
-    content: none;
+    content: '';
 }
 
 a.button:after {
@@ -156,7 +155,7 @@ table td {
     text-align: right;
 }
 
-.body-options:li {
+.body-options li {
     height: 21px;
 }
 
