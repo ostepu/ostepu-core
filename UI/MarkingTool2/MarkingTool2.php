@@ -55,6 +55,7 @@ class UIMarkingTool2
         
         global $globalUserData;
         global $serverURI;
+        global $externalURI;
         global $getSiteURI;
         
         //Überprüft ob mindestens ein Tutor diese Seite abruft.
@@ -87,7 +88,7 @@ class UIMarkingTool2
         $c->bind(array(
             "restricted" => Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUserData),
             "userLevel" => $userLevel = Authentication::getUserLevel($cid, $uid, $globalUserData),
-            "backUrl" => "$serverURI/UI/".PRIVILEGE_LEVEL::$SITES[$userLevel]."?cid=$cid",
+            "backUrl" => "$externalURI/UI/".PRIVILEGE_LEVEL::$SITES[$userLevel]."?cid=$cid",
             "uid" => $uid
         ));
         $w = new HTMLWrapper(/*$h, */$c);
