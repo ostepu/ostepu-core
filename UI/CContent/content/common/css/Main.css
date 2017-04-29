@@ -155,9 +155,9 @@ table td {
     text-align: right;
 }
 
-.body-options li {
+/*.body-options li {
     height: 21px;
-}
+}*/
 
 .accept-button, .deny-button {
     padding-left: 40px;
