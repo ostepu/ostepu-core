@@ -57,18 +57,26 @@ class CContent
         // überprüft, ob die Daten schon im Cache existieren und maximal 1 Tag (86400) alt sind.
         if (file_exists(dirname(__FILE__).'/content/'.$cachePath) && filemtime(dirname(__FILE__).'/content/'.$cachePath) >= time() - 86400){ // temporär abgeschalten
             $preparedPath = $this->prepareFileForResponse($cachePath, $contentPath);
-            Model::header('Location',$this->config['MAIN']['externalUrl'].'/UI/CContent/content/'.$preparedPath);
-            return Model::isTemporarilyMoved('');
+            //Model::header('Location',$this->config['MAIN']['externalUrl'].'/UI/CContent/content/'.$preparedPath);
+            
+            Model::header('Content-Length',filesize(dirname(__FILE__).'/content/'.$preparedPath));
+            $mime = MimeReader::get_mime(dirname(__FILE__).'/content/'.$preparedPath, true);
+            Model::header('Content-Type',$mime);
+            return Model::isOk(file_get_contents(dirname(__FILE__).'/content/'.$preparedPath));
         }
         
         // jetzt soll geprüft werden, ob die Datei zu CContent gehört und sich im /content Ordner befindet
         $localPath = $contentPath;
         if (file_exists(dirname(__FILE__).'/content/'.$localPath)){
-            self::generatepath( dirname(dirname(__FILE__).'/content/'.$cachePath) );
-            file_put_contents(dirname(__FILE__).'/content/'.$cachePath, file_get_contents(dirname(__FILE__).'/content/'.$localPath));
-            $preparedPath = $this->prepareFileForResponse($cachePath, $contentPath);
-            Model::header('Location',$this->config['MAIN']['externalUrl'].'/UI/CContent/content/'.$preparedPath);
-            return Model::isTemporarilyMoved('');
+            //self::generatepath( dirname(dirname(__FILE__).'/content/'.$cachePath) );
+            //file_put_contents(dirname(__FILE__).'/content/'.$cachePath, file_get_contents(dirname(__FILE__).'/content/'.$localPath));
+            $preparedPath = $this->prepareFileForResponse($localPath, $contentPath);
+            //Model::header('Location',$this->config['MAIN']['externalUrl'].'/UI/CContent/content/'.$preparedPath);
+            
+            Model::header('Content-Length',filesize(dirname(__FILE__).'/content/'.$preparedPath));
+            $mime = MimeReader::get_mime(dirname(__FILE__).'/content/'.$preparedPath, true);
+            Model::header('Content-Type',$mime);
+            return Model::isOk(file_get_contents(dirname(__FILE__).'/content/'.$preparedPath));
         }
         
         $order = '/content/'.$contentPath;     
@@ -80,12 +88,20 @@ class CContent
             }            
             
             // die Datei wird lokal gespeichert
+            self::generatepath( dirname(dirname(__FILE__).'/content/'.$cachePath) );
             @file_put_contents(dirname(__FILE__).'/content/'.$cachePath,$input);
             
             $preparedPath = $this->prepareFileForResponse($cachePath, $contentPath);
 
-            Model::header('Location',$this->config['MAIN']['externalUrl'].'/UI/CContent/content/'.$preparedPath);
-            return Model::isTemporarilyMoved('');
+            //Model::header('Location',$this->config['MAIN']['externalUrl'].'/UI/CContent/content/'.$preparedPath);
+            if ($cachePath !== $preparedPath){
+                $input = file_get_contents(dirname(__FILE__).'/content/'.$preparedPath);
+            }
+            
+            Model::header('Content-Length',strlen($input));
+            $mime = MimeReader::get_mime(dirname(__FILE__).'/content/'.$cachePath, true);
+            Model::header('Content-Type',$mime);
+            return Model::isOk($input);
         };
         
         $negative = function() {
@@ -102,7 +118,6 @@ class CContent
      * for that the file extension is used to decide if a compression is required or not
      */
     private function prepareFileForResponse($localFilePath, $order){
-        return $localFilePath;
         $realLocalPath = dirname(__FILE__).'/content/'.$localFilePath;
         $path_parts = pathinfo($realLocalPath);
         $extension = (isset($path_parts['extension']) ? ('.'.strtolower($path_parts['extension'])) : '');
@@ -115,7 +130,18 @@ class CContent
             return 'cache/minified/'.$order;
         }
 
-        if ($extension == '.js'){
+        if ($extension == '.php'){
+            ob_start();
+            include($realLocalPath);
+            $result = ob_get_clean();
+            
+            $newOrder = substr($order, 0, -4).'.css';
+            
+            self::generatepath( dirname(dirname(__FILE__).'/content/cache/'.$newOrder) );
+            file_put_contents(dirname(__FILE__).'/content/cache/'.$newOrder, $result);
+            return 'cache/'.$newOrder;
+        } elseif ($extension === '.js'){
+            //return $localFilePath; // derzeit wird der Inhalt nicht verkleinert
             $minifiedContent = \PHPWee\Minify::js(file_get_contents($realLocalPath));
             if ($minifiedContent === ''){
                 // bei der Umwandlung gab es einen Fehler
@@ -124,8 +150,9 @@ class CContent
             
             self::generatepath( dirname($minifiedPath) );
             file_put_contents($minifiedPath, $minifiedContent);
-            return $minifiedPath;
-        } elseif ($extension == '.css'){
+            return 'cache/minified/'.$order;
+        } elseif ($extension === '.css'){
+            //return $localFilePath; // derzeit wird der Inhalt nicht verkleinert
             $minifiedContent = \PHPWee\Minify::css(file_get_contents($realLocalPath));
             if ($minifiedContent === ''){
                 // bei der Umwandlung gab es einen Fehler
