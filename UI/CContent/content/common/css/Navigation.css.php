@@ -13,7 +13,7 @@
  */
 
   header('Content-type: text/css');
-  include_once (dirname(__FILE__).'/../../../../include/Config.php');
+  global $externalURI;
   $commonImagePath = $externalURI.'/UI/CContent/content/common/img';
 ?>
 
@@ -60,3 +60,4 @@
         echo "background-position: 99% 10%;";
     }
     ?>
+}
