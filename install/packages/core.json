@@ -79,6 +79,16 @@
                 "path": "UI/CContent/phpwee/"
             }
         },
+        {
+            "path": "Assistants/vendor/mimey/",
+            "type": "git",
+            "params": {
+                "name": "mimey",
+                "branch": "master",
+                "URL": "https://github.com/ralouphie/mimey",
+                "path": "Assistants/vendor/mimey/"
+            }
+        },
         {"path": "DB/.htaccess"},
         {"path": "FS/.htaccess"},
         {"path": "logic/Include/"},
