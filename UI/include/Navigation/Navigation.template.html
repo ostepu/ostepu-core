@@ -17,7 +17,7 @@
 ?>
 
 <?php $langTemplate='Navigation';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
-<?php $confFile=dirname(__FILE__).'/uinavigation_cconfig.json'; ?>
+<?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uinavigation_cconfig.json'); ?>
 
 <input type="hidden" name="action" value="navigation">
 
@@ -91,7 +91,7 @@
     <?php } ?>
 
     <?php // gibt den Inhalt des getContent-Eingangs aus
-        echo pageLib::getContent('getContent', $this->content, $confFile); ?>
+        echo pageLib::getContent('getContent', $this->content, $pageComponent); ?>
                         
     <?php if (count($links)>0){
         echo '<span class="new-line left">';

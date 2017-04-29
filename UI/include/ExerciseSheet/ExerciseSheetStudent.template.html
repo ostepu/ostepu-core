@@ -19,6 +19,7 @@
 ?>
 
 <?php $langTemplate='ExerciseSheet';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+<?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uiexercisesheetstudent_cconfig.json'); ?>
 
 <?php
 if (isset($notifications)){
@@ -35,6 +36,9 @@ if (isset($notifications)){
 }
 ?>
 
+<?php // gibt den Inhalt des getTop-Eingangs aus
+    echo pageLib::getContent('getTop', $this->content, $pageComponent); ?>
+    
 <?php 
     $anyoneStarted=false;
     if (!empty($sheets))
@@ -344,6 +348,9 @@ if (isset($notifications)){
                             if ($red['location'] !== 'sheet') continue;
                             echo '<li>'.createRedirectButton($red,$sheet['id']).'</li>';
                         }} ?>
+                        
+                    <?php // gibt den Inhalt des getSheetNavigation-Eingangs aus
+                        echo pageLib::getContent('getSheetNavigation', $this->content, $pageComponent, array('cid'=>$user['courses'][0]['course']['id'], 'sid'=>$sheet['id'])); ?>
                 </ol>
             </div>
         </div> <!-- end: content-body-wrapper -->

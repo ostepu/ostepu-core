@@ -19,6 +19,20 @@
             "target": "CLocalObjectRequest"
         },
         {
+            "name": "getSheetNavigation",
+            "target": "UIExerciseSheetLecturer",
+            "links": [
+                {"path": "/view/button/entry/course/:cid/sheet/:sid", "priority": "150"}
+            ]
+        },
+        {
+            "name": "getSheetNavigation",
+            "target": "UIExerciseSheetTutor",
+            "links": [
+                {"path": "/view/button/entry/course/:cid/sheet/:sid", "priority": "150"}
+            ]
+        },
+        {
             "name": "getContent",
             "target": "CContent",
             "links": [

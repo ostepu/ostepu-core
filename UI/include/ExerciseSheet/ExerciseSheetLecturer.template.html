@@ -19,6 +19,7 @@
 ?>
 
 <?php $langTemplate='ExerciseSheet';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+<?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uiexercisesheetlecturer_cconfig.json'); ?>
 
 <?php
 if (isset($notifications)){
@@ -34,6 +35,9 @@ if (isset($notifications)){
     echo "</div>";
 }
 ?>
+
+<?php // gibt den Inhalt des getTop-Eingangs aus
+    echo pageLib::getContent('getTop', $this->content, $pageComponent); ?>
 
 <div class="new-line">
 <input type="hidden" name="action" value="ExerciseSheetLecturer">
@@ -255,28 +259,26 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                         <?php echo Language::Get('sheetMenu','markingTool', $langTemplate); ?>
                     </a>
                 </li>
-				<li>
-                    <a class="text-button" href="MarkingTool2/page/markingtool2/course/<?php echo $user['courses'][0]['course']['id'],
-                                                     '/exercisesheet/',
-                                                     $sheet['id']; ?>">
-                        <?php echo Language::Get('sheetMenu','markingTool2', $langTemplate); ?>
-                    </a>
-                </li>
-                <li>
-                </li>
-                <li>
-                    <button title="Übungsserie löschen" name="<?php echo (!isset($_POST['deleteSheetWarning']) || (isset($_POST['deleteSheetWarning']) && $_POST['deleteSheetWarning'] != $sheet['id'])) ? 'deleteSheetWarning' : 'deleteSheet';?>" value="<?php echo $sheet['id']; ?>"class="text-button<?php echo (!isset($_POST['deleteSheetWarning']) || (isset($_POST['deleteSheetWarning']) && $_POST['deleteSheetWarning'] != $sheet['id'])) ? ' ' : '-simple  error-simple' ;?> bold critical-color">
-                        <?php echo Language::Get('sheetMenu','deleteSheet', $langTemplate); ?>
-                    </button>
-                </li>
-                            
+                
+                <?php // gibt den Inhalt des getSheetNavigation-Eingangs aus
+                    echo pageLib::getContent('getSheetNavigation', $this->content, $pageComponent, array('cid'=>$user['courses'][0]['course']['id'], 'sid'=>$sheet['id'])); ?>
+
                 <?php if (isset($redirect)){
                     $redirect2 = array_reverse($redirect);
                     foreach($redirect2 as $red) {
                         if ($red['location'] !== 'sheet') continue;
                         echo '<li>'.createRedirectButton($red,$sheet['id']).'</li>';
                     }} ?>
-                       
+                    
+                <li>
+                </li>
+                
+                <li>
+                    <button title="Übungsserie löschen" name="<?php echo (!isset($_POST['deleteSheetWarning']) || (isset($_POST['deleteSheetWarning']) && $_POST['deleteSheetWarning'] != $sheet['id'])) ? 'deleteSheetWarning' : 'deleteSheet';?>" value="<?php echo $sheet['id']; ?>"class="text-button<?php echo (!isset($_POST['deleteSheetWarning']) || (isset($_POST['deleteSheetWarning']) && $_POST['deleteSheetWarning'] != $sheet['id'])) ? ' ' : '-simple  error-simple' ;?> bold critical-color">
+                        <?php echo Language::Get('sheetMenu','deleteSheet', $langTemplate); ?>
+                    </button>
+                </li>
+                
             </ol>
         </div>
     </div>

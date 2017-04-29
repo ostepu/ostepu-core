@@ -1,5 +1,12 @@
 [
     {
+        "name": "getButton",
+        "outputType": "binary",
+        "inputType": "",
+        "method": "GET",
+        "path": "/view/button/entry/course/:cid/sheet/:sid"
+    },
+    {
         "name": "getMarkingTool2Page",
         "outputType": "binary",
         "inputType": "",

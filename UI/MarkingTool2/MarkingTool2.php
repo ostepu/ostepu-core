@@ -29,6 +29,21 @@ class UIMarkingTool2
         return true;
     }
     
+    public function getButton( $callName, $input, $params = array() )
+    {
+        $data = json_decode($input, true);
+        $res = array('content'=>'');
+        if (isset($data['cid'])){
+        $content =  '<li>
+                        <a class="text-button" href="'.$data['externalURI'].'/UI/MarkingTool2/page/markingtool2/course/'.$params['cid'].'/exercisesheet/'.$params['sid'].'">
+                            Korrekturassistent (Entwicklung)
+                        </a>
+                    </li>';
+            $res = array('content'=>$content);
+        }
+        return Model::isOk(json_encode($res)); 
+    }
+    
     public function getMarkingTool2Page( $callName, $input, $params = array() )
     {   
         include_once ( dirname(__FILE__) . '/../include/Boilerplate.php' );
