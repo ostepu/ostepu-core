@@ -135,7 +135,7 @@ class CContent
             include($realLocalPath);
             $result = ob_get_clean();
             
-            $newOrder = substr($order, 0, -4).'.css';
+            $newOrder = 'cached_'.substr($order, 0, -4);
             
             self::generatepath( dirname(dirname(__FILE__).'/content/cache/'.$newOrder) );
             file_put_contents(dirname(__FILE__).'/content/cache/'.$newOrder, $result);
