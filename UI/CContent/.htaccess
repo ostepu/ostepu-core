@@ -2,6 +2,4 @@ RewriteEngine On
 RewriteCond %{HTTP_HOST} !^localhost$
 RewriteRule ^ - [F]
 
-RewriteCond %{THE_REQUEST} !(.)*\/CContent\/content\/cache [OR]
-RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^ index.php [QSA,L]
