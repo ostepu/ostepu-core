@@ -55,7 +55,7 @@ class CContent
         $cachePath = 'cache/'.$contentPath;
 
         // überprüft, ob die Daten schon im Cache existieren und maximal 1 Tag (86400) alt sind.
-        if (file_exists(dirname(__FILE__).'/content/'.$cachePath) && filemtime(dirname(__FILE__).'/content/'.$cachePath) >= time() - 86400){ // temporär abgeschalten
+        if (false && file_exists(dirname(__FILE__).'/content/'.$cachePath) && filemtime(dirname(__FILE__).'/content/'.$cachePath) >= time() - 86400){ // temporär abgeschalten
             $preparedPath = $this->prepareFileForResponse($cachePath, $contentPath);
             //Model::header('Location',$this->config['MAIN']['externalUrl'].'/UI/CContent/content/'.$preparedPath);
             
