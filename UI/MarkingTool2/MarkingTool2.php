@@ -58,11 +58,13 @@ class UIMarkingTool2
         global $externalURI;
         global $getSiteURI;
         
-        //Überprüft ob mindestens ein Tutor diese Seite abruft.
-        Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $globalUserData);
+        $uid = null;
         if (isset($globalUserData['id'])){
             $uid = $globalUserData['id'];
         }
+        
+        //Überprüft ob mindestens ein Tutor diese Seite abruft.
+        Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $globalUserData);
         
         // turorid und statusid gibt es hier natürlich nicht
         $URI = $getSiteURI . "/markingtool/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
