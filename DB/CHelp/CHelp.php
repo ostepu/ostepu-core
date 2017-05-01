@@ -97,7 +97,7 @@ class CHelp
         
         $cachePath = dirname(__FILE__).'/cache/'.implode('/',$params['path']).$cacheExtension;
         //Überprüft ob die Daten schon im Cache existieren und maximal 1 Woche (604800 Sekunden) alt sind.
-        if (file_exists($cachePath) && filemtime($cachePath) >= time() - 604800){
+        if ((!isset($this->config['SETTINGS']['developmentMode']) || $this->config['SETTINGS']['developmentMode'] !== '1') && file_exists($cachePath) && filemtime($cachePath) >= time() - 604800){
             Model::header('Content-Length',filesize($cachePath));
             return Model::isOk(file_get_contents($cachePath));
         }
@@ -179,6 +179,11 @@ class CHelp
         if (isset($settings->contactUrl)){
             $text .= "[HELP]\n";
             $text .= "contactUrl = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$settings->contactUrl))."\"\n";
+        }
+        
+        if (isset($settings->developmentMode)){
+            $text .= "[SETTINGS]\n";
+            $text .= "developmentMode = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$settings->developmentMode))."\"\n";
         }
                 
         if (!@file_put_contents($file,$text)){

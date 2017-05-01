@@ -55,7 +55,7 @@ class CContent
         $cachePath = 'cache/'.$contentPath;
 
         // überprüft, ob die Daten schon im Cache existieren und maximal 1 Tag (86400) alt sind.
-        if (false && file_exists(dirname(__FILE__).'/content/'.$cachePath) && filemtime(dirname(__FILE__).'/content/'.$cachePath) >= time() - 86400){ // temporär abgeschalten
+        if ((!isset($this->config['SETTINGS']['developmentMode']) || $this->config['SETTINGS']['developmentMode'] !== '1') && file_exists(dirname(__FILE__).'/content/'.$cachePath) && filemtime(dirname(__FILE__).'/content/'.$cachePath) >= time() - 86400){ // temporär abgeschalten
             $preparedPath = $this->prepareFileForResponse($cachePath, $contentPath);
             //Model::header('Location',$this->config['MAIN']['externalUrl'].'/UI/CContent/content/'.$preparedPath);
             
@@ -117,7 +117,7 @@ class CContent
      * prepares a local existing file.
      * for that the file extension is used to decide if a compression is required or not
      */
-    private function prepareFileForResponse($localFilePath, $order){
+    private function prepareFileForResponse($localFilePath, $order){        
         $realLocalPath = dirname(__FILE__).'/content/'.$localFilePath;
         $path_parts = pathinfo($realLocalPath);
         $extension = (isset($path_parts['extension']) ? ('.'.strtolower($path_parts['extension'])) : '');
@@ -141,6 +141,11 @@ class CContent
             file_put_contents(dirname(__FILE__).'/content/cache/'.$newOrder, $result);
             return 'cache/'.$newOrder;
         } elseif ($extension === '.js'){
+            if (isset($this->config['SETTINGS']['developmentMode']) && $this->config['SETTINGS']['developmentMode'] === '1'){
+                // die javascript-Datei soll nicht verkleinert werden
+                return $localFilePath;
+            }
+        
             //return $localFilePath; // derzeit wird der Inhalt nicht verkleinert
             $minifiedContent = \PHPWee\Minify::js(file_get_contents($realLocalPath));
             if ($minifiedContent === ''){
@@ -152,6 +157,11 @@ class CContent
             file_put_contents($minifiedPath, $minifiedContent);
             return 'cache/minified/'.$order;
         } elseif ($extension === '.css'){
+            if (isset($this->config['SETTINGS']['developmentMode']) && $this->config['SETTINGS']['developmentMode'] === '1'){
+                // die css-Datei soll nicht verkleinert werden
+                return $localFilePath;
+            }
+        
             //return $localFilePath; // derzeit wird der Inhalt nicht verkleinert
             $minifiedContent = \PHPWee\Minify::css(file_get_contents($realLocalPath));
             if ($minifiedContent === ''){
@@ -199,6 +209,11 @@ class CContent
         if (isset($settings->contactUrl)){
             $text .= "[HELP]\n";
             $text .= "contactUrl = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$settings->contactUrl))."\"\n";
+        }
+        
+        if (isset($settings->developmentMode)){
+            $text .= "[SETTINGS]\n";
+            $text .= "developmentMode = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$settings->developmentMode))."\"\n";
         }
                 
         if (!@file_put_contents($file,$text)){

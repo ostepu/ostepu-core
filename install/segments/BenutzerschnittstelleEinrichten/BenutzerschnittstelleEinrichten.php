@@ -161,7 +161,12 @@ class BenutzerschnittstelleEinrichten {
         $text[] = '$ldapBase' . " = '{$data['UI']['ldapBase']}';";
         $text[] = '$ldapAdmin' . " = '{$data['UI']['ldapAdmin']}';";
         $text[] = '$ldapPasswd' . " = '{$data['UI']['ldapPasswd']}';";
-        $text[] = '$ldapFilter' . " = '{$data['UI']['ldapFilter']}';";            
+        $text[] = '$ldapFilter' . " = '{$data['UI']['ldapFilter']}';";  
+        
+        $externalSettings = Installation::collect('getUserInterfaceSettings',$data, array(__CLASS__));
+        foreach ($externalSettings as $settingName => $settingContent){
+            $text[] = '$'.$settingName . " = '{$settingContent}';";  
+        }
             
         $text = implode("\n", $text);
         Installation::log(array('text' => Installation::Get('userInterface', 'confContent', self::$langTemplate, array('content' => json_encode($text)))));

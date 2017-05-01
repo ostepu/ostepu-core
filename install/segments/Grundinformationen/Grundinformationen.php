@@ -45,7 +45,8 @@ class Grundinformationen {
             'localPath' => array('data[PL][localPath]', '/var/www/uebungsplattform'),
             'urlExtern' => array('data[PL][urlExtern]', 'http://localhost/uebungsplattform'),
             'temp' => array('data[PL][temp]', '/var/www/temp'),
-            'files' => array('data[PL][files]', '/var/www/files')
+            'files' => array('data[PL][files]', '/var/www/files'),
+            'developmentMode' => array('data[UI][developmentMode]', '0')
         );
     }
 
@@ -71,6 +72,7 @@ class Grundinformationen {
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['PL']['urlExtern'], 'data[PL][urlExtern]', $def['urlExtern'][1], true);
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['PL']['temp'], 'data[PL][temp]', $def['temp'][1], true);
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['PL']['files'], 'data[PL][files]', $def['files'][1], true);
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PL']['developmentMode'], 'data[PL][developmentMode]', $def['developmentMode'][1], true);
         echo $text;
         self::$initialized = true;
         Installation::log(array('text' => Installation::Get('main', 'functionEnd')));
@@ -107,11 +109,33 @@ class Grundinformationen {
                 Installation::log(array('text' => 'data[PL][files]: ' . $data['PL']['files'] . ' existiert nicht.', 'logLevel' => LogLevel::WARNING));
                 $text .= Design::erstelleZeile($console, '', 'e', $data['PL']['files'] . ' existiert nicht.', 'error v');
             }
+            
+            $text .= Design::erstelleZeile($console, Installation::Get('general_informations', 'developmentMode', self::$langTemplate), 'e', Design::erstelleAuswahl($console, $data['PL']['developmentMode'], 'data[PL][developmentMode]', '1', null, true), 'v_c');
         }
 
         echo Design::erstelleBlock($console, Installation::Get('general_informations', 'title', self::$langTemplate), $text);
         Installation::log(array('text' => Installation::Get('main', 'functionEnd')));
         return null;
+    }
+
+    /*
+     * diese Methode wird von Installation::PlattformZusammenstellen aufgerufen (eingesammelt)
+     */
+    public static function platformSetting($data) {
+        Installation::log(array('text' => Installation::Get('main', 'functionBegin')));
+        $result = array('developmentMode' => $data['PL']['developmentMode']);
+        Installation::log(array('text' => Installation::Get('main', 'functionEnd')));
+        return $result;
+    }
+    
+    /*
+     * diese Methode wird von BenutzerschnittstelleEinrichten aufgerufen (eingesammelt)
+     */
+    public static function getUserInterfaceSettings($data) {
+        Installation::log(array('text' => Installation::Get('main', 'functionBegin')));
+        $result = array('developmentMode' => $data['PL']['developmentMode']);
+        Installation::log(array('text' => Installation::Get('main', 'functionEnd')));
+        return $result;
     }
 
 }
