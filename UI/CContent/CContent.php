@@ -127,7 +127,9 @@ class CContent
         
         // wenn die Datei bereits lokal gecached wurde, dann müssen wir sie nicht nochmal verkleinern
         if (file_exists($minifiedPath) && filemtime($minifiedPath) >= time() - 86400){ // 1 Tag
-            return 'cache/minified/'.$order;
+            if (!isset($this->config['SETTINGS']['developmentMode']) || $this->config['SETTINGS']['developmentMode'] !== '1'){
+                return 'cache/minified/'.$order;
+            }
         }
 
         if ($extension == '.php'){
@@ -196,7 +198,7 @@ class CContent
      */
     public function addPlatform( $callName, $input, $params = array())
     {
-        self::deleteDir( dirname(__FILE__).'/cache' );
+        self::deleteDir( dirname(__FILE__).'/content/cache' );
         
         $file = dirname(__FILE__).'/config.ini';
         $text = "[DIR]\n".
