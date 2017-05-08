@@ -93,6 +93,7 @@ class UIMarkingTool2
             "backUrl" => "$externalURI/UI/".PRIVILEGE_LEVEL::$SITES[$userLevel]."?cid=$cid",
             "uid" => $uid
         ));
+		$c->bind($params);
         $w = new HTMLWrapper(/*$h, */$c);
         $w->set_config_file('config_marking_tool2.json');
         if (isset($maintenanceMode) && $maintenanceMode === '1')
@@ -175,12 +176,16 @@ class UIMarkingTool2
     
     public function postUpload( $callName, $input, $params = array() )
     {
+		global $_SESSION;
+		
         $response = null;
         parse_str($input, $postData); // parst die eingehenden Formulardaten nach $postData
         
         $cid = $params['cid'];
         $sid = $params['sid'];
         
+		header("Content-Type: text/json"); //Damit jQuery das automatisch parst
+		
         /* sid und cid existieren hier garantiert
         elseif (!isset($_GET["cid"]) || !isset($_GET["sid"])) {
             $response = array(
@@ -208,7 +213,7 @@ class UIMarkingTool2
                 return false;
             };
 
-            $rawData = $this->_component->call('getMarkingToolData', array('cid'=>$cid, 'sid'=>$sid), '', 200, $positive, array(), $false, array());
+            $rawData = $this->_component->call('getMarkingToolData', array('cid'=>$cid, 'sid'=>$sid), '', 200, $positive, array(), $negative, array());
             
             if ($rawData === false){
                 // der Aufruf war fehlerhaft

@@ -1787,7 +1787,7 @@ MarkingTool.Editor.Logic = new function() {
 			//Phase 3 - Lade die Änderungen hoch
 			for (var i = 0; i<upl.length; ++i) {
 				$.post({
-					url: "../../../../api/upload/course/" + MarkingTool.Editor.Settings.Get.cid +
+					url: "../../../../../api/upload/course/" + MarkingTool.Editor.Settings.Get.cid +
 						"/exercisesheet/" + MarkingTool.Editor.Settings.Get.sid,
 					cache: false,
 					data: { "tasks[]": upl[i] },
@@ -1879,13 +1879,13 @@ MarkingTool.Editor.Settings = new function() {
 	
 	//private Init()
 	var _init = function() {
-		var query = window.location.search.substring(1);
-		var vars = query.split('&');
-		for (var i = 0; i<vars.length; ++i) {
-			var pair = vars[i].split('=');
-			this.Get[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
-		}
-		console.log("Get Parameter: "+JSON.stringify(this.Get));
+		// var query = window.location.search.substring(1);
+		// var vars = query.split('&');
+		// for (var i = 0; i<vars.length; ++i) {
+			// var pair = vars[i].split('=');
+			// this.Get[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+		// }
+		// console.log("Get Parameter: "+JSON.stringify(this.Get));
 	};
 	//Initialisiert die Einstellungen
 	this.Init = function() {
