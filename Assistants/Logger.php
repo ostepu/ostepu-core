@@ -51,17 +51,33 @@ class Logger
      *
      * @param mixed $message The log message.
      * @param int $logLevel One of the constants defined in the class LogLevel.
+     * @param boolean $trace Enables or disables the trace mechanism (true = enabled, false = disabled).
      * @param string $logFile An alternative location for the log.
+     * @param string $name Sets a custom identifier for this log entry.
+     * @param boolean $timestamp Adds the timestamp to the log message (true = enabled, false = disabled).
+     * @param string $currentLogLevel Sets a custom log level for this call.
      * @return nothing
      */
     public static function Log($message,
                                $logLevel = LogLevel::INFO,
-                               $trace = true,
+                               $trace = NULL,
                                $logFile = NULL,
-                               $name = 'Logger',
-                               $timestamp = true,
+                               $name = NULL,
+                               $timestamp = NULL,
                                $currentLogLevel = null)
     {
+        if ($name === null){
+            $name = 'Logger';
+        }
+        
+        if ($trace === null){
+            $trace = true;
+        }
+        
+        if ($timestamp === null){
+            $timestamp = true;
+        }
+        
         if (!isset($currentLogLevel)){
             $currentLogLevel = self::$defaultLogLevel; //error_reporting();
         }
