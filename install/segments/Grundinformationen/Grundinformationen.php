@@ -46,7 +46,8 @@ class Grundinformationen {
             'urlExtern' => array('data[PL][urlExtern]', 'http://localhost/uebungsplattform'),
             'temp' => array('data[PL][temp]', '/var/www/temp'),
             'files' => array('data[PL][files]', '/var/www/files'),
-            'developmentMode' => array('data[UI][developmentMode]', '0')
+            'developmentMode' => array('data[PL][developmentMode]', '0'),
+            'logLevel' => array('data[PL][logLevel]', strval(LogLevel::ERROR))
         );
     }
 
@@ -73,6 +74,7 @@ class Grundinformationen {
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['PL']['temp'], 'data[PL][temp]', $def['temp'][1], true);
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['PL']['files'], 'data[PL][files]', $def['files'][1], true);
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['PL']['developmentMode'], 'data[PL][developmentMode]', $def['developmentMode'][1], true);
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PL']['logLevel'], 'data[PL][logLevel]', $def['logLevel'][1], true);
         echo $text;
         self::$initialized = true;
         Installation::log(array('text' => Installation::Get('main', 'functionEnd')));
@@ -109,8 +111,9 @@ class Grundinformationen {
                 Installation::log(array('text' => 'data[PL][files]: ' . $data['PL']['files'] . ' existiert nicht.', 'logLevel' => LogLevel::WARNING));
                 $text .= Design::erstelleZeile($console, '', 'e', $data['PL']['files'] . ' existiert nicht.', 'error v');
             }
-            
+
             $text .= Design::erstelleZeile($console, Installation::Get('general_informations', 'developmentMode', self::$langTemplate), 'e', Design::erstelleAuswahl($console, $data['PL']['developmentMode'], 'data[PL][developmentMode]', '1', null, true), 'v_c');
+            $text .= Design::erstelleZeile($console, Installation::Get('general_informations', 'logLevel', self::$langTemplate), 'e', Design::erstelleAuswahlliste($console, array(strval(LogLevel::NONE)=>'NONE', strval(LogLevel::DEBUG)=>'DEBUG', LogLevel::INFO=>'INFO', strval(LogLevel::WARNING)=>'WARNING', strval(LogLevel::ERROR)=>'ERROR'), $data['PL']['logLevel'], 'data[PL][logLevel]', strval(LogLevel::ERROR), true), 'v_c');
         }
 
         echo Design::erstelleBlock($console, Installation::Get('general_informations', 'title', self::$langTemplate), $text);
@@ -123,7 +126,7 @@ class Grundinformationen {
      */
     public static function platformSetting($data) {
         Installation::log(array('text' => Installation::Get('main', 'functionBegin')));
-        $result = array('developmentMode' => $data['PL']['developmentMode']);
+        $result = array('developmentMode' => $data['PL']['developmentMode'], 'logLevel' => $data['PL']['logLevel']);
         Installation::log(array('text' => Installation::Get('main', 'functionEnd')));
         return $result;
     }
@@ -133,7 +136,7 @@ class Grundinformationen {
      */
     public static function getUserInterfaceSettings($data) {
         Installation::log(array('text' => Installation::Get('main', 'functionBegin')));
-        $result = array('developmentMode' => $data['PL']['developmentMode']);
+        $result = array('developmentMode' => $data['PL']['developmentMode'], 'logLevel' => $data['PL']['logLevel']);
         Installation::log(array('text' => Installation::Get('main', 'functionEnd')));
         return $result;
     }

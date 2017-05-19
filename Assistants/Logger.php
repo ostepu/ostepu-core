@@ -31,6 +31,10 @@
  * Logger::Log("test3");
  * @endcode
  */
+ 
+if (file_exists(dirname(__FILE__).'/../UI/include/Config.php')){
+    include_once(dirname(__FILE__).'/../UI/include/Config.php');
+}
 
 /**
  * A Logger Class.
@@ -79,7 +83,11 @@ class Logger
         }
         
         if (!isset($currentLogLevel)){
-            $currentLogLevel = self::$defaultLogLevel; //error_reporting();
+            if (isset($GLOBALS['logLevel'])){
+                $currentLogLevel = intval($GLOBALS['logLevel']);
+            } else {
+                $currentLogLevel = self::$defaultLogLevel;
+            }
         }
         
         // if the function is called with the no prority don't log anything
