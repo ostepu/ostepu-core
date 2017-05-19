@@ -13,4 +13,14 @@
 
 require_once ( dirname( __FILE__ ) . '/DBCourseStatus.php' );
 
+Logger::Log(
+            'begin DBCourseStatus',
+            LogLevel::DEBUG
+            );
+
 new DBCourseStatus();
+
+Logger::Log(
+            'end DBCourseStatus',
+            LogLevel::DEBUG
+            );

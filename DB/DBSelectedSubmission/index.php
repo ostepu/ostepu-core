@@ -13,4 +13,14 @@
 
 require_once ( dirname( __FILE__ ) . '/DBSelectedSubmission.php' );
 
+Logger::Log(
+            'begin DBSelectedSubmission',
+            LogLevel::DEBUG
+            );
+
 new DBSelectedSubmission();
+
+Logger::Log(
+            'end DBSelectedSubmission',
+            LogLevel::DEBUG
+            );

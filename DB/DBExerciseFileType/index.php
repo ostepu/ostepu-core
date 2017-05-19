@@ -13,4 +13,14 @@
 
 require_once ( dirname( __FILE__ ) . '/DBExerciseFileType.php' );
 
+Logger::Log(
+            'begin DBExerciseFileType',
+            LogLevel::DEBUG
+            );
+
 new DBExerciseFileType();
+
+Logger::Log(
+            'end DBExerciseFileType',
+            LogLevel::DEBUG
+            );

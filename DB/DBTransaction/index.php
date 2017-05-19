@@ -13,4 +13,14 @@
 
 require_once ( dirname( __FILE__ ) . '/DBTransaction.php' );
 
+Logger::Log(
+            'begin DBTransaction',
+            LogLevel::DEBUG
+            );
+
  new DBTransaction();
+
+Logger::Log(
+            'end DBTransaction',
+            LogLevel::DEBUG
+            );

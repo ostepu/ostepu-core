@@ -13,4 +13,14 @@
 
 require_once ( dirname( __FILE__ ) . '/DBQuery2.php' );
 
+Logger::Log(
+            'begin DBQuery2',
+            LogLevel::DEBUG
+            );
+
 new DBQuery2();
+
+Logger::Log(
+            'end DBQuery2',
+            LogLevel::DEBUG
+            );

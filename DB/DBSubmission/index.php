@@ -13,4 +13,14 @@
 
 require_once ( dirname( __FILE__ ) . '/DBSubmission.php' );
 
+Logger::Log(
+            'begin DBSubmission',
+            LogLevel::DEBUG
+            );
+
 new DBSubmission();
+
+Logger::Log(
+            'end DBSubmission',
+            LogLevel::DEBUG
+            );

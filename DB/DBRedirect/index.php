@@ -13,4 +13,14 @@
 
 require_once ( dirname( __FILE__ ) . '/DBRedirect.php' );
 
+Logger::Log(
+            'begin DBRedirect',
+            LogLevel::DEBUG
+            );
+            
  new DBRedirect();
+
+Logger::Log(
+            'end DBRedirect',
+            LogLevel::DEBUG
+            );

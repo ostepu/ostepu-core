@@ -13,4 +13,14 @@
 
 require_once ( dirname( __FILE__ ) . '/DBFile.php' );
 
+Logger::Log(
+            'begin DBFile',
+            LogLevel::DEBUG
+            );
+
 new DBFile();
+
+Logger::Log(
+            'end DBFile',
+            LogLevel::DEBUG
+            );
