@@ -17,6 +17,7 @@
 ?>
 
 <?php $langTemplate='TutorAssign_Remove';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+<?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uitutorassign_assignremove_cconfig.json'); ?>
 
 <?php
 if (isset($AssignRemoveNotificationElements)) {
@@ -31,12 +32,14 @@ if (isset($AssignRemoveNotificationElements)) {
     <div class="content-header">
         <?php echo MakeInfoButton('page/admin/tutorAssign','remove.md'); ?>
         <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <?php echo pageLib::getContent('getHeader', $this->content, $pageComponent);?>
         <button class="text-button<?php echo (!isset($_POST['action']) || $_POST['action'] != "AssignRemoveWarning") ? ' right' : '-simple  error-simple' ;?> bold critical-color"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
             <?php echo Language::Get('main','content', $langTemplate); ?>
+            <?php echo pageLib::getContent('getContent', $this->content, $pageComponent);?>
         </div>
     </div> <!-- end: content-body-wrapper -->
 </div> <!-- end: content-element -->

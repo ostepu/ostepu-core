@@ -1,0 +1,12 @@
+{
+  "name":"UITutorAssign_AssignManually",
+  "version":"1.0",
+  "type":"clone",
+  "base":"CAbstract",
+  "baseURI":"/uitutorassign_assignmanually",
+  "option":"confPath=UI/include/TutorAssign/uitutorassign_assignmanually_cconfig.json",
+  "links":[
+    {"name":"getContent","target":"","links":[]},
+    {"name":"getHeader","target":"","links":[]}  
+  ]
+}

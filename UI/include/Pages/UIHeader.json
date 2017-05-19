@@ -1,0 +1,14 @@
+{
+  "name":"UIHeader",
+  "version":"1.0",
+  "type":"clone",
+  "base":"CAbstract",
+  "baseURI":"/uiheader",
+  "option":"confPath=UI/include/Header/uiheader_cconfig.json",
+  "links":[
+    {"name":"getTitleContent","target":"","links":[]},
+    {"name":"getFooterContent","target":"","links":[]},
+    {"name":"getContent","target":"","links":[]},
+    {"name":"getStudentContent","target":"","links":[]}
+  ]
+}

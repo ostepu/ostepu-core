@@ -1,0 +1,13 @@
+{
+  "name":"UIUpload",
+  "version":"1.0",
+  "type":"clone",
+  "base":"CAbstract",
+  "baseURI":"/uiupload",
+  "option":"confPath=UI/include/Upload/uiupload_cconfig.json",
+  "links":[
+    {"name":"getExerciseContent","target":"","links":[]},
+    {"name":"getContent","target":"","links":[]},
+    {"name":"getHeader","target":"","links":[]}
+  ]
+}

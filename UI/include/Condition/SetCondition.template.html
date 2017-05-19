@@ -17,6 +17,7 @@
 ?>
 
 <?php $langTemplate='Condition_SetCondition';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+<?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uicondition_setcondition_cconfig.json'); ?>
 
 <?php
 if (isset($SetConditionNotificationElements)) {
@@ -39,6 +40,7 @@ if (isset($SetConditionNotificationElements)) {
     <div class="content-header">
         <?php echo MakeInfoButton('page/admin/condition','set.md'); ?>
         <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <?php echo pageLib::getContent('getHeader', $this->content, $pageComponent);?>
         <?php if (isset($minimumPercentages[0])) { ?>
         <div class="info-color bold right">
             <button class="text-button info-color bold right"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
@@ -50,6 +52,7 @@ if (isset($SetConditionNotificationElements)) {
         <div class="content-body left">
             <div class="content-description">
                 <?php echo Language::Get('main','description', $langTemplate); ?>
+                <?php echo pageLib::getContent('getContentDescription', $this->content, $pageComponent);?>
             </div>
             <?php 
             if (isset($minimumPercentages[0])) {
@@ -84,6 +87,7 @@ if (isset($SetConditionNotificationElements)) {
                 echo Language::Get('main','noApprovalConditions', $langTemplate);
             }
             ?>
+            <?php echo pageLib::getContent('getContent', $this->content, $pageComponent);?>
         </div>
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->

@@ -1,0 +1,13 @@
+{
+  "name":"UICourseManagement_EditExerciseType",
+  "version":"1.0",
+  "type":"clone",
+  "base":"CAbstract",
+  "baseURI":"/uicoursemanagement_editexercisetype",
+  "option":"confPath=UI/include/CourseManagement/uicoursemanagement_editexercisetype_cconfig.json",
+  "links":[
+    {"name":"getHeader","target":"","links":[]},
+    {"name":"getContentDescription","target":"","links":[]},
+    {"name":"getContent","target":"","links":[]}   
+  ]
+}

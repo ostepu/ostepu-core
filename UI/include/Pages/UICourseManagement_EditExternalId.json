@@ -1,0 +1,13 @@
+{
+  "name":"UICourseManagement_EditExternalId",
+  "version":"1.0",
+  "type":"clone",
+  "base":"CAbstract",
+  "baseURI":"/uicoursemanagement_editexternalid",
+  "option":"confPath=UI/include/CourseManagement/uicoursemanagement_editexternalid_cconfig.json",
+  "links":[
+    {"name":"getHeader","target":"","links":[]},
+    {"name":"getContentDescription","target":"","links":[]},
+    {"name":"getContent","target":"","links":[]}  
+  ]
+}

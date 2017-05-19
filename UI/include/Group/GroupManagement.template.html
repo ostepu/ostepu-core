@@ -19,12 +19,14 @@
 ?>
 
 <?php $langTemplate='Group_GroupManagement';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+<?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uigroup_groupmanagement_cconfig.json'); ?>
 
 <input type="hidden" name="action" value="ManageGroup">
 <div class="content-element">
     <div class="content-header">
         <?php echo MakeInfoButton('page/student/groups','groupManagement.md'); ?>
         <div class="content-title left"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <?php echo pageLib::getContent('getHeader', $this->content, $pageComponent);?>
         <?php if ($isLeader || $privileged): ?>
         <button class="right text-button info-color bold"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
         <?php endif; ?>
@@ -38,6 +40,7 @@
                 <?php else: ?>
                 <?php echo Language::Get('main','memberDescription', $langTemplate); ?>
                 <?php endif; ?>
+                <?php echo pageLib::getContent('getContentDescription', $this->content, $pageComponent);?>
             </div>
             <?php
             /**
@@ -149,6 +152,7 @@
                 }
             } 
             ?>
+            <?php echo pageLib::getContent('getContent', $this->content, $pageComponent);?>
         </div>
     </div> <!-- end: content-body-wrapper -->
 </div> <!-- end: content-element -->

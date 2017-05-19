@@ -19,6 +19,7 @@
 ?>
 
 <?php $langTemplate='Student_Upload';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+<?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uiupload_cconfig.json'); ?>
 
 <form action="Upload.php?cid=<?php echo $cid; ?>&sid=<?php echo $sid; ?>" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="action" value="submit">
@@ -26,6 +27,7 @@
         <div class="content-element">
             <div class="content-header">
                 <div class="content-title left uppercase"><?php echo Language::Get('main','execute', $langTemplate); ?></div>
+                <?php echo pageLib::getContent('getHeader', $this->content, $pageComponent);?>
                 <div class="info-color bold right">
                     <a href="javascript:void(0);"
                        class="add-exercise"
@@ -265,6 +267,8 @@
             $isSubtask = false;
         }
         ?>
+    <?php echo pageLib::getContent('getExerciseContent', array_merge($this->content, array('exercise'=>$exercise)), $pageComponent);?>
     <?php endforeach; ?>
+    <?php echo pageLib::getContent('getContent', $this->content, $pageComponent);?>
 
 </form>

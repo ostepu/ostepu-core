@@ -19,6 +19,7 @@
 ?>
 
 <?php $langTemplate='UploadHistory';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+<?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uiuploadhistory_uploadhistory_cconfig.json'); ?>
 
 <?php
 include_once dirname(__FILE__).'/../../../Assistants/LArraySorter.php';
@@ -97,6 +98,7 @@ if (isset($UploadHistoryNotificationElements)) {
     <div class="content-header">
         <?php echo MakeInfoButton('page/common/uploadHistory','change.md'); ?>
         <div class="content-title left"><?php echo $namesOfExercises[$key];?></div>
+        <?php echo pageLib::getContent('getHeader', $this->content, $pageComponent);?>
     </div>
 
     <div class="content-body-wrapper">
@@ -231,6 +233,7 @@ echo '</span>';
                     echo Language::Get('main','noSubmissions', $langTemplate);
                 }
             ?>
+            <?php echo pageLib::getContent('getContent', $this->content, $pageComponent);?>
         </div>
     </div>
 </div>

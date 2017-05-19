@@ -1,0 +1,14 @@
+{
+  "name":"UIGroup_GroupMembers",
+  "version":"1.0",
+  "type":"clone",
+  "base":"CAbstract",
+  "baseURI":"/uigroup_groupmembers",
+  "option":"confPath=UI/include/Group/uigroup_groupmembers_cconfig.json",
+  "links":[
+    {"name":"getHeader","target":"","links":[]},
+    {"name":"getContentDescription","target":"","links":[]},
+    {"name":"getContent","target":"","links":[]},
+    {"name":"getContentWithoutGroups","target":"","links":[]}   
+  ]
+}

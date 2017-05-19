@@ -1,0 +1,12 @@
+{
+  "name":"UICondition_Summary",
+  "version":"1.0",
+  "type":"clone",
+  "base":"CAbstract",
+  "baseURI":"/uicondition_summary",
+  "option":"confPath=UI/include/Condition/uicondition_summary_cconfig.json",
+  "links":[
+    {"name":"getHeader","target":"","links":[]},
+    {"name":"getContent","target":"","links":[]}    
+  ]
+}

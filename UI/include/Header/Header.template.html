@@ -19,6 +19,7 @@
 ?>
 
 <?php $langTemplate='Header';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+<?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uiheader_cconfig.json'); ?>
 
 <div id="header" class="header" style="">
     <div class="course-info left" style="">
@@ -27,6 +28,7 @@
             <?php /*if (isset($courses[0]['course']['id']) && isset($courses[0]['status']) && count($courses) === 1) {?>
             <span class="tiny">(<?php echo Language::Get('main','id', $langTemplate); ?>: <?php echo $courses[0]['course']['id'];?>)</span>
             <?php }*/ ?>
+            <?php echo pageLib::getContent('getTitleContent', $this->content, $pageComponent);?>
         </div>
         <?php $titleState=0; ?>
         <?php if (isset($backURL) && isset($backTitle) && !is_null($backURL)
@@ -53,12 +55,15 @@
             </a>
             </div>
             <?php } ?>
+            <?php echo pageLib::getContent('getFooterContent', $this->content, $pageComponent);?>
        </div>
 
     </div>
     <div class="course-extra-info left">
         <?php echo isset($extraInfo) ? $extraInfo : NULL; ?>
     </div>
+    
+    <?php echo pageLib::getContent('getContent', $this->content, $pageComponent);?>
     
     <?php if (isset($courses[0]['status']) && (int) $courses[0]['status']===0){
             if (isset($sheets)){
@@ -116,6 +121,7 @@
                 <?php
                 }
             }
+            <?php echo pageLib::getContent('getStudentContent', $this->content, $pageComponent);?>
         }
     ?>
     
