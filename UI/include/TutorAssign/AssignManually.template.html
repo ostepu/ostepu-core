@@ -17,6 +17,7 @@
 ?>
 
 <?php $langTemplate='TutorAssign_Manually';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+<?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uitutorassign_assignmanually_cconfig.json'); ?>
 
 <?php
 if (isset($AssignManuallyNotificationElements)) {
@@ -31,6 +32,7 @@ if (isset($AssignManuallyNotificationElements)) {
     <div class="content-header">
         <?php echo MakeInfoButton('page/admin/tutorAssign','manually.md'); ?>
         <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <?php echo pageLib::getContent('getHeader', $this->content, $pageComponent);?>
         <button name="actionAssignManually" value="" class="text-button right bold info-color"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
     </div>
         
@@ -191,6 +193,7 @@ if (isset($AssignManuallyNotificationElements)) {
     <?php } ?>
     </div>
     
+        <?php echo pageLib::getContent('getContent', $this->content, $pageComponent);?>
     
         </div>  <!--end: content-body -->
     </div>  <!--end: content-body-wrapper -->

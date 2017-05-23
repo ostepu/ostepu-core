@@ -17,6 +17,7 @@
 ?>
 
 <?php $langTemplate='Condition_UserList';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+<?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uicondition_userlist_cconfig.json'); ?>
 
 <?php
 if (isset($UserListNotificationElements)) {
@@ -42,6 +43,7 @@ if (isset($UserListNotificationElements)) {
     <div class="content-header">
         <?php echo MakeInfoButton('page/admin/condition','list.md'); ?>
         <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <?php echo pageLib::getContent('getHeader', $this->content, $pageComponent);?>
         <div class="info-color bold right">
             <a href="<?php echo $fileName; ?>?downloadConditionCsv=<?php echo $user['courses'][0]['course']['id']; ?><?php echo (isset($sortby)?'&sortby='.$sortby:'')?><?php echo (isset($sortId)?'&sortId='.$sortId:'')?>" class="download text-button body-option-color">
                 <?php echo Language::Get('main','createCSV', $langTemplate); ?>
@@ -145,6 +147,8 @@ if (isset($UserListNotificationElements)) {
                     }
                 ?>
             </table>
+            
+            <?php echo pageLib::getContent('getContent', $this->content, $pageComponent);?>
             <?php
                 }
             else {

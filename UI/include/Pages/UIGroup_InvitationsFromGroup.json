@@ -1,0 +1,15 @@
+{
+  "name":"UIGroup_InvitationsFromGroup",
+  "version":"1.0",
+  "type":"clone",
+  "base":"CAbstract",
+  "baseURI":"/uigroup_invitationsfromgroup",
+  "option":"confPath=UI/include/Group/uigroup_invitationsfromgroup_cconfig.json",
+  "links":[
+    {"name":"getHeader","target":"","links":[]},
+    {"name":"getContentDescriptionApplyGroup","target":"","links":[]},
+    {"name":"getContentApplyGroup","target":"","links":[]},
+    {"name":"getContentDescriptionInvitation","target":"","links":[]} ,
+    {"name":"getContentInvitation","target":"","links":[]}
+  ]
+}

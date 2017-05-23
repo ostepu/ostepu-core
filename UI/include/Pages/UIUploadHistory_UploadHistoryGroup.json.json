@@ -1,0 +1,12 @@
+{
+  "name":"UIUploadHistory_UploadHistoryGroup",
+  "version":"1.0",
+  "type":"clone",
+  "base":"CAbstract",
+  "baseURI":"/uiuploadhistory_uploadhistorygroup",
+  "option":"confPath=UI/include/UploadHistory/uiuploadhistory_uploadhistorygroup_cconfig.json",
+  "links":[
+    {"name":"getHeader","target":"","links":[]},
+    {"name":"getContent","target":"","links":[]}
+  ]
+}

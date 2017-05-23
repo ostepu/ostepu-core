@@ -6,6 +6,10 @@
   "baseURI":"/uinavigation",
   "option":"confPath=UI/include/Navigation/uinavigation_cconfig.json",
   "links":[
-    {"name":"getContent","target":"","links":[]}
+    {"name":"getContent","target":"","links":[]},
+    {"name":"getStudentContent","target":"","links":[]},
+    {"name":"getTutorContent","target":"","links":[]},
+    {"name":"getLecturerContent","target":"","links":[]} ,
+    {"name":"getAdminContent","target":"","links":[]}    
   ]
 }

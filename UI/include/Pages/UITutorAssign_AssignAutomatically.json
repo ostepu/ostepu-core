@@ -1,0 +1,13 @@
+{
+  "name":"UITutorAssign_AssignAutomatically",
+  "version":"1.0",
+  "type":"clone",
+  "base":"CAbstract",
+  "baseURI":"/uitutorassign_assignautomatically",
+  "option":"confPath=UI/include/TutorAssign/uitutorassign_assignautomatically_cconfig.json",
+  "links":[
+    {"name":"getHeader","target":"","links":[]},
+    {"name":"getContent","target":"","links":[]},
+    {"name":"getContentWithoutPossibleAssignments","target":"","links":[]}   
+  ]
+}

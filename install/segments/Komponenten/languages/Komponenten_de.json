@@ -29,5 +29,6 @@
     "queryGetCommandsResult": "Result-Commands: $res",
     "queryGetLinksResult": "Result-Links: $res",
     "failure": "Fehler: $message",
-    "failure2": "Fehler: $message $status"
+    "failure2": "Fehler: $message $status",
+    "missingPath": "der Befehl besitzt keine Pfadangabe: $content"
 }}

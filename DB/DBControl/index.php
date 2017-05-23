@@ -13,4 +13,14 @@
 
 require_once ( dirname( __FILE__ ) . '/DBControl.php' );
 
+Logger::Log(
+            'begin DBControl',
+            LogLevel::DEBUG
+            );
+
 new DBControl( );
+
+Logger::Log(
+            'end DBControl',
+            LogLevel::DEBUG
+            );

@@ -1,0 +1,12 @@
+{
+  "name":"UIAccountSettings_AccountInfo",
+  "version":"1.0",
+  "type":"clone",
+  "base":"CAbstract",
+  "baseURI":"/uiaccountsettings_accountinfo",
+  "option":"confPath=UI/include/AccountSettings/uiaccountsettings_accountinfo_cconfig.json",
+  "links":[
+    {"name":"getHeader","target":"","links":[]},
+    {"name":"getContent","target":"","links":[]}  
+  ]
+}

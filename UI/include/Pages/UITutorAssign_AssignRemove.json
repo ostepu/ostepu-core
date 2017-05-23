@@ -1,0 +1,12 @@
+{
+  "name":"UITutorAssign_AssignRemove",
+  "version":"1.0",
+  "type":"clone",
+  "base":"CAbstract",
+  "baseURI":"/uitutorassign_assignremove",
+  "option":"confPath=UI/include/TutorAssign/uitutorassign_assignremove_cconfig.json",
+  "links":[
+    {"name":"getHeader","target":"","links":[]},
+    {"name":"getContent","target":"","links":[]} 
+  ]
+}

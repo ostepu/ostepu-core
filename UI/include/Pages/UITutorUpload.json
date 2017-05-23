@@ -1,0 +1,13 @@
+{
+  "name":"UITutorUpload",
+  "version":"1.0",
+  "type":"clone",
+  "base":"CAbstract",
+  "baseURI":"/uitutorupload",
+  "option":"confPath=UI/include/TutorUpload/uitutorupload_cconfig.json",
+  "links":[
+    {"name":"getHeader","target":"","links":[]},
+    {"name":"getContentDescription","target":"","links":[]},
+    {"name":"getContent","target":"","links":[]}   
+  ]
+}

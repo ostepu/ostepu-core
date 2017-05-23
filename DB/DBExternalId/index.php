@@ -13,4 +13,14 @@
 
 require_once ( dirname( __FILE__ ) . '/DBExternalId.php' );
 
+Logger::Log(
+            'begin DBExternalId',
+            LogLevel::DEBUG
+            );
+
 new DBExternalId();
+
+Logger::Log(
+            'end DBExternalId',
+            LogLevel::DEBUG
+            );

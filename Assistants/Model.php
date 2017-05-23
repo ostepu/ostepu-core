@@ -62,7 +62,8 @@ class Model
                               'addProfileToParameters'=>false,
                               'addProfileToParametersAsPostfix'=>false,
                               'addRequestToParams'=>false,
-                              'defaultParams' => array());
+                              'defaultParams' => array(),
+                              'getContent' => true); // für den Befehl GET /content/path+ aus der CConfig.php
 
     /**
      * Der Konstruktor
@@ -97,10 +98,11 @@ class Model
     public function run()
     {
         // runs the CConfig
-        $com = new CConfig( $this->_prefix, $this->_path, $this->_noInfo, $this->_noHelp, 'de', array('getAndHead'=>true, 'allowOptions'=>true) );
+        $com = new CConfig( $this->_prefix, $this->_path, $this->_noInfo, $this->_noHelp, 'de', array('getContent'=>$this->getOption('getContent'), 'getAndHead'=>true, 'allowOptions'=>true) );
 
         // lädt die Konfiguration des Moduls
         if ($com->used()) {
+            Logger::Log('cconfig was used',LogLevel::INFO);
             return;
         }
         ///var_dump($conf);
@@ -167,7 +169,8 @@ class Model
         $scriptName = $_SERVER['SCRIPT_NAME'];
         $requestUri = $_SERVER['REQUEST_URI'];
         $path = str_replace('?' . (isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : ''), '', substr_replace($requestUri, '', 0, strlen((strpos($requestUri, $scriptName) !== false ? $scriptName : str_replace('\\', '', dirname($scriptName))))));
-
+        Logger::Log(__FILE__.':'.__LINE__.' requested URI: "'.$path.'"',LogLevel::DEBUG);
+        
         // ermittelt den zuständigen Befehl
         $matches = $router->getMatchedRoutes(strtoupper($_SERVER['REQUEST_METHOD']), $path);
 
@@ -180,12 +183,14 @@ class Model
             foreach ($commands as $command){
                 if ($command['name'] === $matches->getName()){
                     $selectedCommand = $command;
+                    Logger::Log(__FILE__.':'.__LINE__.' associated command: "'.json_encode($command).'"',LogLevel::DEBUG);
                     break;
                 }
             }
 
             if ($selectedCommand == null){
                 http_response_code(500);
+                Logger::Log('no possible command: '.json_encode($matches),LogLevel::ERROR);
                 return;
             }
 
@@ -201,6 +206,9 @@ class Model
             // wenn zu diesem Befehl ein inputType angegeben wurde, wird eine Type::decodeType() aufgerufen
             if (isset($selectedCommand['inputType']) && trim($selectedCommand['inputType'])!='' && trim($selectedCommand['inputType'])!='binary'){
                 $inputType = $selectedCommand['inputType'];
+                Logger::Log(__FILE__.':'.__LINE__.' input-type: "'.$inputType.'"',LogLevel::DEBUG);
+
+                Logger::Log(__FILE__.':'.__LINE__.' call_user_func_array: '.$inputType.'::decode',LogLevel::DEBUG);
                 $rawInput = call_user_func_array('\\'.$inputType.'::decode'.$inputType, array($rawInput));
 
                 if ( !is_array( $rawInput ) ){
@@ -208,6 +216,8 @@ class Model
                     $rawInput = array( $rawInput );
                     $arr = false;
                 }
+            } else {
+                Logger::Log(__FILE__.':'.__LINE__.' no input-type',LogLevel::DEBUG);
             }
 
             if (strtoupper($selectedCommand['seqInput']) != 'TRUE') {
@@ -221,43 +231,55 @@ class Model
             foreach ($selectedCommand['placeholder'] as $holder){
                 if (!isset($holder['name'])) {
                     // der Eintrag muss sich auf einen Platzhalter beziehen
+                    Logger::Log('missing name-attribute in placeholder: '.json_encode($holder),LogLevel::ERROR);
                     continue;
                 }
                 if (!isset($holder['regex'])) {
                     // der Eintrag muss einen regulären Ausdruck besitzen, der 
                     // getestet werden kann
+                    Logger::Log('missing regex-attribute in placeholder: '.json_encode($holder),LogLevel::ERROR);
                     continue;
                 }
                 $placeholder[$holder['name']] = $holder['regex'];
             }
 
             // hier werden die eigentlichen Bedingungen der Platzhalter geprüft
+            Logger::Log(__FILE__.':'.__LINE__.' check params >>',LogLevel::DEBUG);
             foreach ($params as $key => $value){
+                Logger::Log(__FILE__.':'.__LINE__.' param: "'.json_encode($value).'"',LogLevel::DEBUG);    
                 if (isset($placeholder[$key])){
+                    Logger::Log(__FILE__.':'.__LINE__.' placeholder definition found: "'.$placeholder[$key].'"',LogLevel::DEBUG);
                     if (is_array($value)){
+                        Logger::Log(__FILE__.':'.__LINE__.' placeholder-array',LogLevel::DEBUG);
+                        
                         // wenn es ein Array ist, wurde ein :Element+ verwendet (Slim)
                         // daher wird der Ausdruck auf jedes Element angewendet
                         foreach($value as $val){
+                            Logger::Log(__FILE__.':'.__LINE__.' validate: "'.$val.'"',LogLevel::DEBUG);
+                            
                             $pregRes = @preg_match($placeholder[$key], $val);
                             if ($pregRes === false){
-                                error_log(__FILE__.':'.__LINE__.' '.$placeholder[$key].' konnte nicht interpretiert werden');
+                                Logger::Log(__FILE__.':'.__LINE__.' "'.$placeholder[$key].'" konnte nicht interpretiert werden'." in \n".strtoupper($_SERVER['REQUEST_METHOD']).' '.$path,LogLevel::ERROR);
                                 $this->finishRequest(self::isError());
                                 return;
                             } else if ($pregRes === 0){
-                                error_log(__FILE__.':'.__LINE__.' '.$val.' passt nicht zu '.$placeholder[$key]);
+                                Logger::Log(__FILE__.':'.__LINE__.' "'.$val.'" passt nicht zu '.$placeholder[$key]." in \n".strtoupper($_SERVER['REQUEST_METHOD']).' '.$path,LogLevel::ERROR);
                                 $this->finishRequest(self::isPreconditionError());
                                 return;
                             }
                         }
                     } else {
+                        Logger::Log(__FILE__.':'.__LINE__.' single-placeholder',LogLevel::DEBUG);
+                        Logger::Log(__FILE__.':'.__LINE__.' validate: "'.$value.'"',LogLevel::DEBUG);
+
                         // einzelnes Element für Slim verwendet :Element
                         $pregRes = @preg_match($placeholder[$key], $value);
                         if ($pregRes === false){
-                            error_log(__FILE__.':'.__LINE__.' '.$placeholder[$key].' konnte nicht interpretiert werden');
+                            Logger::Log(__FILE__.':'.__LINE__.' "'.$placeholder[$key].'" konnte nicht interpretiert werden'." in \n".strtoupper($_SERVER['REQUEST_METHOD']).' '.$path,LogLevel::ERROR);
                             $this->finishRequest(self::isError());
                             return;
                         } else if ($pregRes === 0){
-                            error_log(__FILE__.':'.__LINE__.' '.$value.' passt nicht zu '.$placeholder[$key]);
+                            Logger::Log(__FILE__.':'.__LINE__.' "'.$value.'" passt nicht zu '.$placeholder[$key]." in \n".strtoupper($_SERVER['REQUEST_METHOD']).' '.$path,LogLevel::ERROR);
                             $this->finishRequest(self::isPreconditionError());
                             return;
                         }
@@ -266,9 +288,12 @@ class Model
             }
 
             // der Befehl wurde nun bestimmt, sodass wir jetzt den Rest der Komponente laden koennen
+            Logger::Log(__FILE__.':'.__LINE__.' load component config',LogLevel::DEBUG);
             if ($this->getOption('cloneable') && isset($params['profileName'])){
                 $conf = $com->loadConfig( $params['profileName'] );
+                Logger::Log(__FILE__.':'.__LINE__.' load: "'.$params['profileName'].'"',LogLevel::DEBUG);
             } else {
+                Logger::Log(__FILE__.':'.__LINE__.' load: default',LogLevel::DEBUG);
                 $conf = $com->loadConfig( );
             }
             $this->_conf=$conf;
@@ -280,15 +305,17 @@ class Model
                 $params['request'] = array('method'=>$matches->getHttpMethods()[0],
                                            'pattern'=>$matches->getPattern(),
                                            'headers'=>\Slim\Http\Headers::extract($_SERVER)); // TODO: hier fehlen noch die richtigen Header
+                Logger::Log(__FILE__.':'.__LINE__.' addRequestToParams-option: "'.json_encode($params['request']).'"',LogLevel::DEBUG);
             }
             
-            if ($this->getOption('cloneable')){
+            if ($this->getOption('cloneable')){                
                 // fügt profileName der Komponente den Ausfuehrungsparametern hinzu
                 if (isset($params['profileName'])){
                     $params['profile'] = $params['profileName'];
                 } else {
                     $params['profile'] = '';                       
                 }
+                Logger::Log(__FILE__.':'.__LINE__.' cloneable-option: "'.json_encode($params['profile']).'"',LogLevel::DEBUG);
             }
             
             if ($this->getOption('addOptionsToParametersAsPostfix')){
@@ -301,6 +328,7 @@ class Model
                     }
                 }
                 unset($options);
+                Logger::Log(__FILE__.':'.__LINE__.' addOptionsToParametersAsPostfix-option',LogLevel::DEBUG);
             }
             
             if ($this->getOption('addOptionsToParameters')){
@@ -310,6 +338,7 @@ class Model
                     $params = array_merge($options, $params);
                 }
                 unset($options);
+                Logger::Log(__FILE__.':'.__LINE__.' addOptionsToParameters-option',LogLevel::DEBUG);
             }
             
             if ($this->getOption('addProfileToParametersAsPostfix')){
@@ -317,6 +346,7 @@ class Model
                     // fügt profileName der Komponente den Ausfuehrungsparametern hinzu
                     Model::generatePostfix(array('profileName'=>'profile'), $params);
                 }
+                Logger::Log(__FILE__.':'.__LINE__.' addProfileToParametersAsPostfix-option',LogLevel::DEBUG);
             }
 
             // nun soll die zugehörige Funktion im Modul aufgerufen werden
@@ -330,6 +360,7 @@ class Model
                         foreach($rawInput as $input){
 
                             // Aufruf der Modulfunktion
+                            Logger::Log(__FILE__.':'.__LINE__.' call: '.json_encode($matches->getCallable()),LogLevel::DEBUG);
                             $res = call_user_func_array($matches->getCallable(), array($selectedCommand['name'],"input"=>$input,$params));
 
                             // wenn es ein Ausgabeobjekt gibt, wird versucht dort einen Status zu setzen
@@ -345,7 +376,7 @@ class Model
                         }
                     } catch(Exception $e) {
                         header_remove();
-                        error_log($e->getMessage());
+                        Logger::Log($e->getMessage(),LogLevel::ERROR);
                         $this->finishRequest(self::isError());
                         return;
                     }
@@ -353,6 +384,7 @@ class Model
                 } else {
                     try {
                         // Aufruf der Modulfunktion
+                        Logger::Log(__FILE__.':'.__LINE__.' call: '.json_encode($matches->getCallable()),LogLevel::DEBUG);
                         $res = call_user_func_array($matches->getCallable(), array($selectedCommand['name'],"input"=>$rawInput,$params));
 
                         // wenn es ein Ausgabeobjekt gibt, wird versucht dort einen Status zu setzen
@@ -367,7 +399,7 @@ class Model
                         }
                     } catch(Exception $e) {
                         header_remove();
-                        error_log($e->getMessage());
+                        Logger::Log($e->getMessage(),LogLevel::ERROR);
                         $this->finishRequest(self::isError());
                         return;
                     }
@@ -375,6 +407,7 @@ class Model
 
             } else {
                 // wenn keinen vorgegebenen Eingabetyp gibt, wird die Eingabe direkt an die Modulfunktion weitergegeben
+                Logger::Log(__FILE__.':'.__LINE__.' call: '.json_encode($matches->getCallable()),LogLevel::DEBUG);
                 $result = call_user_func_array($matches->getCallable(), array($selectedCommand['name'],"input"=>$rawInput,$params));
             }
             
@@ -401,7 +434,8 @@ class Model
                     } elseif ( !$arr && count( $result['content'] ) == 1 ){
                         $result['content'] = $result['content'][0];
                     }
-
+                    
+                    Logger::Log(__FILE__.':'.__LINE__.' result conversion with: '.$outputType.'::encode',LogLevel::DEBUG);
                     $result['content'] = call_user_func_array('\\'.$outputType.'::encode'.$outputType, array($result['content']));
                 }
                 header('Content-Type: application/json');
@@ -416,6 +450,7 @@ class Model
             }
         } else {
             // es wurde kein zutreffender Befehl gefunden, also gibt es eine leere Antwort
+            Logger::Log('i can\'t handle the request:'.strtoupper($_SERVER['REQUEST_METHOD']).' '.$path,LogLevel::ERROR);
             $this->finishRequest(self::isError());
             return;
         }
@@ -1010,6 +1045,28 @@ class Model
             return self::createAnswer(401,$content);
         }
         return self::createAnswer(401,$params);
+    }
+
+    /**
+     * Liefert eine Rückgabe (ein Problem ist aufgetreten)
+     *
+     * @param int $status Der Status
+     * @param string $content Der optionale Inhalt
+     * @return array('status'=>..,'content'=>..) Die Antwort
+     */
+    public static function isTemporarilyMoved($content=null)
+    {
+        if (func_num_args()>1){
+            return self::isTemporarilyMovedAnswer(func_get_arg(0),func_get_arg(1));
+        }
+        return self::createAnswer(301,$content);
+    }
+    private static function isTemporarilyMovedAnswer($input, $params)
+    {
+        if ($params===null){
+            return self::createAnswer(301,$content);
+        }
+        return self::createAnswer(301,$params);
     }
 
     public static function header($name, $value)

@@ -388,7 +388,7 @@ class Design {
         $result = Design::erstelleVersteckteEingabezeile($console, $empty, $variablenName, $default, false);
         $result .= "<select style='' id='{$variablenName}' name='{$variablenName}'>";
         foreach($list as $key => $value){
-            $result .= "<option value ='{$key}'". (($variable == $key && $variable != null) ? "selected='selected'" : ($default === null ? '' : ($default === $key ? "selected='selected'" : '')) ).">{$value}</option>";
+            $result .= "<option value ='{$key}'". (($variable == $key && $variable !== null) ? "selected='selected'" : ($default === null ? '' : ($default === $key ? "selected='selected'" : '')) ).">{$value}</option>";
         }
 		$result .= "</select>";
         return $result;

@@ -13,4 +13,14 @@
 
 require_once ( dirname( __FILE__ ) . '/DBAttachment2.php' );
 
+Logger::Log(
+            'begin DBAttachment2',
+            LogLevel::DEBUG
+            );
+
  new DBAttachment2();
+
+Logger::Log(
+            'end DBAttachment2',
+            LogLevel::DEBUG
+            );

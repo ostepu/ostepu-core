@@ -13,4 +13,14 @@
 
 require_once ( dirname( __FILE__ ) . '/CControl.php' );
 
+Logger::Log(
+            'begin CControl',
+            LogLevel::DEBUG
+            );
+
 new CControl();
+
+Logger::Log(
+            'end CControl',
+            LogLevel::DEBUG
+            );

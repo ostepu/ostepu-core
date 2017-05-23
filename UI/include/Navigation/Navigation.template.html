@@ -17,7 +17,7 @@
 ?>
 
 <?php $langTemplate='Navigation';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
-<?php $confFile=dirname(__FILE__).'/uinavigation_cconfig.json'; ?>
+<?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uinavigation_cconfig.json'); ?>
 
 <input type="hidden" name="action" value="navigation">
 
@@ -91,7 +91,24 @@
     <?php } ?>
 
     <?php // gibt den Inhalt des getContent-Eingangs aus
-        echo pageLib::getContent('getContent', $this->content, $confFile); ?>
+        echo pageLib::getContent('getContent', $this->content, $pageComponent); ?>
+        
+    <?php
+        // es soll für alle Nutzertypen einen eigenen Einstiegspunkt geben
+        if ($courseStatus == 0){
+            // Studenten
+            echo pageLib::getContent('getStudentContent', $this->content, $pageComponent);
+        } elseif ($courseStatus == 1){
+            // Tutoren
+            echo pageLib::getContent('getTutorContent', $this->content, $pageComponent);        
+        } elseif ($courseStatus == 2){
+            // Dozenten
+            echo pageLib::getContent('getLecturerContent', $this->content, $pageComponent);        
+        } elseif ($courseStatus == 3){
+            // Admins
+            echo pageLib::getContent('getAdminContent', $this->content, $pageComponent);        
+        }
+    ?>
                         
     <?php if (count($links)>0){
         echo '<span class="new-line left">';

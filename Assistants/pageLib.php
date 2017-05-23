@@ -5,16 +5,24 @@ include_once ( dirname(__FILE__) . '/Model.php' );
 
 class pageLib
 {
-    public static function getContent($linkName, &$model, $confFile){
+    public static function loadConf($confFile)
+    {
         // wenn die Konfigurationsdatei nicht existiert, dann können wir hier aufhören
         if (!file_exists($confFile)){
-            return '';
+            return null;
         }
-
+        
         // hier wird die Komponente initialisiert
         $component = new Model('', dirname($confFile), null);   
         $component->_conf=CConfig::loadStaticConfig('','',dirname($confFile),basename($confFile));
         $component->_com=new CConfig('');
+        return $component;
+    }
+    
+    public static function getContent($linkName, &$model, $component, $placeholder=array()){
+        if ($component=== null){
+            return '';
+        }
 
         // nun sollen die weiteren Inhalte gesammelt werden
         $res = array();
@@ -32,12 +40,12 @@ class pageLib
             // -> ignorieren
             Logger::Log( 
                 'error on calling link: '.$linkName,
-                LogLevel::ERROR
+                LogLevel::WARNING
                         );
         };
 
         // ruft alle Views auf
-        $component->callAll('getContent', array(), json_encode($model), 200, $positive2, array('res'=>&$res, 'model'=>&$model), $negative2, array('model'=>&$model, 'linkName'=>$linkName));
+        $component->callAll($linkName, $placeholder, json_encode($model), 200, $positive2, array('res'=>&$res, 'model'=>&$model), $negative2, array('model'=>&$model, 'linkName'=>$linkName));
 
         // das Ergebnis der Aufrufe wird nun zu einem String zusammengefasst
         return implode('',$res);

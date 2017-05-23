@@ -1,0 +1,67 @@
+[
+    {
+        "name": "getButton",
+        "outputType": "binary",
+        "inputType": "",
+        "method": "GET",
+        "path": "/view/button/entry/course/:cid/sheet/:sid"
+    },
+    {
+        "name": "getMarkingTool2Page",
+        "outputType": "binary",
+        "inputType": "",
+        "method": "GET",
+        "placeholder": [{
+            "name": "cid",
+            "regex": "%^([0-9_]+)$%"
+        },
+        {
+            "name": "sid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/page/markingtool2/course/:cid/exercisesheet/:sid"
+    },
+    {
+        "name": "getPing",
+        "outputType": "binary",
+        "inputType": "",
+        "method": "GET",
+        "path": "/api/ping"
+    },
+    {
+        "name": "getTest",
+        "outputType": "binary",
+        "inputType": "",
+        "method": "GET",
+        "path": "/api/test"
+    },
+    {
+        "name": "postUpload",
+        "outputType": "binary",
+        "inputType": "",
+        "method": "POST",
+        "placeholder": [{
+            "name": "cid",
+            "regex": "%^([0-9_]+)$%"
+        },
+        {
+            "name": "sid",
+            "regex": "%^([0-9_]+)$%"
+        }],
+        "path": "/api/upload/course/:cid/exercisesheet/:sid"
+    },
+    {
+        "name": "getUnknownMode",
+        "outputType": "binary",
+        "inputType": "",
+        "method": "GET",
+        "path": "/api/:mode"
+    },
+    {
+        "name": "getUnknownApiCall",
+        "outputType": "binary",
+        "inputType": "",
+        "method": "GET,POST,DELETE,PUT",
+        "path": "/:path+"
+    }
+]

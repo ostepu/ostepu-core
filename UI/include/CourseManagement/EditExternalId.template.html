@@ -13,6 +13,7 @@
 ?>
 
 <?php $langTemplate='CourseManagement_EditExternalId';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+<?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uicoursemanagement_editexternalid_cconfig.json'); ?>
 
 <?php
 if (isset($EditExternalIdNotificationElements)) {
@@ -27,6 +28,7 @@ if (isset($EditExternalIdNotificationElements)) {
     <div class="content-header">
         <?php echo MakeInfoButton('page/admin/courseManagement','editExternalId.md'); ?>
         <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <?php echo pageLib::getContent('getHeader', $this->content, $pageComponent);?>
         <button class="text-button info-color bold right"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
     </div>
 
@@ -34,6 +36,7 @@ if (isset($EditExternalIdNotificationElements)) {
         <div class="content-body left">
             <div class="content-description">
                 <?php echo Language::Get('main','description', $langTemplate); ?>
+                <?php echo pageLib::getContent('getContentDescription', $this->content, $pageComponent);?>
             </div>
             <?php if (isset($externalId)) { 
             if (count($externalId)>0){
@@ -54,6 +57,7 @@ if (isset($EditExternalIdNotificationElements)) {
             echo "</td><td width='*'>{$extern['id']}</td></tr>";            
             } ?>
             </table>
+            <?php echo pageLib::getContent('getContent', $this->content, $pageComponent);?>
             <?php 
             } else {
                 echo Language::Get('main','noData', $langTemplate);

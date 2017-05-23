@@ -19,6 +19,7 @@
 ?>
 
 <?php $langTemplate='CourseManagement_GrantRights';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+<?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uicoursemanagement_grantrights_cconfig.json'); ?>
 
 <?php
 if (isset($GrantRightsNotificationElements)) {
@@ -33,12 +34,14 @@ if (isset($GrantRightsNotificationElements)) {
     <div class="content-header">
         <?php echo MakeInfoButton('page/admin/courseManagement','grantRights.md'); ?>
         <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+                <?php echo pageLib::getContent('getHeader', $this->content, $pageComponent);?>
         <button class="text-button info-color bold right"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
     </div>
     <div class="content-body-wrapper">
         <div class="content-body left">
             <div class="content-description">
                 <?php echo Language::Get('main','description', $langTemplate); ?>
+                <?php echo pageLib::getContent('getContentDescription', $this->content, $pageComponent);?>
             </div>
             <label class="form-field left label bold" for="lecturerRightsPerson"><?php echo Language::Get('main','selectUser', $langTemplate); ?>:</label>
             <div class="left" name="GrantRightsSortUsers" id="GrantRightsSortUsers" >
@@ -154,6 +157,7 @@ if (isset($GrantRightsNotificationElements)) {
                 <input type="radio" name="Rights" id="grantAdminRights" value="3"/>
                 <label for="grantAdminRights"> <?php echo Language::Get('main','administrator', $langTemplate); ?></label>
             </div>
+            <?php echo pageLib::getContent('getContent', $this->content, $pageComponent);?>
         </div>
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->

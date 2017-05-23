@@ -13,4 +13,14 @@
 
 require_once ( dirname( __FILE__ ) . '/DBExercise.php' );
 
+Logger::Log(
+            'begin DBExercise',
+            LogLevel::DEBUG
+            );
+
 new DBExercise();
+
+Logger::Log(
+            'end DBExercise',
+            LogLevel::DEBUG
+            );

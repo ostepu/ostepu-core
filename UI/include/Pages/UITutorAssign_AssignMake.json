@@ -1,0 +1,12 @@
+{
+  "name":"UITutorAssign_AssignMake",
+  "version":"1.0",
+  "type":"clone",
+  "base":"CAbstract",
+  "baseURI":"/uitutorassign_assignmake",
+  "option":"confPath=UI/include/TutorAssign/uitutorassign_assignmake_cconfig.json",
+  "links":[
+    {"name":"getHeader","target":"","links":[]},
+    {"name":"getContent","target":"","links":[]}   
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name":"UICourseManagement_GrantRights",
+  "version":"1.0",
+  "type":"clone",
+  "base":"CAbstract",
+  "baseURI":"/uicoursemanagement_grantrights",
+  "option":"confPath=UI/include/CourseManagement/uicoursemanagement_grantrights_cconfig.json",
+  "links":[
+    {"name":"getHeader","target":"","links":[]},
+    {"name":"getContentDescription","target":"","links":[]},
+    {"name":"getContent","target":"","links":[]}    
+  ]
+}

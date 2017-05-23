@@ -12,6 +12,7 @@
     {    "method":"GET", "path":"/markingtool/user/:userid/course/:courseid/exercisesheet/:sheetid/tutor/:tutorid" },
     {    "method":"GET", "path":"/markingtool/user/:userid/course/:courseid/exercisesheet/:sheetid/status/:statusid" },
     {    "method":"GET", "path":"/markingtool/user/:userid/course/:courseid/exercisesheet/:sheetid/tutor/:tutorid/status/:statusid" },
+	{    "method":"GET", "path":"/markingtool/course/:courseid/sheet/:sheetid(/)" },
     {    "method":"GET", "path":"/uploadhistory/user/:userid/course/:courseid/exercisesheet/:sheetid/uploaduser/:uploaduserid" },
     {    "method":"GET", "path":"/uploadhistoryoptions/user/:userid/course/:courseid" },
     {    "method":"GET", "path":"/tutor/user/:userid/course/:courseid" },

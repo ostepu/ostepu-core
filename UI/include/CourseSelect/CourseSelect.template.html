@@ -19,11 +19,13 @@
 ?>
 
 <?php $langTemplate='CourseSelect';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+<?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uicourseselect_cconfig.json'); ?>
 
 <div class="content-element">
     <div class="content-header">
         <?php echo MakeInfoButton('page/common/courseSelect','courseSelect.md'); ?>
         <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <?php echo pageLib::getContent('getHeader', $this->content, $pageComponent);?>
     </div>
 
     <div class="content-body-wrapper">
@@ -64,10 +66,12 @@
                 }
             ?>
                 </span>
+                <?php echo pageLib::getContent('getContent', $this->content, $pageComponent);?>
             <?php
             }
             else {
                 print Language::Get('main','noData', $langTemplate);
+                <?php echo pageLib::getContent('getContentWithoutCourses', $this->content, $pageComponent);?>
             }
             ?>
         </div>

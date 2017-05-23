@@ -1,0 +1,47 @@
+{
+    "name": "UIMarkingTool2",
+    "version": "1.0",
+    "classFile": "MarkingTool2.php",
+    "className": "UIMarkingTool2",
+    "links": [        
+        {
+            "name": "getMarkingToolData",
+            "target": "LGetSite",
+            "links": [{
+                "method": "GET",
+                "path": "/markingtool/course/:cid/sheet/:sid"
+            }]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        },
+        {
+            "name": "getSheetNavigation",
+            "target": "UIExerciseSheetLecturer",
+            "links": [
+                {"path": "/view/button/entry/course/:cid/sheet/:sid", "priority": "150"}
+            ]
+        },
+        {
+            "name": "getSheetNavigation",
+            "target": "UIExerciseSheetTutor",
+            "links": [
+                {"path": "/view/button/entry/course/:cid/sheet/:sid", "priority": "150"}
+            ]
+        },
+        {
+            "name": "getContent",
+            "target": "CContent",
+            "links": [
+                {"path": "/content/markingtool2/css/MarkingTool2.css"},
+                {"path": "/content/markingtool2/img/computer-icon.png"},
+                {"path": "/content/markingtool2/img/ok-icon.png"},
+                {"path": "/content/markingtool2/img/server-icon.png"},
+                {"path": "/content/markingtool2/js/marking_tool2_editor.js"}
+            ]
+        }
+    ]
+}

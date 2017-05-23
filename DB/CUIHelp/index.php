@@ -13,4 +13,14 @@
 
 require_once ( dirname( __FILE__ ) . '/CUIHelp.php' );
 
+Logger::Log(
+            'begin CUIHelp',
+            LogLevel::DEBUG
+            );
+
 new CUIHelp();
+
+Logger::Log(
+            'end CUIHelp',
+            LogLevel::DEBUG
+            );

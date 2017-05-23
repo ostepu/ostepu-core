@@ -1,0 +1,12 @@
+{
+  "name":"UICondition_UserList",
+  "version":"1.0",
+  "type":"clone",
+  "base":"CAbstract",
+  "baseURI":"/uicondition_userlist",
+  "option":"confPath=UI/include/Condition/uicondition_userlist_cconfig.json",
+  "links":[
+    {"name":"getHeader","target":"","links":[]},
+    {"name":"getContent","target":"","links":[]}  
+  ]
+}

@@ -198,11 +198,11 @@ if (isset($GroupNotificationElements)) {
                                         print '" title="';
                                         print $displayName;
                                         print '" class="plain" target="_blank">';
-                                        print '<img src="Images/Download.png" />';
+                                        print '<img src="'.generateCommonFileUrl('img/Download.png').'" />';
                                         print '</a>';
                                     } elseif (!isset($exercise['submission']['file'])){
                                         print '<span class ="">';
-                                        print '<img src="Images/Error.png" title="'.Language::Get('main','invalidSubmission', $langTemplate).'"/>';
+                                        print '<img src="'.generateCommonFileUrl('img/Error.png').'" title="'.Language::Get('main','invalidSubmission', $langTemplate).'"/>';
                                         print '</span>';
                                     }
                                 }
@@ -223,7 +223,7 @@ if (isset($GroupNotificationElements)) {
                                         print '" title="';
                                         print $displayName;
                                         print '" class="plain" target="_blank">';
-                                        print '<img src="Images/DownloadCorrection.png" />';
+                                        print '<img src="'.generateCommonFileUrl('img/DownloadCorrection.png').'" />';
                                         print '</a>';
                                         print '</span>';
                                     }

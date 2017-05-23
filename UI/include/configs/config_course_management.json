@@ -3,24 +3,24 @@
     "content":"text/html",
     "charset":"utf-8",
     "stylesheets":[
-        "css/CSSReset.css",
-        "css/Main.css",
-        "css/Exercises.css",
-        "css/Header.css",
-        "css/Forms.css",
-        "css/Navigation.css",
-        "css/Navigation.css.php",
-        "css/Notifications.css",
-        "css/bootstrap-datetimepicker.css"
+        "UI/CContent/content/common/css/CSSReset.css",
+        "UI/CContent/content/common/css/Main.css",
+        "UI/CContent/content/common/css/Exercises.css",
+        "UI/CContent/content/common/css/Header.css",
+        "UI/CContent/content/common/css/Forms.css",
+        "UI/CContent/content/common/css/Navigation.css",
+        "UI/CContent/content/common/css/Navigation.css.php",
+        "UI/CContent/content/common/css/Notifications.css",
+        "UI/CContent/content/common/css/bootstrap-datetimepicker.css"
     ],
     "javascripts":[
-        "javascript/retina.js",
-        "javascript/jquery-2.0.3.min.js",
-        "javascript/bootstrap.min.js",
-        "javascript/bootstrap-datetimepicker.min.js",
-        "javascript/interactive.js",
-        "javascript/course_management.js",
-        "javascript/course_management_notifications.js",
-        "javascript/course_management_redirects.js"
+        "UI/CContent/content/common/js/retina.js",
+        "UI/CContent/content/common/js/jquery-2.0.3.min.js",
+        "UI/CContent/content/common/js/bootstrap.min.js",
+        "UI/CContent/content/common/js/bootstrap-datetimepicker.min.js",
+        "UI/CContent/content/common/js/interactive.js",
+        "UI/CContent/content/common/js/course_management.js",
+        "UI/CContent/content/common/js/course_management_notifications.js",
+        "UI/CContent/content/common/js/course_management_redirects.js"
     ]
 }

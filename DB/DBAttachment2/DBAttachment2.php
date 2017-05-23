@@ -477,7 +477,7 @@ class DBAttachment2
 
         Logger::Log(
                     'GET ' . $functionName . ' failed',
-                    LogLevel::ERROR
+                    LogLevel::WARNING
                     );
 
         $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );

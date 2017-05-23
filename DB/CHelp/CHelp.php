@@ -97,7 +97,7 @@ class CHelp
         
         $cachePath = dirname(__FILE__).'/cache/'.implode('/',$params['path']).$cacheExtension;
         //Überprüft ob die Daten schon im Cache existieren und maximal 1 Woche (604800 Sekunden) alt sind.
-        if (file_exists($cachePath) && filemtime($cachePath) >= time() - 604800){
+        if ((!isset($this->config['SETTINGS']['developmentMode']) || $this->config['SETTINGS']['developmentMode'] !== '1') && file_exists($cachePath) && filemtime($cachePath) >= time() - 604800){
             Model::header('Content-Length',filesize($cachePath));
             return Model::isOk(file_get_contents($cachePath));
         }
@@ -120,7 +120,7 @@ class CHelp
                     $contact = '<a href="'.$contact.'">Kontakt</a>';
                 }
                 
-                $input = '<html><head></head><body><link rel="stylesheet" href="'.$this->config['MAIN']['externalUrl'].'/UI/css/github-markdown.css" type="text/css"><span class="markdown-body">'.$my_html.$contact.'</span></body></html>';
+                $input = '<html><head></head><body><link rel="stylesheet" href="'.$this->config['MAIN']['externalUrl'].'/UI/CContent/content/common/css/github-markdown.css" type="text/css"><span class="markdown-body">'.$my_html.$contact.'</span></body></html>';
             }
             
             
@@ -137,7 +137,7 @@ class CHelp
             $parser = new \Michelf\MarkdownExtra;
             $input = $this->umlaute($input);
             $my_html = $parser->transform($input);
-            $input = '<html><head></head><body><link rel="stylesheet" href="'.$this->config['MAIN']['externalUrl'].'/UI/css/github-markdown.css" type="text/css"><span class="markdown-body">'.$my_html.'</span></body></html>';
+            $input = '<html><head></head><body><link rel="stylesheet" href="'.$this->config['MAIN']['externalUrl'].'/UI/CContent/content/common/css/github-markdown.css" type="text/css"><span class="markdown-body">'.$my_html.'</span></body></html>';
 
             Model::header('Content-Length',strlen($input));
             return Model::isOk($input);
@@ -179,6 +179,11 @@ class CHelp
         if (isset($settings->contactUrl)){
             $text .= "[HELP]\n";
             $text .= "contactUrl = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$settings->contactUrl))."\"\n";
+        }
+        
+        if (isset($settings->developmentMode)){
+            $text .= "[SETTINGS]\n";
+            $text .= "developmentMode = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$settings->developmentMode))."\"\n";
         }
                 
         if (!@file_put_contents($file,$text)){

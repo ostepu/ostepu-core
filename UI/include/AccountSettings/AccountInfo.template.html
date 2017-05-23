@@ -19,6 +19,7 @@
 ?>
 
 <?php $langTemplate='AccountSettings_AccountInfo';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+<?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uiaccountsettings_accountinfo_cconfig.json'); ?>
 
 <input type="hidden" name="action" value="SetAccountInfo">
 
@@ -26,6 +27,7 @@
     <div class="content-header">
         <?php echo MakeInfoButton('page/common/accountSettings','user.md'); ?>
         <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <?php echo pageLib::getContent('getHeader', $this->content, $pageComponent);?>
         <div class="info-color bold right">
             <button class="text-button info-color bold right"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
         </div>
@@ -75,6 +77,7 @@
                 ?>
             </select>
             </div>
+            <?php echo pageLib::getContent('getContent', $this->content, $pageComponent);?>
         </div>
     </div> <!-- end: content-body-wrapper -->
 </div> <!-- end: content-element -->

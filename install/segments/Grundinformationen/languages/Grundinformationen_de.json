@@ -6,6 +6,8 @@
     "urlExtern": "externe URL",
     "temp": "temporäres Verzeichnis",
     "files": "Dateiverzeichnis",
+    "developmentMode": "Entwicklermodus</br>(deaktiviert Cache-Mechanismen)",
+    "logLevel": "LogLevel",
     "description": "Geben Sie jene URL in das Eingabefeld ein, unter welcher die Plattform lokal zu erreichen ist. Dieser Pfad wird von den Komponenten zum Aufruf untereinander verwendet.",
     "barResult": "Resultat = $res"
 }}

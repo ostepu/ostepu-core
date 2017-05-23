@@ -13,4 +13,14 @@
 
 require_once ( dirname( __FILE__ ) . '/DBNotification.php' );
 
+Logger::Log(
+            'begin DBNotification',
+            LogLevel::DEBUG
+            );
+
  new DBNotification();
+
+Logger::Log(
+            'end DBNotification',
+            LogLevel::DEBUG
+            );

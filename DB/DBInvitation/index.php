@@ -13,4 +13,14 @@
 
 require_once ( dirname( __FILE__ ) . '/DBInvitation.php' );
 
+Logger::Log(
+            'begin DBInvitation',
+            LogLevel::DEBUG
+            );
+
 new DBInvitation();
+
+Logger::Log(
+            'end DBInvitation',
+            LogLevel::DEBUG
+            );

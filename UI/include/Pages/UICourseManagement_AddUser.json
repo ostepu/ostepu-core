@@ -1,0 +1,13 @@
+{
+  "name":"UICourseManagement_AddUser",
+  "version":"1.0",
+  "type":"clone",
+  "base":"CAbstract",
+  "baseURI":"/uicoursemanagement_adduser",
+  "option":"confPath=UI/include/CourseManagement/uicoursemanagement_adduser_cconfig.json",
+  "links":[
+    {"name":"getHeader","target":"","links":[]},
+    {"name":"getContentDescription","target":"","links":[]},
+    {"name":"getContent","target":"","links":[]}  
+  ]
+}

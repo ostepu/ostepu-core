@@ -15,6 +15,7 @@
 ?>
 
 <?php $langTemplate='TutorUpload';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+<?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uitutorupload_cconfig.json'); ?>
 
 <form action="TutorUpload.php?cid=<?php echo $cid; ?>" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="action" value="TutorUpload">
@@ -24,6 +25,7 @@
             <div class="content-title left uppercase">
                 <?php echo Language::Get('main','title', $langTemplate); ?>
             </div>
+            <?php echo pageLib::getContent('getHeader', $this->content, $pageComponent);?>
             <button class="text-button info-color bold right">
                 <?php echo Language::Get('main','execute', $langTemplate); ?>
             </button>
@@ -32,11 +34,13 @@
             <div class="content-body left">
                 <div class="content-description">
                     <?php echo Language::Get('main','description', $langTemplate); ?>
+                    <?php echo pageLib::getContent('getContentDescription', $this->content, $pageComponent);?>
                 </div>
                 <label class="short left label bold new-line">
                     <?php echo Language::Get('main','zipFilter', $langTemplate); ?> (*.zip):
                 </label>
                 <input type="file" class="button left" name="MarkingFile">
+                <?php echo pageLib::getContent('getContent', $this->content, $pageComponent);?>
             </div>
         </div>
     </div>

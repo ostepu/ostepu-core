@@ -40,7 +40,7 @@ foreach($files as $key => $file){
         <td></td>
         <td style="padding-right: 10px; min-width:160px; padding:4px;" class="input-parameter-choice">
             <a href="javascript:void(0);" name="deleteCol" class="plain deleteCol" style="width:17px; height:17px; float:right;">                                      
-                <img src="Images/Delete.png" style="width:17px; height:17px;">
+                <img src="<?php echo generateCommonFileUrl('img/Delete.png');?>" style="width:17px; height:17px;">
                 <?php if (isset($sheetFile)){ ?><span class="right warning-simple"></span><?php } ?>
             </a>
             <div style="min-width:140px; margin-right:20px;">
@@ -66,7 +66,7 @@ foreach($files as $key => $file){
         
         <td style="padding-right: 10px; min-width:160px; padding:4px;" class="input-parameter-choice">
             <a href="javascript:void(0);" name="deleteCol" class="plain deleteCol" style="width:17px; height:17px; float:right;">                                      
-                <img src="Images/Delete.png" style="width:17px; height:17px;">
+                <img src="<?php echo generateCommonFileUrl('img/Delete.png');?>" style="width:17px; height:17px;">
                 <?php if (isset($sheetFile)){ ?><span class="right warning-simple"></span><?php } ?>
             </a>
             <div style="min-width:140px; margin-right:20px;">
@@ -93,7 +93,7 @@ foreach($files as $key => $file){
     <?php if (!isset($testcases)) { ?>
     <tr>
         <td style="vertical-align: middle; padding: 0;"><a href="javascript:void(0);" name="deleteRow" class="plain deleteRow" style="width:17px; height:17px; float:right;">                                      
-                <img src="Images/Delete.png" style="width:17px; height:17px;">
+                <img src="<?php echo generateCommonFileUrl('img/Delete.png');?>" style="width:17px; height:17px;">
             </a>
         </td>
         <td style="padding-right: 10px; min-width:160px; padding:4px;  border-width: 1px 0px 1px 0px; border-style: solid none solid none;" class="input-parameter">
@@ -107,7 +107,7 @@ foreach($files as $key => $file){
         foreach($testcases as $key => $testcase){?>
         <tr>
             <td style="vertical-align: middle; padding: 0;"><a href="javascript:void(0);" name="deleteRow" class="plain deleteRow" style="width:17px; height:17px; float:right;">                                      
-                <img src="Images/Delete.png" style="width:17px; height:17px;">
+                <img src="<?php echo generateCommonFileUrl('img/Delete.png');?>" style="width:17px; height:17px;">
                 </a>
             </td>
         <?php

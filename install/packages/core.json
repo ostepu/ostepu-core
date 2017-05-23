@@ -69,6 +69,26 @@
                 "path": "FS/FSPdf/tcpdf/"
             }
         },
+        {
+            "path": "UI/CContent/phpwee/",
+            "type": "git",
+            "params": {
+                "name": "phpwee",
+                "branch": "master",
+                "URL": "https://github.com/ostepu/phpwee-php-minifier",
+                "path": "UI/CContent/phpwee/"
+            }
+        },
+        {
+            "path": "Assistants/vendor/mimey/",
+            "type": "git",
+            "params": {
+                "name": "mimey",
+                "branch": "master",
+                "URL": "https://github.com/ralouphie/mimey",
+                "path": "Assistants/vendor/mimey/"
+            }
+        },
         {"path": "DB/.htaccess"},
         {"path": "FS/.htaccess"},
         {"path": "logic/Include/"},
@@ -142,6 +162,43 @@
         {"conf": "DB/DBQuery2/DBQuerySetup.json"},
         {"conf": "DB/DBQuery2/Component.json"},
         {"conf": "Assistants/Request.json"},
-        {"conf": "UI/include/Pages/UINavigation.json"}
+        {"conf": "UI/include/Pages/UINavigation.json"},
+        {"conf": "UI/include/Pages/UIExerciseSheetTutor.json"},
+        {"conf": "UI/include/Pages/UIExerciseSheetLecturer.json"},
+        {"conf": "UI/include/Pages/UIExerciseSheetStudent.json"},
+        {"conf": "UI/include/Pages/UIAccountSettings_ChangePassword.json"},
+        {"conf": "UI/include/Pages/UIAccountSettings_AccountInfo.json"},
+        {"conf": "UI/include/Pages/UICondition_SetCondition.json"},
+        {"conf": "UI/include/Pages/UICondition_Summary.json"},
+        {"conf": "UI/include/Pages/UICondition_UserList.json"},
+        {"conf": "UI/include/Pages/UICourseManagement_EditExerciseType.json"},
+        {"conf": "UI/include/Pages/UICourseManagement_EditExternalId.json"},
+        {"conf": "UI/include/Pages/UICourseManagement_GrantRights.json"},
+        {"conf": "UI/include/Pages/UICourseManagement_Plugins.json"},
+        {"conf": "UI/include/Pages/UICourseManagement_RevokeRights.json"},
+        {"conf": "UI/include/Pages/UICourseManagement_AddExerciseType.json"},
+        {"conf": "UI/include/Pages/UICourseManagement_AddExternalId.json"},
+        {"conf": "UI/include/Pages/UICourseManagement_AddUser.json"},
+        {"conf": "UI/include/Pages/UICourseManagement_CourseNotifications.json"},
+        {"conf": "UI/include/Pages/UICourseManagement_CourseRedirects.json"},
+        {"conf": "UI/include/Pages/UICourseManagement_CourseSettings.json"},
+        {"conf": "UI/include/Pages/UICourseSelect.json"},
+        {"conf": "UI/include/Pages/UIGroup_GroupMembers.json"},
+        {"conf": "UI/include/Pages/UIGroup_GroupManagement.json"},
+        {"conf": "UI/include/Pages/UIGroup_InvitationsFromGroup.json"},
+        {"conf": "UI/include/Pages/UIGroup_InvitationsToGroup.json"},
+        {"conf": "UI/include/Pages/UIUploadHistory_UploadHistorySettings.json"},
+        {"conf": "UI/include/Pages/UITutorAssign_AssignManually.json"},
+        {"conf": "UI/include/Pages/UITutorAssign_AssignMake.json"},
+        {"conf": "UI/include/Pages/UITutorAssign_AssignRemove.json"},
+        {"conf": "UI/include/Pages/UITutorAssign_AssignAutomatically.json"},
+        {"conf": "UI/include/Pages/UIUploadHistory_UploadHistory.json"},
+        {"conf": "UI/include/Pages/UITutorUpload.json"},
+        {"conf": "UI/include/Pages/UIUpload.json"},
+        {"conf": "UI/include/Pages/UIUploadHistory_UploadHistoryGroup.json.json"},
+        {"conf": "UI/include/Pages/UIHeader.json"},
+        {"conf": "UI/include/Pages/UIUserNavigation.json"},
+        {"conf": "UI/CContent/Component.json"},
+        {"conf": "UI/MarkingTool2/Component.json"}
     ]
 }

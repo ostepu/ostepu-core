@@ -14,4 +14,14 @@
 require_once ( dirname( __FILE__ ) . '/DBCourse.php' );
 include_once ( '../../Assistants/CConfig.php' );
 
+Logger::Log(
+            'begin DBCourse',
+            LogLevel::DEBUG
+            );
+
 new DBCourse();
+
+Logger::Log(
+            'end DBCourse',
+            LogLevel::DEBUG
+            );

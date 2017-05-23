@@ -1,0 +1,12 @@
+{
+  "name":"UIExerciseSheetTutor",
+  "version":"1.0",
+  "type":"clone",
+  "base":"CAbstract",
+  "baseURI":"/uiexercisesheettutor",
+  "option":"confPath=UI/include/ExerciseSheet/uiexercisesheettutor_cconfig.json",
+  "links":[
+    {"name":"getTop","target":"","links":[]},
+    {"name":"getSheetNavigation","target":"","links":[]}
+  ]
+}

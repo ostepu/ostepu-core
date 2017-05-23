@@ -61,10 +61,10 @@
                         <?php } ?>
                         <div class="exercise-sheet-images">
                             <a href="<?php echo $fileURL; ?>" title="<?php echo $file['displayName']; ?>" class="plain" target="_blank">
-                                <img src="Images/Download.png" />
+                                <img src="<?php echo generateCommonFileUrl('img/Download.png');?>" />
                             </a>
                             <a href="javascript:void(0);" title="<?php echo Language::Get('main','removeFile', $langTemplate); ?>" name="deleteAttachmentFile'" class="plain deleteFile">     
-                                <img src="Images/Delete.png">
+                                <img src="img/Delete.png">
                                 <?php if (isset($file)){ ?><span class="right warning-simple"></span><?php } ?>
                             </a>
                         </div>

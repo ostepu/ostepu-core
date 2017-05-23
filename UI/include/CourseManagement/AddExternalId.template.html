@@ -13,6 +13,7 @@
 ?>
 
 <?php $langTemplate='CourseManagement_AddExternalId';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+<?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uicoursemanagement_addexternalid_cconfig.json'); ?>
 
 <?php
 if (isset($AddExternalIdNotificationElements)) {
@@ -27,6 +28,7 @@ if (isset($AddExternalIdNotificationElements)) {
     <div class="content-header">
         <?php echo MakeInfoButton('page/admin/courseManagement','addExternalId.md'); ?>
         <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <?php echo pageLib::getContent('getHeader', $this->content, $pageComponent);?>
         <button class="text-button info-color bold right"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
     </div>
 
@@ -34,6 +36,7 @@ if (isset($AddExternalIdNotificationElements)) {
         <div class="content-body left">
             <div class="content-description">
                 <?php echo Language::Get('main','description', $langTemplate); ?>
+                <?php echo pageLib::getContent('getContentDescription', $this->content, $pageComponent);?>
             </div>
  
             <div class="form-field left label bold new-line"><?php echo Language::Get('main','alias', $langTemplate); ?>:
@@ -58,6 +61,7 @@ if (isset($AddExternalIdNotificationElements)) {
                 </div>
                 
             </div>
+            <?php echo pageLib::getContent('getContent', $this->content, $pageComponent);?>
         </div>
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->

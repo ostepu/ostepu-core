@@ -1,0 +1,12 @@
+{
+  "name":"UIUserNavigation",
+  "version":"1.0",
+  "type":"clone",
+  "base":"CAbstract",
+  "baseURI":"/uiusernavigation",
+  "option":"confPath=UI/include/Navigation/uiusernavigation_cconfig.json",
+  "links":[
+    {"name":"getContent","target":"","links":[]},
+    {"name":"getPrivilegedContent","target":"","links":[]} 
+  ]
+}

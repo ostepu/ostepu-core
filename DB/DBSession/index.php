@@ -13,4 +13,14 @@
 
 require_once ( dirname( __FILE__ ) . '/DBSession.php' );
 
+Logger::Log(
+            'begin DBSession',
+            LogLevel::DEBUG
+            );
+
 new DBSession();
+
+Logger::Log(
+            'end DBSession',
+            LogLevel::DEBUG
+            );
