@@ -18,6 +18,7 @@
  */
 ?>
 
+<?php include_once dirname(__FILE__) . '/../../../Assistants/pageLib.php'; ?>
 <?php $langTemplate='Header';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 <?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uiheader_cconfig.json'); ?>
 
@@ -121,7 +122,7 @@
                 <?php
                 }
             }
-            <?php echo pageLib::getContent('getStudentContent', $this->content, $pageComponent);?>
+            echo pageLib::getContent('getStudentContent', $this->content, $pageComponent);
         }
     ?>
     

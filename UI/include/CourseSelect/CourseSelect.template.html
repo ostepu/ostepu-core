@@ -71,7 +71,7 @@
             }
             else {
                 print Language::Get('main','noData', $langTemplate);
-                <?php echo pageLib::getContent('getContentWithoutCourses', $this->content, $pageComponent);?>
+                echo pageLib::getContent('getContentWithoutCourses', $this->content, $pageComponent);
             }
             ?>
         </div>
