@@ -9,6 +9,13 @@
     "javascripts":[
         "UI/CContent/content/common/js/jquery.js",
 		"UI/CContent/content/common/js/jquery-ui.min.js",
+		"UI/CContent/content/markingtool2/js/helper_events.js",
+		"UI/CContent/content/markingtool2/js/helper_queue.js",
+		"UI/CContent/content/markingtool2/js/helper_html.js",
+		"UI/CContent/content/markingtool2/js/helper_updateindicator.js",
+		"UI/CContent/content/markingtool2/js/helper_updateproperty.js",
+		"UI/CContent/content/markingtool2/js/helper_updateobect.js",
+		"UI/CContent/content/markingtool2/js/helper_updatefactory.js",
 		"UI/CContent/content/markingtool2/js/marking_tool2_editor.js"
     ]
 }
