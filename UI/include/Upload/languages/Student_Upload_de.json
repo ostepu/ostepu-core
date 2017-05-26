@@ -1,7 +1,7 @@
 {
     "main": {
         "execute": "alle absenden",
-        "notSubmittable": "Es ist keine Einsendung möglich"
+        "notSubmittable": "Sie können hier nichts einsenden!"
     },
     "submission": {
         "execute": "alle absenden",
