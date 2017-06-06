@@ -66,7 +66,7 @@ MarkingTool.Editor.View = new function() {
 							document.location.reload();
 						}),
 						hc.CreateButton("Speichern", function() {
-							MarkingTool.Editor.Logic.CheckForUploadableTasks();
+							MarkingTool.Editor.Logic.CheckForUploadableTasks(true);
 						}, {
 							children: [
 								counter = hc.CreateElement("div", "0", {css:["ui-change-counter"]})
@@ -732,7 +732,8 @@ MarkingTool.Editor.View = new function() {
 			var content = [];
 			var setted;
 			var createFork = function(param, createView) {
-				var fork = createForkInfo(createView(task.task[param+"_old"]), 
+				var fork = createForkInfo(
+					createView(task.task[param+"_old"]), 
 					createView(task.newData[param]),
 					createView(task.task[param+"_new"]), 
 					function(state) {
@@ -1363,14 +1364,14 @@ MarkingTool.Editor.Logic = new function() {
 		else $(".warning.many-items").addClass("ui-hide");
 	};
 	//Überprüft ob Tasks nun hochgeladen werden können und führt diesen Upload durch.
-	this.CheckForUploadableTasks = function() {
+	this.CheckForUploadableTasks = function(force) {
 		checking++;
 		if (checking == 1) {
 			//Phase 1 - Suche nach Uploadbarem und packe es zusammen
 			var list = [];
 			var time = Date.now() - MarkingTool.Editor.Settings.IntervallTime * 60000;
 			for (var i = 0; i<Helper.UpdateFactory.UpdateList.length; ++i)
-				if (Helper.UpdateFactory.UpdateList[i].changeTime >= time) {
+				if (force || Helper.UpdateFactory.UpdateList[i].changeTime <= time) {
 					var task = Helper.UpdateFactory.UpdateList[i];
 					var changeObj = { 
 						data: {
@@ -1452,18 +1453,64 @@ MarkingTool.Editor.Logic = new function() {
 							frame.appendTo($(document.body));
 						}
 						else {
+							var full = false;
+							var info = MarkingTool.Editor.View.createForkInfo(data.smalStates, function() {
+								full = true;
+							});
+							var btn = info.find(".ui-fork-button.large");
+							var serv = btn.filter(".server");
+							var locl = btn.filter(".local");
 							var frame = Helper.HTML.CreateWindow(
 								"Es existiert ein neuerer Zustand auf dem Server", "large", [
 									Helper.HTML.CreateElementRaw({
 										//content: JSON.stringify(data.smalStates)
 										content: [Helper.HTML.CreateButtonFrame([
-											Helper.HTML.CreateButton("Alles vom Server auswählen"),
-											Helper.HTML.CreateButton("Alles eigene auswählen"),
-											Helper.HTML.CreateButton("Änderungen übernehmen")
-										], [
-											MarkingTool.Editor.View.createForkInfo(data.smalStates, function() {
+											Helper.HTML.CreateButton("Alles vom Server auswählen", function() {
+												serv.click();
+											}),
+											Helper.HTML.CreateButton("Alles eigene auswählen", function() {
+												locl.click();
+											}),
+											Helper.HTML.CreateButton("Änderungen übernehmen", function() {
+												if (!full) {
+													alert("Bitte wählen Sie überall aus, was übernommen werden soll!");
+													return;
+												}
+												else {
+													var tasks = data.smalStates;
+													for (var i = 0; i<tasks.length; ++i) {
+														var use = tasks[i].use;
+														console.log(tasks[i]);
+														var task;
+														for (var n = 0; n<bName.length; ++n)
+															if (bName[n].user[0].id == tasks[i].task.leaderId) {
+																for (var t = 0; t<bName[n].tasks.length; ++t)
+																	if (bName[n].tasks[t].task.id == tasks[i].task.exerciseId) {
+																		task = bName[n].tasks[t].task;
+																		break;
+																	}
+																break;
+															}
+														console.log(task);
+														if (task == undefined) continue;
+														var props = task.getPropertys();
+														for (var p in tasks[i].use)
+															if (tasks[i].use.hasOwnProperty(p)) {
+																if (tasks[i].use[p]) {
+																	props[p].setDefaultValue(tasks[i].newData[p]);
+																}
+																else {
+																	props[p].setDefaultValue(tasks[i].newData[p]);
+																	props[p].changeValue(tasks[i].newData[p]);
+																}
+															}
+														task.changeTime = 0;
+													}
+													frame.remove();
+													MarkingTool.Editor.Logic.CheckForUploadableTasks(false);
+												}
 											})
-										]										
+										], [ info ]										
 										)]
 									})
 								], function() {
@@ -1487,7 +1534,7 @@ MarkingTool.Editor.Logic = new function() {
 		Helper.UpdateFactory.AddedEvent.add(updAddHandler);
 		Helper.UpdateFactory.RemovedEvent.add(updRemoveHandler);
 		var loop = function() {
-			thisref.CheckForUploadableTasks();
+			thisref.CheckForUploadableTasks(false);
 			setTimeout(loop, 60000); //1 Minute
 		};
 		setTimeout(loop, 60000);
