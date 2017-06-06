@@ -7,9 +7,91 @@
 		"optionBtn": "Optionen"
 	},
 	"filter": {
-		"filterHeader": "Filter"
+		"filterHeader": "Filter",
+		"warningHeader": "Warnung",
+		"devModeWarning": "Dieser Bestandteil der Plattform befindet sich noch im aktiven Entwicklungsstadium, weshalb einige Dinge unter Umständen noch nicht funktionieren oder sich in Zukunft sehr stark verändern werden.<br/>Probleme und Anmerkungen hier melden: <a href=\"http://www3.informatik.uni-halle.de/mantis/\"target=\"_blank\">Mantis</a>",
+		"largeSeries": "Da diese Serie sehr groß ist, kann es zu Verzögerungen in der Verarbeitung kommen.",
+		"seriesSetting": "Serie:",
+		"lectureSetting": "Kontrolleur:",
+		"stateSetting": "Status:",
+		"withoutSubmissionSetting": "Ohne Einsendung",
+		"wosCheckbox": "Einträge ohne Einsendungen anzeigen",
+		"sortHeader": "Sortierung",
+		"sortSetting": "Sortiere nach:",
+		"sortForName": "Nach Namen",
+		"sortForTask": "Nach Aufgaben",
+		"searchHeader": "Suche:"
 	},
 	"changes": {
-		"changeHeader": "Änderungen"
+		"changeHeader": "Änderungen",
+		"submissionAcceptedNow": "Einsendung wird nun akzeptiert",
+		"submissionNotAcceptedNow": "Einsendung wird nicht mehr akzeptiert",
+		"newState": "Neuer Status: ",
+		"voidState": "-",
+		"newComment": "Neue Bemerkung",
+		"newSubmission": "Neue Einsendung: ",
+		"newCorrectedFile": "Neue Korrektur: ",
+		"resetChanges": "Alle Werte aus diesem Eintrag zurücksetzen"
+	},
+	"task": {
+		"submissionId": "Einsendungs-ID",
+		"emptyInput": "leer",
+		"bonusPoints": "Bonus",
+		"bonusPointsShort": "(B)",
+		"points": "Punkte",
+		"pointsHeader": "Punkte:",
+		"stateHeader": "Status:",
+		"accepted": "Akzeptiert",
+		"notAccepted": "nicht Akzeptiert",
+		"acceptedHeader": "Akzeptiert:",
+		"acceptSubmission": "Diese Einsendung akzeptieren",
+		"commentHeader": "Bemerkung:",
+		"studentHeader": "Student:",
+		"lectureHeader": "Kontrolleur:",
+		"filesHeader": "Dateien:",
+		"studentShort": "S",
+		"lectureShort": "K",
+		"studentComment": "Studentenkommentar",
+		"studentCommentHeader": "Studentenkommentar:",
+		"lectureComment": "Kontrolleurkommentar",
+		"lectureCommentHeader": "Kontrolleurkommentar:",
+		"studentSubmission": "Studenteneinsendung",
+		"lectureSubmission": "Kontrolleureinsendung",
+		"noComment": "kein Kommentar",
+		"noSubmissionExists": "Keine Einsendung vorhanden",
+		"openFile": "Öffnen",
+		"task": "Aufgabe",
+		"noElementsToShow": "Keine Elemente zur Anzeige vorhanden",
+		"detailView": "detailierte Ansicht"
+	},
+	"fork": {
+		"currentServerState": "Der aktuelle Zustand auf dem Server",
+		"stateToSave": "Der zu speichernde Zustand",
+		"oldState": "Der ursprüngliche Zustand",
+		"stateUnknown": "Status: unbekannt",
+		"newStateOnServer": "Es existiert ein neuerer Zustand auf dem Server",
+		"selectServer": "Alles vom Server auswählen",
+		"selectLocal": "Alles eigene auswählen",
+		"takeChanges": "Änderungen übernehmen",
+		"someLeftMsg": "Bitte wählen Sie überall aus, was übernommen werden soll!"
+	},
+	"settings": {
+		"saveHeader": "Speichern",
+		"saveIntervallDesc": "Intervall nach dem automatisch gespeichert wird (in Minuten):",
+		"missingValue": "Wert!!!"
+	},
+	"error": {
+		"errorHeader": "Fehler: ",
+		"hint": "Hinweis: ",
+		"courseId": "Kurs-ID: ",
+		"seriesId": "Serien-ID: ",
+		"report": "Bitte melden Sie diesen Fehler auf <a href=\"http://www3.informatik.uni-halle.de/mantis/\" target=\"_blank\">Mantis</a>.",
+		"duringSubmission": "Fehler in der Übertragung"
+	},
+	"localisation": {
+		"nameListSeperator": ", "
+	},
+	"<--IGNORE-->": {
+		"files": "only marking tool js"
 	}
 }

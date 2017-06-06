@@ -94,51 +94,48 @@ MarkingTool.Editor.View = new function() {
 			hc.CreateElementRaw({
 				css: ["warning", "devmode"],
 				children: [
-					hc.CreateElement("div", "Warnung", {css: ["warning-header"]}),
-					hc.CreateElement("div", "Dieser Bestandteil der Plattform befindet sich noch im aktiven Entwicklungsstadium, "+
-					"weshalb einige Dinge unter Umständen noch nicht funktionieren oder sich in Zukunft sehr stark "+
-					"verändern werden.<br/>Probleme und Anmerkungen hier melden: <a href=\"http://www3.informatik.uni-halle.de/mantis/\""+
-					" target=\"_blank\">Mantis</a>")
+					hc.CreateElement("div", Lang("filter","warningHeader"), {css: ["warning-header"]}),
+					hc.CreateElement("div", Lang("filter","devModeWarning"))
 				] 
 			}),
 			hc.CreateElementRaw({
 				css: ["warning", "many-items", "ui-hide"],
 				children: [
 					hc.CreateElement("div", "Warnung", {css: ["warning-header"]}),
-					hc.CreateElement("div", "Da diese Serie sehr groß ist, kann es zu Verzögerungen in der Verarbeitung kommen.")
+					hc.CreateElement("div", Lang("filter","largeSeries"))
 				] 
 			}),
-			hc.CreateFoldingGroup("Filter", [
-				hc.CreateElement("div", "Serie:", { css: ["ui-filter-title"] }),
+			hc.CreateFoldingGroup(Lang("filter","filterHeader"), [
+				hc.CreateElement("div", Lang("filter","seriesSetting"), { css: ["ui-filter-title"] }),
 				hc.CreateSelect(MarkingTool.Editor.View.SheetCodes, undefined, undefined, { css: ["ui-select"] }),
-				hc.CreateElement("div", "Kontrolleur:", { css: ["ui-filter-title"] }),
+				hc.CreateElement("div", Lang("filter","lectureSetting"), { css: ["ui-filter-title"] }),
 				hc.CreateSelect(MarkingTool.Editor.View.TutorCodes, undefined, function() {
 					MarkingTool.Editor.Logic.Filter.lecture = $(this).val();
 					MarkingTool.Editor.Logic.ApplyFilter();
 				}, { css: ["ui-select"] }),
-				hc.CreateElement("div", "Status:", { css: ["ui-filter-title"] }),
+				hc.CreateElement("div", Lang("filter","stateSetting"), { css: ["ui-filter-title"] }),
 				hc.CreateSelect(MarkingTool.Editor.View.StateCodes, undefined, function() {
 					MarkingTool.Editor.Logic.Filter.state = $(this).val();
 					MarkingTool.Editor.Logic.ApplyFilter();
 				}, { css: ["ui-select"] }),
 				MarkingTool.Editor.Settings.RestrictedMode ? null :
-					hc.CreateElement("div", "Ohne Einsendung", { css: ["ui-filter-title"] }),
+					hc.CreateElement("div", Lang("filter","withoutSubmissionSetting"), { css: ["ui-filter-title"] }),
 				MarkingTool.Editor.Settings.RestrictedMode ? null :
 					hc.CreateInput("checkbox", function() {
 						MarkingTool.Editor.Logic.Filter.showTaskWithoutUserFiles = $(this).is(":checked");
 						MarkingTool.Editor.Logic.ApplyFilter();
 					}),
 				MarkingTool.Editor.Settings.RestrictedMode ? null :
-					hc.CreateElement("label", "Einträge ohne Einsendungen anzeigen", {
+					hc.CreateElement("label", Lang("filter","wosCheckbox"), {
 						style: "font-size: 0.8em"
 					})
 			], { css: ["ui-open"] }),
 			MarkingTool.Editor.Settings.RestrictedMode ? null :
-				hc.CreateFoldingGroup("Sortierung", [
-					hc.CreateElement("div", "Sortiere nach:", { css: ["ui-filter-title"] }),
+				hc.CreateFoldingGroup(Lang("filter","sortHeader"), [
+					hc.CreateElement("div", Lang("filter","sortSetting"), { css: ["ui-filter-title"] }),
 					hc.CreateSelect({
-						"name": "Nach Namen",
-						"task": "Nach Aufgaben"
+						"name": Lang("filter","sortForName"),
+						"task": Lang("filter","sortForTask")
 					}, "name", function() {
 						var useTaskNum = $(this).val() == "task";
 						Helper.UpdateIndicator.ShowBox();
@@ -150,7 +147,7 @@ MarkingTool.Editor.View = new function() {
 						Helper.UpdateIndicator.HideBox();
 					}, { css: ["ui-select"] })
 				], { css: ["ui-open"] }),
-			hc.CreateFoldingGroup("Suche", [
+			hc.CreateFoldingGroup(Lang("filter","searchHeader"), [
 				hc.CreateInput("text", function() {
 					MarkingTool.Editor.Logic.Filter.text = $(this).val();
 					MarkingTool.Editor.Logic.ApplyFilter();
@@ -209,7 +206,7 @@ MarkingTool.Editor.View = new function() {
 				hc.CreateElementRaw({
 					css: ["ui-layout-left", "ui-layout-dock", "ui-open"],
 					children: [
-						createLayoutWindow("Filter", createFilterBox(), 0)
+						createLayoutWindow(Lang("filter","filterHeader"), createFilterBox(), 0)
 					]
 				}),
 				createWrapper(hc.CreateElementRaw({
@@ -219,7 +216,7 @@ MarkingTool.Editor.View = new function() {
 				hc.CreateElementRaw({
 					css: ["ui-layout-right", "ui-layout-dock", "ui-open"],
 					children: [
-						createLayoutWindow("Änderungen", [], 1)
+						createLayoutWindow(Lang("changes","changeHeader"), [], 1)
 					]
 				})
 			]
@@ -236,7 +233,7 @@ MarkingTool.Editor.View = new function() {
 			css: ["ui-task-bar"],
 			children: [
 				(useTaskNum ? hc.CreateElement("div", task.path[1], { css: ["ui-task-num"] }) :
-					hc.CreateElement("div", "#"+task.markingId, { css: ["ui-task-sub"], title: "Einsendungs-ID" })),
+					hc.CreateElement("div", "#"+task.markingId, { css: ["ui-task-sub"], title: Lang("task","submissionId") })),
 				hc.CreateElementRaw({
 					children: [
 						inpPoints = hc.CreateInput("text", function(){
@@ -253,10 +250,15 @@ MarkingTool.Editor.View = new function() {
 						}, {
 							css: ["ui-task-points small"], 
 							value: String(task.points == undefined ? "": task.points).replace(/\./g, ","), 
-							placeholder: "leer" 
+							placeholder: Lang("task","emptyInput")
 						} ),
-						hc.CreateElement("span", "/" + task.maxPoints + (task.isBonus ? "<span title=\"Bonus\"> (B)</span>" : ""), {
-							title: "Punkte"
+						hc.CreateElement("span", "/" + task.maxPoints +
+							(task.isBonus ? "<span title="+
+							Lang("task","bonusPoints")+"> "+
+							Lang("task","bonusPointsShort")+
+							"</span>" : ""
+						), {
+							title: Lang("task","points")
 						})
 					]
 				}),
@@ -277,37 +279,37 @@ MarkingTool.Editor.View = new function() {
 					hc.CreateSimpleImage("../../../../../../CContent/content/common/img/Error.png", 
 						task.studentComment == null || task.studentComment == "" ? 
 						{ css: [ "ui-show" ] } : undefined),
-					hc.CreateElement("div", "S"),
+					hc.CreateElement("div", Lang("task", "studentShort")),
 					undefined,
-					{ title: "Studentenkommentar" }
+					{ title: Lang("task","studentComment") }
 				),
 				hc.CreateComplexButton(
 					hc.CreateSimpleImage("../../../../../../CContent/content/common/img/Text.png"),
 					hc.CreateSimpleImage("../../../../../../CContent/content/common/img/Error.png", 
 						task.tutorComment == null || task.tutorComment == "" ? 
 						{ css: [ "ui-show" ] } : undefined),
-					hc.CreateElement("div", "K"),
+					hc.CreateElement("div", Lang("task", "lectureShort")),
 					undefined,
-					{ title: "Kontrolleurkommentar" }
+					{ title: Lang("task","lectureComment") }
 				),
 				hc.CreateComplexButton(
 					hc.CreateSimpleImage("../../../../../../CContent/content/common/img/Download.png"),
 					hc.CreateSimpleImage("../../../../../../CContent/content/common/img/Error.png", 
 						task.userFile == null ? { css: [ "ui-show" ] } : undefined),
-					hc.CreateElement("div", "S"),
+					hc.CreateElement("div", Lang("task", "studentShort")),
 					undefined,
-					{ title: "Studenteneinsendung" }
+					{ title: Lang("task","studentSubmission") }
 				),
 				hc.CreateComplexButton(
 					hc.CreateSimpleImage("../../../../../../CContent/content/common/img/Download.png"),
 					hc.CreateSimpleImage("../../../../../../CContent/content/common/img/Error.png", 
 						task.tutorFile == null ? { css: [ "ui-show" ] } : undefined),
-					hc.CreateElement("div", "K"),
+					hc.CreateElement("div", Lang("task", "lectureShort")),
 					undefined,
-					{ title: "Kontrolleureinsendung" }
+					{ title: Lang("task","lectureSubmission") }
 				),
 				!useTaskNum ? null :
-					hc.CreateElement("div", "#"+task.markingId, { css: ["ui-task-sub"], title: "Einsendungs-ID" })
+					hc.CreateElement("div", "#"+task.markingId, { css: ["ui-task-sub"], title: Lang("task","submissionId") })
 			]
 		});
 		task.UpdatedEvent.add(function() {
@@ -325,13 +327,13 @@ MarkingTool.Editor.View = new function() {
 		var hc = Helper.HTML;
 		var content;
 		var header;
-		if (isTaskNum) header = hc.CreateElement("div", "Aufgabe "+key);
+		if (isTaskNum) header = hc.CreateElement("div", Lang("task","task")+" "+key);
 		else {
 			var user = MarkingTool.Editor.Logic.bName[key].user;
 			var names = [];
 			for (var i = 0; i<user.length; ++i)
 				names.push(user[i].name);
-			header = hc.CreateElement("div", names.join(", "));
+			header = hc.CreateElement("div", names.join(Lang("localisation","nameListSeperator")));
 		}
 		var box = hc.CreateElementRaw({
 			css: ["ui-task-big-box"],
@@ -351,7 +353,7 @@ MarkingTool.Editor.View = new function() {
 		var hc = Helper.HTML;
 		var box = hc.CreateElementRaw({
 			css: show ? ["ui-task-big-box", "empty"] : ["ui-task-big-box", "empty", "ui-hide"],
-			content: "Keine Elemente zur Anzeige vorhanden"
+			content: Lang("task","noElementsToShow")
 		});
 		return box;
 	};
@@ -405,7 +407,7 @@ MarkingTool.Editor.View = new function() {
 			hc.CreateElementRaw({
 				css: ["ui-task-points"],
 				children: [
-					hc.CreateElement("div", "Punkte:"),
+					hc.CreateElement("div", Lang("task","pointsHeader")),
 					createWrapper(slider = hc.CreateTrackBar(task.points == null ? 0 : task.points, 
 						task.maxPoints, function(value) {
 							task.changeState_detailContent++;
@@ -433,10 +435,10 @@ MarkingTool.Editor.View = new function() {
 								task.changeState_detailContent--;
 							}, {
 								value: String(task.points == null ? "" : task.points).replace(/\./g, ","),
-								placeholder: "leer"
+								placeholder: Lang("task","emptyInput")
 							}),
 							hc.CreateElement("span", "/" + task.maxPoints + (task.isBonus ? "<span title=\"Bonus\"> (B)</span>" : ""), {
-								title: "Punkte"
+								title: Lang("task","points")
 							})
 						]
 					})
@@ -445,7 +447,7 @@ MarkingTool.Editor.View = new function() {
 			//Statusauswahl
 			hc.CreateElementRaw({
 				children: [
-					hc.CreateElement("div", "Status:"),
+					hc.CreateElement("div", Lang("task","stateHeader")),
 					createWrapper(stategroup = hc.CreateElementRaw({
 						children: states,
 						element: "fieldset"
@@ -455,7 +457,7 @@ MarkingTool.Editor.View = new function() {
 			//Akzeptiert
 			hc.CreateElementRaw({
 				children: [
-					hc.CreateElement("div", "Akzeptiert:"),
+					hc.CreateElement("div", Lang("task","acceptedHeader")),
 					hc.CreateElementRaw({
 						children: [
 							acceptedInput = hc.CreateInput("checkbox", function(){
@@ -465,7 +467,7 @@ MarkingTool.Editor.View = new function() {
 								}
 								task.changeState_detailContent--;
 							}, task.accepted ? { checked: "checked" } : {}),
-							hc.CreateElement("label", "Diese Einsendung akzeptieren", {
+							hc.CreateElement("label", Lang("task","acceptSubmission"), {
 								style: "font-size: 0.9em"
 							})
 						]
@@ -476,12 +478,12 @@ MarkingTool.Editor.View = new function() {
 			hc.CreateElementRaw({
 				css: ["ui-task-comment"],
 				children: [
-					hc.CreateElement("div", "Bemerkung:"),
+					hc.CreateElement("div", Lang("task","commentHeader")),
 					hc.CreateElementRaw({
 						children: [
-							hc.CreateElement("div", "Student:"),
+							hc.CreateElement("div", Lang("task","studentHeader")),
 							task.studentComment == null ?
-							hc.CreateElement("div", "kein Kommentar", {
+							hc.CreateElement("div", Lang("task","noComment"), {
 								style: "font-style: italic; font-weight: normal;"
 							}) :
 							hc.CreateElementRaw({
@@ -489,7 +491,7 @@ MarkingTool.Editor.View = new function() {
 								text: task.studentComment,
 								readonly: "readonly"
 							}),
-							hc.CreateElement("div", "Kontrolleur:"),
+							hc.CreateElement("div", Lang("task","lectureHeader")),
 							tutorComment = hc.CreateElementRaw({
 								element: "textarea",
 								text: task.tutorComment
@@ -501,17 +503,17 @@ MarkingTool.Editor.View = new function() {
 			//Einsendungen
 			hc.CreateElementRaw({
 				children: [
-					hc.CreateElement("div", "Dateien:"),
+					hc.CreateElement("div", Lang("task","filesHeader")),
 					hc.CreateElementRaw({
 						css: ["ui-task-files"],
 						children: [
 							hc.CreateElementRaw({
 								"data-has-file": task.userFile != null,
 								children: [
-									hc.CreateElement("div", "Student:", {css: ["ui-task-files-header"]}),
-									hc.CreateElement("div", "Keine Einsendung vorhanden"),
+									hc.CreateElement("div", Lang("task","studentHeader"), {css: ["ui-task-files-header"]}),
+									hc.CreateElement("div", Lang("task","noSubmissionExists")),
 									studFileBut = hc.CreateButton(
-										"Öffnen", undefined, {
+										Lang("task","openFile"), undefined, {
 											element: "a",
 											target: "_blank",
 											href: task.userFile==null ? "" : task.userFile.url,
@@ -545,10 +547,10 @@ MarkingTool.Editor.View = new function() {
 							hc.CreateElementRaw({
 								"data-has-file": task.tutorFile != null,
 								children: [
-									hc.CreateElement("div", "Kontrolleur:", {css: ["ui-task-files-header"]}),
-									hc.CreateElement("div", "Keine Einsendung vorhanden"),
+									hc.CreateElement("div", Lang("task","lectureHeader"), {css: ["ui-task-files-header"]}),
+									hc.CreateElement("div", Lang("task","noSubmissionExists")),
 									tutorFileBut = hc.CreateButton(
-										"Öffnen", undefined, {
+										Lang("task","openFile"), undefined, {
 											element: "a",
 											target: "_blank",
 											href: task.tutorFile==null ? "" : task.tutorFile.url,
@@ -663,7 +665,7 @@ MarkingTool.Editor.View = new function() {
 					]
 				})
 			],
-			title: "Der aktuelle Zustand auf dem Server"
+			title: Lang("fork","currentServerState")
 		});
 		var local = hc.CreateElementRaw({
 			css: ["ui-fork-button", "large", "local"],
@@ -683,7 +685,7 @@ MarkingTool.Editor.View = new function() {
 					]
 				})
 			],
-			title: "Der zu speichernde Zustand"
+			title: Lang("fork","stateToSave")
 		});
 		var state = null; //undefined
 		var handler = function() {
@@ -705,7 +707,7 @@ MarkingTool.Editor.View = new function() {
 				createWrapper(hc.CreateElementRaw({
 					css: ["ui-fork-button"],
 					children: [ baseState ],
-					title: "Der ursprüngliche Zustand"
+					title: Lang("fork","oldState")
 				})),
 				createWrapper(hc.CreateElementRaw({
 					children: [
@@ -750,25 +752,25 @@ MarkingTool.Editor.View = new function() {
 			};
 			if (task.newData.points != undefined)
 				content.push(createFork("points", function(value) {
-					return hc.CreateElementRaw({ text: "Punkte: " + value });
+					return hc.CreateElementRaw({ text: Lang("task","pointsHeader")+" " + value });
 				}));
 			if (task.newData.accepted != undefined)
 				content.push(createFork("accepted", function(value) {
-					return hc.CreateElementRaw({ text: value ? "Akzeptiert" : "nicht Akzeptiert" });
+					return hc.CreateElementRaw({ text: Lang("task", value ? "accepted" : "notAccepted") });
 				}));
 			if (task.newData.status != undefined)
 				content.push(createFork("status", function(value) {
 					for (var i = 0; i<MarkingTool.Editor.View.StateCodes.length; ++i)
 						if (MarkingTool.Editor.View.StateCodes[i].key == value)
-							return hc.CreateElementRaw({ text: "Status: " + MarkingTool.Editor.View.StateCodes[i].value });
-					return hc.CreateElementRaw({ text: "Status: unbekannt" });
+							return hc.CreateElementRaw({ text: Lang("task","stateHeader")+" " + MarkingTool.Editor.View.StateCodes[i].value });
+					return hc.CreateElementRaw({ text: Lang("fork","stateUnknown") });
 				}));
 			if (task.newData.tutorComment != undefined)
 				content.push(createFork("tutorComment", function(value) {
 					return hc.CreateElementRaw({
 						css: ["comment-box"],
 						children: [
-							hc.CreateElementRaw({ title: "Tutorkommentar:" }),
+							hc.CreateElementRaw({ title: Lang("task","lectureCommentHeader") }),
 							hc.CreateElementRaw({ element: "textarea", text: value })
 						]
 					});
@@ -778,7 +780,7 @@ MarkingTool.Editor.View = new function() {
 					return hc.CreateElementRaw({
 						css: ["comment-box"],
 						children: [
-							hc.CreateElementRaw({ title: "Studentenkommentar:" }),
+							hc.CreateElementRaw({ title: Lang("task","studentCommentHeader") }),
 							hc.CreateElementRaw({ element: "textarea", text: value })
 						]
 					});
@@ -797,7 +799,7 @@ MarkingTool.Editor.View = new function() {
 					if (MarkingTool.Editor.Logic.bName[i].user[0].id == task.task.leaderId) {
 						var group = MarkingTool.Editor.Logic.bName[i].user;
 						for (i = 0; i<group.length; ++i)
-							name += group[i].name + ", ";
+							name += group[i].name + Lang("localisation","nameListSeperator");
 						break;
 					}
 			name += "#"+task.task.markingId;
@@ -822,10 +824,9 @@ MarkingTool.Editor.View = new function() {
 		var updating = 0;
 		var autoSaveSlide, autoSaveInput;
 		var win = Helper.HTML.CreateWindow(
-			"Optionen", "large", [
-				hc.CreateFoldingGroup("Speichern", [
-					hc.CreateElement("div", 
-						"Intervall nach dem automatisch gespeichert wird (in Minuten):",
+			Lang("menu","optionBtn"), "large", [
+				hc.CreateFoldingGroup(Lang("settings","saveHeader"), [
+					hc.CreateElement("div", Lang("settings","saveIntervallDesc"),
 						{ css: ["ui-filter-title"] }),
 					hc.CreateElementRaw({
 						children: [
@@ -855,7 +856,7 @@ MarkingTool.Editor.View = new function() {
 								updating--;
 							}, {
 								value: MarkingTool.Editor.Settings.IntervallTime,
-								placeholder: "Wert!!!"
+								placeholder: Lang("settings","missingValue")
 							})
 						],
 						css: ["opt-inline-content"]
@@ -901,8 +902,8 @@ MarkingTool.Editor.View = new function() {
 			var def = task.getPropertys()["points"].getDefaultValue();
 			oldP.html(def == undefined ? 0 : def);
 			newP.html(task.points);
-			newAccepted.html(task.accepted ? "Einsendung wird nun akzeptiert" :
-				"Einsendung wird nicht mehr akzeptiert");
+			newAccepted.html(task.accepted ? Lang("changes","submissionAcceptedNow") :
+				Lang("changes","submissionNotAcceptedNow"));
 			newStudentFile.html(task.userFile != null && task.userFile.file != null ?
 				Math.round(task.userFile.file.size/1024) + " KB" : "0 KB");
 			newTutorFile.html(task.tutorFile != null && task.tutorFile.file != null ?
@@ -932,42 +933,42 @@ MarkingTool.Editor.View = new function() {
 				css: ["ui-upd-line", "ui-upd-points"],
 				children: [
 					oldP = hc.CreateElement("span", 0),
-					hc.CreateElement("span", "Punkte"),
+					hc.CreateElement("span", Lang("task","points")),
 					hc.CreateElement("span", "&#10142;"),
 					newP = hc.CreateElement("span", 0),
-					hc.CreateElement("span", "Punkte")
+					hc.CreateElement("span", Lang("task","points"))
 				]
 			}),
 			lineS = hc.CreateElementRaw({
 				css: ["ui-upd-line", "ui-upd-state"],
 				children: [
-					hc.CreateElement("span", "Neuer Status: "),
-					newState = hc.CreateElement("span", "-")
+					hc.CreateElement("span", Lang("changes","newState")),
+					newState = hc.CreateElement("span", Lang("changes","voidState"))
 				]
 			}),
 			lineA = hc.CreateElementRaw({
 				css: ["ui-upd-line", "ui-upd-accepted"],
 				children: [
-					newAccepted = hc.CreateElement("span", "Akzeptiert")
+					newAccepted = hc.CreateElement("span", Lang("task","accepted"))
 				]
 			}),
 			lineC = hc.CreateElementRaw({
 				css: ["ui-upd-line", "ui-upd-comment"],
 				children: [
-					hc.CreateElement("span", "Neue Bemerkung")
+					hc.CreateElement("span", Lang("changes","newComment"))
 				]
 			}),
 			lineSF = hc.CreateElementRaw({
 				css: ["ui-upd-line", "ui-upd-student-file"],
 				children: [
-					hc.CreateElement("span", "Neue Einsendung: "),
+					hc.CreateElement("span", Lang("changes","newSubmission")),
 					newStudentFile = hc.CreateElement("span", "0 KB")
 				]
 			}),
 			lineTF = hc.CreateElementRaw({
 				css: ["ui-upd-line", "ui-upd-tutor-file"],
 				children: [
-					hc.CreateElement("span", "Neue Korrektur: "),
+					hc.CreateElement("span", Lang("changes","newCorrectedFile")),
 					newTutorFile = hc.CreateElement("span", "0 KB")
 				]
 			})
@@ -982,7 +983,7 @@ MarkingTool.Editor.View = new function() {
 						createWrapper(hc.CreateButton("X", function() {
 							task.resetValues();
 							close();
-						}, { title: "Alle Werte aus diesem Eintrag zurücksetzen"}))
+						}, { title: Lang("changes","resetChanges")}))
 					]
 				}),
 				hc.CreateElementRaw({
@@ -1023,7 +1024,7 @@ MarkingTool.Editor.View = new function() {
 									$(this).parent().parent().parent().toggleClass("ui-open");
 								}, {
 									css: ["ui-task-header-switch"],
-									title: "detailierte Ansicht"
+									title: Lang("task","detailView")
 								}))
 							]
 						}),
@@ -1488,15 +1489,13 @@ MarkingTool.Editor.Logic = new function() {
 						//data = JSON.parse(data);
 						if (data.success) return;
 						if (data.error != "outdatetData") {
-							var message = "Fehler: "+data.error;
-							if (data.hint) message += "<br/>Hinweis: "+data.hint;
-							message += "<br/>Kurs-ID: "+MarkingTool.Editor.Settings.Get.cid;
-							message += "<br/>Serien-ID: "+MarkingTool.Editor.Settings.Get.sid;
-							message += "<br/>Bitte melden Sie diesen Fehler auf <a href=\""+
-								"http://www3.informatik.uni-halle.de/mantis/\" target=\"_blank\""+
-								">Mantis</a>.";
+							var message = Lang("error","errorHeader")+data.error;
+							if (data.hint) message += "<br/>"+Lang("error","hint")+data.hint;
+							message += "<br/>"+Lang("error","courseId")+MarkingTool.Editor.Settings.Get.cid;
+							message += "<br/>"+Lang("error","seriesId")+MarkingTool.Editor.Settings.Get.sid;
+							message += "<br/>"+Lang("error","report");
 							var frame = Helper.HTML.CreateWindow(
-								"Fehler in der Übertragung", "small", [
+								Lang("error","duringSubmission"), "small", [
 									Helper.HTML.CreateElementRaw({
 										content: message
 									})
@@ -1514,19 +1513,19 @@ MarkingTool.Editor.Logic = new function() {
 							var serv = btn.filter(".server");
 							var locl = btn.filter(".local");
 							var frame = Helper.HTML.CreateWindow(
-								"Es existiert ein neuerer Zustand auf dem Server", "large", [
+								Lang("fork","newStateOnServer"), "large", [
 									Helper.HTML.CreateElementRaw({
 										//content: JSON.stringify(data.smalStates)
 										content: [Helper.HTML.CreateButtonFrame([
-											Helper.HTML.CreateButton("Alles vom Server auswählen", function() {
+											Helper.HTML.CreateButton(Lang("fork","selectServer"), function() {
 												serv.click();
 											}),
-											Helper.HTML.CreateButton("Alles eigene auswählen", function() {
+											Helper.HTML.CreateButton(Lang("fork","selectLocal"), function() {
 												locl.click();
 											}),
-											Helper.HTML.CreateButton("Änderungen übernehmen", function() {
+											Helper.HTML.CreateButton(Lang("fork","takeChanges"), function() {
 												if (!full) {
-													alert("Bitte wählen Sie überall aus, was übernommen werden soll!");
+													alert(Lang("fork","someLeftMsg"));
 													return;
 												}
 												else {
