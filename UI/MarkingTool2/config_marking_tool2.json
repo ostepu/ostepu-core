@@ -16,6 +16,7 @@
 		"UI/CContent/content/markingtool2/js/helper_updateproperty.js",
 		"UI/CContent/content/markingtool2/js/helper_updateobject.js",
 		"UI/CContent/content/markingtool2/js/helper_updatefactory.js",
+		"UI/CContent/content/markingtool2/js/helper_cookie.js",
 		"UI/CContent/content/markingtool2/js/marking_tool2_editor.js"
     ]
 }

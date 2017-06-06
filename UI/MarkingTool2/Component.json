@@ -47,7 +47,8 @@
 				{"path": "/content/markingtool2/js/helper_updateindicator.js"},
 				{"path": "/content/markingtool2/js/helper_updateproperty.js"},
 				{"path": "/content/markingtool2/js/helper_updateobject.js"},
-				{"path": "/content/markingtool2/js/helper_updatefactory.js"}
+				{"path": "/content/markingtool2/js/helper_updatefactory.js"},
+				{"path": "/content/markingtool2/js/helper_cookie.js"}
             ]
         }
     ]

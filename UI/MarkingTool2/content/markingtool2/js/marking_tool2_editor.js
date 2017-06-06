@@ -72,7 +72,10 @@ MarkingTool.Editor.View = new function() {
 								counter = hc.CreateElement("div", "0", {css:["ui-change-counter"]})
 							]
 						}),
-						hc.CreateButton("Optionen")
+						hc.CreateButton("Optionen", function() {
+							MarkingTool.Editor.View.CreateOptionsMenu()
+								.appendTo($(document.body));
+						})
 					]
 				})
 			]
@@ -813,6 +816,56 @@ MarkingTool.Editor.View = new function() {
 		}
 	};
 	
+	//Erzeugt das Optionsmenu
+	this.CreateOptionsMenu = function() {
+		var hc = Helper.HTML;
+		var updating = 0;
+		var autoSaveSlide, autoSaveInput;
+		var win = Helper.HTML.CreateWindow(
+			"Optionen", "large", [
+				hc.CreateFoldingGroup("Speichern", [
+					hc.CreateElement("div", 
+						"Intervall nach dem automatisch gespeichert wird (in Minuten):",
+						{ css: ["ui-filter-title"] }),
+					hc.CreateElementRaw({
+						children: [
+							createWrapper(autoSaveSlide = hc.CreateTrackBar(
+								MarkingTool.Editor.Settings.IntervallTime, 
+								120, function(val) {
+									if ((++updating) == 1) {
+										val = Math.ceil(val < 1 ? 1 : val > 120 ? 120 : val);
+										autoSaveInput.val(String(val));
+										autoSaveSlide.slider("value", val);
+										MarkingTool.Editor.Settings.IntervallTime = val;
+										MarkingTool.Editor.Settings.SaveCookies();
+									}
+									updating--;
+								})),
+							autoSaveInput = hc.CreateInput("number", function() {
+								if ((++updating) == 1) {
+									var val = $(this).val();
+									try { val = val * 1; }
+									catch (e) { val = 5; }
+									val = Math.ceil(val < 1 ? 1 : val > 120 ? 120 : val);
+									autoSaveInput.val(val);
+									autoSaveSlide.slider("value", val);
+									MarkingTool.Editor.Settings.IntervallTime = val;
+									MarkingTool.Editor.Settings.SaveCookies();
+								}
+								updating--;
+							}, {
+								value: MarkingTool.Editor.Settings.IntervallTime,
+								placeholder: "Wert!!!"
+							})
+						],
+						css: ["opt-inline-content"]
+					})
+				], { css: ["ui-open"] })
+			], function() {
+				win.remove();
+			});
+		return win;
+	};
 	//Erzeugt eine Übersicht zu allen Änderungen
 	this.createForkInfo = function(tasks, fullsetted) {
 		var left = tasks.length;
@@ -1561,6 +1614,15 @@ MarkingTool.Editor.Settings = new function() {
 	this.MaxUploadVariablesCount = 1000;
 	//Die Variablen, die über HTTP-GET in der URL definiert wurden
 	this.Get = {};
+	//Der Cookiezugriff
+	this.Cookie = new Helper.Cookie();
+	
+	this.SaveCookies = function() {
+		var cookie = {
+			IntervallTime: thisref.IntervallTime
+		};
+		thisref.Cookie.SetCookie("MarkingTool", cookie, thisref.Cookie.OneDay * 365);
+	};
 	
 	//private Init()
 	var _init = function() {
@@ -1571,6 +1633,11 @@ MarkingTool.Editor.Settings = new function() {
 			// this.Get[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
 		// }
 		// console.log("Get Parameter: "+JSON.stringify(this.Get));
+		var cookies = thisref.Cookie.GetCookie("MarkingTool");
+		if (cookies) {
+			if (cookies.IntervallTime != undefined) 
+				thisref.IntervallTime = cookies.IntervallTime;
+		}
 	};
 	//Initialisiert die Einstellungen
 	this.Init = function() {

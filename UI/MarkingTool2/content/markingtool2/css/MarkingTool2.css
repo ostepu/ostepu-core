@@ -811,6 +811,23 @@ img.ui-complex-button-background {
 	border-radius: 3px;
 	cursor: ew-resize;
 }
+/*Optionsmenü*/
+.opt-inline-content  {
+	display: table;
+	width: 100%;
+}
+.opt-inline-content > * {
+	display: table-cell;
+	width: 100%;
+}
+.opt-inline-content > *:nth-child(2) {
+	width: 3em !important;
+}
+.opt-inline-content .ui-slider {
+	top: 0.15em;
+	margin-right: 0.9em;
+}
+
 
 /*Keine Benutzerauswahl*/
 .ui-commandbar,
