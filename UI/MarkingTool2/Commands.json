@@ -57,6 +57,13 @@
         "method": "GET",
         "path": "/api/:mode"
     },
+	{
+		"name": "language",
+		"outputType": "binary",
+		"inputType": "",
+		"method": "GET",
+		"path": "/lang"
+	},
     {
         "name": "getUnknownApiCall",
         "outputType": "binary",

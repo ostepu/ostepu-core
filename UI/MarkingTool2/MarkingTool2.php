@@ -311,4 +311,16 @@ class UIMarkingTool2
 		// $response["hint"] = 'look in $smalStates for more details';
         return Model::isOk(json_encode($response, JSON_PRETTY_PRINT));
     }
+	
+	public function language() {
+		Language::loadLanguageFile('de', 'MarkingTool_Editor', 'json', dirname(__FILE__).'/');
+		$strings = Language::GetAll('MarkingTool_Editor');
+		header("Content-Type: application/javascript");
+		$js = file_get_contents(dirname(__FILE__).'/templates/langFile.js');
+		$js = str_replace(
+			array('"<--2-->"','"<--1-->"'),
+			array(Language::$errorValue, json_encode($strings)),
+			$js);
+		echo $js;
+	}
 }

@@ -1,0 +1,15 @@
+{
+	"menu": {
+		"backBtn": "Zurück",
+		"viewBtn": "Ansicht",
+		"updateBtn": "Aktualisieren",
+		"saveBtn": "Speichern",
+		"optionBtn": "Optionen"
+	},
+	"filter": {
+		"filterHeader": "Filter"
+	},
+	"changes": {
+		"changeHeader": "Änderungen"
+	}
+}

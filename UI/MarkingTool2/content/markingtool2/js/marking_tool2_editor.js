@@ -41,38 +41,38 @@ MarkingTool.Editor.View = new function() {
 		var optionsBar = hc.CreateElementRaw({
 			css: ["ui-commandbar"],
 			children: [
-				hc.CreateButton("Zurück", function() {
+				hc.CreateButton(Lang("menu","backBtn"), function() {
 					document.location.href = MarkingTool.Editor.Settings.BackUrl;
 				}),
 				hc.CreateElementRaw({
 					css: ["ui-commandbar-container"],
 					children: [
-						hc.CreateButtonMenu(hc.CreateButton("Ansicht"), [
-							hc.CreateButton("Filter", function() {
+						hc.CreateButtonMenu(hc.CreateButton(Lang("menu","viewBtn")), [
+							hc.CreateButton(Lang("filter","filterHeader"), function() {
 								$(this).toggleClass("active");
 								if ($(this).hasClass("active")) $(".ui-layout-left").addClass("ui-open");
 								else $(".ui-layout-left").removeClass("ui-open");
 								$(".ui-ref-view-button").removeClass("ui-open");
 							}, {css:["active"]} ),
-							hc.CreateButton("Änderungen", function() {
+							hc.CreateButton(Lang("changes","changeHeader"), function() {
 								$(this).toggleClass("active");
 								if ($(this).hasClass("active")) $(".ui-layout-right").addClass("ui-open");
 								else $(".ui-layout-right").removeClass("ui-open");
 								$(".ui-ref-view-button").removeClass("ui-open");
 							}, {css:["active"]} )
 						], { css: ["ui-ref-view-button"] }),
-						hc.CreateButton("Aktualisieren", function() {
+						hc.CreateButton(Lang("menu","updateBtn"), function() {
 							Helper.UpdateIndicator.ShowBox();
 							document.location.reload();
 						}),
-						hc.CreateButton("Speichern", function() {
+						hc.CreateButton(Lang("menu","saveBtn"), function() {
 							MarkingTool.Editor.Logic.CheckForUploadableTasks(true);
 						}, {
 							children: [
 								counter = hc.CreateElement("div", "0", {css:["ui-change-counter"]})
 							]
 						}),
-						hc.CreateButton("Optionen", function() {
+						hc.CreateButton(Lang("menu","optionBtn"), function() {
 							MarkingTool.Editor.View.CreateOptionsMenu()
 								.appendTo($(document.body));
 						})
