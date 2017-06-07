@@ -861,6 +861,23 @@ MarkingTool.Editor.View = new function() {
 						],
 						css: ["opt-inline-content"]
 					})
+				], { css: ["ui-open"] }),
+				hc.CreateFoldingGroup(Lang("settings","editorHeader"), [
+					hc.CreateElement("div", Lang("settings","autoOpenEditorBoxes"),
+						{ css: ["ui-filter-title"] }),
+					hc.CreateElementRaw({
+						children: [
+							hc.CreateInput("checkbox", function() {
+								if ((++updating) == 1) {
+									MarkingTool.Editor.Settings.AutoOpenTaskBoxes =
+										$(this).is(":checked");
+									MarkingTool.Editor.Settings.SaveCookies();
+								}
+								updating--;
+							}, MarkingTool.Editor.Settings.AutoOpenTaskBoxes ? { checked: "checked" } : {}),
+							hc.CreateElement("span", Lang("settings", "autoOpenEditorBoxDesc"))
+						]
+					})
 				], { css: ["ui-open"] })
 			], function() {
 				win.remove();
@@ -1014,7 +1031,8 @@ MarkingTool.Editor.View = new function() {
 			show: false,
 			create: function() {
 				result.box = hc.CreateElementRaw({
-					css: ["ui-task-box"],
+					css: MarkingTool.Editor.Settings.AutoOpenTaskBoxes ?
+						["ui-task-box", "ui-open"] : ["ui-task-box"],
 					children: [
 						hc.CreateElementRaw({
 							css: ["ui-task-header"],
@@ -1611,6 +1629,8 @@ MarkingTool.Editor.Settings = new function() {
 	this.IntervallTime = 5;
 	//Int - die maximale Anzahl an Variablen die per HTTP-POST gesendet werden können.
 	this.MaxUploadVariablesCount = 1000;
+	//Bool - Gibt an ob alle Boxen standartmäßig geöffnet sind
+	this.AutoOpenTaskBoxes = false;
 	//Die Variablen, die über HTTP-GET in der URL definiert wurden
 	this.Get = {};
 	//Der Cookiezugriff
@@ -1618,7 +1638,8 @@ MarkingTool.Editor.Settings = new function() {
 	
 	this.SaveCookies = function() {
 		var cookie = {
-			IntervallTime: thisref.IntervallTime
+			IntervallTime: thisref.IntervallTime,
+			AutoOpenTaskBoxes: thisref.AutoOpenTaskBoxes
 		};
 		thisref.Cookie.SetCookie("MarkingTool", cookie, thisref.Cookie.OneDay * 365);
 	};
@@ -1636,6 +1657,8 @@ MarkingTool.Editor.Settings = new function() {
 		if (cookies) {
 			if (cookies.IntervallTime != undefined) 
 				thisref.IntervallTime = cookies.IntervallTime;
+			if (cookies.AutoOpenTaskBoxes != undefined)
+				thisref.AutoOpenTaskBoxes = cookies.AutoOpenTaskBoxes;
 		}
 	};
 	//Initialisiert die Einstellungen

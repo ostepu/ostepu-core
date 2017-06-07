@@ -78,7 +78,10 @@
 	"settings": {
 		"saveHeader": "Speichern",
 		"saveIntervallDesc": "Intervall nach dem automatisch gespeichert wird (in Minuten):",
-		"missingValue": "Wert!!!"
+		"missingValue": "Wert!!!",
+		"editorHeader": "Editor",
+		"autoOpenEditorBoxes": "Bei Start der Seite automatisch die erweiterten Eingabeboxen öffnen",
+		"autoOpenEditorBoxDesc": "erweiterte Eingabeboxen automatisch öffnen"
 	},
 	"error": {
 		"errorHeader": "Fehler: ",
