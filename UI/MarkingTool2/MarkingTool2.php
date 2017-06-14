@@ -186,6 +186,11 @@ class UIMarkingTool2
         
 		header("Content-Type: text/json"); //Damit jQuery das automatisch parst
 		
+		$loggedIn = $this->checkLogin();
+        if ($loggedIn !== true){
+            return Model::isOk(json_encode($loggedIn, JSON_PRETTY_PRINT));
+        }
+		
         /* sid und cid existieren hier garantiert
         elseif (!isset($_GET["cid"]) || !isset($_GET["sid"])) {
             $response = array(

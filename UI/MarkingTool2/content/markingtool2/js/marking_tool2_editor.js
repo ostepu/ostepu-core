@@ -1581,19 +1581,21 @@ MarkingTool.Editor.Logic = new function() {
 			}
 			if (cur.length > 0) upl.push(cur);
 			//Phase 3 - Lade die Änderungen hoch
-			for (var i = 0; i<upl.length; ++i) {
+			var postFunc = function(uplData) {
 				$.post({
 					url: "../../../../../api/upload/course/" + MarkingTool.Editor.Settings.Get.cid +
 						"/exercisesheet/" + MarkingTool.Editor.Settings.Get.sid,
 					cache: false,
-					data: { "tasks[]": upl[i] },
+					data: { "tasks[]": uplData },
 					success: function(data) {
 						//data = JSON.parse(data);
 						if (data.success) return;
-						if (data.error != "outdatetData") {
-							showErrorBox(data);
+						if (data.error == "invalidLogin") {
+							showLoginWindow(function() {
+								postFunc(uplData);
+							});
 						}
-						else {
+						else if (data.error == "outdatetData") {
 							var full = false;
 							var info = MarkingTool.Editor.View.createForkInfo(data.smalStates, function() {
 								full = true;
@@ -1660,8 +1662,12 @@ MarkingTool.Editor.Logic = new function() {
 							);
 							frame.appendTo($(document.body));
 						}
+						else showErrorBox(data);
 					}
 				});
+			};
+			for (var i = 0; i<upl.length; ++i) {
+				postFunc(upl[i]);
 			}
 		}
 		checking--;
