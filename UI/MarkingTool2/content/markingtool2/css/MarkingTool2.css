@@ -622,6 +622,11 @@ img.ui-complex-button-background {
   padding: 0.2em;
   position: relative;
 }
+.ui-iframe-full-size {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
 
 /*Fenster - Buttongruppe*/
 .ui-button-frame-content {

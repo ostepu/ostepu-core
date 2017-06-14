@@ -110,7 +110,7 @@ class UIMarkingTool2
     {
         $loggedIn = $this->checkLogin();
         if ($loggedIn !== true){
-            return Model::isProblem(json_encode($loggedIn, JSON_PRETTY_PRINT));
+            return Model::isOk(json_encode($loggedIn, JSON_PRETTY_PRINT));
         }
 
         $response = array(

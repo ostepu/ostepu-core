@@ -89,7 +89,10 @@
 		"courseId": "Kurs-ID: ",
 		"seriesId": "Serien-ID: ",
 		"report": "Bitte melden Sie diesen Fehler auf <a href=\"http://www3.informatik.uni-halle.de/mantis/\" target=\"_blank\">Mantis</a>.",
-		"duringSubmission": "Fehler in der Übertragung"
+		"duringSubmission": "Fehler in der Übertragung",
+		"sessionTimeout": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an!",
+		"forceLoginHeader": "Bitte melden Sie sich an!",
+		"forceLoginDesc": "Ihre Sitzung ist abgelaufen. Damit Sie weiterarbeiten können, müssen Sie sich zuvor anmelden!"
 	},
 	"localisation": {
 		"nameListSeperator": ", "

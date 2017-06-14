@@ -1387,6 +1387,91 @@ MarkingTool.Editor.Logic = new function() {
 		updObjectList[path].close();
 		updObjectList[path] = undefined;
 	};
+	//Zeigt ein Fehlerfenster an, bei der angezeigt wird, dass bei der Verarbeitung ein 
+	//unbekannter Fehler aufgetreten ist
+	var showErrorBox = function(data) {
+		var message = Lang("error","errorHeader")+data.error;
+		if (data.hint) message += "<br/>"+Lang("error","hint")+data.hint;
+		message += "<br/>"+Lang("error","courseId")+MarkingTool.Editor.Settings.Get.cid;
+		message += "<br/>"+Lang("error","seriesId")+MarkingTool.Editor.Settings.Get.sid;
+		message += "<br/>"+Lang("error","report");
+		var frame = Helper.HTML.CreateWindow(
+			Lang("error","duringSubmission"), "small", [
+				Helper.HTML.CreateElementRaw({
+					content: message
+				})
+			], function() {
+				frame.remove();
+			});
+		frame.appendTo($(document.body));
+	};
+	//Eine Funktion, die regelmäßig aufgerufen wird, um den Onlinestatus zu überprüfen
+	var enablePing = true;
+	var internalPing = function(onResult) {
+		$.get({
+			url: "../../../../../api/ping",
+			cache: false,
+			data: {},
+			success: function(data) {
+				data = JSON.parse(data);
+				console.log(data);
+				if (data.success) {
+					if (onResult != undefined)
+						onResult(0);
+				}
+				else if (data.error != "invalidLogin") {
+					showErrorBox(data);
+					if (onResult != undefined)
+						onResult(2);
+				}
+				else {
+					if (onResult != undefined)
+						onResult(1);
+				}
+			}
+		});
+	};
+	var showLoginWindow = function(finish) {
+		enablePing = false;
+		var iframe = Helper.HTML.CreateElement("iframe","",{
+			src: "../../../../../../Login.php",
+			css: [ "ui-iframe-full-size" ]
+		});
+		var frame;
+		iframe.on("load", function() {
+			internalPing(function(result) {
+				if (result == 0) {
+					frame.remove();
+					enablePing = true;
+					if (finish != undefined)
+						finish();
+				}
+			});
+		});
+		frame = Helper.HTML.CreateWindow(
+			Lang("error","sessionTimeout"), "large", [
+				iframe
+			], function() {
+				var subframe = Helper.HTML.CreateWindow(
+					Lang("error","forceLoginHeader"), "small", [
+						Helper.HTML.CreateElement("div",
+							Lang("error","forceLoginDesc"))
+					], function() {
+						subframe.remove();
+					});
+				subframe.appendTo($(document.body));
+			}
+		);
+		frame.appendTo($(document.body));
+	};
+	var ping = function() {
+		if (!enablePing) return;
+		internalPing(function(result) {
+			if (result == 1) {
+				showLoginWindow();
+			}
+		});
+	};
 		
 	//Bestimmt den Filter, der auf alle angezeigten Aufgaben angewandt wird.
 	this.Filter = {
@@ -1503,24 +1588,10 @@ MarkingTool.Editor.Logic = new function() {
 					cache: false,
 					data: { "tasks[]": upl[i] },
 					success: function(data) {
-						console.log(data);
 						//data = JSON.parse(data);
 						if (data.success) return;
 						if (data.error != "outdatetData") {
-							var message = Lang("error","errorHeader")+data.error;
-							if (data.hint) message += "<br/>"+Lang("error","hint")+data.hint;
-							message += "<br/>"+Lang("error","courseId")+MarkingTool.Editor.Settings.Get.cid;
-							message += "<br/>"+Lang("error","seriesId")+MarkingTool.Editor.Settings.Get.sid;
-							message += "<br/>"+Lang("error","report");
-							var frame = Helper.HTML.CreateWindow(
-								Lang("error","duringSubmission"), "small", [
-									Helper.HTML.CreateElementRaw({
-										content: message
-									})
-								], function() {
-									frame.remove();
-								});
-							frame.appendTo($(document.body));
+							showErrorBox(data);
 						}
 						else {
 							var full = false;
@@ -1596,6 +1667,7 @@ MarkingTool.Editor.Logic = new function() {
 		checking--;
 	};
 	
+	
 	//private Init()
 	var _init = function() {
 		getAllTasks();
@@ -1605,6 +1677,7 @@ MarkingTool.Editor.Logic = new function() {
 		Helper.UpdateFactory.RemovedEvent.add(updRemoveHandler);
 		var loop = function() {
 			thisref.CheckForUploadableTasks(false);
+			ping();
 			setTimeout(loop, 60000); //1 Minute
 		};
 		setTimeout(loop, 60000);
