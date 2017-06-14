@@ -326,6 +326,7 @@ class UIMarkingTool2
 			array('"<--2-->"','"<--1-->"'),
 			array(Language::$errorValue, json_encode($strings)),
 			$js);
-		echo $js;
+		return Model::isOk($js);
+		//echo $js;
 	}
 }

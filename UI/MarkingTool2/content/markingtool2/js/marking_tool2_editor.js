@@ -822,7 +822,7 @@ MarkingTool.Editor.View = new function() {
 	this.CreateOptionsMenu = function() {
 		var hc = Helper.HTML;
 		var updating = 0;
-		var autoSaveSlide, autoSaveInput;
+		var autoSaveSlide, autoSaveInput, pingSlide, pingInput;
 		var win = Helper.HTML.CreateWindow(
 			Lang("menu","optionBtn"), "large", [
 				hc.CreateFoldingGroup(Lang("settings","saveHeader"), [
@@ -858,6 +858,32 @@ MarkingTool.Editor.View = new function() {
 								value: MarkingTool.Editor.Settings.IntervallTime,
 								placeholder: Lang("settings","missingValue")
 							})
+						],
+						css: ["opt-inline-content"]
+					}),
+					hc.CreateElement("div", Lang("settings","pingDesc"),
+						{ css: ["ui-filter-title"] }),
+					hc.CreateElementRaw({
+						children: [
+							createWrapper(pingSlide = hc.CreateTrackBar(
+								MarkingTool.Editor.Settings.PingTimeSetting, 
+								7, function(val) {
+									if ((++updating) == 1) {
+										val = Math.round(val < 0 ? 0 : val > 7 ? 7 : val);
+										pingInput.text(
+											Lang("time",MarkingTool.Editor.Logic.GetSpecialTimeName(
+												"ping","lang",val)));
+										pingSlide.slider("value", val);
+										MarkingTool.Editor.Settings.PingTimeSetting = val;
+										MarkingTool.Editor.Settings.SaveCookies();
+									}
+									updating--;
+								})),
+							pingInput = hc.CreateElement("span", Lang("time", 
+								MarkingTool.Editor.Logic.GetSpecialTimeName(
+									"ping","lang",
+									MarkingTool.Editor.Settings.PingTimeSetting)
+							))
 						],
 						css: ["opt-inline-content"]
 					})
@@ -1672,7 +1698,17 @@ MarkingTool.Editor.Logic = new function() {
 		}
 		checking--;
 	};
-	
+	//Ruft spezielle Zeitdaten ab.
+	this.GetSpecialTimeName = function(set, format, index) {
+		var sets = {
+			ping: {
+				num: [ 10, 30, 60, 120, 300, 600, 1200, 0 ],
+				lang: [ "sec10", "sec30", "min1", "min2", "min5", "min10", "min20", "never" ]
+			}
+		};
+		if (sets[set] && sets[set][format])
+			return sets[set][format][index];
+	}
 	
 	//private Init()
 	var _init = function() {
@@ -1683,10 +1719,21 @@ MarkingTool.Editor.Logic = new function() {
 		Helper.UpdateFactory.RemovedEvent.add(updRemoveHandler);
 		var loop = function() {
 			thisref.CheckForUploadableTasks(false);
-			ping();
 			setTimeout(loop, 60000); //1 Minute
 		};
 		setTimeout(loop, 60000);
+		var pingWaited = 0;
+		var pingloop = function() {
+			pingWaited += 10;
+			if (pingWaited >= thisref.GetSpecialTimeName("ping","num",
+				MarkingTool.Editor.Settings.PingTimeSetting)) 
+			{
+				pingWaited = 0;
+				ping();
+			}
+			setTimeout(pingloop, 10000); //10 Sekunden
+		};
+		pingloop();
 	};
 	//Initialisiert die Logik
 	this.Init = function() {
@@ -1710,6 +1757,8 @@ MarkingTool.Editor.Settings = new function() {
 	this.MaxUploadVariablesCount = 1000;
 	//Bool - Gibt an ob alle Boxen standartmäßig geöffnet sind
 	this.AutoOpenTaskBoxes = false;
+	//Der Zeitindex für die automatische Kontrolle der Session
+	this.PingTimeSetting = 2;
 	//Die Variablen, die über HTTP-GET in der URL definiert wurden
 	this.Get = {};
 	//Der Cookiezugriff
@@ -1718,7 +1767,8 @@ MarkingTool.Editor.Settings = new function() {
 	this.SaveCookies = function() {
 		var cookie = {
 			IntervallTime: thisref.IntervallTime,
-			AutoOpenTaskBoxes: thisref.AutoOpenTaskBoxes
+			AutoOpenTaskBoxes: thisref.AutoOpenTaskBoxes,
+			PingTimeSetting: thisref.PingTimeSetting
 		};
 		thisref.Cookie.SetCookie("MarkingTool", cookie, thisref.Cookie.OneDay * 365);
 	};
@@ -1738,6 +1788,8 @@ MarkingTool.Editor.Settings = new function() {
 				thisref.IntervallTime = cookies.IntervallTime;
 			if (cookies.AutoOpenTaskBoxes != undefined)
 				thisref.AutoOpenTaskBoxes = cookies.AutoOpenTaskBoxes;
+			if (cookies.PingTimeSetting != undefined)
+				thisref.PingTimeSetting = cookies.PingTimeSetting;
 		}
 	};
 	//Initialisiert die Einstellungen

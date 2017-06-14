@@ -78,6 +78,7 @@
 	"settings": {
 		"saveHeader": "Speichern",
 		"saveIntervallDesc": "Intervall nach dem automatisch gespeichert wird (in Minuten):",
+		"pingDesc": "Intervall nach der die aktuelle Sitzung auf Gültigkeit überprüft wird:",
 		"missingValue": "Wert!!!",
 		"editorHeader": "Editor",
 		"autoOpenEditorBoxes": "Bei Start der Seite automatisch die erweiterten Eingabeboxen öffnen",
@@ -93,6 +94,16 @@
 		"sessionTimeout": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an!",
 		"forceLoginHeader": "Bitte melden Sie sich an!",
 		"forceLoginDesc": "Ihre Sitzung ist abgelaufen. Damit Sie weiterarbeiten können, müssen Sie sich zuvor anmelden!"
+	},
+	"time": {
+		"sec10": "10 Sekunden",
+		"sec30": "30 Sekunden",
+		"min1": "1 Minute",
+		"min2": "2 Minuten",
+		"min5": "5 Minuten",
+		"min10": "10 Minuten",
+		"min20": "20 Minuten",
+		"never": "Nie"
 	},
 	"localisation": {
 		"nameListSeperator": ", "

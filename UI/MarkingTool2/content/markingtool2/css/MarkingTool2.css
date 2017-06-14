@@ -827,6 +827,7 @@ img.ui-complex-button-background {
 }
 .opt-inline-content > *:nth-child(2) {
 	width: 3em !important;
+	white-space: nowrap;
 }
 .opt-inline-content .ui-slider {
 	top: 0.15em;
