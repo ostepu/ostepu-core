@@ -93,6 +93,7 @@ class UIMarkingTool2
             "backUrl" => "$externalURI/UI/".PRIVILEGE_LEVEL::$SITES[$userLevel]."?cid=$cid",
             "uid" => $uid
         ));
+		$c->bind($params);
         $w = new HTMLWrapper(/*$h, */$c);
         $w->set_config_file('config_marking_tool2.json');
         if (isset($maintenanceMode) && $maintenanceMode === '1')
@@ -109,7 +110,7 @@ class UIMarkingTool2
     {
         $loggedIn = $this->checkLogin();
         if ($loggedIn !== true){
-            return Model::isProblem(json_encode($loggedIn, JSON_PRETTY_PRINT));
+            return Model::isOk(json_encode($loggedIn, JSON_PRETTY_PRINT));
         }
 
         $response = array(
@@ -175,12 +176,21 @@ class UIMarkingTool2
     
     public function postUpload( $callName, $input, $params = array() )
     {
+		global $_SESSION;
+		
         $response = null;
         parse_str($input, $postData); // parst die eingehenden Formulardaten nach $postData
         
         $cid = $params['cid'];
         $sid = $params['sid'];
         
+		header("Content-Type: text/json"); //Damit jQuery das automatisch parst
+		
+		$loggedIn = $this->checkLogin();
+        if ($loggedIn !== true){
+            return Model::isOk(json_encode($loggedIn, JSON_PRETTY_PRINT));
+        }
+		
         /* sid und cid existieren hier garantiert
         elseif (!isset($_GET["cid"]) || !isset($_GET["sid"])) {
             $response = array(
@@ -208,7 +218,7 @@ class UIMarkingTool2
                 return false;
             };
 
-            $rawData = $this->_component->call('getMarkingToolData', array('cid'=>$cid, 'sid'=>$sid), '', 200, $positive, array(), $false, array());
+            $rawData = $this->_component->call('getMarkingToolData', array('cid'=>$cid, 'sid'=>$sid), '', 200, $positive, array(), $negative, array());
             
             if ($rawData === false){
                 // der Aufruf war fehlerhaft
@@ -306,4 +316,17 @@ class UIMarkingTool2
 		// $response["hint"] = 'look in $smalStates for more details';
         return Model::isOk(json_encode($response, JSON_PRETTY_PRINT));
     }
+	
+	public function language() {
+		Language::loadLanguageFile('de', 'MarkingTool_Editor', 'json', dirname(__FILE__).'/');
+		$strings = Language::GetAll('MarkingTool_Editor');
+		header("Content-Type: application/javascript");
+		$js = file_get_contents(dirname(__FILE__).'/templates/langFile.js');
+		$js = str_replace(
+			array('"<--2-->"','"<--1-->"'),
+			array(Language::$errorValue, json_encode($strings)),
+			$js);
+		return Model::isOk($js);
+		//echo $js;
+	}
 }

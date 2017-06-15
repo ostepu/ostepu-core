@@ -40,7 +40,15 @@
                 {"path": "/content/markingtool2/img/computer-icon.png"},
                 {"path": "/content/markingtool2/img/ok-icon.png"},
                 {"path": "/content/markingtool2/img/server-icon.png"},
-                {"path": "/content/markingtool2/js/marking_tool2_editor.js"}
+                {"path": "/content/markingtool2/js/marking_tool2_editor.js"},
+				{"path": "/content/markingtool2/js/helper_events.js"},
+				{"path": "/content/markingtool2/js/helper_queue.js"},
+				{"path": "/content/markingtool2/js/helper_html.js"},
+				{"path": "/content/markingtool2/js/helper_updateindicator.js"},
+				{"path": "/content/markingtool2/js/helper_updateproperty.js"},
+				{"path": "/content/markingtool2/js/helper_updateobject.js"},
+				{"path": "/content/markingtool2/js/helper_updatefactory.js"},
+				{"path": "/content/markingtool2/js/helper_cookie.js"}
             ]
         }
     ]

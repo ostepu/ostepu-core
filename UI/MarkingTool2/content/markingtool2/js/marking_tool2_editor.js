@@ -1,376 +1,14 @@
-
+//require helper_events.js
+//require helper_queue.js
+//require helper_html.js
+//require helper_updateindicator.js
+//require helper_updateproperty.js
+//require helper_updateobject.js
+//require helper_updatefactory.js
 
 //Lege Klassenvariable an
 var MarkingTool = MarkingTool || {};
 MarkingTool.Editor = MarkingTool.Editor || {};
-
-//=== Hilfsbibliotheken
-
-//Ein Eventhandler, welcher ein Event verwalten kann.
-MarkingTool.Event = function() {
-	var list = [];
-	//Fügt eine neue Eventmethode zu diesem Event hinzu.
-	//method: function - die Methode, die beim Auslösen des Events aufgerufen wird.
-	this.add = function(method) {
-		if (method == undefined) throw new Error("no method given");
-		for (var i = 0; i<list.length; ++i)
-			if (list[i] == method) return;
-		list.push(method);
-	};
-	//Entfernt eine Eventmethode wieder
-	//method: function - die Methode, die nicht mehr aufgerufen werden soll.
-	this.remove = function(method) {
-		for (var i = 0; i<list.length; ++i)
-			if (list[i] == method) {
-				list.splice(i, 1);
-				return;
-			}
-	};
-	//Ruft alle Methoden mit aktuellen Kontext und verschiedenen Argumenten auf.
-	//args: Werte... - Verschiedene Argumente
-	this.invoke = function(args) {
-		for (var i = 0; i<list.length; ++i)
-			list[i].apply(this, arguments);
-	};
-	//Ruft alle Methoden in einem bestimmten Kontext und verschiedenen Argumenten auf.
-	//thisArg: Wert     - der Zielkontext für die Methoden
-	//args:    Werte... - Verschiedene Argumente
-	this.call = function(thisArg, args) {
-		arguments.splice(0, 1);
-		for (var i = 0; i<list.length; ++i)
-			list[i].apply(thisArg, arguments);
-	};
-};
-//Implementiert eine einfache Queue
-MarkingTool.Queue = function() {
-	var first = null, last = null, count = 0;
-	//Legt ein Element an das Ende der Queue
-	//element: Wert - das neue Element
-	this.push = function(element) {
-		var entry = {
-			element: element,
-			prev: last
-		};
-		if (last == null) first = last = entry;
-		else {
-			last.next = entry;
-			last = entry;
-		}
-		count++;
-	};
-	//Ruft das erste Element von der Queue ab und entfernt dieses
-	//return: Wert - der erste Eintrag
-	this.pop = function() {
-		if (first == null) return null;
-		var element = first.element;
-		if (first.next) first = first.next;
-		else first = last = null;
-		count--;
-		return element;
-	};
-	//Fragt ab, ob diese Queue leer ist.
-	//return: Bool - true wenn Queue leer
-	this.isEmpty = function() {
-		return first == null;
-	};
-	//Ruft das erste Element von der Queue ab ohne es zu entfernen
-	//return: Wert - der erste Eintrag
-	this.pick = function() {
-		if (first == null) return null;
-		else return first.element;
-	};
-	//Löscht alle Elemente in der Queue
-	this.clear = function() {
-		first = last = null;
-		count = 0;
-	};
-	//Ermittelt die Anzahl in der Queue
-	this.size = function() {
-		return count;
-	};
-};
-
-
-//=== HTML Bibliothek um einen HTML Körper zu erstellen ===
-MarkingTool.Editor.HTML = new function(){
-	var thisref = this;
-	//Erstellt aus Rohdaten ein neues HTML-Element
-	//data:        Objekt - Ein Objekt mit den Attributen, den Namen (element) und den Inhalt (content) des neuen Elements
-	//-[content]:  String - Der HTML Inhalt des Elements
-	//-[element]:  String - Der Name des neuen Elements
-	//-[css]:      Array  - Eine Liste aus CSS Klassen, die diesem Element hinzugefügt werden sollen
-	//-[children]: Array  - Eine Liste aus HTML Elementen, die diesem Element als Kinder hinzugefügt werden sollen.
-	//-[...]:      Werte  - zusätzliche Attribute für das neue Element als Schlüssel-Werte-Paare
-	//return:	   jQuery - Das neue erzeugte HTML Element
-	this.CreateElementRaw = function(data) {
-		var content = data.content || "";
-		var element = data.element || "div";
-		var css = data.css || [];
-		var children = data.children || [];
-		var text = data.text;
-		data.content = undefined;
-		data.element = undefined;
-		data.css = undefined;
-		data.children = undefined;
-		data.text = undefined;
-		var obj = $("<"+element+"/>");
-		for (var key in data)
-			if (data.hasOwnProperty(key)) {
-				obj.attr(key, data[key]);
-			}
-		for (var i = 0; i<css.length; ++i)
-			obj.addClass(css[i]);
-		obj.html(content);
-		if (text) obj.text(text);
-		for (var i = 0; i<children.length; ++i)
-			if (children[i] != null)
-				obj.append(children[i]);
-		return obj;
-	};
-	//Erstellt ein neues HTML-Element
-	//element: String - der Typ des Elements
-	//content: String - der Inhalt des Elements
-	//[data]:  Objekt - Zusätzliche Daten für CreateElementRaw
-	//return:  jQuery - Das neue erzeugte HTML Element
-	this.CreateElement = function(element, content, data) {
-		data = data || {};
-		data.element = element;
-		data.content = content;
-		return MarkingTool.Editor.HTML.CreateElementRaw(data);
-	};
-	//Erstellt einen neuen klickbaren Button
-	//content:  String  - Der Text der angezeigt wird
-	//[method]: Fuktion - Die Methode die beim Klicken ausgelöst wird.
-	//[data]:   Objekt  - Zusätzliche Daten für CreateElementRaw
-	//return:   jQuery  - Das neu erzeugte Element
-	this.CreateButton = function(content, method, data) {
-		data = data || {};
-		data.css = data.css || [];
-		data.css.push("ui-button");
-		var element = thisref.CreateElement(data.element || "div", content, data);
-		if (method != undefined) element.click(method);
-		return element;
-	};
-	//Erstellt ein Aufklappmenü
-	//header:   jQuery        - Der Button der das Aufklappmenü aufklappt
-	//elements: Array<jQuery> - Die Elemente die angezeigt werden sollen, wenn das Aufklappmenü offen ist.
-	//[data]:   Objekt        - Zusätzliche Daten für das Objekt welches das Aufklappmenü beherbergt
-	//return:   jQuery        - Das neu erzeugte Element
-	this.CreateButtonMenu = function(header, elements, data) {
-		data = data || {};
-		data.css = data.css || [];
-		data.css.push("ui-foldable");
-		data.children = data.children || [];
-		data.children.push(header);
-		data.children.push(thisref.CreateElementRaw({
-			css: ["ui-foldable-marker"],
-			children: [
-				thisref.CreateElementRaw({
-					css: ["ui-foldable-box"],
-					children: elements
-				})
-			]
-		}));
-		header.click(function() {
-			$(this).parent().toggleClass("ui-open");
-		});
-		return thisref.CreateElementRaw(data);
-	};
-	//Erstellt ein neues Eingabeelement
-	//[type]:   String   - der Typ des Eingabeelements (Standart: "text")
-	//[method]: Funktion - Die Methode die aufgerufen wird, wenn sich das Objekt ändert
-	//[data]:   Objekt   - Zusätzliche Daten für das Eingabeelement
-	//return:   jQuery   - Das neu erzeugte Element
-	this.CreateInput = function(type, method, data) {
-		type = type || "text";
-		data = data || {};
-		data.element = "input";
-		data.type = type;
-		data.css = data.css || [];
-		data.css.push("ui-input");
-		var element = thisref.CreateElementRaw(data);
-		if (method != undefined) element.change(method);
-		return element;
-	};
-	//Erstellt ein Element, welches andere Elemente gruppiert und sie zusammenfalten (verstecken) kann.
-	//title:      String        - Der Name der Gruppe
-	//[elements]: Array<jQuery> - Die Elemente, die zu dieser Gruppe gehören
-	//[data]:     Objekt        - Zusätzliche Daten für dieses Gruppenelement
-	//return:     jQuery        - Das neu erzeugte Element
-	this.CreateFoldingGroup = function(title, elements, data) {
-		data = data || {};
-		title = title || "";
-		elements = elements || [];
-		var button = thisref.CreateElementRaw({
-			content: title,
-			css: ["ui-foldable-group-header"]
-		});
-		button.click(function() {
-			$(this).parent().toggleClass("ui-open");
-		});
-		data.css = data.css || [];
-		data.css.push("ui-foldable-group");
-		data.children = data.children || [];
-		data.children.push(button);
-		data.children.push(thisref.CreateElementRaw({
-			css: ["ui-foldable-group-content"],
-			children: elements
-		}));
-		return thisref.CreateElementRaw(data);
-	};	
-	//Erstellt ein neues HTML Select Element
-	//[values]:  Objekt/Array - Ein Objekt oder eine Array mit den Werten für das neue Element.
-	//                          Der values-Schlüssel wird als Optionswert und der values-Wert 
-	//                          wird als Darstellungstext verwendet.
-	//[current]: Wert         - Der aktuelle Wert (Schlüssel in values) der ausgewählt ist.
-	//[method]:  Funktion     - Diese Methode wird aufgerufen, wenn sich der Wert ändert.
-	//[data]:    Objekt       - Zusätzliche Daten für das neue Element
-	//return:    jQuery       - Das neu erzeugte Element
-	this.CreateSelect = function(values, current, method, data) {
-		values = values || [];
-		data = data || {};
-		data.element = "select";
-		data.children = data.children || [];
-		for (var key in values)
-			if (values.hasOwnProperty(key)) {
-				var value = values[key];
-				if (value.key != undefined && value.value != undefined) {
-					key = value.key;
-					value = value.value;
-				}
-				data.children.push(thisref.CreateElement("option", value, { value: key }));
-			}
-		var sel = thisref.CreateElementRaw(data);
-		if (current != undefined) sel.val(current);
-		if (method != undefined) sel.change(method);
-		return sel;
-	};
-	//Erstellt ein neue Anzeige für ein Bild
-	//src:    String - die relative URL zum Bild
-	//[data]: Objekt - Zusätzliche Daten für das neue Element
-	//return: jQuery - Das neu erzeugte Element
-	this.CreateSimpleImage = function(src, data) {
-		data = data || {};
-		data.element = "img";
-		data.src = src;
-		return thisref.CreateElementRaw(data);
-	};
-	//Erstellt einen erweiterten Button, der unten rechts eine Info und oben links 
-	//einen Modus anzeigen kann.
-	//background: jQuery   - Das Objekt, welches den Hintergrund darstellt.
-	//                       Gleichzeitig bestimmt es die Größe des Buttons
-	//info:       jQuery   - Das Objekt, welches unten rechts angezeigt wird.
-	//mode:       jQuery   - Das Objekt, welches oben links angezeigt wird.
-	//[method]:   Funktion - Die Methode die aufgerufen wird, wenn auf diesem Button geklickt wird.
-	//[data]:     Objekt   - Zusätzliche Daten für das neue Element
-	//return:     jQuery   - Das neu erzeugte Element
-	this.CreateComplexButton = function(background, info, mode, method, data) {
-		data = data || {};
-		data.children = data.children || [];
-		data.css = data.css || [];
-		data.css.push("ui-complex-button");
-		background.addClass("ui-complex-button-background");
-		info.addClass("ui-complex-button-info");
-		mode.addClass("ui-complex-button-mode");
-		data.children.push(background);
-		data.children.push(info);
-		data.children.push(mode);
-		var button = thisref.CreateElementRaw(data);
-		if (method != undefined) button.click(method);
-		return button;
-	};
-	//Erstellt eine Leiste mit einem Balken wo man einen Wert einstellen kann. Er 
-	//geht von 0 bis max mit einer Schritteweite von 0,1
-	//value:    Zahl           - Der aktuelle Wert
-	//max:      Zahl           - Der maximale Wert der Leiste (value darf größer sein)
-	//[method]: Funktion(Zahl) - Die Methode die aufgerufen wird, wenn sich der Wert ändert.
-	//                           Zusätzlich wird der aktuelle Wert übergeben.
-	//[data]:   Objekt         - Zusätzliche Daten für das neue Element
-	//return:   jQuery         - Das neu erzeugte Element
-	this.CreateTrackBar = function(value, max, method, data) {
-		data = data || {};
-		data.css = data.css || [];
-		data.css.push("ui-trackbar");
-		var slider = thisref.CreateElementRaw(data);
-		slider.slider({
-			range: "min",
-			value: value,
-			min: 0,
-			max: max,
-			step: 0.1,
-			slide: function(event, ui) {
-				if (method != undefined) method(ui.value);
-			},
-			create: function(event, ui) {
-				slider[0].initTest = 1;
-				try { slider.slider("value", value); }
-				catch (e) { console.log(e); }
-			}
-		});
-		return slider;
-	};
-	//Erzeugt ein neues Fenster, welches sich dann über alles andere legen kann.
-	//title:         String   - Der Titel dieses Fensters
-	//[sizeClass]:   String   - "large" um ein großes Fenster zu erzeugen
-	//                          "small" (default) um ein kleineres Dialogfenster zu erzeugen
-	//[content]:     Array    - Die Liste an Elementen, die als Content hinzugefügt wird
-	//[closeMethod]: Funktion - Die Methode, die aufgerufen wird, wenn dieses Fenster 
-	//                          geschlossen wurde
-	//[data]:        Objekt   - Zusätzliche Daten für den Fensterrahmen
-	//return:        jQuery   - Das neu erzeugte Element
-	this.CreateWindow = function(title, sizeClass, content, closeMethod, data) {
-		var closeButton;
-		data = data || {};
-		data.css = data.css || [];
-		data.css.push("ui-window-frame");
-		data.css.push(sizeClass || "small");
-		data.children = data.children || [];
-		data.children.push(thisref.CreateElementRaw({
-			css: ["ui-window-header"],
-			children: [
-				thisref.CreateElementRaw({
-					css: ["ui-window-title"],
-					text: title
-				}),
-				closeButton = thisref.CreateElementRaw({
-					css: ["ui-window-close"],
-					text: "x"
-				})
-			]
-		}));
-		data.children.push(thisref.CreateElementRaw({
-			css: ["ui-window-content"],
-			children: content
-		}));
-		var frame = thisref.CreateElementRaw(data);
-		if (closeMethod != undefined) closeButton.click(closeMethod);
-		return thisref.CreateElementRaw({
-			css: ["ui-window-outer"],
-			children: [ frame ]
-		});
-	}
-	//Erzeugt einen Rahmen, in dem in den unteren Bereich Buttons nebeneinander angeordnet werden
-	//können. Im großen Bereich erfolgt dann der Inhalt.
-	//[buttons]: Array<jQuery> - Die Buttons für den unteren Bereich
-	//[content]: Array<jQuery> - Der Inhalt für den oberen Bereich
-	//[data]:    Object        - Zusätzliche Daten für den Rahmen
-	//return:    jQuery        - Das neu erzeugte Element
-	this.CreateButtonFrame = function(buttons, content, data) {
-		data = data || [];
-		data.css = data.css || [];
-		data.css.push("ui-button-frame");
-		data.children = data.children || [];
-		data.children.push(thisref.CreateElementRaw({
-			css: ["ui-button-frame-content"],
-			children: content
-		}));
-		data.children.push(thisref.CreateElementRaw({
-			css: ["ui-button-frame-buttons"],
-			children: buttons
-		}));
-		return thisref.CreateElementRaw(data);
-	};
-};
 
 //Stellt die Oberfläche und ihre Funktionen bereit.
 MarkingTool.Editor.View = new function() {
@@ -394,122 +32,122 @@ MarkingTool.Editor.View = new function() {
 	};
 	//verpackt das Element in ein <div/> Element
 	var createWrapper = function(element) {
-		return MarkingTool.Editor.HTML.CreateElementRaw({children: [element]});
+		return Helper.HTML.CreateElementRaw({children: [element]});
 	};
 	//erzeugt die Optionsleiste ganz oben
 	var createCommandBar = function() {
-		var hc = MarkingTool.Editor.HTML;
+		var hc = Helper.HTML;
 		var counter;
 		var optionsBar = hc.CreateElementRaw({
 			css: ["ui-commandbar"],
 			children: [
-				hc.CreateButton("Zurück", function() {
+				hc.CreateButton(Lang("menu","backBtn"), function() {
 					document.location.href = MarkingTool.Editor.Settings.BackUrl;
 				}),
 				hc.CreateElementRaw({
 					css: ["ui-commandbar-container"],
 					children: [
-						hc.CreateButtonMenu(hc.CreateButton("Ansicht"), [
-							hc.CreateButton("Filter", function() {
+						hc.CreateButtonMenu(hc.CreateButton(Lang("menu","viewBtn")), [
+							hc.CreateButton(Lang("filter","filterHeader"), function() {
 								$(this).toggleClass("active");
 								if ($(this).hasClass("active")) $(".ui-layout-left").addClass("ui-open");
 								else $(".ui-layout-left").removeClass("ui-open");
 								$(".ui-ref-view-button").removeClass("ui-open");
 							}, {css:["active"]} ),
-							hc.CreateButton("Änderungen", function() {
+							hc.CreateButton(Lang("changes","changeHeader"), function() {
 								$(this).toggleClass("active");
 								if ($(this).hasClass("active")) $(".ui-layout-right").addClass("ui-open");
 								else $(".ui-layout-right").removeClass("ui-open");
 								$(".ui-ref-view-button").removeClass("ui-open");
 							}, {css:["active"]} )
 						], { css: ["ui-ref-view-button"] }),
-						hc.CreateButton("Aktualisieren", function() {
-							MarkingTool.Editor.UpdateIndicator.ShowBox();
+						hc.CreateButton(Lang("menu","updateBtn"), function() {
+							Helper.UpdateIndicator.ShowBox();
 							document.location.reload();
 						}),
-						hc.CreateButton("Speichern", function() {
-							MarkingTool.Editor.Logic.CheckForUploadableTasks();
+						hc.CreateButton(Lang("menu","saveBtn"), function() {
+							MarkingTool.Editor.Logic.CheckForUploadableTasks(true);
 						}, {
 							children: [
 								counter = hc.CreateElement("div", "0", {css:["ui-change-counter"]})
 							]
 						}),
-						hc.CreateButton("Optionen")
+						hc.CreateButton(Lang("menu","optionBtn"), function() {
+							MarkingTool.Editor.View.CreateOptionsMenu()
+								.appendTo($(document.body));
+						})
 					]
 				})
 			]
 		});
 		createWrapper(optionsBar).appendTo($(".content-box"));
 		var upd = function() {
-			counter.html(MarkingTool.Editor.UpdateFactory.UpdateList.length);
+			counter.html(Helper.UpdateFactory.UpdateList.length);
 		};
-		MarkingTool.Editor.UpdateFactory.AddedEvent.add(upd);
-		MarkingTool.Editor.UpdateFactory.RemovedEvent.add(upd);
+		Helper.UpdateFactory.AddedEvent.add(upd);
+		Helper.UpdateFactory.RemovedEvent.add(upd);
 	};
 	//erzeugt die Inhalte für die Filterbox auf der linken seite
 	var createFilterBox = function() {
-		var hc = MarkingTool.Editor.HTML;
+		var hc = Helper.HTML;
 		return [
 			hc.CreateElementRaw({
 				css: ["warning", "devmode"],
 				children: [
-					hc.CreateElement("div", "Warnung", {css: ["warning-header"]}),
-					hc.CreateElement("div", "Dieser Bestandteil der Plattform befindet sich noch im aktiven Entwicklungsstadium, "+
-					"weshalb einige Dinge unter Umständen noch nicht funktionieren oder sich in Zukunft sehr stark "+
-					"verändern werden.<br/>Probleme und Anmerkungen hier melden: <a href=\"http://www3.informatik.uni-halle.de/mantis/\""+
-					" target=\"_blank\">Mantis</a>")
+					hc.CreateElement("div", Lang("filter","warningHeader"), {css: ["warning-header"]}),
+					hc.CreateElement("div", Lang("filter","devModeWarning"))
 				] 
 			}),
 			hc.CreateElementRaw({
 				css: ["warning", "many-items", "ui-hide"],
 				children: [
 					hc.CreateElement("div", "Warnung", {css: ["warning-header"]}),
-					hc.CreateElement("div", "Da diese Serie sehr groß ist, kann es zu Verzögerungen in der Verarbeitung kommen.")
+					hc.CreateElement("div", Lang("filter","largeSeries"))
 				] 
 			}),
-			hc.CreateFoldingGroup("Filter", [
-				hc.CreateElement("div", "Serie:", { css: ["ui-filter-title"] }),
+			hc.CreateFoldingGroup(Lang("filter","filterHeader"), [
+				hc.CreateElement("div", Lang("filter","seriesSetting"), { css: ["ui-filter-title"] }),
 				hc.CreateSelect(MarkingTool.Editor.View.SheetCodes, undefined, undefined, { css: ["ui-select"] }),
-				hc.CreateElement("div", "Kontrolleur:", { css: ["ui-filter-title"] }),
+				hc.CreateElement("div", Lang("filter","lectureSetting"), { css: ["ui-filter-title"] }),
 				hc.CreateSelect(MarkingTool.Editor.View.TutorCodes, undefined, function() {
 					MarkingTool.Editor.Logic.Filter.lecture = $(this).val();
 					MarkingTool.Editor.Logic.ApplyFilter();
 				}, { css: ["ui-select"] }),
-				hc.CreateElement("div", "Status:", { css: ["ui-filter-title"] }),
+				hc.CreateElement("div", Lang("filter","stateSetting"), { css: ["ui-filter-title"] }),
 				hc.CreateSelect(MarkingTool.Editor.View.StateCodes, undefined, function() {
 					MarkingTool.Editor.Logic.Filter.state = $(this).val();
 					MarkingTool.Editor.Logic.ApplyFilter();
 				}, { css: ["ui-select"] }),
 				MarkingTool.Editor.Settings.RestrictedMode ? null :
-					hc.CreateElement("div", "Ohne Einsendung", { css: ["ui-filter-title"] }),
+					hc.CreateElement("div", Lang("filter","withoutSubmissionSetting"), { css: ["ui-filter-title"] }),
 				MarkingTool.Editor.Settings.RestrictedMode ? null :
 					hc.CreateInput("checkbox", function() {
 						MarkingTool.Editor.Logic.Filter.showTaskWithoutUserFiles = $(this).is(":checked");
 						MarkingTool.Editor.Logic.ApplyFilter();
 					}),
 				MarkingTool.Editor.Settings.RestrictedMode ? null :
-					hc.CreateElement("label", "Einträge ohne Einsendungen anzeigen", {
+					hc.CreateElement("label", Lang("filter","wosCheckbox"), {
 						style: "font-size: 0.8em"
 					})
 			], { css: ["ui-open"] }),
 			MarkingTool.Editor.Settings.RestrictedMode ? null :
-				hc.CreateFoldingGroup("Sortierung", [
-					hc.CreateElement("div", "Sortiere nach:", { css: ["ui-filter-title"] }),
+				hc.CreateFoldingGroup(Lang("filter","sortHeader"), [
+					hc.CreateElement("div", Lang("filter","sortSetting"), { css: ["ui-filter-title"] }),
 					hc.CreateSelect({
-						"name": "Nach Namen",
-						"task": "Nach Aufgaben"
+						"name": Lang("filter","sortForName"),
+						"task": Lang("filter","sortForTask")
 					}, "name", function() {
 						var useTaskNum = $(this).val() == "task";
-						MarkingTool.Editor.UpdateIndicator.ShowBox();
+						Helper.UpdateIndicator.ShowBox();
 						MarkingTool.Editor.View.createFunctions.clear();
 						MarkingTool.Editor.View.Loader.lazyLoadList = [];
 						MarkingTool.Editor.View.createCompleteTaskView(useTaskNum);
 						MarkingTool.Editor.Logic.ApplyFilter();
 						MarkingTool.Editor.Logic.UpdateTaskCounter();
-						MarkingTool.Editor.UpdateIndicator.HideBox();
+						Helper.UpdateIndicator.HideBox();
 					}, { css: ["ui-select"] })
 				], { css: ["ui-open"] }),
-			hc.CreateFoldingGroup("Suche", [
+			hc.CreateFoldingGroup(Lang("filter","searchHeader"), [
 				hc.CreateInput("text", function() {
 					MarkingTool.Editor.Logic.Filter.text = $(this).val();
 					MarkingTool.Editor.Logic.ApplyFilter();
@@ -523,7 +161,7 @@ MarkingTool.Editor.View = new function() {
 	//erzeugt eine Sidebar, die auch als Fenster geöffnet werden kann. Sie wird für 
 	//den Filter genutzt.
 	var createLayoutWindow = function(name, content, viewIndex) {
-		var hc = MarkingTool.Editor.HTML;
+		var hc = Helper.HTML;
 		var window = hc.CreateElementRaw({
 			css: ["ui-layout-window-outer"],
 			children: [
@@ -561,14 +199,14 @@ MarkingTool.Editor.View = new function() {
 	//erzeugt den Hauptcontainer in dem sich dann der Filter, die Änderungen und die
 	//Hauptelemente befinden.
 	var createLayoutContainer = function() {
-		var hc = MarkingTool.Editor.HTML;
+		var hc = Helper.HTML;
 		var container = hc.CreateElementRaw({
 			css: ["ui-layout-container"],
 			children: [
 				hc.CreateElementRaw({
 					css: ["ui-layout-left", "ui-layout-dock", "ui-open"],
 					children: [
-						createLayoutWindow("Filter", createFilterBox(), 0)
+						createLayoutWindow(Lang("filter","filterHeader"), createFilterBox(), 0)
 					]
 				}),
 				createWrapper(hc.CreateElementRaw({
@@ -578,7 +216,7 @@ MarkingTool.Editor.View = new function() {
 				hc.CreateElementRaw({
 					css: ["ui-layout-right", "ui-layout-dock", "ui-open"],
 					children: [
-						createLayoutWindow("Änderungen", [], 1)
+						createLayoutWindow(Lang("changes","changeHeader"), [], 1)
 					]
 				})
 			]
@@ -588,14 +226,14 @@ MarkingTool.Editor.View = new function() {
 	//erzeugt den dünnen Streifen mit den schnellen Optionseinstellungen für die 
 	//ganzen Einträge
 	var createTaskSingleBar = function(task, useTaskNum) {
-		var hc = MarkingTool.Editor.HTML;
+		var hc = Helper.HTML;
 		var changeState = 0;
 		var inpPoints, inpState;
 		var bar = hc.CreateElementRaw({
 			css: ["ui-task-bar"],
 			children: [
 				(useTaskNum ? hc.CreateElement("div", task.path[1], { css: ["ui-task-num"] }) :
-					hc.CreateElement("div", "#"+task.markingId, { css: ["ui-task-sub"], title: "Einsendungs-ID" })),
+					hc.CreateElement("div", "#"+task.markingId, { css: ["ui-task-sub"], title: Lang("task","submissionId") })),
 				hc.CreateElementRaw({
 					children: [
 						inpPoints = hc.CreateInput("text", function(){
@@ -612,10 +250,15 @@ MarkingTool.Editor.View = new function() {
 						}, {
 							css: ["ui-task-points small"], 
 							value: String(task.points == undefined ? "": task.points).replace(/\./g, ","), 
-							placeholder: "leer" 
+							placeholder: Lang("task","emptyInput")
 						} ),
-						hc.CreateElement("span", "/" + task.maxPoints + (task.isBonus ? "<span title=\"Bonus\"> (B)</span>" : ""), {
-							title: "Punkte"
+						hc.CreateElement("span", "/" + task.maxPoints +
+							(task.isBonus ? "<span title="+
+							Lang("task","bonusPoints")+"> "+
+							Lang("task","bonusPointsShort")+
+							"</span>" : ""
+						), {
+							title: Lang("task","points")
 						})
 					]
 				}),
@@ -636,37 +279,37 @@ MarkingTool.Editor.View = new function() {
 					hc.CreateSimpleImage("../../../../../../CContent/content/common/img/Error.png", 
 						task.studentComment == null || task.studentComment == "" ? 
 						{ css: [ "ui-show" ] } : undefined),
-					hc.CreateElement("div", "S"),
+					hc.CreateElement("div", Lang("task", "studentShort")),
 					undefined,
-					{ title: "Studentenkommentar" }
+					{ title: Lang("task","studentComment") }
 				),
 				hc.CreateComplexButton(
 					hc.CreateSimpleImage("../../../../../../CContent/content/common/img/Text.png"),
 					hc.CreateSimpleImage("../../../../../../CContent/content/common/img/Error.png", 
 						task.tutorComment == null || task.tutorComment == "" ? 
 						{ css: [ "ui-show" ] } : undefined),
-					hc.CreateElement("div", "K"),
+					hc.CreateElement("div", Lang("task", "lectureShort")),
 					undefined,
-					{ title: "Kontrolleurkommentar" }
+					{ title: Lang("task","lectureComment") }
 				),
 				hc.CreateComplexButton(
 					hc.CreateSimpleImage("../../../../../../CContent/content/common/img/Download.png"),
 					hc.CreateSimpleImage("../../../../../../CContent/content/common/img/Error.png", 
 						task.userFile == null ? { css: [ "ui-show" ] } : undefined),
-					hc.CreateElement("div", "S"),
+					hc.CreateElement("div", Lang("task", "studentShort")),
 					undefined,
-					{ title: "Studenteneinsendung" }
+					{ title: Lang("task","studentSubmission") }
 				),
 				hc.CreateComplexButton(
 					hc.CreateSimpleImage("../../../../../../CContent/content/common/img/Download.png"),
 					hc.CreateSimpleImage("../../../../../../CContent/content/common/img/Error.png", 
 						task.tutorFile == null ? { css: [ "ui-show" ] } : undefined),
-					hc.CreateElement("div", "K"),
+					hc.CreateElement("div", Lang("task", "lectureShort")),
 					undefined,
-					{ title: "Kontrolleureinsendung" }
+					{ title: Lang("task","lectureSubmission") }
 				),
 				!useTaskNum ? null :
-					hc.CreateElement("div", "#"+task.markingId, { css: ["ui-task-sub"], title: "Einsendungs-ID" })
+					hc.CreateElement("div", "#"+task.markingId, { css: ["ui-task-sub"], title: Lang("task","submissionId") })
 			]
 		});
 		task.UpdatedEvent.add(function() {
@@ -681,16 +324,16 @@ MarkingTool.Editor.View = new function() {
 	};
 	//erzeugt das Rohgerüst für die Box in der alle Einsendungen aufgelistet sind.
 	var createSimpleTaskBox = function(key, isTaskNum) {
-		var hc = MarkingTool.Editor.HTML;
+		var hc = Helper.HTML;
 		var content;
 		var header;
-		if (isTaskNum) header = hc.CreateElement("div", "Aufgabe "+key);
+		if (isTaskNum) header = hc.CreateElement("div", Lang("task","task")+" "+key);
 		else {
 			var user = MarkingTool.Editor.Logic.bName[key].user;
 			var names = [];
 			for (var i = 0; i<user.length; ++i)
 				names.push(user[i].name);
-			header = hc.CreateElement("div", names.join(", "));
+			header = hc.CreateElement("div", names.join(Lang("localisation","nameListSeperator")));
 		}
 		var box = hc.CreateElementRaw({
 			css: ["ui-task-big-box"],
@@ -707,16 +350,16 @@ MarkingTool.Editor.View = new function() {
 	};
 	//erzeugt eine Box zur Signalisation, dass keine Einträge sichtbar sind.
 	var createEmptyTaskBox = function(show) {
-		var hc = MarkingTool.Editor.HTML;
+		var hc = Helper.HTML;
 		var box = hc.CreateElementRaw({
 			css: show ? ["ui-task-big-box", "empty"] : ["ui-task-big-box", "empty", "ui-hide"],
-			content: "Keine Elemente zur Anzeige vorhanden"
+			content: Lang("task","noElementsToShow")
 		});
 		return box;
 	};
 	//Erzeugt den Inhalt für die erweiterten Funktionen
 	var createTaskDetailContent = function(task) {
-		var hc = MarkingTool.Editor.HTML;
+		var hc = Helper.HTML;
 		task.changeState_detailContent = 0;
 		var slider, pointInput, stategroup, tutorComment, studFileBut, studFileInput,
 			tutorFileBut, tutorFileInput, acceptedInput;
@@ -764,7 +407,7 @@ MarkingTool.Editor.View = new function() {
 			hc.CreateElementRaw({
 				css: ["ui-task-points"],
 				children: [
-					hc.CreateElement("div", "Punkte:"),
+					hc.CreateElement("div", Lang("task","pointsHeader")),
 					createWrapper(slider = hc.CreateTrackBar(task.points == null ? 0 : task.points, 
 						task.maxPoints, function(value) {
 							task.changeState_detailContent++;
@@ -792,10 +435,10 @@ MarkingTool.Editor.View = new function() {
 								task.changeState_detailContent--;
 							}, {
 								value: String(task.points == null ? "" : task.points).replace(/\./g, ","),
-								placeholder: "leer"
+								placeholder: Lang("task","emptyInput")
 							}),
 							hc.CreateElement("span", "/" + task.maxPoints + (task.isBonus ? "<span title=\"Bonus\"> (B)</span>" : ""), {
-								title: "Punkte"
+								title: Lang("task","points")
 							})
 						]
 					})
@@ -804,7 +447,7 @@ MarkingTool.Editor.View = new function() {
 			//Statusauswahl
 			hc.CreateElementRaw({
 				children: [
-					hc.CreateElement("div", "Status:"),
+					hc.CreateElement("div", Lang("task","stateHeader")),
 					createWrapper(stategroup = hc.CreateElementRaw({
 						children: states,
 						element: "fieldset"
@@ -814,7 +457,7 @@ MarkingTool.Editor.View = new function() {
 			//Akzeptiert
 			hc.CreateElementRaw({
 				children: [
-					hc.CreateElement("div", "Akzeptiert:"),
+					hc.CreateElement("div", Lang("task","acceptedHeader")),
 					hc.CreateElementRaw({
 						children: [
 							acceptedInput = hc.CreateInput("checkbox", function(){
@@ -824,7 +467,7 @@ MarkingTool.Editor.View = new function() {
 								}
 								task.changeState_detailContent--;
 							}, task.accepted ? { checked: "checked" } : {}),
-							hc.CreateElement("label", "Diese Einsendung akzeptieren", {
+							hc.CreateElement("label", Lang("task","acceptSubmission"), {
 								style: "font-size: 0.9em"
 							})
 						]
@@ -835,12 +478,12 @@ MarkingTool.Editor.View = new function() {
 			hc.CreateElementRaw({
 				css: ["ui-task-comment"],
 				children: [
-					hc.CreateElement("div", "Bemerkung:"),
+					hc.CreateElement("div", Lang("task","commentHeader")),
 					hc.CreateElementRaw({
 						children: [
-							hc.CreateElement("div", "Student:"),
+							hc.CreateElement("div", Lang("task","studentHeader")),
 							task.studentComment == null ?
-							hc.CreateElement("div", "kein Kommentar", {
+							hc.CreateElement("div", Lang("task","noComment"), {
 								style: "font-style: italic; font-weight: normal;"
 							}) :
 							hc.CreateElementRaw({
@@ -848,7 +491,7 @@ MarkingTool.Editor.View = new function() {
 								text: task.studentComment,
 								readonly: "readonly"
 							}),
-							hc.CreateElement("div", "Kontrolleur:"),
+							hc.CreateElement("div", Lang("task","lectureHeader")),
 							tutorComment = hc.CreateElementRaw({
 								element: "textarea",
 								text: task.tutorComment
@@ -860,17 +503,17 @@ MarkingTool.Editor.View = new function() {
 			//Einsendungen
 			hc.CreateElementRaw({
 				children: [
-					hc.CreateElement("div", "Dateien:"),
+					hc.CreateElement("div", Lang("task","filesHeader")),
 					hc.CreateElementRaw({
 						css: ["ui-task-files"],
 						children: [
 							hc.CreateElementRaw({
 								"data-has-file": task.userFile != null,
 								children: [
-									hc.CreateElement("div", "Student:", {css: ["ui-task-files-header"]}),
-									hc.CreateElement("div", "Keine Einsendung vorhanden"),
+									hc.CreateElement("div", Lang("task","studentHeader"), {css: ["ui-task-files-header"]}),
+									hc.CreateElement("div", Lang("task","noSubmissionExists")),
 									studFileBut = hc.CreateButton(
-										"Öffnen", undefined, {
+										Lang("task","openFile"), undefined, {
 											element: "a",
 											target: "_blank",
 											href: task.userFile==null ? "" : task.userFile.url,
@@ -904,10 +547,10 @@ MarkingTool.Editor.View = new function() {
 							hc.CreateElementRaw({
 								"data-has-file": task.tutorFile != null,
 								children: [
-									hc.CreateElement("div", "Kontrolleur:", {css: ["ui-task-files-header"]}),
-									hc.CreateElement("div", "Keine Einsendung vorhanden"),
+									hc.CreateElement("div", Lang("task","lectureHeader"), {css: ["ui-task-files-header"]}),
+									hc.CreateElement("div", Lang("task","noSubmissionExists")),
 									tutorFileBut = hc.CreateButton(
-										"Öffnen", undefined, {
+										Lang("task","openFile"), undefined, {
 											element: "a",
 											target: "_blank",
 											href: task.tutorFile==null ? "" : task.tutorFile.url,
@@ -1003,7 +646,7 @@ MarkingTool.Editor.View = new function() {
 	};
 	//Erzeugt die Info für die Auspaltung der Zustände
 	var createForkInfo = function(baseState, serverState, localState, changed) {
-		var hc = MarkingTool.Editor.HTML;
+		var hc = Helper.HTML;
 		var server = hc.CreateElementRaw({
 			css: ["ui-fork-button", "large", "server"],
 			children: [
@@ -1022,7 +665,7 @@ MarkingTool.Editor.View = new function() {
 					]
 				})
 			],
-			title: "Der aktuelle Zustand auf dem Server"
+			title: Lang("fork","currentServerState")
 		});
 		var local = hc.CreateElementRaw({
 			css: ["ui-fork-button", "large", "local"],
@@ -1042,7 +685,7 @@ MarkingTool.Editor.View = new function() {
 					]
 				})
 			],
-			title: "Der zu speichernde Zustand"
+			title: Lang("fork","stateToSave")
 		});
 		var state = null; //undefined
 		var handler = function() {
@@ -1064,7 +707,7 @@ MarkingTool.Editor.View = new function() {
 				createWrapper(hc.CreateElementRaw({
 					css: ["ui-fork-button"],
 					children: [ baseState ],
-					title: "Der ursprüngliche Zustand"
+					title: Lang("fork","oldState")
 				})),
 				createWrapper(hc.CreateElementRaw({
 					children: [
@@ -1086,7 +729,7 @@ MarkingTool.Editor.View = new function() {
 	};
 	
 	var createForkTaskInfo = function(task, fullsetted) {
-		var hc = MarkingTool.Editor.HTML;
+		var hc = Helper.HTML;
 		if (task.error != null) {
 		}
 		else {
@@ -1094,7 +737,8 @@ MarkingTool.Editor.View = new function() {
 			var content = [];
 			var setted;
 			var createFork = function(param, createView) {
-				var fork = createForkInfo(createView(task.task[param+"_old"]), 
+				var fork = createForkInfo(
+					createView(task.task[param+"_old"]), 
 					createView(task.newData[param]),
 					createView(task.task[param+"_new"]), 
 					function(state) {
@@ -1108,25 +752,25 @@ MarkingTool.Editor.View = new function() {
 			};
 			if (task.newData.points != undefined)
 				content.push(createFork("points", function(value) {
-					return hc.CreateElementRaw({ text: "Punkte: " + value });
+					return hc.CreateElementRaw({ text: Lang("task","pointsHeader")+" " + value });
 				}));
 			if (task.newData.accepted != undefined)
 				content.push(createFork("accepted", function(value) {
-					return hc.CreateElementRaw({ text: value ? "Akzeptiert" : "nicht Akzeptiert" });
+					return hc.CreateElementRaw({ text: Lang("task", value ? "accepted" : "notAccepted") });
 				}));
 			if (task.newData.status != undefined)
 				content.push(createFork("status", function(value) {
 					for (var i = 0; i<MarkingTool.Editor.View.StateCodes.length; ++i)
 						if (MarkingTool.Editor.View.StateCodes[i].key == value)
-							return hc.CreateElementRaw({ text: "Status: " + MarkingTool.Editor.View.StateCodes[i].value });
-					return hc.CreateElementRaw({ text: "Status: unbekannt" });
+							return hc.CreateElementRaw({ text: Lang("task","stateHeader")+" " + MarkingTool.Editor.View.StateCodes[i].value });
+					return hc.CreateElementRaw({ text: Lang("fork","stateUnknown") });
 				}));
 			if (task.newData.tutorComment != undefined)
 				content.push(createFork("tutorComment", function(value) {
 					return hc.CreateElementRaw({
 						css: ["comment-box"],
 						children: [
-							hc.CreateElementRaw({ title: "Tutorkommentar:" }),
+							hc.CreateElementRaw({ title: Lang("task","lectureCommentHeader") }),
 							hc.CreateElementRaw({ element: "textarea", text: value })
 						]
 					});
@@ -1136,7 +780,7 @@ MarkingTool.Editor.View = new function() {
 					return hc.CreateElementRaw({
 						css: ["comment-box"],
 						children: [
-							hc.CreateElementRaw({ title: "Studentenkommentar:" }),
+							hc.CreateElementRaw({ title: Lang("task","studentCommentHeader") }),
 							hc.CreateElementRaw({ element: "textarea", text: value })
 						]
 					});
@@ -1155,7 +799,7 @@ MarkingTool.Editor.View = new function() {
 					if (MarkingTool.Editor.Logic.bName[i].user[0].id == task.task.leaderId) {
 						var group = MarkingTool.Editor.Logic.bName[i].user;
 						for (i = 0; i<group.length; ++i)
-							name += group[i].name + ", ";
+							name += group[i].name + Lang("localisation","nameListSeperator");
 						break;
 					}
 			name += "#"+task.task.markingId;
@@ -1174,6 +818,98 @@ MarkingTool.Editor.View = new function() {
 		}
 	};
 	
+	//Erzeugt das Optionsmenu
+	this.CreateOptionsMenu = function() {
+		var hc = Helper.HTML;
+		var updating = 0;
+		var autoSaveSlide, autoSaveInput, pingSlide, pingInput;
+		var win = Helper.HTML.CreateWindow(
+			Lang("menu","optionBtn"), "large", [
+				hc.CreateFoldingGroup(Lang("settings","saveHeader"), [
+					hc.CreateElement("div", Lang("settings","saveIntervallDesc"),
+						{ css: ["ui-filter-title"] }),
+					hc.CreateElementRaw({
+						children: [
+							createWrapper(autoSaveSlide = hc.CreateTrackBar(
+								MarkingTool.Editor.Settings.IntervallTime, 
+								120, function(val) {
+									if ((++updating) == 1) {
+										val = Math.ceil(val < 1 ? 1 : val > 120 ? 120 : val);
+										autoSaveInput.val(String(val));
+										autoSaveSlide.slider("value", val);
+										MarkingTool.Editor.Settings.IntervallTime = val;
+										MarkingTool.Editor.Settings.SaveCookies();
+									}
+									updating--;
+								})),
+							autoSaveInput = hc.CreateInput("number", function() {
+								if ((++updating) == 1) {
+									var val = $(this).val();
+									try { val = val * 1; }
+									catch (e) { val = 5; }
+									val = Math.ceil(val < 1 ? 1 : val > 120 ? 120 : val);
+									autoSaveInput.val(val);
+									autoSaveSlide.slider("value", val);
+									MarkingTool.Editor.Settings.IntervallTime = val;
+									MarkingTool.Editor.Settings.SaveCookies();
+								}
+								updating--;
+							}, {
+								value: MarkingTool.Editor.Settings.IntervallTime,
+								placeholder: Lang("settings","missingValue")
+							})
+						],
+						css: ["opt-inline-content"]
+					}),
+					hc.CreateElement("div", Lang("settings","pingDesc"),
+						{ css: ["ui-filter-title"] }),
+					hc.CreateElementRaw({
+						children: [
+							createWrapper(pingSlide = hc.CreateTrackBar(
+								MarkingTool.Editor.Settings.PingTimeSetting, 
+								7, function(val) {
+									if ((++updating) == 1) {
+										val = Math.round(val < 0 ? 0 : val > 7 ? 7 : val);
+										pingInput.text(
+											Lang("time",MarkingTool.Editor.Logic.GetSpecialTimeName(
+												"ping","lang",val)));
+										pingSlide.slider("value", val);
+										MarkingTool.Editor.Settings.PingTimeSetting = val;
+										MarkingTool.Editor.Settings.SaveCookies();
+									}
+									updating--;
+								})),
+							pingInput = hc.CreateElement("span", Lang("time", 
+								MarkingTool.Editor.Logic.GetSpecialTimeName(
+									"ping","lang",
+									MarkingTool.Editor.Settings.PingTimeSetting)
+							))
+						],
+						css: ["opt-inline-content"]
+					})
+				], { css: ["ui-open"] }),
+				hc.CreateFoldingGroup(Lang("settings","editorHeader"), [
+					hc.CreateElement("div", Lang("settings","autoOpenEditorBoxes"),
+						{ css: ["ui-filter-title"] }),
+					hc.CreateElementRaw({
+						children: [
+							hc.CreateInput("checkbox", function() {
+								if ((++updating) == 1) {
+									MarkingTool.Editor.Settings.AutoOpenTaskBoxes =
+										$(this).is(":checked");
+									MarkingTool.Editor.Settings.SaveCookies();
+								}
+								updating--;
+							}, MarkingTool.Editor.Settings.AutoOpenTaskBoxes ? { checked: "checked" } : {}),
+							hc.CreateElement("span", Lang("settings", "autoOpenEditorBoxDesc"))
+						]
+					})
+				], { css: ["ui-open"] })
+			], function() {
+				win.remove();
+			});
+		return win;
+	};
 	//Erzeugt eine Übersicht zu allen Änderungen
 	this.createForkInfo = function(tasks, fullsetted) {
 		var left = tasks.length;
@@ -1191,14 +927,14 @@ MarkingTool.Editor.View = new function() {
 			if (!submitted) fullsetted();
 			return;
 		}
-		return MarkingTool.Editor.HTML.CreateElementRaw({
+		return Helper.HTML.CreateElementRaw({
 			children: content
 		});
 	};
 	//erzeugt den Eintrag für die Änderungsliste in der genau aufgelistet ist, 
 	//was geändert wurde.
 	this.createChangeInfo = function(task, closeMethod) {
-		var hc = MarkingTool.Editor.HTML;
+		var hc = Helper.HTML;
 		var user = task.path[0];
 		var names = [];
 		for (var i = 0; i<user.length; ++i)
@@ -1209,8 +945,8 @@ MarkingTool.Editor.View = new function() {
 			var def = task.getPropertys()["points"].getDefaultValue();
 			oldP.html(def == undefined ? 0 : def);
 			newP.html(task.points);
-			newAccepted.html(task.accepted ? "Einsendung wird nun akzeptiert" :
-				"Einsendung wird nicht mehr akzeptiert");
+			newAccepted.html(task.accepted ? Lang("changes","submissionAcceptedNow") :
+				Lang("changes","submissionNotAcceptedNow"));
 			newStudentFile.html(task.userFile != null && task.userFile.file != null ?
 				Math.round(task.userFile.file.size/1024) + " KB" : "0 KB");
 			newTutorFile.html(task.tutorFile != null && task.tutorFile.file != null ?
@@ -1240,42 +976,42 @@ MarkingTool.Editor.View = new function() {
 				css: ["ui-upd-line", "ui-upd-points"],
 				children: [
 					oldP = hc.CreateElement("span", 0),
-					hc.CreateElement("span", "Punkte"),
+					hc.CreateElement("span", Lang("task","points")),
 					hc.CreateElement("span", "&#10142;"),
 					newP = hc.CreateElement("span", 0),
-					hc.CreateElement("span", "Punkte")
+					hc.CreateElement("span", Lang("task","points"))
 				]
 			}),
 			lineS = hc.CreateElementRaw({
 				css: ["ui-upd-line", "ui-upd-state"],
 				children: [
-					hc.CreateElement("span", "Neuer Status: "),
-					newState = hc.CreateElement("span", "-")
+					hc.CreateElement("span", Lang("changes","newState")),
+					newState = hc.CreateElement("span", Lang("changes","voidState"))
 				]
 			}),
 			lineA = hc.CreateElementRaw({
 				css: ["ui-upd-line", "ui-upd-accepted"],
 				children: [
-					newAccepted = hc.CreateElement("span", "Akzeptiert")
+					newAccepted = hc.CreateElement("span", Lang("task","accepted"))
 				]
 			}),
 			lineC = hc.CreateElementRaw({
 				css: ["ui-upd-line", "ui-upd-comment"],
 				children: [
-					hc.CreateElement("span", "Neue Bemerkung")
+					hc.CreateElement("span", Lang("changes","newComment"))
 				]
 			}),
 			lineSF = hc.CreateElementRaw({
 				css: ["ui-upd-line", "ui-upd-student-file"],
 				children: [
-					hc.CreateElement("span", "Neue Einsendung: "),
+					hc.CreateElement("span", Lang("changes","newSubmission")),
 					newStudentFile = hc.CreateElement("span", "0 KB")
 				]
 			}),
 			lineTF = hc.CreateElementRaw({
 				css: ["ui-upd-line", "ui-upd-tutor-file"],
 				children: [
-					hc.CreateElement("span", "Neue Korrektur: "),
+					hc.CreateElement("span", Lang("changes","newCorrectedFile")),
 					newTutorFile = hc.CreateElement("span", "0 KB")
 				]
 			})
@@ -1290,7 +1026,7 @@ MarkingTool.Editor.View = new function() {
 						createWrapper(hc.CreateButton("X", function() {
 							task.resetValues();
 							close();
-						}, { title: "Alle Werte aus diesem Eintrag zurücksetzen"}))
+						}, { title: Lang("changes","resetChanges")}))
 					]
 				}),
 				hc.CreateElementRaw({
@@ -1315,13 +1051,14 @@ MarkingTool.Editor.View = new function() {
 	//Erzeugt den Container und Ansicht für eine Einsendung. Hier wird alles zu
 	//dieser bearbeitet und angezeigt.
 	this.createTasksView = function(task, useTaskNum) {
-		var hc = MarkingTool.Editor.HTML;
+		var hc = Helper.HTML;
 		var result = {
 			box: null,
 			show: false,
 			create: function() {
 				result.box = hc.CreateElementRaw({
-					css: ["ui-task-box"],
+					css: MarkingTool.Editor.Settings.AutoOpenTaskBoxes ?
+						["ui-task-box", "ui-open"] : ["ui-task-box"],
 					children: [
 						hc.CreateElementRaw({
 							css: ["ui-task-header"],
@@ -1331,7 +1068,7 @@ MarkingTool.Editor.View = new function() {
 									$(this).parent().parent().parent().toggleClass("ui-open");
 								}, {
 									css: ["ui-task-header-switch"],
-									title: "detailierte Ansicht"
+									title: Lang("task","detailView")
 								}))
 							]
 						}),
@@ -1521,13 +1258,13 @@ MarkingTool.Editor.View = new function() {
 		thisref.Loader.check();
 	}
 	//Eine Schlange an Funktionen, die neue Boxen erzeugen können.
-	this.createFunctions = new MarkingTool.Queue();
+	this.createFunctions = new Helper.Queue();
 	//Ein paar Methoden, die das Nachladen von Boxen unterstützen.
 	this.Loader = {
 		loaderBox: undefined,
 		lazyLoadList: [],
 		createLoaderContainer: function() {
-			var hc = MarkingTool.Editor.HTML;
+			var hc = Helper.HTML;
 			var content = "";
 			for (var i = 0; i<12; ++i) content+="<div/>";
 			var box = hc.CreateElementRaw({
@@ -1615,7 +1352,7 @@ MarkingTool.Editor.Logic = new function() {
 	var bTask = {}; //Sortiert nach Aufgabennummer
 	//erzeugt ein neues überwachtes Objekt aus den Rohdaten der Aufgabe.
 	var createTaskObject = function(raw, path) {
-		var data = new MarkingTool.Editor.UpdateFactory.AddObject(raw, path); //Erzeugt das Objekt über die Verwaltung
+		var data = new Helper.UpdateFactory.AddObject(raw, path); //Erzeugt das Objekt über die Verwaltung
 		//Falls der Wert auf null gesetzt wurde, so wurde seine Property nicht erzeugt.
 		//Hier wird gegengeprüft, ob alle Propertys angelegt wurden (nur die die auf null gesetzt werden können).
 		data.checkProperty("submissionId", null);
@@ -1676,6 +1413,91 @@ MarkingTool.Editor.Logic = new function() {
 		updObjectList[path].close();
 		updObjectList[path] = undefined;
 	};
+	//Zeigt ein Fehlerfenster an, bei der angezeigt wird, dass bei der Verarbeitung ein 
+	//unbekannter Fehler aufgetreten ist
+	var showErrorBox = function(data) {
+		var message = Lang("error","errorHeader")+data.error;
+		if (data.hint) message += "<br/>"+Lang("error","hint")+data.hint;
+		message += "<br/>"+Lang("error","courseId")+MarkingTool.Editor.Settings.Get.cid;
+		message += "<br/>"+Lang("error","seriesId")+MarkingTool.Editor.Settings.Get.sid;
+		message += "<br/>"+Lang("error","report");
+		var frame = Helper.HTML.CreateWindow(
+			Lang("error","duringSubmission"), "small", [
+				Helper.HTML.CreateElementRaw({
+					content: message
+				})
+			], function() {
+				frame.remove();
+			});
+		frame.appendTo($(document.body));
+	};
+	//Eine Funktion, die regelmäßig aufgerufen wird, um den Onlinestatus zu überprüfen
+	var enablePing = true;
+	var internalPing = function(onResult) {
+		$.get({
+			url: "../../../../../api/ping",
+			cache: false,
+			data: {},
+			success: function(data) {
+				data = JSON.parse(data);
+				console.log(data);
+				if (data.success) {
+					if (onResult != undefined)
+						onResult(0);
+				}
+				else if (data.error != "invalidLogin") {
+					showErrorBox(data);
+					if (onResult != undefined)
+						onResult(2);
+				}
+				else {
+					if (onResult != undefined)
+						onResult(1);
+				}
+			}
+		});
+	};
+	var showLoginWindow = function(finish) {
+		enablePing = false;
+		var iframe = Helper.HTML.CreateElement("iframe","",{
+			src: "../../../../../../Login.php",
+			css: [ "ui-iframe-full-size" ]
+		});
+		var frame;
+		iframe.on("load", function() {
+			internalPing(function(result) {
+				if (result == 0) {
+					frame.remove();
+					enablePing = true;
+					if (finish != undefined)
+						finish();
+				}
+			});
+		});
+		frame = Helper.HTML.CreateWindow(
+			Lang("error","sessionTimeout"), "large", [
+				iframe
+			], function() {
+				var subframe = Helper.HTML.CreateWindow(
+					Lang("error","forceLoginHeader"), "small", [
+						Helper.HTML.CreateElement("div",
+							Lang("error","forceLoginDesc"))
+					], function() {
+						subframe.remove();
+					});
+				subframe.appendTo($(document.body));
+			}
+		);
+		frame.appendTo($(document.body));
+	};
+	var ping = function() {
+		if (!enablePing) return;
+		internalPing(function(result) {
+			if (result == 1) {
+				showLoginWindow();
+			}
+		});
+	};
 		
 	//Bestimmt den Filter, der auf alle angezeigten Aufgaben angewandt wird.
 	this.Filter = {
@@ -1691,13 +1513,13 @@ MarkingTool.Editor.Logic = new function() {
 	//Ein Schlüssel zur Erkennung neuerer Filtermethoden
 	var filterChangedEventKey = 0;
 	//private Event für FilterChanged
-	var filterChangedEvent = new MarkingTool.Event();
+	var filterChangedEvent = new Helper.Event();
 	//Dieses Event wird ausgelöst, sobald ApplyFilter() aufgerufen wurde.
 	Object.defineProperty(this, "FilterChanged", {get: function(){ return filterChangedEvent; } });
 	//Wendet den ausgewählten Filter auf alle angezeigten Boxen an.
 	//[filter]: Objekt - Der Filter. (default: this.Filter)
 	this.ApplyFilter = function(filter) {
-		MarkingTool.Editor.UpdateIndicator.ShowBox();
+		Helper.UpdateIndicator.ShowBox();
 		if (filter == undefined) filter = thisref.Filter;
 		else thisref.Filter = filter;
 		thisref.FilterChanged.invoke(thisref);
@@ -1710,7 +1532,7 @@ MarkingTool.Editor.Logic = new function() {
 		if (show) $(".ui-task-big-box.empty").addClass("ui-hide");
 		else $(".ui-task-big-box.empty").removeClass("ui-hide");
 		MarkingTool.Editor.View.Loader.check();
-		MarkingTool.Editor.UpdateIndicator.HideBox();
+		Helper.UpdateIndicator.HideBox();
 	};
 	//Die Anzahl der noch zu erstellenden Tasks
 	this.TaskLeftCounter = 0;
@@ -1725,15 +1547,15 @@ MarkingTool.Editor.Logic = new function() {
 		else $(".warning.many-items").addClass("ui-hide");
 	};
 	//Überprüft ob Tasks nun hochgeladen werden können und führt diesen Upload durch.
-	this.CheckForUploadableTasks = function() {
+	this.CheckForUploadableTasks = function(force) {
 		checking++;
 		if (checking == 1) {
 			//Phase 1 - Suche nach Uploadbarem und packe es zusammen
 			var list = [];
 			var time = Date.now() - MarkingTool.Editor.Settings.IntervallTime * 60000;
-			for (var i = 0; i<MarkingTool.Editor.UpdateFactory.UpdateList.length; ++i)
-				if (MarkingTool.Editor.UpdateFactory.UpdateList[i].changeTime >= time) {
-					var task = MarkingTool.Editor.UpdateFactory.UpdateList[i];
+			for (var i = 0; i<Helper.UpdateFactory.UpdateList.length; ++i)
+				if (force || Helper.UpdateFactory.UpdateList[i].changeTime <= time) {
+					var task = Helper.UpdateFactory.UpdateList[i];
 					var changeObj = { 
 						data: {
 							leaderId: task.leaderId,
@@ -1785,47 +1607,79 @@ MarkingTool.Editor.Logic = new function() {
 			}
 			if (cur.length > 0) upl.push(cur);
 			//Phase 3 - Lade die Änderungen hoch
-			for (var i = 0; i<upl.length; ++i) {
+			var postFunc = function(uplData) {
 				$.post({
-					url: "../../../../api/upload/course/" + MarkingTool.Editor.Settings.Get.cid +
+					url: "../../../../../api/upload/course/" + MarkingTool.Editor.Settings.Get.cid +
 						"/exercisesheet/" + MarkingTool.Editor.Settings.Get.sid,
 					cache: false,
-					data: { "tasks[]": upl[i] },
+					data: { "tasks[]": uplData },
 					success: function(data) {
-						console.log(data);
 						//data = JSON.parse(data);
 						if (data.success) return;
-						if (data.error != "outdatetData") {
-							var message = "Fehler: "+data.error;
-							if (data.hint) message += "<br/>Hinweis: "+data.hint;
-							message += "<br/>Kurs-ID: "+MarkingTool.Editor.Settings.Get.cid;
-							message += "<br/>Serien-ID: "+MarkingTool.Editor.Settings.Get.sid;
-							message += "<br/>Bitte melden Sie diesen Fehler auf <a href=\""+
-								"http://www3.informatik.uni-halle.de/mantis/\" target=\"_blank\""+
-								">Mantis</a>.";
-							var frame = MarkingTool.Editor.HTML.CreateWindow(
-								"Fehler in der Übertragung", "small", [
-									MarkingTool.Editor.HTML.CreateElementRaw({
-										content: message
-									})
-								], function() {
-									frame.remove();
-								});
-							frame.appendTo($(document.body));
+						if (data.error == "invalidLogin") {
+							showLoginWindow(function() {
+								postFunc(uplData);
+							});
 						}
-						else {
-							var frame = MarkingTool.Editor.HTML.CreateWindow(
-								"Es existiert ein neuerer Zustand auf dem Server", "large", [
-									MarkingTool.Editor.HTML.CreateElementRaw({
+						else if (data.error == "outdatetData") {
+							var full = false;
+							var info = MarkingTool.Editor.View.createForkInfo(data.smalStates, function() {
+								full = true;
+							});
+							var btn = info.find(".ui-fork-button.large");
+							var serv = btn.filter(".server");
+							var locl = btn.filter(".local");
+							var frame = Helper.HTML.CreateWindow(
+								Lang("fork","newStateOnServer"), "large", [
+									Helper.HTML.CreateElementRaw({
 										//content: JSON.stringify(data.smalStates)
-										content: [MarkingTool.Editor.HTML.CreateButtonFrame([
-											MarkingTool.Editor.HTML.CreateButton("Alles vom Server auswählen"),
-											MarkingTool.Editor.HTML.CreateButton("Alles eigene auswählen"),
-											MarkingTool.Editor.HTML.CreateButton("Änderungen übernehmen")
-										], [
-											MarkingTool.Editor.View.createForkInfo(data.smalStates, function() {
+										content: [Helper.HTML.CreateButtonFrame([
+											Helper.HTML.CreateButton(Lang("fork","selectServer"), function() {
+												serv.click();
+											}),
+											Helper.HTML.CreateButton(Lang("fork","selectLocal"), function() {
+												locl.click();
+											}),
+											Helper.HTML.CreateButton(Lang("fork","takeChanges"), function() {
+												if (!full) {
+													alert(Lang("fork","someLeftMsg"));
+													return;
+												}
+												else {
+													var tasks = data.smalStates;
+													for (var i = 0; i<tasks.length; ++i) {
+														var use = tasks[i].use;
+														console.log(tasks[i]);
+														var task;
+														for (var n = 0; n<bName.length; ++n)
+															if (bName[n].user[0].id == tasks[i].task.leaderId) {
+																for (var t = 0; t<bName[n].tasks.length; ++t)
+																	if (bName[n].tasks[t].task.id == tasks[i].task.exerciseId) {
+																		task = bName[n].tasks[t].task;
+																		break;
+																	}
+																break;
+															}
+														console.log(task);
+														if (task == undefined) continue;
+														var props = task.getPropertys();
+														for (var p in tasks[i].use)
+															if (tasks[i].use.hasOwnProperty(p)) {
+																if (tasks[i].use[p]) {
+																	props[p].setDefaultValue(tasks[i].newData[p]);
+																}
+																else {
+																	props[p].setDefaultValue(tasks[i].newData[p]);
+																	props[p].changeValue(tasks[i].newData[p]);
+																}
+															}
+														task.changeTime = 0;
+													}
+													frame.remove();
+													MarkingTool.Editor.Logic.CheckForUploadableTasks(false);
+												}
 											})
-										]										
+										], [ info ]										
 										)]
 									})
 								], function() {
@@ -1834,25 +1688,52 @@ MarkingTool.Editor.Logic = new function() {
 							);
 							frame.appendTo($(document.body));
 						}
+						else showErrorBox(data);
 					}
 				});
+			};
+			for (var i = 0; i<upl.length; ++i) {
+				postFunc(upl[i]);
 			}
 		}
 		checking--;
 	};
+	//Ruft spezielle Zeitdaten ab.
+	this.GetSpecialTimeName = function(set, format, index) {
+		var sets = {
+			ping: {
+				num: [ 10, 30, 60, 120, 300, 600, 1200, 0 ],
+				lang: [ "sec10", "sec30", "min1", "min2", "min5", "min10", "min20", "never" ]
+			}
+		};
+		if (sets[set] && sets[set][format])
+			return sets[set][format][index];
+	}
 	
 	//private Init()
 	var _init = function() {
 		getAllTasks();
 		thisref.bName = bName;
 		thisref.bTask = bTask;
-		MarkingTool.Editor.UpdateFactory.AddedEvent.add(updAddHandler);
-		MarkingTool.Editor.UpdateFactory.RemovedEvent.add(updRemoveHandler);
+		Helper.UpdateFactory.AddedEvent.add(updAddHandler);
+		Helper.UpdateFactory.RemovedEvent.add(updRemoveHandler);
 		var loop = function() {
-			thisref.CheckForUploadableTasks();
+			thisref.CheckForUploadableTasks(false);
 			setTimeout(loop, 60000); //1 Minute
 		};
 		setTimeout(loop, 60000);
+		var pingWaited = 0;
+		var pingloop = function() {
+			pingWaited += 10;
+			if (pingWaited >= thisref.GetSpecialTimeName("ping","num",
+				MarkingTool.Editor.Settings.PingTimeSetting)) 
+			{
+				pingWaited = 0;
+				ping();
+			}
+			setTimeout(pingloop, 10000); //10 Sekunden
+		};
+		pingloop();
 	};
 	//Initialisiert die Logik
 	this.Init = function() {
@@ -1874,241 +1755,47 @@ MarkingTool.Editor.Settings = new function() {
 	this.IntervallTime = 5;
 	//Int - die maximale Anzahl an Variablen die per HTTP-POST gesendet werden können.
 	this.MaxUploadVariablesCount = 1000;
+	//Bool - Gibt an ob alle Boxen standartmäßig geöffnet sind
+	this.AutoOpenTaskBoxes = false;
+	//Der Zeitindex für die automatische Kontrolle der Session
+	this.PingTimeSetting = 2;
 	//Die Variablen, die über HTTP-GET in der URL definiert wurden
 	this.Get = {};
+	//Der Cookiezugriff
+	this.Cookie = new Helper.Cookie();
+	
+	this.SaveCookies = function() {
+		var cookie = {
+			IntervallTime: thisref.IntervallTime,
+			AutoOpenTaskBoxes: thisref.AutoOpenTaskBoxes,
+			PingTimeSetting: thisref.PingTimeSetting
+		};
+		thisref.Cookie.SetCookie("MarkingTool", cookie, thisref.Cookie.OneDay * 365);
+	};
 	
 	//private Init()
 	var _init = function() {
-		var query = window.location.search.substring(1);
-		var vars = query.split('&');
-		for (var i = 0; i<vars.length; ++i) {
-			var pair = vars[i].split('=');
-			this.Get[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+		// var query = window.location.search.substring(1);
+		// var vars = query.split('&');
+		// for (var i = 0; i<vars.length; ++i) {
+			// var pair = vars[i].split('=');
+			// this.Get[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+		// }
+		// console.log("Get Parameter: "+JSON.stringify(this.Get));
+		var cookies = thisref.Cookie.GetCookie("MarkingTool");
+		if (cookies) {
+			if (cookies.IntervallTime != undefined) 
+				thisref.IntervallTime = cookies.IntervallTime;
+			if (cookies.AutoOpenTaskBoxes != undefined)
+				thisref.AutoOpenTaskBoxes = cookies.AutoOpenTaskBoxes;
+			if (cookies.PingTimeSetting != undefined)
+				thisref.PingTimeSetting = cookies.PingTimeSetting;
 		}
-		console.log("Get Parameter: "+JSON.stringify(this.Get));
 	};
 	//Initialisiert die Einstellungen
 	this.Init = function() {
 		_init.call(thisref);
 	};
-};
-
-//=== Bibliothek um die Updates nachzuvollziehen
-MarkingTool.Editor.UpdateIndicator = new function() {
-	var thisref = this;
-	var display = undefined;
-	$(function(){ display = $(".loading-box"); });
-	//Zeigt die Ladeanzeige an
-	this.ShowBox = function() {
-		if (display != undefined) display.show();
-	};
-	//Versteckt die Ladeanzeige
-	this.HideBox = function() {
-		if (display != undefined) display.hide();
-	};
-	//Setzt die Beschreibung der Ladeanzeige
-	//text: String - Der Text der gesetzt werden soll.
-	this.SetText = function(text) {
-		if (display != undefined) display.find(".loading-description").html(text);
-	};
-};
-
-//=== Update Bibliothek um immer den aktuellen Zustand von Objekten verfolgen zu können. ===
-
-//Verfolgt den Zustand einer Property eines Objektes
-//owner: Objekt - Das Objekt das eine Property enthält, die Überwacht werden soll.
-//key:   String - Der Name der Property
-//path:  Objekt - Eindeutige Informationen, die das Objekt identifizieren
-MarkingTool.Editor.UpdateProperty = function(owner, key, path) {
-	var defaultValue = undefined;
-	var updadedEvent = new MarkingTool.Event();
-	var thisref = this; //Der Verweis auf dieses Objekt für spätere Eventaufrufe
-	//String - Der Name der Property
-	this.key = key;
-	//Objekt - Der Pfad, der das Besitzerobjekt identifiziert.
-	this.path = path;
-	//[EVENT] Dieses Event wird ausgelöst, wenn sich der Wert dieser Variable ändert.
-	//[function(sender)]
-	//    sender: Objekt - dieses Objekt
-	Object.defineProperty(this, "UpdatedEvent", {get: function(){ return updadedEvent; } });
-	//Setzt den Standartwert für die Property
-	//value: Wert - Der Standartwert
-	this.setDefaultValue = function(value) {
-		defaultValue = value;
-		thisref.UpdatedEvent.invoke(thisref);
-	};
-	//Überprüft ob der aktuelle Wert der Property mit dem Standartwert übereinstimmt. Es erfolgt keine
-	//Typprüfung.
-	//return: Boolean - Ergebnis der Überprüfung
-	this.isValueChanged = function() {
-		var value = owner[thisref.key];
-		return value != defaultValue;
-	};
-	//Verändert den Wert der Property
-	//newValue: Wert - Der neue Wert der Property
-	this.changeValue = function(newValue) {
-		owner[key] = newValue;
-		thisref.UpdatedEvent.invoke(thisref);
-	};
-	//Setzt den Wert auf den Standart zurück
-	this.resetValue = function() {
-		owner[key] = defaultValue;
-		thisref.UpdatedEvent.invoke(thisref);
-	};
-	//Ruft den Standartwert ab
-	//return: Wert - der Standartwert dieser Property
-	this.getDefaultValue = function() {
-		return defaultValue;
-	}
-};
-//Ein Objekt welches selbst verfolgen kann, ob sich sein Zustand ändert.
-//data: Objekt - Ein Objekt welches durch Schlüssel- und Wertepaare alle Daten enthält. Alle Daten aus 
-//               diesem Objekt werden auch hier wieder verfügbar gemacht. Obwohl dieses Objekt als Daten-
-//               speicher dient, sollten alle Zugriffe nur über das UpdateObject erfolgen
-//path: Objekt - Eindeutige Informationen, die das Objekt identifizieren
-MarkingTool.Editor.UpdateObject = function (data, path) {
-	var propertys = {};
-	var thisref = this;
-	var updadedEvent = new MarkingTool.Event();
-	var raiseHandler = function(sender) {
-		thisref.UpdatedEvent.invoke(thisref);
-	};
-	for (var key in data) {
-		if (data.hasOwnProperty(key)) {
-			propertys[key] = new MarkingTool.Editor.UpdateProperty(data, key, path);
-			Object.defineProperty(this, key, {
-				get: (function(data, key) { return function() { return data[key]; }; })(data, key),
-				set: (function(data, key, propertys) { return function(value) { propertys[key].changeValue(value); }; })(data, key, propertys)
-			});
-			propertys[key].UpdatedEvent.add(raiseHandler);
-		}
-		else this[key] = data[key];
-	}
-	//Überprüft ob eine Property schon exisitiert und fügt sie gegebenfalls hinzu.
-	//key:          String - Der Name der Property
-	//defaultValue: Wert   - Der Wert den die Property annehmen soll, falls sie noch nicht existierte.
-	this.checkProperty = function(key, defaultValue) {
-		if (propertys[key] == undefined) {
-			propertys[key] = new MarkingTool.Editor.UpdateProperty(data, key, path);
-			propertys[key].changeValue(defaultValue);
-			propertys[key].setDefaultValue(defaultValue);
-			Object.defineProperty(this, key, {
-				get: (function(data, key) { return function() { return data[key]; }; })(data, key),
-				set: (function(data, key, propertys) { return function(value) { propertys[key].changeValue(value); }; })(data, key, propertys)
-			});
-			propertys[key].UpdatedEvent.add(raiseHandler);
-		}
-	};
-	//Objekt - Die eindeitige Information, die dieses Objekt identifiziert.
-	this.path = path;
-	//[EVENT] Dieses Event wird ausgelöst, wenn sich der Wert einer Variable ändert.
-	//[function(sender)]
-	//    sender: Objekt - dieses Objekt
-	Object.defineProperty(this, "UpdatedEvent", {get: function(){ return updadedEvent; } });
-	//Setzt alle Propertys auf ihren Standartwert
-	this.resetValues = function() {
-		for (var key in propertys)
-			if (propertys.hasOwnProperty(key))
-				propertys[key].resetValue();
-		thisref.UpdatedEvent.invoke(thisref);
-	};
-	//Überprüft ob die aktuellen Werte aller Propertys mit dem Standartwerten übereinstimmen. Es erfolgt keine
-	//Typprüfung.
-	//return: Boolean - Ergebnis der Überprüfung
-	this.isValueChanged = function() {
-		for (var key in propertys)
-			if (propertys.hasOwnProperty(key))
-				if (propertys[key].isValueChanged())
-					return true;
-		return false;
-	};
-	//Setzt den Standartwert für eine Property
-	//key:   String - Der Name der Property
-	//value: Wert   - Der neue Standartwert der Property
-	this.setDefaultValue = function(key, value) {
-		propertys[key].setDefaultValue(value);
-		thisref.UpdatedEvent.invoke(thisref);
-	};
-	//Setzt die aktuellen Werte aller Propertys als Standartwerte
-	this.setAllValuesAsDefault = function() {
-		for (var key in propertys)
-			if (propertys.hasOwnProperty(key))
-				propertys[key].setDefaultValue(data[key]);
-		thisref.UpdatedEvent.invoke(thisref);
-	};
-	//Ruft die Liste alle Propertys zu diesen Objekt ab
-	//return: Objekt - Eine Liste aus Schlüssel-Werte-Paaren mit UpdateProperty als Werten.
-	this.getPropertys = function() {
-		return propertys;
-	};
-};
-//Eine Bibliothek die mehrere Objekte auf Änderungen überwachen kann.
-MarkingTool.Editor.UpdateFactory = new function() {
-	var thisref = this;
-	var changedHandler = function(sender) {
-		if (sender.isValueChanged()) {
-			sender.changeTime = Date.now(); //Zeit in ms
-			for (var i = 0; i<thisref.UpdateList.length; ++i)
-				if (thisref.UpdateList[i] == sender)
-					return;
-			thisref.UpdateList.push(sender);
-			addedEvent.invoke(sender);
-		}
-		else {
-			sender.changeTime = Number.MAX_SAFE_INTEGER;
-			for (var i = 0; i<thisref.UpdateList.length; ++i)
-				if (thisref.UpdateList[i] == sender) {
-					thisref.UpdateList.splice(i, 1);
-					removedEvent.invoke(sender);
-					return;
-				}
-		}
-	};
-	var addedEvent = new MarkingTool.Event();
-	var removedEvent = new MarkingTool.Event();
-	
-	//[EVENT] Dieses Event wird ausgelöst, falls eines Objekt sich geändert hat und nun in UpdateList steht.
-	//[function(sender)]
-	//    sender: Objekt - das veränderte Objekt
-	Object.defineProperty(this, "AddedEvent", {get: function() { return addedEvent; } });
-	//[EVENT] Dieses Event wird ausgelöst, falls eines Objekt nun nicht mehr als geändert betrachtet wird und 
-	//        deshalb nicht mehr in UpdateList steht.
-	//[function(sender)]
-	//    sender: Objekt - das nun unveränderte Objekt
-	Object.defineProperty(this, "RemovedEvent", {get: function() { return removedEvent; } });
-	//[UpdateObject] - Eine Liste aller aktuell geänderter Werte
-	this.UpdateList = [];
-	//[UpdateObject] - Eine Liste aller Objekte die von dieser Facoty überwacht werden.
-	this.WatchList = [];
-	//Fügt ein neues Objekt der Überwachung hinzu.
-	//data:   Objekt       - Die Daten mit den das UpdateObject erstellt wird.
-	//path:   Objekt       - Die Daten mit den das Objekt identifiziert wird.
-	//return: UpdateObject - Das zur Überwachung hinzugefügte UpdateObject
-	this.AddObject = function(data, path) {
-		var obj = new MarkingTool.Editor.UpdateObject(data, path);
-		obj.UpdatedEvent.add(changedHandler);
-		thisref.WatchList.push(obj);
-		return obj;
-	};
-	//Entfernt ein UpdateObject wieder aus der Überwachung.
-	//path: Objekt - der Identifizierer für das UpdateObject.
-	this.RemoveObject = function(path) {
-		for (var i = 0; i<this.WatchList.length; ++i)
-			if (this.WatchList[i].path == path) {
-				this.WatchList.splice(i,1)[0].UpdatedEvent.remove(changedHandler);
-				return;
-			}
-	};
-	//Setzt ein UpdateObject wieder auf den Standartwert zurück.
-	//path: Objekt - der Identifizierer unter der das UpdateObject zu finden ist.
-	this.Reset = function(path) {
-		for (var i = 0; i<this.UpdateList.length; ++i)
-			if (this.UpdateList[i].path == path) {
-				this.UpdateList.splice(i, 1)[0].resetValues();
-				return;
-			}
-	};
-	
 };
 
 
@@ -2122,5 +1809,5 @@ $(function() {
 	MarkingTool.Editor.View.createCompleteTaskView(MarkingTool.Editor.Settings.RestrictedMode);
 	MarkingTool.Editor.Logic.ApplyFilter();
 	MarkingTool.Editor.Logic.UpdateTaskCounter();
-	MarkingTool.Editor.UpdateIndicator.HideBox();
+	Helper.UpdateIndicator.HideBox();
 });

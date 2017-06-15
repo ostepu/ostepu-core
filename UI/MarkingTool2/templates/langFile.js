@@ -1,0 +1,1 @@
+var Lang=function(area,cell){var d="<--1-->";if(d[area]&&d[area][cell])return d[area][cell];else return'"<--2-->"'};
