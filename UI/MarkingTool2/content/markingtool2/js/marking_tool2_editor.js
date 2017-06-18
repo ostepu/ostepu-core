@@ -1587,7 +1587,7 @@ MarkingTool.Editor.Logic = new function() {
 					setProp("accepted");
 					setProp("status");
 					setProp("tutorComment");
-					setProp("studentComment");
+					//setProp("studentComment"); //readonly
 					if (!setPropFile("userFile")) continue; //Datei wurde noch nicht geladen
 					if (!setPropFile("tutorFile")) continue;
 					task.setAllValuesAsDefault();

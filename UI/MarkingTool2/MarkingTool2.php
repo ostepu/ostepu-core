@@ -190,15 +190,6 @@ class UIMarkingTool2
         if ($loggedIn !== true){
             return Model::isOk(json_encode($loggedIn, JSON_PRETTY_PRINT));
         }
-		
-        /* sid und cid existieren hier garantiert
-        elseif (!isset($_GET["cid"]) || !isset($_GET["sid"])) {
-            $response = array(
-                "success" => false,
-                "error" => "noCourseOrSheetSetted",
-                "hint" => 'GET variables $cid and/or $sid not setted'
-            );
-        }*/
         
         if (!isset($postData["tasks"])) {
             $response = array(
@@ -309,7 +300,56 @@ class UIMarkingTool2
                 }
                 //Schritt 4 - Speichere neuen Zustand
                 //Schritt 4.1 - Speichere Daten zur Submission (Einsendung)
-                //Schritt 4.2 - Speichere Daten zum Marking (Korrektur)
+                if ($sub) {
+					$s = &$exercise["submission"];
+					$changed = false;
+					if (isset($task["accepted_new"])) {
+						$v = intval(boolval($task["accepted_new"]));
+						if ($v >=0 && $v <= 1) {
+							$changed = true;
+							$s["accepted"] = $v;
+						}
+					}
+					if ($changed) {
+						updateSubmission($s["id"], $s["accepted"]);
+					}
+				}
+				//Schritt 4.2 - Speichere Daten zum Marking (Korrektur)
+				if ($mark) {
+					$m = &$exercise["submission"]["marking"];
+					$changed = false;
+					if (isset($task["points_new"])) {
+						$v = floatval($task["points_new"]);
+						if ($v >= 0) {
+							$changed = true;
+							$m["points"] = $v;
+						}
+					}
+					if (isset($task["tutorComment_new"])) {
+						$v = strval($task["tutorComment_new"]);
+						if ($v !== null) {
+							$changed = true;
+							$m["tutorComment"] = $v;
+						}
+					}
+					if (isset($task["status_new"])) {
+						$v = intval($task["status_new"]);
+						if ($v >= 0) { //TODO: Max marking status
+							$changed = true;
+							$m["status"] = $v;
+						}
+					}
+					if ($changed) {
+						saveMarking($m["points"],
+							$m["tutorComment"],
+							$m["status"],
+							$m["submissionId"],
+							$m["id"],
+							$exercise["submission"]["leaderId"],
+							$uid,
+							$exercise["id"]);
+					}
+				}
             }
         }
         // if (!$response["success"] && !isset($response["hint"]))
