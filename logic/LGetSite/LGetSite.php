@@ -2049,10 +2049,23 @@ class LGetSite
         unset($computedSubmissions);
 
         $allGroups = array();
+        $myLeader = array(); // soll zu einem Nutzer den Gruppenleiter enthalten
         foreach ($groups as $group){
             if (!isset($allGroups[$group['sheetId']]))
                 $allGroups[$group['sheetId']] = array();
+            if (!isset($myLeader[$group['sheetId']]))
+                $myLeader[$group['sheetId']] = array();
+
             $allGroups[$group['sheetId']][$group['leader']['id']] = $group;
+            
+            // ein Gruppenleiter ist sein eigener Leiter
+            $myLeader[$group['sheetId']][$group['leader']['id']] = $group['leader']['id'];
+            
+            // jetzt wird für alle Gruppenmitglieder der Leiter gesetzt
+            if (isset($group['members'])){
+                foreach ($group['members'] as $member){
+                    $myLeader[$group['sheetId']][$member['id']] = $group['leader']['id'];
+            }}
         }
         unset($groups);
 
@@ -2063,7 +2076,8 @@ class LGetSite
         $studentMarkings = array();
         foreach ($allMarkings as $marking) {
             $studentID = $marking['submission']['studentId'];
-            $leaderID = $marking['submission']['leaderId'];
+            $leaderID = $myLeader[$marking['submission']['exerciseSheetId']][$studentID]; //$marking['submission']['leaderId']; // möglicherweise passt diese leaderID nicht zur tatsächlichen Gruppe
+            
             if (!isset($studentMarkings[$studentID]))
                 $studentMarkings[$studentID] = array();
             if (!isset($studentMarkings[$leaderID]))
@@ -2084,6 +2098,7 @@ class LGetSite
             $exercisePoints[$exerciseID]['points'] += isset($marking['points']) ? $marking['points'] : 0;
             $exercisePoints[$exerciseID]['markings'] += isset($marking['points']) ? 1 : 0;
 
+            // wenn zu diesem Gruppenleiter weitere Mitglieder existieren, dann müssen diese die Punkte auch erhalten
             if (isset($allGroups[$sheetID][$leaderID])){
                 $group = $allGroups[$sheetID][$leaderID];
                 if (isset($group['members'])){
