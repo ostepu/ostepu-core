@@ -322,7 +322,9 @@ class Submission extends Object implements JsonSerializable
     }
 
     /**
+     * @deprecated
      * @var int $leaderId the id of the group leader
+     * @description es ist nicht garantiert, dass dieses Feld korrekt ist (NIEMALS NUTZEN)
      */
     private $leaderId = null;
 
