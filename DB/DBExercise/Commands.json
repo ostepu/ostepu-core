@@ -4,7 +4,7 @@
         "path": "\/link\/exists\/platform",
         "method": "GET",
         "description": {
-            "de": "pr\\u00fcft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollst\u00e4ndig installiert ist"
+            "de": "prüft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollständig installiert ist"
         },
         "inputType": "",
         "outputType": "Platform",
@@ -96,14 +96,14 @@
         "path": "\/exercise\/exercisesheet\/:esid(\/:sub)",
         "method": "GET",
         "description": {
-            "de": "liefert die Aufgaben einer \u00dcbungsserie (sub=nosubmission bedeutet ohne Einsendungen)"
+            "de": "liefert die Aufgaben einer Übungsserie (sub=nosubmission bedeutet ohne Einsendungen)"
         },
         "placeholder": [
             {
                 "name": "esid",
                 "regex": "%^([0-9_]+)$%",
                 "description": {
-                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                    "de": "die ID einer Übungsserie (`ExerciseSheet`)"
                 }
             }
         ],
@@ -146,7 +146,7 @@
         "path": "\/exercise",
         "method": "POST",
         "description": {
-            "de": "f\u00fcgt eine Aufgabe ein"
+            "de": "fügt eine Aufgabe ein"
         },
         "inputType": "Exercise",
         "outputType": "Exercise"
@@ -166,7 +166,7 @@
         "path": "\/platform",
         "method": "POST",
         "description": {
-            "de": "installiert dies zugeh\\u00f6rige Tabelle und die Prozeduren f\\u00fcr diese Plattform"
+            "de": "installiert die zugehörige Tabelle und die Prozeduren für diese Plattform"
         },
         "inputType": "Platform",
         "outputType": "Platform"

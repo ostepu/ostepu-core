@@ -4,7 +4,7 @@
         "path": "\/platform",
         "method": "POST",
         "description": {
-            "de": "installiert dies zugeh\\u00f6rige Tabelle und die Prozeduren f\\u00fcr diese Plattform"
+            "de": "installiert die zugehörige Tabelle und die Prozeduren für diese Plattform"
         },
         "inputType": "Platform",
         "outputType": "Platform"
@@ -28,7 +28,7 @@
                 "name": "esid",
                 "regex": "%^([0-9_]+)$%",
                 "description": {
-                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                    "de": "die ID einer Übungsserie (`ExerciseSheet`)"
                 }
             },
             {
@@ -61,7 +61,7 @@
                 "name": "esid",
                 "regex": "%^([0-9_]+)$%",
                 "description": {
-                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                    "de": "die ID einer Übungsserie (`ExerciseSheet`)"
                 }
             },
             {
@@ -80,14 +80,14 @@
         "path": "\/invitation\/leader\/exercisesheet\/:esid\/user\/:userid",
         "method": "GET",
         "description": {
-            "de": "ermittelt die Einladungen eines Gruppenleiters f\u00fcr eine \u00dcbungsserie"
+            "de": "ermittelt die Einladungen eines Gruppenleiters für eine Übungsserie"
         },
         "placeholder": [
             {
                 "name": "esid",
                 "regex": "%^([0-9_]+)$%",
                 "description": {
-                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                    "de": "die ID einer Übungsserie (`ExerciseSheet`)"
                 }
             },
             {
@@ -127,7 +127,7 @@
         "path": "\/link\/exists\/platform",
         "method": "GET",
         "description": {
-            "de": "pr\\u00fcft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollst\u00e4ndig installiert ist"
+            "de": "prüft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollständig installiert ist"
         },
         "inputType": "",
         "outputType": "Platform",
@@ -170,14 +170,14 @@
         "path": "\/invitation\/exercisesheet\/:esid",
         "method": "GET",
         "description": {
-            "de": "ermittelt alle Einladungen einer \u00dcbungsserie"
+            "de": "ermittelt alle Einladungen einer Übungsserie"
         },
         "placeholder": [
             {
                 "name": "esid",
                 "regex": "%^([0-9_]+)$%",
                 "description": {
-                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                    "de": "die ID einer Übungsserie (`ExerciseSheet`)"
                 }
             }
         ],
@@ -190,7 +190,7 @@
         "path": "\/invitation",
         "method": "POST",
         "description": {
-            "de": "f\u00fcgt eine neue Einladung hinzu"
+            "de": "fügt eine neue Einladung hinzu"
         },
         "inputType": "Invitation",
         "outputType": "Invitation"
@@ -210,14 +210,14 @@
         "path": "\/invitation\/member\/exercisesheet\/:esid\/user\/:userid",
         "method": "GET",
         "description": {
-            "de": "ermittelt alle Einladungen einer \u00dcbungsserie eines Nutzers (als Mitglied)"
+            "de": "ermittelt alle Einladungen einer Übungsserie eines Nutzers (als Mitglied)"
         },
         "placeholder": [
             {
                 "name": "esid",
                 "regex": "%^([0-9_]+)$%",
                 "description": {
-                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                    "de": "die ID einer Übungsserie (`ExerciseSheet`)"
                 }
             },
             {

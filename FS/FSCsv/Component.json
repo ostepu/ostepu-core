@@ -1,7 +1,7 @@
 {
     "name": "FSCsv",
     "description": {
-        "de": "Die FSCsv erm\u00f6glicht das Erstellen von CSV-Dateien."
+        "de": "Die FSCsv ermöglicht das Erstellen von CSV-Dateien."
     },
     "version": "1.0",
     "classFile": "FSCsv.php",

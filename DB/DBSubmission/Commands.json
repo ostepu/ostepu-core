@@ -4,14 +4,14 @@
         "path": "\/submission\/exercisesheet\/:esid",
         "method": "GET",
         "description": {
-            "de": "gibt alle Einsendungen einer \u00dcbungsserie"
+            "de": "gibt alle Einsendungen einer Übungsserie"
         },
         "placeholder": [
             {
                 "name": "esid",
                 "regex": "%^([0-9_]+)$%",
                 "description": {
-                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                    "de": "die ID einer Übungsserie (`ExerciseSheet`)"
                 }
             }
         ],
@@ -61,7 +61,7 @@
         "path": "\/platform",
         "method": "POST",
         "description": {
-            "de": "installiert dies zugeh\\u00f6rige Tabelle und die Prozeduren f\\u00fcr diese Plattform"
+            "de": "installiert die zugehörige Tabelle und die Prozeduren für diese Plattform"
         },
         "inputType": "Platform",
         "outputType": "Platform"
@@ -71,7 +71,7 @@
         "path": "\/link\/exists\/platform",
         "method": "GET",
         "description": {
-            "de": "pr\\u00fcft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollst\u00e4ndig installiert ist"
+            "de": "prüft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollständig installiert ist"
         },
         "inputType": "",
         "outputType": "Platform",
@@ -90,7 +90,7 @@
                 "name": "esid",
                 "regex": "%^([0-9_]+)$%",
                 "description": {
-                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                    "de": "die ID einer Übungsserie (`ExerciseSheet`)"
                 }
             }
         ],
@@ -123,7 +123,7 @@
         "path": "\/submission\/user\/:userid\/exercise\/:eid",
         "method": "GET",
         "description": {
-            "de": "gibt alle Einsendungen eines Nutzers zu einer Aufgabe zur\u00fcck"
+            "de": "gibt alle Einsendungen eines Nutzers zu einer Aufgabe zurück"
         },
         "placeholder": [
             {
@@ -162,14 +162,14 @@
         "path": "\/submission\/user\/:userid\/exercisesheet\/:esid",
         "method": "GET",
         "description": {
-            "de": "gibt alle Einsendungen eines Nutzers zu einer \u00dcbungsserie zur\u00fcck"
+            "de": "gibt alle Einsendungen eines Nutzers zu einer Übungsserie zurück"
         },
         "placeholder": [
             {
                 "name": "esid",
                 "regex": "%^([0-9_]+)$%",
                 "description": {
-                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                    "de": "die ID einer Übungsserie (`ExerciseSheet`)"
                 }
             }
         ],
@@ -182,7 +182,7 @@
         "path": "\/submission(\/:selected)(\/date\/begin\/:beginStamp\/end\/:endStamp)",
         "method": "GET",
         "description": {
-            "de": "liefert alle Einsendungen (f\u00fcr alle Veranstaltungen), es kann aber ein bestimmter Zeitraum eingegrenzt und sich auf selektierte Einsendungen festgelegt werden"
+            "de": "liefert alle Einsendungen (für alle Veranstaltungen), es kann aber ein bestimmter Zeitraum eingegrenzt und sich auf selektierte Einsendungen festgelegt werden"
         },
         "inputType": "",
         "outputType": "Submission",
@@ -193,14 +193,14 @@
         "path": "\/submission\/group\/user\/:userid\/exercisesheet\/:esid",
         "method": "GET",
         "description": {
-            "de": "liefert alle Einsendungen einer Gruppe (anhand der NutzerId eines Gruppenmitglieds und der \u00dcbungsserie)"
+            "de": "liefert alle Einsendungen einer Gruppe (anhand der NutzerId eines Gruppenmitglieds und der Übungsserie)"
         },
         "placeholder": [
             {
                 "name": "esid",
                 "regex": "%^([0-9_]+)$%",
                 "description": {
-                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                    "de": "die ID einer Übungsserie (`ExerciseSheet`)"
                 }
             }
         ],
@@ -301,7 +301,7 @@
         "path": "\/submission",
         "method": "POST",
         "description": {
-            "de": "f\u00fcgt eine neue Einsendung ein"
+            "de": "fügt eine neue Einsendung ein"
         },
         "inputType": "Submission",
         "outputType": "Submission"
@@ -407,14 +407,14 @@
         "path": "\/submission\/exercisesheet\/:esid\/selected",
         "method": "GET",
         "description": {
-            "de": "gibt alle selektierten Einsendungen einer \u00dcbungsserie"
+            "de": "gibt alle selektierten Einsendungen einer Übungsserie"
         },
         "placeholder": [
             {
                 "name": "esid",
                 "regex": "%^([0-9_]+)$%",
                 "description": {
-                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                    "de": "die ID einer Übungsserie (`ExerciseSheet`)"
                 }
             }
         ],
@@ -437,7 +437,7 @@
         "path": "\/submission\/exercise\/:eid",
         "method": "GET",
         "description": {
-            "de": "gibt alle Einsendungen zu einer Aufgabe zur\u00fcck"
+            "de": "gibt alle Einsendungen zu einer Aufgabe zurück"
         },
         "placeholder": [
             {

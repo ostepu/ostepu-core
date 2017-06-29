@@ -66,7 +66,7 @@
         "path": "\/selectedsubmission\/exercise\/:eid",
         "method": "GET",
         "description": {
-            "de": "liefert alle Auswahleintr\u00e4ge einer Aufgabe"
+            "de": "liefert alle Auswahleinträge einer Aufgabe"
         },
         "placeholder": [
             {
@@ -105,7 +105,7 @@
         "path": "\/link\/exists\/platform",
         "method": "GET",
         "description": {
-            "de": "pr\\u00fcft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollst\u00e4ndig installiert ist"
+            "de": "prüft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollständig installiert ist"
         },
         "inputType": "",
         "outputType": "Platform",
@@ -117,7 +117,7 @@
         "path": "\/selectedsubmission\/user\/:userid\/exercisesheet\/:esid",
         "method": "DELETE",
         "description": {
-            "de": "entfernt alle Auswahleintr\u00e4ge der Einsendungen eines Nutzers f\u00fcr eine Veranstaltung"
+            "de": "entfernt alle Auswahleinträge der Einsendungen eines Nutzers für eine Veranstaltung"
         },
         "placeholder": [
             {
@@ -131,7 +131,7 @@
                 "name": "esid",
                 "regex": "%^([0-9_]+)$%",
                 "description": {
-                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                    "de": "die ID einer Übungsserie (`ExerciseSheet`)"
                 }
             }
         ],
@@ -143,7 +143,7 @@
         "path": "\/selectedsubmission",
         "method": "POST",
         "description": {
-            "de": "f\u00fcgt eine neue Auswahl ein"
+            "de": "fügt eine neue Auswahl ein"
         },
         "inputType": "SelectedSubmission",
         "outputType": "SelectedSubmission"
@@ -153,7 +153,7 @@
         "path": "\/selectedsubmission\/course\/:courseid",
         "method": "GET",
         "description": {
-            "de": "liefert alle Auswahleintr\u00e4ge einer Veranstaltung"
+            "de": "liefert alle Auswahleinträge einer Veranstaltung"
         },
         "placeholder": [
             {
@@ -202,14 +202,14 @@
         "path": "\/selectedsubmission\/exercisesheet\/:esid",
         "method": "GET",
         "description": {
-            "de": "liefert alle Auswahleintr\u00e4ge einer \u00dcbungsserie"
+            "de": "liefert alle Auswahleinträge einer Übungsserie"
         },
         "placeholder": [
             {
                 "name": "esid",
                 "regex": "%^([0-9_]+)$%",
                 "description": {
-                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                    "de": "die ID einer Übungsserie (`ExerciseSheet`)"
                 }
             }
         ],
@@ -232,7 +232,7 @@
         "path": "\/platform",
         "method": "POST",
         "description": {
-            "de": "installiert dies zugeh\\u00f6rige Tabelle und die Prozeduren f\\u00fcr diese Plattform"
+            "de": "installiert die zugehörige Tabelle und die Prozeduren für diese Plattform"
         },
         "inputType": "Platform",
         "outputType": "Platform"

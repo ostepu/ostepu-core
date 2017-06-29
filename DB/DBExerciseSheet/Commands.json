@@ -14,14 +14,14 @@
         "path": "\/exercisesheet\/exercisesheet\/:esid",
         "method": "PUT",
         "description": {
-            "de": "editiert eine \u00dcbungsserie"
+            "de": "editiert eine Übungsserie"
         },
         "placeholder": [
             {
                 "name": "esid",
                 "regex": "%^([0-9_]+)$%",
                 "description": {
-                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                    "de": "die ID einer Übungsserie (`ExerciseSheet`)"
                 }
             }
         ],
@@ -33,7 +33,7 @@
         "path": "\/exercisesheet\/course\/:courseid(\/:exercise)",
         "method": "GET",
         "description": {
-            "de": "ermittelt alle \u00dcbungsserien einer Veranstaltung"
+            "de": "ermittelt alle Übungsserien einer Veranstaltung"
         },
         "placeholder": [
             {
@@ -52,7 +52,7 @@
         "path": "\/exercisesheet",
         "method": "POST",
         "description": {
-            "de": "f\u00fcgt eine neue \u00dcbungsserie ein"
+            "de": "fügt eine neue Übungsserie ein"
         },
         "inputType": "ExerciseSheet",
         "outputType": "ExerciseSheet"
@@ -72,14 +72,14 @@
         "path": "\/exercisesheet\/exercisesheet\/:esid\/url",
         "method": "GET",
         "description": {
-            "de": "liefert die Dateiadresse der \u00dcbungsserie (das Aufgabenblatt)"
+            "de": "liefert die Dateiadresse der Übungsserie (das Aufgabenblatt)"
         },
         "placeholder": [
             {
                 "name": "esid",
                 "regex": "%^([0-9_]+)$%",
                 "description": {
-                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                    "de": "die ID einer Übungsserie (`ExerciseSheet`)"
                 }
             }
         ],
@@ -93,7 +93,7 @@
         "path": "\/exercisesheet\/course\/:courseid\/url",
         "method": "GET",
         "description": {
-            "de": "liefert die Dateiadressen der \u00dcbungsserien einer Veranstaltung"
+            "de": "liefert die Dateiadressen der Übungsserien einer Veranstaltung"
         },
         "placeholder": [
             {
@@ -113,7 +113,7 @@
         "path": "\/platform",
         "method": "POST",
         "description": {
-            "de": "installiert dies zugeh\\u00f6rige Tabelle und die Prozeduren f\\u00fcr diese Plattform"
+            "de": "installiert die zugehörige Tabelle und die Prozeduren für diese Plattform"
         },
         "inputType": "Platform",
         "outputType": "Platform"
@@ -123,14 +123,14 @@
         "path": "\/exercisesheet\/exercisesheet\/:esid",
         "method": "DELETE",
         "description": {
-            "de": "entfernt eine \u00dcbungsserie"
+            "de": "entfernt eine Übungsserie"
         },
         "placeholder": [
             {
                 "name": "esid",
                 "regex": "%^([0-9_]+)$%",
                 "description": {
-                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                    "de": "die ID einer Übungsserie (`ExerciseSheet`)"
                 }
             }
         ],
@@ -152,14 +152,14 @@
         "path": "\/exercisesheet\/exercisesheet\/:esid(\/:exercise)",
         "method": "GET",
         "description": {
-            "de": "liefert eine einzelne \u00dcbungsserie anhand ihrer ID"
+            "de": "liefert eine einzelne Übungsserie anhand ihrer ID"
         },
         "placeholder": [
             {
                 "name": "esid",
                 "regex": "%^([0-9_]+)$%",
                 "description": {
-                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                    "de": "die ID einer Übungsserie (`ExerciseSheet`)"
                 }
             }
         ],

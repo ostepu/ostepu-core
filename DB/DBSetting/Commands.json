@@ -4,7 +4,7 @@
         "path": "\/course",
         "method": "post",
         "description": {
-            "de": "f\\u00fcgt DBSetting zur Veranstaltung hinzu"
+            "de": "fügt DBSetting zur Veranstaltung hinzu"
         },
         "inputType": "Course",
         "outputType": "Course"
@@ -14,7 +14,7 @@
         "path": "\/link\/exists\/course\/:courseid",
         "method": "get",
         "description": {
-            "de": "pr\u00fcft, ob DBSettings f\u00fcr diese Veranstaltung installiert wurde"
+            "de": "prüft, ob DBSettings für diese Veranstaltung installiert wurde"
         },
         "placeholder": [
             {
@@ -61,7 +61,7 @@
         "path": "\/setting\/course\/:courseid",
         "method": "post",
         "description": {
-            "de": "f\u00fcgt einen neuen Setting-Eintrag ein"
+            "de": "fügt einen neuen Setting-Eintrag ein"
         },
         "placeholder": [
             {

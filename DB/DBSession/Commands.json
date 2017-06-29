@@ -57,7 +57,7 @@
         "placeholder": [
             {
                 "name": "userid",
-                "regex": "%^[a-zA-Z0-9\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df]+$%",
+                "regex": "%^[a-zA-Z0-9äöüÄÖÜß]+$%",
                 "description": {
                     "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
                 }
@@ -78,7 +78,7 @@
         "placeholder": [
             {
                 "name": "userid",
-                "regex": "%^[a-zA-Z0-9\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df]+$%",
+                "regex": "%^[a-zA-Z0-9äöüÄÖÜß]+$%",
                 "description": {
                     "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
                 }
@@ -92,7 +92,7 @@
         "path": "\/link\/exists\/platform",
         "method": "GET",
         "description": {
-            "de": "pr\\u00fcft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollst\u00e4ndig installiert ist"
+            "de": "prüft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollständig installiert ist"
         },
         "inputType": "",
         "outputType": "Platform",
@@ -104,7 +104,7 @@
         "path": "\/session",
         "method": "POST",
         "description": {
-            "de": "f\u00fcgt eine Session ein (wenn der Eintrag schon existiert, dann wird er aktualisiert\/\u00fcberschrieben)"
+            "de": "fügt eine Session ein (wenn der Eintrag schon existiert, dann wird er aktualisiert\/überschrieben)"
         },
         "inputType": "Session",
         "outputType": "Session"
@@ -125,7 +125,7 @@
         "path": "\/session\/session\/:seid\/user\/:userid",
         "method": "GET",
         "description": {
-            "de": "gibt einen Eintrag zur\u00fcck, wenn die Session und der Nutzer zusammen passen"
+            "de": "gibt einen Eintrag zurück, wenn die Session und der Nutzer zusammen passen"
         },
         "placeholder": [
             {
@@ -137,7 +137,7 @@
             },
             {
                 "name": "userid",
-                "regex": "%^[a-zA-Z0-9\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df]+$%",
+                "regex": "%^[a-zA-Z0-9äöüÄÖÜß]+$%",
                 "description": {
                     "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
                 }
@@ -158,7 +158,7 @@
         "placeholder": [
             {
                 "name": "userid",
-                "regex": "%^[a-zA-Z0-9\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df]+$%",
+                "regex": "%^[a-zA-Z0-9äöüÄÖÜß]+$%",
                 "description": {
                     "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
                 }
@@ -213,7 +213,7 @@
         "path": "\/platform",
         "method": "POST",
         "description": {
-            "de": "installiert dies zugeh\\u00f6rige Tabelle und die Prozeduren f\\u00fcr diese Plattform"
+            "de": "installiert die zugehörige Tabelle und die Prozeduren für diese Plattform"
         },
         "inputType": "Platform",
         "outputType": "Platform"

@@ -1,7 +1,7 @@
 {
     "name": "LOOP",
     "description": {
-        "de": "???"
+        "de": "Die LOOP Komponente wird beim Erstellen von Übungsserien als Verarbeitung verwendet, dabei bietet sie im wesentlichen die Möglichkeit Java Einsendungen zu compilieren und im Fehlerfall abzulehnen."
     },
     "version": "1.0",
     "classFile": "LOOP.php",

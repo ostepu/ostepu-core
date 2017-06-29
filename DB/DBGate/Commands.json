@@ -118,7 +118,7 @@
         "path": "\/gateprofile",
         "method": "POST",
         "description": {
-            "de": "f\u00fcgt ein neues Profil ein"
+            "de": "fügt ein neues Profil ein"
         },
         "inputType": "GateProfile",
         "outputType": "GateProfile"
@@ -128,7 +128,7 @@
         "path": "\/gateauth",
         "method": "POST",
         "description": {
-            "de": "f\u00fcgt eine neue Authentifizierung ein"
+            "de": "fügt eine neue Authentifizierung ein"
         },
         "inputType": "GateAuth",
         "outputType": "GateAuth"
@@ -195,7 +195,7 @@
         "path": "\/gaterule",
         "method": "POST",
         "description": {
-            "de": "f\u00fcgt eine neue Regel ein"
+            "de": "fügt eine neue Regel ein"
         },
         "inputType": "GateRule",
         "outputType": "GateRule"
@@ -294,7 +294,7 @@
         "path": "\/gateprofile\/name\/:gpname",
         "method": "DELETE",
         "description": {
-            "de": "l\u00f6scht ein Profil \u00fcber seinen Namen"
+            "de": "löscht ein Profil über seinen Namen"
         },
         "placeholder": [
             {
@@ -333,7 +333,7 @@
         "path": "\/platform",
         "method": "POST",
         "description": {
-            "de": "installiert dies zugeh\\u00f6rige Tabelle und die Prozeduren f\\u00fcr diese Plattform"
+            "de": "installiert die zugehörige Tabelle und die Prozeduren für diese Plattform"
         },
         "inputType": "Platform",
         "outputType": "Platform"
@@ -385,7 +385,7 @@
         "path": "\/link\/exists\/platform",
         "method": "GET",
         "description": {
-            "de": "pr\\u00fcft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollst\u00e4ndig installiert ist"
+            "de": "prüft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollständig installiert ist"
         },
         "inputType": "",
         "outputType": "Platform",

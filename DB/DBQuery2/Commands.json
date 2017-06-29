@@ -4,7 +4,7 @@
         "path": "\/query",
         "method": "POST",
         "description": {
-            "de": "f\u00fchrt eine Datenbankanfrage aus und gibt das Ergebnis zur\u00fcck"
+            "de": "führt eine Datenbankanfrage aus und gibt das Ergebnis zurück"
         },
         "inputType": "Query",
         "outputType": "Query"
@@ -14,7 +14,7 @@
         "path": "\/multiGetRequest",
         "method": "POST",
         "description": {
-            "de": "f\u00fchrt eine Menge von Anfragen aus (als Array)"
+            "de": "führt eine Menge von Anfragen aus (als Array)"
         },
         "inputType": "",
         "outputType": ""
@@ -43,7 +43,7 @@
         "path": "\/platform",
         "method": "POST",
         "description": {
-            "de": "installiert dies zugeh\\u00f6rige Tabelle und die Prozeduren f\\u00fcr diese Plattform"
+            "de": "installiert die zugehörige Tabelle und die Prozeduren für diese Plattform"
         },
         "inputType": "Platform",
         "outputType": "Platform"
@@ -63,7 +63,7 @@
         "path": "\/link\/exists\/platform",
         "method": "GET",
         "description": {
-            "de": "pr\\u00fcft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollst\u00e4ndig installiert ist"
+            "de": "prüft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollständig installiert ist"
         },
         "inputType": "",
         "outputType": "Platform"

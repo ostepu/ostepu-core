@@ -33,7 +33,7 @@
         "path": "\/exercisetype",
         "method": "GET",
         "description": {
-            "de": "liefert alle Eintr\u00e4ge"
+            "de": "liefert alle Einträge"
         },
         "inputType": "",
         "outputType": "ExerciseType",
@@ -44,7 +44,7 @@
         "path": "\/link\/exists\/platform",
         "method": "GET",
         "description": {
-            "de": "pr\\u00fcft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollst\u00e4ndig installiert ist"
+            "de": "prüft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollständig installiert ist"
         },
         "inputType": "",
         "outputType": "Platform",
@@ -106,7 +106,7 @@
         "path": "\/platform",
         "method": "POST",
         "description": {
-            "de": "installiert dies zugeh\\u00f6rige Tabelle und die Prozeduren f\\u00fcr diese Plattform"
+            "de": "installiert die zugehörige Tabelle und die Prozeduren für diese Plattform"
         },
         "inputType": "Platform",
         "outputType": "Platform"
@@ -126,7 +126,7 @@
         "path": "\/exercisetype",
         "method": "POST",
         "description": {
-            "de": "f\u00fcgt einen neuen Eintrag ein"
+            "de": "fügt einen neuen Eintrag ein"
         },
         "inputType": "ExerciseType",
         "outputType": "ExerciseType"

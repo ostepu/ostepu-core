@@ -4,7 +4,7 @@
         "path": "\/course",
         "method": "post",
         "description": {
-            "de": "f\\u00fcgt DBRedirect zur Veranstaltung hinzu"
+            "de": "fügt DBRedirect zur Veranstaltung hinzu"
         },
         "inputType": "Course",
         "outputType": "Course"
@@ -14,7 +14,7 @@
         "path": "\/link\/exists\/course\/:courseid",
         "method": "get",
         "description": {
-            "de": "pr\u00fcft, ob die Komponente korrekt f\u00fcr diese Veranstaltung installiert wurde"
+            "de": "prüft, ob die Komponente korrekt für diese Veranstaltung installiert wurde"
         },
         "placeholder": [
             {
@@ -49,7 +49,7 @@
                 "name": "locname",
                 "regex": "%^([a-zA-Z_]+)$%",
                 "description": {
-                    "de": "der Ortsbezeichner einer Weiterleitung, an welchem diese gezeichnet wird (beispielsweise `sheet`, f\u00fcr alle \u00dcbungsserien)"
+                    "de": "der Ortsbezeichner einer Weiterleitung, an welchem diese gezeichnet wird (beispielsweise `sheet`, für alle Übungsserien)"
                 }
             }
         ],
@@ -62,7 +62,7 @@
         "path": "\/redirect\/course\/:courseid",
         "method": "post",
         "description": {
-            "de": "f\u00fcgt einen neuen Eintrag ein"
+            "de": "fügt einen neuen Eintrag ein"
         },
         "placeholder": [
             {

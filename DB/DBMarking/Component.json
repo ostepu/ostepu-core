@@ -1,7 +1,7 @@
 {
     "name": "DBMarking",
     "description": {
-        "de": "Die DBMarking erm\u00f6glicht den Zugriff auf die `Marking` Tabelle der Datenbank, dabei sollen Korrekturen, zu Einsendungen, verwaltet werden. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle geh\u00f6rt die `Marking` Datenstruktur.\n\n| Spalte        | Struktur  | Beschreibung | Besonderheit |\n| :------       |:---------:| :------------| -----------: |\n|M_id|INT NOT NULL| die ID der Korrektur |AUTO_INCREMENT,<br>UNIQUE|\n|U_id_tutor|INT NOT NULL| ein Verweis auf das Nutzerkonto des Kontrolleurs (bei automatisch kontrollierten steht hier der Einsender) |-|\n|F_id_file|INT NULL| ein Verweis auf den Korrektureintrag |-|\n|S_id|INT NOT NULL| ein Verweis auf die Einsendung |-|\n|M_tutorComment|VARCHAR(255) NULL| ein Kommentar des Kontrolleurs |-|\n|M_outstanding|TINYINT(1) NULL DEFAULT 0| hier kann die Einsendung als "besonders" markiert werden (1 = besonders, 0 = normal) |-|\n|M_status|TINYINT NOT NULL DEFAULT 0| der Korrekturstatus (siehe Marking::getStatusDefinition()) |-|\n|M_points|FLOAT NULL DEFAULT 0| die durch den Kontrolleur vergebenen Punkte |-|\n|M_date|INT UNSIGNED NULL DEFAULT 0| das Datum der Korrektur (als Unix-Zeitstempel) |-|\n|E_id|INT NULL| ein Verweis auf die zugehörige Aufgabe |-|\n|ES_id|INT NULL| ein Verweis auf die Übungsserie |-|\n|M_hideFile|TINYINT NOT NULL DEFAULT 0| ein Korrektur kann ausgeblendet werden, wenn beispielweise ein manuelle Nachkorrektur vorgenommen wurde (1 = \nausgeblendet, 0 = sichtbar) |-|"
+        "de": "Die DBMarking ermöglicht den Zugriff auf die `Marking` Tabelle der Datenbank, dabei sollen Korrekturen, zu Einsendungen, verwaltet werden. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle gehört die `Marking` Datenstruktur.\n\n| Spalte        | Struktur  | Beschreibung | Besonderheit |\n| :------       |:---------:| :------------| -----------: |\n|M_id|INT NOT NULL| die ID der Korrektur |AUTO_INCREMENT,<br>UNIQUE|\n|U_id_tutor|INT NOT NULL| ein Verweis auf das Nutzerkonto des Kontrolleurs (bei automatisch kontrollierten steht hier der Einsender) |-|\n|F_id_file|INT NULL| ein Verweis auf den Korrektureintrag |-|\n|S_id|INT NOT NULL| ein Verweis auf die Einsendung |-|\n|M_tutorComment|VARCHAR(255) NULL| ein Kommentar des Kontrolleurs |-|\n|M_outstanding|TINYINT(1) NULL DEFAULT 0| hier kann die Einsendung als \"besonders\" markiert werden (1 = besonders, 0 = normal) |-|\n|M_status|TINYINT NOT NULL DEFAULT 0| der Korrekturstatus (siehe Marking::getStatusDefinition()) |-|\n|M_points|FLOAT NULL DEFAULT 0| die durch den Kontrolleur vergebenen Punkte |-|\n|M_date|INT UNSIGNED NULL DEFAULT 0| das Datum der Korrektur (als Unix-Zeitstempel) |-|\n|E_id|INT NULL| ein Verweis auf die zugehörige Aufgabe |-|\n|ES_id|INT NULL| ein Verweis auf die Übungsserie |-|\n|M_hideFile|TINYINT NOT NULL DEFAULT 0| ein Korrektur kann ausgeblendet werden, wenn beispielweise ein manuelle Nachkorrektur vorgenommen wurde (1 = \nausgeblendet, 0 = sichtbar) |-|"
     },
     "version": "1.0",
     "classFile": "DBMarking.php",
@@ -34,7 +34,7 @@
             "name": "editMarking",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl editMarking"
+                "de": "für den Befehl editMarking"
             },
             "links": [
                 {
@@ -47,7 +47,7 @@
             "name": "deleteMarking",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteMarking"
+                "de": "für den Befehl deleteMarking"
             },
             "links": [
                 {
@@ -60,7 +60,7 @@
             "name": "deleteSheetMarkings",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteSheetMarkings"
+                "de": "für den Befehl deleteSheetMarkings"
             },
             "links": [
                 {
@@ -73,7 +73,7 @@
             "name": "addMarking",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl addMarking"
+                "de": "für den Befehl addMarking"
             },
             "links": [
                 {
@@ -86,7 +86,7 @@
             "name": "postSamples",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl postSamples"
+                "de": "für den Befehl postSamples"
             },
             "links": [
                 {
@@ -99,7 +99,7 @@
             "name": "deletePlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl deletePlatform"
+                "de": "für den Befehl deletePlatform"
             },
             "links": [
                 {
@@ -112,7 +112,7 @@
             "name": "addPlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl addPlatform"
+                "de": "für den Befehl addPlatform"
             },
             "links": [
                 {
@@ -125,7 +125,7 @@
             "name": "getMarking",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getMarking"
+                "de": "für den Befehl getMarking"
             },
             "links": [
                 {
@@ -138,7 +138,7 @@
             "name": "getSubmissionMarking",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getSubmissionMarking"
+                "de": "für den Befehl getSubmissionMarking"
             },
             "links": [
                 {
@@ -151,7 +151,7 @@
             "name": "getAllMarkings",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getAllMarkings"
+                "de": "für den Befehl getAllMarkings"
             },
             "links": [
                 {
@@ -164,7 +164,7 @@
             "name": "getCourseMarkings",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getCourseMarkings"
+                "de": "für den Befehl getCourseMarkings"
             },
             "links": [
                 {
@@ -177,7 +177,7 @@
             "name": "getExerciseMarkings",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getExerciseMarkings"
+                "de": "für den Befehl getExerciseMarkings"
             },
             "links": [
                 {
@@ -190,7 +190,7 @@
             "name": "getSheetMarkings",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getSheetMarkings"
+                "de": "für den Befehl getSheetMarkings"
             },
             "links": [
                 {
@@ -203,7 +203,7 @@
             "name": "getTutorCourseMarkings",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getTutorCourseMarkings"
+                "de": "für den Befehl getTutorCourseMarkings"
             },
             "links": [
                 {
@@ -216,7 +216,7 @@
             "name": "getTutorExerciseMarkings",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getTutorExerciseMarkings"
+                "de": "für den Befehl getTutorExerciseMarkings"
             },
             "links": [
                 {
@@ -229,7 +229,7 @@
             "name": "getTutorSheetMarkings",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getTutorSheetMarkings"
+                "de": "für den Befehl getTutorSheetMarkings"
             },
             "links": [
                 {
@@ -242,7 +242,7 @@
             "name": "getUserGroupMarkings",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getUserGroupMarkings"
+                "de": "für den Befehl getUserGroupMarkings"
             },
             "links": [
                 {
@@ -255,7 +255,7 @@
             "name": "getCourseUserGroupMarkings",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getCourseUserGroupMarkings"
+                "de": "für den Befehl getCourseUserGroupMarkings"
             },
             "links": [
                 {
@@ -268,7 +268,7 @@
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getExistsPlatform"
+                "de": "für den Befehl getExistsPlatform"
             },
             "links": [
                 {

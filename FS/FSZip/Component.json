@@ -1,7 +1,7 @@
 {
     "name": "FSZip",
     "description": {
-        "de": "Die FSZip erstellt ZIP-Archive. Diese k\u00f6nnen tempor\u00e4r oder dauerhaft im Dateisystem hinterlegt werden."
+        "de": "Die FSZip erstellt ZIP-Archive. Diese können temporär oder dauerhaft im Dateisystem hinterlegt werden."
     },
     "version": "1.0",
     "classFile": "FSZip.php",
