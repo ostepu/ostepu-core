@@ -1,23 +1,146 @@
 {
-  "name":"LExerciseSheet",
-  "version":"1.0",
-  "classFile":"LExerciseSheet.php",
-  "className":"LExerciseSheet",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"LExerciseSheet.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"}
-  ],
-  "links":[
-    {"name":"controller", "target":"LController", "links":[{"method":"DELETE", "path":"/FS/sheetFileAddress+" },{"method":"DELETE", "path":"/FS/sampleFileAddress+" },{"method":"DELETE", "path":"/DB/exercisesheet/exercisesheet/:sheetid" },{"method":"GET", "path":"/DB/exercisesheet/course/:courseid/exercise" },{"method":"GET", "path":"/DB/exercisesheet/course/:courseid" },{"method":"GET", "path":"/DB/exercisesheet/exercisesheet/:sheetid/exercise" },{"method":"GET", "path":"/DB/exercisesheet/exercisesheet/:sheetid/url" },{"method":"PUT", "path":"/DB/exercisesheet/exercisesheet/:sheetid" },{"method":"POST", "path":"/DB/exercisesheet" },{"method":"GET", "path":"/hash/:hash" },{"method":"POST", "path":"/DB/file" },{"method":"POST", "path":"/FS/file" }] },
-    {"name":"postFile", "target":"LFile", "links":[]},
-    {"name":"deleteFile", "target":"LFile", "links":[{"method":"DELETE", "path":"/file/:fileId" }]},
-    {"name":"postExerciseSheet", "target":"DBExerciseSheet", "links":[]},
-    {"name":"getExerciseSheet", "target":"DBExerciseSheet", "links":[{"method":"GET", "path":"/exercisesheet/exercisesheet/:sheetId" }]},
-    {"name":"deleteExerciseSheet", "target":"DBExerciseSheet", "links":[{"method":"DELETE", "path":"/exercisesheet/exercisesheet/:sheetId" }]}
-  ],
-  "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"}
-  ]
+    "name": "LExerciseSheet",
+    "description": {
+        "de": "???"
+    },
+    "version": "1.0",
+    "classFile": "LExerciseSheet.php",
+    "className": "LExerciseSheet",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "LExerciseSheet.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        }
+    ],
+    "links": [
+        {
+            "name": "controller",
+            "target": "LController",
+            "description": {
+                "de": "f\\u00fcr den Befehl controller"
+            },
+            "links": [
+                {
+                    "method": "DELETE",
+                    "path": "\/FS\/sheetFileAddress+"
+                },
+                {
+                    "method": "DELETE",
+                    "path": "\/FS\/sampleFileAddress+"
+                },
+                {
+                    "method": "DELETE",
+                    "path": "\/DB\/exercisesheet\/exercisesheet\/:sheetid"
+                },
+                {
+                    "method": "GET",
+                    "path": "\/DB\/exercisesheet\/course\/:courseid\/exercise"
+                },
+                {
+                    "method": "GET",
+                    "path": "\/DB\/exercisesheet\/course\/:courseid"
+                },
+                {
+                    "method": "GET",
+                    "path": "\/DB\/exercisesheet\/exercisesheet\/:sheetid\/exercise"
+                },
+                {
+                    "method": "GET",
+                    "path": "\/DB\/exercisesheet\/exercisesheet\/:sheetid\/url"
+                },
+                {
+                    "method": "PUT",
+                    "path": "\/DB\/exercisesheet\/exercisesheet\/:sheetid"
+                },
+                {
+                    "method": "POST",
+                    "path": "\/DB\/exercisesheet"
+                },
+                {
+                    "method": "GET",
+                    "path": "\/hash\/:hash"
+                },
+                {
+                    "method": "POST",
+                    "path": "\/DB\/file"
+                },
+                {
+                    "method": "POST",
+                    "path": "\/FS\/file"
+                }
+            ]
+        },
+        {
+            "name": "postFile",
+            "target": "LFile",
+            "description": {
+                "de": "f\\u00fcr den Befehl postFile"
+            },
+            "links": []
+        },
+        {
+            "name": "deleteFile",
+            "target": "LFile",
+            "description": {
+                "de": "f\\u00fcr den Befehl deleteFile"
+            },
+            "links": [
+                {
+                    "method": "DELETE",
+                    "path": "\/file\/:fileId"
+                }
+            ]
+        },
+        {
+            "name": "postExerciseSheet",
+            "target": "DBExerciseSheet",
+            "description": {
+                "de": "f\\u00fcr den Befehl postExerciseSheet"
+            },
+            "links": []
+        },
+        {
+            "name": "getExerciseSheet",
+            "target": "DBExerciseSheet",
+            "description": {
+                "de": "f\\u00fcr den Befehl getExerciseSheet"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/exercisesheet\/exercisesheet\/:sheetId"
+                }
+            ]
+        },
+        {
+            "name": "deleteExerciseSheet",
+            "target": "DBExerciseSheet",
+            "description": {
+                "de": "f\\u00fcr den Befehl deleteExerciseSheet"
+            },
+            "links": [
+                {
+                    "method": "DELETE",
+                    "path": "\/exercisesheet\/exercisesheet\/:sheetId"
+                }
+            ]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit LExerciseSheet als lokales Objekt aufgerufen werden kann"
+            }
+        }
+    ]
 }

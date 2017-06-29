@@ -1,3 +1,9 @@
 [
-    {    "method":"POST", "path":"/exercise" }
+    {
+        "path": "\/exercise",
+        "method": "POST",
+        "description": {
+            "de": "???"
+        }
+    }
 ]

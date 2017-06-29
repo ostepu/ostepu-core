@@ -108,7 +108,7 @@ class DBOOP
                                )
                          );
 
-        // PUT EditProcess
+        // GET Testcase
         $this->_app->get( 
                          '(/:pre)/testcase/submission/:sid/course/:cid(/)',
                          array( 
@@ -117,7 +117,7 @@ class DBOOP
                                )
                          );
 
-        // PUT EditProcess
+        // PUT EditTestcase
         $this->_app->post( 
                          '(/:pre)/testcase(/testcase)/:testcaseid(/)',
                          array( 

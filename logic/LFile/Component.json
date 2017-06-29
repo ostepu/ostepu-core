@@ -1,22 +1,77 @@
 {
-  "name":"LFile",
-  "version":"1.0",
-  "classFile":"LFile.php",
-  "className":"LFile",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"LFile.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"},
-    {"path":"info/"},
-    {"path":"messages/"},
-    {"path":"LFileHandler2.php"}
-  ],
-  "links":[
-    {"name":"fileDb", "target":"DBFile", "links":[{"method":"GET", "path":"/file/hash/:hash" },{"method":"DELETE", "path":"/file/:fileid" }] },
-    {"name":"file", "target":"FSFile", "links":[{"method":"POST", "path":"/file" },{"method":"DELETE", "path":"/file/:adress" }] }
-  ],
-  "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"}
-  ]
+    "name": "LFile",
+    "description": {
+        "de": "???"
+    },
+    "version": "1.0",
+    "classFile": "LFile.php",
+    "className": "LFile",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "LFile.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "info\/"
+        },
+        {
+            "path": "messages\/"
+        },
+        {
+            "path": "LFileHandler2.php"
+        }
+    ],
+    "links": [
+        {
+            "name": "fileDb",
+            "target": "DBFile",
+            "description": {
+                "de": "f\\u00fcr den Befehl fileDb"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/file\/hash\/:hash"
+                },
+                {
+                    "method": "DELETE",
+                    "path": "\/file\/:fileid"
+                }
+            ]
+        },
+        {
+            "name": "file",
+            "target": "FSFile",
+            "description": {
+                "de": "f\\u00fcr den Befehl file"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/file"
+                },
+                {
+                    "method": "DELETE",
+                    "path": "\/file\/:adress"
+                }
+            ]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit LFile als lokales Objekt aufgerufen werden kann"
+            }
+        }
+    ]
 }

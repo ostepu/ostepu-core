@@ -1,123 +1,231 @@
 [
     {
         "name": "editSession",
-        "outputType": "Session",
-        "inputType": "Session",
+        "path": "\/session\/session\/:seid",
         "method": "PUT",
-        "placeholder":[{"name":"seid","regex":"%^[0-9A-Fa-f]{32}$%"}],
-        "path": "/session/session/:seid"
+        "description": {
+            "de": "editiert eine Session"
+        },
+        "placeholder": [
+            {
+                "name": "seid",
+                "regex": "%^[0-9A-Fa-f]{32}$%",
+                "description": {
+                    "de": "die ID einer Sitzung (`Session`)"
+                }
+            }
+        ],
+        "inputType": "Session",
+        "outputType": "Session"
     },
     {
         "name": "deleteSession",
-        "outputType": "Session",
-        "inputType": "",
+        "path": "\/session\/session\/:seid",
         "method": "DELETE",
-        "placeholder":[{"name":"seid","regex":"%^[0-9A-Fa-f]{32}$%"}],
-        "path": "/session/session/:seid"
-    },
-    {
-        "name": "editUserSession",
-        "outputType": "Session",
-        "inputType": "Session",
-        "method": "PUT",
-        "placeholder":[{"name":"userid","regex":"%^[a-zA-Z0-9äöüÄÖÜß]+$%"}],
-        "path": "/session/user/:userid"
-    },
-    {
-        "name": "deleteUserSession",
-        "outputType": "Session",
+        "description": {
+            "de": "entfernt eine Session"
+        },
+        "placeholder": [
+            {
+                "name": "seid",
+                "regex": "%^[0-9A-Fa-f]{32}$%",
+                "description": {
+                    "de": "die ID einer Sitzung (`Session`)"
+                }
+            }
+        ],
         "inputType": "",
-        "method": "DELETE",
-        "placeholder":[{"name":"userid","regex":"%^[a-zA-Z0-9äöüÄÖÜß]+$%"}],
-        "path": "/session/user/:userid"
-    },
-    {
-        "name": "addSession",
-        "outputType": "Session",
-        "inputType": "Session",
-        "method": "POST",
-        "path": "/session"
-    },
-    {
-        "name": "getAllSessions",
-        "callback": "getMatch",
-        "outputType": "Session",
-        "inputType": "",
-        "method": "GET",
-        "path": "/session"
-    },
-    {
-        "name": "getUserSession",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "Session",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"userid","regex":"%^[a-zA-Z0-9äöüÄÖÜß]+$%"}],
-        "path": "/session/user/:userid"
-    },
-    {
-        "name": "getSessionUser",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "Session",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"seid","regex":"%^([0-9_]+)$%"}],
-        "path": "/session/session/:seid"
-    },
-    {
-        "name": "getValidSession",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "Session",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"seid","regex":"%^([0-9_]+)$%"},{"name":"userid","regex":"%^[a-zA-Z0-9äöüÄÖÜß]+$%"}],
-        "path": "/session/session/:seid/user/:userid"
-    },
-    {
-        "name": "addPlatform",
-        "outputType": "Platform",
-        "inputType": "Platform",
-        "method": "POST",
-        "path": "/platform"
-    },
-    {
-        "name": "deletePlatform",
-        "outputType": "Platform",
-        "inputType": "",
-        "method": "DELETE",
-        "path": "/platform"
-    },
-    {
-        "name": "getExistsPlatform",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "Platform",
-        "inputType": "",
-        "method": "GET",
-        "path": "/link/exists/platform"
-    },
-    {
-        "name": "getSamplesInfo",
-        "outputType": "",
-        "inputType": "",
-        "method": "GET",
-        "path": "/samples"
+        "outputType": "Session"
     },
     {
         "name": "postSamples",
-        "outputType": "",
-        "inputType": "",
+        "path": "\/samples\/:amount",
         "method": "POST",
-        "path": "/samples/:amount"
+        "description": {
+            "de": "erzeugt Zufallsdaten (courseAmount = Anzahl der Veranstaltungen, userAmount = Anzahl der Nutzer), anhand der Vorgabe"
+        },
+        "inputType": "",
+        "outputType": ""
+    },
+    {
+        "name": "getUserSession",
+        "path": "\/session\/user\/:userid",
+        "method": "GET",
+        "description": {
+            "de": "liefert die Session eines Nutzers"
+        },
+        "placeholder": [
+            {
+                "name": "userid",
+                "regex": "%^[a-zA-Z0-9\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df]+$%",
+                "description": {
+                    "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Session",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
+    },
+    {
+        "name": "deleteUserSession",
+        "path": "\/session\/user\/:userid",
+        "method": "entfernt die Session eines Nutzers",
+        "description": {
+            "de": "entfernt die Session eines Nutzers"
+        },
+        "placeholder": [
+            {
+                "name": "userid",
+                "regex": "%^[a-zA-Z0-9\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df]+$%",
+                "description": {
+                    "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Session"
+    },
+    {
+        "name": "getExistsPlatform",
+        "path": "\/link\/exists\/platform",
+        "method": "GET",
+        "description": {
+            "de": "pr\\u00fcft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollst\u00e4ndig installiert ist"
+        },
+        "inputType": "",
+        "outputType": "Platform",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
+    },
+    {
+        "name": "addSession",
+        "path": "\/session",
+        "method": "POST",
+        "description": {
+            "de": "f\u00fcgt eine Session ein (wenn der Eintrag schon existiert, dann wird er aktualisiert\/\u00fcberschrieben)"
+        },
+        "inputType": "Session",
+        "outputType": "Session"
+    },
+    {
+        "name": "getAllSessions",
+        "path": "\/session",
+        "method": "GET",
+        "description": {
+            "de": "ermittelt alle Sessions"
+        },
+        "inputType": "",
+        "outputType": "Session",
+        "callback": "getMatch"
+    },
+    {
+        "name": "getValidSession",
+        "path": "\/session\/session\/:seid\/user\/:userid",
+        "method": "GET",
+        "description": {
+            "de": "gibt einen Eintrag zur\u00fcck, wenn die Session und der Nutzer zusammen passen"
+        },
+        "placeholder": [
+            {
+                "name": "seid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Sitzung (`Session`)"
+                }
+            },
+            {
+                "name": "userid",
+                "regex": "%^[a-zA-Z0-9\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df]+$%",
+                "description": {
+                    "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Session",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
+    },
+    {
+        "name": "editUserSession",
+        "path": "\/session\/user\/:userid",
+        "method": "PUT",
+        "description": {
+            "de": "editiert die Session eines Nutzers"
+        },
+        "placeholder": [
+            {
+                "name": "userid",
+                "regex": "%^[a-zA-Z0-9\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df]+$%",
+                "description": {
+                    "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
+                }
+            }
+        ],
+        "inputType": "Session",
+        "outputType": "Session"
+    },
+    {
+        "name": "deletePlatform",
+        "path": "\/platform",
+        "method": "DELETE",
+        "description": {
+            "de": "entfernt die Komponente und ihre installierten Bestandteile aus der Plattform"
+        },
+        "inputType": "",
+        "outputType": "Platform"
+    },
+    {
+        "name": "getSessionUser",
+        "path": "\/session\/session\/:seid",
+        "method": "GET",
+        "description": {
+            "de": "liefert die Session anhand der Session-ID"
+        },
+        "placeholder": [
+            {
+                "name": "seid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Sitzung (`Session`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Session",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
+    },
+    {
+        "name": "getSamplesInfo",
+        "path": "\/samples",
+        "method": "GET",
+        "description": {
+            "de": "liefert die Bezeichner der betroffenen Tabellen"
+        },
+        "inputType": "",
+        "outputType": ""
+    },
+    {
+        "name": "addPlatform",
+        "path": "\/platform",
+        "method": "POST",
+        "description": {
+            "de": "installiert dies zugeh\\u00f6rige Tabelle und die Prozeduren f\\u00fcr diese Plattform"
+        },
+        "inputType": "Platform",
+        "outputType": "Platform"
     },
     {
         "name": "getApiProfiles",
-        "outputType": "GateProfile",
-        "inputType": "",
+        "path": "\/api\/profiles",
         "method": "GET",
-        "path": "/api/profiles"
+        "description": {
+            "de": "liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren"
+        },
+        "inputType": "",
+        "outputType": "GateProfile"
     }
 ]

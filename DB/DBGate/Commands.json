@@ -1,257 +1,405 @@
 [
     {
-        "name": "editGateProfile",
-        "outputType": "GateProfile",
-        "inputType": "GateProfile",
-        "method": "PUT",
-        "placeholder": [{
-            "name": "gpid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/gateprofile/gateprofile/:gpid"
-    },
-    {
-        "name": "deleteGateProfile",
-        "outputType": "GateProfile",
+        "name": "getProfilesByAuth",
+        "path": "\/gateprofile\/auth\/:authType",
+        "method": "GET",
+        "description": {
+            "de": "ermittelt alle Profile anhand der Authentifizierungsmethode (noAuth, httpAuth, tokenAuth)"
+        },
+        "placeholder": [
+            {
+                "name": "authType",
+                "regex": "%^([a-zA-Z0-9_]+)$%",
+                "description": {
+                    "de": "ein Authentifizierungstyp (`noAuth`, `httpAuth`, `tokenAuth`"
+                }
+            }
+        ],
         "inputType": "",
-        "method": "DELETE",
-        "placeholder": [{
-            "name": "gpid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/gateprofile/gateprofile/:gpid"
-    },
-    {
-        "name": "deleteGateProfileByName",
         "outputType": "GateProfile",
-        "inputType": "",
-        "method": "DELETE",
-        "placeholder": [{
-            "name": "gpname",
-            "regex": "%^([a-zA-Z0-9_]+)$%"
-        }],
-        "path": "/gateprofile/name/:gpname"
-    },
-    {
-        "name": "addGateProfile",
-        "outputType": "GateProfile",
-        "inputType": "GateProfile",
-        "method": "POST",
-        "path": "/gateprofile"
-    },
-    {
-        "name": "editGateRule",
-        "outputType": "GateRule",
-        "inputType": "GateRule",
-        "method": "PUT",
-        "placeholder": [{
-            "name": "grid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/gaterule/gaterule/:grid"
-    },
-    {
-        "name": "deleteGateRule",
-        "outputType": "GateRule",
-        "inputType": "",
-        "method": "DELETE",
-        "placeholder": [{
-            "name": "grid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/gaterule/gaterule/:grid"
-    },
-    {
-        "name": "addGateRule",
-        "outputType": "GateRule",
-        "inputType": "GateRule",
-        "method": "POST",
-        "path": "/gaterule"
+        "callback": "getMatch"
     },
     {
         "name": "editGateAuth",
-        "outputType": "GateAuth",
-        "inputType": "GateAuth",
+        "path": "\/gateauth\/gateauth\/:gaid",
         "method": "PUT",
-        "placeholder": [{
-            "name": "gaid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/gateauth/gateauth/:gaid"
-    },
-    {
-        "name": "deleteGateAuth",
-        "outputType": "GateAuth",
-        "inputType": "",
-        "method": "DELETE",
-        "placeholder": [{
-            "name": "gaid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/gateauth/gateauth/:gaid"
-    },
-    {
-        "name": "addGateAuth",
-        "outputType": "GateAuth",
+        "description": {
+            "de": "editiert eine Authentifizierung"
+        },
+        "placeholder": [
+            {
+                "name": "gaid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Authentifizierung (`GateAuth`)"
+                }
+            }
+        ],
         "inputType": "GateAuth",
-        "method": "POST",
-        "path": "/gateauth"
-    },
-    {
-        "name": "addPlatform",
-        "outputType": "Platform",
-        "inputType": "Platform",
-        "method": "POST",
-        "path": "/platform"
-    },
-    {
-        "name": "deletePlatform",
-        "outputType": "Platform",
-        "inputType": "",
-        "method": "DELETE",
-        "path": "/platform"
-    },
-    {
-        "name": "getExistsPlatform",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "Platform",
-        "inputType": "",
-        "method": "GET",
-        "path": "/link/exists/platform"
-    },
-    {
-        "name": "getProfile",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "GateProfile",
-        "inputType": "",
-        "method": "GET",
-        "placeholder": [{
-            "name": "gpid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/gateprofile/gateprofile/:gpid"
+        "outputType": "GateAuth"
     },
     {
         "name": "getProfileByName",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "GateProfile",
-        "inputType": "",
+        "path": "\/gateprofile\/name\/:gpname",
         "method": "GET",
-        "placeholder": [{
-            "name": "name",
-            "regex": "%^([a-zA-Z0-9_]+)$%"
-        }],
-        "path": "/gateprofile/name/:name"
-    },
-    {
-        "name": "getAllProfiles",
-        "callback": "getMatch",
-        "outputType": "GateProfile",
-        "inputType": "",
-        "method": "GET",
-        "path": "/gateprofile"
-    },
-    {
-        "name": "getProfilesByAuth",
-        "callback": "getMatch",
-        "outputType": "GateProfile",
-        "inputType": "",
-        "method": "GET",
-        "placeholder": [{
-            "name": "authType",
-            "regex": "%^([a-zA-Z0-9_]+)$%"
-        }],
-        "path": "/gateprofile/auth/:authType"
-    },
-    {
-        "name": "getProfilesByComponent",
-        "callback": "getMatch",
-        "outputType": "GateProfile",
-        "inputType": "",
-        "method": "GET",
-        "placeholder": [{
-            "name": "component",
-            "regex": "%^([a-zA-Z0-9_]+)$%"
-        }],
-        "path": "/gateprofile/component/:component"
-    },
-    {
-        "name": "getProfileWithAuth",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "GateProfile",
-        "inputType": "",
-        "method": "GET",
+        "description": {
+            "de": "ermittelt ein Profil anhand seines Namens"
+        },
         "placeholder": [
             {
-                "name": "gpid",
-                "regex": "%^([0-9_]+)$%"
-            },
-            {
-                "name": "authType",
-                "regex": "%^([a-zA-Z0-9_]+)$%"
+                "name": "gpname",
+                "regex": "%^([a-zA-Z0-9_]+)$%",
+                "description": {
+                    "de": "der Name eines Gate-Profils"
+                }
             }
         ],
-        "path": "/gateprofile/gateprofile/:gpid/auth/:authType"
-    },
-    {
-        "name": "getComponentProfileWithAuthLogin",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "GateProfile",
         "inputType": "",
-        "method": "GET",
-        "placeholder": [
-            {
-                "name": "profName",
-                "regex": "%^([a-zA-Z0-9_]+)$%"
-            },
-            {
-                "name": "authType",
-                "regex": "%^([a-zA-Z0-9_]+)$%"
-            },
-            {
-                "name": "component",
-                "regex": "%^([a-zA-Z0-9_]+)$%"
-            },
-            {
-                "name": "login",
-                "regex": "%^([a-zA-Z0-9_]+)$%"
-            }
-        ],
-        "path": "/gateprofile/gateprofile/:profName/auth/:authType/component/:component/login/:login"
+        "outputType": "GateProfile",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
     },
     {
         "name": "getComponentProfileWithAuth",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "GateProfile",
-        "inputType": "",
+        "path": "\/gateprofile\/gateprofile\/:gpname\/auth\/:authType\/component\/:component",
         "method": "GET",
+        "description": {
+            "de": "ermittelt einen Eintrag anhand des Namens und der Komponente (+Authentifizierungsmethode)"
+        },
         "placeholder": [
             {
-                "name": "profName",
-                "regex": "%^([a-zA-Z0-9_]+)$%"
+                "name": "gpname",
+                "regex": "%^([a-zA-Z0-9_]+)$%",
+                "description": {
+                    "de": "der Name eines Gate-Profils"
+                }
             },
             {
                 "name": "authType",
-                "regex": "%^([a-zA-Z0-9_]+)$%"
+                "regex": "%^([a-zA-Z0-9_]+)$%",
+                "description": {
+                    "de": "ein Authentifizierungstyp (`noAuth`, `httpAuth`, `tokenAuth`"
+                }
             },
             {
                 "name": "component",
-                "regex": "%^([a-zA-Z0-9_]+)$%"
+                "regex": "%^([a-zA-Z0-9_]+)$%",
+                "description": {
+                    "de": "der Name einer Komponente"
+                }
             }
         ],
-        "path": "/gateprofile/gateprofile/:profName/auth/:authType/component/:component"
+        "inputType": "",
+        "outputType": "GateProfile",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
+    },
+    {
+        "name": "editGateProfile",
+        "path": "\/gateprofile\/gateprofile\/:gpid",
+        "method": "PUT",
+        "description": {
+            "de": "editiert ein Profil"
+        },
+        "placeholder": [
+            {
+                "name": "gpid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID eines Gate-Profile (`GateProfile`)"
+                }
+            }
+        ],
+        "inputType": "GateProfile",
+        "outputType": "GateProfile"
+    },
+    {
+        "name": "addGateProfile",
+        "path": "\/gateprofile",
+        "method": "POST",
+        "description": {
+            "de": "f\u00fcgt ein neues Profil ein"
+        },
+        "inputType": "GateProfile",
+        "outputType": "GateProfile"
+    },
+    {
+        "name": "addGateAuth",
+        "path": "\/gateauth",
+        "method": "POST",
+        "description": {
+            "de": "f\u00fcgt eine neue Authentifizierung ein"
+        },
+        "inputType": "GateAuth",
+        "outputType": "GateAuth"
+    },
+    {
+        "name": "editGateRule",
+        "path": "\/gaterule\/gaterule\/:grid",
+        "method": "PUT",
+        "description": {
+            "de": "editiert eine Regel"
+        },
+        "placeholder": [
+            {
+                "name": "grid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Gate-Regel (`GateRule`)"
+                }
+            }
+        ],
+        "inputType": "GateRule",
+        "outputType": "GateRule"
+    },
+    {
+        "name": "deleteGateProfile",
+        "path": "\/gateprofile\/gateprofile\/:gpid",
+        "method": "DELETE",
+        "description": {
+            "de": "entfernt ein Profil"
+        },
+        "placeholder": [
+            {
+                "name": "gpid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID eines Gate-Profile (`GateProfile`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "GateProfile"
+    },
+    {
+        "name": "deleteGateRule",
+        "path": "\/gaterule\/gaterule\/:grid",
+        "method": "DELETE",
+        "description": {
+            "de": "entfernt eine Regel"
+        },
+        "placeholder": [
+            {
+                "name": "grid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Gate-Regel (`GateRule`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "GateRule"
+    },
+    {
+        "name": "addGateRule",
+        "path": "\/gaterule",
+        "method": "POST",
+        "description": {
+            "de": "f\u00fcgt eine neue Regel ein"
+        },
+        "inputType": "GateRule",
+        "outputType": "GateRule"
+    },
+    {
+        "name": "deletePlatform",
+        "path": "\/platform",
+        "method": "DELETE",
+        "description": {
+            "de": "entfernt die Komponente und ihre installierten Bestandteile aus der Plattform"
+        },
+        "inputType": "",
+        "outputType": "Platform"
+    },
+    {
+        "name": "getProfileWithAuth",
+        "path": "\/gateprofile\/gateprofile\/:gpid\/auth\/:authType",
+        "method": "GET",
+        "description": {
+            "de": "ermittelt ein Profil anhand seiner ID und des Authentifizierungstyps"
+        },
+        "placeholder": [
+            {
+                "name": "gpid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID eines Gate-Profile (`GateProfile`)"
+                }
+            },
+            {
+                "name": "authType",
+                "regex": "%^([a-zA-Z0-9_]+)$%",
+                "description": {
+                    "de": "ein Authentifizierungstyp (`noAuth`, `httpAuth`, `tokenAuth`"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "GateProfile",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
+    },
+    {
+        "name": "getProfile",
+        "path": "\/gateprofile\/gateprofile\/:gpid",
+        "method": "GET",
+        "description": {
+            "de": "ermittelt ein Profil anhand seiner ID"
+        },
+        "placeholder": [
+            {
+                "name": "gpid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID eines Gate-Profile (`GateProfile`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "GateProfile",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
+    },
+    {
+        "name": "deleteGateAuth",
+        "path": "\/gateauth\/gateauth\/:gaid",
+        "method": "DELETE",
+        "description": {
+            "de": "entfernt eine Authentifizierung"
+        },
+        "placeholder": [
+            {
+                "name": "gaid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Authentifizierung (`GateAuth`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "GateAuth"
+    },
+    {
+        "name": "getAllProfiles",
+        "path": "\/gateprofile",
+        "method": "GET",
+        "description": {
+            "de": "liefert alle Profile"
+        },
+        "inputType": "",
+        "outputType": "GateProfile",
+        "callback": "getMatch"
+    },
+    {
+        "name": "deleteGateProfileByName",
+        "path": "\/gateprofile\/name\/:gpname",
+        "method": "DELETE",
+        "description": {
+            "de": "l\u00f6scht ein Profil \u00fcber seinen Namen"
+        },
+        "placeholder": [
+            {
+                "name": "gpname",
+                "regex": "%^([a-zA-Z0-9_]+)$%",
+                "description": {
+                    "de": "der Name eines Gate-Profils"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "GateProfile"
+    },
+    {
+        "name": "getProfilesByComponent",
+        "path": "\/gateprofile\/component\/:component",
+        "method": "GET",
+        "description": {
+            "de": "ermittelt die Profile zu einer Komponente"
+        },
+        "placeholder": [
+            {
+                "name": "component",
+                "regex": "%^([a-zA-Z0-9_]+)$%",
+                "description": {
+                    "de": "der Name einer Komponente"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "GateProfile",
+        "callback": "getMatch"
+    },
+    {
+        "name": "addPlatform",
+        "path": "\/platform",
+        "method": "POST",
+        "description": {
+            "de": "installiert dies zugeh\\u00f6rige Tabelle und die Prozeduren f\\u00fcr diese Plattform"
+        },
+        "inputType": "Platform",
+        "outputType": "Platform"
+    },
+    {
+        "name": "getComponentProfileWithAuthLogin",
+        "path": "\/gateprofile\/gateprofile\/:gpname\/auth\/:authType\/component\/:component\/login\/:login",
+        "method": "GET",
+        "description": {
+            "de": "ermittelt Profile anhand des Profils, der Methode, einer Komponente und dem Login-Namen"
+        },
+        "placeholder": [
+            {
+                "name": "gpname",
+                "regex": "%^([a-zA-Z0-9_]+)$%",
+                "description": {
+                    "de": "der Name eines Gate-Profils"
+                }
+            },
+            {
+                "name": "authType",
+                "regex": "%^([a-zA-Z0-9_]+)$%",
+                "description": {
+                    "de": "ein Authentifizierungstyp (`noAuth`, `httpAuth`, `tokenAuth`"
+                }
+            },
+            {
+                "name": "component",
+                "regex": "%^([a-zA-Z0-9_]+)$%",
+                "description": {
+                    "de": "der Name einer Komponente"
+                }
+            },
+            {
+                "name": "login",
+                "regex": "%^([a-zA-Z0-9_]+)$%",
+                "description": {
+                    "de": "der Login (`GA_login`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "GateProfile",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
+    },
+    {
+        "name": "getExistsPlatform",
+        "path": "\/link\/exists\/platform",
+        "method": "GET",
+        "description": {
+            "de": "pr\\u00fcft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollst\u00e4ndig installiert ist"
+        },
+        "inputType": "",
+        "outputType": "Platform",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
     },
     {
         "name": "getApiProfiles",
-        "outputType": "GateProfile",
-        "inputType": "",
+        "path": "\/api\/profiles",
         "method": "GET",
-        "path": "/api/profiles"
+        "description": {
+            "de": "liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren"
+        },
+        "inputType": "",
+        "outputType": "GateProfile"
     }
 ]

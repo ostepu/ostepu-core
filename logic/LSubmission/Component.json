@@ -1,21 +1,98 @@
 {
-  "name":"LSubmission",
-  "version":"1.0",
-  "classFile":"LSubmission.php",
-  "className":"LSubmission",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"LSubmission.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"}
-  ],
-  "links":[
-    {"name":"file", "target":"LFile", "links":[{"method":"POST", "path":"/file" }] },
-    {"name":"submission", "target":"DBSubmission", "links":[{"method":"GET", "path":"/submission/group/user/:userid/exercisesheet/:sheetid/selected" },{"method":"DELETE", "path":"/submission/:submissionid" },{"method":"POST", "path":"/submission" }] },
-    {"name":"selectedSubmission", "target":"DBSelectedSubmission", "links":[{"method":"PUT", "path":"/selectedsubmission/leader/:leaderid/exercise/:exerciseid" },{"method":"POST", "path":"/selectedsubmission" }] },
-    {"name":"zip", "target":"FSZip", "links":[{"method":"POST", "path":"/zip/:zipname" }] }
-  ],
-  "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"}
-  ]
+    "name": "LSubmission",
+    "description": {
+        "de": "Die LSubmission bietet Aufrufe zum Handhaben von Einsendungen an (Submission's)"
+    },
+    "version": "1.0",
+    "classFile": "LSubmission.php",
+    "className": "LSubmission",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "LSubmission.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        }
+    ],
+    "links": [
+        {
+            "name": "file",
+            "target": "LFile",
+            "description": {
+                "de": "f\\u00fcr den Befehl file"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/file"
+                }
+            ]
+        },
+        {
+            "name": "submission",
+            "target": "DBSubmission",
+            "description": {
+                "de": "f\\u00fcr den Befehl submission"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/submission\/group\/user\/:userid\/exercisesheet\/:sheetid\/selected"
+                },
+                {
+                    "method": "DELETE",
+                    "path": "\/submission\/:submissionid"
+                },
+                {
+                    "method": "POST",
+                    "path": "\/submission"
+                }
+            ]
+        },
+        {
+            "name": "selectedSubmission",
+            "target": "DBSelectedSubmission",
+            "description": {
+                "de": "f\\u00fcr den Befehl selectedSubmission"
+            },
+            "links": [
+                {
+                    "method": "PUT",
+                    "path": "\/selectedsubmission\/leader\/:leaderid\/exercise\/:exerciseid"
+                },
+                {
+                    "method": "POST",
+                    "path": "\/selectedsubmission"
+                }
+            ]
+        },
+        {
+            "name": "zip",
+            "target": "FSZip",
+            "description": {
+                "de": "f\\u00fcr den Befehl zip"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/zip\/:zipname"
+                }
+            ]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit LSubmission als lokales Objekt aufgerufen werden kann"
+            }
+        }
+    ]
 }

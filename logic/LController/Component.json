@@ -1,20 +1,101 @@
 {
-  "name":"LController",
-  "version":"1.0",
-  "classFile":"LController.php",
-  "className":"LController",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"LController.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"}
-  ],
-  "links":[
-    {"name":"out", "target":["LProcessor","LForm","LGetSite","LAttachment","LExercise","LTutor","LExerciseSheet","LCourse"], "links":[] },
-    {"name":"database", "target":"DBControl", "links":[{"method":"POST", "path":"/path+" },{"method":"GET", "path":"/path+" },{"method":"PUT", "path":"/path+" },{"method":"DELETE", "path":"/path+" }] },
-    {"name":"filesystem", "target":"FSControl", "links":[{"method":"POST", "path":"/path+" },{"method":"GET", "path":"/path+" },{"method":"PUT", "path":"/path+" },{"method":"DELETE", "path":"/path+" }] }
-  ],
-  "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"}
-  ]
+    "name": "LController",
+    "description": {
+        "de": "???"
+    },
+    "version": "1.0",
+    "classFile": "LController.php",
+    "className": "LController",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "LController.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        }
+    ],
+    "links": [
+        {
+            "name": "out",
+            "target": [
+                "LProcessor",
+                "LForm",
+                "LGetSite",
+                "LAttachment",
+                "LExercise",
+                "LTutor",
+                "LExerciseSheet",
+                "LCourse"
+            ],
+            "description": {
+                "de": "f\\u00fcr den Befehl out"
+            },
+            "links": []
+        },
+        {
+            "name": "database",
+            "target": "DBControl",
+            "description": {
+                "de": "f\\u00fcr den Befehl database"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/path+"
+                },
+                {
+                    "method": "GET",
+                    "path": "\/path+"
+                },
+                {
+                    "method": "PUT",
+                    "path": "\/path+"
+                },
+                {
+                    "method": "DELETE",
+                    "path": "\/path+"
+                }
+            ]
+        },
+        {
+            "name": "filesystem",
+            "target": "FSControl",
+            "description": {
+                "de": "f\\u00fcr den Befehl filesystem"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/path+"
+                },
+                {
+                    "method": "GET",
+                    "path": "\/path+"
+                },
+                {
+                    "method": "PUT",
+                    "path": "\/path+"
+                },
+                {
+                    "method": "DELETE",
+                    "path": "\/path+"
+                }
+            ]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit LController als lokales Objekt aufgerufen werden kann"
+            }
+        }
+    ]
 }

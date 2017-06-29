@@ -1,12 +1,72 @@
 [
-    {    "method":"put", "path":"(/:pre)/notification/notification/:notid" },
-    {    "method":"delete", "path":"(/:pre)/notification/notification/:notid" },
-    {    "method":"post", "path":"(/:pre)/notification/course/:courseid" },
-    {    "method":"get", "path":"(/:pre)/link/exists/course/:courseid" },
-    {    "method":"get", "path":"(/:pre)/notification/course/:courseid" },
-    {    "method":"get", "path":"(/:pre)/notification/alive/course/:courseid" },
-    {    "method":"get", "path":"(/:pre)/notification/notification/:notid" },
-    {    "method":"delete", "path":"(/:pre)/course/:courseid" },
-    {    "method":"post", "path":"(/:pre)/course" },
-    {    "method":"post", "path":"(/:pre)/platform" }
+    {
+        "path": "(\/:pre)\/course",
+        "method": "post",
+        "description": {
+            "de": "installiert die Komponente in die \u00fcbermittelte Veranstaltung"
+        }
+    },
+    {
+        "path": "(\/:pre)\/link\/exists\/course\/:courseid",
+        "method": "get",
+        "description": {
+            "de": "pr\u00fcft, ob die Komponente korrekt in die Veranstaltung installiert wurde"
+        }
+    },
+    {
+        "path": "(\/:pre)\/notification\/notification\/:notid",
+        "method": "get",
+        "description": {
+            "de": "gibt einen einzelnen Eintrag anhand dessen ID zur\u00fcck"
+        }
+    },
+    {
+        "path": "(\/:pre)\/notification\/course\/:courseid",
+        "method": "post",
+        "description": {
+            "de": "f\u00fcgt einen neuen Eintrag ein"
+        }
+    },
+    {
+        "path": "(\/:pre)\/notification\/notification\/:notid",
+        "method": "put",
+        "description": {
+            "de": "editiert einen einzelnen Eintrag"
+        }
+    },
+    {
+        "path": "(\/:pre)\/notification\/alive\/course\/:courseid",
+        "method": "get",
+        "description": {
+            "de": "ermittelt alle 'aktiven' Meldungen einer Veranstaltung (also keine abgelaufenen Meldungen)"
+        }
+    },
+    {
+        "path": "(\/:pre)\/notification\/course\/:courseid",
+        "method": "get",
+        "description": {
+            "de": "ermittelt alle Meldungen einer Veranstaltung"
+        }
+    },
+    {
+        "path": "(\/:pre)\/course\/:courseid",
+        "method": "delete",
+        "description": {
+            "de": "entfernt die Komponente aus einer Veranstaltung"
+        }
+    },
+    {
+        "path": "(\/:pre)\/notification\/notification\/:notid",
+        "method": "delete",
+        "description": {
+            "de": "entfernt eine einzelne Meldung"
+        }
+    },
+    {
+        "path": "(\/:pre)\/platform",
+        "method": "post",
+        "description": {
+            "de": "installiert die Komponente in die Plattform"
+        }
+    }
 ]

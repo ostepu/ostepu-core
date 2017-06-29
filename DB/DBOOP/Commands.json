@@ -1,8 +1,44 @@
 [
-    {   "method":"post", "path":"(/:pre)/course" },
-    {   "method":"delete", "path":"(/:pre)/course/:courseid" },
-    {   "method":"post", "path":"(/:pre)/insert" },
-    {   "method":"get", "path":"(/:pre)/pop" },
-    {   "method":"post", "path":"(/:pre)/testcase(/testcase)/:testcaseid" },
-    {   "method":"get", "path":"(/:pre)/testcase/submission/:sid/course/:cid" }
+    {
+        "path": "(\/:pre)\/course",
+        "method": "post",
+        "description": {
+            "de": "installiert die Komponente in die Veranstaltung"
+        }
+    },
+    {
+        "path": "(\/:pre)\/course\/:courseid",
+        "method": "delete",
+        "description": {
+            "de": "entfernt die Komponente aus der Veranstaltung"
+        }
+    },
+    {
+        "path": "(\/:pre)\/insert",
+        "method": "post",
+        "description": {
+            "de": "f\u00fcgt einen neuen Testfall ein"
+        }
+    },
+    {
+        "path": "(\/:pre)\/pop",
+        "method": "get",
+        "description": {
+            "de": "sperrt den n\u00e4chsten unbearbeiteten Testfall und liefert ihn zur\u00fcck"
+        }
+    },
+    {
+        "path": "(\/:pre)\/testcase(\/testcase)\/:testcaseid",
+        "method": "put",
+        "description": {
+            "de": "editiert einen Testfall"
+        }
+    },
+    {
+        "path": "(\/:pre)\/testcase\/submission\/:sid\/course\/:cid",
+        "method": "get",
+        "description": {
+            "de": "ermittelt einen Testfall zu einer Einsendung"
+        }
+    }
 ]

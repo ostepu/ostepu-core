@@ -1,96 +1,164 @@
 [
     {
+        "name": "getExistsPlatform",
+        "path": "\/link\/exists\/platform",
+        "method": "GET",
+        "description": {
+            "de": "pr\\u00fcft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollst\u00e4ndig installiert ist"
+        },
+        "inputType": "",
+        "outputType": "Platform",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
+    },
+    {
         "name": "editApprovalCondition",
-        "outputType": "ApprovalCondition",
-        "inputType": "ApprovalCondition",
+        "path": "\/approvalcondition\/approvalcondition\/:apid",
         "method": "PUT",
-        "placeholder":[{"name":"apid","regex":"%^([0-9_]+)$%"}],
-        "path": "/approvalcondition/approvalcondition/:apid"
-    },
-    {
-        "name": "deleteApprovalCondition",
-        "outputType": "ApprovalCondition",
-        "inputType": "",
-        "method": "DELETE",
-        "placeholder":[{"name":"apid","regex":"%^([0-9_]+)$%"}],
-        "path": "/approvalcondition/approvalcondition/:apid"
-    },
-    {
-        "name": "addApprovalCondition",
-        "outputType": "ApprovalCondition",
+        "description": {
+            "de": "editiert eine Zulassungsbedingung"
+        },
+        "placeholder": [
+            {
+                "name": "apid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Zulassungsbedingung (`ApprovalCondition`)"
+                }
+            }
+        ],
         "inputType": "ApprovalCondition",
-        "method": "POST",
-        "path": "/approvalcondition"
-    },
-    {
-        "name": "getApprovalCondition",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "ApprovalCondition",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"apid","regex":"%^([0-9_]+)$%"}],
-        "path": "/approvalcondition/approvalcondition/:apid"
-    },
-    {
-        "name": "getAllApprovalConditions",
-        "callback": "getMatch",
-        "outputType": "ApprovalCondition",
-        "inputType": "",
-        "method": "GET",
-        "path": "/approvalcondition/approvalcondition"
+        "outputType": "ApprovalCondition"
     },
     {
         "name": "getCourseApprovalConditions",
-        "callback": "getMatch",
+        "path": "\/approvalcondition\/course\/:courseid",
+        "method": "GET",
+        "description": {
+            "de": "ermittelt alle Zulassungsbedingungen einer Veranstaltung"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                }
+            }
+        ],
+        "inputType": "",
         "outputType": "ApprovalCondition",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],
-        "path": "/approvalcondition/course/:courseid"
+        "callback": "getMatch"
     },
     {
-        "name": "addPlatform",
-        "outputType": "Platform",
-        "inputType": "Platform",
+        "name": "addApprovalCondition",
+        "path": "\/approvalcondition",
         "method": "POST",
-        "path": "/platform"
-    },
-    {
-        "name": "deletePlatform",
-        "outputType": "Platform",
-        "inputType": "",
-        "method": "DELETE",
-        "path": "/platform"
-    },
-    {
-        "name": "getExistsPlatform",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "Platform",
-        "inputType": "",
-        "method": "GET",
-        "path": "/link/exists/platform"
-    },
-    {
-        "name": "getSamplesInfo",
-        "outputType": "",
-        "inputType": "",
-        "method": "GET",
-        "path": "/samples"
+        "description": {
+            "de": "f\u00fcgt eine neue Zulassungsbedingung ein"
+        },
+        "inputType": "ApprovalCondition",
+        "outputType": "ApprovalCondition"
     },
     {
         "name": "postSamples",
-        "outputType": "",
-        "inputType": "",
+        "path": "\/samples\/:amount",
         "method": "POST",
-        "path": "/samples/:amount"
+        "description": {
+            "de": "erzeugt Zufallsdaten (courseAmount = Anzahl der Veranstaltungen, userAmount = Anzahl der Nutzer), anhand der Vorgabe"
+        },
+        "inputType": "",
+        "outputType": ""
+    },
+    {
+        "name": "getApprovalCondition",
+        "path": "\/approvalcondition\/approvalcondition\/:apid",
+        "method": "GET",
+        "description": {
+            "de": "liefert eine einzelne Zulassungsbedingung"
+        },
+        "placeholder": [
+            {
+                "name": "apid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Zulassungsbedingung (`ApprovalCondition`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "ApprovalCondition",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
+    },
+    {
+        "name": "getAllApprovalConditions",
+        "path": "\/approvalcondition\/approvalcondition",
+        "method": "GET",
+        "description": {
+            "de": "ermittelt alle Zulassungsbedingungen"
+        },
+        "inputType": "",
+        "outputType": "ApprovalCondition",
+        "callback": "getMatch"
+    },
+    {
+        "name": "deletePlatform",
+        "path": "\/platform",
+        "method": "DELETE",
+        "description": {
+            "de": "entfernt die Komponente und ihre installierten Bestandteile aus der Plattform"
+        },
+        "inputType": "",
+        "outputType": "Platform"
+    },
+    {
+        "name": "deleteApprovalCondition",
+        "path": "\/approvalcondition\/approvalcondition\/:apid",
+        "method": "DELETE",
+        "description": {
+            "de": "entfernt eine Zulassungsbedingung"
+        },
+        "placeholder": [
+            {
+                "name": "apid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Zulassungsbedingung (`ApprovalCondition`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "ApprovalCondition"
+    },
+    {
+        "name": "getSamplesInfo",
+        "path": "\/samples",
+        "method": "GET",
+        "description": {
+            "de": "liefert die Bezeichner der betroffenen Tabellen"
+        },
+        "inputType": "",
+        "outputType": ""
+    },
+    {
+        "name": "addPlatform",
+        "path": "\/platform",
+        "method": "POST",
+        "description": {
+            "de": "installiert dies zugeh\\u00f6rige Tabelle und die Prozeduren f\\u00fcr diese Plattform"
+        },
+        "inputType": "Platform",
+        "outputType": "Platform"
     },
     {
         "name": "getApiProfiles",
-        "outputType": "GateProfile",
-        "inputType": "",
+        "path": "\/api\/profiles",
         "method": "GET",
-        "path": "/api/profiles"
+        "description": {
+            "de": "liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren"
+        },
+        "inputType": "",
+        "outputType": "GateProfile"
     }
 ]

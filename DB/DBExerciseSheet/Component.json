@@ -1,144 +1,241 @@
 {
     "name": "DBExerciseSheet",
+    "description": {
+        "de": "Die DBExerciseSheet erm\u00f6glicht den Zugriff auf die `EcerciseSheet` Tabelle der Datenbank. Sie verwaltet \u00dcbungsserien. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt."
+    },
     "version": "1.0",
     "classFile": "DBExerciseSheet.php",
     "className": "DBExerciseSheet",
     "files": [
-        {"path": ".htaccess"},
-        {"path": "DBExerciseSheet.php"},
-        {"path": "index.php"},
-        {"path": "Commands.json"},
-        {"path": "ExerciseSheetSample.json"},
-        {"path": "Sql/"},
-        {"path": "info/"}
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBExerciseSheet.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "ExerciseSheetSample.json"
+        },
+        {
+            "path": "Sql\/"
+        },
+        {
+            "path": "info\/"
+        }
     ],
     "links": [
         {
             "name": "editExerciseSheet",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl editExerciseSheet"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deleteExerciseSheet",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl deleteExerciseSheet"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addExerciseSheet",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl addExerciseSheet"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "postSamples",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl postSamples"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deletePlatform",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl deletePlatform"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addPlatform",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl addPlatform"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "getCourseExercises",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBExerciseSheetGetCourseExercises/:courseid"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl getCourseExercises"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBExerciseSheetGetCourseExercises\/:courseid"
+                }
+            ]
         },
         {
             "name": "getCourseSheets",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBExerciseSheetGetCourseSheets/:courseid"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl getCourseSheets"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBExerciseSheetGetCourseSheets\/:courseid"
+                }
+            ]
         },
         {
             "name": "getCourseSheetURLS",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBExerciseSheetGetCourseSheetURLs/:courseid"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl getCourseSheetURLS"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBExerciseSheetGetCourseSheetURLs\/:courseid"
+                }
+            ]
         },
         {
             "name": "getExerciseSheet",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBExerciseSheetGetExerciseSheet/:esid"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl getExerciseSheet"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBExerciseSheetGetExerciseSheet\/:esid"
+                }
+            ]
         },
         {
             "name": "getExerciseSheetURL",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBExerciseSheetGetExerciseSheetURL/:esid"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl getExerciseSheetURL"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBExerciseSheetGetExerciseSheetURL\/:esid"
+                }
+            ]
         },
         {
             "name": "getSheetExercises",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBExerciseSheetGetSheetExercises/:esid"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl getSheetExercises"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBExerciseSheetGetSheetExercises\/:esid"
+                }
+            ]
         },
         {
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBExerciseSheetGetExistsPlatform"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl getExistsPlatform"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBExerciseSheetGetExistsPlatform"
+                }
+            ]
         }
     ],
     "connector": [
         {
             "name": "request",
-            "target": "CLocalObjectRequest"
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit DBExerciseSheet als lokales Objekt aufgerufen werden kann"
+            }
         },
         {
             "name": "postPlatform",
-            "target": "CInstall"
+            "target": "CInstall",
+            "description": {
+                "de": "der Installationsassistent soll uns bei der Plattforminstallation aufrufen"
+            }
         },
         {
+            "priority": 120,
             "name": "postSamples",
             "target": "CInstall",
-            "priority": 120
+            "description": {
+                "de": "wir wollen bei Bedarf Beispieldaten erzeugen"
+            }
         },
         {
             "name": "getDescFiles",
-            "target": "TDocuView"
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
+            }
         },
         {
             "name": "getComponentProfiles",
-            "target": "TApiConfiguration"
+            "target": "TApiConfiguration",
+            "description": {
+                "de": "damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden"
+            }
         }
     ]
 }

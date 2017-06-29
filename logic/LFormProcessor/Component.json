@@ -1,76 +1,133 @@
 {
     "name": "LFormProcessor",
+    "description": {
+        "de": "???"
+    },
     "version": "1.0",
     "classFile": "LFormProcessor.php",
     "className": "LFormProcessor",
     "files": [
-        {"path": ".htaccess"},
-        {"path": "LFormProcessor.php"},
-        {"path": "index.php"},
-        {"path": "Commands.json"},
-        {"path": "info/"},
-        {"path": "help/"}
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "LFormProcessor.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "info\/"
+        },
+        {
+            "path": "help\/"
+        }
     ],
     "links": [
         {
             "name": "formDb",
             "target": "DBForm",
-            "links": [{
-                "method": "GET",
-                "path": "/form/exercise/:exerciseid"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl formDb"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/form\/exercise\/:exerciseid"
+                }
+            ]
         },
         {
             "name": "postProcess",
             "target": "DBProcessList",
-            "links": [{
-                "method": "POST",
-                "path": "/process"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl postProcess"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/process"
+                }
+            ]
         },
         {
             "name": "deleteProcess",
             "target": "DBProcessList",
-            "links": [{
-                "method": "DELETE",
-                "path": "/process/process/:processid"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl deleteProcess"
+            },
+            "links": [
+                {
+                    "method": "DELETE",
+                    "path": "\/process\/process\/:processid"
+                }
+            ]
         },
         {
             "name": "getProcess",
             "target": "DBProcessList",
-            "links": [{
-                "method": "GET",
-                "path": "/process/course/:courseid/component/:componentid"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl getProcess"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/process\/course\/:courseid\/component\/:componentid"
+                }
+            ]
         },
         {
             "name": "pdf",
             "target": "FSPdf",
-            "links": [{
-                "method": "POST",
-                "path": "/pdf"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl pdf"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/pdf"
+                }
+            ]
         }
     ],
     "connector": [
         {
+            "priority": 150,
             "name": "postCourse",
             "target": "LForm",
-            "priority": 150
+            "description": {
+                "de": "???"
+            }
         },
         {
             "name": "request",
-            "target": "CLocalObjectRequest"
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit LFormProcessor als lokales Objekt aufgerufen werden kann"
+            }
         },
         {
             "name": "request",
             "target": "CHelp",
+            "description": {
+                "de": "hier werden Hilfedateien beim zentralen Hilfesystem angemeldet, sodass sie \u00fcber ihre globale Adresse abgerufen werden k\u00f6nnen"
+            },
             "links": [
-                {"path": "/help/:language/extension/LFormProcessor/LFormProcessor.md"},
-                {"path": "/help/:language/extension/LFormProcessor/LFormProcessorAhnlichkeit.png"},
-                {"path": "/help/:language/extension/LFormProcessor/LFormProcessorNormal.png"},
-                {"path": "/help/:language/extension/LFormProcessor/LFormProcessorRegular.png"}
+                {
+                    "path": "\/help\/:language\/extension\/LFormProcessor\/LFormProcessor.md"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LFormProcessor\/LFormProcessorAhnlichkeit.png"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LFormProcessor\/LFormProcessorNormal.png"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LFormProcessor\/LFormProcessorRegular.png"
+                }
             ]
         }
     ]

@@ -1,19 +1,64 @@
 {
-  "name":"LMarking",
-  "version":"1.0",
-  "classFile":"LMarking.php",
-  "className":"LMarking",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"LMarking.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"}
-  ],
-  "links":[
-    {"name":"file", "target":"LFile", "links":[{"method":"POST", "path":"/file" }] },
-    {"name":"marking", "target":"DBMarking", "links":[{"method":"DELETE", "path":"/marking/marking/:markingid" },{"method":"POST", "path":"/marking" }] }
-  ],
-  "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"}
-  ]
+    "name": "LMarking",
+    "description": {
+        "de": "???"
+    },
+    "version": "1.0",
+    "classFile": "LMarking.php",
+    "className": "LMarking",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "LMarking.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        }
+    ],
+    "links": [
+        {
+            "name": "file",
+            "target": "LFile",
+            "description": {
+                "de": "f\\u00fcr den Befehl file"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/file"
+                }
+            ]
+        },
+        {
+            "name": "marking",
+            "target": "DBMarking",
+            "description": {
+                "de": "f\\u00fcr den Befehl marking"
+            },
+            "links": [
+                {
+                    "method": "DELETE",
+                    "path": "\/marking\/marking\/:markingid"
+                },
+                {
+                    "method": "POST",
+                    "path": "\/marking"
+                }
+            ]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit LMarking als lokales Objekt aufgerufen werden kann"
+            }
+        }
+    ]
 }

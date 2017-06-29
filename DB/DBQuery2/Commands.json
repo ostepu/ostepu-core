@@ -1,52 +1,81 @@
 [
     {
         "name": "postQuery",
-        "outputType": "Query",
-        "inputType": "Query",
+        "path": "\/query",
         "method": "POST",
-        "path": "/query"
+        "description": {
+            "de": "f\u00fchrt eine Datenbankanfrage aus und gibt das Ergebnis zur\u00fcck"
+        },
+        "inputType": "Query",
+        "outputType": "Query"
     },
     {
         "name": "postMultiGetRequest",
-        "outputType": "",
-        "inputType": "",
+        "path": "\/multiGetRequest",
         "method": "POST",
-        "path": "/multiGetRequest"
+        "description": {
+            "de": "f\u00fchrt eine Menge von Anfragen aus (als Array)"
+        },
+        "inputType": "",
+        "outputType": ""
     },
     {
         "name": "getProcedureQuery",
-        "outputType": "Query",
-        "inputType": "",
+        "path": "\/query\/procedure\/:procedure(\/:params+)",
         "method": "GET",
-        "placeholder":[{"name":"procedure","regex":"%^([a-zA-Z]+)$%"}],
-        "path": "/query/procedure/:procedure(/:params+)"
+        "description": {
+            "de": "ruft eine Prozedur in der Datenbank auf"
+        },
+        "placeholder": [
+            {
+                "name": "procedure",
+                "regex": "%^([a-zA-Z]+)$%",
+                "description": {
+                    "de": "???"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Query"
     },
     {
         "name": "addPlatform",
-        "outputType": "Platform",
-        "inputType": "Platform",
+        "path": "\/platform",
         "method": "POST",
-        "path": "/platform"
+        "description": {
+            "de": "installiert dies zugeh\\u00f6rige Tabelle und die Prozeduren f\\u00fcr diese Plattform"
+        },
+        "inputType": "Platform",
+        "outputType": "Platform"
     },
     {
         "name": "deletePlatform",
-        "outputType": "Platform",
-        "inputType": "",
+        "path": "\/platform",
         "method": "DELETE",
-        "path": "/platform"
+        "description": {
+            "de": "entfernt die Komponente und ihre installierten Bestandteile aus der Plattform"
+        },
+        "inputType": "",
+        "outputType": "Platform"
     },
     {
         "name": "getExistsPlatform",
-        "outputType": "Platform",
-        "inputType": "",
+        "path": "\/link\/exists\/platform",
         "method": "GET",
-        "path": "/link/exists/platform"
+        "description": {
+            "de": "pr\\u00fcft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollst\u00e4ndig installiert ist"
+        },
+        "inputType": "",
+        "outputType": "Platform"
     },
     {
         "name": "getApiProfiles",
-        "outputType": "GateProfile",
-        "inputType": "",
+        "path": "\/api\/profiles",
         "method": "GET",
-        "path": "/api/profiles"
+        "description": {
+            "de": "liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren"
+        },
+        "inputType": "",
+        "outputType": "GateProfile"
     }
 ]

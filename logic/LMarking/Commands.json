@@ -1,4 +1,16 @@
 [
-    {    "method":"POST", "path":"/marking" },
-    {    "method":"DELETE", "path":"/marking/marking/:markingid" }
+    {
+        "path": "\/marking",
+        "method": "POST",
+        "description": {
+            "de": "???"
+        }
+    },
+    {
+        "path": "\/marking\/marking\/:markingid",
+        "method": "DELETE",
+        "description": {
+            "de": "???"
+        }
+    }
 ]

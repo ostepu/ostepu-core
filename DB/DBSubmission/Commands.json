@@ -1,222 +1,465 @@
 [
     {
-        "name": "editSubmission",
-        "outputType": "Submission",
-        "inputType": "Submission",
-        "method": "PUT",
-        "placeholder":[{"name":"suid","regex":"%^([0-9_]+)$%"}],
-        "path": "/submission/submission/:suid"
-    },
-    {
-        "name": "deleteSubmission",
-        "outputType": "Submission",
-        "inputType": "",
-        "method": "DELETE",
-        "placeholder":[{"name":"suid","regex":"%^([0-9_]+)$%"}],
-        "path": "/submission/submission/:suid"
-    },
-    {
-        "name": "addSubmission",
-        "outputType": "Submission",
-        "inputType": "Submission",
-        "method": "POST",
-        "path": "/submission"
-    },
-    {
-        "name": "getExerciseSubmissions",
-        "callback": "getMatch",
-        "outputType": "Submission",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
-        "path": "/submission/exercise/:eid"
-    },
-    {
-        "name": "getUserExerciseSubmissions",
-        "callback": "getMatch",
-        "outputType": "Submission",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
-        "path": "/submission/user/:userid/exercise/:eid"
-    },
-    {
-        "name": "getUserSheetSubmissions",
-        "callback": "getMatch",
-        "outputType": "Submission",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
-        "path": "/submission/user/:userid/exercisesheet/:esid"
-    },
-    {
-        "name": "getGroupSubmissions",
-        "callback": "getMatch",
-        "outputType": "Submission",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
-        "path": "/submission/group/user/:userid/exercisesheet/:esid"
-    },
-    {
-        "name": "getGroupSelectedSubmissions",
-        "callback": "getMatch",
-        "outputType": "Submission",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
-        "path": "/submission/group/user/:userid/exercisesheet/:esid/selected"
-    },
-    {
-        "name": "getGroupExerciseSubmissions",
-        "callback": "getMatch",
-        "outputType": "Submission",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
-        "path": "/submission/group/user/:userid/exercise/:eid"
-    },
-    {
-        "name": "getGroupSelectedExerciseSubmissions",
-        "callback": "getMatch",
-        "outputType": "Submission",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
-        "path": "/submission/group/user/:userid/exercise/:eid/selected"
-    },
-    {
-        "name": "getGroupSelectedCourseSubmissions",
-        "callback": "getMatch",
-        "outputType": "Submission",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],
-        "path": "/submission/group/user/:userid/course/:courseid/selected"
-    },
-    {
-        "name": "getGroupCourseSubmissions",
-        "callback": "getMatch",
-        "outputType": "Submission",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"userid","regex":"%^([0-9_]+)$%"},{"name":"courseid","regex":"%^([0-9_]+)$%"}],
-        "path": "/submission/group/user/:userid/course/:courseid"
-    },
-    {
-        "name": "getSelectedSheetSubmissions",
-        "callback": "getMatch",
-        "outputType": "Submission",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
-        "path": "/submission/exercisesheet/:esid/selected"
-    },
-    {
-        "name": "getSubmission",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "Submission",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"suid","regex":"%^([0-9_]+)$%"}],
-        "path": "/submission/submission/:suid"
-    },
-    {
-        "name": "getAllSubmissions",
-        "callback": "getMatch",
-        "outputType": "Submission",
-        "inputType": "",
-        "method": "GET",
-        "path": "/submission(/:selected)(/date/begin/:beginStamp/end/:endStamp)"
-    },
-    {
-        "name": "getSelectedExerciseSubmissions",
-        "callback": "getMatch",
-        "outputType": "Submission",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
-        "path": "/submission/exercise/:eid/selected"
-    },
-    {
         "name": "getSheetSubmissions",
-        "callback": "getMatch",
+        "path": "\/submission\/exercisesheet\/:esid",
+        "method": "GET",
+        "description": {
+            "de": "gibt alle Einsendungen einer \u00dcbungsserie"
+        },
+        "placeholder": [
+            {
+                "name": "esid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                }
+            }
+        ],
+        "inputType": "",
         "outputType": "Submission",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
-        "path": "/submission/exercisesheet/:esid"
-    },
-    {
-        "name": "getCourseSubmissions",
-        "callback": "getMatch",
-        "outputType": "Submission",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],
-        "path": "/submission/course/:courseid"
-    },
-    {
-        "name": "getCourseUserSubmissions",
-        "callback": "getMatch",
-        "outputType": "Submission",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"},{"name":"userid","regex":"%^([0-9_]+)$%"}],
-        "path": "/submission/course/:courseid/user/:userid"
-    },
-    {
-        "name": "getSelectedCourseUserSubmissions",
-        "callback": "getMatch",
-        "outputType": "Submission",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"},{"name":"userid","regex":"%^([0-9_]+)$%"}],
-        "path": "/submission/course/:courseid/user/:userid/selected"
-    },
-    {
-        "name": "addPlatform",
-        "outputType": "Platform",
-        "inputType": "Platform",
-        "method": "POST",
-        "path": "/platform"
-    },
-    {
-        "name": "deletePlatform",
-        "outputType": "Platform",
-        "inputType": "",
-        "method": "DELETE",
-        "path": "/platform"
-    },
-    {
-        "name": "getExistsPlatform",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "Platform",
-        "inputType": "",
-        "method": "GET",
-        "path": "/link/exists/platform"
-    },
-    {
-        "name": "getSamplesInfo",
-        "outputType": "",
-        "inputType": "",
-        "method": "GET",
-        "path": "/samples"
+        "callback": "getMatch"
     },
     {
         "name": "postSamples",
-        "outputType": "Query",
-        "inputType": "",
+        "path": "\/samples\/course\/:courseAmount\/user\/:userAmount",
         "method": "POST",
-        "path": "/samples/course/:courseAmount/user/:userAmount"
+        "description": {
+            "de": "erzeugt Zufallsdaten (courseAmount = Anzahl der Veranstaltungen, userAmount = Anzahl der Nutzer), anhand der Vorgabe"
+        },
+        "inputType": "",
+        "outputType": "Query"
+    },
+    {
+        "name": "getGroupCourseSubmissions",
+        "path": "\/submission\/group\/user\/:userid\/course\/:courseid",
+        "method": "GET",
+        "description": {
+            "de": "gibt die Einsendungen einer Gruppe zu einer Veranstaltung"
+        },
+        "placeholder": [
+            {
+                "name": "userid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
+                }
+            },
+            {
+                "name": "courseid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Submission",
+        "callback": "getMatch"
+    },
+    {
+        "name": "addPlatform",
+        "path": "\/platform",
+        "method": "POST",
+        "description": {
+            "de": "installiert dies zugeh\\u00f6rige Tabelle und die Prozeduren f\\u00fcr diese Plattform"
+        },
+        "inputType": "Platform",
+        "outputType": "Platform"
+    },
+    {
+        "name": "getExistsPlatform",
+        "path": "\/link\/exists\/platform",
+        "method": "GET",
+        "description": {
+            "de": "pr\\u00fcft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollst\u00e4ndig installiert ist"
+        },
+        "inputType": "",
+        "outputType": "Platform",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
+    },
+    {
+        "name": "getGroupSelectedSubmissions",
+        "path": "\/submission\/group\/user\/:userid\/exercisesheet\/:esid\/selected",
+        "method": "GET",
+        "description": {
+            "de": "liefert nur die selektierten Einsendungen einer Gruppe (nur diese gehen in die Bewertung ein)"
+        },
+        "placeholder": [
+            {
+                "name": "esid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Submission",
+        "callback": "getMatch"
+    },
+    {
+        "name": "getGroupSelectedExerciseSubmissions",
+        "path": "\/submission\/group\/user\/:userid\/exercise\/:eid\/selected",
+        "method": "GET",
+        "description": {
+            "de": "gibt die selektierten Einsendungen einer Gruppe zu einer Aufgabe"
+        },
+        "placeholder": [
+            {
+                "name": "eid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Aufgabe (`Exercise`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Submission",
+        "callback": "getMatch"
+    },
+    {
+        "name": "getUserExerciseSubmissions",
+        "path": "\/submission\/user\/:userid\/exercise\/:eid",
+        "method": "GET",
+        "description": {
+            "de": "gibt alle Einsendungen eines Nutzers zu einer Aufgabe zur\u00fcck"
+        },
+        "placeholder": [
+            {
+                "name": "eid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Aufgabe (`Exercise`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Submission",
+        "callback": "getMatch"
+    },
+    {
+        "name": "deleteSubmission",
+        "path": "\/submission\/submission\/:suid",
+        "method": "DELETE",
+        "description": {
+            "de": "entfernt eine Einsendung (damit werden auch Korrekturen entfernt und vergebene Punkte)"
+        },
+        "placeholder": [
+            {
+                "name": "suid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Einsendung (`Submission`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Submission"
+    },
+    {
+        "name": "getUserSheetSubmissions",
+        "path": "\/submission\/user\/:userid\/exercisesheet\/:esid",
+        "method": "GET",
+        "description": {
+            "de": "gibt alle Einsendungen eines Nutzers zu einer \u00dcbungsserie zur\u00fcck"
+        },
+        "placeholder": [
+            {
+                "name": "esid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Submission",
+        "callback": "getMatch"
+    },
+    {
+        "name": "getAllSubmissions",
+        "path": "\/submission(\/:selected)(\/date\/begin\/:beginStamp\/end\/:endStamp)",
+        "method": "GET",
+        "description": {
+            "de": "liefert alle Einsendungen (f\u00fcr alle Veranstaltungen), es kann aber ein bestimmter Zeitraum eingegrenzt und sich auf selektierte Einsendungen festgelegt werden"
+        },
+        "inputType": "",
+        "outputType": "Submission",
+        "callback": "getMatch"
+    },
+    {
+        "name": "getGroupSubmissions",
+        "path": "\/submission\/group\/user\/:userid\/exercisesheet\/:esid",
+        "method": "GET",
+        "description": {
+            "de": "liefert alle Einsendungen einer Gruppe (anhand der NutzerId eines Gruppenmitglieds und der \u00dcbungsserie)"
+        },
+        "placeholder": [
+            {
+                "name": "esid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Submission",
+        "callback": "getMatch"
+    },
+    {
+        "name": "getCourseUserSubmissions",
+        "path": "\/submission\/course\/:courseid\/user\/:userid",
+        "method": "GET",
+        "description": {
+            "de": "gibt alle Einsendungen eines Nutzers in einer Veranstaltung"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                }
+            },
+            {
+                "name": "userid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Submission",
+        "callback": "getMatch"
+    },
+    {
+        "name": "getSubmission",
+        "path": "\/submission\/submission\/:suid",
+        "method": "GET",
+        "description": {
+            "de": "liefert eine einzelne Einsendung"
+        },
+        "placeholder": [
+            {
+                "name": "suid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Einsendung (`Submission`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Submission",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
+    },
+    {
+        "name": "getGroupExerciseSubmissions",
+        "path": "\/submission\/group\/user\/:userid\/exercise\/:eid",
+        "method": "GET",
+        "description": {
+            "de": "gibt die Einsendungen einer Gruppe zu einer Aufgabe"
+        },
+        "placeholder": [
+            {
+                "name": "eid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Aufgabe (`Exercise`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Submission",
+        "callback": "getMatch"
+    },
+    {
+        "name": "getSelectedExerciseSubmissions",
+        "path": "\/submission\/exercise\/:eid\/selected",
+        "method": "GET",
+        "description": {
+            "de": "gibt alle selektierten Einsendungen einer Aufgabe"
+        },
+        "placeholder": [
+            {
+                "name": "eid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Aufgabe (`Exercise`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Submission",
+        "callback": "getMatch"
+    },
+    {
+        "name": "addSubmission",
+        "path": "\/submission",
+        "method": "POST",
+        "description": {
+            "de": "f\u00fcgt eine neue Einsendung ein"
+        },
+        "inputType": "Submission",
+        "outputType": "Submission"
+    },
+    {
+        "name": "getCourseSubmissions",
+        "path": "\/submission\/course\/:courseid",
+        "method": "GET",
+        "description": {
+            "de": "gibt alle Einsendungen einer Veranstaltung"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Submission",
+        "callback": "getMatch"
+    },
+    {
+        "name": "getGroupSelectedCourseSubmissions",
+        "path": "\/submission\/group\/user\/:userid\/course\/:courseid\/selected",
+        "method": "GET",
+        "description": {
+            "de": "gibt die selektierten Einsendungen einer Gruppe zu einer Veranstaltung"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Submission",
+        "callback": "getMatch"
+    },
+    {
+        "name": "getSelectedCourseUserSubmissions",
+        "path": "\/submission\/course\/:courseid\/user\/:userid\/selected",
+        "method": "GET",
+        "description": {
+            "de": "gibt alle selektierten Einsendungen eines Nutzers in einer Veranstaltung"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                }
+            },
+            {
+                "name": "userid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Submission",
+        "callback": "getMatch"
+    },
+    {
+        "name": "editSubmission",
+        "path": "\/submission\/submission\/:suid",
+        "method": "PUT",
+        "description": {
+            "de": "editiert eine existierende Einsendung"
+        },
+        "placeholder": [
+            {
+                "name": "suid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Einsendung (`Submission`)"
+                }
+            }
+        ],
+        "inputType": "Submission",
+        "outputType": "Submission"
+    },
+    {
+        "name": "deletePlatform",
+        "path": "\/platform",
+        "method": "DELETE",
+        "description": {
+            "de": "entfernt die Komponente und ihre installierten Bestandteile aus der Plattform"
+        },
+        "inputType": "",
+        "outputType": "Platform"
+    },
+    {
+        "name": "getSelectedSheetSubmissions",
+        "path": "\/submission\/exercisesheet\/:esid\/selected",
+        "method": "GET",
+        "description": {
+            "de": "gibt alle selektierten Einsendungen einer \u00dcbungsserie"
+        },
+        "placeholder": [
+            {
+                "name": "esid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Submission",
+        "callback": "getMatch"
+    },
+    {
+        "name": "getSamplesInfo",
+        "path": "\/samples",
+        "method": "GET",
+        "description": {
+            "de": "liefert die Bezeichner der betroffenen Tabellen"
+        },
+        "inputType": "",
+        "outputType": ""
+    },
+    {
+        "name": "getExerciseSubmissions",
+        "path": "\/submission\/exercise\/:eid",
+        "method": "GET",
+        "description": {
+            "de": "gibt alle Einsendungen zu einer Aufgabe zur\u00fcck"
+        },
+        "placeholder": [
+            {
+                "name": "eid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Aufgabe (`Exercise`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Submission",
+        "callback": "getMatch"
     },
     {
         "name": "getApiProfiles",
-        "outputType": "GateProfile",
-        "inputType": "",
+        "path": "\/api\/profiles",
         "method": "GET",
-        "path": "/api/profiles"
+        "description": {
+            "de": "liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren"
+        },
+        "inputType": "",
+        "outputType": "GateProfile"
     }
 ]

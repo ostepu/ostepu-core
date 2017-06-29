@@ -1,343 +1,910 @@
 {
     "name": "CUIHelp",
+    "description": {
+        "de": "Die CUIHelp enth\u00e4lt einige Hilfedatei der Benutzerschicht (`UI`)"
+    },
     "version": "1.0",
     "classFile": "CUIHelp.php",
     "className": "CUIHelp",
     "files": [
-        {"path": ".htaccess"},
-        {"path": "CUIHelp.php"},
-        {"path": "index.php"},
-        {"path": "Commands.json"},
-        {"path": "info/"},
-        {"path": "help/"}
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "CUIHelp.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "info\/"
+        },
+        {
+            "path": "help\/"
+        }
     ],
     "connector": [
         {
             "name": "request",
-            "target": "CLocalObjectRequest"
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit CUIHelp als lokales Objekt aufgerufen werden kann"
+            }
         },
         {
             "name": "request",
             "target": "CHelp",
+            "description": {
+                "de": "hier werden Hilfedateien beim zentralen Hilfesystem angemeldet, sodass sie \u00fcber ihre globale Adresse abgerufen werden k\u00f6nnen"
+            },
             "links": [
-                {"path": "/help/:language/page/admin/tutorUpload/upload.md"},
-                {"path": "/help/:language/page/admin/tutorUpload/uploadA.png"},
-                {"path": "/help/:language/page/admin/tutorUpload/uploadB.png"},
-                {"path": "/help/:language/page/admin/tutorUpload/uploadC.png"},
-                {"path": "/help/:language/page/admin/tutorUpload/uploadD.png"},
-                {"path": "/help/:language/page/admin/tutorUpload/sampleD.png"},
-                {},
-                {"path": "/help/:language/setting/AllowLateSubmissions/AllowLateSubmissionsDesc.md"},
-                {"path": "/help/:language/setting/AllowLateSubmissions/allowLateSubmissionsA.png"},
-                {"path": "/help/:language/setting/AllowLateSubmissions/allowLateSubmissionsB.png"},
-                {"path": "/help/:language/setting/AllowLateSubmissions/allowLateSubmissionsC.png"},
-                {"path": "/help/:language/setting/AllowLateSubmissions/allowLateSubmissionsD.png"},
-                {},
-                {"path": "/help/:language/setting/RegistrationPeriodEnd/RegistrationPeriodEndDesc.md"},
-                {"path": "/help/:language/setting/RegistrationPeriodEnd/periodExpiredA.png"},
-                {},
-                {"path": "/help/:language/setting/InsertStudentNamesIntoTutorArchives/InsertStudentNamesIntoTutorArchivesDesc.md"},
-                {"path": "/help/:language/setting/InsertStudentNamesIntoTutorArchives/insertStudentNamesIntoTutorArchivesA.png"},
-                {},
-                {"path": "/help/:language/page/student/groups/A.png"},
-                {"path": "/help/:language/page/student/groups/B.png"},
-                {"path": "/help/:language/page/student/groups/C.png"},
-                {"path": "/help/:language/page/student/groups/Cf.png"},
-                {"path": "/help/:language/page/student/groups/D.png"},
-                {"path": "/help/:language/page/student/groups/E.png"},
-                {"path": "/help/:language/page/student/groups/F.png"},
-                {"path": "/help/:language/page/student/groups/G.png"},
-                {"path": "/help/:language/page/student/groups/H.png"},
-                {"path": "/help/:language/page/student/groups/I.png"},
-                {"path": "/help/:language/page/student/groups/invitationsToGroup.md"},
-                {"path": "/help/:language/page/student/groups/invitationsFromGroup.md"},
-                {"path": "/help/:language/page/student/groups/groupMembers.md"},
-                {"path": "/help/:language/page/student/groups/groupManagement.md"},
-                {},
-                {"path": "/help/:language/page/admin/markingTool/createArchive.md"},
-                {"path": "/help/:language/page/admin/markingTool/sampleB.png"},
-                {"path": "/help/:language/page/admin/markingTool/libreA.png"},
-                {"path": "/help/:language/page/admin/markingTool/libreB.png"},
-                {"path": "/help/:language/page/admin/markingTool/pathA.png"},
-                {"path": "/help/:language/page/admin/markingTool/pathB.png"},
-                {"path": "/help/:language/page/admin/markingTool/pathC.png"},
-                {"path": "/help/:language/page/admin/markingTool/pathD.png"},
-                {"path": "/help/:language/page/admin/markingTool/pathE.png"},
-                {},
-                {"path": "/help/:language/page/admin/markingTool/filter.md"},
-                {"path": "/help/:language/page/admin/markingTool/filterA.png"},
-                {"path": "/help/:language/page/admin/markingTool/filterB.png"},
-                {"path": "/help/:language/page/admin/markingTool/filterC.png"},
-                {"path": "/help/:language/page/admin/markingTool/filterD.png"},
-                {"path": "/help/:language/page/admin/markingTool/filterE.png"},
-                {},
-                {"path": "/help/:language/page/admin/markingTool/work.md"},
-                {"path": "/help/:language/page/admin/markingTool/workA.png"},
-                {"path": "/help/:language/page/admin/markingTool/workB.png"},
-                {"path": "/help/:language/page/admin/markingTool/workC.png"},
-                {"path": "/help/:language/page/admin/markingTool/workD.png"},
-                {"path": "/help/:language/page/admin/markingTool/workE.png"},
-                {},
-                {"path": "/help/:language/page/admin/createSheet/sheetSettingsA.png"},
-                {"path": "/help/:language/page/admin/createSheet/sheetSettingsB.png"},
-                {"path": "/help/:language/page/admin/createSheet/sheetSettingsC.png"},
-                {"path": "/help/:language/page/admin/createSheet/sheetSettingsD.png"},
-                {"path": "/help/:language/page/admin/createSheet/sheetSettingsE.png"},
-                {"path": "/help/:language/page/admin/createSheet/sheetSettingsF.png"},
-                {"path": "/help/:language/page/admin/createSheet/sheetSettingsG.png"},
-                {"path": "/help/:language/page/admin/createSheet/sheetSettingsH.png"},
-                {"path": "/help/:language/page/admin/createSheet/sheetSettingsI.png"},
-                {"path": "/help/:language/page/admin/createSheet/sheetSettingsJ.png"},
-                {"path": "/help/:language/page/admin/createSheet/sheetSettingsK.png"},
-                {"path": "/help/:language/page/admin/createSheet/sheetSettingsL.png"},
-                {"path": "/help/:language/page/admin/createSheet/sheetSettingsM.png"},
-                {"path": "/help/:language/page/admin/createSheet/sheetSettingsN.png"},
-                {"path": "/help/:language/page/admin/createSheet/sheetSettings.md"},
-                {},
-                {"path": "/help/:language/page/admin/createSheet/createExerciseA.png"},
-                {"path": "/help/:language/page/admin/createSheet/createExerciseB.png"},
-                {"path": "/help/:language/page/admin/createSheet/createExerciseC.png"},
-                {"path": "/help/:language/page/admin/createSheet/createExerciseD.png"},
-                {"path": "/help/:language/page/admin/createSheet/createExerciseE.png"},
-                {"path": "/help/:language/page/admin/createSheet/createExerciseF.png"},
-                {"path": "/help/:language/page/admin/createSheet/createExerciseG.png"},
-                {"path": "/help/:language/page/admin/createSheet/createExerciseH.png"},
-                {"path": "/help/:language/page/admin/createSheet/createExerciseI.png"},
-                {"path": "/help/:language/page/admin/createSheet/exercise.md"},
-                {},
-                {"path": "/help/:language/page/admin/tutorAssign/automatically.md"},
-                {"path": "/help/:language/page/admin/tutorAssign/autoA.png"},
-                {"path": "/help/:language/page/admin/tutorAssign/autoB.png"},
-                {"path": "/help/:language/page/admin/tutorAssign/autoC.png"},
-                {},
-                {"path": "/help/:language/page/admin/tutorAssign/make.md"},
-                {"path": "/help/:language/page/admin/tutorAssign/makeA.png"},
-                {"path": "/help/:language/page/admin/tutorAssign/makeB.png"},
-                {"path": "/help/:language/page/admin/tutorAssign/makeC.png"},
-                {"path": "/help/:language/page/admin/tutorAssign/makeD.png"},
-                {"path": "/help/:language/page/admin/tutorAssign/makeE.png"},
-                {},
-                {"path": "/help/:language/page/admin/tutorAssign/manually.md"},
-                {"path": "/help/:language/page/admin/tutorAssign/manA.png"},
-                {"path": "/help/:language/page/admin/tutorAssign/manB.png"},
-                {"path": "/help/:language/page/admin/tutorAssign/manC.png"},
-                {"path": "/help/:language/page/admin/tutorAssign/manD.png"},
-                {"path": "/help/:language/page/admin/tutorAssign/manE.png"},
-                {"path": "/help/:language/page/admin/tutorAssign/manF.png"},
-                {"path": "/help/:language/page/admin/tutorAssign/manG.png"},
-                {},
-                {"path": "/help/:language/page/admin/tutorAssign/remove.md"},
-                {"path": "/help/:language/page/admin/tutorAssign/removeA.png"},
-                {"path": "/help/:language/page/admin/tutorAssign/removeB.png"},
-                {"path": "/help/:language/page/admin/tutorAssign/removeC.png"},
-                {},
-                {"path": "/help/:language/extension/LFormPredecessor/LFormPredecessorDesc.md"},
-                {"path": "/help/:language/extension/LFormPredecessor/LFormPredecessor.png"},
-                {},
-                {"path": "/help/:language/extension/LFormProcessor/LFormProcessorDesc.md"},
-                {"path": "/help/:language/extension/LFormProcessor/LFormProcessor.png"},
-                {},
-                {"path": "/help/:language/extension/LForm/LFormDesc.md"},
-                {"path": "/help/:language/extension/LForm/formCheckbox.md"},
-                {"path": "/help/:language/extension/LForm/MehrfachauswahlVerwenden3.png"},
-                {"path": "/help/:language/extension/LForm/MehrfachauswahlVerwendenSample.png"},
-                {"path": "/help/:language/extension/LForm/formInput.md"},
-                {"path": "/help/:language/extension/LForm/EingabezeileVerwenden3.png"},
-                {"path": "/help/:language/extension/LForm/EingabezeileVerwendenSample.png"},
-                {"path": "/help/:language/extension/LForm/formRadio.md"},
-                {"path": "/help/:language/extension/LForm/EinfachauswahlVerwenden3.png"},
-                {"path": "/help/:language/extension/LForm/EinfachauswahlVerwendenSample.png"},
-                {},
-                {"path": "/help/:language/extension/LProcessor/LProcessorDesc.md"},
-                {},
-                {"path": "/help/:language/page/admin/courseManagement/courseSettings.md"},
-                {"path": "/help/:language/page/admin/courseManagement/courseSettingsA.png"},
-                {"path": "/help/:language/page/admin/courseManagement/courseSettingsB.png"},
-                {"path": "/help/:language/page/admin/courseManagement/courseSettingsC.png"},
-                {"path": "/help/:language/page/admin/courseManagement/courseSettingsD.png"},
-                {"path": "/help/:language/page/admin/courseManagement/courseSettingsE.png"},
-                {"path": "/help/:language/page/admin/courseManagement/courseSettingsF.png"},
-                {"path": "/help/:language/page/admin/courseManagement/courseSettingsG.png"},
-                {},
-                {"path": "/help/:language/page/admin/courseManagement/courseNotifications.md"},
-                {"path": "/help/:language/page/admin/courseManagement/courseNotificationsA.png"},
-                {"path": "/help/:language/page/admin/courseManagement/courseNotificationsB.png"},
-                {"path": "/help/:language/page/admin/courseManagement/courseNotificationsC.png"},
-                {"path": "/help/:language/page/admin/courseManagement/courseNotificationsD.png"},
-                {"path": "/help/:language/page/admin/courseManagement/courseNotificationsE.png"},
-                {"path": "/help/:language/page/admin/courseManagement/courseNotificationsF.png"},
-                {"path": "/help/:language/page/admin/courseManagement/courseNotificationsG.png"},
-                {"path": "/help/:language/page/admin/courseManagement/courseNotificationsH.png"},
-                {},
-                {"path": "/help/:language/page/admin/courseManagement/courseRedirects.md"},
-                {"path": "/help/:language/page/admin/courseManagement/courseRedirectsA.png"},
-                {"path": "/help/:language/page/admin/courseManagement/courseRedirectsB.png"},
-                {"path": "/help/:language/page/admin/courseManagement/courseRedirectsC.png"},
-                {"path": "/help/:language/page/admin/courseManagement/courseRedirectsD.png"},
-                {"path": "/help/:language/page/admin/courseManagement/courseRedirectsE.png"},
-                {"path": "/help/:language/page/admin/courseManagement/courseRedirectsF.png"},
-                {},
-                {"path": "/help/:language/page/admin/courseManagement/addExternalId.md"},
-                {"path": "/help/:language/page/admin/courseManagement/addExternalIdA.png"},
-                {"path": "/help/:language/page/admin/courseManagement/addExternalIdB.png"},
-                {"path": "/help/:language/page/admin/courseManagement/addExternalIdC.png"},
-                {"path": "/help/:language/page/admin/courseManagement/addExternalIdD.png"},
-                {"path": "/help/:language/page/admin/courseManagement/addExternalIdE.png"},
-                {},
-                {"path": "/help/:language/page/admin/courseManagement/editExternalId.md"},
-                {"path": "/help/:language/page/admin/courseManagement/editExternalIdA.png"},
-                {"path": "/help/:language/page/admin/courseManagement/editExternalIdB.png"},
-                {"path": "/help/:language/page/admin/courseManagement/editExternalIdC.png"},
-                {},
-                {"path": "/help/:language/page/admin/courseManagement/revokeRights.md"},
-                {"path": "/help/:language/page/admin/courseManagement/revokeRightsA.png"},
-                {"path": "/help/:language/page/admin/courseManagement/revokeRightsB.png"},
-                {"path": "/help/:language/page/admin/courseManagement/revokeRightsC.png"},
-                {},
-                {"path": "/help/:language/page/admin/courseManagement/addUser.md"},
-                {"path": "/help/:language/page/admin/courseManagement/addUserA.png"},
-                {"path": "/help/:language/page/admin/courseManagement/addUserB.png"},
-                {"path": "/help/:language/page/admin/courseManagement/addUserC.png"},
-                {"path": "/help/:language/page/admin/courseManagement/addUserD.png"},
-                {"path": "/help/:language/page/admin/courseManagement/addUserE.png"},
-                {},
-                {"path": "/help/:language/page/admin/courseManagement/grantRights.md"},
-                {"path": "/help/:language/page/admin/courseManagement/grantRightsA.png"},
-                {"path": "/help/:language/page/admin/courseManagement/grantRightsB.png"},
-                {"path": "/help/:language/page/admin/courseManagement/grantRightsC.png"},
-                {"path": "/help/:language/page/admin/courseManagement/grantRightsD.png"},
-                {},
-                {"path": "/help/:language/page/admin/courseManagement/plugins.md"},
-                {"path": "/help/:language/page/admin/courseManagement/pluginsA.png"},
-                {"path": "/help/:language/page/admin/courseManagement/pluginsB.png"},
-                {"path": "/help/:language/page/admin/courseManagement/pluginsC.png"},
-                {},
-                {"path": "/help/:language/page/admin/courseManagement/addExerciseType.md"},
-                {"path": "/help/:language/page/admin/courseManagement/addExerciseTypeA.png"},
-                {"path": "/help/:language/page/admin/courseManagement/addExerciseTypeB.png"},
-                {"path": "/help/:language/page/admin/courseManagement/addExerciseTypeC.png"},
-                {},
-                {"path": "/help/:language/page/admin/courseManagement/editExerciseType.md"},
-                {"path": "/help/:language/page/admin/courseManagement/editExerciseTypeA.png"},
-                {"path": "/help/:language/page/admin/courseManagement/editExerciseTypeB.png"},
-                {"path": "/help/:language/page/admin/courseManagement/editExerciseTypeC.png"},
-                {"path": "/help/:language/page/admin/courseManagement/editExerciseTypeD.png"},
-                {},
-                {"path": "/help/:language/setting/MaxStudentUploadSize/MaxStudentUploadSizeDesc.md"},
-                {"path": "/help/:language/setting/MaxStudentUploadSize/maxStudentUploadSizeA.png"},
-                {"path": "/help/:language/setting/MaxStudentUploadSize/maxStudentUploadSizeB.png"},
-                {},
-                {"path": "/help/:language/setting/GenerateDummyCorrectionsForTutorArchives/GenerateDummyCorrectionsForTutorArchivesDesc.md"},
-                {},
-                {"path": "/help/:language/page/common/accountSettings/password.md"},
-                {"path": "/help/:language/page/common/accountSettings/passwordA.png"},
-                {"path": "/help/:language/page/common/accountSettings/passwordB.png"},
-                {"path": "/help/:language/page/common/accountSettings/passwordC.png"},
-                {},
-                {"path": "/help/:language/page/common/login/login.md"},
-                {"path": "/help/:language/page/common/login/loginA.png"},
-                {"path": "/help/:language/page/common/login/loginB.png"},
-                {"path": "/help/:language/page/common/login/loginC.png"},
-                {},
-                {"path": "/help/:language/page/common/accountSettings/user.md"},
-                {"path": "/help/:language/page/common/accountSettings/userA.png"},
-                {"path": "/help/:language/page/common/accountSettings/userB.png"},
-                {"path": "/help/:language/page/common/accountSettings/userC.png"},
-                {"path": "/help/:language/page/common/accountSettings/userD.png"},
-                {"path": "/help/:language/page/common/accountSettings/userE.png"},
-                {"path": "/help/:language/page/common/accountSettings/userF.png"},
-                {"path": "/help/:language/page/common/accountSettings/userG.png"},
-                {},
-                {"path": "/help/:language/page/admin/condition/list.md"},
-                {"path": "/help/:language/page/admin/condition/listA.png"},
-                {"path": "/help/:language/page/admin/condition/listB.png"},
-                {"path": "/help/:language/page/admin/condition/listC.png"},
-                {"path": "/help/:language/page/admin/condition/listD.png"},
-                {},
-                {"path": "/help/:language/page/admin/condition/set.md"},
-                {"path": "/help/:language/page/admin/condition/setA.png"},
-                {"path": "/help/:language/page/admin/condition/setB.png"},
-                {"path": "/help/:language/page/admin/condition/setC.png"},
-                {"path": "/help/:language/page/admin/condition/setD.png"},
-                {},
-                {"path": "/help/:language/page/admin/condition/summary.md"},
-                {"path": "/help/:language/page/admin/condition/summaryA.png"},
-                {"path": "/help/:language/page/admin/condition/summaryB.png"},
-                {"path": "/help/:language/page/admin/condition/summaryC.png"},
-                {"path": "/help/:language/page/admin/condition/summaryD.png"},
-                {"path": "/help/:language/page/admin/condition/summaryE.png"},
-                {"path": "/help/:language/page/admin/condition/summaryF.png"},
-                {"path": "/help/:language/page/admin/condition/summaryG.png"},
-                {"path": "/help/:language/page/admin/condition/summaryH.png"},
-                {"path": "/help/:language/page/admin/condition/summaryI.png"},
-                {},
-                {"path": "/help/:language/page/common/uploadHistory/change.md"},
-                {"path": "/help/:language/page/common/uploadHistory/changeA.png"},
-                {"path": "/help/:language/page/common/uploadHistory/changeB.png"},
-                {"path": "/help/:language/page/common/uploadHistory/changeC.png"},
-                {"path": "/help/:language/page/common/uploadHistory/changeD.png"},
-                {"path": "/help/:language/page/common/uploadHistory/changeE.png"},
-                {},
-                {"path": "/help/:language/page/admin/uploadHistory/select.md"},
-                {"path": "/help/:language/page/admin/uploadHistory/selectA.png"},
-                {"path": "/help/:language/page/admin/uploadHistory/selectB.png"},
-                {"path": "/help/:language/page/admin/uploadHistory/selectC.png"},
-                {"path": "/help/:language/page/admin/uploadHistory/selectD.png"},
-                {"path": "/help/:language/page/admin/uploadHistory/selectE.png"},
-                {},
-                {"path": "/help/:language/page/admin/studentMode/studentMode.md"},
-                {"path": "/help/:language/page/admin/studentMode/studentModeA.png"},
-                {"path": "/help/:language/page/admin/studentMode/studentModeB.png"},
-                {"path": "/help/:language/page/admin/studentMode/studentModeC.png"},
-                {"path": "/help/:language/page/admin/studentMode/studentModeD.png"},
-                {},
-                {"path": "/help/:language/page/student/upload/upload.md"},
-                {"path": "/help/:language/page/student/upload/uploadA.png"},
-                {"path": "/help/:language/page/student/upload/uploadB.png"},
-                {"path": "/help/:language/page/student/upload/uploadC.png"},
-                {"path": "/help/:language/page/student/upload/uploadD.png"},
-                {"path": "/help/:language/page/student/upload/uploadE.png"},
-                {"path": "/help/:language/page/student/upload/uploadF.png"},
-                {"path": "/help/:language/page/student/upload/uploadG.png"},
-                {"path": "/help/:language/page/student/upload/uploadH.png"},
-                {},
-                {"path": "/help/:language/page/student/student/student.md"},
-                {"path": "/help/:language/page/student/student/sheetHeadA.png"},
-                {"path": "/help/:language/page/student/student/sheetHeadB.png"},
-                {"path": "/help/:language/page/student/student/sheetHeadC.png"},
-                {"path": "/help/:language/page/student/student/sheetHeadD.png"},
-                {"path": "/help/:language/page/student/student/sheetHeadE.png"},
-                {"path": "/help/:language/page/student/student/sheetBodyA.png"},
-                {"path": "/help/:language/page/student/student/sheetBodyB.png"},
-                {"path": "/help/:language/page/student/student/sheetBodyC.png"},
-                {"path": "/help/:language/page/student/student/sheetBodyD.png"},
-                {"path": "/help/:language/page/student/student/sheetBodyE.png"},
-                {"path": "/help/:language/page/student/student/sheetBodyF.png"},
-                {"path": "/help/:language/page/student/student/sheetBodyG.png"},
-                {"path": "/help/:language/page/student/student/sheetBodyH.png"},
-                {"path": "/help/:language/page/student/student/sheetBodyI.png"},
-                {"path": "/help/:language/page/student/student/sheetBodyJ.png"},
-                {"path": "/help/:language/page/student/student/navigationA.png"},
-                {"path": "/help/:language/page/student/student/navigationB.png"},
-                {"path": "/help/:language/page/student/student/navigationC.png"},
-                {"path": "/help/:language/page/student/student/navigationD.png"},
-                {"path": "/help/:language/page/student/student/navigationE.png"},
-                {"path": "/help/:language/page/student/student/navigationF.png"},
-                {"path": "/help/:language/page/student/student/navigationG.png"},
-                {},
-                {"path": "/help/:language/page/common/courseSelect/courseSelect.md"},
-                {"path": "/help/:language/page/common/courseSelect/courseSelectA.png"},
-                {"path": "/help/:language/page/common/courseSelect/courseSelectB.png"},
-                {"path": "/help/:language/page/common/courseSelect/courseSelectC.png"},
-                {},
-                {"path": "/help/:language/page/admin/faq/faq.md"},
-                {"path": "/help/:language/page/admin/faq/faqA.png"},
-                {"path": "/help/:language/page/admin/faq/faqB.png"},
-                {"path": "/help/:language/page/admin/faq/faqC.png"},
-                {},
-                {"path": "/help/:language/page/student/faq/faq.md"},
-                {},
-                {"path": "/help/:language/page/tutor/faq/faq.md"}
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorUpload\/upload.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorUpload\/uploadA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorUpload\/uploadB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorUpload\/uploadC.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorUpload\/uploadD.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorUpload\/sampleD.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/setting\/AllowLateSubmissions\/AllowLateSubmissionsDesc.md"
+                },
+                {
+                    "path": "\/help\/:language\/setting\/AllowLateSubmissions\/allowLateSubmissionsA.png"
+                },
+                {
+                    "path": "\/help\/:language\/setting\/AllowLateSubmissions\/allowLateSubmissionsB.png"
+                },
+                {
+                    "path": "\/help\/:language\/setting\/AllowLateSubmissions\/allowLateSubmissionsC.png"
+                },
+                {
+                    "path": "\/help\/:language\/setting\/AllowLateSubmissions\/allowLateSubmissionsD.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/setting\/RegistrationPeriodEnd\/RegistrationPeriodEndDesc.md"
+                },
+                {
+                    "path": "\/help\/:language\/setting\/RegistrationPeriodEnd\/periodExpiredA.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/setting\/InsertStudentNamesIntoTutorArchives\/InsertStudentNamesIntoTutorArchivesDesc.md"
+                },
+                {
+                    "path": "\/help\/:language\/setting\/InsertStudentNamesIntoTutorArchives\/insertStudentNamesIntoTutorArchivesA.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/student\/groups\/A.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/groups\/B.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/groups\/C.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/groups\/Cf.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/groups\/D.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/groups\/E.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/groups\/F.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/groups\/G.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/groups\/H.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/groups\/I.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/groups\/invitationsToGroup.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/groups\/invitationsFromGroup.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/groups\/groupMembers.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/groups\/groupManagement.md"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/admin\/markingTool\/createArchive.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/markingTool\/sampleB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/markingTool\/libreA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/markingTool\/libreB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/markingTool\/pathA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/markingTool\/pathB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/markingTool\/pathC.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/markingTool\/pathD.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/markingTool\/pathE.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/admin\/markingTool\/filter.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/markingTool\/filterA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/markingTool\/filterB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/markingTool\/filterC.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/markingTool\/filterD.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/markingTool\/filterE.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/admin\/markingTool\/work.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/markingTool\/workA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/markingTool\/workB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/markingTool\/workC.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/markingTool\/workD.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/markingTool\/workE.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/admin\/createSheet\/sheetSettingsA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/createSheet\/sheetSettingsB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/createSheet\/sheetSettingsC.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/createSheet\/sheetSettingsD.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/createSheet\/sheetSettingsE.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/createSheet\/sheetSettingsF.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/createSheet\/sheetSettingsG.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/createSheet\/sheetSettingsH.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/createSheet\/sheetSettingsI.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/createSheet\/sheetSettingsJ.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/createSheet\/sheetSettingsK.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/createSheet\/sheetSettingsL.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/createSheet\/sheetSettingsM.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/createSheet\/sheetSettingsN.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/createSheet\/sheetSettings.md"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/admin\/createSheet\/createExerciseA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/createSheet\/createExerciseB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/createSheet\/createExerciseC.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/createSheet\/createExerciseD.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/createSheet\/createExerciseE.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/createSheet\/createExerciseF.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/createSheet\/createExerciseG.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/createSheet\/createExerciseH.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/createSheet\/createExerciseI.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/createSheet\/exercise.md"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorAssign\/automatically.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorAssign\/autoA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorAssign\/autoB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorAssign\/autoC.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorAssign\/make.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorAssign\/makeA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorAssign\/makeB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorAssign\/makeC.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorAssign\/makeD.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorAssign\/makeE.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorAssign\/manually.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorAssign\/manA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorAssign\/manB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorAssign\/manC.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorAssign\/manD.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorAssign\/manE.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorAssign\/manF.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorAssign\/manG.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorAssign\/remove.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorAssign\/removeA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorAssign\/removeB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/tutorAssign\/removeC.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/extension\/LFormPredecessor\/LFormPredecessorDesc.md"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LFormPredecessor\/LFormPredecessor.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/extension\/LFormProcessor\/LFormProcessorDesc.md"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LFormProcessor\/LFormProcessor.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/extension\/LForm\/LFormDesc.md"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LForm\/formCheckbox.md"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LForm\/MehrfachauswahlVerwenden3.png"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LForm\/MehrfachauswahlVerwendenSample.png"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LForm\/formInput.md"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LForm\/EingabezeileVerwenden3.png"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LForm\/EingabezeileVerwendenSample.png"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LForm\/formRadio.md"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LForm\/EinfachauswahlVerwenden3.png"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LForm\/EinfachauswahlVerwendenSample.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/extension\/LProcessor\/LProcessorDesc.md"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/courseSettings.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/courseSettingsA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/courseSettingsB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/courseSettingsC.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/courseSettingsD.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/courseSettingsE.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/courseSettingsF.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/courseSettingsG.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/courseNotifications.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/courseNotificationsA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/courseNotificationsB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/courseNotificationsC.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/courseNotificationsD.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/courseNotificationsE.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/courseNotificationsF.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/courseNotificationsG.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/courseNotificationsH.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/courseRedirects.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/courseRedirectsA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/courseRedirectsB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/courseRedirectsC.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/courseRedirectsD.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/courseRedirectsE.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/courseRedirectsF.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/addExternalId.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/addExternalIdA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/addExternalIdB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/addExternalIdC.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/addExternalIdD.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/addExternalIdE.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/editExternalId.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/editExternalIdA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/editExternalIdB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/editExternalIdC.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/revokeRights.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/revokeRightsA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/revokeRightsB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/revokeRightsC.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/addUser.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/addUserA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/addUserB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/addUserC.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/addUserD.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/addUserE.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/grantRights.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/grantRightsA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/grantRightsB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/grantRightsC.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/grantRightsD.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/plugins.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/pluginsA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/pluginsB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/pluginsC.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/addExerciseType.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/addExerciseTypeA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/addExerciseTypeB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/addExerciseTypeC.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/editExerciseType.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/editExerciseTypeA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/editExerciseTypeB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/editExerciseTypeC.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/courseManagement\/editExerciseTypeD.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/setting\/MaxStudentUploadSize\/MaxStudentUploadSizeDesc.md"
+                },
+                {
+                    "path": "\/help\/:language\/setting\/MaxStudentUploadSize\/maxStudentUploadSizeA.png"
+                },
+                {
+                    "path": "\/help\/:language\/setting\/MaxStudentUploadSize\/maxStudentUploadSizeB.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/setting\/GenerateDummyCorrectionsForTutorArchives\/GenerateDummyCorrectionsForTutorArchivesDesc.md"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/common\/accountSettings\/password.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/common\/accountSettings\/passwordA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/common\/accountSettings\/passwordB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/common\/accountSettings\/passwordC.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/common\/login\/login.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/common\/login\/loginA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/common\/login\/loginB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/common\/login\/loginC.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/common\/accountSettings\/user.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/common\/accountSettings\/userA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/common\/accountSettings\/userB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/common\/accountSettings\/userC.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/common\/accountSettings\/userD.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/common\/accountSettings\/userE.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/common\/accountSettings\/userF.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/common\/accountSettings\/userG.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/admin\/condition\/list.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/condition\/listA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/condition\/listB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/condition\/listC.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/condition\/listD.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/admin\/condition\/set.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/condition\/setA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/condition\/setB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/condition\/setC.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/condition\/setD.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/admin\/condition\/summary.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/condition\/summaryA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/condition\/summaryB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/condition\/summaryC.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/condition\/summaryD.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/condition\/summaryE.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/condition\/summaryF.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/condition\/summaryG.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/condition\/summaryH.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/condition\/summaryI.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/common\/uploadHistory\/change.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/common\/uploadHistory\/changeA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/common\/uploadHistory\/changeB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/common\/uploadHistory\/changeC.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/common\/uploadHistory\/changeD.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/common\/uploadHistory\/changeE.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/admin\/uploadHistory\/select.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/uploadHistory\/selectA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/uploadHistory\/selectB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/uploadHistory\/selectC.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/uploadHistory\/selectD.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/uploadHistory\/selectE.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/admin\/studentMode\/studentMode.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/studentMode\/studentModeA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/studentMode\/studentModeB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/studentMode\/studentModeC.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/studentMode\/studentModeD.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/student\/upload\/upload.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/upload\/uploadA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/upload\/uploadB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/upload\/uploadC.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/upload\/uploadD.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/upload\/uploadE.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/upload\/uploadF.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/upload\/uploadG.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/upload\/uploadH.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/student\/student\/student.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/student\/sheetHeadA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/student\/sheetHeadB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/student\/sheetHeadC.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/student\/sheetHeadD.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/student\/sheetHeadE.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/student\/sheetBodyA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/student\/sheetBodyB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/student\/sheetBodyC.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/student\/sheetBodyD.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/student\/sheetBodyE.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/student\/sheetBodyF.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/student\/sheetBodyG.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/student\/sheetBodyH.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/student\/sheetBodyI.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/student\/sheetBodyJ.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/student\/navigationA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/student\/navigationB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/student\/navigationC.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/student\/navigationD.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/student\/navigationE.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/student\/navigationF.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/student\/student\/navigationG.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/common\/courseSelect\/courseSelect.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/common\/courseSelect\/courseSelectA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/common\/courseSelect\/courseSelectB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/common\/courseSelect\/courseSelectC.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/admin\/faq\/faq.md"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/faq\/faqA.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/faq\/faqB.png"
+                },
+                {
+                    "path": "\/help\/:language\/page\/admin\/faq\/faqC.png"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/student\/faq\/faq.md"
+                },
+                [],
+                {
+                    "path": "\/help\/:language\/page\/tutor\/faq\/faq.md"
+                }
             ]
         }
     ]

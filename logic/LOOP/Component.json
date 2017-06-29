@@ -1,153 +1,268 @@
 {
     "name": "LOOP",
+    "description": {
+        "de": "???"
+    },
     "version": "1.0",
     "classFile": "LOOP.php",
     "className": "LOOP",
     "files": [
-        {"path": ".htaccess"},
-        {"path": "LOOP.php"},
-        {"path": "index.php"},
-        {"path": "Commands.json"},
-        {"path": "compiler/"},
-        {"path": "info/"},
-        {"path": "help/"},
-        {"path": "start_cx"}
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "LOOP.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "compiler\/"
+        },
+        {
+            "path": "info\/"
+        },
+        {
+            "path": "help\/"
+        },
+        {
+            "path": "start_cx"
+        }
     ],
     "links": [
         {
             "name": "pdf",
             "target": "FSPdf",
-            "links": [{
-                "method": "POST",
-                "path": "/pdf"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl pdf"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/pdf"
+                }
+            ]
         },
         {
             "name": "postProcess",
             "target": "DBProcessList",
-            "links": [{
-                "method": "POST",
-                "path": "/process"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl postProcess"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/process"
+                }
+            ]
         },
         {
             "name": "deleteProcess",
             "target": "DBProcessList",
-            "links": [{
-                "method": "DELETE",
-                "path": "/process/process/:processid"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl deleteProcess"
+            },
+            "links": [
+                {
+                    "method": "DELETE",
+                    "path": "\/process\/process\/:processid"
+                }
+            ]
         },
         {
             "name": "getProcess",
             "target": "DBProcessList",
-            "links": [{
-                "method": "GET",
-                "path": "/process/course/:courseid/component/:componentid"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl getProcess"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/process\/course\/:courseid\/component\/:componentid"
+                }
+            ]
         },
         {
             "name": "postCourse",
             "target": "DBOOP",
-            "links": [{
-                "method": "POST",
-                "path": "/course"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl postCourse"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/course"
+                }
+            ]
         },
         {
             "name": "deleteCourse",
             "target": "DBOOP",
-            "links": [{
-                "method": "DELETE",
-                "path": "/course/:courseid"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl deleteCourse"
+            },
+            "links": [
+                {
+                    "method": "DELETE",
+                    "path": "\/course\/:courseid"
+                }
+            ]
         },
         {
             "name": "postTestcase",
             "target": "DBOOP",
-            "links": [{
-                "method": "POST",
-                "path": "/insert"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl postTestcase"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/insert"
+                }
+            ]
         },
         {
             "name": "selfLink",
             "target": "LOOP",
+            "description": {
+                "de": "f\\u00fcr den Befehl selfLink"
+            },
             "links": []
         },
         {
             "name": "popTestcase",
             "target": "DBOOP",
-            "links": [{
-                "method": "GET",
-                "path": "/pop"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl popTestcase"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/pop"
+                }
+            ]
         },
         {
             "name": "getSubmission",
             "target": "DBSubmission",
+            "description": {
+                "de": "f\\u00fcr den Befehl getSubmission"
+            },
             "links": []
         },
         {
             "name": "editTestcase",
             "target": "DBOOP",
-            "links": [{
-                "method": "POST",
-                "path": "/testcase/testcase/:testcaseid"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl editTestcase"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/testcase\/testcase\/:testcaseid"
+                }
+            ]
         },
         {
             "name": "getTestcase",
             "target": "DBOOP",
-            "links": [{
-                "method": "GET",
-                "path": "/testcase/submission/:sid/course/:cid"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl getTestcase"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/testcase\/submission\/:sid\/course\/:cid"
+                }
+            ]
         },
         {
             "name": "getExercise",
             "target": "DBExercise",
-            "links": [{
-                "method": "GET",
-                "path": "/exercise/exercise/:eid/nosubmission"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl getExercise"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/exercise\/exercise\/:eid\/nosubmission"
+                }
+            ]
         },
         {
             "name": "marking",
             "target": "LMarking",
-            "links": [{
-                "method": "POST",
-                "path": "/marking"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl marking"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/marking"
+                }
+            ]
         }
     ],
     "connector": [
         {
             "name": "extension",
-            "target": "LExtension"
+            "target": "LExtension",
+            "description": {
+                "de": "???"
+            }
         },
         {
             "name": "request",
-            "target": "CLocalObjectRequest"
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit LOOP als lokales Objekt aufgerufen werden kann"
+            }
         },
         {
             "name": "request",
             "target": "CHelp",
+            "description": {
+                "de": "hier werden Hilfedateien beim zentralen Hilfesystem angemeldet, sodass sie \u00fcber ihre globale Adresse abgerufen werden k\u00f6nnen"
+            },
             "links": [
-                {"path": "/help/:language/extension/LOOP/LOOP.md"},
-                {"path": "/help/:language/extension/LOOP/LOOPDesc.md"},
-                {"path": "/help/:language/extension/LOOP/LOOPA.png"},
-                {"path": "/help/:language/extension/LOOP/LOOPB.png"},
-                {"path": "/help/:language/extension/LOOP/LOOPC.png"},
-                {"path": "/help/:language/extension/LOOP/LOOPD.png"},
-                {"path": "/help/:language/extension/LOOP/LOOPE.png"},
-                {"path": "/help/:language/extension/LOOP/LOOPF.png"},
-                {"path": "/help/:language/extension/LOOP/LOOPG.png"}
+                {
+                    "path": "\/help\/:language\/extension\/LOOP\/LOOP.md"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LOOP\/LOOPDesc.md"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LOOP\/LOOPA.png"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LOOP\/LOOPB.png"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LOOP\/LOOPC.png"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LOOP\/LOOPD.png"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LOOP\/LOOPE.png"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LOOP\/LOOPF.png"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LOOP\/LOOPG.png"
+                }
             ]
         },
         {
             "name": "postPlatform",
-            "target": "CInstall"
+            "target": "CInstall",
+            "description": {
+                "de": "der Installationsassistent soll uns bei der Plattforminstallation aufrufen"
+            }
         }
     ]
 }

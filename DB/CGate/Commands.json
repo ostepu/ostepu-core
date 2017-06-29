@@ -1,11 +1,14 @@
 [
     {
         "name": "call",
-        "outputType": "binary",
-        "inputType": "binary",
         "seqInput": "FALSE",
-        "callback": "request",
+        "path": "\/interface\/:profile\/:component\/:path+",
         "method": "PUT,GET,HEAD,OPTIONS,POST,DELETE",
-        "path": "/interface/:profile/:component/:path+"
+        "description": {
+            "de": "\u00fcber diese Anfrage werden alle Interface-Anfragen behandelt"
+        },
+        "inputType": "binary",
+        "outputType": "binary",
+        "callback": "request"
     }
 ]

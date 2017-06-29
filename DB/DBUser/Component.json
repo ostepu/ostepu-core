@@ -1,172 +1,291 @@
 {
     "name": "DBUser",
+    "description": {
+        "de": "Die DBUser erm\u00f6glicht den Zugriff auf die `User` Tabelle der Datenbank, dabei sollen Nutzerdaten verwaltet werden. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt."
+    },
     "version": "1.0",
     "classFile": "DBUser.php",
     "className": "DBUser",
     "files": [
-        {"path": ".htaccess"},
-        {"path": "DBUser.php"},
-        {"path": "index.php"},
-        {"path": "Commands.json"},
-        {"path": "UserSample.json"},
-        {"path": "Sql/"},
-        {"path": "info/"}
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBUser.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "UserSample.json"
+        },
+        {
+            "path": "Sql\/"
+        },
+        {
+            "path": "info\/"
+        }
     ],
     "links": [
         {
             "name": "editUser",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "f\u00fcr den Befehl editUser"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "removeUser",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "f\u00fcr den Befehl removeUser"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "removeUserPermanent",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "f\u00fcr den Befehl removeUserPermanent"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addUser",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "f\u00fcr den Befehl addUser"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deletePlatform",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "f\u00fcr den Befehl deletePatform"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addPlatform",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "f\u00fcr den Befehl addPlatform"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "postSamples",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "f\u00fcr den Befehl postSamples"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "getUser",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBUserGetUser/:profile/:userid"
-            }]
+            "description": {
+                "de": "f\u00fcr den Befehl getUser"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBUserGetUser\/:profile\/:userid"
+                }
+            ]
         },
         {
             "name": "getUsers",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBUserGetUsers/:profile"
-            }]
+            "description": {
+                "de": "f\u00fcr den Befehl getUsers"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBUserGetUsers\/:profile"
+                }
+            ]
         },
         {
             "name": "getCourseMember",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBUserGetCourseMember/:profile/:courseid"
-            }]
+            "description": {
+                "de": "f\u00fcr den Befehl getCourseMember"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBUserGetCourseMember\/:profile\/:courseid"
+                }
+            ]
         },
         {
             "name": "getGroupMember",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBUserGetGroupMember/:profile/:esid/:userid"
-            }]
+            "description": {
+                "de": "f\u00fcr den Befehl getGroupMember"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBUserGetGroupMember\/:profile\/:esid\/:userid"
+                }
+            ]
         },
         {
             "name": "getUserByStatus",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBUserGetUserByStatus/:profile/:statusid"
-            }]
+            "description": {
+                "de": "f\u00fcr den Befehl getUserByStatus"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBUserGetUserByStatus\/:profile\/:statusid"
+                }
+            ]
         },
         {
             "name": "getCourseUserByStatus",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBUserGetCourseUserByStatus/:profile/:courseid/:statusid"
-            }]
+            "description": {
+                "de": "f\u00fcr den Befehl getCoursUserByStatus"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBUserGetCourseUserByStatus\/:profile\/:courseid\/:statusid"
+                }
+            ]
         },
         {
             "name": "getIncreaseUserFailedLogin",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBUserGetIncreaseUserFailedLogin/:profile/:userid"
-            }]
+            "description": {
+                "de": "f\u00fcr den Befehl getIncreaseUserFailedLogin"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBUserGetIncreaseUserFailedLogin\/:profile\/:userid"
+                }
+            ]
         },
         {
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBUserGetExistsPlatform/:profile"
-            }]
+            "description": {
+                "de": "f\u00fcr den Befehl getExsistsPlatform"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBUserGetExistsPlatform\/:profile"
+                }
+            ]
         },
         {
             "name": "getSamplesInfo",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBUserGetExistsPlatform/:profile"
-            }]
+            "description": {
+                "de": "f\u00fcr den Befehl getSamplesInfo"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBUserGetExistsPlatform\/:profile"
+                }
+            ]
         }
     ],
     "connector": [
         {
             "name": "request",
-            "target": "CLocalObjectRequest"
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit DBUser als lokales Objekt aufgerufen werden kann"
+            }
         },
         {
             "name": "postPlatform",
-            "target": "CInstall"
+            "target": "CInstall",
+            "description": {
+                "de": "der Installationsassistent soll uns bei der Plattforminstallation aufrufen"
+            }
         },
         {
             "name": "postSamples",
-            "target": "CInstall"
+            "target": "CInstall",
+            "description": {
+                "de": "wir wollen bei Bedarf Beispieldaten erzeugen"
+            }
         },
         {
             "name": "getAlive",
             "target": "CHelp",
-            "links": [{"path": "/link/exists/platform"}]
+            "description": {
+                "de": "soll CHelp mitteilen, ob die Datenbank erreichbar ist, indem die Existenz der User-Tabelle gepr\u00fcft wird"
+            },
+            "links": [
+                {
+                    "path": "\/link\/exists\/platform"
+                }
+            ]
         },
         {
             "name": "getDescFiles",
-            "target": "TDocuView"
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
+            }
         },
         {
             "name": "getComponentProfiles",
-            "target": "TApiConfiguration"
+            "target": "TApiConfiguration",
+            "description": {
+                "de": "damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden"
+            }
         }
     ]
 }

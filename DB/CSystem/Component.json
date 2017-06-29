@@ -1,22 +1,39 @@
 {
     "name": "CSystem",
+    "description": {
+        "de": "die CSystem bietet Anfragen an, welche eher allgemeine Aufgaben haben oder anderen Komponenten dienen sollen"
+    },
     "version": "1.0",
     "classFile": "CSystem.php",
     "className": "CSystem",
     "files": [
-        {"path": ".htaccess"},
-        {"path": "CSystem.php"},
-        {"path": "index.php"},
-        {"path": "Commands.json"}
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "CSystem.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        }
     ],
     "connector": [
         {
             "name": "request",
-            "target": "CLocalObjectRequest"
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit CSystem als lokales Objekt aufgerufen werden kann"
+            }
         },
         {
             "name": "getComponentProfiles",
-            "target": "TApiConfiguration"
+            "target": "TApiConfiguration",
+            "description": {
+                "de": "damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden"
+            }
         }
     ]
 }

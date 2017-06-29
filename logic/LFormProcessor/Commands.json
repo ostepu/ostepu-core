@@ -1,18 +1,30 @@
 [
     {
+        "path": "\/link\/exists\/course\/:courseid",
         "method": "GET",
-        "path": "/link/exists/course/:courseid"
+        "description": {
+            "de": "???"
+        }
     },
     {
+        "path": "\/process",
         "method": "post",
-        "path": "/process"
+        "description": {
+            "de": "???"
+        }
     },
     {
+        "path": "\/course",
         "method": "post",
-        "path": "/course"
+        "description": {
+            "de": "???"
+        }
     },
     {
+        "path": "\/course\/:courseid",
         "method": "delete",
-        "path": "/course/:courseid"
+        "description": {
+            "de": "???"
+        }
     }
 ]

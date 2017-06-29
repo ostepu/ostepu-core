@@ -1,96 +1,180 @@
 [
     {
-        "name": "editExerciseSheet",
-        "outputType": "ExerciseSheet",
-        "inputType": "ExerciseSheet",
-        "method": "PUT",
-        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercisesheet/exercisesheet/:esid"
-    },
-    {
-        "name": "deleteExerciseSheet",
-        "outputType": "ExerciseSheet",
-        "inputType": "",
+        "name": "deletePlatform",
+        "path": "\/platform",
         "method": "DELETE",
-        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercisesheet/exercisesheet/:esid"
+        "description": {
+            "de": "entfernt die Komponente und ihre installierten Bestandteile aus der Plattform"
+        },
+        "inputType": "",
+        "outputType": "Platform"
     },
     {
-        "name": "addExerciseSheet",
-        "outputType": "ExerciseSheet",
+        "name": "editExerciseSheet",
+        "path": "\/exercisesheet\/exercisesheet\/:esid",
+        "method": "PUT",
+        "description": {
+            "de": "editiert eine \u00dcbungsserie"
+        },
+        "placeholder": [
+            {
+                "name": "esid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                }
+            }
+        ],
         "inputType": "ExerciseSheet",
-        "method": "POST",
-        "path": "/exercisesheet"
-    },
-    {
-        "name": "getExerciseSheetURL",
-        "callback": "getMatchURL",
-        "singleOutput": "TRUE",
-        "outputType": "",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercisesheet/exercisesheet/:esid/url"
-    },
-    {
-        "name": "getCourseSheetURLs",
-        "callback": "getMatchURL",
-        "outputType": "",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercisesheet/course/:courseid/url"
+        "outputType": "ExerciseSheet"
     },
     {
         "name": "getCourseSheets",
-        "outputType": "",
-        "inputType": "",
+        "path": "\/exercisesheet\/course\/:courseid(\/:exercise)",
         "method": "GET",
-        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercisesheet/course/:courseid(/:exercise)"
+        "description": {
+            "de": "ermittelt alle \u00dcbungsserien einer Veranstaltung"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": ""
     },
     {
-        "name": "getExerciseSheet",
-        "singleOutput": "TRUE",
-        "outputType": "",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercisesheet/exercisesheet/:esid(/:exercise)"
-    },
-    {
-        "name": "addPlatform",
-        "outputType": "Platform",
-        "inputType": "Platform",
+        "name": "addExerciseSheet",
+        "path": "\/exercisesheet",
         "method": "POST",
-        "path": "/platform"
-    },
-    {
-        "name": "deletePlatform",
-        "outputType": "Platform",
-        "inputType": "",
-        "method": "DELETE",
-        "path": "/platform"
-    },
-    {
-        "name": "getSamplesInfo",
-        "outputType": "",
-        "inputType": "",
-        "method": "GET",
-        "path": "/samples"
+        "description": {
+            "de": "f\u00fcgt eine neue \u00dcbungsserie ein"
+        },
+        "inputType": "ExerciseSheet",
+        "outputType": "ExerciseSheet"
     },
     {
         "name": "postSamples",
-        "outputType": "Query",
-        "inputType": "",
+        "path": "\/samples\/course\/:courseAmount\/user\/:userAmount",
         "method": "POST",
-        "path": "/samples/course/:courseAmount/user/:userAmount"
+        "description": {
+            "de": "erzeugt Zufallsdaten (courseAmount = Anzahl der Veranstaltungen, userAmount = Anzahl der Nutzer), anhand der Vorgabe"
+        },
+        "inputType": "",
+        "outputType": "Query"
+    },
+    {
+        "name": "getExerciseSheetURL",
+        "path": "\/exercisesheet\/exercisesheet\/:esid\/url",
+        "method": "GET",
+        "description": {
+            "de": "liefert die Dateiadresse der \u00dcbungsserie (das Aufgabenblatt)"
+        },
+        "placeholder": [
+            {
+                "name": "esid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "",
+        "callback": "getMatchURL",
+        "singleOutput": "TRUE"
+    },
+    {
+        "name": "getCourseSheetURLs",
+        "path": "\/exercisesheet\/course\/:courseid\/url",
+        "method": "GET",
+        "description": {
+            "de": "liefert die Dateiadressen der \u00dcbungsserien einer Veranstaltung"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "",
+        "callback": "getMatchURL"
+    },
+    {
+        "name": "addPlatform",
+        "path": "\/platform",
+        "method": "POST",
+        "description": {
+            "de": "installiert dies zugeh\\u00f6rige Tabelle und die Prozeduren f\\u00fcr diese Plattform"
+        },
+        "inputType": "Platform",
+        "outputType": "Platform"
+    },
+    {
+        "name": "deleteExerciseSheet",
+        "path": "\/exercisesheet\/exercisesheet\/:esid",
+        "method": "DELETE",
+        "description": {
+            "de": "entfernt eine \u00dcbungsserie"
+        },
+        "placeholder": [
+            {
+                "name": "esid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "ExerciseSheet"
+    },
+    {
+        "name": "getSamplesInfo",
+        "path": "\/samples",
+        "method": "GET",
+        "description": {
+            "de": "liefert die Bezeichner der betroffenen Tabellen"
+        },
+        "inputType": "",
+        "outputType": ""
+    },
+    {
+        "name": "getExerciseSheet",
+        "path": "\/exercisesheet\/exercisesheet\/:esid(\/:exercise)",
+        "method": "GET",
+        "description": {
+            "de": "liefert eine einzelne \u00dcbungsserie anhand ihrer ID"
+        },
+        "placeholder": [
+            {
+                "name": "esid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "",
+        "singleOutput": "TRUE"
     },
     {
         "name": "getApiProfiles",
-        "outputType": "GateProfile",
-        "inputType": "",
+        "path": "\/api\/profiles",
         "method": "GET",
-        "path": "/api/profiles"
+        "description": {
+            "de": "liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren"
+        },
+        "inputType": "",
+        "outputType": "GateProfile"
     }
 ]

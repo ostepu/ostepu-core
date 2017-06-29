@@ -1,12 +1,72 @@
 [
-    {    "method":"post", "path":"(/:pre)/course" },
-    {    "method":"delete", "path":"(/:pre)/course(/course)/:courseid" },
-    {    "method":"put", "path":"(/:pre)/process(/process)/:processid" },
-    {    "method":"delete", "path":"(/:pre)/process(/process)/:processid" },
-    {    "method":"post", "path":"(/:pre)/process" },
-    {    "method":"get", "path":"(/:pre)/process(/process)/:processid" },
-    {    "method":"get", "path":"(/:pre)/process/course/:courseid" },
-    {    "method":"get", "path":"(/:pre)/link/exists/course/:courseid" },
-    {    "method":"get", "path":"(/:pre)/process/exercisesheet/:esid" },
-    {    "method":"get", "path":"(/:pre)/process/exercise/:eid" }
+    {
+        "path": "(\/:pre)\/process\/exercisesheet\/:esid",
+        "method": "get",
+        "description": {
+            "de": "fragt alle Eintr\u00e4ge zur gegeben \u00dcbungsserie ab"
+        }
+    },
+    {
+        "path": "(\/:pre)\/process(\/process)\/:processid",
+        "method": "delete",
+        "description": {
+            "de": "entfernt einen Eintrag anhand seiner ID"
+        }
+    },
+    {
+        "path": "(\/:pre)\/process\/course\/:courseid",
+        "method": "get",
+        "description": {
+            "de": "ermittet alle Eintr\u00e4ge zu einer Veranstaltung"
+        }
+    },
+    {
+        "path": "(\/:pre)\/process(\/process)\/:processid",
+        "method": "put",
+        "description": {
+            "de": "editiert einen Eintrag anhand seiner ID"
+        }
+    },
+    {
+        "path": "(\/:pre)\/course",
+        "method": "post",
+        "description": {
+            "de": "installiert die Komponente in die gegebene Veranstaltung"
+        }
+    },
+    {
+        "path": "(\/:pre)\/process(\/process)\/:processid",
+        "method": "get",
+        "description": {
+            "de": "gibt einen einzelnen Eintrag anhand seiner ID zur\u00fcck"
+        }
+    },
+    {
+        "path": "(\/:pre)\/process",
+        "method": "post",
+        "description": {
+            "de": "f\u00fcgt einen neuen Eintrag ein"
+        }
+    },
+    {
+        "path": "(\/:pre)\/link\/exists\/course\/:courseid",
+        "method": "get",
+        "description": {
+            "de": "pr\u00fcft, ob die Komponente korrekt in diese Veranstaltung installiert wurde\/ist"
+        }
+    },
+    {
+        "path": "(\/:pre)\/course(\/course)\/:courseid",
+        "method": "delete",
+        "description": {
+            "de": "entfernt die Komponente aus der Veranstaltung"
+        }
+    },
+    {
+        "path": "(\/:pre)\/process\/exercise\/:eid",
+        "method": "get",
+        "description": {
+            "de": "ermittelt alle Eintr\u00e4ge anhand der ID einer \u00dcbungsaufgabe"
+        }
+    }
 ]

@@ -1,133 +1,215 @@
 {
     "name": "DBCourseStatus",
+    "description": {
+        "de": "Die DBCourseStatus erm\u00f6glicht den Zugriff auf die `CourseStatus` Tabelle der Datenbank. Sie verwaltet den Kurststatus der Nutzer zu den einzelnen Veranstaltungen (Beispiel: Admin, Student, Tutor). Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt."
+    },
     "version": "1.0",
     "classFile": "DBCourseStatus.php",
     "className": "DBCourseStatus",
     "files": [
-        {"path": ".htaccess"},
-        {"path": "DBCourseStatus.php"},
-        {"path": "index.php"},
-        {"path": "Commands.json"},
-        {"path": "CourseStatusSample.json"},
-        {"path": "Sql/"},
-        {"path": "info/"}
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBCourseStatus.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "CourseStatusSample.json"
+        },
+        {
+            "path": "Sql\/"
+        },
+        {
+            "path": "info\/"
+        }
     ],
     "links": [
         {
             "name": "editMemberRight",
             "target": "DBQueryWrite",
+            "description": {
+                "de": "f\\u00fcr den Befehl editMemberRight"
+            },
             "links": [
                 {
                     "method": "POST",
-                    "path": "/query"
+                    "path": "\/query"
                 }
             ]
-        },{
+        },
+        {
             "name": "removeCourseMember",
             "target": "DBQueryWrite",
+            "description": {
+                "de": "f\\u00fcr den Befehl removeCourseMember"
+            },
             "links": [
                 {
                     "method": "POST",
-                    "path": "/query"
+                    "path": "\/query"
                 }
             ]
-        },{
+        },
+        {
             "name": "addCourseMember",
             "target": "DBQueryWrite",
+            "description": {
+                "de": "f\\u00fcr den Befehl addCourseMember"
+            },
             "links": [
                 {
                     "method": "POST",
-                    "path": "/query"
+                    "path": "\/query"
                 }
             ]
-        },{
+        },
+        {
             "name": "postSamples",
             "target": "DBQueryWrite",
+            "description": {
+                "de": "f\\u00fcr den Befehl postSamples"
+            },
             "links": [
                 {
                     "method": "POST",
-                    "path": "/query"
+                    "path": "\/query"
                 }
             ]
         },
         {
             "name": "deletePlatform",
             "target": "DBQuerySetup",
+            "description": {
+                "de": "f\\u00fcr den Befehl deletePlatform"
+            },
             "links": [
                 {
                     "method": "POST",
-                    "path": "/query"
+                    "path": "\/query"
                 }
             ]
-        },{
+        },
+        {
             "name": "addPlatform",
             "target": "DBQuerySetup",
+            "description": {
+                "de": "f\\u00fcr den Befehl addPlatform"
+            },
             "links": [
                 {
                     "method": "POST",
-                    "path": "/query"
+                    "path": "\/query"
                 }
             ]
         },
         {
             "name": "getMemberRight",
             "target": "DBQueryRead",
+            "description": {
+                "de": "f\\u00fcr den Befehl getMemberRight"
+            },
             "links": [
                 {
                     "method": "GET",
-                    "path": "/query/procedure/DBCourseStatusGetMemberRight/:courseid/:userid"
+                    "path": "\/query\/procedure\/DBCourseStatusGetMemberRight\/:courseid\/:userid"
                 }
             ]
         },
         {
             "name": "getMemberRights",
             "target": "DBQueryRead",
+            "description": {
+                "de": "f\\u00fcr den Befehl getMemberRights"
+            },
             "links": [
                 {
                     "method": "GET",
-                    "path": "/query/procedure/DBCourseStatusGetMemberRights/:userid"
+                    "path": "\/query\/procedure\/DBCourseStatusGetMemberRights\/:userid"
                 }
             ]
         },
         {
             "name": "getCourseRights",
             "target": "DBQueryRead",
+            "description": {
+                "de": "f\\u00fcr den Befehl getCourseRights"
+            },
             "links": [
                 {
                     "method": "GET",
-                    "path": "/query/procedure/DBCourseStatusGetCourseRights/:courseid"
+                    "path": "\/query\/procedure\/DBCourseStatusGetCourseRights\/:courseid"
                 }
             ]
         },
         {
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
+            "description": {
+                "de": "f\\u00fcr den Befehl getExistsPlatform"
+            },
             "links": [
                 {
                     "method": "GET",
-                    "path": "/query/procedure/DBUserGetExistsPlatform"
+                    "path": "\/query\/procedure\/DBUserGetExistsPlatform"
                 }
             ]
         },
         {
             "name": "getSamplesInfo",
             "target": "DBQueryRead",
+            "description": {
+                "de": "f\\u00fcr den Befehl getSamplesInfo"
+            },
             "links": [
                 {
                     "method": "GET",
-                    "path": "/query/procedure/DBCourseStatusGetExistsPlatform"
+                    "path": "\/query\/procedure\/DBCourseStatusGetExistsPlatform"
                 }
             ]
         }
     ],
     "connector": [
-        {"name": "request","target": "CLocalObjectRequest"},
-        {"name": "postPlatform","target": "CInstall"},
-        {"name": "postSamples","target": "CInstall", "priority":110},
-        { "name": "getDescFiles","target": "TDocuView"},
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit DBCourseStatus als lokales Objekt aufgerufen werden kann"
+            }
+        },
+        {
+            "name": "postPlatform",
+            "target": "CInstall",
+            "description": {
+                "de": "der Installationsassistent soll uns bei der Plattforminstallation aufrufen"
+            }
+        },
+        {
+            "priority": 110,
+            "name": "postSamples",
+            "target": "CInstall",
+            "description": {
+                "de": "wir wollen bei Bedarf Beispieldaten erzeugen"
+            }
+        },
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
+            }
+        },
         {
             "name": "getComponentProfiles",
-            "target": "TApiConfiguration"
+            "target": "TApiConfiguration",
+            "description": {
+                "de": "damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden"
+            }
         }
     ]
 }

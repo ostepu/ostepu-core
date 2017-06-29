@@ -1,49 +1,71 @@
 {
-    "name": "DBBeispiel",           "Kommentar": "ein eindeutiger Name für diese Komponente",
+    "name": "DBBeispiel",
+    "description": {
+        "de": "Die DBBeispiel ist eine Beispielkomponente."
+    },
     "version": "1.0",
     "classFile": "DBBeispiel.php",
-    "className": "DBBeispiel",      "Kommentar": "muss mit dem Klassennamen der DBBeispiel.php übereinstimmen",
+    "className": "DBBeispiel",
     "files": [
-        {"path": ".htaccess",       "Kommentar": "regelt den Zugang zur Komponente"},
-        {"path": "DBBeispiel.php",  "Kommentar": "hier befindet sich die Hauptklasse"},
-        {"path": "index.php"},
-        {"path": "Commands.json",   "Kommentar": "diese Datei enthält die angebotenen Aufrufe"},
-        {"path": "Sql/",            "Kommentar": "ein ganzer Ordner soll rekursiv dazu gehören"}
+        {
+            "path": ".htaccess",
+            "Kommentar": "regelt den Zugang zur Komponente"
+        },
+        {
+            "path": "DBBeispiel.php",
+            "Kommentar": "hier befindet sich die Hauptklasse"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json",
+            "Kommentar": "diese Datei enth\u00e4lt die angebotenen Aufrufe"
+        },
+        {
+            "path": "Sql\/",
+            "Kommentar": "ein ganzer Ordner soll rekursiv dazu geh\u00f6ren"
+        }
     ],
-
-    "Kommentar": "hier kommen Verbindungen zu anderen Komponente",
     "links": [
         {
-            "name": "out",              "Kommentar": "ein Name um diesen Link über Funktionen anzusprechen",
-            "target": "DBQuery2",       "Kommentar": "der Name der Zielkomponente",
+            "name": "out",
+            "Kommentar": "der Name der Zielkomponente",
+            "target": "DBQuery2",
+            "description": {
+                "de": "\u00fcber diesen Ausgang werden Anfragen an die Datenbank gestellt"
+            },
             "links": [
                 {
-                    "method": "POST",         "Kommentar": "der Aufruftyp",
-                    "path": "/query/:abc",    "Kommentar": "der erwartete Aufrufbefehl"
+                    "method": "POST",
+                    "Kommentar": "der erwartete Aufrufbefehl",
+                    "path": "\/query\/:abc"
                 }
             ]
         },
         {
-            "Kommentar": "Aufruf einer stored-procedure, wobei Informationen zu einer Veranstaltung abgerufen werden",
             "name": "getCourse",
+            "Kommentar": "Aufruf einer stored-procedure, wobei Informationen zu einer Veranstaltung abgerufen werden",
             "target": "DBQuery2",
+            "description": {
+                "de": "f\\u00fcr den Befehl getCourse"
+            },
             "links": [
                 {
                     "method": "GET",
-                    "path": "/query/procedure/DBCourseGetCourse/:courseid"
+                    "path": "\/query\/procedure\/DBCourseGetCourse\/:courseid"
                 }
             ]
         }
     ],
-
-    "Kommentar": "hier kommen Verbindungen anderer Komponenten zu uns",
     "connector": [
         {
-            "Kommentar": "der Name unseres Ausgangs, an welchen wir uns bei der anderen Komponenten anhängen wollen",
-            "name": "request",
-
             "Kommentar": "der Name der Komponente, welche uns aufrufen soll",
-            "target": "CLocalObjectRequest"
+            "name": "request",
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit DBBeispiel als lokales Objekt aufgerufen werden kann"
+            }
         }
     ]
 }

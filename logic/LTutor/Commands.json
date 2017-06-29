@@ -1,6 +1,30 @@
 [
-    {    "method":"POST", "path":"/tutor/auto/exercise/course/:courseid/exercisesheet/:sheetid" },
-    {    "method":"POST", "path":"/tutor/auto/group/course/:courseid/exercisesheet/:sheetid" },
-    {    "method":"GET", "path":"/tutor/user/:userid/exercisesheet/:sheetid" },
-    {    "method":"POST", "path":"/tutor/user/:userid/course/:courseid" }
+    {
+        "path": "\/tutor\/auto\/exercise\/course\/:courseid\/exercisesheet\/:sheetid",
+        "method": "POST",
+        "description": {
+            "de": "dieser Befehl verteilt die Einsendungen der Studenten gleichmäßig auf die übergebenen Tutoren (Aufgabenweise)"
+        }
+    },
+    {
+        "path": "\/tutor\/auto\/group\/course\/:courseid\/exercisesheet\/:sheetid",
+        "method": "POST",
+        "description": {
+            "de": "dieser Befehl verteilt die Einsendungen der Studenten gleichmäßig auf die übergebenen Tutoren (Gruppenweise)"
+        }
+    },
+    {
+        "path": "\/tutor\/user\/:userid\/exercisesheet\/:sheetid",
+        "method": "GET",
+        "description": {
+            "de": "???"
+        }
+    },
+    {
+        "path": "\/tutor\/user\/:userid\/course\/:courseid",
+        "method": "POST",
+        "description": {
+            "de": "???"
+        }
+    }
 ]

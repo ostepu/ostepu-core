@@ -1,51 +1,75 @@
 [
     {
         "name": "getHelp",
-        "outputType": "binary",
+        "path": "\/help\/:language\/:path+",
+        "description": {
+            "de": "gibt eine Hilfedatei aus (dazu werden .md-Dateien in HTML umgewandelt)"
+        },
         "placeholder": [
             {
                 "name": "language",
-                "regex": "%^[a-zA-Z]{2}$%"
+                "regex": "%^[a-zA-Z]{2}$%",
+                "description": {
+                    "de": "???"
+                }
             },
             {
                 "name": "path",
-                "regex": "%^([a-zA-Z0-9\\.\\-_]+)$%"
+                "regex": "%^([a-zA-Z0-9\\.\\-_]+)$%",
+                "description": {
+                    "de": "???"
+                }
             }
         ],
-        "path": "/help/:language/:path+"
+        "outputType": "binary"
     },
     {
         "name": "getSystemStatus",
-        "outputType": "binary",
-        "path": "/status"
+        "path": "\/status",
+        "description": {
+            "de": "pr\u00fcft, ob das System ein Lebenszeichen von sich gibt (dazu wird ein einfache Datenbankanfrage ausgef\u00fchrt)"
+        },
+        "outputType": "binary"
     },
     {
         "name": "addPlatform",
-        "outputType": "Platform",
-        "inputType": "Platform",
+        "path": "\/platform",
         "method": "POST",
-        "path": "/platform"
+        "description": {
+            "de": "installiert dies zugeh\\u00f6rige Tabelle und die Prozeduren f\\u00fcr diese Plattform"
+        },
+        "inputType": "Platform",
+        "outputType": "Platform"
     },
     {
         "name": "deletePlatform",
-        "outputType": "Platform",
-        "inputType": "",
+        "path": "\/platform",
         "method": "DELETE",
-        "path": "/platform"
+        "description": {
+            "de": "entfernt die Komponente und ihre installierten Bestandteile aus der Plattform"
+        },
+        "inputType": "",
+        "outputType": "Platform"
     },
     {
         "name": "getExistsPlatform",
-        "singleOutput": "TRUE",
-        "outputType": "Platform",
-        "inputType": "",
+        "path": "\/link\/exists\/platform",
         "method": "GET",
-        "path": "/link/exists/platform"
+        "description": {
+            "de": "pr\\u00fcft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollst\u00e4ndig installiert ist"
+        },
+        "inputType": "",
+        "outputType": "Platform",
+        "singleOutput": "TRUE"
     },
     {
         "name": "getApiProfiles",
-        "outputType": "GateProfile",
-        "inputType": "",
+        "path": "\/api\/profiles",
         "method": "GET",
-        "path": "/api/profiles"
+        "description": {
+            "de": "liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren"
+        },
+        "inputType": "",
+        "outputType": "GateProfile"
     }
 ]

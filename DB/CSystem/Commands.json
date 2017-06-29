@@ -1,14 +1,20 @@
 [
     {
         "name": "getTimestamp",
+        "path": "\/timestamp",
         "method": "GET",
-        "path": "/timestamp"
+        "description": {
+            "de": "gibt den aktuellen UNIX-Zeitstempel zur\u00fcck"
+        }
     },
     {
         "name": "getApiProfiles",
-        "outputType": "GateProfile",
-        "inputType": "",
+        "path": "\/api\/profiles",
         "method": "GET",
-        "path": "/api/profiles"
+        "description": {
+            "de": "liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren"
+        },
+        "inputType": "",
+        "outputType": "GateProfile"
     }
 ]

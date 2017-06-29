@@ -1,14 +1,86 @@
 [
-    {    "method":"put", "path":"/attachment(/attachment)/:aid" },
-    {    "method":"delete", "path":"/attachment(/attachment)/:aid" },
-    {    "method":"delete", "path":"/attachment/exercise/:eid" },
-    {    "method":"delete", "path":"/attachment/exercise/:eid/file/:fileid" },
-    {    "method":"post", "path":"/attachment" },
-    {    "method":"get", "path":"/attachment(/attachment)/:aid" },
-    {    "method":"get", "path":"/attachment(/attachment)" },
-    {    "method":"get", "path":"/attachment/exercise/:eid" },
-    {    "method":"get", "path":"/attachment/exercisesheet/:esid" },
-    {    "method":"POST", "path":"/platform"},
-    {    "method":"DELETE", "path":"/platform"},
-    {    "method":"GET", "path":"/link/exists/platform"}
+    {
+        "path": "\/attachment\/exercisesheet\/:esid",
+        "method": "get",
+        "description": {
+            "de": "ermittelt alle Anh\u00e4nge einer \u00dcbungsserie"
+        }
+    },
+    {
+        "path": "\/attachment(\/attachment)\/:aid",
+        "method": "put",
+        "description": {
+            "de": "editiert einen Anhang"
+        }
+    },
+    {
+        "path": "\/attachment(\/attachment)\/:aid",
+        "method": "get",
+        "description": {
+            "de": "liefert einen einzelnen Anhang zur\u00fcck"
+        }
+    },
+    {
+        "path": "\/attachment\/exercise\/:eid",
+        "method": "delete",
+        "description": {
+            "de": "entfernt die Anh\u00e4nge einer Aufgabe"
+        }
+    },
+    {
+        "path": "\/platform",
+        "method": "DELETE",
+        "description": {
+            "de": "entfernt die Komponente aus der Plattform"
+        }
+    },
+    {
+        "path": "\/attachment\/exercise\/:eid\/file\/:fileid",
+        "method": "delete",
+        "description": {
+            "de": "l\u00f6scht einen Anhang anhand der Aufgabe und der Datei"
+        }
+    },
+    {
+        "path": "\/attachment",
+        "method": "post",
+        "description": {
+            "de": "f\u00fcgt einen Anhang ein"
+        }
+    },
+    {
+        "path": "\/attachment\/exercise\/:eid",
+        "method": "get",
+        "description": {
+            "de": "ermittelt alle Anh\u00e4nge zu einer Aufgabe"
+        }
+    },
+    {
+        "path": "\/attachment(\/attachment)\/:aid",
+        "method": "delete",
+        "description": {
+            "de": "entfernt einen Anhang"
+        }
+    },
+    {
+        "path": "\/platform",
+        "method": "POST",
+        "description": {
+            "de": "installiert die Komponente in die Plattform"
+        }
+    },
+    {
+        "path": "\/attachment(\/attachment)",
+        "method": "get",
+        "description": {
+            "de": "liefert alle Anh\u00e4nge der Plattform"
+        }
+    },
+    {
+        "path": "\/link\/exists\/platform",
+        "method": "GET",
+        "description": {
+            "de": "pr\u00fcft, ob die Komponente korrekt in die Plattform installiert wurde"
+        }
+    }
 ]

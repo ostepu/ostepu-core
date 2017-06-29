@@ -1,168 +1,352 @@
 [
     {
-        "name": "editMarking",
-        "outputType": "Marking",
-        "inputType": "Marking",
-        "method": "PUT",
-        "placeholder":[{"name":"mid","regex":"%^([0-9_]+)$%"}],
-        "path": "/marking/marking/:mid"
-    },
-    {
-        "name": "deleteMarking",
-        "outputType": "Marking",
-        "inputType": "",
-        "method": "DELETE",
-        "placeholder":[{"name":"mid","regex":"%^([0-9_]+)$%"}],
-        "path": "/marking/marking/:mid"
-    },
-    {
-        "name": "deleteSheetMarkings",
-        "outputType": "Marking",
-        "inputType": "",
-        "method": "DELETE",
-        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
-        "path": "/marking/marking/exercisesheet/:esid"
-    },
-    {
-        "name": "addMarking",
-        "outputType": "Marking",
-        "inputType": "Marking",
-        "method": "POST",
-        "path": "/marking"
-    },
-    {
-        "name": "getSubmissionMarking",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "Marking",
-        "inputType": "",
+        "name": "getExistsPlatform",
+        "path": "\/link\/exists\/platform",
         "method": "GET",
-        "placeholder":[{"name":"suid","regex":"%^([0-9_]+)$%"}],
-        "path": "/marking/submission/:suid(/:sub)"
-    },
-    {
-        "name": "getExerciseMarkings",
-        "callback": "getMatch",
-        "outputType": "Marking",
+        "description": {
+            "de": "pr\\u00fcft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollst\u00e4ndig installiert ist"
+        },
         "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
-        "path": "/marking/exercise/:eid(/:sub)"
-    },
-    {
-        "name": "getSheetMarkings",
+        "outputType": "Platform",
         "callback": "getMatch",
-        "outputType": "Marking",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
-        "path": "/marking/exercisesheet/:esid(/:sub)"
-    },
-    {
-        "name": "getCourseMarkings",
-        "callback": "getMatch",
-        "outputType": "Marking",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],
-        "path": "/marking/course/:courseid(/:sub)"
-    },
-    {
-        "name": "getUserGroupMarkings",
-        "callback": "getMatch",
-        "outputType": "Marking",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"},{"name":"userid","regex":"%^([0-9_]+)$%"}],
-        "path": "/marking/exercisesheet/:esid/user/:userid(/:sub)"
-    },
-    {
-        "name": "getCourseUserGroupMarkings",
-        "callback": "getMatch",
-        "outputType": "Marking",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"},{"name":"userid","regex":"%^([0-9_]+)$%"}],
-        "path": "/marking/course/:courseid/user/:userid(/:sub)"
-    },
-    {
-        "name": "getTutorSheetMarkings",
-        "callback": "getMatch",
-        "outputType": "Marking",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"},{"name":"userid","regex":"%^([0-9_]+)$%"}],
-        "path": "/marking/exercisesheet/:esid/tutor/:userid(/:sub)"
-    },
-    {
-        "name": "getTutorExerciseMarkings",
-        "callback": "getMatch",
-        "outputType": "Marking",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"},{"name":"userid","regex":"%^([0-9_]+)$%"}],
-        "path": "/marking/exercise/:eid/tutor/:userid(/:sub)"
+        "singleOutput": "TRUE"
     },
     {
         "name": "getMarking",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "Marking",
-        "inputType": "",
+        "path": "\/marking\/marking\/:mid(\/:sub)",
         "method": "GET",
-        "placeholder":[{"name":"mid","regex":"%^([0-9_]+)$%"}],
-        "path": "/marking/marking/:mid(/:sub)"
+        "description": {
+            "de": "liefert eine einzelne Korrektur"
+        },
+        "placeholder": [
+            {
+                "name": "mid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Korrektur (`Marking`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Marking",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
     },
     {
-        "name": "getAllMarkings",
-        "callback": "getMatch",
-        "outputType": "Marking",
-        "inputType": "",
+        "name": "getExerciseMarkings",
+        "path": "\/marking\/exercise\/:eid(\/:sub)",
         "method": "GET",
-        "path": "/marking(/:sub)"
+        "description": {
+            "de": "liefert alle Korrekturen einer Aufgabe"
+        },
+        "placeholder": [
+            {
+                "name": "eid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Aufgabe (`Exercise`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Marking",
+        "callback": "getMatch"
     },
     {
-        "name": "addPlatform",
-        "outputType": "Platform",
-        "inputType": "Platform",
+        "name": "editMarking",
+        "path": "\/marking\/marking\/:mid",
+        "method": "PUT",
+        "description": {
+            "de": "editiert eine Korrektur"
+        },
+        "placeholder": [
+            {
+                "name": "mid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Korrektur (`Marking`)"
+                }
+            }
+        ],
+        "inputType": "Marking",
+        "outputType": "Marking"
+    },
+    {
+        "name": "getTutorSheetMarkings",
+        "path": "\/marking\/exercisesheet\/:esid\/tutor\/:userid(\/:sub)",
+        "method": "GET",
+        "description": {
+            "de": "liefert Korrekturen eines Kontrolleurs"
+        },
+        "placeholder": [
+            {
+                "name": "esid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                }
+            },
+            {
+                "name": "userid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Marking",
+        "callback": "getMatch"
+    },
+    {
+        "name": "addMarking",
+        "path": "\/marking",
         "method": "POST",
-        "path": "/platform"
+        "description": {
+            "de": "f\u00fcgt eine neue Korrektur ein"
+        },
+        "inputType": "Marking",
+        "outputType": "Marking"
     },
     {
-        "name": "deletePlatform",
-        "outputType": "Platform",
+        "name": "getCourseUserGroupMarkings",
+        "path": "\/marking\/course\/:courseid\/user\/:userid(\/:sub)",
+        "method": "GET",
+        "description": {
+            "de": "gibt alle Korrekturen eines Nutzers und seiner zugeh\u00f6rigen Gruppe aus"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                }
+            },
+            {
+                "name": "userid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
+                }
+            }
+        ],
         "inputType": "",
-        "method": "DELETE",
-        "path": "/platform"
+        "outputType": "Marking",
+        "callback": "getMatch"
     },
     {
-        "name": "getExistsPlatform",
+        "name": "getSubmissionMarking",
+        "path": "\/marking\/submission\/:suid(\/:sub)",
+        "method": "GET",
+        "description": {
+            "de": "liefert alle Korrekturen zu einer Einsendung"
+        },
+        "placeholder": [
+            {
+                "name": "suid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Einsendung (`Submission`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Marking",
         "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "Platform",
-        "inputType": "",
-        "method": "GET",
-        "path": "/link/exists/platform"
+        "singleOutput": "TRUE"
     },
     {
-        "name": "getSamplesInfo",
-        "outputType": "",
+        "name": "deleteMarking",
+        "path": "\/marking\/marking\/:mid",
+        "method": "DELETE",
+        "description": {
+            "de": "entfernt eine Korrektur"
+        },
+        "placeholder": [
+            {
+                "name": "mid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Korrektur (`Marking`)"
+                }
+            }
+        ],
         "inputType": "",
+        "outputType": "Marking"
+    },
+    {
+        "name": "getCourseMarkings",
+        "path": "\/marking\/course\/:courseid(\/:sub)",
         "method": "GET",
-        "path": "/samples"
+        "description": {
+            "de": "ermittelt alle Korrekturen einer Veranstaltung"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Marking",
+        "callback": "getMatch"
+    },
+    {
+        "name": "getSheetMarkings",
+        "path": "\/marking\/exercisesheet\/:esid(\/:sub)",
+        "method": "GET",
+        "description": {
+            "de": "ermittelt alle Korrekturen einer \u00dcbungsserie"
+        },
+        "placeholder": [
+            {
+                "name": "esid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Marking",
+        "callback": "getMatch"
+    },
+    {
+        "name": "getTutorExerciseMarkings",
+        "path": "\/marking\/exercise\/:eid\/tutor\/:userid(\/:sub)",
+        "method": "GET",
+        "description": {
+            "de": "ermittelt alle Korrekturen eines Tutors anhand einer Aufgaben-ID"
+        },
+        "placeholder": [
+            {
+                "name": "eid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Aufgabe (`Exercise`)"
+                }
+            },
+            {
+                "name": "userid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Marking",
+        "callback": "getMatch"
     },
     {
         "name": "postSamples",
-        "outputType": "Query",
-        "inputType": "",
+        "path": "\/samples\/course\/:courseAmount\/user\/:userAmount",
         "method": "POST",
-        "path": "/samples/course/:courseAmount/user/:userAmount"
+        "description": {
+            "de": "erzeugt Zufallsdaten (courseAmount = Anzahl der Veranstaltungen, userAmount = Anzahl der Nutzer), anhand der Vorgabe"
+        },
+        "inputType": "",
+        "outputType": "Query"
+    },
+    {
+        "name": "getAllMarkings",
+        "path": "\/marking(\/:sub)",
+        "method": "GET",
+        "description": {
+            "de": "ermittelt alle Korrekturen"
+        },
+        "inputType": "",
+        "outputType": "Marking",
+        "callback": "getMatch"
+    },
+    {
+        "name": "getUserGroupMarkings",
+        "path": "\/marking\/exercisesheet\/:esid\/user\/:userid(\/:sub)",
+        "method": "GET",
+        "description": {
+            "de": "gibt alle Korrekturen eines Nutzers und seiner zugeh\u00f6rigen Gruppe aus"
+        },
+        "placeholder": [
+            {
+                "name": "esid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                }
+            },
+            {
+                "name": "userid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Marking",
+        "callback": "getMatch"
+    },
+    {
+        "name": "deletePlatform",
+        "path": "\/platform",
+        "method": "DELETE",
+        "description": {
+            "de": "entfernt die Komponente und ihre installierten Bestandteile aus der Plattform"
+        },
+        "inputType": "",
+        "outputType": "Platform"
+    },
+    {
+        "name": "deleteSheetMarkings",
+        "path": "\/marking\/marking\/exercisesheet\/:esid",
+        "method": "DELETE",
+        "description": {
+            "de": "entfernt alle Korrekturen einer \u00dcbungsserie"
+        },
+        "placeholder": [
+            {
+                "name": "esid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Marking"
+    },
+    {
+        "name": "getSamplesInfo",
+        "path": "\/samples",
+        "method": "GET",
+        "description": {
+            "de": "liefert die Bezeichner der betroffenen Tabellen"
+        },
+        "inputType": "",
+        "outputType": ""
+    },
+    {
+        "name": "addPlatform",
+        "path": "\/platform",
+        "method": "POST",
+        "description": {
+            "de": "installiert dies zugeh\\u00f6rige Tabelle und die Prozeduren f\\u00fcr diese Plattform"
+        },
+        "inputType": "Platform",
+        "outputType": "Platform"
     },
     {
         "name": "getApiProfiles",
-        "outputType": "GateProfile",
-        "inputType": "",
+        "path": "\/api\/profiles",
         "method": "GET",
-        "path": "/api/profiles"
+        "description": {
+            "de": "liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren"
+        },
+        "inputType": "",
+        "outputType": "GateProfile"
     }
 ]

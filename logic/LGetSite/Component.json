@@ -1,32 +1,154 @@
 {
-  "name":"LGetSite",
-  "version":"1.0",
-  "classFile":"LGetSite.php",
-  "className":"LGetSite",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"LGetSite.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"}
-  ],
-  "links":[
-    {"name":"controller", "target":"LController","links":[]},
-    {"name":"getExerciseType", "target":"DBExerciseType","links":[]},
-    {"name":"getExerciseFileType", "target":"DBExerciseFileType","links":[]},
-    {"name":"getExercise", "target":"DBExercise","links":[]},
-    {"name":"getApprovalCondition", "target":"DBApprovalCondition","links":[]},
-    {"name":"getUser", "target":"DBUser","links":[]},
-    {"name":"getMarking", "target":"DBMarking","links":[]},
-    {"name":"getSelectedSubmission", "target":"DBSelectedSubmission","links":[]},
-    {"name":"getGroup", "target":"DBGroup","links":[]},
-    {"name":"getCourseStatus", "target":"DBCourseStatus","links":[]},
-    {"name":"getSubmission", "target":"DBSubmission","links":[]},
-    {"name":"getCourse", "target":"DBCourse","links":[]},
-    {"name":"getInvitation", "target":"DBInvitation","links":[]},
-    {"name":"getNotification", "target":"DBNotification","links":[]},
-    {"name":"getRedirect", "target":"DBRedirect","links":[]}
-  ],
-  "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"}
-  ]
+    "name": "LGetSite",
+    "description": {
+        "de": "Die LGetSite sammelt und modeliert die Daten für die Benutzerschicht."
+    },
+    "version": "1.0",
+    "classFile": "LGetSite.php",
+    "className": "LGetSite",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "LGetSite.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        }
+    ],
+    "links": [
+        {
+            "name": "controller",
+            "target": "LController",
+            "description": {
+                "de": "über diesen Ausgang werden die übrigen Anfragen behandelt (DEPRECATED)"
+            },
+            "links": []
+        },
+        {
+            "name": "getExerciseType",
+            "target": "DBExerciseType",
+            "description": {
+                "de": "f\\u00fcr den Befehl getExerciseType"
+            },
+            "links": []
+        },
+        {
+            "name": "getExerciseFileType",
+            "target": "DBExerciseFileType",
+            "description": {
+                "de": "f\\u00fcr den Befehl getExerciseFileType"
+            },
+            "links": []
+        },
+        {
+            "name": "getExercise",
+            "target": "DBExercise",
+            "description": {
+                "de": "f\\u00fcr den Befehl getExercise"
+            },
+            "links": []
+        },
+        {
+            "name": "getApprovalCondition",
+            "target": "DBApprovalCondition",
+            "description": {
+                "de": "f\\u00fcr den Befehl getApprovalCondition"
+            },
+            "links": []
+        },
+        {
+            "name": "getUser",
+            "target": "DBUser",
+            "description": {
+                "de": "f\\u00fcr den Befehl getUser"
+            },
+            "links": []
+        },
+        {
+            "name": "getMarking",
+            "target": "DBMarking",
+            "description": {
+                "de": "f\\u00fcr den Befehl getMarking"
+            },
+            "links": []
+        },
+        {
+            "name": "getSelectedSubmission",
+            "target": "DBSelectedSubmission",
+            "description": {
+                "de": "f\\u00fcr den Befehl getSelectedSubmission"
+            },
+            "links": []
+        },
+        {
+            "name": "getGroup",
+            "target": "DBGroup",
+            "description": {
+                "de": "f\\u00fcr den Befehl getGroup"
+            },
+            "links": []
+        },
+        {
+            "name": "getCourseStatus",
+            "target": "DBCourseStatus",
+            "description": {
+                "de": "f\\u00fcr den Befehl getCourseStatus"
+            },
+            "links": []
+        },
+        {
+            "name": "getSubmission",
+            "target": "DBSubmission",
+            "description": {
+                "de": "f\\u00fcr den Befehl getSubmission"
+            },
+            "links": []
+        },
+        {
+            "name": "getCourse",
+            "target": "DBCourse",
+            "description": {
+                "de": "f\\u00fcr den Befehl getCourse"
+            },
+            "links": []
+        },
+        {
+            "name": "getInvitation",
+            "target": "DBInvitation",
+            "description": {
+                "de": "f\\u00fcr den Befehl getInvitation"
+            },
+            "links": []
+        },
+        {
+            "name": "getNotification",
+            "target": "DBNotification",
+            "description": {
+                "de": "f\\u00fcr den Befehl getNotification"
+            },
+            "links": []
+        },
+        {
+            "name": "getRedirect",
+            "target": "DBRedirect",
+            "description": {
+                "de": "f\\u00fcr den Befehl getRedirect"
+            },
+            "links": []
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit LGetSite als lokales Objekt aufgerufen werden kann"
+            }
+        }
+    ]
 }

@@ -1,29 +1,172 @@
 {
-  "name":"LProcessor",
-  "version":"1.0",
-  "classFile":"LProcessor.php",
-  "className":"LProcessor",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"LProcessor.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"},
-    {"path":"info/"},
-    {"path":"messages/"}
-  ],
-  "links":[
-    {"name":"submission", "target":"LSubmission", "links":[{"method":"POST", "path":"/submission" }] },
-    {"name":"marking", "target":"LMarking", "links":[{"method":"POST", "path":"/marking" }] },
-    {"name":"processorDb", "target":"DBProcess", "links":[{"method":"POST", "path":"/process" },{"method":"GET", "path":"/process/exercise/:exerciseid" }] },
-    {"name":"attachment", "target":"DBProcessAttachment", "links":[{"method":"POST", "path":"/attachment" }] },
-    {"name":"workFiles", "target":"DBProcessWorkFiles", "links":[{"method":"POST", "path":"/attachment" }] },
-    {"name":"getExerciseExerciseFileType", "target":"DBExerciseFileType", "links":[{"method":"GET", "path":"/exercisefiletype/exercise/:eid" }] },
-    {"name":"file", "target":"LFile", "links":[{"method":"POST", "path":"/file" }] },
-    {"name":"postCourse", "target":"DBProcess", "links":[{"method":"GET", "path":"/link/exists/course/:courseid" },{"method":"POST", "path":"/course" },{"method":"DELETE", "path":"/course/course/:courseid" }] }
-  ],
-  "connector":[
-    {"name":"deleteCourse", "target":"LCourse", "priority":150},
-    {"name":"postCourse", "target":"LCourse", "priority":150},
-    {"name":"request", "target":"CLocalObjectRequest"}
-  ]
+    "name": "LProcessor",
+    "description": {
+        "de": "???"
+    },
+    "version": "1.0",
+    "classFile": "LProcessor.php",
+    "className": "LProcessor",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "LProcessor.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "info\/"
+        },
+        {
+            "path": "messages\/"
+        }
+    ],
+    "links": [
+        {
+            "name": "submission",
+            "target": "LSubmission",
+            "description": {
+                "de": "f\\u00fcr den Befehl submission"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/submission"
+                }
+            ]
+        },
+        {
+            "name": "marking",
+            "target": "LMarking",
+            "description": {
+                "de": "f\\u00fcr den Befehl marking"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/marking"
+                }
+            ]
+        },
+        {
+            "name": "processorDb",
+            "target": "DBProcess",
+            "description": {
+                "de": "f\\u00fcr den Befehl processorDb"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/process"
+                },
+                {
+                    "method": "GET",
+                    "path": "\/process\/exercise\/:exerciseid"
+                }
+            ]
+        },
+        {
+            "name": "attachment",
+            "target": "DBProcessAttachment",
+            "description": {
+                "de": "f\\u00fcr den Befehl attachment"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/attachment"
+                }
+            ]
+        },
+        {
+            "name": "workFiles",
+            "target": "DBProcessWorkFiles",
+            "description": {
+                "de": "f\\u00fcr den Befehl workFiles"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/attachment"
+                }
+            ]
+        },
+        {
+            "name": "getExerciseExerciseFileType",
+            "target": "DBExerciseFileType",
+            "description": {
+                "de": "f\\u00fcr den Befehl getExerciseExerciseFileType"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/exercisefiletype\/exercise\/:eid"
+                }
+            ]
+        },
+        {
+            "name": "file",
+            "target": "LFile",
+            "description": {
+                "de": "f\\u00fcr den Befehl file"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/file"
+                }
+            ]
+        },
+        {
+            "name": "postCourse",
+            "target": "DBProcess",
+            "description": {
+                "de": "f\\u00fcr den Befehl postCourse"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/link\/exists\/course\/:courseid"
+                },
+                {
+                    "method": "POST",
+                    "path": "\/course"
+                },
+                {
+                    "method": "DELETE",
+                    "path": "\/course\/course\/:courseid"
+                }
+            ]
+        }
+    ],
+    "connector": [
+        {
+            "priority": 150,
+            "name": "deleteCourse",
+            "target": "LCourse",
+            "description": {
+                "de": "wenn eine Veranstaltung gel\\u00f6scht wird, dann m\\u00fcssen auch unsere Tabellen entfernt werden"
+            }
+        },
+        {
+            "priority": 150,
+            "name": "postCourse",
+            "target": "LCourse",
+            "description": {
+                "de": "wenn eine neue Veranstaltung angelegt wird, dann wollen wir auch aufgerufen werden"
+            }
+        },
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit LProcessor als lokales Objekt aufgerufen werden kann"
+            }
+        }
+    ]
 }

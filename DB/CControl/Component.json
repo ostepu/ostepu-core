@@ -1,13 +1,26 @@
 {
-  "name":"CControl",
-  "version":"1.0",
-  "classFile":"CControl.php",
-  "className":"CControl",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"CControl.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"},
-    {"path":"Sql/"}
-  ]
+    "name": "CControl",
+    "description": {
+        "de": "Diese Komponente stellt wichtige Aufrufe bereit, um die Installation der Komponenten durchzuf\u00fchren. Zudem legt sie die Tabellen `Component` und `ComponentLinkage` an und verwaltet diese."
+    },
+    "version": "1.0",
+    "classFile": "CControl.php",
+    "className": "CControl",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "CControl.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "Sql\/"
+        }
+    ]
 }

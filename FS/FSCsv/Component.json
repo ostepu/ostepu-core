@@ -1,20 +1,46 @@
 {
-  "name":"FSCsv",
-  "version":"1.0",
-  "classFile":"FSCsv.php",
-  "className":"FSCsv",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"FSCsv.php"},
-    {"path":"Commands.json"},
-    {"path":"index.php"}
-  ],
-  "connector":[
-        {"name": "request","target": "CLocalObjectRequest"},
-        {"name": "postPlatform","target": "CInstall"},
+    "name": "FSCsv",
+    "description": {
+        "de": "Die FSCsv ermöglicht das Erstellen von CSV-Dateien."
+    },
+    "version": "1.0",
+    "classFile": "FSCsv.php",
+    "className": "FSCsv",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "FSCsv.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "index.php"
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit FSCsv als lokales Objekt aufgerufen werden kann"
+            }
+        },
+        {
+            "name": "postPlatform",
+            "target": "CInstall",
+            "description": {
+                "de": "der Installationsassistent soll uns bei der Plattforminstallation aufrufen"
+            }
+        },
         {
             "name": "getComponentProfiles",
-            "target": "TApiConfiguration"
+            "target": "TApiConfiguration",
+            "description": {
+                "de": "damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden"
+            }
         }
-  ]
+    ]
 }

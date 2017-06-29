@@ -1,113 +1,190 @@
 {
     "name": "DBRedirect",
+    "description": {
+        "de": "Die DBRedirect erm\u00f6glicht den Zugriff auf die `Redirect_X` Tabellen der Datenbank, wobei dese Eintr\u00e4ge der Definition von Umleitungslinks dienen. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle geh\u00f6rt die `SelectedSubmission` Datenstruktur."
+    },
     "version": "1.0",
     "classFile": "DBRedirect.php",
     "className": "DBRedirect",
     "files": [
-        {"path": ".htaccess"},
-        {"path": "DBRedirect.php"},
-        {"path": "index.php"},
-        {"path": "Commands.json"},
-        {"path": "RedirectSample.json"},
-        {"path": "Sql/"},
-        {"path": "info/"}
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBRedirect.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "RedirectSample.json"
+        },
+        {
+            "path": "Sql\/"
+        },
+        {
+            "path": "info\/"
+        }
     ],
     "links": [
         {
             "name": "editRedirect",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl editRedirect"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deleteRedirect",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl deleteRedirect"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addRedirect",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl addRedirect"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deleteCourse",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl deleteCourse"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addCourse",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl addCourse"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "getRedirect",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBRedirectGetRedirect/:profile/:courseid/:redid"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl getRedirect"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBRedirectGetRedirect\/:profile\/:courseid\/:redid"
+                }
+            ]
         },
         {
             "name": "getRedirectByLocation",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBRedirectGetRedirectByLocation/:profile/:courseid/:locname"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl getRedirectByLocation"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBRedirectGetRedirectByLocation\/:profile\/:courseid\/:locname"
+                }
+            ]
         },
         {
             "name": "getExistsCourseRedirects",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBRedirectGetExistsPlatform/:profile/:courseid"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl getExistsCourseRedirects"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBRedirectGetExistsPlatform\/:profile\/:courseid"
+                }
+            ]
         },
         {
             "name": "getCourseRedirects",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBRedirectGetCourseRedirects/:profile/:courseid"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl getCourseRedirects"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBRedirectGetCourseRedirects\/:profile\/:courseid"
+                }
+            ]
         }
     ],
     "connector": [
         {
             "name": "request",
-            "target": "CLocalObjectRequest"
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit DBRedirect als lokales Objekt aufgerufen werden kann"
+            }
         },
         {
+            "priority": 150,
             "name": "postCourse",
             "target": "LCourse",
-            "priority": 150
+            "description": {
+                "de": "wenn eine neue Veranstaltung angelegt wird, dann wollen wir auch aufgerufen werden"
+            }
         },
         {
+            "priority": 150,
             "name": "deleteCourse",
             "target": "LCourse",
-            "priority": 150
+            "description": {
+                "de": "wenn eine Veranstaltung gel\\u00f6scht wird, dann m\\u00fcssen auch unsere Tabellen entfernt werden"
+            }
         },
         {
             "name": "getDescFiles",
-            "target": "TDocuView"
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
+            }
         },
         {
             "name": "getComponentProfiles",
-            "target": "TApiConfiguration"
+            "target": "TApiConfiguration",
+            "description": {
+                "de": "damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden"
+            }
         }
     ]
 }

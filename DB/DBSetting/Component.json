@@ -1,113 +1,190 @@
 {
     "name": "DBSetting",
+    "description": {
+        "de": "Die DBSetting erm\u00f6glicht den Zugriff auf die `SETTING_X` Tabellen der Datenbank, dabei sollen Veranstaltungseinstellungen verwaltet werden. Dazu wird bei einem `POST \/course` Aufruf die nachstehende Tabelle erzeugt (X = ID der Veranstaltung). Zu dieser Tabelle geh\u00f6rt die `Session` Datenstruktur."
+    },
     "version": "1.0",
     "classFile": "DBSetting.php",
     "className": "DBSetting",
     "files": [
-        {"path": ".htaccess"},
-        {"path": "DBSetting.php"},
-        {"path": "index.php"},
-        {"path": "Commands.json"},
-        {"path": "SettingSample.json"},
-        {"path": "Sql/"},
-        {"path": "info/"}
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBSetting.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "SettingSample.json"
+        },
+        {
+            "path": "Sql\/"
+        },
+        {
+            "path": "info\/"
+        }
     ],
     "links": [
         {
             "name": "editSetting",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl editSetting"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deleteSetting",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl deleteSetting"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addSetting",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl addSetting"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deleteCourse",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl deleteCourse"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addCourse",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl addCourse"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "getSetting",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBSettingGetSetting/:profile/:courseid/:setid"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl getSetting"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBSettingGetSetting\/:profile\/:courseid\/:setid"
+                }
+            ]
         },
         {
             "name": "getSettingByName",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBSettingGetSettingByName/:profile/:courseid/:setname"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl getSettingByName"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBSettingGetSettingByName\/:profile\/:courseid\/:setname"
+                }
+            ]
         },
         {
             "name": "getExistsCourseSettings",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBSettingGetExistsPlatform/:profile/:courseid"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl getExistsCourseSettings"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBSettingGetExistsPlatform\/:profile\/:courseid"
+                }
+            ]
         },
         {
             "name": "getCourseSettings",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBSettingGetCourseSettings/:profile/:courseid"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl getCourseSettings"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBSettingGetCourseSettings\/:profile\/:courseid"
+                }
+            ]
         }
     ],
     "connector": [
         {
             "name": "request",
-            "target": "CLocalObjectRequest"
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit DBSetting als lokales Objekt aufgerufen werden kann"
+            }
         },
         {
+            "priority": 150,
             "name": "postCourse",
             "target": "LCourse",
-            "priority": 150
+            "description": {
+                "de": "wenn eine neue Veranstaltung angelegt wird, dann wollen wir auch aufgerufen werden"
+            }
         },
         {
+            "priority": 150,
             "name": "deleteCourse",
             "target": "LCourse",
-            "priority": 150
+            "description": {
+                "de": "wenn eine Veranstaltung gel\\u00f6scht wird, dann m\\u00fcssen auch unsere Tabellen entfernt werden"
+            }
         },
         {
             "name": "getDescFiles",
-            "target": "TDocuView"
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
+            }
         },
         {
             "name": "getComponentProfiles",
-            "target": "TApiConfiguration"
+            "target": "TApiConfiguration",
+            "description": {
+                "de": "damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden"
+            }
         }
     ]
 }

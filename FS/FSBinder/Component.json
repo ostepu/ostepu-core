@@ -1,20 +1,46 @@
 {
-  "name":"FSBinder",
-  "version":"1.0",
-  "classFile":"FSBinder.php",
-  "className":"FSBinder",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"FSBinder.php"},
-    {"path":"Commands.json"},
-    {"path":"index.php"}
-  ],
-  "connector":[
-        {"name": "request","target": "CLocalObjectRequest"},
-        {"name": "postPlatform","target": "CInstall"},
+    "name": "FSBinder",
+    "description": {
+        "de": "Die FSBinder erlaubte die allgemeine Nutzung von Dateien (es können also Dateien von FSZip, FSFile oder auch FSPdf genutzt werden)."
+    },
+    "version": "1.0",
+    "classFile": "FSBinder.php",
+    "className": "FSBinder",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "FSBinder.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "index.php"
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit FSBinder als lokales Objekt aufgerufen werden kann"
+            }
+        },
+        {
+            "name": "postPlatform",
+            "target": "CInstall",
+            "description": {
+                "de": "der Installationsassistent soll uns bei der Plattforminstallation aufrufen"
+            }
+        },
         {
             "name": "getComponentProfiles",
-            "target": "TApiConfiguration"
+            "target": "TApiConfiguration",
+            "description": {
+                "de": "damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden"
+            }
         }
-  ]
+    ]
 }

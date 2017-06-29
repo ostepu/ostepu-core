@@ -1,4 +1,16 @@
 [
-    {    "method":"POST", "path":"/file(/)" },
-    {    "method":"DELETE", "path":"/file/:fileid(/)" }
+    {
+        "path": "\/file(\/)",
+        "method": "POST",
+        "description": {
+            "de": "???"
+        }
+    },
+    {
+        "path": "\/file\/:fileid(\/)",
+        "method": "DELETE",
+        "description": {
+            "de": "???"
+        }
+    }
 ]

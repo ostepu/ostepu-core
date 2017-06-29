@@ -1,6 +1,30 @@
 [
-    {"method":"POST", "path":"/attachment" },
-    {"method":"GET", "path":"'/attachment/attachment/:attachmentid" },
-    {"method":"DELETE", "path":"/attachment/attachment/:attachmentid" },
-    {"method":"PUT", "path":"/attachment/attachment/:attachmentid" }
+    {
+        "path": "\/attachment",
+        "method": "POST",
+        "description": {
+            "de": "???"
+        }
+    },
+    {
+        "path": "'\/attachment\/attachment\/:attachmentid",
+        "method": "GET",
+        "description": {
+            "de": "???"
+        }
+    },
+    {
+        "path": "\/attachment\/attachment\/:attachmentid",
+        "method": "DELETE",
+        "description": {
+            "de": "???"
+        }
+    },
+    {
+        "path": "\/attachment\/attachment\/:attachmentid",
+        "method": "PUT",
+        "description": {
+            "de": "???"
+        }
+    }
 ]

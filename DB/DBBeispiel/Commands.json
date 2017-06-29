@@ -1,18 +1,25 @@
 [
     {
-        "name": "getDaten",              "Kommentar": "der Name des Befehls",
-        "outputType": "BEISPIEL",        "Kommentar": "der erwartete Ausgabetyp dieses Befehls",
-        "inputType": "BEISPIEL",         "Kommentar": "der erwartete Eingabetyp dieses Befehls",
-        "method": "GET",                 "Kommentar": "GET|PUT|POST|DELETE, entsprechend der HTTP Methoden",
-        "path": "/beispiel/course/:cid", "Kommentar": "der Aufrufpfad für diesen befehl"
+        "name": "getDaten",
+        "Kommentar": "der Aufrufpfad f\u00fcr diesen befehl",
+        "path": "\/beispiel\/course\/:cid",
+        "method": "GET",
+        "description": {
+            "de": "diese Beispielanfrage hat keinen Nutzen"
+        },
+        "inputType": "BEISPIEL",
+        "outputType": "BEISPIEL"
     },
     {
         "name": "getCourse",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "Course",
-        "inputType": "",
+        "path": "\/course(\/course)\/:courseid",
         "method": "GET",
-        "path": "/course(/course)/:courseid"
+        "description": {
+            "de": "fragt den Eintrag einer Veranstaltung ab"
+        },
+        "inputType": "",
+        "outputType": "Course",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
     }
 ]

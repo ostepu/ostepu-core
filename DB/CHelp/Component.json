@@ -1,32 +1,66 @@
 {
     "name": "CHelp",
+    "description": {
+        "de": "die CHelp ist ein zentraler Sammelpunkt aller Hilfedateien"
+    },
     "version": "1.0",
     "classFile": "CHelp.php",
     "className": "CHelp",
     "files": [
-        {"path": ".htaccess"},
-        {"path": "CHelp.php"},
-        {"path": "index.php"},
-        {"path": "Commands.json"},
-        {"path": "info/"},
-        {"path": "help/"}
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "CHelp.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "info\/"
+        },
+        {
+            "path": "help\/"
+        }
     ],
     "links": [
-        {"name": "request"},
-        {"name": "getAlive"}
+        {
+            "name": "request",
+            "description": {
+                "de": "\u00fcber diesen Ausgang werden alle Hilfeseiten von anderen Komponenten angefragt"
+            }
+        },
+        {
+            "name": "getAlive",
+            "description": {
+                "de": "f\\u00fcr den Befehl getAlive"
+            }
+        }
     ],
     "connector": [
         {
             "name": "request",
-            "target": "CLocalObjectRequest"
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit CHelp als lokales Objekt aufgerufen werden kann"
+            }
         },
         {
             "name": "postPlatform",
-            "target": "CInstall"
+            "target": "CInstall",
+            "description": {
+                "de": "der Installationsassistent soll uns bei der Plattforminstallation aufrufen"
+            }
         },
         {
             "name": "getComponentProfiles",
-            "target": "TApiConfiguration"
+            "target": "TApiConfiguration",
+            "description": {
+                "de": "damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden"
+            }
         }
     ]
 }

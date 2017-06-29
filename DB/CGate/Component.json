@@ -1,39 +1,66 @@
 {
     "name": "CGate",
+    "description": {
+        "de": "Die CGate stellt zugangskontrollierte Zug\u00e4nge zu internen Komponenten bereit."
+    },
     "version": "1.0",
     "classFile": "CGate.php",
     "className": "CGate",
     "files": [
-        {"path": ".htaccess"},
-        {"path": "CGate.php"},
-        {"path": "index.php"},
-        {"path": "Commands.json"}
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "CGate.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        }
     ],
     "links": [
         {
             "name": "getComponentProfileWithAuthLogin",
             "target": "DBGate",
-            "links": [{
-                "method": "GET",
-                "path": "/gateprofile/gateprofile/:profName/auth/:authType/component/:component/login/:login"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl getComponentProfileWithAuthLogin"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/gateprofile\/gateprofile\/:profName\/auth\/:authType\/component\/:component\/login\/:login"
+                }
+            ]
         },
         {
             "name": "getComponentProfileWithAuth",
             "target": "DBGate",
-            "links": [{
-                "method": "GET",
-                "path": "/gateprofile/gateprofile/:profName/auth/:authType/component/:component"
-            }]
+            "description": {
+                "de": "f\\u00fcr den Befehl getComponentProfileWithAuth"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/gateprofile\/gateprofile\/:profName\/auth\/:authType\/component\/:component"
+                }
+            ]
         },
         {
-            "name": "request"
+            "name": "request",
+            "description": {
+                "de": "f\\u00fcr den Befehl request"
+            }
         }
     ],
     "connector": [
         {
             "name": "request",
-            "target": "CLocalObjectRequest"
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit CGate als lokales Objekt aufgerufen werden kann"
+            }
         }
     ]
 }

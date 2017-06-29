@@ -1,6 +1,30 @@
 [
-    {"method":"POST", "path":"/:string+" },
-    {"method":"PUT", "path":"/:string+" },
-    {"method":"GET", "path":"/:string+" },
-    {"method":"DELETE", "path":"/:string+" }
+    {
+        "path": "\/:string+",
+        "method": "POST",
+        "description": {
+            "de": "???"
+        }
+    },
+    {
+        "path": "\/:string+",
+        "method": "PUT",
+        "description": {
+            "de": "???"
+        }
+    },
+    {
+        "path": "\/:string+",
+        "method": "GET",
+        "description": {
+            "de": "???"
+        }
+    },
+    {
+        "path": "\/:string+",
+        "method": "DELETE",
+        "description": {
+            "de": "???"
+        }
+    }
 ]
