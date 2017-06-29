@@ -1,7 +1,7 @@
 {
     "name": "DBTransaction",
     "description": {
-        "de": "Die DBTransaction erm\u00f6glicht den Zugriff auf die `Transaction_X` Tabellen der Datenbank, dabei sollen Vorgangsnummern mit zugeh\u00f6rigen Inhalten verwaltet werden (welcher nur tempor\u00e4r zug\u00e4nglich sind). Sie wird beispielsweise genutzt, wenn man zu einem Vorgang zugeh\u00f6rige Daten kurzfristif hinterlegen m\u00f6chte (beispielsweise zur Verifizierung). Dazu wird bei einem `POST \/course` Aufruf die nachstehende Tabelle erzeugt."
+        "de": "Die DBTransaction ermöglicht den Zugriff auf die `Transaction_X` Tabellen der Datenbank, dabei sollen Vorgangsnummern mit zugehörigen Inhalten verwaltet werden (welcher nur temporär zugänglich sind). Sie wird beispielsweise genutzt, wenn man zu einem Vorgang zugehörige Daten kurzfristif hinterlegen möchte (beispielsweise zur Verifizierung). Dazu wird bei einem `POST \/course` Aufruf die nachstehende Tabelle erzeugt."
     },
     "version": "1.0",
     "classFile": "DBTransaction.php",
@@ -31,7 +31,7 @@
             "name": "deleteTransaction",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\u00fcr den Befehl deleteTransaction"
+                "de": "für den Befehl deleteTransaction"
             },
             "links": [
                 {
@@ -44,7 +44,7 @@
             "name": "addTransaction",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\u00fcr den Befehl addTransaction"
+                "de": "für den Befehl addTransaction"
             },
             "links": [
                 {
@@ -57,7 +57,7 @@
             "name": "deleteTransactionShort",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\u00fcr den Befehl deleteTransactionShort"
+                "de": "für den Befehl deleteTransactionShort"
             },
             "links": [
                 {
@@ -70,7 +70,7 @@
             "name": "cleanTransactions",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\u00fcr den Befehl cleanTransactions"
+                "de": "für den Befehl cleanTransactions"
             },
             "links": [
                 {
@@ -83,7 +83,7 @@
             "name": "addExerciseTransaction",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\u00fcr den Befehl addExerciseTransaction"
+                "de": "für den Befehl addExerciseTransaction"
             },
             "links": [
                 {
@@ -96,7 +96,7 @@
             "name": "addSheetTransaction",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\u00fcr den Befehl addSheetTransaction"
+                "de": "für den Befehl addSheetTransaction"
             },
             "links": [
                 {
@@ -109,7 +109,7 @@
             "name": "deleteCourse",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\u00fcr den Befehl deleteCourse"
+                "de": "für den Befehl deleteCourse"
             },
             "links": [
                 {
@@ -122,7 +122,7 @@
             "name": "addCourse",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\u00fcr den Befehl addCourse"
+                "de": "für den Befehl addCourse"
             },
             "links": [
                 {
@@ -135,7 +135,7 @@
             "name": "getTransaction",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\u00fcr den Befehl getTransaction"
+                "de": "für den Befehl getTransaction"
             },
             "links": [
                 {
@@ -148,7 +148,7 @@
             "name": "getTransactionShort",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\u00fcr den Befehl getTransactionShort"
+                "de": "für den Befehl getTransactionShort"
             },
             "links": [
                 {
@@ -161,7 +161,7 @@
             "name": "getAmountOfExpiredTransactions",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\u00fcr den Befehl getAmountOfExpiredTransactions"
+                "de": "für den Befehl getAmountOfExpiredTransactions"
             },
             "links": [
                 {
@@ -174,7 +174,7 @@
             "name": "getExistsCourseTransactions",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\u00fcr den Befehl getExsistsCourseTransactions"
+                "de": "für den Befehl getExsistsCourseTransactions"
             },
             "links": [
                 {
@@ -205,7 +205,7 @@
             "name": "deleteCourse",
             "target": "LCourse",
             "description": {
-                "de": "wenn eine Veranstaltung gel\u00f6scht wird, dann m\u00fcssen auch unsere Tabellen entfernt werden"
+                "de": "wenn eine Veranstaltung gelöscht wird, dann müssen auch unsere Tabellen entfernt werden"
             }
         },
         {

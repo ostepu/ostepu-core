@@ -25,7 +25,7 @@
             "name": "file",
             "target": "LFile",
             "description": {
-                "de": "f\\u00fcr den Befehl file"
+                "de": "für den Befehl file"
             },
             "links": [
                 {
@@ -38,7 +38,7 @@
             "name": "marking",
             "target": "DBMarking",
             "description": {
-                "de": "f\\u00fcr den Befehl marking"
+                "de": "für den Befehl marking"
             },
             "links": [
                 {

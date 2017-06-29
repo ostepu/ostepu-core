@@ -1,7 +1,7 @@
 {
     "name": "DBExerciseType",
     "description": {
-        "de": "Die DBExerciseType erm\u00f6glicht den Zugriff auf die `ExerciseType` Tabelle der Datenbank, dabei sollen Typen von Aufgaben (Punktearten) verwaltet werden. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle geh\u00f6rt die `ExerciseType` Datenstruktur."
+        "de": "Die DBExerciseType ermöglicht den Zugriff auf die `ExerciseType` Tabelle der Datenbank, dabei sollen Typen von Aufgaben (Punktearten) verwaltet werden. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle gehört die `ExerciseType` Datenstruktur.\n\n| Spalte        | Struktur  | Beschreibung | Besonderheit |\n| :------       |:---------:| :------------| -----------: |\n|ET_id|INT NOT NULL| die ID des Bewertungstyps |AUTO_INCREMENT,<br>UNIQUE|\n|ET_name|VARCHAR(45) NOT NULL| ein Bezeichner, Bsp.: Theorie, Praxis |-|"
     },
     "version": "1.0",
     "classFile": "DBExerciseType.php",
@@ -34,7 +34,7 @@
             "name": "editExerciseType",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl editExerciseType"
+                "de": "für den Befehl editExerciseType"
             },
             "links": [
                 {
@@ -47,7 +47,7 @@
             "name": "deleteExerciseType",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteExerciseType"
+                "de": "für den Befehl deleteExerciseType"
             },
             "links": [
                 {
@@ -60,7 +60,7 @@
             "name": "addExerciseType",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl addExerciseType"
+                "de": "für den Befehl addExerciseType"
             },
             "links": [
                 {
@@ -73,7 +73,7 @@
             "name": "postSamples",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl postSamples"
+                "de": "für den Befehl postSamples"
             },
             "links": [
                 {
@@ -86,7 +86,7 @@
             "name": "deletePlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl deletePlatform"
+                "de": "für den Befehl deletePlatform"
             },
             "links": [
                 {
@@ -99,7 +99,7 @@
             "name": "addPlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl addPlatform"
+                "de": "für den Befehl addPlatform"
             },
             "links": [
                 {
@@ -112,7 +112,7 @@
             "name": "getExerciseType",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getExerciseType"
+                "de": "für den Befehl getExerciseType"
             },
             "links": [
                 {
@@ -125,7 +125,7 @@
             "name": "getAllExerciseTypes",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getAllExerciseTypes"
+                "de": "für den Befehl getAllExerciseTypes"
             },
             "links": [
                 {
@@ -138,7 +138,7 @@
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getExistsPlatform"
+                "de": "für den Befehl getExistsPlatform"
             },
             "links": [
                 {
@@ -151,7 +151,7 @@
             "name": "getSamplesInfo",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getSamplesInfo"
+                "de": "für den Befehl getSamplesInfo"
             },
             "links": [
                 {

@@ -33,7 +33,7 @@
             "name": "getExerciseType",
             "target": "DBExerciseType",
             "description": {
-                "de": "f\\u00fcr den Befehl getExerciseType"
+                "de": "für den Befehl getExerciseType"
             },
             "links": []
         },
@@ -41,7 +41,7 @@
             "name": "getExerciseFileType",
             "target": "DBExerciseFileType",
             "description": {
-                "de": "f\\u00fcr den Befehl getExerciseFileType"
+                "de": "für den Befehl getExerciseFileType"
             },
             "links": []
         },
@@ -49,7 +49,7 @@
             "name": "getExercise",
             "target": "DBExercise",
             "description": {
-                "de": "f\\u00fcr den Befehl getExercise"
+                "de": "für den Befehl getExercise"
             },
             "links": []
         },
@@ -57,7 +57,7 @@
             "name": "getApprovalCondition",
             "target": "DBApprovalCondition",
             "description": {
-                "de": "f\\u00fcr den Befehl getApprovalCondition"
+                "de": "für den Befehl getApprovalCondition"
             },
             "links": []
         },
@@ -65,7 +65,7 @@
             "name": "getUser",
             "target": "DBUser",
             "description": {
-                "de": "f\\u00fcr den Befehl getUser"
+                "de": "für den Befehl getUser"
             },
             "links": []
         },
@@ -73,7 +73,7 @@
             "name": "getMarking",
             "target": "DBMarking",
             "description": {
-                "de": "f\\u00fcr den Befehl getMarking"
+                "de": "für den Befehl getMarking"
             },
             "links": []
         },
@@ -81,7 +81,7 @@
             "name": "getSelectedSubmission",
             "target": "DBSelectedSubmission",
             "description": {
-                "de": "f\\u00fcr den Befehl getSelectedSubmission"
+                "de": "für den Befehl getSelectedSubmission"
             },
             "links": []
         },
@@ -89,7 +89,7 @@
             "name": "getGroup",
             "target": "DBGroup",
             "description": {
-                "de": "f\\u00fcr den Befehl getGroup"
+                "de": "für den Befehl getGroup"
             },
             "links": []
         },
@@ -97,7 +97,7 @@
             "name": "getCourseStatus",
             "target": "DBCourseStatus",
             "description": {
-                "de": "f\\u00fcr den Befehl getCourseStatus"
+                "de": "für den Befehl getCourseStatus"
             },
             "links": []
         },
@@ -105,7 +105,7 @@
             "name": "getSubmission",
             "target": "DBSubmission",
             "description": {
-                "de": "f\\u00fcr den Befehl getSubmission"
+                "de": "für den Befehl getSubmission"
             },
             "links": []
         },
@@ -113,7 +113,7 @@
             "name": "getCourse",
             "target": "DBCourse",
             "description": {
-                "de": "f\\u00fcr den Befehl getCourse"
+                "de": "für den Befehl getCourse"
             },
             "links": []
         },
@@ -121,7 +121,7 @@
             "name": "getInvitation",
             "target": "DBInvitation",
             "description": {
-                "de": "f\\u00fcr den Befehl getInvitation"
+                "de": "für den Befehl getInvitation"
             },
             "links": []
         },
@@ -129,7 +129,7 @@
             "name": "getNotification",
             "target": "DBNotification",
             "description": {
-                "de": "f\\u00fcr den Befehl getNotification"
+                "de": "für den Befehl getNotification"
             },
             "links": []
         },
@@ -137,7 +137,7 @@
             "name": "getRedirect",
             "target": "DBRedirect",
             "description": {
-                "de": "f\\u00fcr den Befehl getRedirect"
+                "de": "für den Befehl getRedirect"
             },
             "links": []
         }

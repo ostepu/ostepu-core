@@ -1,7 +1,7 @@
 {
     "name": "DBApprovalCondition",
     "description": {
-        "de": "Die DBApprovalCondition erm\u00f6glicht den Zugriff auf die `ApprovalCondition` Tabelle der Datenbank, dabei sollen Zulassungsbedingungen verwaltet werden. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle geh\u00f6rt die `ApprovalCondition` Datenstruktur."
+        "de": "Die DBApprovalCondition ermöglicht den Zugriff auf die `ApprovalCondition` Tabelle der Datenbank, dabei sollen Zulassungsbedingungen verwaltet werden. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle gehört die `ApprovalCondition` Datenstruktur.\n\n| Spalte        | Struktur  | Beschreibung | Besonderheit |\n| :------       |:---------:| :------------| -----------: |\n|AC_id|INT NOT NULL| die ID der Zulassungsbedingung |AUTO_INCREMENT,<br>UNIQUE|\n|C_id|INT NOT NULL| ein Verweis auf die zugehörige Veranstaltung (`Course`) |-|\n|ET_id|INT NOT NULL| ein Verweis auf einen Aufgabentyp (`ExerciseType`) |-|\n|AC_percentage|FLOAT NOT NULL DEFAULT 0| die zu erreichenden Punkte in Prozent. Bsp.: 0.5 für 50% |-|"
     },
     "version": "1.0",
     "classFile": "DBApprovalCondition.php",
@@ -31,7 +31,7 @@
             "name": "editApprovalCondition",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl editApprovalCondition"
+                "de": "für den Befehl editApprovalCondition"
             },
             "links": [
                 {
@@ -44,7 +44,7 @@
             "name": "deleteApprovalCondition",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteApprovalCondition"
+                "de": "für den Befehl deleteApprovalCondition"
             },
             "links": [
                 {
@@ -57,7 +57,7 @@
             "name": "addApprovalCondition",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl addApprovalCondition"
+                "de": "für den Befehl addApprovalCondition"
             },
             "links": [
                 {
@@ -70,7 +70,7 @@
             "name": "postSamples",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl postSamples"
+                "de": "für den Befehl postSamples"
             },
             "links": [
                 {
@@ -83,7 +83,7 @@
             "name": "deletePlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl deletePlatform"
+                "de": "für den Befehl deletePlatform"
             },
             "links": [
                 {
@@ -96,7 +96,7 @@
             "name": "addPlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl addPlatform"
+                "de": "für den Befehl addPlatform"
             },
             "links": [
                 {
@@ -109,7 +109,7 @@
             "name": "getApprovalCondition",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getApprovalCondition"
+                "de": "für den Befehl getApprovalCondition"
             },
             "links": [
                 {
@@ -122,7 +122,7 @@
             "name": "getAllApprovalConditions",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getAllApprovalConditions"
+                "de": "für den Befehl getAllApprovalConditions"
             },
             "links": [
                 {
@@ -135,7 +135,7 @@
             "name": "getCourseApprovalConditions",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getCourseApprovalConditions"
+                "de": "für den Befehl getCourseApprovalConditions"
             },
             "links": [
                 {
@@ -148,7 +148,7 @@
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getExistsPlatform"
+                "de": "für den Befehl getExistsPlatform"
             },
             "links": [
                 {
@@ -161,7 +161,7 @@
             "name": "getSamplesInfo",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getSamplesInfo"
+                "de": "für den Befehl getSamplesInfo"
             },
             "links": [
                 {

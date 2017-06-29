@@ -1,7 +1,7 @@
 {
     "name": "DBSubmission",
     "description": {
-        "de": "Die DBSubmission erm\u00f6glicht den Zugriff auf die `Submission` Tabelle der Datenbank, dabei sollen studentische Einsendungen verwaltet werden. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle geh\u00f6rt die `Submission` Datenstruktur."
+        "de": "Die DBSubmission ermöglicht den Zugriff auf die `Submission` Tabelle der Datenbank, dabei sollen studentische Einsendungen verwaltet werden. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle gehört die `Submission` Datenstruktur.\n\n| Spalte        | Struktur  | Beschreibung | Besonderheit |\n| :------       |:---------:| :------------| -----------: |\n|U_id|INT NOT NULL| ein Verweis auf den Nutzer (`User`), dem die Einsendung gehört (hat sie eingeschickt) |-|\n|S_id|INT NOT NULL| die ID der Einsendung |AUTO_INCREMENT,<br>UNIQUE|\n|F_id_file|INT NULL| ein Verweis auf den Eintrag der Datei (`File`) |-|\n|S_comment|VARCHAR(255) NULL| der Kommentar des Einsenders |-|\n|S_date|INT UNSIGNED NOT NULL DEFAULT 0| der Einsendezeitpunkt als Unix-Zeitstempel |-|\n|S_accepted|TINYINT(1) NOT NULL DEFAULT false| eine Einsendung kann als nicht-akzeptiert markiert werden (wenn sie beispielsweise verspätet eingesendet wurde). 1 = akzeptiert, Student erhält die Punkte, 0 = nicht akzeptiert |-|\n|E_id|INT NOT NULL| ein Verweis auf die zugehörige Aufgabe (`Exercise`) |-|\n|ES_id|INT NULL| ein Verweis auf die Übungsserie (`ExerciseSheet`) |-|\n|S_flag|TINYINT NOT NULL DEFAULT 1| hier kann der Status der Einsendung vermerkt werden (1 = normal, 0 = gelöscht (für den Studenten nichtmehr sichtbar, aber für Admins)) |-|\n|S_leaderId|INT NULL| ein Verweis auf das Nutzerkonto des Gruppenführers |-|\n|S_hideFile|TINYINT NOT NULL DEFAULT 0| ein Einsendung kann ausgeblendet werden, wenn beispielweise ein manuelle Nachkorrektur vorgenommen wurde (1 = ausgeblendet, 0 = sichtbar) |-|"
     },
     "version": "1.0",
     "classFile": "DBSubmission.php",
@@ -34,7 +34,7 @@
             "name": "editSubmission",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl editSubmission"
+                "de": "für den Befehl editSubmission"
             },
             "links": [
                 {
@@ -47,7 +47,7 @@
             "name": "deleteSubmission",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteSubmission"
+                "de": "für den Befehl deleteSubmission"
             },
             "links": [
                 {
@@ -60,7 +60,7 @@
             "name": "addSubmission",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl addSubmission"
+                "de": "für den Befehl addSubmission"
             },
             "links": [
                 {
@@ -73,7 +73,7 @@
             "name": "postSamples",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl postSamples"
+                "de": "für den Befehl postSamples"
             },
             "links": [
                 {
@@ -86,7 +86,7 @@
             "name": "deletePlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl deletePlatform"
+                "de": "für den Befehl deletePlatform"
             },
             "links": [
                 {
@@ -99,7 +99,7 @@
             "name": "addPlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl addPlatform"
+                "de": "für den Befehl addPlatform"
             },
             "links": [
                 {
@@ -112,7 +112,7 @@
             "name": "getAllSubmissions",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getAllSubmissions"
+                "de": "für den Befehl getAllSubmissions"
             },
             "links": [
                 {
@@ -125,7 +125,7 @@
             "name": "getCourseSubmissions",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getCourseSubmissions"
+                "de": "für den Befehl getCourseSubmissions"
             },
             "links": [
                 {
@@ -138,7 +138,7 @@
             "name": "getCourseUserSubmissions",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getCourseUserSubmissions"
+                "de": "für den Befehl getCourseUserSubmissions"
             },
             "links": [
                 {
@@ -151,7 +151,7 @@
             "name": "getExerciseSubmissions",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getExerciseSubmissions"
+                "de": "für den Befehl getExerciseSubmissions"
             },
             "links": [
                 {
@@ -164,7 +164,7 @@
             "name": "getGroupCourseSubmissions",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getGroupCourseSubmissions"
+                "de": "für den Befehl getGroupCourseSubmissions"
             },
             "links": [
                 {
@@ -177,7 +177,7 @@
             "name": "getGroupExerciseSubmissions",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getGroupExerciseSubmissions"
+                "de": "für den Befehl getGroupExerciseSubmissions"
             },
             "links": [
                 {
@@ -190,7 +190,7 @@
             "name": "getGroupSelectedCourseSubmissions",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getGroupSelectedCourseSubmissions"
+                "de": "für den Befehl getGroupSelectedCourseSubmissions"
             },
             "links": [
                 {
@@ -203,7 +203,7 @@
             "name": "getGroupSelectedExerciseSubmissions",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getGroupSelectedExerciseSubmissions"
+                "de": "für den Befehl getGroupSelectedExerciseSubmissions"
             },
             "links": [
                 {
@@ -216,7 +216,7 @@
             "name": "getGroupSelectedSubmissions",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getGroupSelectedSubmissions"
+                "de": "für den Befehl getGroupSelectedSubmissions"
             },
             "links": [
                 {
@@ -229,7 +229,7 @@
             "name": "getGroupSubmissions",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getGroupSubmissions"
+                "de": "für den Befehl getGroupSubmissions"
             },
             "links": [
                 {
@@ -242,7 +242,7 @@
             "name": "getSelectedCourseUserSubmissions",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getSelectedCourseUserSubmissions"
+                "de": "für den Befehl getSelectedCourseUserSubmissions"
             },
             "links": [
                 {
@@ -255,7 +255,7 @@
             "name": "getSelectedExerciseSubmissions",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getSelectedExerciseSubmissions"
+                "de": "für den Befehl getSelectedExerciseSubmissions"
             },
             "links": [
                 {
@@ -268,7 +268,7 @@
             "name": "getSelectedSheetSubmissions",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getSelectedSheetSubmissions"
+                "de": "für den Befehl getSelectedSheetSubmissions"
             },
             "links": [
                 {
@@ -281,7 +281,7 @@
             "name": "getSheetSubmissions",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getSheetSubmissions"
+                "de": "für den Befehl getSheetSubmissions"
             },
             "links": [
                 {
@@ -294,7 +294,7 @@
             "name": "getSubmission",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getSubmission"
+                "de": "für den Befehl getSubmission"
             },
             "links": [
                 {
@@ -307,7 +307,7 @@
             "name": "getUserExerciseSubmissions",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getUserExerciseSubmissions"
+                "de": "für den Befehl getUserExerciseSubmissions"
             },
             "links": [
                 {
@@ -320,7 +320,7 @@
             "name": "getUserSheetSubmissions",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getUserSheetSubmissions"
+                "de": "für den Befehl getUserSheetSubmissions"
             },
             "links": [
                 {
@@ -333,7 +333,7 @@
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getExistsPlatform"
+                "de": "für den Befehl getExistsPlatform"
             },
             "links": [
                 {

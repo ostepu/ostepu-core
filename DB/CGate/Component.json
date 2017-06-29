@@ -1,7 +1,7 @@
 {
     "name": "CGate",
     "description": {
-        "de": "Die CGate stellt zugangskontrollierte Zug\u00e4nge zu internen Komponenten bereit."
+        "de": "Die CGate stellt zugangskontrollierte Zugänge zu internen Komponenten bereit."
     },
     "version": "1.0",
     "classFile": "CGate.php",
@@ -25,7 +25,7 @@
             "name": "getComponentProfileWithAuthLogin",
             "target": "DBGate",
             "description": {
-                "de": "f\\u00fcr den Befehl getComponentProfileWithAuthLogin"
+                "de": "für den Befehl getComponentProfileWithAuthLogin"
             },
             "links": [
                 {
@@ -38,7 +38,7 @@
             "name": "getComponentProfileWithAuth",
             "target": "DBGate",
             "description": {
-                "de": "f\\u00fcr den Befehl getComponentProfileWithAuth"
+                "de": "für den Befehl getComponentProfileWithAuth"
             },
             "links": [
                 {
@@ -50,7 +50,7 @@
         {
             "name": "request",
             "description": {
-                "de": "f\\u00fcr den Befehl request"
+                "de": "für den Befehl request"
             }
         }
     ],

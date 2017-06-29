@@ -25,7 +25,7 @@
             "name": "controller",
             "target": "LController",
             "description": {
-                "de": "f\\u00fcr den Befehl controller"
+                "de": "für den Befehl controller"
             },
             "links": [
                 {
@@ -82,7 +82,7 @@
             "name": "postFile",
             "target": "LFile",
             "description": {
-                "de": "f\\u00fcr den Befehl postFile"
+                "de": "für den Befehl postFile"
             },
             "links": []
         },
@@ -90,7 +90,7 @@
             "name": "deleteFile",
             "target": "LFile",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteFile"
+                "de": "für den Befehl deleteFile"
             },
             "links": [
                 {
@@ -103,7 +103,7 @@
             "name": "postExerciseSheet",
             "target": "DBExerciseSheet",
             "description": {
-                "de": "f\\u00fcr den Befehl postExerciseSheet"
+                "de": "für den Befehl postExerciseSheet"
             },
             "links": []
         },
@@ -111,7 +111,7 @@
             "name": "getExerciseSheet",
             "target": "DBExerciseSheet",
             "description": {
-                "de": "f\\u00fcr den Befehl getExerciseSheet"
+                "de": "für den Befehl getExerciseSheet"
             },
             "links": [
                 {
@@ -124,7 +124,7 @@
             "name": "deleteExerciseSheet",
             "target": "DBExerciseSheet",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteExerciseSheet"
+                "de": "für den Befehl deleteExerciseSheet"
             },
             "links": [
                 {

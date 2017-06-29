@@ -50,7 +50,7 @@
                 "DBSetting"
             ],
             "description": {
-                "de": "\u00fcber diesen Ausgang werden die nachgeschaltenen Komponenten angefragt"
+                "de": "über diesen Ausgang werden die nachgeschaltenen Komponenten angefragt"
             },
             "links": []
         }

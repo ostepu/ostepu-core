@@ -1,7 +1,7 @@
 {
     "name": "CControl",
     "description": {
-        "de": "Diese Komponente stellt wichtige Aufrufe bereit, um die Installation der Komponenten durchzuf\u00fchren. Zudem legt sie die Tabellen `Component` und `ComponentLinkage` an und verwaltet diese."
+        "de": "Diese Komponente stellt wichtige Aufrufe bereit, um die Installation der Komponenten durchzuführen. Zudem legt sie die Tabellen `Component` und `ComponentLinkage` an und verwaltet diese."
     },
     "version": "1.0",
     "classFile": "CControl.php",

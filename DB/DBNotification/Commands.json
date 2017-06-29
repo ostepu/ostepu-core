@@ -3,28 +3,28 @@
         "path": "(\/:pre)\/course",
         "method": "post",
         "description": {
-            "de": "installiert die Komponente in die \u00fcbermittelte Veranstaltung"
+            "de": "installiert die Komponente in die übermittelte Veranstaltung"
         }
     },
     {
         "path": "(\/:pre)\/link\/exists\/course\/:courseid",
         "method": "get",
         "description": {
-            "de": "pr\u00fcft, ob die Komponente korrekt in die Veranstaltung installiert wurde"
+            "de": "prüft, ob die Komponente korrekt in die Veranstaltung installiert wurde"
         }
     },
     {
         "path": "(\/:pre)\/notification\/notification\/:notid",
         "method": "get",
         "description": {
-            "de": "gibt einen einzelnen Eintrag anhand dessen ID zur\u00fcck"
+            "de": "gibt einen einzelnen Eintrag anhand dessen ID zurück"
         }
     },
     {
         "path": "(\/:pre)\/notification\/course\/:courseid",
         "method": "post",
         "description": {
-            "de": "f\u00fcgt einen neuen Eintrag ein"
+            "de": "fügt einen neuen Eintrag ein"
         }
     },
     {

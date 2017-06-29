@@ -31,7 +31,7 @@
             "name": "submission",
             "target": "LSubmission",
             "description": {
-                "de": "f\\u00fcr den Befehl submission"
+                "de": "für den Befehl submission"
             },
             "links": [
                 {
@@ -44,7 +44,7 @@
             "name": "marking",
             "target": "LMarking",
             "description": {
-                "de": "f\\u00fcr den Befehl marking"
+                "de": "für den Befehl marking"
             },
             "links": [
                 {
@@ -57,7 +57,7 @@
             "name": "processorDb",
             "target": "DBProcess",
             "description": {
-                "de": "f\\u00fcr den Befehl processorDb"
+                "de": "für den Befehl processorDb"
             },
             "links": [
                 {
@@ -74,7 +74,7 @@
             "name": "attachment",
             "target": "DBProcessAttachment",
             "description": {
-                "de": "f\\u00fcr den Befehl attachment"
+                "de": "für den Befehl attachment"
             },
             "links": [
                 {
@@ -87,7 +87,7 @@
             "name": "workFiles",
             "target": "DBProcessWorkFiles",
             "description": {
-                "de": "f\\u00fcr den Befehl workFiles"
+                "de": "für den Befehl workFiles"
             },
             "links": [
                 {
@@ -100,7 +100,7 @@
             "name": "getExerciseExerciseFileType",
             "target": "DBExerciseFileType",
             "description": {
-                "de": "f\\u00fcr den Befehl getExerciseExerciseFileType"
+                "de": "für den Befehl getExerciseExerciseFileType"
             },
             "links": [
                 {
@@ -113,7 +113,7 @@
             "name": "file",
             "target": "LFile",
             "description": {
-                "de": "f\\u00fcr den Befehl file"
+                "de": "für den Befehl file"
             },
             "links": [
                 {
@@ -126,7 +126,7 @@
             "name": "postCourse",
             "target": "DBProcess",
             "description": {
-                "de": "f\\u00fcr den Befehl postCourse"
+                "de": "für den Befehl postCourse"
             },
             "links": [
                 {
@@ -150,7 +150,7 @@
             "name": "deleteCourse",
             "target": "LCourse",
             "description": {
-                "de": "wenn eine Veranstaltung gel\\u00f6scht wird, dann m\\u00fcssen auch unsere Tabellen entfernt werden"
+                "de": "wenn eine Veranstaltung gelöscht wird, dann müssen auch unsere Tabellen entfernt werden"
             }
         },
         {

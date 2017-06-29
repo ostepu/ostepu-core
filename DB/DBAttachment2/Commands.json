@@ -10,21 +10,21 @@
         "path": "(\/:pre)\/link\/exists\/course\/:courseid",
         "method": "get",
         "description": {
-            "de": "pr\u00fcft, ob die Komponente korrekt in die Veranstaltung installiert wurde"
+            "de": "prüft, ob die Komponente korrekt in die Veranstaltung installiert wurde"
         }
     },
     {
         "path": "(\/:pre)\/attachment\/course\/:courseid",
         "method": "get",
         "description": {
-            "de": "gibt die Anh\u00e4nge der Veranstaltung zur\u00fcck"
+            "de": "gibt die Anhänge der Veranstaltung zurück"
         }
     },
     {
         "path": "(\/:pre)\/attachment",
         "method": "post",
         "description": {
-            "de": "f\u00fcgt einen neuen Eintrag hinzu"
+            "de": "fügt einen neuen Eintrag hinzu"
         }
     },
     {
@@ -38,7 +38,7 @@
         "path": "(\/:pre)\/attachment\/exercise\/:eid",
         "method": "get",
         "description": {
-            "de": "ermittelt alle Anh\u00e4nge einer Veranstaltung"
+            "de": "ermittelt alle Anhänge einer Veranstaltung"
         }
     },
     {
@@ -52,7 +52,7 @@
         "path": "(\/:pre)\/attachment\/exercisesheet\/:esid",
         "method": "get",
         "description": {
-            "de": "ermittelt alle Anh\u00e4nge einer \u00dcbungsserie"
+            "de": "ermittelt alle Anhänge einer Übungsserie"
         }
     },
     {

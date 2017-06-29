@@ -1,7 +1,7 @@
 {
     "name": "DBExerciseFileType",
     "description": {
-        "de": "Die DBExerciseFileType erm\u00f6glicht den Zugriff auf die `ExerciseFileType` Tabelle der Datenbank. Hier werden die erlaubten Dateitypen f\u00fcr den Dateiupload der Studenten hinterlegt. Dazu wird bei einem `POST \/course` Aufruf die nachstehende Tabelle erzeugt."
+        "de": "Die DBExerciseFileType ermöglicht den Zugriff auf die `ExerciseFileType` Tabelle der Datenbank. Hier werden die erlaubten Dateitypen für den Dateiupload der Studenten hinterlegt. Dazu wird bei einem `POST \/course` Aufruf die nachstehende Tabelle erzeugt."
     },
     "version": "1.0",
     "classFile": "DBExerciseFileType.php",
@@ -34,7 +34,7 @@
             "name": "editExerciseFileType",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl editExerciseFileType"
+                "de": "für den Befehl editExerciseFileType"
             },
             "links": [
                 {
@@ -47,7 +47,7 @@
             "name": "deleteExerciseFileType",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteExerciseFileType"
+                "de": "für den Befehl deleteExerciseFileType"
             },
             "links": [
                 {
@@ -60,7 +60,7 @@
             "name": "deleteExerciseExerciseFileType",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteExerciseExerciseFileType"
+                "de": "für den Befehl deleteExerciseExerciseFileType"
             },
             "links": [
                 {
@@ -73,7 +73,7 @@
             "name": "deleteExerciseSheetExerciseFileType",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteExerciseSheetExerciseFileType"
+                "de": "für den Befehl deleteExerciseSheetExerciseFileType"
             },
             "links": [
                 {
@@ -86,7 +86,7 @@
             "name": "addExerciseFileType",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl addExerciseFileType"
+                "de": "für den Befehl addExerciseFileType"
             },
             "links": [
                 {
@@ -99,7 +99,7 @@
             "name": "deletePlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl deletePlatform"
+                "de": "für den Befehl deletePlatform"
             },
             "links": [
                 {
@@ -112,7 +112,7 @@
             "name": "addPlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl addPlatform"
+                "de": "für den Befehl addPlatform"
             },
             "links": [
                 {
@@ -125,7 +125,7 @@
             "name": "getExerciseFileType",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getExerciseFileType"
+                "de": "für den Befehl getExerciseFileType"
             },
             "links": [
                 {
@@ -138,7 +138,7 @@
             "name": "getAllExerciseFileTypes",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getAllExerciseFileTypes"
+                "de": "für den Befehl getAllExerciseFileTypes"
             },
             "links": [
                 {
@@ -151,7 +151,7 @@
             "name": "getExerciseExerciseFileTypes",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getExerciseExerciseFileTypes"
+                "de": "für den Befehl getExerciseExerciseFileTypes"
             },
             "links": [
                 {
@@ -164,7 +164,7 @@
             "name": "getSheetExerciseFileTypes",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getSheetExerciseFileTypes"
+                "de": "für den Befehl getSheetExerciseFileTypes"
             },
             "links": [
                 {
@@ -177,7 +177,7 @@
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getExistsPlatform"
+                "de": "für den Befehl getExistsPlatform"
             },
             "links": [
                 {

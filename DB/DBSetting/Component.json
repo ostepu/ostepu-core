@@ -1,7 +1,7 @@
 {
     "name": "DBSetting",
     "description": {
-        "de": "Die DBSetting erm\u00f6glicht den Zugriff auf die `SETTING_X` Tabellen der Datenbank, dabei sollen Veranstaltungseinstellungen verwaltet werden. Dazu wird bei einem `POST \/course` Aufruf die nachstehende Tabelle erzeugt (X = ID der Veranstaltung). Zu dieser Tabelle geh\u00f6rt die `Session` Datenstruktur."
+        "de": "Die DBSetting ermöglicht den Zugriff auf die `SETTING_X` Tabellen der Datenbank, dabei sollen Veranstaltungseinstellungen verwaltet werden. Dazu wird bei einem `POST \/course` Aufruf die nachstehende Tabelle erzeugt (X = ID der Veranstaltung). Zu dieser Tabelle gehört die `Session` Datenstruktur.\n\n| Spalte  | Struktur  | Beschreibung | Besonderheit |\n| :------ |:---------:| :------------| -----------: |\n|SET_id   |INT NOT NULL| die ID der Einstellung |AUTO_INCREMENT,<br>UNIQUE|\n|SET_name |VARCHAR(255) NOT NULL| ein Bezeichner, wird exakt so auch zur Bestimmung des Wertes benötigt |UNIQUE|\n|SET_state|VARCHAR(255) NOT NULL DEFAULT ''| der Zustand\/Wert der Einstellung (Bsp.: 1) ' |-|\n|SET_type |VARCHAR(255) NOT NULL DEFAULT 'TEXT'| der erwartete Typ (wird in der Oberfläche benötigt, damit der Nutzer den Wert entsprechend eingeben kann). Erlaubt sind: TEXT (Text), INT (Zahl\/Integer), BOOL (Wahrheitswert als 0\/1), TIMESTAMP (Unix-Zeitstempel)  |-|\n|SET_category|VARCHAR(255) NOT NULL DEFAULT ''| Ein Bezeichner für die Kategorie (submissions, markings, userManagement...) ' |-|"
     },
     "version": "1.0",
     "classFile": "DBSetting.php",
@@ -34,7 +34,7 @@
             "name": "editSetting",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl editSetting"
+                "de": "für den Befehl editSetting"
             },
             "links": [
                 {
@@ -47,7 +47,7 @@
             "name": "deleteSetting",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteSetting"
+                "de": "für den Befehl deleteSetting"
             },
             "links": [
                 {
@@ -60,7 +60,7 @@
             "name": "addSetting",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl addSetting"
+                "de": "für den Befehl addSetting"
             },
             "links": [
                 {
@@ -73,7 +73,7 @@
             "name": "deleteCourse",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteCourse"
+                "de": "für den Befehl deleteCourse"
             },
             "links": [
                 {
@@ -86,7 +86,7 @@
             "name": "addCourse",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl addCourse"
+                "de": "für den Befehl addCourse"
             },
             "links": [
                 {
@@ -99,7 +99,7 @@
             "name": "getSetting",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getSetting"
+                "de": "für den Befehl getSetting"
             },
             "links": [
                 {
@@ -112,7 +112,7 @@
             "name": "getSettingByName",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getSettingByName"
+                "de": "für den Befehl getSettingByName"
             },
             "links": [
                 {
@@ -125,7 +125,7 @@
             "name": "getExistsCourseSettings",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getExistsCourseSettings"
+                "de": "für den Befehl getExistsCourseSettings"
             },
             "links": [
                 {
@@ -138,7 +138,7 @@
             "name": "getCourseSettings",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getCourseSettings"
+                "de": "für den Befehl getCourseSettings"
             },
             "links": [
                 {
@@ -169,7 +169,7 @@
             "name": "deleteCourse",
             "target": "LCourse",
             "description": {
-                "de": "wenn eine Veranstaltung gel\\u00f6scht wird, dann m\\u00fcssen auch unsere Tabellen entfernt werden"
+                "de": "wenn eine Veranstaltung gelöscht wird, dann müssen auch unsere Tabellen entfernt werden"
             }
         },
         {

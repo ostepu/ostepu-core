@@ -3,7 +3,7 @@
         "path": "(\/:pre)\/process\/exercisesheet\/:esid",
         "method": "get",
         "description": {
-            "de": "fragt alle Eintr\u00e4ge zur gegeben \u00dcbungsserie ab"
+            "de": "fragt alle Einträge zur gegeben Übungsserie ab"
         }
     },
     {
@@ -17,7 +17,7 @@
         "path": "(\/:pre)\/process\/course\/:courseid",
         "method": "get",
         "description": {
-            "de": "ermittet alle Eintr\u00e4ge zu einer Veranstaltung"
+            "de": "ermittet alle Einträge zu einer Veranstaltung"
         }
     },
     {
@@ -38,21 +38,21 @@
         "path": "(\/:pre)\/process(\/process)\/:processid",
         "method": "get",
         "description": {
-            "de": "gibt einen einzelnen Eintrag anhand seiner ID zur\u00fcck"
+            "de": "gibt einen einzelnen Eintrag anhand seiner ID zurück"
         }
     },
     {
         "path": "(\/:pre)\/process",
         "method": "post",
         "description": {
-            "de": "f\u00fcgt einen neuen Eintrag ein"
+            "de": "fügt einen neuen Eintrag ein"
         }
     },
     {
         "path": "(\/:pre)\/link\/exists\/course\/:courseid",
         "method": "get",
         "description": {
-            "de": "pr\u00fcft, ob die Komponente korrekt in diese Veranstaltung installiert wurde\/ist"
+            "de": "prüft, ob die Komponente korrekt in diese Veranstaltung installiert wurde\/ist"
         }
     },
     {
@@ -66,7 +66,7 @@
         "path": "(\/:pre)\/process\/exercise\/:eid",
         "method": "get",
         "description": {
-            "de": "ermittelt alle Eintr\u00e4ge anhand der ID einer \u00dcbungsaufgabe"
+            "de": "ermittelt alle Einträge anhand der ID einer Übungsaufgabe"
         }
     }
 ]

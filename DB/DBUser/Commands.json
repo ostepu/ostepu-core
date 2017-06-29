@@ -14,12 +14,12 @@
         "path": "\/user\/user\/:userid",
         "method": "DELETE",
         "description": {
-            "de": "setzt U_flag = 0 und l\u00f6st damit das Entfernen der pers\u00f6nlichen Nutzerdaten aus (entfernt das Nutzerkonto nicht), zus\u00e4tzlich wird eine eventuell aktive Session entfernt"
+            "de": "setzt U_flag = 0 und löst damit das Entfernen der persönlichen Nutzerdaten aus (entfernt das Nutzerkonto nicht), zusätzlich wird eine eventuell aktive Session entfernt"
         },
         "placeholder": [
             {
                 "name": "userid",
-                "regex": "%^([a-zA-Z0-9\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df]+)$%",
+                "regex": "%^([a-zA-Z0-9äöüÄÖÜß]+)$%",
                 "description": {
                     "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
                 }
@@ -60,7 +60,7 @@
         "path": "\/link\/exists\/platform",
         "method": "GET",
         "description": {
-            "de": "pr\u00fcft, ob die Tabelle und die Prozeduren existieren"
+            "de": "prüft, ob die Tabelle und die Prozeduren existieren"
         },
         "inputType": "",
         "outputType": "Platform",
@@ -72,12 +72,12 @@
         "path": "\/user\/user\/:userid\/permanent",
         "method": "DELETE",
         "description": {
-            "de": "entfernt das Nutzerkonto entg\u00fcltig mit allen Konsequenzen (eventuell sind Einsendungen und damit auch Gruppenmitglieder betroffen)"
+            "de": "entfernt das Nutzerkonto entgültig mit allen Konsequenzen (eventuell sind Einsendungen und damit auch Gruppenmitglieder betroffen)"
         },
         "placeholder": [
             {
                 "name": "userid",
-                "regex": "%^([a-zA-Z0-9\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df]+)$%",
+                "regex": "%^([a-zA-Z0-9äöüÄÖÜß]+)$%",
                 "description": {
                     "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
                 }
@@ -96,7 +96,7 @@
         "placeholder": [
             {
                 "name": "userid",
-                "regex": "%^([a-zA-Z0-9\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df]+)$%",
+                "regex": "%^([a-zA-Z0-9äöüÄÖÜß]+)$%",
                 "description": {
                     "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
                 }
@@ -112,14 +112,14 @@
         "path": "\/user\/group\/user\/:userid\/exercisesheet\/:esid",
         "method": "GET",
         "description": {
-            "de": "liefert alle Gruppenangeh\u00f6rigen eines Nutzers in einer bestimmten \u00dcbungsserie (dabei ist es egal, ob dieser Nutzer Gruppenf\u00fchrer oder Mitglied ist)"
+            "de": "liefert alle Gruppenangehörigen eines Nutzers in einer bestimmten Übungsserie (dabei ist es egal, ob dieser Nutzer Gruppenführer oder Mitglied ist)"
         },
         "placeholder": [
             {
                 "name": "esid",
                 "regex": "%^([0-9_]+)$%",
                 "description": {
-                    "de": "die ID einer \u00dcbungsserie (`ExerciseSheet`)"
+                    "de": "die ID einer Übungsserie (`ExerciseSheet`)"
                 }
             }
         ],
@@ -132,7 +132,7 @@
         "path": "\/user",
         "method": "POST",
         "description": {
-            "de": "f\u00fcgt eine neues Nutzerkonto ein"
+            "de": "fügt eine neues Nutzerkonto ein"
         },
         "inputType": "User",
         "outputType": "User"
@@ -147,7 +147,7 @@
         "placeholder": [
             {
                 "name": "userid",
-                "regex": "%^([a-zA-Z0-9\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df]+)$%",
+                "regex": "%^([a-zA-Z0-9äöüÄÖÜß]+)$%",
                 "description": {
                     "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
                 }
@@ -161,7 +161,7 @@
         "path": "\/platform",
         "method": "POST",
         "description": {
-            "de": "installiert dies zugeh\u00f6rige Tabelle und die Prozeduren f\u00fcr diese Plattform"
+            "de": "installiert dies zugehörige Tabelle und die Prozeduren für diese Plattform"
         },
         "inputType": "Platform",
         "outputType": "Platform"
@@ -171,7 +171,7 @@
         "path": "\/user\/status\/:statusid",
         "method": "GET",
         "description": {
-            "de": "liefert Nutzerdaten, mit einem bestimmten Status (siehe CourseStatus::getStatusDefinition()), f\u00fcr alle Veranstaltungen"
+            "de": "liefert Nutzerdaten, mit einem bestimmten Status (siehe CourseStatus::getStatusDefinition()), für alle Veranstaltungen"
         },
         "placeholder": [
             {
@@ -217,7 +217,7 @@
         "placeholder": [
             {
                 "name": "userid",
-                "regex": "%^([a-zA-Z0-9\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df]+)$%",
+                "regex": "%^([a-zA-Z0-9äöüÄÖÜß]+)$%",
                 "description": {
                     "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
                 }

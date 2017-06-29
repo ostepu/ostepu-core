@@ -1,7 +1,7 @@
 {
     "name": "DBSession",
     "description": {
-        "de": "Die DBSession erm\u00f6glicht den Zugriff auf die `Session` Tabelle der Datenbank, dabei sollen Sitzungen verwaltet werden. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle geh\u00f6rt die `Session` Datenstruktur."
+        "de": "Die DBSession ermöglicht den Zugriff auf die `Session` Tabelle der Datenbank, dabei sollen Sitzungen verwaltet werden. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle gehört die `Session` Datenstruktur.\n\n| Spalte     | Struktur        | Beschreibung | Besonderheit |\n| :------    |:---------:      | :------------| -----------: |\n|U_id        |INT NOT NULL     | die ID des zugehörigen Nutzers |UNIQUE|\n|SE_sessionID|CHAR(32) NOT NULL| ein md5 Hash, welcher die Sitzung identifiziert |-|"
     },
     "version": "1.0",
     "classFile": "DBSession.php",
@@ -34,7 +34,7 @@
             "name": "editSession",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl editSession"
+                "de": "für den Befehl editSession"
             },
             "links": [
                 {
@@ -47,7 +47,7 @@
             "name": "deleteSession",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteSession"
+                "de": "für den Befehl deleteSession"
             },
             "links": [
                 {
@@ -60,7 +60,7 @@
             "name": "editUserSession",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl editUserSession"
+                "de": "für den Befehl editUserSession"
             },
             "links": [
                 {
@@ -73,7 +73,7 @@
             "name": "deleteUserSession",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteUserSession"
+                "de": "für den Befehl deleteUserSession"
             },
             "links": [
                 {
@@ -86,7 +86,7 @@
             "name": "addSession",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl addSession"
+                "de": "für den Befehl addSession"
             },
             "links": [
                 {
@@ -99,7 +99,7 @@
             "name": "deletePlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl deletePlatform"
+                "de": "für den Befehl deletePlatform"
             },
             "links": [
                 {
@@ -112,7 +112,7 @@
             "name": "addPlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl addPlatform"
+                "de": "für den Befehl addPlatform"
             },
             "links": [
                 {
@@ -125,7 +125,7 @@
             "name": "postSamples",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl postSamples"
+                "de": "für den Befehl postSamples"
             },
             "links": [
                 {
@@ -138,7 +138,7 @@
             "name": "getUserSession",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getUserSession"
+                "de": "für den Befehl getUserSession"
             },
             "links": [
                 {
@@ -151,7 +151,7 @@
             "name": "getSessionUser",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getSessionUser"
+                "de": "für den Befehl getSessionUser"
             },
             "links": [
                 {
@@ -164,7 +164,7 @@
             "name": "getValidSession",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getValidSession"
+                "de": "für den Befehl getValidSession"
             },
             "links": [
                 {
@@ -177,7 +177,7 @@
             "name": "getAllSessions",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getAllSessions"
+                "de": "für den Befehl getAllSessions"
             },
             "links": [
                 {
@@ -190,7 +190,7 @@
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getExistsPlatform"
+                "de": "für den Befehl getExistsPlatform"
             },
             "links": [
                 {
@@ -203,7 +203,7 @@
             "name": "getSamplesInfo",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getSamplesInfo"
+                "de": "für den Befehl getSamplesInfo"
             },
             "links": [
                 {

@@ -25,7 +25,7 @@
             "name": "controller",
             "target": "LController",
             "description": {
-                "de": "f\\u00fcr den Befehl controller"
+                "de": "für den Befehl controller"
             },
             "links": [
                 {
@@ -82,7 +82,7 @@
             "name": "postTransaction",
             "target": "DBTransaction",
             "description": {
-                "de": "f\\u00fcr den Befehl postTransaction"
+                "de": "für den Befehl postTransaction"
             },
             "links": [
                 {
@@ -95,7 +95,7 @@
             "name": "getTransaction",
             "target": "DBTransaction",
             "description": {
-                "de": "f\\u00fcr den Befehl getTransaction"
+                "de": "für den Befehl getTransaction"
             },
             "links": []
         },
@@ -103,7 +103,7 @@
             "name": "postZip",
             "target": "FSZip",
             "description": {
-                "de": "f\\u00fcr den Befehl postZip"
+                "de": "für den Befehl postZip"
             },
             "links": []
         },
@@ -111,7 +111,7 @@
             "name": "postPdf",
             "target": "FSPdf",
             "description": {
-                "de": "f\\u00fcr den Befehl postPdf"
+                "de": "für den Befehl postPdf"
             },
             "links": []
         },
@@ -119,7 +119,7 @@
             "name": "postMarking",
             "target": "LMarking",
             "description": {
-                "de": "f\\u00fcr den Befehl postMarking"
+                "de": "für den Befehl postMarking"
             },
             "links": []
         },
@@ -127,7 +127,7 @@
             "name": "getMarking",
             "target": "DBMarking",
             "description": {
-                "de": "f\\u00fcr den Befehl getMarking"
+                "de": "für den Befehl getMarking"
             },
             "links": []
         },
@@ -135,7 +135,7 @@
             "name": "getGroup",
             "target": "DBGroup",
             "description": {
-                "de": "f\\u00fcr den Befehl getGroup"
+                "de": "für den Befehl getGroup"
             },
             "links": []
         },
@@ -143,7 +143,7 @@
             "name": "getExercise",
             "target": "DBExercise",
             "description": {
-                "de": "f\\u00fcr den Befehl getExercise"
+                "de": "für den Befehl getExercise"
             },
             "links": []
         },
@@ -151,7 +151,7 @@
             "name": "getSubmission",
             "target": "DBSubmission",
             "description": {
-                "de": "f\\u00fcr den Befehl getSubmission"
+                "de": "für den Befehl getSubmission"
             },
             "links": []
         },
@@ -159,7 +159,7 @@
             "name": "postSubmission",
             "target": "LSubmission",
             "description": {
-                "de": "f\\u00fcr den Befehl postSubmission"
+                "de": "für den Befehl postSubmission"
             },
             "links": []
         },
@@ -180,7 +180,7 @@
             "name": "getCourse",
             "target": "DBCourse",
             "description": {
-                "de": "f\\u00fcr den Befehl getCourse"
+                "de": "für den Befehl getCourse"
             },
             "links": [
                 {

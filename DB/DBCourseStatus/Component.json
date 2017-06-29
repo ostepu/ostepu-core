@@ -1,7 +1,7 @@
 {
     "name": "DBCourseStatus",
     "description": {
-        "de": "Die DBCourseStatus erm\u00f6glicht den Zugriff auf die `CourseStatus` Tabelle der Datenbank. Sie verwaltet den Kurststatus der Nutzer zu den einzelnen Veranstaltungen (Beispiel: Admin, Student, Tutor). Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt."
+        "de": "Die DBCourseStatus ermöglicht den Zugriff auf die `CourseStatus` Tabelle der Datenbank. Sie verwaltet den Kurststatus der Nutzer zu den einzelnen Veranstaltungen (Beispiel: Admin, Student, Tutor). Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt.\n\n| Spalte        | Struktur  | Beschreibung | Besonderheit |\n| :------       |:---------:| :------------| -----------: |\n|C_id|INT NOT NULL| ein Verweis auf eine Veranstaltung |-|\n|U_id|INT NOT NULL| ein Verweis auf ein Nutzerkonto |-|\n|CS_status|INT NOT NULL DEFAULT 0| die Statuskennung (siehe CourseStatus::getStatusDefinition()) |-|"
     },
     "version": "1.0",
     "classFile": "DBCourseStatus.php",
@@ -34,7 +34,7 @@
             "name": "editMemberRight",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl editMemberRight"
+                "de": "für den Befehl editMemberRight"
             },
             "links": [
                 {
@@ -47,7 +47,7 @@
             "name": "removeCourseMember",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl removeCourseMember"
+                "de": "für den Befehl removeCourseMember"
             },
             "links": [
                 {
@@ -60,7 +60,7 @@
             "name": "addCourseMember",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl addCourseMember"
+                "de": "für den Befehl addCourseMember"
             },
             "links": [
                 {
@@ -73,7 +73,7 @@
             "name": "postSamples",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl postSamples"
+                "de": "für den Befehl postSamples"
             },
             "links": [
                 {
@@ -86,7 +86,7 @@
             "name": "deletePlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl deletePlatform"
+                "de": "für den Befehl deletePlatform"
             },
             "links": [
                 {
@@ -99,7 +99,7 @@
             "name": "addPlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl addPlatform"
+                "de": "für den Befehl addPlatform"
             },
             "links": [
                 {
@@ -112,7 +112,7 @@
             "name": "getMemberRight",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getMemberRight"
+                "de": "für den Befehl getMemberRight"
             },
             "links": [
                 {
@@ -125,7 +125,7 @@
             "name": "getMemberRights",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getMemberRights"
+                "de": "für den Befehl getMemberRights"
             },
             "links": [
                 {
@@ -138,7 +138,7 @@
             "name": "getCourseRights",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getCourseRights"
+                "de": "für den Befehl getCourseRights"
             },
             "links": [
                 {
@@ -151,7 +151,7 @@
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getExistsPlatform"
+                "de": "für den Befehl getExistsPlatform"
             },
             "links": [
                 {
@@ -164,7 +164,7 @@
             "name": "getSamplesInfo",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getSamplesInfo"
+                "de": "für den Befehl getSamplesInfo"
             },
             "links": [
                 {

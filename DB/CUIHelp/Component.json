@@ -1,7 +1,7 @@
 {
     "name": "CUIHelp",
     "description": {
-        "de": "Die CUIHelp enth\u00e4lt einige Hilfedatei der Benutzerschicht (`UI`)"
+        "de": "Die CUIHelp enthält einige Hilfedatei der Benutzerschicht (`UI`)"
     },
     "version": "1.0",
     "classFile": "CUIHelp.php",
@@ -38,7 +38,7 @@
             "name": "request",
             "target": "CHelp",
             "description": {
-                "de": "hier werden Hilfedateien beim zentralen Hilfesystem angemeldet, sodass sie \u00fcber ihre globale Adresse abgerufen werden k\u00f6nnen"
+                "de": "hier werden Hilfedateien beim zentralen Hilfesystem angemeldet, sodass sie über ihre globale Adresse abgerufen werden können"
             },
             "links": [
                 {

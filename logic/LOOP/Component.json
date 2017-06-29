@@ -37,7 +37,7 @@
             "name": "pdf",
             "target": "FSPdf",
             "description": {
-                "de": "f\\u00fcr den Befehl pdf"
+                "de": "für den Befehl pdf"
             },
             "links": [
                 {
@@ -50,7 +50,7 @@
             "name": "postProcess",
             "target": "DBProcessList",
             "description": {
-                "de": "f\\u00fcr den Befehl postProcess"
+                "de": "für den Befehl postProcess"
             },
             "links": [
                 {
@@ -63,7 +63,7 @@
             "name": "deleteProcess",
             "target": "DBProcessList",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteProcess"
+                "de": "für den Befehl deleteProcess"
             },
             "links": [
                 {
@@ -76,7 +76,7 @@
             "name": "getProcess",
             "target": "DBProcessList",
             "description": {
-                "de": "f\\u00fcr den Befehl getProcess"
+                "de": "für den Befehl getProcess"
             },
             "links": [
                 {
@@ -89,7 +89,7 @@
             "name": "postCourse",
             "target": "DBOOP",
             "description": {
-                "de": "f\\u00fcr den Befehl postCourse"
+                "de": "für den Befehl postCourse"
             },
             "links": [
                 {
@@ -102,7 +102,7 @@
             "name": "deleteCourse",
             "target": "DBOOP",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteCourse"
+                "de": "für den Befehl deleteCourse"
             },
             "links": [
                 {
@@ -115,7 +115,7 @@
             "name": "postTestcase",
             "target": "DBOOP",
             "description": {
-                "de": "f\\u00fcr den Befehl postTestcase"
+                "de": "für den Befehl postTestcase"
             },
             "links": [
                 {
@@ -128,7 +128,7 @@
             "name": "selfLink",
             "target": "LOOP",
             "description": {
-                "de": "f\\u00fcr den Befehl selfLink"
+                "de": "für den Befehl selfLink"
             },
             "links": []
         },
@@ -136,7 +136,7 @@
             "name": "popTestcase",
             "target": "DBOOP",
             "description": {
-                "de": "f\\u00fcr den Befehl popTestcase"
+                "de": "für den Befehl popTestcase"
             },
             "links": [
                 {
@@ -149,7 +149,7 @@
             "name": "getSubmission",
             "target": "DBSubmission",
             "description": {
-                "de": "f\\u00fcr den Befehl getSubmission"
+                "de": "für den Befehl getSubmission"
             },
             "links": []
         },
@@ -157,7 +157,7 @@
             "name": "editTestcase",
             "target": "DBOOP",
             "description": {
-                "de": "f\\u00fcr den Befehl editTestcase"
+                "de": "für den Befehl editTestcase"
             },
             "links": [
                 {
@@ -170,7 +170,7 @@
             "name": "getTestcase",
             "target": "DBOOP",
             "description": {
-                "de": "f\\u00fcr den Befehl getTestcase"
+                "de": "für den Befehl getTestcase"
             },
             "links": [
                 {
@@ -183,7 +183,7 @@
             "name": "getExercise",
             "target": "DBExercise",
             "description": {
-                "de": "f\\u00fcr den Befehl getExercise"
+                "de": "für den Befehl getExercise"
             },
             "links": [
                 {
@@ -196,7 +196,7 @@
             "name": "marking",
             "target": "LMarking",
             "description": {
-                "de": "f\\u00fcr den Befehl marking"
+                "de": "für den Befehl marking"
             },
             "links": [
                 {
@@ -225,7 +225,7 @@
             "name": "request",
             "target": "CHelp",
             "description": {
-                "de": "hier werden Hilfedateien beim zentralen Hilfesystem angemeldet, sodass sie \u00fcber ihre globale Adresse abgerufen werden k\u00f6nnen"
+                "de": "hier werden Hilfedateien beim zentralen Hilfesystem angemeldet, sodass sie über ihre globale Adresse abgerufen werden können"
             },
             "links": [
                 {

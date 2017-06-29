@@ -1,7 +1,7 @@
 {
     "name": "FSBinder",
     "description": {
-        "de": "Die FSBinder erlaubte die allgemeine Nutzung von Dateien (es können also Dateien von FSZip, FSFile oder auch FSPdf genutzt werden)."
+        "de": "Die FSBinder erlaubte die allgemeine Nutzung von Dateien (es k\u00f6nnen also Dateien von FSZip, FSFile oder auch FSPdf genutzt werden)."
     },
     "version": "1.0",
     "classFile": "FSBinder.php",

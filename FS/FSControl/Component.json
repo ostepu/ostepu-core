@@ -1,7 +1,7 @@
 {
     "name": "FSControl",
     "description": {
-        "de": "Die FSControl ist ein zentraler Ansprechpartner für alle Komponenten der Dateisystemschicht."
+        "de": "Die FSControl ist ein zentraler Ansprechpartner f\u00fcr alle Komponenten der Dateisystemschicht."
     },
     "version": "1.0",
     "classFile": "FSControl.php",
@@ -33,7 +33,7 @@
                 "FSCsv"
             ],
             "description": {
-                "de": "über diesen Ausgang werden alle angehangenen Komponenten angefragt"
+                "de": "\u00fcber diesen Ausgang werden alle angehangenen Komponenten angefragt"
             },
             "links": []
         }

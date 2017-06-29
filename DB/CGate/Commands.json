@@ -5,7 +5,7 @@
         "path": "\/interface\/:profile\/:component\/:path+",
         "method": "PUT,GET,HEAD,OPTIONS,POST,DELETE",
         "description": {
-            "de": "\u00fcber diese Anfrage werden alle Interface-Anfragen behandelt"
+            "de": "über diese Anfrage werden alle Interface-Anfragen behandelt"
         },
         "inputType": "binary",
         "outputType": "binary",

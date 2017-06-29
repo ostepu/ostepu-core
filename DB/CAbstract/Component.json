@@ -1,7 +1,7 @@
 {
     "name": "CAbstract",
     "description": {
-        "de": "Die CAbstract hat selber keine Funktionalit\u00e4t und ist \u00fcberwiegend als Basis f\u00fcr Kopien gedacht. Dabei kann sie die Komponentenkonfiguration an einem beliebigen Ort speichern, indem in der Komponentendefinition beispielsweise `\"option\":\"confPath=UI\/include\/Condition\/uicondition_setcondition_cconfig.json\"` angegeben wird (der Speicherort der Konfiguration)."
+        "de": "Die CAbstract hat selber keine Funktionalität und ist überwiegend als Basis für Kopien gedacht. Dabei kann sie die Komponentenkonfiguration an einem beliebigen Ort speichern, indem in der Komponentendefinition beispielsweise `\"option\":\"confPath=UI\/include\/Condition\/uicondition_setcondition_cconfig.json\"` angegeben wird (der Speicherort der Konfiguration)."
     },
     "version": "1.0",
     "classFile": "CAbstract.php",

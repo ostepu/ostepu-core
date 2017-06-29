@@ -31,7 +31,7 @@
             "name": "formDb",
             "target": "DBForm",
             "description": {
-                "de": "f\\u00fcr den Befehl formDb"
+                "de": "für den Befehl formDb"
             },
             "links": [
                 {
@@ -44,7 +44,7 @@
             "name": "postProcess",
             "target": "DBProcessList",
             "description": {
-                "de": "f\\u00fcr den Befehl postProcess"
+                "de": "für den Befehl postProcess"
             },
             "links": [
                 {
@@ -57,7 +57,7 @@
             "name": "deleteProcess",
             "target": "DBProcessList",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteProcess"
+                "de": "für den Befehl deleteProcess"
             },
             "links": [
                 {
@@ -70,7 +70,7 @@
             "name": "getProcess",
             "target": "DBProcessList",
             "description": {
-                "de": "f\\u00fcr den Befehl getProcess"
+                "de": "für den Befehl getProcess"
             },
             "links": [
                 {
@@ -83,7 +83,7 @@
             "name": "pdf",
             "target": "FSPdf",
             "description": {
-                "de": "f\\u00fcr den Befehl pdf"
+                "de": "für den Befehl pdf"
             },
             "links": [
                 {
@@ -113,7 +113,7 @@
             "name": "request",
             "target": "CHelp",
             "description": {
-                "de": "hier werden Hilfedateien beim zentralen Hilfesystem angemeldet, sodass sie \u00fcber ihre globale Adresse abgerufen werden k\u00f6nnen"
+                "de": "hier werden Hilfedateien beim zentralen Hilfesystem angemeldet, sodass sie über ihre globale Adresse abgerufen werden können"
             },
             "links": [
                 {

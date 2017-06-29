@@ -1,7 +1,7 @@
 {
     "name": "DBSelectedSubmission",
     "description": {
-        "de": "Die DBSelectedSubmission erm\u00f6glicht den Zugriff auf die `SelectedSubmission` Tabelle der Datenbank, dabei sollen f\u00fcr einen Gruppeneintrag ausgew\u00e4hlte Einsendungen (f\u00fcr eine Aufgabe) verwaltet werden. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle geh\u00f6rt die `SelectedSubmission` Datenstruktur."
+        "de": "Die DBSelectedSubmission ermöglicht den Zugriff auf die `SelectedSubmission` Tabelle der Datenbank, dabei sollen für einen Gruppeneintrag ausgewählte Einsendungen (für eine Aufgabe) verwaltet werden. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle gehört die `SelectedSubmission` Datenstruktur.\n\n| Spalte        | Struktur  | Beschreibung | Besonderheit |\n| :------       |:---------:| :------------| -----------: |\n|U_id_leader|INT NOT NULL| ein Verweis auf ein Nutzerkonto, welches die Gruppe repräsentiert |-|\n|S_id_selected|INT NOT NULL| ein Verweis auf die ausgewählte Einsendung |UNIQUE|\n|E_id|INT NOT NULL| ein Verweis auf die zugehörige Aufgabe |-|\n|ES_id|INT NULL| ein Verweis auf die Übungsserie |-|"
     },
     "version": "1.0",
     "classFile": "DBSelectedSubmission.php",
@@ -34,7 +34,7 @@
             "name": "editSelectedSubmission",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl editSelectedSubmission"
+                "de": "für den Befehl editSelectedSubmission"
             },
             "links": [
                 {
@@ -47,7 +47,7 @@
             "name": "editSubmissionSelectedSubmission",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl editSubmissionSelectedSubmission"
+                "de": "für den Befehl editSubmissionSelectedSubmission"
             },
             "links": [
                 {
@@ -60,7 +60,7 @@
             "name": "deleteSelectedSubmission",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteSelectedSubmission"
+                "de": "für den Befehl deleteSelectedSubmission"
             },
             "links": [
                 {
@@ -73,7 +73,7 @@
             "name": "deleteUserSheetSelectedSubmission",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteUserSheetSelectedSubmission"
+                "de": "für den Befehl deleteUserSheetSelectedSubmission"
             },
             "links": [
                 {
@@ -86,7 +86,7 @@
             "name": "deleteSubmissionSelectedSubmission",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteSubmissionSelectedSubmission"
+                "de": "für den Befehl deleteSubmissionSelectedSubmission"
             },
             "links": [
                 {
@@ -99,7 +99,7 @@
             "name": "addSelectedSubmission",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl addSelectedSubmission"
+                "de": "für den Befehl addSelectedSubmission"
             },
             "links": [
                 {
@@ -112,7 +112,7 @@
             "name": "postSamples",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl postSamples"
+                "de": "für den Befehl postSamples"
             },
             "links": [
                 {
@@ -125,7 +125,7 @@
             "name": "deletePlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl deletePlatform"
+                "de": "für den Befehl deletePlatform"
             },
             "links": [
                 {
@@ -138,7 +138,7 @@
             "name": "addPlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl addPlatform"
+                "de": "für den Befehl addPlatform"
             },
             "links": [
                 {
@@ -151,7 +151,7 @@
             "name": "getCourseSelected",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getCourseSelected"
+                "de": "für den Befehl getCourseSelected"
             },
             "links": [
                 {
@@ -164,7 +164,7 @@
             "name": "getExerciseSelected",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getExerciseSelected"
+                "de": "für den Befehl getExerciseSelected"
             },
             "links": [
                 {
@@ -177,7 +177,7 @@
             "name": "getSheetSelected",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getSheetSelected"
+                "de": "für den Befehl getSheetSelected"
             },
             "links": [
                 {
@@ -190,7 +190,7 @@
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getExistsPlatform"
+                "de": "für den Befehl getExistsPlatform"
             },
             "links": [
                 {
@@ -203,7 +203,7 @@
             "name": "getSamplesInfo",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getSamplesInfo"
+                "de": "für den Befehl getSamplesInfo"
             },
             "links": [
                 {

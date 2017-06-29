@@ -1,7 +1,7 @@
 {
     "name": "DBUser",
     "description": {
-        "de": "Die DBUser erm\u00f6glicht den Zugriff auf die `User` Tabelle der Datenbank, dabei sollen Nutzerdaten verwaltet werden. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt."
+        "de": "Die DBUser ermöglicht den Zugriff auf die `User` Tabelle der Datenbank, dabei sollen Nutzerdaten verwaltet werden. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt.\n\n| Spalte        | Struktur  | Beschreibung | Besonderheit |\n| :------       |:---------:| :------------| -----------: |\n|U_id           |INT NOT NULL| die ID des Nutzerkontos |AUTO_INCREMENT,<br>UNIQUE|\n|U_username     |VARCHAR(120) NOT NULL| der Nutzername (wird für den Login benötigt) |UNIQUE|\n|U_email        |VARCHAR(120) NULL| eine eventuelle E-Mail Adresse (möglicherweise nicht immer gesetzt), weil sie meist optional ist)|-|\n|U_lastName     |VARCHAR(120) NULL| der Nachname |-|\n|U_firstName    |VARCHAR(120) NULL| der Vorname |-|\n|U_title        |CHAR(10) NULL| ein eventueller Titel (wird nicht verwendet) |-|\n|U_password     |CHAR(64) NOT NULL| das Darstellungsveränderte Passwort (SHA1) |-|\n|U_flag         |TINYINT NULL DEFAULT 1| der Status des Kontos ( 0 = gesperrt, 1 = aktiv) |-|\n|U_salt         |CHAR(40) NULL| wird als zusätzlicher Schlüssel für die Passwortkodierung verwendet (md5) |-|\n|U_failed_logins|INT NULL DEFAULT 0| speichert den letzten fehlgeschlagenen Anmeldeversuch (als Zeitstempel), für eine Sekundensperre |-|\n|U_externalId   |VARCHAR(255) NULL| eine externe ID für dieses Nutzerkonto (Bsp.: die StudIP-ID, um dieses Konto dem dortigen zuzuordnen) |-|\n|U_studentNumber|VARCHAR(120) NULL| die Matrikelnummer des Studenten oder ähnliches (wird derzeit nicht aus dem StudIP abgefragt) |-|\n|U_isSuperAdmin |TINYINT NULL DEFAULT 0| ob es sich dabei um einen Super-Admin Konto handelt (1 = Ja, 0 = Nein) |-|\n|U_comment      |VARCHAR(255) NULL| ein Kommentar zu diesem Nutzerkonto (wird nicht verwendet) |-|\n|U_lang         |CHAR(2) NOT NULL DEFAULT 'de'| die bevorzugte Sprache des Nutzers als Kürzel (Bsp.: de, en) |-|"
     },
     "version": "1.0",
     "classFile": "DBUser.php",
@@ -34,7 +34,7 @@
             "name": "editUser",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\u00fcr den Befehl editUser"
+                "de": "für den Befehl editUser"
             },
             "links": [
                 {
@@ -47,7 +47,7 @@
             "name": "removeUser",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\u00fcr den Befehl removeUser"
+                "de": "für den Befehl removeUser"
             },
             "links": [
                 {
@@ -60,7 +60,7 @@
             "name": "removeUserPermanent",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\u00fcr den Befehl removeUserPermanent"
+                "de": "für den Befehl removeUserPermanent"
             },
             "links": [
                 {
@@ -73,7 +73,7 @@
             "name": "addUser",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\u00fcr den Befehl addUser"
+                "de": "für den Befehl addUser"
             },
             "links": [
                 {
@@ -86,7 +86,7 @@
             "name": "deletePlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\u00fcr den Befehl deletePatform"
+                "de": "für den Befehl deletePatform"
             },
             "links": [
                 {
@@ -99,7 +99,7 @@
             "name": "addPlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\u00fcr den Befehl addPlatform"
+                "de": "für den Befehl addPlatform"
             },
             "links": [
                 {
@@ -112,7 +112,7 @@
             "name": "postSamples",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\u00fcr den Befehl postSamples"
+                "de": "für den Befehl postSamples"
             },
             "links": [
                 {
@@ -125,7 +125,7 @@
             "name": "getUser",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\u00fcr den Befehl getUser"
+                "de": "für den Befehl getUser"
             },
             "links": [
                 {
@@ -138,7 +138,7 @@
             "name": "getUsers",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\u00fcr den Befehl getUsers"
+                "de": "für den Befehl getUsers"
             },
             "links": [
                 {
@@ -151,7 +151,7 @@
             "name": "getCourseMember",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\u00fcr den Befehl getCourseMember"
+                "de": "für den Befehl getCourseMember"
             },
             "links": [
                 {
@@ -164,7 +164,7 @@
             "name": "getGroupMember",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\u00fcr den Befehl getGroupMember"
+                "de": "für den Befehl getGroupMember"
             },
             "links": [
                 {
@@ -177,7 +177,7 @@
             "name": "getUserByStatus",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\u00fcr den Befehl getUserByStatus"
+                "de": "für den Befehl getUserByStatus"
             },
             "links": [
                 {
@@ -190,7 +190,7 @@
             "name": "getCourseUserByStatus",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\u00fcr den Befehl getCoursUserByStatus"
+                "de": "für den Befehl getCoursUserByStatus"
             },
             "links": [
                 {
@@ -203,7 +203,7 @@
             "name": "getIncreaseUserFailedLogin",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\u00fcr den Befehl getIncreaseUserFailedLogin"
+                "de": "für den Befehl getIncreaseUserFailedLogin"
             },
             "links": [
                 {
@@ -216,7 +216,7 @@
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\u00fcr den Befehl getExsistsPlatform"
+                "de": "für den Befehl getExsistsPlatform"
             },
             "links": [
                 {
@@ -229,7 +229,7 @@
             "name": "getSamplesInfo",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\u00fcr den Befehl getSamplesInfo"
+                "de": "für den Befehl getSamplesInfo"
             },
             "links": [
                 {
@@ -265,7 +265,7 @@
             "name": "getAlive",
             "target": "CHelp",
             "description": {
-                "de": "soll CHelp mitteilen, ob die Datenbank erreichbar ist, indem die Existenz der User-Tabelle gepr\u00fcft wird"
+                "de": "soll CHelp mitteilen, ob die Datenbank erreichbar ist, indem die Existenz der User-Tabelle geprüft wird"
             },
             "links": [
                 {

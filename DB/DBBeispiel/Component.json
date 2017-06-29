@@ -20,11 +20,11 @@
         },
         {
             "path": "Commands.json",
-            "Kommentar": "diese Datei enth\u00e4lt die angebotenen Aufrufe"
+            "Kommentar": "diese Datei enthält die angebotenen Aufrufe"
         },
         {
             "path": "Sql\/",
-            "Kommentar": "ein ganzer Ordner soll rekursiv dazu geh\u00f6ren"
+            "Kommentar": "ein ganzer Ordner soll rekursiv dazu gehören"
         }
     ],
     "links": [
@@ -33,7 +33,7 @@
             "Kommentar": "der Name der Zielkomponente",
             "target": "DBQuery2",
             "description": {
-                "de": "\u00fcber diesen Ausgang werden Anfragen an die Datenbank gestellt"
+                "de": "über diesen Ausgang werden Anfragen an die Datenbank gestellt"
             },
             "links": [
                 {
@@ -48,7 +48,7 @@
             "Kommentar": "Aufruf einer stored-procedure, wobei Informationen zu einer Veranstaltung abgerufen werden",
             "target": "DBQuery2",
             "description": {
-                "de": "f\\u00fcr den Befehl getCourse"
+                "de": "für den Befehl getCourse"
             },
             "links": [
                 {

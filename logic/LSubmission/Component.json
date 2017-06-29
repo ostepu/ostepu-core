@@ -25,7 +25,7 @@
             "name": "file",
             "target": "LFile",
             "description": {
-                "de": "f\\u00fcr den Befehl file"
+                "de": "für den Befehl file"
             },
             "links": [
                 {
@@ -38,7 +38,7 @@
             "name": "submission",
             "target": "DBSubmission",
             "description": {
-                "de": "f\\u00fcr den Befehl submission"
+                "de": "für den Befehl submission"
             },
             "links": [
                 {
@@ -59,7 +59,7 @@
             "name": "selectedSubmission",
             "target": "DBSelectedSubmission",
             "description": {
-                "de": "f\\u00fcr den Befehl selectedSubmission"
+                "de": "für den Befehl selectedSubmission"
             },
             "links": [
                 {
@@ -76,7 +76,7 @@
             "name": "zip",
             "target": "FSZip",
             "description": {
-                "de": "f\\u00fcr den Befehl zip"
+                "de": "für den Befehl zip"
             },
             "links": [
                 {

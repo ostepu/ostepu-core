@@ -25,7 +25,7 @@
             "name": "controller",
             "target": "LController",
             "description": {
-                "de": "f\\u00fcr den Befehl controller"
+                "de": "für den Befehl controller"
             },
             "links": [
                 {
@@ -66,7 +66,7 @@
             "name": "postAttachment",
             "target": "LAttachment",
             "description": {
-                "de": "f\\u00fcr den Befehl postAttachment"
+                "de": "für den Befehl postAttachment"
             },
             "links": [
                 {

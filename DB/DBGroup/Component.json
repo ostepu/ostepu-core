@@ -1,7 +1,7 @@
 {
     "name": "DBGroup",
     "description": {
-        "de": "Die DBGroup erm\u00f6glicht den Zugriff auf die `Group` Tabelle der Datenbank, dabei sollen Arbeitsgruppen verwaltet werden. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle geh\u00f6rt die `Group` Datenstruktur."
+        "de": "Die DBGroup ermöglicht den Zugriff auf die `Group` Tabelle der Datenbank, dabei sollen Arbeitsgruppen verwaltet werden. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle gehört die `Group` Datenstruktur.\n\n| Spalte        | Struktur  | Beschreibung | Besonderheit |\n| :------       |:---------:| :------------| -----------: |\n|U_id_leader|INT NOT NULL| ein Verweis auf ein Nutzerkonto, dem dieser Eintrag gehört |-|\n|U_id_member|INT NOT NULL| ein Verweis auf ein Nutzerkonto, in dessen Gruppe dieser Nutzer ist |-|\n|C_id|INT NULL| ein Verweis auf eine Veranstaltung |-|\n|ES_id|INT NOT NULL| ein Verweis auf die zugehörige Übungsserie |-|"
     },
     "version": "1.0",
     "classFile": "DBGroup.php",
@@ -34,7 +34,7 @@
             "name": "editGroup",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl editGroup"
+                "de": "für den Befehl editGroup"
             },
             "links": [
                 {
@@ -47,7 +47,7 @@
             "name": "deleteGroup",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteGroup"
+                "de": "für den Befehl deleteGroup"
             },
             "links": [
                 {
@@ -60,7 +60,7 @@
             "name": "addGroup",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl addGroup"
+                "de": "für den Befehl addGroup"
             },
             "links": [
                 {
@@ -73,7 +73,7 @@
             "name": "postSamples",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl postSamples"
+                "de": "für den Befehl postSamples"
             },
             "links": [
                 {
@@ -86,7 +86,7 @@
             "name": "deletePlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl deletePlatform"
+                "de": "für den Befehl deletePlatform"
             },
             "links": [
                 {
@@ -99,7 +99,7 @@
             "name": "addPlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl addPlatform"
+                "de": "für den Befehl addPlatform"
             },
             "links": [
                 {
@@ -112,7 +112,7 @@
             "name": "getUserGroups",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getUserGroups"
+                "de": "für den Befehl getUserGroups"
             },
             "links": [
                 {
@@ -125,7 +125,7 @@
             "name": "getSheetGroups",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getSheetGroups"
+                "de": "für den Befehl getSheetGroups"
             },
             "links": [
                 {
@@ -138,7 +138,7 @@
             "name": "getUserSheetGroup",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getUserSheetGroup"
+                "de": "für den Befehl getUserSheetGroup"
             },
             "links": [
                 {
@@ -151,7 +151,7 @@
             "name": "getCourseGroups",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getCourseGroups"
+                "de": "für den Befehl getCourseGroups"
             },
             "links": [
                 {
@@ -164,7 +164,7 @@
             "name": "getAllGroups",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getAllGroups"
+                "de": "für den Befehl getAllGroups"
             },
             "links": [
                 {
@@ -177,7 +177,7 @@
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getExistsPlatform"
+                "de": "für den Befehl getExistsPlatform"
             },
             "links": [
                 {

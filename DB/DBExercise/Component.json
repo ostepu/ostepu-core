@@ -1,7 +1,7 @@
 {
     "name": "DBExercise",
     "description": {
-        "de": "Die DBExercise erm\u00f6glicht den Zugriff auf die `Exercise` Tabelle der Datenbank. Sie verwaltet die einzelnen Aufgaben einer \u00dcbungsserie. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt."
+        "de": "Die DBExercise ermöglicht den Zugriff auf die `Exercise` Tabelle der Datenbank. Sie verwaltet die einzelnen Aufgaben einer Übungsserie. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt."
     },
     "version": "1.0",
     "classFile": "DBExercise.php",
@@ -34,7 +34,7 @@
             "name": "editExercise",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl editExercise"
+                "de": "für den Befehl editExercise"
             },
             "links": [
                 {
@@ -47,7 +47,7 @@
             "name": "deleteExercise",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteExercise"
+                "de": "für den Befehl deleteExercise"
             },
             "links": [
                 {
@@ -60,7 +60,7 @@
             "name": "addExercise",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl addExercise"
+                "de": "für den Befehl addExercise"
             },
             "links": [
                 {
@@ -73,7 +73,7 @@
             "name": "postSamples",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl postSamples"
+                "de": "für den Befehl postSamples"
             },
             "links": [
                 {
@@ -86,7 +86,7 @@
             "name": "deletePlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl deletePlatform"
+                "de": "für den Befehl deletePlatform"
             },
             "links": [
                 {
@@ -99,7 +99,7 @@
             "name": "addPlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl addPlatform"
+                "de": "für den Befehl addPlatform"
             },
             "links": [
                 {
@@ -112,7 +112,7 @@
             "name": "getExercise",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getExercise"
+                "de": "für den Befehl getExercise"
             },
             "links": [
                 {
@@ -125,7 +125,7 @@
             "name": "getAllExercises",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getAllExercises"
+                "de": "für den Befehl getAllExercises"
             },
             "links": [
                 {
@@ -138,7 +138,7 @@
             "name": "getCourseExercises",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getCourseExercises"
+                "de": "für den Befehl getCourseExercises"
             },
             "links": [
                 {
@@ -151,7 +151,7 @@
             "name": "getSheetExercises",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getSheetExercises"
+                "de": "für den Befehl getSheetExercises"
             },
             "links": [
                 {
@@ -164,7 +164,7 @@
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getExistsPlatform"
+                "de": "für den Befehl getExistsPlatform"
             },
             "links": [
                 {

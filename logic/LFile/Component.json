@@ -34,7 +34,7 @@
             "name": "fileDb",
             "target": "DBFile",
             "description": {
-                "de": "f\\u00fcr den Befehl fileDb"
+                "de": "für den Befehl fileDb"
             },
             "links": [
                 {
@@ -51,7 +51,7 @@
             "name": "file",
             "target": "FSFile",
             "description": {
-                "de": "f\\u00fcr den Befehl file"
+                "de": "für den Befehl file"
             },
             "links": [
                 {

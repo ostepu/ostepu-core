@@ -34,7 +34,7 @@
                 "LCourse"
             ],
             "description": {
-                "de": "f\\u00fcr den Befehl out"
+                "de": "für den Befehl out"
             },
             "links": []
         },
@@ -42,7 +42,7 @@
             "name": "database",
             "target": "DBControl",
             "description": {
-                "de": "f\\u00fcr den Befehl database"
+                "de": "für den Befehl database"
             },
             "links": [
                 {
@@ -67,7 +67,7 @@
             "name": "filesystem",
             "target": "FSControl",
             "description": {
-                "de": "f\\u00fcr den Befehl filesystem"
+                "de": "für den Befehl filesystem"
             },
             "links": [
                 {

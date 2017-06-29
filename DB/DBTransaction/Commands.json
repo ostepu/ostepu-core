@@ -4,14 +4,14 @@
         "path": "\/transaction\/exercisesheet\/:esid",
         "method": "post",
         "description": {
-            "de": "erzeugt eine Transaktion (anhand der ID einer \u00dcbungsserie)"
+            "de": "erzeugt eine Transaktion (anhand der ID einer Übungsserie)"
         },
         "placeholder": [
             {
                 "name": "esid",
                 "regex": "%^([0-9_]+)$%",
                 "description": {
-                    "de": "die ID einer \u00dcbungsserie (`ExercisehSheet`)"
+                    "de": "die ID einer Übungsserie (`ExercisehSheet`)"
                 }
             }
         ],
@@ -49,7 +49,7 @@
                 "name": "auid",
                 "regex": "%^([a-zA-Z0-9_]+)$%",
                 "description": {
-                    "de": "das zur Transaktion geh\u00f6rige Sicherheitswort (durch den Ersteller festgelegt)"
+                    "de": "das zur Transaktion gehörige Sicherheitswort (durch den Ersteller festgelegt)"
                 }
             },
             {
@@ -94,7 +94,7 @@
                 "name": "auid",
                 "regex": "%^([a-zA-Z0-9_]+)$%",
                 "description": {
-                    "de": "das zur Transaktion geh\u00f6rige Geheimwort (durch den Ersteller festgelegt)"
+                    "de": "das zur Transaktion gehörige Geheimwort (durch den Ersteller festgelegt)"
                 }
             },
             {
@@ -174,7 +174,7 @@
         "path": "\/course",
         "method": "post",
         "description": {
-            "de": "f\u00fcgt DBTransaction zur Veranstaltung hinzu (erzeugt `Transaction_X`)"
+            "de": "fügt DBTransaction zur Veranstaltung hinzu (erzeugt `Transaction_X`)"
         },
         "inputType": "Course",
         "outputType": "Course"
@@ -184,7 +184,7 @@
         "path": "\/link\/exists\/course\/:courseid",
         "method": "get",
         "description": {
-            "de": "pr\u00fcft, ob die Tabellen zur Veranstaltung korrekt installiert sind"
+            "de": "prüft, ob die Tabellen zur Veranstaltung korrekt installiert sind"
         },
         "placeholder": [
             {

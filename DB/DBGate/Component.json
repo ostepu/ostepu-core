@@ -1,7 +1,7 @@
 {
     "name": "DBGate",
     "description": {
-        "de": "Die DBGate erm\u00f6glicht den Zugriff auf die `GateAuth`, `GateProfile` und `GateRule` Tabellen der Datenbank. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt."
+        "de": "Die DBGate ermöglicht den Zugriff auf die `GateAuth`, `GateProfile` und `GateRule` Tabellen der Datenbank. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt."
     },
     "version": "1.0",
     "classFile": "DBGate.php",
@@ -31,7 +31,7 @@
             "name": "editGateProfile",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl editGateProfile"
+                "de": "für den Befehl editGateProfile"
             },
             "links": [
                 {
@@ -44,7 +44,7 @@
             "name": "editGateAuth",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl editGateAuth"
+                "de": "für den Befehl editGateAuth"
             },
             "links": [
                 {
@@ -57,7 +57,7 @@
             "name": "editGateRule",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl editGateRule"
+                "de": "für den Befehl editGateRule"
             },
             "links": [
                 {
@@ -70,7 +70,7 @@
             "name": "deleteGateProfile",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteGateProfile"
+                "de": "für den Befehl deleteGateProfile"
             },
             "links": [
                 {
@@ -83,7 +83,7 @@
             "name": "deleteGateProfileByName",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteGateProfileByName"
+                "de": "für den Befehl deleteGateProfileByName"
             },
             "links": [
                 {
@@ -96,7 +96,7 @@
             "name": "deleteGateRule",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteGateRule"
+                "de": "für den Befehl deleteGateRule"
             },
             "links": [
                 {
@@ -109,7 +109,7 @@
             "name": "deleteGateAuth",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteGateAuth"
+                "de": "für den Befehl deleteGateAuth"
             },
             "links": [
                 {
@@ -122,7 +122,7 @@
             "name": "addGateProfile",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl addGateProfile"
+                "de": "für den Befehl addGateProfile"
             },
             "links": [
                 {
@@ -135,7 +135,7 @@
             "name": "addGateRule",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl addGateRule"
+                "de": "für den Befehl addGateRule"
             },
             "links": [
                 {
@@ -148,7 +148,7 @@
             "name": "addGateAuth",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl addGateAuth"
+                "de": "für den Befehl addGateAuth"
             },
             "links": [
                 {
@@ -161,7 +161,7 @@
             "name": "deletePlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl deletePlatform"
+                "de": "für den Befehl deletePlatform"
             },
             "links": [
                 {
@@ -174,7 +174,7 @@
             "name": "addPlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl addPlatform"
+                "de": "für den Befehl addPlatform"
             },
             "links": [
                 {
@@ -187,7 +187,7 @@
             "name": "getAllProfiles",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getAllProfiles"
+                "de": "für den Befehl getAllProfiles"
             },
             "links": [
                 {
@@ -200,7 +200,7 @@
             "name": "getProfile",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getProfile"
+                "de": "für den Befehl getProfile"
             },
             "links": [
                 {
@@ -213,7 +213,7 @@
             "name": "getProfileByName",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getProfileByName"
+                "de": "für den Befehl getProfileByName"
             },
             "links": [
                 {
@@ -226,7 +226,7 @@
             "name": "getProfilesByAuth",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getProfilesByAuth"
+                "de": "für den Befehl getProfilesByAuth"
             },
             "links": [
                 {
@@ -239,7 +239,7 @@
             "name": "getProfilesByComponent",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getProfilesByComponent"
+                "de": "für den Befehl getProfilesByComponent"
             },
             "links": [
                 {
@@ -252,7 +252,7 @@
             "name": "getProfileWithAuth",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getProfileWithAuth"
+                "de": "für den Befehl getProfileWithAuth"
             },
             "links": [
                 {
@@ -265,7 +265,7 @@
             "name": "getComponentProfileWithAuth",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getComponentProfileWithAuth"
+                "de": "für den Befehl getComponentProfileWithAuth"
             },
             "links": [
                 {
@@ -278,7 +278,7 @@
             "name": "getComponentProfileWithAuthLogin",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getComponentProfileWithAuthLogin"
+                "de": "für den Befehl getComponentProfileWithAuthLogin"
             },
             "links": [
                 {
@@ -291,7 +291,7 @@
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getExistsPlatform"
+                "de": "für den Befehl getExistsPlatform"
             },
             "links": [
                 {

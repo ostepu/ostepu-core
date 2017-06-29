@@ -4,7 +4,7 @@
         "path": "\/timestamp",
         "method": "GET",
         "description": {
-            "de": "gibt den aktuellen UNIX-Zeitstempel zur\u00fcck"
+            "de": "gibt den aktuellen UNIX-Zeitstempel zurück"
         }
     },
     {

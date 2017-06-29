@@ -1,7 +1,7 @@
 {
     "name": "DBInvitation",
     "description": {
-        "de": "Die DBInvitation erm\u00f6glicht den Zugriff auf die `Invitation` Tabelle der Datenbank. Hier werden Einladungen f\u00fcr die Gruppenverwaltung gespeichert. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt."
+        "de": "Die DBInvitation ermöglicht den Zugriff auf die `Invitation` Tabelle der Datenbank. Hier werden Einladungen für die Gruppenverwaltung gespeichert. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt."
     },
     "version": "1.0",
     "classFile": "DBInvitation.php",
@@ -34,7 +34,7 @@
             "name": "editInvitation",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl editInvitation"
+                "de": "für den Befehl editInvitation"
             },
             "links": [
                 {
@@ -47,7 +47,7 @@
             "name": "deleteInvitation",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteInvitation"
+                "de": "für den Befehl deleteInvitation"
             },
             "links": [
                 {
@@ -60,7 +60,7 @@
             "name": "addInvitation",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl addInvitation"
+                "de": "für den Befehl addInvitation"
             },
             "links": [
                 {
@@ -73,7 +73,7 @@
             "name": "deletePlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl deletePlatform"
+                "de": "für den Befehl deletePlatform"
             },
             "links": [
                 {
@@ -86,7 +86,7 @@
             "name": "addPlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl addPlatform"
+                "de": "für den Befehl addPlatform"
             },
             "links": [
                 {
@@ -99,7 +99,7 @@
             "name": "getAllInvitations",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getAllInvitations"
+                "de": "für den Befehl getAllInvitations"
             },
             "links": [
                 {
@@ -112,7 +112,7 @@
             "name": "getLeaderInvitations",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getLeaderInvitations"
+                "de": "für den Befehl getLeaderInvitations"
             },
             "links": [
                 {
@@ -125,7 +125,7 @@
             "name": "getMemberInvitations",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getMemberInvitations"
+                "de": "für den Befehl getMemberInvitations"
             },
             "links": [
                 {
@@ -138,7 +138,7 @@
             "name": "getSheetInvitations",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getSheetInvitations"
+                "de": "für den Befehl getSheetInvitations"
             },
             "links": [
                 {
@@ -151,7 +151,7 @@
             "name": "getSheetLeaderInvitations",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getSheetLeaderInvitations"
+                "de": "für den Befehl getSheetLeaderInvitations"
             },
             "links": [
                 {
@@ -164,7 +164,7 @@
             "name": "getSheetMemberInvitations",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getSheetMemberInvitations"
+                "de": "für den Befehl getSheetMemberInvitations"
             },
             "links": [
                 {
@@ -177,7 +177,7 @@
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getExistsPlatform"
+                "de": "für den Befehl getExistsPlatform"
             },
             "links": [
                 {

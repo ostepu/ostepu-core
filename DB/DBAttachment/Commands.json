@@ -3,7 +3,7 @@
         "path": "\/attachment\/exercisesheet\/:esid",
         "method": "get",
         "description": {
-            "de": "ermittelt alle Anh\u00e4nge einer \u00dcbungsserie"
+            "de": "ermittelt alle Anhänge einer Übungsserie"
         }
     },
     {
@@ -17,14 +17,14 @@
         "path": "\/attachment(\/attachment)\/:aid",
         "method": "get",
         "description": {
-            "de": "liefert einen einzelnen Anhang zur\u00fcck"
+            "de": "liefert einen einzelnen Anhang zurück"
         }
     },
     {
         "path": "\/attachment\/exercise\/:eid",
         "method": "delete",
         "description": {
-            "de": "entfernt die Anh\u00e4nge einer Aufgabe"
+            "de": "entfernt die Anhänge einer Aufgabe"
         }
     },
     {
@@ -38,21 +38,21 @@
         "path": "\/attachment\/exercise\/:eid\/file\/:fileid",
         "method": "delete",
         "description": {
-            "de": "l\u00f6scht einen Anhang anhand der Aufgabe und der Datei"
+            "de": "löscht einen Anhang anhand der Aufgabe und der Datei"
         }
     },
     {
         "path": "\/attachment",
         "method": "post",
         "description": {
-            "de": "f\u00fcgt einen Anhang ein"
+            "de": "fügt einen Anhang ein"
         }
     },
     {
         "path": "\/attachment\/exercise\/:eid",
         "method": "get",
         "description": {
-            "de": "ermittelt alle Anh\u00e4nge zu einer Aufgabe"
+            "de": "ermittelt alle Anhänge zu einer Aufgabe"
         }
     },
     {
@@ -73,14 +73,14 @@
         "path": "\/attachment(\/attachment)",
         "method": "get",
         "description": {
-            "de": "liefert alle Anh\u00e4nge der Plattform"
+            "de": "liefert alle Anhänge der Plattform"
         }
     },
     {
         "path": "\/link\/exists\/platform",
         "method": "GET",
         "description": {
-            "de": "pr\u00fcft, ob die Komponente korrekt in die Plattform installiert wurde"
+            "de": "prüft, ob die Komponente korrekt in die Plattform installiert wurde"
         }
     }
 ]

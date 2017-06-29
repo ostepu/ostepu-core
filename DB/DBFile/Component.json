@@ -1,7 +1,7 @@
 {
     "name": "DBFile",
     "description": {
-        "de": "Die DBFile erm\u00f6glicht den Zugriff auf die `File` Tabelle der Datenbank, dabei sollen Dateien (nicht der Dateiinhalt) verwaltet werden. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle geh\u00f6rt die `File` Datenstruktur."
+        "de": "Die DBFile ermöglicht den Zugriff auf die `File` Tabelle der Datenbank, dabei sollen Dateien (nicht der Dateiinhalt) verwaltet werden. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle gehört die `File` Datenstruktur.\n\n| Spalte        | Struktur  | Beschreibung | Besonderheit |\n| :------       |:---------:| :------------| -----------: |\n|F_id|INT NOT NULL| die ID der Datei |AUTO_INCREMENT,<br>UNIQUE|\n|F_displayName|VARCHAR(255) NULL| der Anzeigename, bekommt der Nutzer beim Herunterladen so angezeigt Bsp.: MeineDatei.txt |-|\n|F_address|CHAR(55) NOT NULL| der Pfad im Dateisystem (zum Abrufen über `FSBinder`), Bsp.: pdf\/3\/e\/1\/288361a6d62aa394feee355bd8779269a5977, die Adresse entspricht nicht immer dem Hash des Dateiinhalts |UNIQUE|\n|F_timeStamp|INT UNSIGNED NULL DEFAULT 0| der Unix-Zeitstempel der Speicherung\/des Hochladens, wird meist direkt nach dem Eingang im System gesetzt |-|\n|F_fileSize|INT NULL DEFAULT 0| die Dateigröße in Byte (entsprechend dem Dateiinhalt) |-|\n|F_hash|CHAR(40) NULL| der md5 hash |UNIQUE|\n|F_comment|VARCHAR(255) NULL| ein möglicher Dateikommentar (wird nicht verwendet) |-|\n|F_mimeType|VARCHAR(255) NULL| der mimType (siehe `Assistants\/MimeReader.php`), Bsp.: image\/png, application\/pdf |-|"
     },
     "version": "1.0",
     "classFile": "DBFile.php",
@@ -34,7 +34,7 @@
             "name": "editFile",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl editFile"
+                "de": "für den Befehl editFile"
             },
             "links": [
                 {
@@ -47,7 +47,7 @@
             "name": "removeFile",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl removeFile"
+                "de": "für den Befehl removeFile"
             },
             "links": [
                 {
@@ -60,7 +60,7 @@
             "name": "addFile",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl addFile"
+                "de": "für den Befehl addFile"
             },
             "links": [
                 {
@@ -73,7 +73,7 @@
             "name": "deletePlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl deletePlatform"
+                "de": "für den Befehl deletePlatform"
             },
             "links": [
                 {
@@ -86,7 +86,7 @@
             "name": "addPlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl addPlatform"
+                "de": "für den Befehl addPlatform"
             },
             "links": [
                 {
@@ -99,7 +99,7 @@
             "name": "postSamples",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl postSamples"
+                "de": "für den Befehl postSamples"
             },
             "links": [
                 {
@@ -112,7 +112,7 @@
             "name": "getFile",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getFile"
+                "de": "für den Befehl getFile"
             },
             "links": [
                 {
@@ -125,7 +125,7 @@
             "name": "getAllFiles",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getAllFiles"
+                "de": "für den Befehl getAllFiles"
             },
             "links": [
                 {
@@ -138,7 +138,7 @@
             "name": "getFileByHash",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getFileByHash"
+                "de": "für den Befehl getFileByHash"
             },
             "links": [
                 {
@@ -151,7 +151,7 @@
             "name": "getFileByMimeType",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getFileByMimeType"
+                "de": "für den Befehl getFileByMimeType"
             },
             "links": [
                 {
@@ -164,7 +164,7 @@
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getExistsPlatform"
+                "de": "für den Befehl getExistsPlatform"
             },
             "links": [
                 {
@@ -177,7 +177,7 @@
             "name": "getSamplesInfo",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getSamplesInfo"
+                "de": "für den Befehl getSamplesInfo"
             },
             "links": [
                 {

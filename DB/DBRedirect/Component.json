@@ -1,7 +1,7 @@
 {
     "name": "DBRedirect",
     "description": {
-        "de": "Die DBRedirect erm\u00f6glicht den Zugriff auf die `Redirect_X` Tabellen der Datenbank, wobei dese Eintr\u00e4ge der Definition von Umleitungslinks dienen. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle geh\u00f6rt die `SelectedSubmission` Datenstruktur."
+        "de": "Die DBRedirect ermöglicht den Zugriff auf die `Redirect_X` Tabellen der Datenbank, wobei dese Einträge der Definition von Umleitungslinks dienen. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle gehört die `SelectedSubmission` Datenstruktur."
     },
     "version": "1.0",
     "classFile": "DBRedirect.php",
@@ -34,7 +34,7 @@
             "name": "editRedirect",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl editRedirect"
+                "de": "für den Befehl editRedirect"
             },
             "links": [
                 {
@@ -47,7 +47,7 @@
             "name": "deleteRedirect",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteRedirect"
+                "de": "für den Befehl deleteRedirect"
             },
             "links": [
                 {
@@ -60,7 +60,7 @@
             "name": "addRedirect",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl addRedirect"
+                "de": "für den Befehl addRedirect"
             },
             "links": [
                 {
@@ -73,7 +73,7 @@
             "name": "deleteCourse",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteCourse"
+                "de": "für den Befehl deleteCourse"
             },
             "links": [
                 {
@@ -86,7 +86,7 @@
             "name": "addCourse",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl addCourse"
+                "de": "für den Befehl addCourse"
             },
             "links": [
                 {
@@ -99,7 +99,7 @@
             "name": "getRedirect",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getRedirect"
+                "de": "für den Befehl getRedirect"
             },
             "links": [
                 {
@@ -112,7 +112,7 @@
             "name": "getRedirectByLocation",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getRedirectByLocation"
+                "de": "für den Befehl getRedirectByLocation"
             },
             "links": [
                 {
@@ -125,7 +125,7 @@
             "name": "getExistsCourseRedirects",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getExistsCourseRedirects"
+                "de": "für den Befehl getExistsCourseRedirects"
             },
             "links": [
                 {
@@ -138,7 +138,7 @@
             "name": "getCourseRedirects",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getCourseRedirects"
+                "de": "für den Befehl getCourseRedirects"
             },
             "links": [
                 {
@@ -169,7 +169,7 @@
             "name": "deleteCourse",
             "target": "LCourse",
             "description": {
-                "de": "wenn eine Veranstaltung gel\\u00f6scht wird, dann m\\u00fcssen auch unsere Tabellen entfernt werden"
+                "de": "wenn eine Veranstaltung gelöscht wird, dann müssen auch unsere Tabellen entfernt werden"
             }
         },
         {

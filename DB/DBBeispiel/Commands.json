@@ -1,7 +1,7 @@
 [
     {
         "name": "getDaten",
-        "Kommentar": "der Aufrufpfad f\u00fcr diesen befehl",
+        "Kommentar": "der Aufrufpfad für diesen befehl",
         "path": "\/beispiel\/course\/:cid",
         "method": "GET",
         "description": {

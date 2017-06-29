@@ -30,13 +30,13 @@
         {
             "name": "request",
             "description": {
-                "de": "\u00fcber diesen Ausgang werden alle Hilfeseiten von anderen Komponenten angefragt"
+                "de": "über diesen Ausgang werden alle Hilfeseiten von anderen Komponenten angefragt"
             }
         },
         {
             "name": "getAlive",
             "description": {
-                "de": "f\\u00fcr den Befehl getAlive"
+                "de": "für den Befehl getAlive"
             }
         }
     ],

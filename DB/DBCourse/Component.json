@@ -1,7 +1,7 @@
 {
     "name": "DBCourse",
     "description": {
-        "de": "Die DBCourse erm\u00f6glicht den Zugriff auf die `Course` Tabelle der Datenbank, dabei sollen Veranstaltungen verwaltet werden. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle geh\u00f6rt die `Course` Datenstruktur."
+        "de": "Die DBCourse ermöglicht den Zugriff auf die `Course` Tabelle der Datenbank, dabei sollen Veranstaltungen verwaltet werden. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle gehört die `Course` Datenstruktur.\n\n| Spalte           | Struktur  | Beschreibung | Besonderheit |\n| :------------    |:--------:| :---------------| -----: |\n|C_id              |INT NOT NULL|Der Primärschlüssel einer Veranstaltung|UNIQUE,<br>AUTO_INCREMENT|\n|C_name            |VARCHAR(120) NULL|Der Name der Veranstaltung|-|\n|C_semester        |VARCHAR(60) NULL|Das Semester. Bsp.: SS 2015 und WS 2014\/2015, dieses Format muss eingehalten werden|-|\n|C_defaultGroupSize|INT NOT NULL DEFAULT 1|Die Standardgruppengröße, als Vorgabe beim erzeugen neuer Übungsserien|-|"
     },
     "version": "1.0",
     "classFile": "DBCourse.php",
@@ -34,7 +34,7 @@
             "name": "editCourse",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl editCourse"
+                "de": "für den Befehl editCourse"
             },
             "links": [
                 {
@@ -47,7 +47,7 @@
             "name": "deleteCourse",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl deleteCourse"
+                "de": "für den Befehl deleteCourse"
             },
             "links": [
                 {
@@ -60,7 +60,7 @@
             "name": "addCourse",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl addCourse"
+                "de": "für den Befehl addCourse"
             },
             "links": [
                 {
@@ -73,7 +73,7 @@
             "name": "deletePlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl deletePlatform"
+                "de": "für den Befehl deletePlatform"
             },
             "links": [
                 {
@@ -86,7 +86,7 @@
             "name": "addPlatform",
             "target": "DBQuerySetup",
             "description": {
-                "de": "f\\u00fcr den Befehl addPlatform"
+                "de": "für den Befehl addPlatform"
             },
             "links": [
                 {
@@ -99,7 +99,7 @@
             "name": "postSamples",
             "target": "DBQueryWrite",
             "description": {
-                "de": "f\\u00fcr den Befehl postSamples"
+                "de": "für den Befehl postSamples"
             },
             "links": [
                 {
@@ -112,7 +112,7 @@
             "name": "getCourse",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getCourse"
+                "de": "für den Befehl getCourse"
             },
             "links": [
                 {
@@ -125,7 +125,7 @@
             "name": "getAllCourses",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getAllCourses"
+                "de": "für den Befehl getAllCourses"
             },
             "links": [
                 {
@@ -138,7 +138,7 @@
             "name": "getUserCourses",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getUserCourses"
+                "de": "für den Befehl getUserCourses"
             },
             "links": [
                 {
@@ -151,7 +151,7 @@
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getExistsPlatform"
+                "de": "für den Befehl getExistsPlatform"
             },
             "links": [
                 {
@@ -164,7 +164,7 @@
             "name": "getSamplesInfo",
             "target": "DBQueryRead",
             "description": {
-                "de": "f\\u00fcr den Befehl getSamplesInfo"
+                "de": "für den Befehl getSamplesInfo"
             },
             "links": [
                 {

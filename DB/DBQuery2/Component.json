@@ -1,7 +1,7 @@
 {
     "name": "DBQuery2",
     "description": {
-        "de": "Die DBQuery2 erm\u00f6glicht das Ausf\u00fchren von SQL-Anfragen. Dabei nutzt sie die mysqli-Erweiterung von PHP."
+        "de": "Die DBQuery2 ermöglicht das Ausführen von SQL-Anfragen. Dabei nutzt sie die mysqli-Erweiterung von PHP."
     },
     "version": "1.0",
     "classFile": "DBQuery2.php",
