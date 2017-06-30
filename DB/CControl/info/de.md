@@ -1,3 +1,16 @@
+<!--
+  - @file de.md
+  -
+  - @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+  -
+  - @package OSTEPU (https://github.com/ostepu/ostepu-core)
+  - @since -
+  -
+  - @author Till Uhlig <till.uhlig@student.uni-halle.de>
+  - @date 2017
+  -
+ -->
+
 Diese Komponente stellt wichtige Aufrufe bereit, um die Installation der Komponenten durchzuführen. Zudem legt sie die Tabellen `Component` und `ComponentLinkage` an und verwaltet diese.
 
 ## Eingänge

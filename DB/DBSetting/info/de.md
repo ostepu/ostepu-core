@@ -7,8 +7,7 @@
   - @since 0.3.4
   -
   - @author Till Uhlig <till.uhlig@student.uni-halle.de>
-  - @date 2015
-  -
+  - @date 2015,2017
  -->
 
 Die DBSetting ermöglicht den Zugriff auf die `SETTING_X` Tabellen der Datenbank, dabei sollen Veranstaltungseinstellungen verwaltet werden. Dazu wird bei einem `POST /course` Aufruf die nachstehende Tabelle erzeugt (X = ID der Veranstaltung). Zu dieser Tabelle gehört die `Session` Datenstruktur.

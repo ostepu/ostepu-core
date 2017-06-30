@@ -1,3 +1,16 @@
+<!--
+  - @file de.md
+  -
+  - @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+  -
+  - @package OSTEPU (https://github.com/ostepu/ostepu-core)
+  - @since -
+  -
+  - @author Till Uhlig <till.uhlig@student.uni-halle.de>
+  - @date 2017
+  -
+ -->
+
 Die DBTransaction ermöglicht den Zugriff auf die `Transaction_X` Tabellen der Datenbank, dabei sollen Vorgangsnummern mit zugehörigen Inhalten verwaltet werden (welcher nur temporär zugänglich sind). Sie wird beispielsweise genutzt, wenn man zu einem Vorgang zugehörige Daten kurzfristif hinterlegen möchte (beispielsweise zur Verifizierung). Dazu wird bei einem `POST /course` Aufruf die nachstehende Tabelle erzeugt.
 
 ## Eingänge

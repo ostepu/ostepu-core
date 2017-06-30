@@ -7,8 +7,7 @@
   - @since 0.3.4
   -
   - @author Till Uhlig <till.uhlig@student.uni-halle.de>
-  - @date 2015
-  -
+  - @date 2015,2017
  -->
 
 Die DBGroup ermöglicht den Zugriff auf die `Group` Tabelle der Datenbank, dabei sollen Arbeitsgruppen verwaltet werden. Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle gehört die `Group` Datenstruktur.

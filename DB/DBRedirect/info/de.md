@@ -1,3 +1,16 @@
+<!--
+  - @file de.md
+  -
+  - @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+  -
+  - @package OSTEPU (https://github.com/ostepu/ostepu-core)
+  - @since -
+  -
+  - @author Till Uhlig <till.uhlig@student.uni-halle.de>
+  - @date 2017
+  -
+ -->
+
 Die DBRedirect ermöglicht den Zugriff auf die `Redirect_X` Tabellen der Datenbank, wobei dese Einträge der Definition von Umleitungslinks dienen. Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle gehört die `SelectedSubmission` Datenstruktur.
 
 ## Eingänge

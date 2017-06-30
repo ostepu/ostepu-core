@@ -7,8 +7,7 @@
   - @since 0.3.5
   -
   - @author Till Uhlig <till.uhlig@student.uni-halle.de>
-  - @date 2015
-  -
+  - @date 2015,2017
  -->
 
 Die DBExerciseFileType ermöglicht den Zugriff auf die `ExerciseFileType` Tabelle der Datenbank. Hier werden die erlaubten Dateitypen für den Dateiupload der Studenten hinterlegt. Dazu wird bei einem `POST /course` Aufruf die nachstehende Tabelle erzeugt.

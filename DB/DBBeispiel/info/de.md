@@ -7,8 +7,7 @@
   - @since 0.3.5
   -
   - @author Till Uhlig <till.uhlig@student.uni-halle.de>
-  - @date 2015
-  -
+  - @date 2015,2017
  -->
 
 Die DBBeispiel ist eine Beispielkomponente.

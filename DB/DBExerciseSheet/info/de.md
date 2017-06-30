@@ -7,8 +7,7 @@
   - @since 0.3.5
   -
   - @author Till Uhlig <till.uhlig@student.uni-halle.de>
-  - @date 2015
-  -
+  - @date 2015,2017
  -->
 
 Die DBExerciseSheet ermöglicht den Zugriff auf die `EcerciseSheet` Tabelle der Datenbank. Sie verwaltet Übungsserien. Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.

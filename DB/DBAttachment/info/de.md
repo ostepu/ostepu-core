@@ -1,3 +1,16 @@
+<!--
+  - @file de.md
+  -
+  - @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
+  -
+  - @package OSTEPU (https://github.com/ostepu/ostepu-core)
+  - @since -
+  -
+  - @author Till Uhlig <till.uhlig@student.uni-halle.de>
+  - @date 2017
+  -
+ -->
+
 Die DBAttachment ermöglicht den Zugriff auf die `Attachment` Tabelle der Datenbank. Diese verwaltet Anhänge für Aufgaben (`Exercise`). Dazu wird bei einem `POST /course` Aufruf die nachstehende Tabelle erzeugt.
 
 ## Eingänge

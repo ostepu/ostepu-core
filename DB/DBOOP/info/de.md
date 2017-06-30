@@ -6,9 +6,8 @@
   - @package OSTEPU (https://github.com/ostepu/ostepu-core)
   - @since 0.4.4
   -
-  - @author Ralf Busch <ralfbusch92@gmail.com>
-  - @date 2015
-  -
+  - @author Till Uhlig <till.uhlig@student.uni-halle.de>
+  - @date 2017
  -->
 
 Die DBOOP ermöglicht den Zugriff auf die `Testcase_X` Tabellen der Datenbank, diese verwalten die Testfälle für die automatische Vorkorrektur der LOOP. Dazu wird bei einem `POST /course` Aufruf die nachstehende Tabelle erzeugt.

@@ -7,8 +7,7 @@
   - @since 0.3.4
   -
   - @author Till Uhlig <till.uhlig@student.uni-halle.de>
-  - @date 2015
-  -
+  - @date 2015,2017
  -->
 
 Die DBCourseStatus ermöglicht den Zugriff auf die `CourseStatus` Tabelle der Datenbank. Sie verwaltet den Kurststatus der Nutzer zu den einzelnen Veranstaltungen (Beispiel: Admin, Student, Tutor). Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.

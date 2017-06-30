@@ -7,8 +7,7 @@
   - @since 0.3.4
   -
   - @author Till Uhlig <till.uhlig@student.uni-halle.de>
-  - @date 2015
-  -
+  - @date 2015,2017
  -->
 
 Die DBUser ermöglicht den Zugriff auf die `User` Tabelle der Datenbank, dabei sollen Nutzerdaten verwaltet werden. Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.
