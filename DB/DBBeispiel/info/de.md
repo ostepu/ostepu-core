@@ -3,34 +3,57 @@
   -
   - @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
   -
-  - @package OSTEPU (https://github.com/ostepu/system)
+  - @package OSTEPU (https://github.com/ostepu/ostepu-core)
   - @since 0.3.5
   -
   - @author Till Uhlig <till.uhlig@student.uni-halle.de>
   - @date 2015
+  -
  -->
 
-#### Eingänge
-- cid = ???
-- courseid = ???
+Die DBBeispiel ist eine Beispielkomponente.
 
-| Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
-| :----------- |:-----------:| :---------:| :----- | :----------- |
-|getDaten|BEISPIEL|BEISPIEL|GET<br>/beispiel/course/:cid| ??? |
-|getCourse|-|Course|GET<br>/course(/course)/:courseid| ??? |
+## Eingänge
+---------------
 
-#### Ausgänge
-- abc = ???
-- courseid = ???
+||getDaten|
+| :----------- |:-----: |
+|Beschreibung| diese Beispielanfrage hat keinen Nutzen|
+|Befehl| GET<br>/beispiel/course/:cid|
+|Eingabetyp| BEISPIEL|
+|Ausgabetyp| BEISPIEL|
 
-| Bezeichnung  | Ziel  | Verwendung | Beschreibung |
-| :----------- |:----- | :--------- | :----------- |
-|out|DBQuery2|POST<br>/query/:abc| ??? |
-|getCourse|DBQuery2|GET<br>/query/procedure/DBCourseGetCourse/:courseid| ??? |
+||getCourse|
+| :----------- |:-----: |
+|Beschreibung| fragt den Eintrag einer Veranstaltung ab|
+|Befehl| GET<br>/course(/course)/:courseid|
+|Eingabetyp| -|
+|Ausgabetyp| Course|
 
-#### Anbindungen
-| Bezeichnung  | Ziel  | Priorität | Beschreibung |
-| :----------- |:----- | :--------:| :------------|
-|request|CLocalObjectRequest|-| ??? |
 
-Stand 29.06.2015
+## Ausgänge
+---------------
+
+||out|
+| :----------- |:-----: |
+|Ziel| DBQuery2|
+|Befehl| POST<br>/query/:abc|
+|Beschreibung| über diesen Ausgang werden Anfragen an die Datenbank gestellt|
+
+||getCourse|
+| :----------- |:-----: |
+|Ziel| DBQuery2|
+|Befehl| GET<br>/query/procedure/DBCourseGetCourse/:courseid|
+|Beschreibung| für den Befehl getCourse|
+
+
+## Anbindungen
+---------------
+
+|Ausgang|request|
+| :----------- |:-----: |
+|Ziel| CLocalObjectRequest|
+|Beschreibung| damit DBBeispiel als lokales Objekt aufgerufen werden kann|
+
+
+Stand 30.06.2017

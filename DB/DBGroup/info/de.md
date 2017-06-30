@@ -3,17 +3,15 @@
   -
   - @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
   -
-  - @package OSTEPU (https://github.com/ostepu/system)
+  - @package OSTEPU (https://github.com/ostepu/ostepu-core)
   - @since 0.3.4
   -
   - @author Till Uhlig <till.uhlig@student.uni-halle.de>
   - @date 2015
+  -
  -->
 
-#### Datenbank
-Die DBGroup ermöglicht den Zugriff auf die `Group` Tabelle der Datenbank, dabei sollen
-Arbeitsgruppen verwaltet werden.
-Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.
+Die DBGroup ermöglicht den Zugriff auf die `Group` Tabelle der Datenbank, dabei sollen Arbeitsgruppen verwaltet werden. Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle gehört die `Group` Datenstruktur.
 
 | Spalte        | Struktur  | Beschreibung | Besonderheit |
 | :------       |:---------:| :------------| -----------: |
@@ -22,53 +20,250 @@ Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.
 |C_id|INT NULL| ein Verweis auf eine Veranstaltung |-|
 |ES_id|INT NOT NULL| ein Verweis auf die zugehörige Übungsserie |-|
 
-Jeder Nutzer besitzt in jeder Übungsserie einen solchen Eintrag. Dabei steht `U_id_leader`
-für den Besitzer der Zeile und `U_id_member` für die ID des Nutzers, in
-dessen Gruppen der `U_id_leader` in dieser Übungsserie ist (beim Anlegen der
-Übungsserie wird daher `U_id_leader`=`U_id_member` gelten, da jeder zunächst seiner eigenen
-Gruppe zugeordnet ist.
+## Eingänge
+---------------
 
-#### Datenstruktur
-Zu dieser Tabelle gehört die `Group` Datenstruktur.
+||editGroup|
+| :----------- |:-----: |
+|Beschreibung| editiert einen Gruppeneintrag|
+|Befehl| PUT<br>/group/user/:userid/exercisesheet/:esid|
+|Eingabetyp| Group|
+|Ausgabetyp| Group|
+|||
+||Patzhalter|
+|Name|userid|
+|Regex|%^([0-9_]+)$%|
+|Beschreibung|die ID eines Nutzers oder ein Nuzername (`User`)|
+|Name|esid|
+|Regex|%^([0-9_]+)$%|
+|Beschreibung|die ID einer Übungsserie (`ExerciseSheet`)|
 
-#### Eingänge
-- userid = die ID eines Nutzers (`User`)
-- courseid = die ID einer Veranstlatung (`Course`)
-- esid = die ID einer Übungsserie (`ExerciseSheet`)
+||postSamples|
+| :----------- |:-----: |
+|Beschreibung| erzeugt Zufallsdaten (courseAmount = Anzahl der Veranstaltungen, userAmount = Anzahl der Nutzer), anhand der Vorgabe|
+|Befehl| POST<br>/samples/course/:courseAmount/user/:userAmount|
+|Eingabetyp| -|
+|Ausgabetyp| Query|
 
-| Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
-| :----------- |:-----------:| :---------:| :----- | :----------- |
-|editGroup|Group|Group|PUT<br>/group/user/:userid/exercisesheet/:esid| editiert einen Gruppeneintrag |
-|deleteGroup|-|Group|DELETE<br>/group/user/:userid/exercisesheet/:esid| enfernt einen Gruppeneintrag (kann danach in dieser Übungsserie nichts mehr einsenden) |
-|addGroup|Group|Group|POST<br>/group| fügt einen Gruppeneintrag hinzu (wird beim erstellen einer neuen Übungsserie für alle Teilnehmer der Veranstaltung automatisch durchgeführt) |
-|getUserGroups|-|Group|GET<br>/group/user/:userid| liefert alle Gruppeneinträge eines Nutzerkontos |
-|getAllGroups|-|Group|GET<br>/group(/group)| liefert alle Gruppeneinträge (für alle veranstaltungen) |
-|getUserSheetGroup|-|Group|GET<br>/group/user/:userid/exercisesheet/:esid| gibt den Gruppeneintrag eines Nutzers für eine Übungsserie aus |
-|getSheetGroups|-|Group|GET<br>/group/exercisesheet/:esid| liefert alle Gruppen einer Übungsserie |
-|getCourseGroups|-|Group|GET<br>/group/course/:courseid| liefert alle Gruppen einer Veranstaltung |
-|addPlatform|Platform|Platform|POST<br>/platform|installiert dies zugehörige Tabelle und die Prozeduren für diese Plattform|
-|deletePlatform|-|Platform|DELETE<br>/platform|entfernt die Tabelle und Prozeduren aus der Plattform|
-|getExistsPlatform|-|Platform|GET<br>/link/exists/platform| prüft, ob die Tabelle und die Prozeduren existieren |
+||getUserSheetGroup|
+| :----------- |:-----: |
+|Beschreibung| ermittelt die Gruppe eines Nutzers für eine Übungsserie|
+|Befehl| GET<br>/group/user/:userid/exercisesheet/:esid|
+|Eingabetyp| -|
+|Ausgabetyp| Group|
+|||
+||Patzhalter|
+|Name|userid|
+|Regex|%^([0-9_]+)$%|
+|Beschreibung|die ID eines Nutzers oder ein Nuzername (`User`)|
+|Name|esid|
+|Regex|%^([0-9_]+)$%|
+|Beschreibung|die ID einer Übungsserie (`ExerciseSheet`)|
 
-#### Ausgänge
-- userid = die ID eines Nutzers (`User`)
-- courseid = die ID einer Veranstlatung (`Course`)
-- esid = die ID einer Übungsserie (`ExerciseSheet`)
+||addGroup|
+| :----------- |:-----: |
+|Beschreibung| fügt eine neue Gruppe ein|
+|Befehl| POST<br>/group|
+|Eingabetyp| Group|
+|Ausgabetyp| Group|
 
-| Bezeichnung  | Ziel  | Verwendung | Beschreibung |
-| :----------- |:----- | :--------- | :----------- |
-|out2|DBQuery2|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
-|out2|DBQuery|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
-|getUserGroups|DBQuery|GET<br>/query/procedure<br>/DBGroupGetUserGroups/:userid| Prozeduraufruf |
-|getSheetGroups|DBQuery|GET<br>/query/procedure<br>/DBGroupGetSheetGroups/:esid| Prozeduraufruf |
-|getUserSheetGroup|DBQuery|GET<br>/query/procedure<br>/DBGroupGetUserSheetGroups/:userid/:esid| Prozeduraufruf |
-|getCourseGroups|DBQuery|GET<br>/query/procedure<br>/DBGroupGetCourseGroups/:courseid| Prozeduraufruf |
-|getAllGroups|DBQuery|GET<br>/query/procedure<br>/DBGroupGetAllGroups| Prozeduraufruf |
-|getExistsPlatform|DBQuery2|GET<br>/query/procedure<br>/DBGroupGetExistsPlatform| Prozeduraufruf |
+||getExistsPlatform|
+| :----------- |:-----: |
+|Beschreibung| prüft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollständig installiert ist|
+|Befehl| GET<br>/link/exists/platform|
+|Eingabetyp| -|
+|Ausgabetyp| Platform|
 
-#### Anbindungen
-| Bezeichnung  | Ziel  | Priorität | Beschreibung |
-| :----------- |:----- | :--------:| :------------|
-|request|CLocalObjectRequest|-| damit DBGroup als lokales Objekt aufgerufen werden kann |
+||getUserGroups|
+| :----------- |:-----: |
+|Beschreibung| ermittelt die Gruppen eines Nutzers|
+|Befehl| GET<br>/group/user/:userid|
+|Eingabetyp| -|
+|Ausgabetyp| Group|
+|||
+||Patzhalter|
+|Name|userid|
+|Regex|%^([0-9_]+)$%|
+|Beschreibung|die ID eines Nutzers oder ein Nuzername (`User`)|
 
-Stand 13.06.2015
+||getAllGroups|
+| :----------- |:-----: |
+|Beschreibung| ermittelt alle Gruppeneinträge|
+|Befehl| GET<br>/group|
+|Eingabetyp| -|
+|Ausgabetyp| Group|
+
+||getCourseGroups|
+| :----------- |:-----: |
+|Beschreibung| ermittelt alle Gruppen einer Veranstaltung|
+|Befehl| GET<br>/group/course/:courseid|
+|Eingabetyp| -|
+|Ausgabetyp| Group|
+|||
+||Patzhalter|
+|Name|courseid|
+|Regex|%^([0-9_]+)$%|
+|Beschreibung|eine Veranstaltungs ID (`Course`)|
+
+||deleteGroup|
+| :----------- |:-----: |
+|Beschreibung| entfernt einen Gruppeneintrag|
+|Befehl| DELETE<br>/group/user/:userid/exercisesheet/:esid|
+|Eingabetyp| -|
+|Ausgabetyp| Group|
+|||
+||Patzhalter|
+|Name|userid|
+|Regex|%^([0-9_]+)$%|
+|Beschreibung|die ID eines Nutzers oder ein Nuzername (`User`)|
+|Name|esid|
+|Regex|%^([0-9_]+)$%|
+|Beschreibung|die ID einer Übungsserie (`ExerciseSheet`)|
+
+||deletePlatform|
+| :----------- |:-----: |
+|Beschreibung| entfernt die Komponente und ihre installierten Bestandteile aus der Plattform|
+|Befehl| DELETE<br>/platform|
+|Eingabetyp| -|
+|Ausgabetyp| Platform|
+
+||getSheetGroups|
+| :----------- |:-----: |
+|Beschreibung| ermittelt alle Gruppeneinträge einer Übungsserie|
+|Befehl| GET<br>/group/exercisesheet/:esid|
+|Eingabetyp| -|
+|Ausgabetyp| Group|
+|||
+||Patzhalter|
+|Name|esid|
+|Regex|%^([0-9_]+)$%|
+|Beschreibung|die ID einer Übungsserie (`ExerciseSheet`)|
+
+||getSamplesInfo|
+| :----------- |:-----: |
+|Beschreibung| liefert die Bezeichner der betroffenen Tabellen|
+|Befehl| GET<br>/samples|
+|Eingabetyp| -|
+|Ausgabetyp| -|
+
+||addPlatform|
+| :----------- |:-----: |
+|Beschreibung| installiert die zugehörige Tabelle und die Prozeduren für diese Plattform|
+|Befehl| POST<br>/platform|
+|Eingabetyp| Platform|
+|Ausgabetyp| Platform|
+
+||getApiProfiles|
+| :----------- |:-----: |
+|Beschreibung| liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren|
+|Befehl| GET<br>/api/profiles|
+|Eingabetyp| -|
+|Ausgabetyp| GateProfile|
+
+
+## Ausgänge
+---------------
+
+||editGroup|
+| :----------- |:-----: |
+|Ziel| DBQueryWrite|
+|Befehl| POST<br>/query|
+|Beschreibung| für den Befehl editGroup|
+
+||deleteGroup|
+| :----------- |:-----: |
+|Ziel| DBQueryWrite|
+|Befehl| POST<br>/query|
+|Beschreibung| für den Befehl deleteGroup|
+
+||addGroup|
+| :----------- |:-----: |
+|Ziel| DBQueryWrite|
+|Befehl| POST<br>/query|
+|Beschreibung| für den Befehl addGroup|
+
+||postSamples|
+| :----------- |:-----: |
+|Ziel| DBQueryWrite|
+|Befehl| POST<br>/query|
+|Beschreibung| für den Befehl postSamples|
+
+||deletePlatform|
+| :----------- |:-----: |
+|Ziel| DBQuerySetup|
+|Befehl| POST<br>/query|
+|Beschreibung| für den Befehl deletePlatform|
+
+||addPlatform|
+| :----------- |:-----: |
+|Ziel| DBQuerySetup|
+|Befehl| POST<br>/query|
+|Beschreibung| für den Befehl addPlatform|
+
+||getUserGroups|
+| :----------- |:-----: |
+|Ziel| DBQueryRead|
+|Befehl| GET<br>/query/procedure/DBGroupGetUserGroups/:userid|
+|Beschreibung| für den Befehl getUserGroups|
+
+||getSheetGroups|
+| :----------- |:-----: |
+|Ziel| DBQueryRead|
+|Befehl| GET<br>/query/procedure/DBGroupGetSheetGroups/:esid|
+|Beschreibung| für den Befehl getSheetGroups|
+
+||getUserSheetGroup|
+| :----------- |:-----: |
+|Ziel| DBQueryRead|
+|Befehl| GET<br>/query/procedure/DBGroupGetUserSheetGroups/:userid/:esid|
+|Beschreibung| für den Befehl getUserSheetGroup|
+
+||getCourseGroups|
+| :----------- |:-----: |
+|Ziel| DBQueryRead|
+|Befehl| GET<br>/query/procedure/DBGroupGetCourseGroups/:courseid|
+|Beschreibung| für den Befehl getCourseGroups|
+
+||getAllGroups|
+| :----------- |:-----: |
+|Ziel| DBQueryRead|
+|Befehl| GET<br>/query/procedure/DBGroupGetAllGroups|
+|Beschreibung| für den Befehl getAllGroups|
+
+||getExistsPlatform|
+| :----------- |:-----: |
+|Ziel| DBQueryRead|
+|Befehl| GET<br>/query/procedure/DBGroupGetExistsPlatform|
+|Beschreibung| für den Befehl getExistsPlatform|
+
+
+## Anbindungen
+---------------
+
+|Ausgang|request|
+| :----------- |:-----: |
+|Ziel| CLocalObjectRequest|
+|Beschreibung| damit DBGroup als lokales Objekt aufgerufen werden kann|
+
+|Ausgang|postPlatform|
+| :----------- |:-----: |
+|Ziel| CInstall|
+|Beschreibung| der Installationsassistent soll uns bei der Plattforminstallation aufrufen|
+
+|Ausgang|postSamples|
+| :----------- |:-----: |
+|Ziel| CInstall|
+|Beschreibung| wir wollen bei Bedarf Beispieldaten erzeugen|
+
+|Ausgang|getDescFiles|
+| :----------- |:-----: |
+|Ziel| TDocuView|
+|Beschreibung| die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen|
+
+|Ausgang|getComponentProfiles|
+| :----------- |:-----: |
+|Ziel| TApiConfiguration|
+|Beschreibung| damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden|
+
+
+Stand 30.06.2017

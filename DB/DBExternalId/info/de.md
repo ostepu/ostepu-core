@@ -3,60 +3,195 @@
   -
   - @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
   -
-  - @package OSTEPU (https://github.com/ostepu/system)
+  - @package OSTEPU (https://github.com/ostepu/ostepu-core)
   - @since 0.3.4
   -
   - @author Till Uhlig <till.uhlig@student.uni-halle.de>
   - @date 2015
+  -
  -->
 
-#### Datenbank
-Die DBExternalId ermöglicht den Zugriff auf die `ExternalId` Tabelle der Datenbank, dabei sollen
-externe Zuordnungsnummern für Nutzerkonten verwaltet werden.
-Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.
+Die DBExternalId ermöglicht den Zugriff auf die `ExternalId` Tabelle der Datenbank, dabei sollen externe Zuordnungsnummern für Nutzerkonten verwaltet werden. Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle gehört die `ExternalId` Datenstruktur.
 
 | Spalte        | Struktur  | Beschreibung | Besonderheit |
 | :------       |:---------:| :------------| -----------: |
 |EX_id|VARCHAR(255) NOT NULL| die externe ID, Bsp.: die StudIP ID |UNIQUE|
 |C_id|INT NOT NULL| ein Verweis auf die zugehörige Veranstaltung (sodass in jeder Veranstaltung eine eigene externe ID vergeben werden kann) |-|
 
-Die externe ID wird für den Zugang übers StudIP verwendet.
+## Eingänge
+---------------
 
-#### Datenstruktur
-Zu dieser Tabelle gehört die `ExternalId` Datenstruktur.
+||getExistsPlatform|
+| :----------- |:-----: |
+|Beschreibung| prüft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollständig installiert ist|
+|Befehl| GET<br>/link/exists/platform|
+|Eingabetyp| -|
+|Ausgabetyp| Platform|
 
-#### Eingänge
-- courseid = die ID einer Veranstlatung (`Course`)
-- exid = die ID einer externen ID (`ExternalId`)
+||getExternalId|
+| :----------- |:-----: |
+|Beschreibung| liefert einen einzelnen Eintrag anhand der ID|
+|Befehl| GET<br>/externalid/externalid/:exid|
+|Eingabetyp| -|
+|Ausgabetyp| ExternalId|
+|||
+||Patzhalter|
+|Name|exid|
+|Regex|%^[0-9a-zA-Z_]+$%|
+|Beschreibung|die ID einer externen ID (`ExternalId`)|
 
-| Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
-| :----------- |:-----------:| :---------:| :----- | :----------- |
-|editExternalId|ExternalId|ExternalId|PUT<br>/externalid(/externalid)/:exid| editiert eine existierende ID |
-|deleteExternalId|-|ExternalId|DELETE<br>/externalid(/externalid)/:exid| entfernt die ID |
-|addExternalId|ExternalId|ExternalId|POST<br>/externalid| fügt eine neue ein |
-|getExternalId|-|ExternalId|GET<br>/externalid(/externalid)/:exid| gibt eine einzelne ID zurück |
-|getAllExternalIds|-|ExternalId|GET<br>/externalid(/externalid)| gibt alle IDs zurück (für alle Veranstaltungen) |
-|getCourseExternalIds|-|ExternalId|GET<br>/externalid/course/:courseid| die die IDs einer bestimmten Veranstaltung aus |
-|addPlatform|Platform|Platform|POST<br>/platform|installiert dies zugehörige Tabelle und die Prozeduren für diese Plattform|
-|deletePlatform|-|Platform|DELETE<br>/platform|entfernt die Tabelle und Prozeduren aus der Plattform|
-|getExistsPlatform|-|Platform|GET<br>/link/exists/platform| prüft, ob die Tabelle und die Prozeduren existieren |
+||addPlatform|
+| :----------- |:-----: |
+|Beschreibung| installiert die zugehörige Tabelle und die Prozeduren für diese Plattform|
+|Befehl| POST<br>/platform|
+|Eingabetyp| Platform|
+|Ausgabetyp| Platform|
 
-#### Ausgänge
-- courseid = die ID einer Veranstlatung (`Course`)
-- exid = die ID einer externen ID (`ExternalId`)
+||addExternalId|
+| :----------- |:-----: |
+|Beschreibung| fügt einen neuen Eintrag ein|
+|Befehl| POST<br>/externalid|
+|Eingabetyp| ExternalId|
+|Ausgabetyp| ExternalId|
 
-| Bezeichnung  | Ziel  | Verwendung | Beschreibung |
-| :----------- |:----- | :--------- | :----------- |
-|out2|DBQuery2|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
-|out2|DBQuery|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
-|getExternalId|DBQuery2|GET<br>/query/procedure<br>/DBExternalIdGetExternalId/:exid| Prozeduraufruf |
-|getAllExternalIds|DBQuery2|GET<br>/query/procedure<br>/DBExternalIdGetAllExternalIds| Prozeduraufruf |
-|getCourseExternalIds|DBQuery2|GET<br>/query/procedure<br>/DBExternalIdGetCourseExternalIds/:courseid| Prozeduraufruf |
-|getExistsPlatform|DBQuery2|GET<br>/query/procedure<br>/DBExternalIdGetExistsPlatform| Prozeduraufruf |
+||editExternalId|
+| :----------- |:-----: |
+|Beschreibung| editiert einen Eintrag|
+|Befehl| PUT<br>/externalid/externalid/:exid|
+|Eingabetyp| ExternalId|
+|Ausgabetyp| ExternalId|
+|||
+||Patzhalter|
+|Name|exid|
+|Regex|%^[0-9a-zA-Z_]+$%|
+|Beschreibung|die ID einer externen ID (`ExternalId`)|
 
-#### Anbindungen
-| Bezeichnung  | Ziel  | Priorität | Beschreibung |
-| :----------- |:----- | :--------:| :------------|
-|request|CLocalObjectRequest|-| damit DBExternalId als lokales Objekt aufgerufen werden kann |
+||getCourseExternalIds|
+| :----------- |:-----: |
+|Beschreibung| liefert alle Einträge einer Veranstaltung|
+|Befehl| GET<br>/externalid/course/:courseid|
+|Eingabetyp| -|
+|Ausgabetyp| ExternalId|
+|||
+||Patzhalter|
+|Name|courseid|
+|Regex|%^([0-9_]+)$%|
+|Beschreibung|eine Veranstaltungs ID (`Course`)|
 
-Stand 13.06.2015
+||getAllExternalIds|
+| :----------- |:-----: |
+|Beschreibung| ermittelt alle Einträge|
+|Befehl| GET<br>/externalid|
+|Eingabetyp| -|
+|Ausgabetyp| ExternalId|
+
+||deletePlatform|
+| :----------- |:-----: |
+|Beschreibung| entfernt die Komponente und ihre installierten Bestandteile aus der Plattform|
+|Befehl| DELETE<br>/platform|
+|Eingabetyp| -|
+|Ausgabetyp| Platform|
+
+||deleteExternalId|
+| :----------- |:-----: |
+|Beschreibung| entfernt einen Eintrag anhand der ID|
+|Befehl| DELETE<br>/externalid/externalid/:exid|
+|Eingabetyp| -|
+|Ausgabetyp| ExternalId|
+|||
+||Patzhalter|
+|Name|exid|
+|Regex|%^[0-9a-zA-Z_]+$%|
+|Beschreibung|die ID einer externen ID (`ExternalId`)|
+
+||getApiProfiles|
+| :----------- |:-----: |
+|Beschreibung| liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren|
+|Befehl| GET<br>/api/profiles|
+|Eingabetyp| -|
+|Ausgabetyp| GateProfile|
+
+
+## Ausgänge
+---------------
+
+||editExternalId|
+| :----------- |:-----: |
+|Ziel| DBQueryWrite|
+|Befehl| POST<br>/query|
+|Beschreibung| für den Befehl editExternalId|
+
+||deleteExternalId|
+| :----------- |:-----: |
+|Ziel| DBQueryWrite|
+|Befehl| POST<br>/query|
+|Beschreibung| für den Befehl deleteExternalId|
+
+||addExternalId|
+| :----------- |:-----: |
+|Ziel| DBQueryWrite|
+|Befehl| POST<br>/query|
+|Beschreibung| für den Befehl addExternalId|
+
+||deletePlatform|
+| :----------- |:-----: |
+|Ziel| DBQuerySetup|
+|Befehl| POST<br>/query|
+|Beschreibung| für den Befehl deletePlatform|
+
+||addPlatform|
+| :----------- |:-----: |
+|Ziel| DBQuerySetup|
+|Befehl| POST<br>/query|
+|Beschreibung| für den Befehl addPlatform|
+
+||getExternalId|
+| :----------- |:-----: |
+|Ziel| DBQueryRead|
+|Befehl| GET<br>/query/procedure/DBExternalIdGetExternalId/:exid|
+|Beschreibung| für den Befehl getExternalId|
+
+||getAllExternalIds|
+| :----------- |:-----: |
+|Ziel| DBQueryRead|
+|Befehl| GET<br>/query/procedure/DBExternalIdGetAllExternalIds|
+|Beschreibung| für den Befehl getAllExternalIds|
+
+||getCourseExternalIds|
+| :----------- |:-----: |
+|Ziel| DBQueryRead|
+|Befehl| GET<br>/query/procedure/DBExternalIdGetCourseExternalIds/:courseid|
+|Beschreibung| für den Befehl getCourseExternalIds|
+
+||getExistsPlatform|
+| :----------- |:-----: |
+|Ziel| DBQueryRead|
+|Befehl| GET<br>/query/procedure/DBCourseGetExistsPlatform|
+|Beschreibung| für den Befehl getExistsPlatform|
+
+
+## Anbindungen
+---------------
+
+|Ausgang|request|
+| :----------- |:-----: |
+|Ziel| CLocalObjectRequest|
+|Beschreibung| damit DBExternalId als lokales Objekt aufgerufen werden kann|
+
+|Ausgang|postPlatform|
+| :----------- |:-----: |
+|Ziel| CInstall|
+|Beschreibung| der Installationsassistent soll uns bei der Plattforminstallation aufrufen|
+
+|Ausgang|getDescFiles|
+| :----------- |:-----: |
+|Ziel| TDocuView|
+|Beschreibung| die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen|
+
+|Ausgang|getComponentProfiles|
+| :----------- |:-----: |
+|Ziel| TApiConfiguration|
+|Beschreibung| damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden|
+
+
+Stand 30.06.2017

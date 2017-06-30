@@ -3,47 +3,135 @@
   -
   - @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
   -
-  - @package OSTEPU (https://github.com/ostepu/system)
+  - @package OSTEPU (https://github.com/ostepu/ostepu-core)
   - @since 0.3.4
   -
   - @author Till Uhlig <till.uhlig@student.uni-halle.de>
   - @date 2015
+  -
  -->
 
+## Eingänge
+---------------
+
+|||
+| :----------- |:-----: |
+|Befehl| post<br>/submission|
+|Eingabetyp| -|
+|Ausgabetyp| -|
+
+|||
+| :----------- |:-----: |
+|Befehl| post<br>/process|
+|Eingabetyp| -|
+|Ausgabetyp| -|
+
+|||
+| :----------- |:-----: |
+|Befehl| post<br>/course|
+|Eingabetyp| -|
+|Ausgabetyp| -|
+
+|||
+| :----------- |:-----: |
+|Befehl| delete<br>/course/:courseid|
+|Eingabetyp| -|
+|Ausgabetyp| -|
+
+|||
+| :----------- |:-----: |
+|Befehl| get<br>/link/exists/course/:courseid|
+|Eingabetyp| -|
+|Ausgabetyp| -|
 
 
-#### Eingänge
-- courseid = eine Veranstaltungs ID (`Course`)
+## Ausgänge
+---------------
 
-| Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
-| :----------- |:-----------:| :---------:| :----- | :----------- |
-|PostSubmission|Submission|Submission|POST /submission| verarbeitet eine Einsendung oder eine Menge von Einsendungen |
-|AddProcess|Process|Process|POST /process| fügt eine neue Verarbeitung hinzu (sendet die Bestandteile einer Verarbeitung an die entsprechenden Komponenten)  |
-|AddCourse|Course|Course|POST /course| installiert die Komponente in dieser Veranstaltung |
-|DeleteCourse|-|Course|DELETE /course/:courseid| entfernt die Komponente aus dieser Veranstaltung |
-|GetExistsCourse|-|Course|GET /link/exists/course/:courseid| prüft, ob diese Komponente für diese Veranstaltung korrekt installiert ist |
+||submission|
+| :----------- |:-----: |
+|Ziel| LSubmission|
+|Befehl| POST<br>/submission|
+|Beschreibung| für den Befehl submission|
 
-#### Ausgänge
-- courseid = eine Veranstaltungs ID (`Course`)
-- processid = die ID eines Prozesses (`Process`)
-- componentid = die ID einer Komponente (`Component`)
+||marking|
+| :----------- |:-----: |
+|Ziel| LMarking|
+|Befehl| POST<br>/marking|
+|Beschreibung| für den Befehl marking|
 
-| Bezeichnung  | Ziel  | Verwendung | Beschreibung |
-| :----------- |:----- | :--------- | :----------- |
-|submission|LSubmission|POST /submission| ??? |
-|marking|LMarking|POST /marking| ??? |
-|processorDb|DBProcess| ??? | ??? |
-|attachment|DBProcessAttachment|POST /attachment| ??? |
-|workFiles|DBProcessWorkFiles|POST /attachment| ??? |
-|getExerciseExerciseFileType|DBExerciseFileType|GET /exercisefiletype/exercise/:eid| ??? |
-|file|LFile|POST /file| ??? |
-|postCourse|DBProcess| ??? | ??? |
+||processorDb|
+| :----------- |:-----: |
+|Ziel| DBProcess|
+|Befehl| POST<br>/process|
+|Beschreibung| für den Befehl processorDb|
 
-#### Anbindungen
-| Bezeichnung  | Ziel  | Priorität | Beschreibung |
-| :----------- |:----- | :--------:| :------------|
-|request|CLocalObjectRequest|-| damit LProcessor als lokales Objekt aufgerufen werden kann |
-|extension|LExtension|-| diese Verbindung ist notwendig, damit die LProcessor in den Veranstaltungseinstellungen und `Erweiterungen` erscheint und installierbar wird |
-|deleteCourse|LCourse|150| ??? |
-|postCourse|LCourse|150| ??? |
-Stand 13.06.2015
+||processorDb|
+| :----------- |:-----: |
+|Ziel| DBProcess|
+|Befehl| GET<br>/process/exercise/:exerciseid|
+|Beschreibung| für den Befehl processorDb|
+
+||attachment|
+| :----------- |:-----: |
+|Ziel| DBProcessAttachment|
+|Befehl| POST<br>/attachment|
+|Beschreibung| für den Befehl attachment|
+
+||workFiles|
+| :----------- |:-----: |
+|Ziel| DBProcessWorkFiles|
+|Befehl| POST<br>/attachment|
+|Beschreibung| für den Befehl workFiles|
+
+||getExerciseExerciseFileType|
+| :----------- |:-----: |
+|Ziel| DBExerciseFileType|
+|Befehl| GET<br>/exercisefiletype/exercise/:eid|
+|Beschreibung| für den Befehl getExerciseExerciseFileType|
+
+||file|
+| :----------- |:-----: |
+|Ziel| LFile|
+|Befehl| POST<br>/file|
+|Beschreibung| für den Befehl file|
+
+||postCourse|
+| :----------- |:-----: |
+|Ziel| DBProcess|
+|Befehl| GET<br>/link/exists/course/:courseid|
+|Beschreibung| für den Befehl postCourse|
+
+||postCourse|
+| :----------- |:-----: |
+|Ziel| DBProcess|
+|Befehl| POST<br>/course|
+|Beschreibung| für den Befehl postCourse|
+
+||postCourse|
+| :----------- |:-----: |
+|Ziel| DBProcess|
+|Befehl| DELETE<br>/course/course/:courseid|
+|Beschreibung| für den Befehl postCourse|
+
+
+## Anbindungen
+---------------
+
+|Ausgang|deleteCourse|
+| :----------- |:-----: |
+|Ziel| LCourse|
+|Beschreibung| wenn eine Veranstaltung gelöscht wird, dann müssen auch unsere Tabellen entfernt werden|
+
+|Ausgang|postCourse|
+| :----------- |:-----: |
+|Ziel| LCourse|
+|Beschreibung| wenn eine neue Veranstaltung angelegt wird, dann wollen wir auch aufgerufen werden|
+
+|Ausgang|request|
+| :----------- |:-----: |
+|Ziel| CLocalObjectRequest|
+|Beschreibung| damit LProcessor als lokales Objekt aufgerufen werden kann|
+
+
+Stand 30.06.2017

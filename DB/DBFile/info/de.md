@@ -3,17 +3,15 @@
   -
   - @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
   -
-  - @package OSTEPU (https://github.com/ostepu/system)
+  - @package OSTEPU (https://github.com/ostepu/ostepu-core)
   - @since 0.3.4
   -
   - @author Till Uhlig <till.uhlig@student.uni-halle.de>
   - @date 2015
+  -
  -->
 
-#### Datenbank
-Die DBFile ermöglicht den Zugriff auf die `File` Tabelle der Datenbank, dabei sollen
-Dateien (nicht der Dateiinhalt) verwaltet werden.
-Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.
+Die DBFile ermöglicht den Zugriff auf die `File` Tabelle der Datenbank, dabei sollen Dateien (nicht der Dateiinhalt) verwaltet werden. Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle gehört die `File` Datenstruktur.
 
 | Spalte        | Struktur  | Beschreibung | Besonderheit |
 | :------       |:---------:| :------------| -----------: |
@@ -26,56 +24,246 @@ Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.
 |F_comment|VARCHAR(255) NULL| ein möglicher Dateikommentar (wird nicht verwendet) |-|
 |F_mimeType|VARCHAR(255) NULL| der mimType (siehe `Assistants/MimeReader.php`), Bsp.: image/png, application/pdf |-|
 
-#### Datenstruktur
-Zu dieser Tabelle gehört die `File` Datenstruktur.
+## Eingänge
+---------------
 
-#### Eingänge
-- courseid = eine Veranstaltungs ID (`Course`)
-- fileid = die ID einer Datei (`File`)
-- beginStamp = der Anfangsstempel (Unix-Zeitstempel)
-- endStamp = der Endstempel (Unix-Zeitstempel)
-- hash = der Hashwert einer Datei
-- base = die Basis eines MimeType Bsp.: text, application
-- type = der explizite Typ eines MimeType Bsp.: c++, pdf
+||getExistsPlatform|
+| :----------- |:-----: |
+|Beschreibung| prüft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollständig installiert ist|
+|Befehl| GET<br>/link/exists/platform|
+|Eingabetyp| -|
+|Ausgabetyp| Platform|
 
-| Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
-| :----------- |:-----------:| :---------:| :----- | :----------- |
-|editFile|File|File|PUT<br>/file(/file)/:fileid| editiert einen Dateieintrag |
-|removeFile|-|File|DELETE<br>/file(/file)/:fileid| entfernt einen Dateieintrag (geht nur, wenn nichts auf diesen Eintrag verweist). Achtung: entfernt die Datei nicht physisch aus dem Dateisystem. |
-|addFile|File|File|POST<br>/file| fügt einen neuen Eintrag ein |
-|getFile|-|File|GET<br>/file(/file)/:fileid| liefert eine einzelne Datei |
-|getFileByHash|-|File|GET<br>/file/hash/:hash| liefert eine Datei anhand ihres md5 Hash |
-|getAllFiles|-|File|GET<br>/file(/timestamp/begin/:beginStamp/end/:endStamp)| liefert alle Dateien (für alle Veranstaltungen), es kann ein Zeitraum angegeben werden |
-|getFileByMimeType|-|File|GET<br>/file/mimetype/:base(/:type)(/timestamp/begin/:beginSttamp/end/:endStamp)| es werden Dateien anhand eines mimeType gewählt (siehe `Assistans/MimeReader.php`), zusätzlich kann ein Zeitraum angegeben werden |
-|addPlatform|Platform|Platform|POST<br>/platform|installiert dies zugehörige Tabelle und die Prozeduren für diese Plattform|
-|deletePlatform|-|Platform|DELETE<br>/platform|entfernt die Tabelle und Prozeduren aus der Plattform|
-|getExistsPlatform|-|Platform|GET<br>/link/exists/platform| prüft, ob die Tabelle und die Prozeduren existieren |
-|getSamplesInfo|-|-|GET<br>/samples| ??? |
-|postSamples|-|Query|POST<br>/samples/course/:courseAmount<br>/user/:userAmount| erzeugt Zufallsdaten (courseAmount = Anzahl der Veranstaltungen, userAmount = Anzahl der Nutzer), anhand der Vorgabe |
+||removeFile|
+| :----------- |:-----: |
+|Beschreibung| entfernt einen Eintrag anhand der ID|
+|Befehl| DELETE<br>/file/file/:fileid|
+|Eingabetyp| -|
+|Ausgabetyp| File|
+|||
+||Patzhalter|
+|Name|fileid|
+|Regex|%^([0-9_]+)$%|
+|Beschreibung|die ID einer Datei (`File`)|
 
-#### Ausgänge
-- courseid = eine Veranstaltungs ID (`Course`)
-- fileid = die ID einer Datei (`File`)
-- beginStamp = der Anfangsstempel (Unix-Zeitstempel)
-- endStamp = der Endstempel (Unix-Zeitstempel)
-- hash = der Hashwert einer Datei
-- base = die Basis eines MimeType Bsp.: text, application
-- type = der explizite Typ eines MimeType Bsp.: c++, pdf
+||editFile|
+| :----------- |:-----: |
+|Beschreibung| editiert einen Eintrag|
+|Befehl| PUT<br>/file/file/:fileid|
+|Eingabetyp| File|
+|Ausgabetyp| File|
+|||
+||Patzhalter|
+|Name|fileid|
+|Regex|%^([0-9_]+)$%|
+|Beschreibung|die ID einer Datei (`File`)|
 
-| Bezeichnung  | Ziel  | Verwendung | Beschreibung |
-| :----------- |:----- | :--------- | :----------- |
-|out2|DBQuery2|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
-|out|DBQuery|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
-|getFile|DBQuery2|GET<br>/query/procedure<br>/DBFileGetFile/:fileid| Prozeduraufruf |
-|getAllFiles|DBQuery2|GET<br>/query/procedure<br>/DBFileGetAllFiles/:beginStamp/:endStamp| Prozeduraufruf |
-|getFileByHash|DBQuery2|GET<br>/query/procedure<br>/DBFileGetFileByHash/:hash| Prozeduraufruf |
-|getFileByMimeType|DBQuery2|GET<br>/query/procedure<br>/DBFileGetFileByMimeType/:base/:type/:beginStamp/:endStamp| Prozeduraufruf |
-|getExistsPlatform|DBQuery2|GET<br>/query/procedure<br>/DBFileGetExistsPlatform| Prozeduraufruf |
-|getSamplesInfo|DBQuery2|GET<br>/query/procedure<br>/DBFileGetExistsPlatform| Prozeduraufruf |
+||getFileByMimeType|
+| :----------- |:-----: |
+|Beschreibung| ermittelt Einträge anhand des MIME-Type|
+|Befehl| GET<br>/file/mimetype/:base(/:type)(/timestamp/begin/:beginStamp/end/:endStamp)|
+|Eingabetyp| -|
+|Ausgabetyp| File|
+|||
+||Patzhalter|
+|Name|base|
+|Regex|%^[a-zA-Z]+$%|
+|Beschreibung|die Basis eines MimeType Bsp.: text, application|
+|Name|type|
+|Regex|%^[a-zA-Z]+$%|
+|Beschreibung|der explizite Typ eines MimeType Bsp.: c++, pdf|
+|Name|beginStamp|
+|Regex|%^([0-9_]+)$%|
+|Beschreibung|der Anfangsstempel (Unix-Zeitstempel)|
+|Name|endStamp|
+|Regex|%^([0-9_]+)$%|
+|Beschreibung|der Endstempel (Unix-Zeitstempel)|
 
-#### Anbindungen
-| Bezeichnung  | Ziel  | Priorität | Beschreibung |
-| :----------- |:----- | :--------:| :------------|
-|request|CLocalObjectRequest|-| damit DBFile als lokales Objekt aufgerufen werden kann |
+||getFile|
+| :----------- |:-----: |
+|Beschreibung| ermittelt einen Eintrag anhand der ID|
+|Befehl| GET<br>/file/file/:fileid|
+|Eingabetyp| -|
+|Ausgabetyp| File|
+|||
+||Patzhalter|
+|Name|fileid|
+|Regex|%^([0-9_]+)$%|
+|Beschreibung|die ID einer Datei (`File`)|
 
-Stand 13.06.2015
+||postSamples|
+| :----------- |:-----: |
+|Beschreibung| erzeugt Zufallsdaten (courseAmount = Anzahl der Veranstaltungen, userAmount = Anzahl der Nutzer), anhand der Vorgabe|
+|Befehl| POST<br>/samples/course/:courseAmount/user/:userAmount|
+|Eingabetyp| -|
+|Ausgabetyp| Query|
+
+||getFileByHash|
+| :----------- |:-----: |
+|Beschreibung| ermittelt einen Eintrag anhand des Hash (`F_hash`)|
+|Befehl| GET<br>/file/hash/:hash|
+|Eingabetyp| -|
+|Ausgabetyp| File|
+|||
+||Patzhalter|
+|Name|hash|
+|Regex|%^[0-9a-fA-F]{40}$%|
+|Beschreibung|der Hashwert einer Datei|
+
+||getAllFiles|
+| :----------- |:-----: |
+|Beschreibung| liefert alle Dateien|
+|Befehl| GET<br>/file(/timestamp/begin/:beginStamp/end/:endStamp)|
+|Eingabetyp| -|
+|Ausgabetyp| File|
+|||
+||Patzhalter|
+|Name|beginStamp|
+|Regex|%^([0-9_]+)$%|
+|Beschreibung|der Anfangsstempel (Unix-Zeitstempel)|
+|Name|endStamp|
+|Regex|%^([0-9_]+)$%|
+|Beschreibung|der Endstempel (Unix-Zeitstempel)|
+
+||deletePlatform|
+| :----------- |:-----: |
+|Beschreibung| entfernt die Komponente und ihre installierten Bestandteile aus der Plattform|
+|Befehl| DELETE<br>/platform|
+|Eingabetyp| -|
+|Ausgabetyp| Platform|
+
+||addFile|
+| :----------- |:-----: |
+|Beschreibung| trägt eine neue Datei ein|
+|Befehl| POST<br>/file|
+|Eingabetyp| File|
+|Ausgabetyp| File|
+
+||getSamplesInfo|
+| :----------- |:-----: |
+|Beschreibung| liefert die Bezeichner der betroffenen Tabellen|
+|Befehl| GET<br>/samples|
+|Eingabetyp| -|
+|Ausgabetyp| -|
+
+||addPlatform|
+| :----------- |:-----: |
+|Beschreibung| installiert die zugehörige Tabelle und die Prozeduren für diese Plattform|
+|Befehl| POST<br>/platform|
+|Eingabetyp| Platform|
+|Ausgabetyp| Platform|
+
+||getApiProfiles|
+| :----------- |:-----: |
+|Beschreibung| liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren|
+|Befehl| GET<br>/api/profiles|
+|Eingabetyp| -|
+|Ausgabetyp| GateProfile|
+
+
+## Ausgänge
+---------------
+
+||editFile|
+| :----------- |:-----: |
+|Ziel| DBQueryWrite|
+|Befehl| POST<br>/query|
+|Beschreibung| für den Befehl editFile|
+
+||removeFile|
+| :----------- |:-----: |
+|Ziel| DBQueryWrite|
+|Befehl| POST<br>/query|
+|Beschreibung| für den Befehl removeFile|
+
+||addFile|
+| :----------- |:-----: |
+|Ziel| DBQueryWrite|
+|Befehl| POST<br>/query|
+|Beschreibung| für den Befehl addFile|
+
+||deletePlatform|
+| :----------- |:-----: |
+|Ziel| DBQuerySetup|
+|Befehl| POST<br>/query|
+|Beschreibung| für den Befehl deletePlatform|
+
+||addPlatform|
+| :----------- |:-----: |
+|Ziel| DBQuerySetup|
+|Befehl| POST<br>/query|
+|Beschreibung| für den Befehl addPlatform|
+
+||postSamples|
+| :----------- |:-----: |
+|Ziel| DBQueryWrite|
+|Befehl| POST<br>/query|
+|Beschreibung| für den Befehl postSamples|
+
+||getFile|
+| :----------- |:-----: |
+|Ziel| DBQueryRead|
+|Befehl| GET<br>/query/procedure/DBFileGetFile/:profile/:fileid|
+|Beschreibung| für den Befehl getFile|
+
+||getAllFiles|
+| :----------- |:-----: |
+|Ziel| DBQueryRead|
+|Befehl| GET<br>/query/procedure/DBFileGetAllFiles/:profile/:beginStamp/:endStamp|
+|Beschreibung| für den Befehl getAllFiles|
+
+||getFileByHash|
+| :----------- |:-----: |
+|Ziel| DBQueryRead|
+|Befehl| GET<br>/query/procedure/DBFileGetFileByHash/:profile/:hash|
+|Beschreibung| für den Befehl getFileByHash|
+
+||getFileByMimeType|
+| :----------- |:-----: |
+|Ziel| DBQueryRead|
+|Befehl| GET<br>/query/procedure/DBFileGetFileByMimeType/:profile/:base/:type/:beginStamp/:endStamp|
+|Beschreibung| für den Befehl getFileByMimeType|
+
+||getExistsPlatform|
+| :----------- |:-----: |
+|Ziel| DBQueryRead|
+|Befehl| GET<br>/query/procedure/DBFileGetExistsPlatform/:profile|
+|Beschreibung| für den Befehl getExistsPlatform|
+
+||getSamplesInfo|
+| :----------- |:-----: |
+|Ziel| DBQueryRead|
+|Befehl| GET<br>/query/procedure/DBFileGetExistsPlatform/:profile|
+|Beschreibung| für den Befehl getSamplesInfo|
+
+
+## Anbindungen
+---------------
+
+|Ausgang|request|
+| :----------- |:-----: |
+|Ziel| CLocalObjectRequest|
+|Beschreibung| damit DBFile als lokales Objekt aufgerufen werden kann|
+
+|Ausgang|postPlatform|
+| :----------- |:-----: |
+|Ziel| CInstall|
+|Beschreibung| der Installationsassistent soll uns bei der Plattforminstallation aufrufen|
+
+|Ausgang|postSamples|
+| :----------- |:-----: |
+|Ziel| CInstall|
+|Beschreibung| wir wollen bei Bedarf Beispieldaten erzeugen|
+
+|Ausgang|getDescFiles|
+| :----------- |:-----: |
+|Ziel| TDocuView|
+|Beschreibung| die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen|
+
+|Ausgang|getComponentProfiles|
+| :----------- |:-----: |
+|Ziel| TApiConfiguration|
+|Beschreibung| damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden|
+
+
+Stand 30.06.2017

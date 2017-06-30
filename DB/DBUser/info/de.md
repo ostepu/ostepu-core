@@ -3,17 +3,15 @@
   -
   - @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
   -
-  - @package OSTEPU (https://github.com/ostepu/system)
+  - @package OSTEPU (https://github.com/ostepu/ostepu-core)
   - @since 0.3.4
   -
   - @author Till Uhlig <till.uhlig@student.uni-halle.de>
   - @date 2015
+  -
  -->
 
-#### Datenbank
-Die DBUser ermöglicht den Zugriff auf die `User` Tabelle der Datenbank, dabei sollen
-Nutzerdaten verwaltet werden.
-Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.
+Die DBUser ermöglicht den Zugriff auf die `User` Tabelle der Datenbank, dabei sollen Nutzerdaten verwaltet werden. Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.
 
 | Spalte        | Struktur  | Beschreibung | Besonderheit |
 | :------       |:---------:| :------------| -----------: |
@@ -33,57 +31,309 @@ Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.
 |U_comment      |VARCHAR(255) NULL| ein Kommentar zu diesem Nutzerkonto (wird nicht verwendet) |-|
 |U_lang         |CHAR(2) NOT NULL DEFAULT 'de'| die bevorzugte Sprache des Nutzers als Kürzel (Bsp.: de, en) |-|
 
-#### Datenstruktur
-Zu dieser Tabelle gehört die `User` Datenstruktur.
+## Eingänge
+---------------
 
-#### Eingänge
-- courseid = eine Veranstaltungs ID (`Course`)
-- userid = die ID eines Nutzers oder ein Nuzername (`User`)
-- statusid = die ID eines Veranstaltungsstatus (siehe `DBCourseStatus::getStatusDefinition()`)
-- esid = die ID einer Übungsserie (`ExerciseSheet`)
+||postSamples|
+| :----------- |:-----: |
+|Beschreibung| erzeugt Zufallsdaten (courseAmount = Anzahl der Veranstaltungen, userAmount = Anzahl der Nutzer), anhand der Vorgabe|
+|Befehl| POST<br>/samples/course/:courseAmount/user/:userAmount|
+|Eingabetyp| -|
+|Ausgabetyp| Query|
 
-| Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
-| :----------- |:-----------:| :---------:| :----- | :----------- |
-|editUser|User|User|PUT<br>/user(/user)/:userid| editiert ein vorhandenes Nutzerkonto |
-|removeUser|-|User|DELETE<br>/user(/user)/:userid| setzt U_flag = 0 und löst damit das Entfernen der persönlichen Nutzerdaten aus (entfernt das Nutzerkonto nicht), zusätzlich wird eine eventuell aktive Session entfernt |
-|removeUserPermanent|-|User|DELETE<br>/user(/user)/:userid/permanent| entfernt das Nutzerkonto entgültig mit allen Konsequenzen (eventuell sind Einsendungen und damit auch Gruppenmitglieder betroffen) |
-|addUser|User|User|POST<br>/user| fügt eine neues Nutzerkonto ein |
-|getUsers|-|User|GET<br>/user(/user)| liefert alle existierenden Nutzerkonten (gesperrte und aktive)|
-|getIncreaseUserFailedLogin|-|User|GET<br>/user(/user)/:userid/IncFailedLogin| setzt `U_failed_logins` auf den aktuellen Zeitstempel |
-|getUser|-|User|GET<br>/user(/user)/:userid| liefert einen einzelnen Nutzer |
-|getCourseUserByStatus|-|User|GET<br>/user/course/:courseid/<br>status/:statusid| liefert Nutzerdaten, mit einem bestimmten Status (siehe CourseStatus::getStatusDefinition()) in dieser Veranstaltung |
-|getCourseMember|-|User|GET<br>/user/course/:courseid| liefert alle Nutzer zu einer Veranstaltung |
-|getGroupMember|-|User|GET<br>/user/group/user/:userid<br>/exercisesheet/:esid| liefert alle Gruppenangehörigen eines Nutzers in einer bestimmten Übungsserie (dabei ist es egal, ob dieser Nutzer Gruppenführer oder Mitglied ist) |
-|getUserByStatus|-|User|GET<br>/user/status/:statusid| liefert Nutzerdaten, mit einem bestimmten Status (siehe CourseStatus::getStatusDefinition()), für alle Veranstaltungen |
-|addPlatform|Platform|Platform|POST<br>/platform|installiert dies zugehörige Tabelle und die Prozeduren für diese Plattform|
-|deletePlatform|-|Platform|DELETE<br>/platform|entfernt die Tabelle und Prozeduren aus der Plattform|
-|getExistsPlatform|-|Platform|GET<br>/link/exists/platform| prüft, ob die Tabelle und die Prozeduren existieren |
-|getSamplesInfo|-|-|GET<br>/samples| ??? |
-|postSamples|-|Query|POST<br>/samples/course/:courseAmount<br>/user/:userAmount| erzeugt Zufallsdaten (courseAmount = Anzahl der Veranstaltungen, userAmount = Anzahl der Nutzer), anhand der Vorgabe |
+||removeUser|
+| :----------- |:-----: |
+|Beschreibung| setzt U_flag = 0 und löst damit das Entfernen der persönlichen Nutzerdaten aus (entfernt das Nutzerkonto nicht), zusätzlich wird eine eventuell aktive Session entfernt|
+|Befehl| DELETE<br>/user/user/:userid|
+|Eingabetyp| -|
+|Ausgabetyp| User|
+|||
+||Patzhalter|
+|Name|userid|
+|Regex|%^([a-zA-Z0-9äöüÄÖÜß]+)$%|
+|Beschreibung|die ID eines Nutzers oder ein Nuzername (`User`)|
 
-#### Ausgänge
-- courseid = eine Veranstaltungs ID (`Course`)
-- userid = die ID eines Nutzers oder ein Nuzername (`User`)
-- statusid = die ID eines Veranstaltungsstatus (siehe `DBCourseStatus::getStatusDefinition()`)
-- esid = die ID einer Übungsserie (`ExerciseSheet`)
+||getCourseUserByStatus|
+| :----------- |:-----: |
+|Beschreibung| liefert Nutzerdaten, mit einem bestimmten Status (siehe CourseStatus::getStatusDefinition()) in dieser Veranstaltung|
+|Befehl| GET<br>/user/course/:courseid/status/:statusid|
+|Eingabetyp| -|
+|Ausgabetyp| User|
+|||
+||Patzhalter|
+|Name|courseid|
+|Regex|%^([0-9_]+)$%|
+|Beschreibung|eine Veranstaltungs ID (`Course`)|
+|Name|statusid|
+|Regex|%^([0-9_]+)$%|
+|Beschreibung|die ID eines Veranstaltungsstatus (siehe `DBCourseStatus::getStatusDefinition()`)|
 
-| Bezeichnung  | Ziel  | Verwendung | Beschreibung |
-| :----------- |:----- | :--------- | :----------- |
-|out2|DBQuery2|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
-|out|DBQuery|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
-|getUser|DBQuery2|GET<br>/query/procedure<br>/DBUserGetUser/:userid| Prozeduraufruf |
-|getUsers|DBQuery2|GET<br>/query/procedure<br>/DBUserGetUsers| Prozeduraufruf |
-|getCourseMember|DBQuery2|GET<br>/query/procedure<br>/DBUserGetCourseMember/:courseid| Prozeduraufruf |
-|getGroupMember|DBQuery2|GET<br>/query/procedure<br>/DBUserGetGroupMember/:esid/:userid| Prozeduraufruf |
-|getUserByStatus|DBQuery2|GET<br>/query/procedure<br>/DBUserGetUserByStatus/:statusid| Prozeduraufruf |
-|getCourseUserByStatus|DBQuery2|GET<br>/query/procedure<br>/DBUserGetCourseUserByStatus/:courseid/:statusid| Prozeduraufruf |
-|getIncreaseUserFailedLogin|DBQuery2|GET<br>/query/procedure<br>/DBUserGetIncreaseUserFailedLogin/:userid| Prozeduraufruf |
-|getExistsPlatform|DBQuery2|GET<br>/query/procedure<br>/DBUserGetExistsPlatform| Prozeduraufruf |
-|getSamplesInfo|DBQuery2|GET<br>/query/procedure<br>/DBUserGetExistsPlatform| Prozeduraufruf |
+||getExistsPlatform|
+| :----------- |:-----: |
+|Beschreibung| prüft, ob die Tabelle und die Prozeduren existieren|
+|Befehl| GET<br>/link/exists/platform|
+|Eingabetyp| -|
+|Ausgabetyp| Platform|
 
-#### Anbindungen
-| Bezeichnung  | Ziel  | Priorität | Beschreibung |
-| :----------- |:----- | :--------:| :------------|
-|request|CLocalObjectRequest|-| damit DBUser als lokales Objekt aufgerufen werden kann |
+||removeUserPermanent|
+| :----------- |:-----: |
+|Beschreibung| entfernt das Nutzerkonto entgültig mit allen Konsequenzen (eventuell sind Einsendungen und damit auch Gruppenmitglieder betroffen)|
+|Befehl| DELETE<br>/user/user/:userid/permanent|
+|Eingabetyp| -|
+|Ausgabetyp| User|
+|||
+||Patzhalter|
+|Name|userid|
+|Regex|%^([a-zA-Z0-9äöüÄÖÜß]+)$%|
+|Beschreibung|die ID eines Nutzers oder ein Nuzername (`User`)|
 
-Stand 13.06.2015
+||getUser|
+| :----------- |:-----: |
+|Beschreibung| liefert einen einzelnen Nutzer (anhand des Nutzernamens oder der ID)|
+|Befehl| GET<br>/user/user/:userid|
+|Eingabetyp| -|
+|Ausgabetyp| User|
+|||
+||Patzhalter|
+|Name|userid|
+|Regex|%^([a-zA-Z0-9äöüÄÖÜß]+)$%|
+|Beschreibung|die ID eines Nutzers oder ein Nuzername (`User`)|
+
+||getGroupMember|
+| :----------- |:-----: |
+|Beschreibung| liefert alle Gruppenangehörigen eines Nutzers in einer bestimmten Übungsserie (dabei ist es egal, ob dieser Nutzer Gruppenführer oder Mitglied ist)|
+|Befehl| GET<br>/user/group/user/:userid/exercisesheet/:esid|
+|Eingabetyp| -|
+|Ausgabetyp| User|
+|||
+||Patzhalter|
+|Name|esid|
+|Regex|%^([0-9_]+)$%|
+|Beschreibung|die ID einer Übungsserie (`ExerciseSheet`)|
+
+||addUser|
+| :----------- |:-----: |
+|Beschreibung| fügt eine neues Nutzerkonto ein|
+|Befehl| POST<br>/user|
+|Eingabetyp| User|
+|Ausgabetyp| User|
+
+||editUser|
+| :----------- |:-----: |
+|Beschreibung| editiert ein vorhandenes Nutzerkonto|
+|Befehl| PUT<br>/user/user/:userid|
+|Eingabetyp| User|
+|Ausgabetyp| User|
+|||
+||Patzhalter|
+|Name|userid|
+|Regex|%^([a-zA-Z0-9äöüÄÖÜß]+)$%|
+|Beschreibung|die ID eines Nutzers oder ein Nuzername (`User`)|
+
+||addPlatform|
+| :----------- |:-----: |
+|Beschreibung| installiert die zugehörige Tabelle und die Prozeduren für diese Plattform|
+|Befehl| POST<br>/platform|
+|Eingabetyp| Platform|
+|Ausgabetyp| Platform|
+
+||getUserByStatus|
+| :----------- |:-----: |
+|Beschreibung| liefert Nutzerdaten, mit einem bestimmten Status (siehe CourseStatus::getStatusDefinition()), für alle Veranstaltungen|
+|Befehl| GET<br>/user/status/:statusid|
+|Eingabetyp| -|
+|Ausgabetyp| User|
+|||
+||Patzhalter|
+|Name|statusid|
+|Regex|%^([0-9_]+)$%|
+|Beschreibung|die ID eines Veranstaltungsstatus (siehe `DBCourseStatus::getStatusDefinition()`)|
+
+||getUsers|
+| :----------- |:-----: |
+|Beschreibung| liefert alle existierenden Nutzerkonten (gesperrte und aktive)|
+|Befehl| GET<br>/user|
+|Eingabetyp| -|
+|Ausgabetyp| User|
+
+||deletePlatform|
+| :----------- |:-----: |
+|Beschreibung| entfernt die Tabelle und Prozeduren aus der Plattform|
+|Befehl| DELETE<br>/platform|
+|Eingabetyp| -|
+|Ausgabetyp| Platform|
+
+||getIncreaseUserFailedLogin|
+| :----------- |:-----: |
+|Beschreibung| setzt `U_failed_logins` auf den aktuellen Zeitstempel (damit klar ist, wann der letzte fehlerhafte Loginversuch war)|
+|Befehl| GET<br>/user/user/:userid/IncFailedLogin|
+|Eingabetyp| -|
+|Ausgabetyp| User|
+|||
+||Patzhalter|
+|Name|userid|
+|Regex|%^([a-zA-Z0-9äöüÄÖÜß]+)$%|
+|Beschreibung|die ID eines Nutzers oder ein Nuzername (`User`)|
+
+||getSamplesInfo|
+| :----------- |:-----: |
+|Beschreibung| liefert die Bezeichner der betroffenen Tabellen|
+|Befehl| GET<br>/samples|
+|Eingabetyp| -|
+|Ausgabetyp| -|
+
+||getCourseMember|
+| :----------- |:-----: |
+|Beschreibung| liefert alle Nutzer zu einer Veranstaltung|
+|Befehl| GET<br>/user/course/:courseid|
+|Eingabetyp| -|
+|Ausgabetyp| User|
+|||
+||Patzhalter|
+|Name|courseid|
+|Regex|%^([0-9_]+)$%|
+|Beschreibung|eine Veranstaltungs ID (`Course`)|
+
+||getApiProfiles|
+| :----------- |:-----: |
+|Beschreibung| liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren|
+|Befehl| GET<br>/api/profiles|
+|Eingabetyp| -|
+|Ausgabetyp| GateProfile|
+
+
+## Ausgänge
+---------------
+
+||editUser|
+| :----------- |:-----: |
+|Ziel| DBQueryWrite|
+|Befehl| POST<br>/query|
+|Beschreibung| für den Befehl editUser|
+
+||removeUser|
+| :----------- |:-----: |
+|Ziel| DBQueryWrite|
+|Befehl| POST<br>/query|
+|Beschreibung| für den Befehl removeUser|
+
+||removeUserPermanent|
+| :----------- |:-----: |
+|Ziel| DBQueryWrite|
+|Befehl| POST<br>/query|
+|Beschreibung| für den Befehl removeUserPermanent|
+
+||addUser|
+| :----------- |:-----: |
+|Ziel| DBQueryWrite|
+|Befehl| POST<br>/query|
+|Beschreibung| für den Befehl addUser|
+
+||deletePlatform|
+| :----------- |:-----: |
+|Ziel| DBQuerySetup|
+|Befehl| POST<br>/query|
+|Beschreibung| für den Befehl deletePatform|
+
+||addPlatform|
+| :----------- |:-----: |
+|Ziel| DBQuerySetup|
+|Befehl| POST<br>/query|
+|Beschreibung| für den Befehl addPlatform|
+
+||postSamples|
+| :----------- |:-----: |
+|Ziel| DBQueryWrite|
+|Befehl| POST<br>/query|
+|Beschreibung| für den Befehl postSamples|
+
+||getUser|
+| :----------- |:-----: |
+|Ziel| DBQueryRead|
+|Befehl| GET<br>/query/procedure/DBUserGetUser/:profile/:userid|
+|Beschreibung| für den Befehl getUser|
+
+||getUsers|
+| :----------- |:-----: |
+|Ziel| DBQueryRead|
+|Befehl| GET<br>/query/procedure/DBUserGetUsers/:profile|
+|Beschreibung| für den Befehl getUsers|
+
+||getCourseMember|
+| :----------- |:-----: |
+|Ziel| DBQueryRead|
+|Befehl| GET<br>/query/procedure/DBUserGetCourseMember/:profile/:courseid|
+|Beschreibung| für den Befehl getCourseMember|
+
+||getGroupMember|
+| :----------- |:-----: |
+|Ziel| DBQueryRead|
+|Befehl| GET<br>/query/procedure/DBUserGetGroupMember/:profile/:esid/:userid|
+|Beschreibung| für den Befehl getGroupMember|
+
+||getUserByStatus|
+| :----------- |:-----: |
+|Ziel| DBQueryRead|
+|Befehl| GET<br>/query/procedure/DBUserGetUserByStatus/:profile/:statusid|
+|Beschreibung| für den Befehl getUserByStatus|
+
+||getCourseUserByStatus|
+| :----------- |:-----: |
+|Ziel| DBQueryRead|
+|Befehl| GET<br>/query/procedure/DBUserGetCourseUserByStatus/:profile/:courseid/:statusid|
+|Beschreibung| für den Befehl getCoursUserByStatus|
+
+||getIncreaseUserFailedLogin|
+| :----------- |:-----: |
+|Ziel| DBQueryWrite|
+|Befehl| GET<br>/query/procedure/DBUserGetIncreaseUserFailedLogin/:profile/:userid|
+|Beschreibung| für den Befehl getIncreaseUserFailedLogin|
+
+||getExistsPlatform|
+| :----------- |:-----: |
+|Ziel| DBQueryRead|
+|Befehl| GET<br>/query/procedure/DBUserGetExistsPlatform/:profile|
+|Beschreibung| für den Befehl getExsistsPlatform|
+
+||getSamplesInfo|
+| :----------- |:-----: |
+|Ziel| DBQueryRead|
+|Befehl| GET<br>/query/procedure/DBUserGetExistsPlatform/:profile|
+|Beschreibung| für den Befehl getSamplesInfo|
+
+
+## Anbindungen
+---------------
+
+|Ausgang|request|
+| :----------- |:-----: |
+|Ziel| CLocalObjectRequest|
+|Beschreibung| damit DBUser als lokales Objekt aufgerufen werden kann|
+
+|Ausgang|postPlatform|
+| :----------- |:-----: |
+|Ziel| CInstall|
+|Beschreibung| der Installationsassistent soll uns bei der Plattforminstallation aufrufen|
+
+|Ausgang|postSamples|
+| :----------- |:-----: |
+|Ziel| CInstall|
+|Beschreibung| wir wollen bei Bedarf Beispieldaten erzeugen|
+
+|Ausgang|getAlive|
+| :----------- |:-----: |
+|Ziel| CHelp|
+|Beschreibung| soll CHelp mitteilen, ob die Datenbank erreichbar ist, indem die Existenz der User-Tabelle geprüft wird|
+
+|Ausgang|getDescFiles|
+| :----------- |:-----: |
+|Ziel| TDocuView|
+|Beschreibung| die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen|
+
+|Ausgang|getComponentProfiles|
+| :----------- |:-----: |
+|Ziel| TApiConfiguration|
+|Beschreibung| damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden|
+
+
+Stand 30.06.2017
