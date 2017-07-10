@@ -1,7 +1,7 @@
 {
     "name": "FSControl",
     "description": {
-        "de": "Die FSControl ist ein zentraler Ansprechpartner für alle Komponenten der Dateisystemschicht."
+        "de": "Die FSControl ist ein zentraler Ansprechpartner für alle Komponenten der Dateisystemschicht. (DEPRECATED)"
     },
     "version": "1.0",
     "classFile": "FSControl.php",
@@ -44,6 +44,13 @@
             "target": "CLocalObjectRequest",
             "description": {
                 "de": "damit FSControl als lokales Objekt aufgerufen werden kann"
+            }
+        },
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
             }
         }
     ]

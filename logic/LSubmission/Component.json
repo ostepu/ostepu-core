@@ -25,7 +25,7 @@
             "name": "file",
             "target": "LFile",
             "description": {
-                "de": "für den Befehl file"
+                "de": "zum Speichern von Dateien"
             },
             "links": [
                 {
@@ -38,7 +38,7 @@
             "name": "submission",
             "target": "DBSubmission",
             "description": {
-                "de": "für den Befehl submission"
+                "de": "zum Speichern von Einsendungen"
             },
             "links": [
                 {
@@ -59,7 +59,7 @@
             "name": "selectedSubmission",
             "target": "DBSelectedSubmission",
             "description": {
-                "de": "für den Befehl selectedSubmission"
+                "de": "zum Ändern/Erstellen der ausgewählten Einsendung"
             },
             "links": [
                 {
@@ -76,7 +76,7 @@
             "name": "zip",
             "target": "FSZip",
             "description": {
-                "de": "für den Befehl zip"
+                "de": "zum Erstellen eines Archivs"
             },
             "links": [
                 {
@@ -92,6 +92,13 @@
             "target": "CLocalObjectRequest",
             "description": {
                 "de": "damit LSubmission als lokales Objekt aufgerufen werden kann"
+            }
+        },
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
             }
         }
     ]

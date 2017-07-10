@@ -45,6 +45,13 @@
             "description": {
                 "de": "damit DBAttachment2 als lokales Objekt aufgerufen werden kann"
             }
+        },
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
+            }
         }
     ]
 }

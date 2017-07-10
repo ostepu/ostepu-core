@@ -1,7 +1,7 @@
 {
     "name": "LFile",
     "description": {
-        "de": "???"
+        "de": "Die LFile bietet Aufrufe an, welche das Speichern und Löschen von Dateien erlauben"
     },
     "version": "1.0",
     "classFile": "LFile.php",
@@ -34,7 +34,7 @@
             "name": "fileDb",
             "target": "DBFile",
             "description": {
-                "de": "für den Befehl fileDb"
+                "de": "zum Speichern/Löschen von Dateien in der Datenbank"
             },
             "links": [
                 {
@@ -43,7 +43,11 @@
                 },
                 {
                     "method": "DELETE",
-                    "path": "\/file\/:fileid"
+                    "path": "\/file\/file\/:fileid"
+                },
+                {
+                    "method": "POST",
+                    "path": "\/file"
                 }
             ]
         },
@@ -51,7 +55,7 @@
             "name": "file",
             "target": "FSFile",
             "description": {
-                "de": "für den Befehl file"
+                "de": "zum Speichern/Löschen von Dateien im Dateisystem"
             },
             "links": [
                 {
@@ -71,6 +75,13 @@
             "target": "CLocalObjectRequest",
             "description": {
                 "de": "damit LFile als lokales Objekt aufgerufen werden kann"
+            }
+        },
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
             }
         }
     ]

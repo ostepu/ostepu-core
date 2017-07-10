@@ -36,6 +36,13 @@
             }
         },
         {
+            "name": "getDescFiles",
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
+            }
+        },
+        {
             "name": "getComponentProfiles",
             "target": "TApiConfiguration",
             "description": {

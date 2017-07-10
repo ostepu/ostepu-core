@@ -68,6 +68,13 @@
             "description": {
                 "de": "der Installationsassistent soll uns bei der Plattforminstallation aufrufen"
             }
+        },
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
+            }
         }
     ]
 }

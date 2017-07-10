@@ -1,7 +1,7 @@
 {
     "name": "DBControl",
     "description": {
-        "de": "???"
+        "de": "Diese Komponente gehört zu den veralteten Verteilerkomponenten und soll den Zugriff auf mehrere nachgeschaltene Komponenten ermöglichen. (DEPRECATED)"
     },
     "version": "1.0",
     "classFile": "DBControl.php",
@@ -61,6 +61,13 @@
             "target": "CLocalObjectRequest",
             "description": {
                 "de": "damit DBControl als lokales Objekt aufgerufen werden kann"
+            }
+        },
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
             }
         }
     ]

@@ -1,7 +1,7 @@
 {
     "name": "CUIHelp",
     "description": {
-        "de": "Die CUIHelp enthält einige Hilfedatei der Benutzerschicht (`UI`)"
+        "de": "Die CUIHelp enthält einige Hilfedateien der Benutzerschicht (`UI`)"
     },
     "version": "1.0",
     "classFile": "CUIHelp.php",
@@ -32,6 +32,13 @@
             "target": "CLocalObjectRequest",
             "description": {
                 "de": "damit CUIHelp als lokales Objekt aufgerufen werden kann"
+            }
+        },
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
             }
         },
         {

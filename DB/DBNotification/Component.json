@@ -63,6 +63,13 @@
             }
         },
         {
+            "name": "getDescFiles",
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
+            }
+        },
+        {
             "priority": 150,
             "name": "postPlatform",
             "target": "CInstall",

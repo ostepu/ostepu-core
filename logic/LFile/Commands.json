@@ -3,14 +3,14 @@
         "path": "\/file(\/)",
         "method": "POST",
         "description": {
-            "de": "???"
+            "de": "über diesen Befehl können Dateien in der Plattform hinterlegt werden (Datenbank+Dateisystem)"
         }
     },
     {
         "path": "\/file\/:fileid(\/)",
         "method": "DELETE",
         "description": {
-            "de": "???"
+            "de": "über diesen Befehl können Dateien sauber aus der Plattform entfernt werden (Datenbank+Dateisystem)"
         }
     }
 ]
