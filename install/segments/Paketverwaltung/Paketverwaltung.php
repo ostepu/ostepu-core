@@ -857,7 +857,14 @@ class Paketverwaltung {
         }
 
         if ($fileList !== null){
-            $fileList = array_unique($fileList);
+            // hier werden alle doppelten Elemente entfernt (indem das Array neu aufgebaut wird)
+            $tempFileList = array();
+            foreach($fileList as $item){
+                $name = strtolower(trim($item));
+                $name = str_replace("\\","/",$name);
+                $tempFileList[$name] = $item;
+            }
+            $fileList = array_values($tempFileList);
         }
 
         Installation::log(array('text' => Installation::Get('main', 'functionEnd')));
