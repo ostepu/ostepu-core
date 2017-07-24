@@ -3,14 +3,14 @@
         "path": "\/marking",
         "method": "POST",
         "description": {
-            "de": "???"
+            "de": "speichert\/ändert das Korrekturobjekt (wenn die ID gesetzt ist, dann wird eine Änderung ausgeführt)"
         }
     },
     {
         "path": "\/marking\/marking\/:markingid",
         "method": "DELETE",
         "description": {
-            "de": "???"
+            "de": "löscht den Korrektureintrag aus der Datenbank"
         }
     }
 ]

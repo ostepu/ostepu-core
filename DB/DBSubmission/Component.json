@@ -359,12 +359,12 @@
             }
         },
         {
-            "priority": 140,
             "name": "postSamples",
             "target": "CInstall",
             "description": {
                 "de": "wir wollen bei Bedarf Beispieldaten erzeugen"
-            }
+            },
+            "priority": 140
         },
         {
             "name": "getDescFiles",

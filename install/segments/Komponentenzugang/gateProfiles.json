@@ -1,76 +1,120 @@
 {
     "name": "TApiConfiguration",
+    "option": "confPath=install\/segments\/Komponentenzugang\/tapiconfiguration_cconfig.json",
+    "description": {
+        "de": "Diese Komponente gehört zum Segment 'Komponentenzugang' des Installationsassistenten und dient der Definition der Verbinungen zum Abrufen aller Profildefinitionen, sowie dem Einfügen, Ändern und Löschen von Profilen, Authentifizierungen und Regeln."
+    },
     "version": "1.0",
-    "type": "clone",
+    "baseURI": "\/tapiconfiguration",
     "base": "CAbstract",
-    "baseURI": "/tapiconfiguration",
-    "option": "confPath=install/segments/Komponentenzugang/tapiconfiguration_cconfig.json",
+    "type": "clone",
     "links": [
         {
             "name": "getComponentProfiles",
-            "links": [{
-                "method": "GET",
-                "path": "/api/profiles"
-            }]
+            "description": {
+                "de": "zum Abrufen aller Profildefinitionen (hier können sich andere Komponenten anhängen)"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/api\/profiles"
+                }
+            ]
         },
         {
             "name": "getAllProfiles",
             "target": "DBGate",
+            "description": {
+                "de": "zum Abrufen aller Profildefinitionen aus der Datenbank"
+            },
             "links": []
         },
         {
             "name": "addProfile",
             "target": "DBGate",
+            "description": {
+                "de": "um ein neues Profil zu speichern"
+            },
             "links": []
         },
         {
             "name": "addAuth",
             "target": "DBGate",
+            "description": {
+                "de": "zum Speichern einer Authentifizierungsmethode"
+            },
             "links": []
         },
         {
             "name": "addRule",
             "target": "DBGate",
+            "description": {
+                "de": "hier soll eine Regel angelegt werden"
+            },
             "links": []
         },
         {
             "name": "deleteRule",
             "target": "DBGate",
+            "description": {
+                "de": "zum Löschen einer Regel"
+            },
             "links": []
         },
         {
             "name": "deleteAuth",
             "target": "DBGate",
+            "description": {
+                "de": "zum Löschen einer Authentifizierung"
+            },
             "links": []
         },
         {
             "name": "deleteProfile",
             "target": "DBGate",
+            "description": {
+                "de": "zum Löschen eines Profils"
+            },
             "links": []
         },
         {
             "name": "deleteProfileByName",
             "target": "DBGate",
+            "description": {
+                "de": "ein Profil soll anhand seines Namens gelöscht werden können"
+            },
             "links": []
         },
         {
             "name": "editRule",
             "target": "DBGate",
+            "description": {
+                "de": "zum Editieren einer Regel"
+            },
             "links": []
         },
         {
             "name": "editAuth",
             "target": "DBGate",
+            "description": {
+                "de": "zum Editieren einer Authentifizierung"
+            },
             "links": []
         },
         {
             "name": "editProfile",
             "target": "DBGate",
+            "description": {
+                "de": "zum Editieren eines Profils"
+            },
             "links": []
         },
         {
             "name": "gate",
             "target": "CGate",
+            "description": {
+                "de": "die erste Komponente an diesem Ausgang wird als Zugangskomponente dieser Plattform verstanden"
+            },
             "links": []
         }
     ]

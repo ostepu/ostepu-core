@@ -1,7 +1,7 @@
 {
     "name": "LController",
     "description": {
-        "de": "???"
+        "de": "(DEPRECATED) Über diese Komponente können verschiedene angehangene Komponenten angesprochen werden. Diese Methode sollte nicht mehr verwendet werden, weil sie fehleranfällig ist."
     },
     "version": "1.0",
     "classFile": "LController.php",
@@ -34,7 +34,7 @@
                 "LCourse"
             ],
             "description": {
-                "de": "für den Befehl out"
+                "de": "an diesen Ausgang können sich Komponenten anhägen, um als mögliches Ziel aufgenommen zu werden (nur Logic)"
             },
             "links": []
         },
@@ -42,7 +42,7 @@
             "name": "database",
             "target": "DBControl",
             "description": {
-                "de": "für den Befehl database"
+                "de": "über diesen Ausgang werden DB-Komponenten (Datenbank) angefragt"
             },
             "links": [
                 {
@@ -67,7 +67,7 @@
             "name": "filesystem",
             "target": "FSControl",
             "description": {
-                "de": "für den Befehl filesystem"
+                "de": "über diesen Ausgang werden FS-Komponenten (Dateisystem) angefragt"
             },
             "links": [
                 {

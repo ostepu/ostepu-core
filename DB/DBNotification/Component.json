@@ -47,20 +47,20 @@
             }
         },
         {
-            "priority": 150,
             "name": "postCourse",
             "target": "LCourse",
             "description": {
                 "de": "wenn eine neue Veranstaltung angelegt wird, dann wollen wir auch aufgerufen werden"
-            }
+            },
+            "priority": 150
         },
         {
-            "priority": 150,
             "name": "deleteCourse",
             "target": "LCourse",
             "description": {
                 "de": "wenn eine Veranstaltung gelöscht wird, dann müssen auch unsere Tabellen entfernt werden"
-            }
+            },
+            "priority": 150
         },
         {
             "name": "getDescFiles",
@@ -70,12 +70,12 @@
             }
         },
         {
-            "priority": 150,
             "name": "postPlatform",
             "target": "CInstall",
             "description": {
                 "de": "der Installationsassistent soll uns bei der Plattforminstallation aufrufen"
-            }
+            },
+            "priority": 150
         }
     ]
 }

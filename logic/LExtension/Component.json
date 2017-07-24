@@ -1,7 +1,7 @@
 {
     "name": "LExtension",
     "description": {
-        "de": "???"
+        "de": "Die LExtension verwaltet Komponenten welche an eine Veranstaltung angehangen werden können. Dazu müssen sich diese Komponenten am 'extension'-Ausgang registrieren und selbst über POST /course installierbar sein."
     },
     "version": "1.0",
     "classFile": "LExtension.php",
@@ -25,7 +25,7 @@
             "name": "extension",
             "target": "",
             "description": {
-                "de": "für den Befehl extension"
+                "de": "An diesen Ausgang können sich die Komponenten hängen, welche als Veranstaltungserweiterung nutzbar sein wollen."
             },
             "links": [
                 {

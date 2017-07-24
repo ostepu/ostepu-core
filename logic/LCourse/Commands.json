@@ -3,42 +3,42 @@
         "path": "\/course",
         "method": "post",
         "description": {
-            "de": "???"
+            "de": "zum Erstellen einer neuen Veranstaltung"
         }
     },
     {
         "path": "\/course\/course\/:courseid",
         "method": "put",
         "description": {
-            "de": "???"
+            "de": "ändert eine Veranstaltung"
         }
     },
     {
         "path": "\/course\/course\/:courseid",
         "method": "delete",
         "description": {
-            "de": "???"
+            "de": "entfernt eine Veranstaltung aus dem System"
         }
     },
     {
         "path": "\/course\/course\/:courseid\/user\/:userid\/status\/:status",
         "method": "post",
         "description": {
-            "de": "???"
+            "de": "trägt einen Nutzer in eine Veranstaltung"
         }
     },
     {
         "path": "\/course\/course\/:courseid\/user",
         "method": "get",
         "description": {
-            "de": "???"
+            "de": "ermittelt alle Nutzer einer Veranstaltung"
         }
     },
     {
         "path": "\/course\/user\/:userid",
         "method": "get",
         "description": {
-            "de": "???"
+            "de": "ermittelt alle Veranstaltungen eines Nutzers"
         }
     }
 ]

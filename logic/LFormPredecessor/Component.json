@@ -1,7 +1,7 @@
 {
     "name": "LFormPredecessor",
     "description": {
-        "de": "???"
+        "de": "Diese Komponente gehört zu den Formuareingaben um LForm und DBForm. Mit LFormPredecessor werden die Eingaben der Studenten in eine PDF umgewandelt und diese als Einsendung behandelt."
     },
     "version": "1.0",
     "classFile": "LFormPredecessor.php",
@@ -31,7 +31,7 @@
             "name": "formDb",
             "target": "DBForm",
             "description": {
-                "de": "für den Befehl formDb"
+                "de": "um die Formulare einer Aufgabe abzurufen"
             },
             "links": [
                 {
@@ -44,7 +44,7 @@
             "name": "pdf",
             "target": "FSPdf",
             "description": {
-                "de": "für den Befehl pdf"
+                "de": "zum Anlegen einer PDF"
             },
             "links": [
                 {
@@ -57,7 +57,7 @@
             "name": "postProcess",
             "target": "DBProcessList",
             "description": {
-                "de": "für den Befehl postProcess"
+                "de": "über diesen Ausgang trägt sich LFormPredecessor als Verarbeitung in eine Veranstaltung ein"
             },
             "links": [
                 {
@@ -70,7 +70,7 @@
             "name": "deleteProcess",
             "target": "DBProcessList",
             "description": {
-                "de": "für den Befehl deleteProcess"
+                "de": "entfernt LFormPredecessor als Verarbeitung aus einer Veranstaltung"
             },
             "links": [
                 {
@@ -83,7 +83,7 @@
             "name": "getProcess",
             "target": "DBProcessList",
             "description": {
-                "de": "für den Befehl getProcess"
+                "de": "um den eigenen Verarbeitungseintrag zu ermitteln"
             },
             "links": [
                 {
@@ -95,12 +95,12 @@
     ],
     "connector": [
         {
-            "priority": 150,
             "name": "postCourse",
             "target": "LForm",
             "description": {
-                "de": "???"
-            }
+                "de": "wenn LForm zu einer Veranstaltung hinzugefügt wird, dann wollen auch aufgerufen werden"
+            },
+            "priority": 150
         },
         {
             "name": "request",

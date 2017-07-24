@@ -1,12 +1,29 @@
 {
-  "name":"UIExerciseSheetTutor",
-  "version":"1.0",
-  "type":"clone",
-  "base":"CAbstract",
-  "baseURI":"/uiexercisesheettutor",
-  "option":"confPath=UI/include/ExerciseSheet/uiexercisesheettutor_cconfig.json",
-  "links":[
-    {"name":"getTop","target":"","links":[]},
-    {"name":"getSheetNavigation","target":"","links":[]}
-  ]
+    "name": "UIExerciseSheetTutor",
+    "option": "confPath=UI\/include\/ExerciseSheet\/uiexercisesheettutor_cconfig.json",
+    "description": {
+        "de": "Diese Komponente gehört zu einem Template und dient der Definition von Plathaltern. An diese Ausgänge\/Platzhalter können sich Komponenten anhängen und Inhalte direkt dort einfügen. Dazu müssen diese Komponenten einen Connector auf den entsprechenden Platzhalter dieser Komponenten definieren. Die Platzhalter selbst werden in dem zugehörigen Template aufgerufen und der Inhalt an der entsprechenden Stelle eingefügt."
+    },
+    "version": "1.0",
+    "baseURI": "\/uiexercisesheettutor",
+    "base": "CAbstract",
+    "type": "clone",
+    "links": [
+        {
+            "name": "getTop",
+            "target": "",
+            "description": {
+                "de": "für den Platzhalter getTop"
+            },
+            "links": []
+        },
+        {
+            "name": "getSheetNavigation",
+            "target": "",
+            "description": {
+                "de": "für den Platzhalter getSheetNavigation"
+            },
+            "links": []
+        }
+    ]
 }

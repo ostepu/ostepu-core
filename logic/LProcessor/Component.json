@@ -1,7 +1,7 @@
 {
     "name": "LProcessor",
     "description": {
-        "de": "???"
+        "de": "Über diese Komponente können Einsendungen im System hinterlegt werden. Sie speichert die Einsendung, Einsendungsdatei und führt nachgeschaltene Verarbeitungen aus. Die Verarbeitungen müssen für die jeweilige Aufgabe definiert sein."
     },
     "version": "1.0",
     "classFile": "LProcessor.php",
@@ -31,7 +31,7 @@
             "name": "submission",
             "target": "LSubmission",
             "description": {
-                "de": "für den Befehl submission"
+                "de": "zum Speichern der Einsendung und Einsendungsdatei"
             },
             "links": [
                 {
@@ -44,7 +44,7 @@
             "name": "marking",
             "target": "LMarking",
             "description": {
-                "de": "für den Befehl marking"
+                "de": "zum Speichern der Korrekturen, falls die Verarbeitungen eine Korrektur erzeugt haben"
             },
             "links": [
                 {
@@ -57,12 +57,16 @@
             "name": "processorDb",
             "target": "DBProcess",
             "description": {
-                "de": "für den Befehl processorDb"
+                "de": "Zum Abrufen der Verarbeitungen für diese Aufgabe. Zudem wird dieser Ausgang genutzt, um neue Verarbeitungen zu speichern und zu ändern."
             },
             "links": [
                 {
                     "method": "POST",
                     "path": "\/process"
+                },
+                {
+                    "method": "PUT",
+                    "path": "\/process\/process\/:processid"
                 },
                 {
                     "method": "GET",
@@ -74,7 +78,7 @@
             "name": "attachment",
             "target": "DBProcessAttachment",
             "description": {
-                "de": "für den Befehl attachment"
+                "de": "zum Speichern der Verarbeitunsanhänge"
             },
             "links": [
                 {
@@ -87,7 +91,7 @@
             "name": "workFiles",
             "target": "DBProcessWorkFiles",
             "description": {
-                "de": "für den Befehl workFiles"
+                "de": "zum Speichern der Arbeitsdaten einer Verarbeitung"
             },
             "links": [
                 {
@@ -100,7 +104,7 @@
             "name": "getExerciseExerciseFileType",
             "target": "DBExerciseFileType",
             "description": {
-                "de": "für den Befehl getExerciseExerciseFileType"
+                "de": "zum Abrufen der erlaubten Dateitypen einer Aufgabe"
             },
             "links": [
                 {
@@ -113,7 +117,7 @@
             "name": "file",
             "target": "LFile",
             "description": {
-                "de": "für den Befehl file"
+                "de": "zum Speichern von Dateien"
             },
             "links": [
                 {
@@ -126,7 +130,7 @@
             "name": "postCourse",
             "target": "DBProcess",
             "description": {
-                "de": "für den Befehl postCourse"
+                "de": "um nachgeschaltene Komponenten in die Veranstaltung installieren zu können"
             },
             "links": [
                 {
@@ -146,20 +150,20 @@
     ],
     "connector": [
         {
-            "priority": 150,
             "name": "deleteCourse",
             "target": "LCourse",
             "description": {
                 "de": "wenn eine Veranstaltung gelöscht wird, dann müssen auch unsere Tabellen entfernt werden"
-            }
+            },
+            "priority": 150
         },
         {
-            "priority": 150,
             "name": "postCourse",
             "target": "LCourse",
             "description": {
                 "de": "wenn eine neue Veranstaltung angelegt wird, dann wollen wir auch aufgerufen werden"
-            }
+            },
+            "priority": 150
         },
         {
             "name": "request",

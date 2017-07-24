@@ -1,7 +1,7 @@
 {
     "name": "LExercise",
     "description": {
-        "de": "???"
+        "de": "Die LExercise bietet Anfragen für Übungsaufgaben an. Dabei enthält sie zunächst nur einen Befehl zum Speichern neuer Übungsaufgaben."
     },
     "version": "1.0",
     "classFile": "LExercise.php",
@@ -25,7 +25,7 @@
             "name": "controller",
             "target": "LController",
             "description": {
-                "de": "für den Befehl controller"
+                "de": "über diesen Ausgang werden diverse Anfragen behandelt"
             },
             "links": [
                 {
@@ -66,7 +66,7 @@
             "name": "postAttachment",
             "target": "LAttachment",
             "description": {
-                "de": "für den Befehl postAttachment"
+                "de": "zum Speichern von Übungsanhängen"
             },
             "links": [
                 {

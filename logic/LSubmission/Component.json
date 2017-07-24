@@ -59,7 +59,7 @@
             "name": "selectedSubmission",
             "target": "DBSelectedSubmission",
             "description": {
-                "de": "zum Ändern/Erstellen der ausgewählten Einsendung"
+                "de": "zum Ändern\/Erstellen der ausgewählten Einsendung"
             },
             "links": [
                 {

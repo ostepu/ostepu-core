@@ -3,35 +3,35 @@
         "path": "\/submission",
         "method": "post",
         "description": {
-            "de": "???"
+            "de": "Dieser Befehl nimmt eine Einsendung entgeben und speichert diese im System. Dabei werden Verarbeitungen ausgeführt."
         }
     },
     {
         "path": "\/process",
         "method": "post",
         "description": {
-            "de": "???"
+            "de": "Zum Anlegen oder Ändern von Verarbeitungseinträgen"
         }
     },
     {
         "path": "\/course",
         "method": "post",
         "description": {
-            "de": "???"
+            "de": "Installiert diese Komponente und nich nachgeschaltenen Komponenten in eine Veranstaltung"
         }
     },
     {
         "path": "\/course\/:courseid",
         "method": "delete",
         "description": {
-            "de": "???"
+            "de": "entfernt die Komponente und nachgeschaltene Komponenten aus der Veranstaltung"
         }
     },
     {
         "path": "\/link\/exists\/course\/:courseid",
         "method": "get",
         "description": {
-            "de": "???"
+            "de": "prüft, ob die Komponente korrekt installiert ist"
         }
     }
 ]

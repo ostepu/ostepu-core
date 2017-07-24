@@ -1,7 +1,7 @@
 {
     "name": "LMarking",
     "description": {
-        "de": "???"
+        "de": "Diese Komponente ermöglicht das einfache Speichern von Korrekturobjekten. Dabei prüft sie selbständig, ob die Korrekturdatei in der Plattform hinterlegt werden muss und ob es sich um eine Änderung oder eine Neuerstellung des Korrekturobjekts handelt."
     },
     "version": "1.0",
     "classFile": "LMarking.php",
@@ -25,7 +25,7 @@
             "name": "file",
             "target": "LFile",
             "description": {
-                "de": "für den Befehl file"
+                "de": "zum Speichern von Dateien"
             },
             "links": [
                 {
@@ -38,7 +38,7 @@
             "name": "marking",
             "target": "DBMarking",
             "description": {
-                "de": "für den Befehl marking"
+                "de": "zum Speichern, Ändern und Löschen von Korrekturen"
             },
             "links": [
                 {
@@ -48,6 +48,10 @@
                 {
                     "method": "POST",
                     "path": "\/marking"
+                },
+                {
+                    "method": "PUT",
+                    "path": "\/marking\/marking\/:markingid"
                 }
             ]
         }

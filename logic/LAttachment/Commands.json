@@ -3,28 +3,28 @@
         "path": "\/attachment",
         "method": "POST",
         "description": {
-            "de": "???"
+            "de": "speichert einen neuen Anhang"
         }
     },
     {
         "path": "'\/attachment\/attachment\/:attachmentid",
         "method": "GET",
         "description": {
-            "de": "???"
+            "de": "ruft einen Anhang ab"
         }
     },
     {
         "path": "\/attachment\/attachment\/:attachmentid",
         "method": "DELETE",
         "description": {
-            "de": "???"
+            "de": "entfernt einen Anhang aus dem System"
         }
     },
     {
         "path": "\/attachment\/attachment\/:attachmentid",
         "method": "PUT",
         "description": {
-            "de": "???"
+            "de": "ändert einen Anhang"
         }
     }
 ]

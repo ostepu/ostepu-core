@@ -3,7 +3,7 @@
         "path": "\/exercise",
         "method": "POST",
         "description": {
-            "de": "???"
+            "de": "Dieser Befehl erlaubt das Anlegen neuer Übungsaufgaben"
         }
     }
 ]

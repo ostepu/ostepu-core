@@ -1,7 +1,7 @@
 {
     "name": "LExerciseSheet",
     "description": {
-        "de": "???"
+        "de": "Die LExerciseSheet bietet Befehle zum Behandeln von Übungsserien an."
     },
     "version": "1.0",
     "classFile": "LExerciseSheet.php",

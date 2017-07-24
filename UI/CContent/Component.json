@@ -1,25 +1,47 @@
 {
     "name": "CContent",
+    "description": {
+        "de": "Über CContent können global bereitgestellte Inhalte abgerufen werden. Diese wurden von anderen Komponenten als Pfad bei CContent registriert."
+    },
     "version": "1.0",
     "classFile": "CContent.php",
     "className": "CContent",
     "files": [
-        {"path": ".htaccess"},
-        {"path": "CContent.php"},
-        {"path": "index.php"},
-        {"path": "Commands.json"}
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "CContent.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        }
     ],
     "links": [
-        {"name": "getContent"}
+        {
+            "name": "getContent",
+            "description": {
+                "de": "An diesen Ausgang können anderen Komponenten ihre Inhalte anhängen. Dabei müssen diese auch einen Pfad in ihrem Connector definieren, über welchen der Inhalt abgerufen werden kann."
+            }
+        }
     ],
     "connector": [
         {
             "name": "request",
-            "target": "CLocalObjectRequest"
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit CContent als lokales Objekt aufgerufen werden kann"
+            }
         },
         {
             "name": "postPlatform",
-            "target": "CInstall"
+            "target": "CInstall",
+            "description": {
+                "de": "der Installationsassistent soll uns bei der Plattforminstallation aufrufen"
+            }
         }
     ]
 }

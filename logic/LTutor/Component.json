@@ -1,7 +1,7 @@
 {
     "name": "LTutor",
     "description": {
-        "de": "???"
+        "de": "Die LTutor bietet Aufrufe zum Verteilen der Einsendungen auf Kontrolleure, dem Abrufen von Korrekturarchiven und dem Behandeln der hochgeladenen Korrekturarchive an."
     },
     "version": "1.0",
     "classFile": "LTutor.php",
@@ -25,7 +25,7 @@
             "name": "controller",
             "target": "LController",
             "description": {
-                "de": "für den Befehl controller"
+                "de": "über diesen Ausgang werden diverse Aufrufe bearbeitet"
             },
             "links": [
                 {
@@ -82,7 +82,7 @@
             "name": "postTransaction",
             "target": "DBTransaction",
             "description": {
-                "de": "für den Befehl postTransaction"
+                "de": "zum Erzeugen einer neuen Transaktionsnummer"
             },
             "links": [
                 {
@@ -95,7 +95,7 @@
             "name": "getTransaction",
             "target": "DBTransaction",
             "description": {
-                "de": "für den Befehl getTransaction"
+                "de": "um eine Transaktionsnummer abzurufen"
             },
             "links": []
         },
@@ -103,7 +103,7 @@
             "name": "postZip",
             "target": "FSZip",
             "description": {
-                "de": "für den Befehl postZip"
+                "de": "zum Erstellen eines Archivs"
             },
             "links": []
         },
@@ -111,7 +111,7 @@
             "name": "postPdf",
             "target": "FSPdf",
             "description": {
-                "de": "für den Befehl postPdf"
+                "de": "zum Erstellen einer PDF"
             },
             "links": []
         },
@@ -119,7 +119,7 @@
             "name": "postMarking",
             "target": "LMarking",
             "description": {
-                "de": "für den Befehl postMarking"
+                "de": "um Korrekturen zu speichern"
             },
             "links": []
         },
@@ -127,7 +127,7 @@
             "name": "getMarking",
             "target": "DBMarking",
             "description": {
-                "de": "für den Befehl getMarking"
+                "de": "um eine Korrektur abzurufen"
             },
             "links": []
         },
@@ -135,7 +135,7 @@
             "name": "getGroup",
             "target": "DBGroup",
             "description": {
-                "de": "für den Befehl getGroup"
+                "de": "zum Abrufen einer Gruppe"
             },
             "links": []
         },
@@ -143,7 +143,7 @@
             "name": "getExercise",
             "target": "DBExercise",
             "description": {
-                "de": "für den Befehl getExercise"
+                "de": "zum Abrufen einer Übungsaufgabe"
             },
             "links": []
         },
@@ -151,7 +151,7 @@
             "name": "getSubmission",
             "target": "DBSubmission",
             "description": {
-                "de": "für den Befehl getSubmission"
+                "de": "über diesen Ausgang soll eine Einsendung abgerufen werden"
             },
             "links": []
         },
@@ -159,7 +159,7 @@
             "name": "postSubmission",
             "target": "LSubmission",
             "description": {
-                "de": "für den Befehl postSubmission"
+                "de": "zum Speichern einer Einsendung"
             },
             "links": []
         },
@@ -180,7 +180,7 @@
             "name": "getCourse",
             "target": "DBCourse",
             "description": {
-                "de": "für den Befehl getCourse"
+                "de": "zum Abrufen einer Veranstaltung anhand seiner Übungsnummer"
             },
             "links": [
                 {
@@ -206,12 +206,12 @@
             }
         },
         {
-            "priority": 300,
             "name": "postCourse",
             "target": "LCourse",
             "description": {
                 "de": "wenn eine neue Veranstaltung angelegt wird, dann wollen wir auch aufgerufen werden"
-            }
+            },
+            "priority": 300
         }
     ]
 }

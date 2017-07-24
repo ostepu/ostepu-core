@@ -11,91 +11,99 @@
   -
  -->
 
-## Eingänge
----------------
+| Themen |
+| :- |
+| [Befehle/Eingänge (Commands.json)](#Eingaenge) |
+| [Ausgänge (Component.json => Links)](#Ausgaenge) |
+| [Anbindungen (Component.json => Connector)](#Anbindungen) |
+
+## Befehle/Eingänge (Commands.json)  {#Eingaenge}
+Diese Befehle bietet diese Komponente als Aufruf an.
 
 |||
-| :----------- |:-----: |
-|Befehl| POST<br>/:string+|
+| :----------- |:----- |
+|Befehl| POST /:string+|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
-|Befehl| PUT<br>/:string+|
+| :----------- |:----- |
+|Befehl| PUT /:string+|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
-|Befehl| GET<br>/:string+|
+| :----------- |:----- |
+|Befehl| GET /:string+|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
-|Befehl| DELETE<br>/:string+|
+| :----------- |:----- |
+|Befehl| DELETE /:string+|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 
-## Ausgänge
----------------
+## Ausgänge (Component.json => Links)  {#Ausgaenge}
+Wenn eine Komponente selbst noch Unteranfragen an anderen Komponenten stellen möchte, dann werden diese über die `Ausgänge` bearbeitet.
+Dabei kann ein Ausgang bereits auf eine Komponente gerichtet sein (`Ziel`) oder durch die Zielkomponente selbst angebunden werden (`Connector`)
 
 ||database|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBControl|
-|Befehl| POST<br>/path+|
+|Befehl| POST /path+|
 |Beschreibung| für den Befehl database|
 
 ||database|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBControl|
-|Befehl| GET<br>/path+|
+|Befehl| GET /path+|
 |Beschreibung| für den Befehl database|
 
 ||database|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBControl|
-|Befehl| PUT<br>/path+|
+|Befehl| PUT /path+|
 |Beschreibung| für den Befehl database|
 
 ||database|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBControl|
-|Befehl| DELETE<br>/path+|
+|Befehl| DELETE /path+|
 |Beschreibung| für den Befehl database|
 
 ||filesystem|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| FSControl|
-|Befehl| POST<br>/path+|
+|Befehl| POST /path+|
 |Beschreibung| für den Befehl filesystem|
 
 ||filesystem|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| FSControl|
-|Befehl| GET<br>/path+|
+|Befehl| GET /path+|
 |Beschreibung| für den Befehl filesystem|
 
 ||filesystem|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| FSControl|
-|Befehl| PUT<br>/path+|
+|Befehl| PUT /path+|
 |Beschreibung| für den Befehl filesystem|
 
 ||filesystem|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| FSControl|
-|Befehl| DELETE<br>/path+|
+|Befehl| DELETE /path+|
 |Beschreibung| für den Befehl filesystem|
 
 
-## Anbindungen
----------------
+## Anbindungen (Component.json => Connector) {#Anbindungen}
+Eine Anbindung verlangt von einer anderen Komponente (`Ziel`) die Anbindung/Verbindung zu dieser Komponente.
+Wenn eine Anbindung den aufzurufenden Befehl vorgibt, dann ist die Notation: METHODE URL (PRIORITÄT).
 
 |Ausgang|request|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CLocalObjectRequest|
 |Beschreibung| damit LController als lokales Objekt aufgerufen werden kann|
 

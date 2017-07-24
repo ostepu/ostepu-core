@@ -1,15 +1,53 @@
 {
-  "name":"UINavigation",
-  "version":"1.0",
-  "type":"clone",
-  "base":"CAbstract",
-  "baseURI":"/uinavigation",
-  "option":"confPath=UI/include/Navigation/uinavigation_cconfig.json",
-  "links":[
-    {"name":"getContent","target":"","links":[]},
-    {"name":"getStudentContent","target":"","links":[]},
-    {"name":"getTutorContent","target":"","links":[]},
-    {"name":"getLecturerContent","target":"","links":[]} ,
-    {"name":"getAdminContent","target":"","links":[]}    
-  ]
+    "name": "UINavigation",
+    "option": "confPath=UI\/include\/Navigation\/uinavigation_cconfig.json",
+    "description": {
+        "de": "Diese Komponente gehört zu einem Template und dient der Definition von Plathaltern. An diese Ausgänge\/Platzhalter können sich Komponenten anhängen und Inhalte direkt dort einfügen. Dazu müssen diese Komponenten einen Connector auf den entsprechenden Platzhalter dieser Komponenten definieren. Die Platzhalter selbst werden in dem zugehörigen Template aufgerufen und der Inhalt an der entsprechenden Stelle eingefügt."
+    },
+    "version": "1.0",
+    "baseURI": "\/uinavigation",
+    "base": "CAbstract",
+    "type": "clone",
+    "links": [
+        {
+            "name": "getContent",
+            "target": "",
+            "description": {
+                "de": "für den Platzhalter getContent"
+            },
+            "links": []
+        },
+        {
+            "name": "getStudentContent",
+            "target": "",
+            "description": {
+                "de": "für den Platzhalter getStudentContent"
+            },
+            "links": []
+        },
+        {
+            "name": "getTutorContent",
+            "target": "",
+            "description": {
+                "de": "für den Platzhalter getTutorContent"
+            },
+            "links": []
+        },
+        {
+            "name": "getLecturerContent",
+            "target": "",
+            "description": {
+                "de": "für den Platzhalter getLecturerContent"
+            },
+            "links": []
+        },
+        {
+            "name": "getAdminContent",
+            "target": "",
+            "description": {
+                "de": "für den Platzhalter getAdminContent"
+            },
+            "links": []
+        }
+    ]
 }

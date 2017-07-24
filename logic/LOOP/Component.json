@@ -37,7 +37,7 @@
             "name": "pdf",
             "target": "FSPdf",
             "description": {
-                "de": "für den Befehl pdf"
+                "de": "zum Erzeugen einer PDF"
             },
             "links": [
                 {
@@ -50,7 +50,7 @@
             "name": "postProcess",
             "target": "DBProcessList",
             "description": {
-                "de": "für den Befehl postProcess"
+                "de": "um LOOP als Verarbeitung einzutragen"
             },
             "links": [
                 {
@@ -63,7 +63,7 @@
             "name": "deleteProcess",
             "target": "DBProcessList",
             "description": {
-                "de": "für den Befehl deleteProcess"
+                "de": "um LOOP als Verarbeitung zu entfernen"
             },
             "links": [
                 {
@@ -76,7 +76,7 @@
             "name": "getProcess",
             "target": "DBProcessList",
             "description": {
-                "de": "für den Befehl getProcess"
+                "de": "um den eigenen Verarbeitungseintrag abzurufen"
             },
             "links": [
                 {
@@ -89,7 +89,7 @@
             "name": "postCourse",
             "target": "DBOOP",
             "description": {
-                "de": "für den Befehl postCourse"
+                "de": "fügt LOOP einer Veranstaltung hinzu"
             },
             "links": [
                 {
@@ -102,7 +102,7 @@
             "name": "deleteCourse",
             "target": "DBOOP",
             "description": {
-                "de": "für den Befehl deleteCourse"
+                "de": "entfernt die Komponente aus einer Veranstaltung"
             },
             "links": [
                 {
@@ -115,7 +115,7 @@
             "name": "postTestcase",
             "target": "DBOOP",
             "description": {
-                "de": "für den Befehl postTestcase"
+                "de": "um einen Testfall zu registrieren"
             },
             "links": [
                 {
@@ -128,7 +128,7 @@
             "name": "selfLink",
             "target": "LOOP",
             "description": {
-                "de": "für den Befehl selfLink"
+                "de": "führt einen Selbstaufruf aus"
             },
             "links": []
         },
@@ -136,7 +136,7 @@
             "name": "popTestcase",
             "target": "DBOOP",
             "description": {
-                "de": "für den Befehl popTestcase"
+                "de": "ruft den nächsten Testfall ab"
             },
             "links": [
                 {
@@ -149,7 +149,7 @@
             "name": "getSubmission",
             "target": "DBSubmission",
             "description": {
-                "de": "für den Befehl getSubmission"
+                "de": "um eine Einsendung abzurufen"
             },
             "links": []
         },
@@ -157,7 +157,7 @@
             "name": "editTestcase",
             "target": "DBOOP",
             "description": {
-                "de": "für den Befehl editTestcase"
+                "de": "um einen Testfall zu bearbeiten"
             },
             "links": [
                 {
@@ -170,7 +170,7 @@
             "name": "getTestcase",
             "target": "DBOOP",
             "description": {
-                "de": "für den Befehl getTestcase"
+                "de": "ruft alle Testfälle einer Veranstaltung und einer Einsendung ab"
             },
             "links": [
                 {
@@ -183,7 +183,7 @@
             "name": "getExercise",
             "target": "DBExercise",
             "description": {
-                "de": "für den Befehl getExercise"
+                "de": "ruft eine Aufgabe ab"
             },
             "links": [
                 {
@@ -196,7 +196,7 @@
             "name": "marking",
             "target": "LMarking",
             "description": {
-                "de": "für den Befehl marking"
+                "de": "um eine Korrektur zu speichern"
             },
             "links": [
                 {
@@ -211,7 +211,7 @@
             "name": "extension",
             "target": "LExtension",
             "description": {
-                "de": "???"
+                "de": "diese Komponente soll als Veranstaltungserweiterung wählbar sein"
             }
         },
         {

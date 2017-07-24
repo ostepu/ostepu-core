@@ -1,12 +1,29 @@
 {
-  "name":"UIUserNavigation",
-  "version":"1.0",
-  "type":"clone",
-  "base":"CAbstract",
-  "baseURI":"/uiusernavigation",
-  "option":"confPath=UI/include/Navigation/uiusernavigation_cconfig.json",
-  "links":[
-    {"name":"getContent","target":"","links":[]},
-    {"name":"getPrivilegedContent","target":"","links":[]} 
-  ]
+    "name": "UIUserNavigation",
+    "option": "confPath=UI\/include\/Navigation\/uiusernavigation_cconfig.json",
+    "description": {
+        "de": "Diese Komponente gehört zu einem Template und dient der Definition von Plathaltern. An diese Ausgänge\/Platzhalter können sich Komponenten anhängen und Inhalte direkt dort einfügen. Dazu müssen diese Komponenten einen Connector auf den entsprechenden Platzhalter dieser Komponenten definieren. Die Platzhalter selbst werden in dem zugehörigen Template aufgerufen und der Inhalt an der entsprechenden Stelle eingefügt."
+    },
+    "version": "1.0",
+    "baseURI": "\/uiusernavigation",
+    "base": "CAbstract",
+    "type": "clone",
+    "links": [
+        {
+            "name": "getContent",
+            "target": "",
+            "description": {
+                "de": "für den Platzhalter getContent"
+            },
+            "links": []
+        },
+        {
+            "name": "getPrivilegedContent",
+            "target": "",
+            "description": {
+                "de": "für den Platzhalter getPrivilegedContent"
+            },
+            "links": []
+        }
+    ]
 }

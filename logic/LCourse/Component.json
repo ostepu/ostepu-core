@@ -1,7 +1,7 @@
 {
     "name": "LCourse",
     "description": {
-        "de": "???"
+        "de": "Die LCourse bietet Anfragen zum Anlegen einer neuen Veranstaltung an."
     },
     "version": "1.0",
     "classFile": "LCourse.php",
@@ -25,7 +25,7 @@
             "name": "controller",
             "target": "LController",
             "description": {
-                "de": "für den Befehl controller"
+                "de": "Über diesen Ausgang werden verschiedene Anfragen an Datenbankkomponenten gestellt. Es muss sich um eine spezielle Verteilerkomponente handeln (normalerweise LController)."
             },
             "links": [
                 {
@@ -52,7 +52,7 @@
                 "DBCourse"
             ],
             "description": {
-                "de": "für den Befehl postCourse"
+                "de": "zum Anlegen einer Veranstaltung (in postCourse)"
             },
             "links": [
                 {
@@ -67,7 +67,7 @@
                 "DBCourse"
             ],
             "description": {
-                "de": "für den Befehl deleteCourse"
+                "de": "zum Entfernen einer Veranstaltung"
             },
             "links": [
                 {

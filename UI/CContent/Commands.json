@@ -1,35 +1,50 @@
 [
     {
         "name": "getContent",
-        "outputType": "binary",
+        "path": "\/content\/:path+",
+        "description": {
+            "de": "über diesen Befehl können Inhalte abgerufen werden, welche am getContent Ausgang von CContent hängen. Diese müssen zuvor durch anderen Komponenten dort mit einem Pfad registriert werden."
+        },
         "placeholder": [
             {
                 "name": "path",
-                "regex": "%^([a-zA-Z0-9\\.\\-_]+)$%"
+                "regex": "%^([a-zA-Z0-9\\.\\-_]+)$%",
+                "description": {
+                    "de": "ein Pfad"
+                }
             }
         ],
-        "path": "/content/:path+"
+        "outputType": "binary"
     },
     {
         "name": "addPlatform",
-        "outputType": "Platform",
-        "inputType": "Platform",
+        "path": "\/platform",
         "method": "POST",
-        "path": "/platform"
+        "description": {
+            "de": "installiert die zugehörige Tabelle und die Prozeduren für diese Plattform"
+        },
+        "inputType": "Platform",
+        "outputType": "Platform"
     },
     {
         "name": "deletePlatform",
-        "outputType": "Platform",
-        "inputType": "",
+        "path": "\/platform",
         "method": "DELETE",
-        "path": "/platform"
+        "description": {
+            "de": "entfernt die Komponente und ihre installierten Bestandteile aus der Plattform"
+        },
+        "inputType": "",
+        "outputType": "Platform"
     },
     {
         "name": "getExistsPlatform",
-        "singleOutput": "TRUE",
-        "outputType": "Platform",
-        "inputType": "",
+        "path": "\/link\/exists\/platform",
         "method": "GET",
-        "path": "/link/exists/platform"
+        "description": {
+            "de": "prüft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollständig installiert ist"
+        },
+        "inputType": "",
+        "outputType": "Platform",
+        "singleOutput": "TRUE"
     }
 ]

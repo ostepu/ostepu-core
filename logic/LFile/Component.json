@@ -34,7 +34,7 @@
             "name": "fileDb",
             "target": "DBFile",
             "description": {
-                "de": "zum Speichern/Löschen von Dateien in der Datenbank"
+                "de": "zum Speichern\/Löschen von Dateien in der Datenbank"
             },
             "links": [
                 {
@@ -55,7 +55,7 @@
             "name": "file",
             "target": "FSFile",
             "description": {
-                "de": "zum Speichern/Löschen von Dateien im Dateisystem"
+                "de": "zum Speichern\/Löschen von Dateien im Dateisystem"
             },
             "links": [
                 {

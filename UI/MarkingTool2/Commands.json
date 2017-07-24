@@ -1,74 +1,114 @@
 [
     {
         "name": "getButton",
-        "outputType": "binary",
-        "inputType": "",
+        "path": "\/view\/button\/entry\/course\/:cid\/sheet\/:sid",
         "method": "GET",
-        "path": "/view/button/entry/course/:cid/sheet/:sid"
+        "description": {
+            "de": "gibt den HTML-Code für die Schaltfläche zum Korrekturassistenten aus"
+        },
+        "inputType": "",
+        "outputType": "binary"
     },
     {
         "name": "getMarkingTool2Page",
-        "outputType": "binary",
-        "inputType": "",
+        "path": "\/page\/markingtool2\/course\/:cid\/exercisesheet\/:sid",
         "method": "GET",
-        "placeholder": [{
-            "name": "cid",
-            "regex": "%^([0-9_]+)$%"
+        "description": {
+            "de": "zeichnet die Seite des Korrekturassistenten"
         },
-        {
-            "name": "sid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/page/markingtool2/course/:cid/exercisesheet/:sid"
+        "placeholder": [
+            {
+                "name": "cid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "???"
+                }
+            },
+            {
+                "name": "sid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "???"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "binary"
     },
     {
         "name": "getPing",
-        "outputType": "binary",
-        "inputType": "",
+        "path": "\/api\/ping",
         "method": "GET",
-        "path": "/api/ping"
+        "description": {
+            "de": "liefert eine einfache Antwort (mit Loginprüfung)"
+        },
+        "inputType": "",
+        "outputType": "binary"
     },
     {
         "name": "getTest",
-        "outputType": "binary",
-        "inputType": "",
+        "path": "\/api\/test",
         "method": "GET",
-        "path": "/api/test"
+        "description": {
+            "de": "liefert eine einfache Antwort (mit Loginprüfung)"
+        },
+        "inputType": "",
+        "outputType": "binary"
     },
     {
         "name": "postUpload",
-        "outputType": "binary",
-        "inputType": "",
+        "path": "\/api\/upload\/course\/:cid\/exercisesheet\/:sid",
         "method": "POST",
-        "placeholder": [{
-            "name": "cid",
-            "regex": "%^([0-9_]+)$%"
+        "description": {
+            "de": "speichert die Änderungen an den Korrekturen"
         },
-        {
-            "name": "sid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/api/upload/course/:cid/exercisesheet/:sid"
+        "placeholder": [
+            {
+                "name": "cid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "???"
+                }
+            },
+            {
+                "name": "sid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "???"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "binary"
     },
     {
         "name": "getUnknownMode",
-        "outputType": "binary",
-        "inputType": "",
+        "path": "\/api\/:mode",
         "method": "GET",
-        "path": "/api/:mode"
+        "description": {
+            "de": "ein unbekannter Api-Aufruf wird verwendet"
+        },
+        "inputType": "",
+        "outputType": "binary"
     },
-	{
-		"name": "language",
-		"outputType": "binary",
-		"inputType": "",
-		"method": "GET",
-		"path": "/lang"
-	},
+    {
+        "name": "language",
+        "path": "\/lang",
+        "method": "GET",
+        "description": {
+            "de": "lädt die Sprachdatei (korrekt???)"
+        },
+        "inputType": "",
+        "outputType": "binary"
+    },
     {
         "name": "getUnknownApiCall",
-        "outputType": "binary",
-        "inputType": "",
+        "path": "\/:path+",
         "method": "GET,POST,DELETE,PUT",
-        "path": "/:path+"
+        "description": {
+            "de": "wenn kein anderer Aufruf passt, dann wird dieser Befehl aufgerufen"
+        },
+        "inputType": "",
+        "outputType": "binary"
     }
 ]

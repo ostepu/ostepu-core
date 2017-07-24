@@ -197,12 +197,12 @@
             }
         },
         {
-            "priority": 300,
             "name": "postCourse",
             "target": "LCourse",
             "description": {
                 "de": "wenn eine neue Veranstaltung angelegt wird, dann wollen wir auch aufgerufen werden"
-            }
+            },
+            "priority": 300
         },
         {
             "name": "getDescFiles",

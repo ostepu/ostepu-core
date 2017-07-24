@@ -3,56 +3,56 @@
         "path": "\/link\/course\/:courseid\/extension\/:name",
         "method": "post",
         "description": {
-            "de": "???"
+            "de": "installiert eine Veranstaltungserweiterung"
         }
     },
     {
         "path": "\/link\/course\/:courseid\/extension\/:name",
         "method": "delete",
         "description": {
-            "de": "???"
+            "de": "entfernt eine Erweiterung aus einer Veranstaltung"
         }
     },
     {
         "path": "\/link\/course\/:courseid",
         "method": "delete",
         "description": {
-            "de": "???"
+            "de": "entfernt die Komponente aus der Veranstaltung"
         }
     },
     {
         "path": "\/link\/exists\/course\/:courseid\/extension\/:name",
         "method": "get",
         "description": {
-            "de": "???"
+            "de": "prüft, ob eine Erweiterung in einer Veranstatung installiert ist"
         }
     },
     {
         "path": "\/link\/course\/:courseid\/extension",
         "method": "get",
         "description": {
-            "de": "???"
+            "de": "ermittelt alle installierten Erweiterungen einer Veranstaltung"
         }
     },
     {
         "path": "\/link\/extension",
         "method": "get",
         "description": {
-            "de": "???"
+            "de": "ermittelt alle installierbaren Erweiterungen"
         }
     },
     {
         "path": "\/link\/exists\/extension\/:name",
         "method": "get",
         "description": {
-            "de": "???"
+            "de": "prüft, ob eine bestimmte Erweiterung existiert"
         }
     },
     {
         "path": "\/link\/extension\/:name",
         "method": "get",
         "description": {
-            "de": "???"
+            "de": "ermittelt die Komponentendaten einer Erweiterung"
         }
     }
 ]

@@ -33,7 +33,7 @@
             "name": "getExerciseType",
             "target": "DBExerciseType",
             "description": {
-                "de": "für den Befehl getExerciseType"
+                "de": "um Aufgabentypen abzufragen"
             },
             "links": []
         },
@@ -41,7 +41,7 @@
             "name": "getExerciseFileType",
             "target": "DBExerciseFileType",
             "description": {
-                "de": "für den Befehl getExerciseFileType"
+                "de": "hier sollen Aufgabendateitypen abgerufen werden"
             },
             "links": []
         },
@@ -49,7 +49,7 @@
             "name": "getExercise",
             "target": "DBExercise",
             "description": {
-                "de": "für den Befehl getExercise"
+                "de": "um Aufgaben abzurufen"
             },
             "links": []
         },
@@ -57,7 +57,7 @@
             "name": "getApprovalCondition",
             "target": "DBApprovalCondition",
             "description": {
-                "de": "für den Befehl getApprovalCondition"
+                "de": "zum Abrufen von Zulassungsbedingungen"
             },
             "links": []
         },
@@ -65,7 +65,7 @@
             "name": "getUser",
             "target": "DBUser",
             "description": {
-                "de": "für den Befehl getUser"
+                "de": "um Nutzerdaten abzurufen"
             },
             "links": []
         },
@@ -73,7 +73,7 @@
             "name": "getMarking",
             "target": "DBMarking",
             "description": {
-                "de": "für den Befehl getMarking"
+                "de": "zum Abfragen von Korrekturen"
             },
             "links": []
         },
@@ -81,7 +81,7 @@
             "name": "getSelectedSubmission",
             "target": "DBSelectedSubmission",
             "description": {
-                "de": "für den Befehl getSelectedSubmission"
+                "de": "hier sollen Einsendungsselektierungen abgerufen werden"
             },
             "links": []
         },
@@ -89,7 +89,7 @@
             "name": "getGroup",
             "target": "DBGroup",
             "description": {
-                "de": "für den Befehl getGroup"
+                "de": "zum Abrufen von Gruppendaten"
             },
             "links": []
         },
@@ -97,7 +97,7 @@
             "name": "getCourseStatus",
             "target": "DBCourseStatus",
             "description": {
-                "de": "für den Befehl getCourseStatus"
+                "de": "über diesen Ausgang soll der Kursstatus für Nutzer ermittelt werden"
             },
             "links": []
         },
@@ -105,7 +105,7 @@
             "name": "getSubmission",
             "target": "DBSubmission",
             "description": {
-                "de": "für den Befehl getSubmission"
+                "de": "für Einsendungen"
             },
             "links": []
         },
@@ -113,7 +113,7 @@
             "name": "getCourse",
             "target": "DBCourse",
             "description": {
-                "de": "für den Befehl getCourse"
+                "de": "zum Abrufen von Veranstaltungsdaten"
             },
             "links": []
         },
@@ -121,7 +121,7 @@
             "name": "getInvitation",
             "target": "DBInvitation",
             "description": {
-                "de": "für den Befehl getInvitation"
+                "de": "um Einladungen zu ermitteln"
             },
             "links": []
         },
@@ -129,7 +129,7 @@
             "name": "getNotification",
             "target": "DBNotification",
             "description": {
-                "de": "für den Befehl getNotification"
+                "de": "hier sollen Veranstaltungsmeldungen abgefragt werden können"
             },
             "links": []
         },
@@ -137,7 +137,7 @@
             "name": "getRedirect",
             "target": "DBRedirect",
             "description": {
-                "de": "für den Befehl getRedirect"
+                "de": "für Veranstaltungsweiterleitungen"
             },
             "links": []
         }

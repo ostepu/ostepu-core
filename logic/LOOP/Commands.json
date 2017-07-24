@@ -3,35 +3,35 @@
         "path": "\/process",
         "method": "post",
         "description": {
-            "de": "???"
+            "de": "behandelt den Verarbeitungsaufruf von LOOP (also einen Einsenevorgang)"
         }
     },
     {
         "path": "\/postprocess",
         "method": "post",
         "description": {
-            "de": "???"
+            "de": "erstellt Testcases"
         }
     },
     {
         "path": "\/course",
         "method": "post",
         "description": {
-            "de": "???"
+            "de": "fügt LOOP einer Veranstaltung hinzu"
         }
     },
     {
         "path": "\/course\/:courseid",
         "method": "delete",
         "description": {
-            "de": "???"
+            "de": "entfernt LOOP aus einer Veranstaltung"
         }
     },
     {
         "path": "\/link\/exists\/course\/:courseid",
         "method": "get",
         "description": {
-            "de": "???"
+            "de": "prüft, ob LOOP in einer Veranstaltung installiert ist"
         }
     },
     {
@@ -68,14 +68,14 @@
         "path": "\/start\/:count",
         "method": "get",
         "description": {
-            "de": "???"
+            "de": "zum n-maligen Starten der Compute Funktion"
         }
     },
     {
         "path": "\/compute\/:count",
         "method": "get",
         "description": {
-            "de": "???"
+            "de": "zum n-maligen Starten der Compute Funktion"
         }
     }
 ]

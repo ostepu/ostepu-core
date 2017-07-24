@@ -3,56 +3,49 @@
         "path": "\/exercisesheet",
         "method": "POST",
         "description": {
-            "de": "???"
+            "de": "erstellt eine neue Übungsserie"
         }
     },
     {
         "path": "\/exercisesheet\/exercisesheet\/:sheetid",
         "method": "PUT",
         "description": {
-            "de": "???"
+            "de": "ändert eine vorhandene Übungsserie"
         }
     },
     {
         "path": "\/exercisesheet\/exercisesheet\/:sheetid\/url",
         "method": "GET",
         "description": {
-            "de": "???"
+            "de": "ermittelt die Dateiadresse des Aufgabenblattes einer Übungsserie"
         }
     },
     {
         "path": "\/exercisesheet\/exercisesheet\/:sheetid",
         "method": "GET",
         "description": {
-            "de": "???"
+            "de": "liefert eine einzelne Übungsserie"
         }
     },
     {
         "path": "\/exercisesheet\/exercisesheet\/:sheetid\/exercise",
         "method": "GET",
         "description": {
-            "de": "???"
+            "de": "ermittet eine Übungsserie mit den dazu gehörigen Aufgaben"
         }
     },
     {
         "path": "\/exercisesheet\/course\/:courseid",
         "method": "GET",
         "description": {
-            "de": "???"
+            "de": "liefert alle Übungsserien einer Veranstaltung"
         }
     },
     {
         "path": "\/exercisesheet\/course\/:courseid\/exercise",
         "method": "GET",
         "description": {
-            "de": "???"
-        }
-    },
-    {
-        "path": "\/exercisesheet\/exercisesheet\/:sheetid",
-        "method": "GET",
-        "description": {
-            "de": "???"
+            "de": "liefert alle Übungsserien einer Veranstaltung und die zugehörigen Aufgaben"
         }
     }
 ]

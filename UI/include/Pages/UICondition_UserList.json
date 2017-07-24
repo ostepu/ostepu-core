@@ -1,12 +1,29 @@
 {
-  "name":"UICondition_UserList",
-  "version":"1.0",
-  "type":"clone",
-  "base":"CAbstract",
-  "baseURI":"/uicondition_userlist",
-  "option":"confPath=UI/include/Condition/uicondition_userlist_cconfig.json",
-  "links":[
-    {"name":"getHeader","target":"","links":[]},
-    {"name":"getContent","target":"","links":[]}  
-  ]
+    "name": "UICondition_UserList",
+    "option": "confPath=UI\/include\/Condition\/uicondition_userlist_cconfig.json",
+    "description": {
+        "de": "Diese Komponente gehört zu einem Template und dient der Definition von Plathaltern. An diese Ausgänge\/Platzhalter können sich Komponenten anhängen und Inhalte direkt dort einfügen. Dazu müssen diese Komponenten einen Connector auf den entsprechenden Platzhalter dieser Komponenten definieren. Die Platzhalter selbst werden in dem zugehörigen Template aufgerufen und der Inhalt an der entsprechenden Stelle eingefügt."
+    },
+    "version": "1.0",
+    "baseURI": "\/uicondition_userlist",
+    "base": "CAbstract",
+    "type": "clone",
+    "links": [
+        {
+            "name": "getHeader",
+            "target": "",
+            "description": {
+                "de": "für den Platzhalter getHeader"
+            },
+            "links": []
+        },
+        {
+            "name": "getContent",
+            "target": "",
+            "description": {
+                "de": "für den Platzhalter getContent"
+            },
+            "links": []
+        }
+    ]
 }
