@@ -149,7 +149,7 @@ class Model
                 }
                 
                 $route = new \Slim\Route($cloneAdd.$command['path'],array($this->_class,$command['callback']),false);
-                $route->via(strtoupper($method));
+                $route->via(strtoupper($method), 'OPTIONS');
                 $route->setName($command['name']);
                 $router->map($route);
 
@@ -175,6 +175,26 @@ class Model
         $matches = $router->getMatchedRoutes(strtoupper($_SERVER['REQUEST_METHOD']), $path);
 
         if (count($matches)>0){
+            
+            // wenn der Befehl als OPTIONS angefragt wird, dann sollen die Daten der Treffer zurückgegeben werden
+            if (strtoupper($_SERVER['REQUEST_METHOD'])=='OPTIONS'){
+                Logger::Log(__FILE__.':'.__LINE__.' OPTIONS',LogLevel::DEBUG);
+                $matchedCommands = array();
+                foreach($matches as $match){
+                    foreach ($commands as $command){
+                        if ($command['name'] === $match->getName()){
+                            $matchedCommands[] = $command;
+                        }
+                    }
+                }
+                
+                header('Content-Type: application/json');
+                $this->finishRequest(self::isOk(json_encode($matchedCommands, JSON_PRETTY_PRINT)));
+                return;
+            }
+            
+            // ab hier wird versucht den angefraten Befehl aufzurufen, wenn es kein OPTIONS ist
+            
             // mindestens ein zutreffender Befehl wurde gefunden (nimm den Ersten)
             $matches = $matches[0];
 
