@@ -11,147 +11,180 @@
   -
  -->
 
-## Eingänge
----------------
+Die LTutor bietet Aufrufe zum Verteilen der Einsendungen auf Kontrolleure, dem Abrufen von Korrekturarchiven und dem Behandeln der hochgeladenen Korrekturarchive an.
+
+| Themen |
+| :- |
+| [Befehle/Eingänge (Commands.json)](#eingaenge) |
+| [Ausgänge (Component.json => Links)](#ausgaenge) |
+| [Anbindungen (Component.json => Connector)](#anbindungen) |
+
+## <a name='eingaenge'></a>Befehle/Eingänge (Commands.json)
+Diese Befehle bietet diese Komponente als Aufruf an.
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| dieser Befehl verteilt die Einsendungen der Studenten gleichmäßig auf die übergebenen Tutoren (Aufgabenweise)|
-|Befehl| POST<br>/tutor/auto/exercise/course/:courseid/exercisesheet/:sheetid|
+|Befehl| POST /tutor/auto/exercise/course/:courseid/exercisesheet/:sheetid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| dieser Befehl verteilt die Einsendungen der Studenten gleichmäßig auf die übergebenen Tutoren (Gruppenweise)|
-|Befehl| POST<br>/tutor/auto/group/course/:courseid/exercisesheet/:sheetid|
+|Befehl| POST /tutor/auto/group/course/:courseid/exercisesheet/:sheetid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
-|Befehl| GET<br>/tutor/user/:userid/exercisesheet/:sheetid|
+| :----------- |:----- |
+|Beschreibung| erzeugt ein Korrekturarchiv mit den zugewiesenen Korrekturaufträgen|
+|Befehl| GET /tutor/user/:userid/exercisesheet/:sheetid(/status/:status)(/)|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
-|Befehl| POST<br>/tutor/user/:userid/course/:courseid|
+| :----------- |:----- |
+|Beschreibung| erzeugt ein Korrekturarchiv mit den zugewiesenen Korrekturaufträgen und fügt die Namen der Studenten ein|
+|Befehl| GET /tutor/user/:userid/exercisesheet/:sheetid(/status/:status)(/withnames)(/)|
+|Eingabetyp| -|
+|Ausgabetyp| -|
+
+|||
+| :----------- |:----- |
+|Beschreibung| bearbeitet ein Korrekturarchiv und übernimmt die Änderungen aus diesem ins System|
+|Befehl| POST /tutor/user/:userid/course/:courseid|
+|Eingabetyp| -|
+|Ausgabetyp| -|
+
+|||
+| :----------- |:----- |
+|Beschreibung| erzeugt ein Korrekturarchiv anhand der übermittelten Marking-Daten|
+|Befehl| POST /tutor/archive/user/:userid/exercisesheet/:sheetid(/)|
+|Eingabetyp| -|
+|Ausgabetyp| -|
+
+|||
+| :----------- |:----- |
+|Beschreibung| erzeugt ein Korrekturarchiv anhand der übermittelten Marking-Daten und fügt die Namen der Studenten ein|
+|Befehl| POST /tutor/archive/user/:userid/exercisesheet/:sheetid/withnames(/)|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 
-## Ausgänge
----------------
+## <a name='ausgaenge'></a>Ausgänge (Component.json => Links)
+Wenn eine Komponente selbst noch Unteranfragen an anderen Komponenten stellen möchte, dann werden diese über die `Ausgänge` bearbeitet.
+Dabei kann ein Ausgang bereits auf eine Komponente gerichtet sein (`Ziel`) oder durch die Zielkomponente selbst angebunden werden (`Connector`)
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| PUT<br>/DB/marking/:marking|
-|Beschreibung| für den Befehl controller|
+|Befehl| PUT /DB/marking/:marking|
+|Beschreibung| über diesen Ausgang werden diverse Aufrufe bearbeitet|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| POST<br>/DB/file|
-|Beschreibung| für den Befehl controller|
+|Befehl| POST /DB/file|
+|Beschreibung| über diesen Ausgang werden diverse Aufrufe bearbeitet|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| GET<br>/DB/file/hash/:hash|
-|Beschreibung| für den Befehl controller|
+|Befehl| GET /DB/file/hash/:hash|
+|Beschreibung| über diesen Ausgang werden diverse Aufrufe bearbeitet|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| POST<br>/FS/file|
-|Beschreibung| für den Befehl controller|
+|Befehl| POST /FS/file|
+|Beschreibung| über diesen Ausgang werden diverse Aufrufe bearbeitet|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| GET<br>/DB/user:userid|
-|Beschreibung| für den Befehl controller|
+|Befehl| GET /DB/user:userid|
+|Beschreibung| über diesen Ausgang werden diverse Aufrufe bearbeitet|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| GET<br>/FS/path+|
-|Beschreibung| für den Befehl controller|
+|Befehl| GET /FS/path+|
+|Beschreibung| über diesen Ausgang werden diverse Aufrufe bearbeitet|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| POST<br>/FS/zip|
-|Beschreibung| für den Befehl controller|
+|Befehl| POST /FS/zip|
+|Beschreibung| über diesen Ausgang werden diverse Aufrufe bearbeitet|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| GET<br>/DB/submission/submission/:submissionid|
-|Beschreibung| für den Befehl controller|
+|Befehl| GET /DB/submission/submission/:submissionid|
+|Beschreibung| über diesen Ausgang werden diverse Aufrufe bearbeitet|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| GET<br>/DB/user/user/:userid|
-|Beschreibung| für den Befehl controller|
+|Befehl| GET /DB/user/user/:userid|
+|Beschreibung| über diesen Ausgang werden diverse Aufrufe bearbeitet|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| GET<br>/DB/exercise/exercisesheet/:sheetid|
-|Beschreibung| für den Befehl controller|
+|Befehl| GET /DB/exercise/exercisesheet/:sheetid|
+|Beschreibung| über diesen Ausgang werden diverse Aufrufe bearbeitet|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| GET<br>/DB/marking/exercisesheet/:sheetid/tutor/:userid|
-|Beschreibung| für den Befehl controller|
+|Befehl| GET /DB/marking/exercisesheet/:sheetid/tutor/:userid|
+|Beschreibung| über diesen Ausgang werden diverse Aufrufe bearbeitet|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| POST<br>/DB/marking|
-|Beschreibung| für den Befehl controller|
+|Befehl| POST /DB/marking|
+|Beschreibung| über diesen Ausgang werden diverse Aufrufe bearbeitet|
 
 ||postTransaction|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBTransaction|
-|Befehl| POST<br>/transaction/exercisesheet/:sheetid|
-|Beschreibung| für den Befehl postTransaction|
+|Befehl| POST /transaction/exercisesheet/:sheetid|
+|Beschreibung| zum Erzeugen einer neuen Transaktionsnummer|
 
 ||out2|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQuery2|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| über diesen Ausgang werden alle übrigen Anfragen behandelt (DEPRECATED)|
 
 ||getCourse|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBCourse|
-|Befehl| GET<br>/course/exercisesheet/:esid|
-|Beschreibung| für den Befehl getCourse|
+|Befehl| GET /course/exercisesheet/:esid|
+|Beschreibung| zum Abrufen einer Veranstaltung anhand seiner Übungsnummer|
 
 
-## Anbindungen
----------------
+## <a name='anbindungen'></a>Anbindungen (Component.json => Connector)
+Eine Anbindung verlangt von einer anderen Komponente (`Ziel`) die Anbindung/Verbindung zu dieser Komponente.
+Wenn eine Anbindung den aufzurufenden Befehl vorgibt, dann ist die Notation: METHODE URL (PRIORITÄT).
 
 |Ausgang|request|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CLocalObjectRequest|
 |Beschreibung| damit LTutor als lokales Objekt aufgerufen werden kann|
 
 |Ausgang|postPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CInstall|
 |Beschreibung| der Installationsassistent soll uns bei der Plattforminstallation aufrufen|
 
 |Ausgang|postCourse|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LCourse|
 |Beschreibung| wenn eine neue Veranstaltung angelegt wird, dann wollen wir auch aufgerufen werden|
 
 
-Stand 30.06.2017
+Stand 25.07.2017

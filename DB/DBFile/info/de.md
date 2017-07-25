@@ -8,6 +8,7 @@
   -
   - @author Till Uhlig <till.uhlig@student.uni-halle.de>
   - @date 2015,2017
+  -
  -->
 
 Die DBFile ermöglicht den Zugriff auf die `File` Tabelle der Datenbank, dabei sollen Dateien (nicht der Dateiinhalt) verwaltet werden. Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle gehört die `File` Datenstruktur.
@@ -23,20 +24,26 @@ Die DBFile ermöglicht den Zugriff auf die `File` Tabelle der Datenbank, dabei s
 |F_comment|VARCHAR(255) NULL| ein möglicher Dateikommentar (wird nicht verwendet) |-|
 |F_mimeType|VARCHAR(255) NULL| der mimType (siehe `Assistants/MimeReader.php`), Bsp.: image/png, application/pdf |-|
 
-## Eingänge
----------------
+| Themen |
+| :- |
+| [Befehle/Eingänge (Commands.json)](#eingaenge) |
+| [Ausgänge (Component.json => Links)](#ausgaenge) |
+| [Anbindungen (Component.json => Connector)](#anbindungen) |
+
+## <a name='eingaenge'></a>Befehle/Eingänge (Commands.json)
+Diese Befehle bietet diese Komponente als Aufruf an.
 
 ||getExistsPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| prüft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollständig installiert ist|
-|Befehl| GET<br>/link/exists/platform|
+|Befehl| GET /link/exists/platform|
 |Eingabetyp| -|
 |Ausgabetyp| Platform|
 
 ||removeFile|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| entfernt einen Eintrag anhand der ID|
-|Befehl| DELETE<br>/file/file/:fileid|
+|Befehl| DELETE /file/file/:fileid|
 |Eingabetyp| -|
 |Ausgabetyp| File|
 |||
@@ -46,9 +53,9 @@ Die DBFile ermöglicht den Zugriff auf die `File` Tabelle der Datenbank, dabei s
 |Beschreibung|die ID einer Datei (`File`)|
 
 ||editFile|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| editiert einen Eintrag|
-|Befehl| PUT<br>/file/file/:fileid|
+|Befehl| PUT /file/file/:fileid|
 |Eingabetyp| File|
 |Ausgabetyp| File|
 |||
@@ -58,9 +65,9 @@ Die DBFile ermöglicht den Zugriff auf die `File` Tabelle der Datenbank, dabei s
 |Beschreibung|die ID einer Datei (`File`)|
 
 ||getFileByMimeType|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| ermittelt Einträge anhand des MIME-Type|
-|Befehl| GET<br>/file/mimetype/:base(/:type)(/timestamp/begin/:beginStamp/end/:endStamp)|
+|Befehl| GET /file/mimetype/:base(/:type)(/timestamp/begin/:beginStamp/end/:endStamp)|
 |Eingabetyp| -|
 |Ausgabetyp| File|
 |||
@@ -79,9 +86,9 @@ Die DBFile ermöglicht den Zugriff auf die `File` Tabelle der Datenbank, dabei s
 |Beschreibung|der Endstempel (Unix-Zeitstempel)|
 
 ||getFile|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| ermittelt einen Eintrag anhand der ID|
-|Befehl| GET<br>/file/file/:fileid|
+|Befehl| GET /file/file/:fileid|
 |Eingabetyp| -|
 |Ausgabetyp| File|
 |||
@@ -91,16 +98,16 @@ Die DBFile ermöglicht den Zugriff auf die `File` Tabelle der Datenbank, dabei s
 |Beschreibung|die ID einer Datei (`File`)|
 
 ||postSamples|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| erzeugt Zufallsdaten (courseAmount = Anzahl der Veranstaltungen, userAmount = Anzahl der Nutzer), anhand der Vorgabe|
-|Befehl| POST<br>/samples/course/:courseAmount/user/:userAmount|
+|Befehl| POST /samples/course/:courseAmount/user/:userAmount|
 |Eingabetyp| -|
 |Ausgabetyp| Query|
 
 ||getFileByHash|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| ermittelt einen Eintrag anhand des Hash (`F_hash`)|
-|Befehl| GET<br>/file/hash/:hash|
+|Befehl| GET /file/hash/:hash|
 |Eingabetyp| -|
 |Ausgabetyp| File|
 |||
@@ -110,9 +117,9 @@ Die DBFile ermöglicht den Zugriff auf die `File` Tabelle der Datenbank, dabei s
 |Beschreibung|der Hashwert einer Datei|
 
 ||getAllFiles|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert alle Dateien|
-|Befehl| GET<br>/file(/timestamp/begin/:beginStamp/end/:endStamp)|
+|Befehl| GET /file(/timestamp/begin/:beginStamp/end/:endStamp)|
 |Eingabetyp| -|
 |Ausgabetyp| File|
 |||
@@ -125,144 +132,146 @@ Die DBFile ermöglicht den Zugriff auf die `File` Tabelle der Datenbank, dabei s
 |Beschreibung|der Endstempel (Unix-Zeitstempel)|
 
 ||deletePlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| entfernt die Komponente und ihre installierten Bestandteile aus der Plattform|
-|Befehl| DELETE<br>/platform|
+|Befehl| DELETE /platform|
 |Eingabetyp| -|
 |Ausgabetyp| Platform|
 
 ||addFile|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| trägt eine neue Datei ein|
-|Befehl| POST<br>/file|
+|Befehl| POST /file|
 |Eingabetyp| File|
 |Ausgabetyp| File|
 
 ||getSamplesInfo|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert die Bezeichner der betroffenen Tabellen|
-|Befehl| GET<br>/samples|
+|Befehl| GET /samples|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 ||addPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| installiert die zugehörige Tabelle und die Prozeduren für diese Plattform|
-|Befehl| POST<br>/platform|
+|Befehl| POST /platform|
 |Eingabetyp| Platform|
 |Ausgabetyp| Platform|
 
 ||getApiProfiles|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren|
-|Befehl| GET<br>/api/profiles|
+|Befehl| GET /api/profiles|
 |Eingabetyp| -|
 |Ausgabetyp| GateProfile|
 
 
-## Ausgänge
----------------
+## <a name='ausgaenge'></a>Ausgänge (Component.json => Links)
+Wenn eine Komponente selbst noch Unteranfragen an anderen Komponenten stellen möchte, dann werden diese über die `Ausgänge` bearbeitet.
+Dabei kann ein Ausgang bereits auf eine Komponente gerichtet sein (`Ziel`) oder durch die Zielkomponente selbst angebunden werden (`Connector`)
 
 ||editFile|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl editFile|
 
 ||removeFile|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl removeFile|
 
 ||addFile|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl addFile|
 
 ||deletePlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQuerySetup|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl deletePlatform|
 
 ||addPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQuerySetup|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl addPlatform|
 
 ||postSamples|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl postSamples|
 
 ||getFile|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBFileGetFile/:profile/:fileid|
+|Befehl| GET /query/procedure/DBFileGetFile/:profile/:fileid|
 |Beschreibung| für den Befehl getFile|
 
 ||getAllFiles|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBFileGetAllFiles/:profile/:beginStamp/:endStamp|
+|Befehl| GET /query/procedure/DBFileGetAllFiles/:profile/:beginStamp/:endStamp|
 |Beschreibung| für den Befehl getAllFiles|
 
 ||getFileByHash|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBFileGetFileByHash/:profile/:hash|
+|Befehl| GET /query/procedure/DBFileGetFileByHash/:profile/:hash|
 |Beschreibung| für den Befehl getFileByHash|
 
 ||getFileByMimeType|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBFileGetFileByMimeType/:profile/:base/:type/:beginStamp/:endStamp|
+|Befehl| GET /query/procedure/DBFileGetFileByMimeType/:profile/:base/:type/:beginStamp/:endStamp|
 |Beschreibung| für den Befehl getFileByMimeType|
 
 ||getExistsPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBFileGetExistsPlatform/:profile|
+|Befehl| GET /query/procedure/DBFileGetExistsPlatform/:profile|
 |Beschreibung| für den Befehl getExistsPlatform|
 
 ||getSamplesInfo|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBFileGetExistsPlatform/:profile|
+|Befehl| GET /query/procedure/DBFileGetExistsPlatform/:profile|
 |Beschreibung| für den Befehl getSamplesInfo|
 
 
-## Anbindungen
----------------
+## <a name='anbindungen'></a>Anbindungen (Component.json => Connector)
+Eine Anbindung verlangt von einer anderen Komponente (`Ziel`) die Anbindung/Verbindung zu dieser Komponente.
+Wenn eine Anbindung den aufzurufenden Befehl vorgibt, dann ist die Notation: METHODE URL (PRIORITÄT).
 
 |Ausgang|request|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CLocalObjectRequest|
 |Beschreibung| damit DBFile als lokales Objekt aufgerufen werden kann|
 
 |Ausgang|postPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CInstall|
 |Beschreibung| der Installationsassistent soll uns bei der Plattforminstallation aufrufen|
 
 |Ausgang|postSamples|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CInstall|
 |Beschreibung| wir wollen bei Bedarf Beispieldaten erzeugen|
 
 |Ausgang|getDescFiles|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| TDocuView|
 |Beschreibung| die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen|
 
 |Ausgang|getComponentProfiles|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| TApiConfiguration|
 |Beschreibung| damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden|
 
 
-Stand 30.06.2017
+Stand 25.07.2017

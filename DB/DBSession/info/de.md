@@ -8,6 +8,7 @@
   -
   - @author Till Uhlig <till.uhlig@student.uni-halle.de>
   - @date 2015,2017
+  -
  -->
 
 Die DBSession ermöglicht den Zugriff auf die `Session` Tabelle der Datenbank, dabei sollen Sitzungen verwaltet werden. Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle gehört die `Session` Datenstruktur.
@@ -17,13 +18,19 @@ Die DBSession ermöglicht den Zugriff auf die `Session` Tabelle der Datenbank, d
 |U_id        |INT NOT NULL     | die ID des zugehörigen Nutzers |UNIQUE|
 |SE_sessionID|CHAR(32) NOT NULL| ein md5 Hash, welcher die Sitzung identifiziert |-|
 
-## Eingänge
----------------
+| Themen |
+| :- |
+| [Befehle/Eingänge (Commands.json)](#eingaenge) |
+| [Ausgänge (Component.json => Links)](#ausgaenge) |
+| [Anbindungen (Component.json => Connector)](#anbindungen) |
+
+## <a name='eingaenge'></a>Befehle/Eingänge (Commands.json)
+Diese Befehle bietet diese Komponente als Aufruf an.
 
 ||editSession|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| editiert eine Session|
-|Befehl| PUT<br>/session/session/:seid|
+|Befehl| PUT /session/session/:seid|
 |Eingabetyp| Session|
 |Ausgabetyp| Session|
 |||
@@ -33,9 +40,9 @@ Die DBSession ermöglicht den Zugriff auf die `Session` Tabelle der Datenbank, d
 |Beschreibung|die ID einer Sitzung (`Session`)|
 
 ||deleteSession|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| entfernt eine Session|
-|Befehl| DELETE<br>/session/session/:seid|
+|Befehl| DELETE /session/session/:seid|
 |Eingabetyp| -|
 |Ausgabetyp| Session|
 |||
@@ -45,16 +52,16 @@ Die DBSession ermöglicht den Zugriff auf die `Session` Tabelle der Datenbank, d
 |Beschreibung|die ID einer Sitzung (`Session`)|
 
 ||postSamples|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| erzeugt Zufallsdaten (courseAmount = Anzahl der Veranstaltungen, userAmount = Anzahl der Nutzer), anhand der Vorgabe|
-|Befehl| POST<br>/samples/:amount|
+|Befehl| POST /samples/:amount|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 ||getUserSession|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert die Session eines Nutzers|
-|Befehl| GET<br>/session/user/:userid|
+|Befehl| GET /session/user/:userid|
 |Eingabetyp| -|
 |Ausgabetyp| Session|
 |||
@@ -64,9 +71,9 @@ Die DBSession ermöglicht den Zugriff auf die `Session` Tabelle der Datenbank, d
 |Beschreibung|die ID eines Nutzers oder ein Nuzername (`User`)|
 
 ||deleteUserSession|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| entfernt die Session eines Nutzers|
-|Befehl| entfernt die Session eines Nutzers<br>/session/user/:userid|
+|Befehl| entfernt die Session eines Nutzers /session/user/:userid|
 |Eingabetyp| -|
 |Ausgabetyp| Session|
 |||
@@ -76,30 +83,30 @@ Die DBSession ermöglicht den Zugriff auf die `Session` Tabelle der Datenbank, d
 |Beschreibung|die ID eines Nutzers oder ein Nuzername (`User`)|
 
 ||getExistsPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| prüft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollständig installiert ist|
-|Befehl| GET<br>/link/exists/platform|
+|Befehl| GET /link/exists/platform|
 |Eingabetyp| -|
 |Ausgabetyp| Platform|
 
 ||addSession|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| fügt eine Session ein (wenn der Eintrag schon existiert, dann wird er aktualisiert/überschrieben)|
-|Befehl| POST<br>/session|
+|Befehl| POST /session|
 |Eingabetyp| Session|
 |Ausgabetyp| Session|
 
 ||getAllSessions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| ermittelt alle Sessions|
-|Befehl| GET<br>/session|
+|Befehl| GET /session|
 |Eingabetyp| -|
 |Ausgabetyp| Session|
 
 ||getValidSession|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| gibt einen Eintrag zurück, wenn die Session und der Nutzer zusammen passen|
-|Befehl| GET<br>/session/session/:seid/user/:userid|
+|Befehl| GET /session/session/:seid/user/:userid|
 |Eingabetyp| -|
 |Ausgabetyp| Session|
 |||
@@ -112,9 +119,9 @@ Die DBSession ermöglicht den Zugriff auf die `Session` Tabelle der Datenbank, d
 |Beschreibung|die ID eines Nutzers oder ein Nuzername (`User`)|
 
 ||editUserSession|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| editiert die Session eines Nutzers|
-|Befehl| PUT<br>/session/user/:userid|
+|Befehl| PUT /session/user/:userid|
 |Eingabetyp| Session|
 |Ausgabetyp| Session|
 |||
@@ -124,16 +131,16 @@ Die DBSession ermöglicht den Zugriff auf die `Session` Tabelle der Datenbank, d
 |Beschreibung|die ID eines Nutzers oder ein Nuzername (`User`)|
 
 ||deletePlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| entfernt die Komponente und ihre installierten Bestandteile aus der Plattform|
-|Befehl| DELETE<br>/platform|
+|Befehl| DELETE /platform|
 |Eingabetyp| -|
 |Ausgabetyp| Platform|
 
 ||getSessionUser|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert die Session anhand der Session-ID|
-|Befehl| GET<br>/session/session/:seid|
+|Befehl| GET /session/session/:seid|
 |Eingabetyp| -|
 |Ausgabetyp| Session|
 |||
@@ -143,137 +150,139 @@ Die DBSession ermöglicht den Zugriff auf die `Session` Tabelle der Datenbank, d
 |Beschreibung|die ID einer Sitzung (`Session`)|
 
 ||getSamplesInfo|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert die Bezeichner der betroffenen Tabellen|
-|Befehl| GET<br>/samples|
+|Befehl| GET /samples|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 ||addPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| installiert die zugehörige Tabelle und die Prozeduren für diese Plattform|
-|Befehl| POST<br>/platform|
+|Befehl| POST /platform|
 |Eingabetyp| Platform|
 |Ausgabetyp| Platform|
 
 ||getApiProfiles|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren|
-|Befehl| GET<br>/api/profiles|
+|Befehl| GET /api/profiles|
 |Eingabetyp| -|
 |Ausgabetyp| GateProfile|
 
 
-## Ausgänge
----------------
+## <a name='ausgaenge'></a>Ausgänge (Component.json => Links)
+Wenn eine Komponente selbst noch Unteranfragen an anderen Komponenten stellen möchte, dann werden diese über die `Ausgänge` bearbeitet.
+Dabei kann ein Ausgang bereits auf eine Komponente gerichtet sein (`Ziel`) oder durch die Zielkomponente selbst angebunden werden (`Connector`)
 
 ||editSession|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl editSession|
 
 ||deleteSession|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl deleteSession|
 
 ||editUserSession|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl editUserSession|
 
 ||deleteUserSession|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl deleteUserSession|
 
 ||addSession|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl addSession|
 
 ||deletePlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQuerySetup|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl deletePlatform|
 
 ||addPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQuerySetup|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl addPlatform|
 
 ||postSamples|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl postSamples|
 
 ||getUserSession|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBSessionGetUserSession/:profile/:userid|
+|Befehl| GET /query/procedure/DBSessionGetUserSession/:profile/:userid|
 |Beschreibung| für den Befehl getUserSession|
 
 ||getSessionUser|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBSessionGetSessionUser/:profile/:seid|
+|Befehl| GET /query/procedure/DBSessionGetSessionUser/:profile/:seid|
 |Beschreibung| für den Befehl getSessionUser|
 
 ||getValidSession|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBSessionGetValidSession/:profile/:seid/:userid|
+|Befehl| GET /query/procedure/DBSessionGetValidSession/:profile/:seid/:userid|
 |Beschreibung| für den Befehl getValidSession|
 
 ||getAllSessions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBSessionGetAllSessions/:profile|
+|Befehl| GET /query/procedure/DBSessionGetAllSessions/:profile|
 |Beschreibung| für den Befehl getAllSessions|
 
 ||getExistsPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBSessionGetExistsPlatform/:profile|
+|Befehl| GET /query/procedure/DBSessionGetExistsPlatform/:profile|
 |Beschreibung| für den Befehl getExistsPlatform|
 
 ||getSamplesInfo|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBSessionGetExistsPlatform/:profile|
+|Befehl| GET /query/procedure/DBSessionGetExistsPlatform/:profile|
 |Beschreibung| für den Befehl getSamplesInfo|
 
 
-## Anbindungen
----------------
+## <a name='anbindungen'></a>Anbindungen (Component.json => Connector)
+Eine Anbindung verlangt von einer anderen Komponente (`Ziel`) die Anbindung/Verbindung zu dieser Komponente.
+Wenn eine Anbindung den aufzurufenden Befehl vorgibt, dann ist die Notation: METHODE URL (PRIORITÄT).
 
 |Ausgang|request|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CLocalObjectRequest|
 |Beschreibung| damit DBSession als lokales Objekt aufgerufen werden kann|
 
 |Ausgang|postPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CInstall|
 |Beschreibung| der Installationsassistent soll uns bei der Plattforminstallation aufrufen|
 
 |Ausgang|getDescFiles|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| TDocuView|
 |Beschreibung| die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen|
 
 |Ausgang|getComponentProfiles|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| TApiConfiguration|
 |Beschreibung| damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden|
 
 
-Stand 30.06.2017
+Stand 25.07.2017

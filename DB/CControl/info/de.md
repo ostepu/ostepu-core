@@ -13,113 +13,128 @@
 
 Diese Komponente stellt wichtige Aufrufe bereit, um die Installation der Komponenten durchzuführen. Zudem legt sie die Tabellen `Component` und `ComponentLinkage` an und verwaltet diese.
 
-## Eingänge
----------------
+| Themen |
+| :- |
+| [Befehle/Eingänge (Commands.json)](#eingaenge) |
+| [Anbindungen (Component.json => Connector)](#anbindungen) |
+
+## <a name='eingaenge'></a>Befehle/Eingänge (Commands.json)
+Diese Befehle bietet diese Komponente als Aufruf an.
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| editiert eine Komponentenverbindung|
-|Befehl| put<br>/link/:linkid|
+|Befehl| put /link/:linkid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| entfernt eine Verbindung|
-|Befehl| delete<br>/link/:linkid|
+|Befehl| delete /link/:linkid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| entfernt die Komponente aus der Veranstaltung (löscht also die zugehörigen Tabellen)|
-|Befehl| DELETE<br>/platform|
+|Befehl| DELETE /platform|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| hinterlegt eine neue Komponente|
-|Befehl| post<br>/component|
+|Befehl| post /component|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| gibt eine einzelne Verbindung zurück|
-|Befehl| get<br>/link/:linkid|
+|Befehl| get /link/:linkid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| installiert die Komponenten anhand der Definitionen, welche sich in der Datenbank befinden|
-|Befehl| get<br>/definition/send|
+|Befehl| get /definition/send|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| editiert einen Komponenteneintrag in der Datenbank|
-|Befehl| put<br>/component/:componentid|
+|Befehl| put /component/:componentid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| entfernt einen Komponenteneintrag|
-|Befehl| delete<br>/component/:componentid|
+|Befehl| delete /component/:componentid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| gibt einen einzelnen Komponenteneintrag aus|
-|Befehl| get<br>/component/:componentid|
+|Befehl| get /component/:componentid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| speichert eine neue Verbindung|
-|Befehl| post<br>/link|
+|Befehl| post /link|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| gibt die vollständige Definition einer Komponente aus|
-|Befehl| get<br>/definition/:componentid|
+|Befehl| get /definition/:componentid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| gibt alle Fremdschlüsselbeziehungen zwischen den Tabellen aus|
-|Befehl| get<br>/tableReferences|
+|Befehl| get /tableReferences|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| installiert CControl in die Plattform (legt also die Tabellen an)|
-|Befehl| POST<br>/platform|
+|Befehl| POST /platform|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| gibt alle Komponentendefinitionen aus|
-|Befehl| get<br>/definition|
+|Befehl| get /definition|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| prüft, ob die CControl korrekt in die Plattform installiert wurde|
-|Befehl| GET<br>/link/exists/platform|
+|Befehl| GET /link/exists/platform|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 
-Stand 30.06.2017
+## <a name='anbindungen'></a>Anbindungen (Component.json => Connector)
+Eine Anbindung verlangt von einer anderen Komponente (`Ziel`) die Anbindung/Verbindung zu dieser Komponente.
+Wenn eine Anbindung den aufzurufenden Befehl vorgibt, dann ist die Notation: METHODE URL (PRIORITÄT).
+
+|Ausgang|getDescFiles|
+| :----------- |:----- |
+|Ziel| TDocuView|
+|Beschreibung| die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen|
+
+
+Stand 25.07.2017

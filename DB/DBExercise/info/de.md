@@ -8,24 +8,31 @@
   -
   - @author Till Uhlig <till.uhlig@student.uni-halle.de>
   - @date 2015,2017
+  -
  -->
 
 Die DBExercise ermöglicht den Zugriff auf die `Exercise` Tabelle der Datenbank. Sie verwaltet die einzelnen Aufgaben einer Übungsserie. Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.
 
-## Eingänge
----------------
+| Themen |
+| :- |
+| [Befehle/Eingänge (Commands.json)](#eingaenge) |
+| [Ausgänge (Component.json => Links)](#ausgaenge) |
+| [Anbindungen (Component.json => Connector)](#anbindungen) |
+
+## <a name='eingaenge'></a>Befehle/Eingänge (Commands.json)
+Diese Befehle bietet diese Komponente als Aufruf an.
 
 ||getExistsPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| prüft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollständig installiert ist|
-|Befehl| GET<br>/link/exists/platform|
+|Befehl| GET /link/exists/platform|
 |Eingabetyp| -|
 |Ausgabetyp| Platform|
 
 ||deleteExercise|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| entfernt eine Aufgabe|
-|Befehl| DELETE<br>/exercise/exercise/:eid|
+|Befehl| DELETE /exercise/exercise/:eid|
 |Eingabetyp| -|
 |Ausgabetyp| Exercise|
 |||
@@ -35,9 +42,9 @@ Die DBExercise ermöglicht den Zugriff auf die `Exercise` Tabelle der Datenbank.
 |Beschreibung|die ID einer Aufgabe (`Exercise`)|
 
 ||editExercise|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| editiert eine Aufgabe|
-|Befehl| PUT<br>/exercise/exercise/:eid|
+|Befehl| PUT /exercise/exercise/:eid|
 |Eingabetyp| Exercise|
 |Ausgabetyp| Exercise|
 |||
@@ -47,9 +54,9 @@ Die DBExercise ermöglicht den Zugriff auf die `Exercise` Tabelle der Datenbank.
 |Beschreibung|die ID einer Aufgabe (`Exercise`)|
 
 ||getExercise|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert eine einzelne Aufgabe (sub=nosubmission bedeutet ohne Einsendungen)|
-|Befehl| GET<br>/exercise/exercise/:eid(/:sub)|
+|Befehl| GET /exercise/exercise/:eid(/:sub)|
 |Eingabetyp| -|
 |Ausgabetyp| Exercise|
 |||
@@ -59,23 +66,23 @@ Die DBExercise ermöglicht den Zugriff auf die `Exercise` Tabelle der Datenbank.
 |Beschreibung|die ID einer Aufgabe (`Exercise`)|
 
 ||getAllExercises|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert alle Aufgaben (sub=nosubmission bedeutet ohne Einsendungen)|
-|Befehl| GET<br>/exercise(/:sub)|
+|Befehl| GET /exercise(/:sub)|
 |Eingabetyp| -|
 |Ausgabetyp| Exercise|
 
 ||postSamples|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| erzeugt Zufallsdaten (courseAmount = Anzahl der Veranstaltungen, userAmount = Anzahl der Nutzer), anhand der Vorgabe|
-|Befehl| POST<br>/samples/course/:courseAmount/user/:userAmount|
+|Befehl| POST /samples/course/:courseAmount/user/:userAmount|
 |Eingabetyp| -|
 |Ausgabetyp| Query|
 
 ||getSheetExercises|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert die Aufgaben einer Übungsserie (sub=nosubmission bedeutet ohne Einsendungen)|
-|Befehl| GET<br>/exercise/exercisesheet/:esid(/:sub)|
+|Befehl| GET /exercise/exercisesheet/:esid(/:sub)|
 |Eingabetyp| -|
 |Ausgabetyp| Exercise|
 |||
@@ -85,9 +92,9 @@ Die DBExercise ermöglicht den Zugriff auf die `Exercise` Tabelle der Datenbank.
 |Beschreibung|die ID einer Übungsserie (`ExerciseSheet`)|
 
 ||getCourseExercises|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert die Aufgaben einer Veranstaltung (sub=nosubmission bedeutet ohne Einsendungen)|
-|Befehl| GET<br>/exercise/course/:courseid(/:sub)|
+|Befehl| GET /exercise/course/:courseid(/:sub)|
 |Eingabetyp| -|
 |Ausgabetyp| Exercise|
 |||
@@ -97,138 +104,140 @@ Die DBExercise ermöglicht den Zugriff auf die `Exercise` Tabelle der Datenbank.
 |Beschreibung|eine Veranstaltungs ID (`Course`)|
 
 ||deletePlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| entfernt die Komponente und ihre installierten Bestandteile aus der Plattform|
-|Befehl| DELETE<br>/platform|
+|Befehl| DELETE /platform|
 |Eingabetyp| -|
 |Ausgabetyp| Platform|
 
 ||addExercise|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| fügt eine Aufgabe ein|
-|Befehl| POST<br>/exercise|
+|Befehl| POST /exercise|
 |Eingabetyp| Exercise|
 |Ausgabetyp| Exercise|
 
 ||getSamplesInfo|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert die Bezeichner der betroffenen Tabellen|
-|Befehl| GET<br>/samples|
+|Befehl| GET /samples|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 ||addPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| installiert die zugehörige Tabelle und die Prozeduren für diese Plattform|
-|Befehl| POST<br>/platform|
+|Befehl| POST /platform|
 |Eingabetyp| Platform|
 |Ausgabetyp| Platform|
 
 ||getApiProfiles|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren|
-|Befehl| GET<br>/api/profiles|
+|Befehl| GET /api/profiles|
 |Eingabetyp| -|
 |Ausgabetyp| GateProfile|
 
 
-## Ausgänge
----------------
+## <a name='ausgaenge'></a>Ausgänge (Component.json => Links)
+Wenn eine Komponente selbst noch Unteranfragen an anderen Komponenten stellen möchte, dann werden diese über die `Ausgänge` bearbeitet.
+Dabei kann ein Ausgang bereits auf eine Komponente gerichtet sein (`Ziel`) oder durch die Zielkomponente selbst angebunden werden (`Connector`)
 
 ||editExercise|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl editExercise|
 
 ||deleteExercise|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl deleteExercise|
 
 ||addExercise|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl addExercise|
 
 ||postSamples|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl postSamples|
 
 ||deletePlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQuerySetup|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl deletePlatform|
 
 ||addPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQuerySetup|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl addPlatform|
 
 ||getExercise|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBExerciseGetExercise/:eid/:sub|
+|Befehl| GET /query/procedure/DBExerciseGetExercise/:eid/:sub|
 |Beschreibung| für den Befehl getExercise|
 
 ||getAllExercises|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBExerciseGetAllExercises/:sub|
+|Befehl| GET /query/procedure/DBExerciseGetAllExercises/:sub|
 |Beschreibung| für den Befehl getAllExercises|
 
 ||getCourseExercises|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBExerciseGetCourseExercises/:courseid/:sub|
+|Befehl| GET /query/procedure/DBExerciseGetCourseExercises/:courseid/:sub|
 |Beschreibung| für den Befehl getCourseExercises|
 
 ||getSheetExercises|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBExerciseGetSheetExercises/:esid/:sub|
+|Befehl| GET /query/procedure/DBExerciseGetSheetExercises/:esid/:sub|
 |Beschreibung| für den Befehl getSheetExercises|
 
 ||getExistsPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBExerciseGetExistsPlatform|
+|Befehl| GET /query/procedure/DBExerciseGetExistsPlatform|
 |Beschreibung| für den Befehl getExistsPlatform|
 
 
-## Anbindungen
----------------
+## <a name='anbindungen'></a>Anbindungen (Component.json => Connector)
+Eine Anbindung verlangt von einer anderen Komponente (`Ziel`) die Anbindung/Verbindung zu dieser Komponente.
+Wenn eine Anbindung den aufzurufenden Befehl vorgibt, dann ist die Notation: METHODE URL (PRIORITÄT).
 
 |Ausgang|request|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CLocalObjectRequest|
 |Beschreibung| damit DBExercise als lokales Objekt aufgerufen werden kann|
 
 |Ausgang|postPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CInstall|
 |Beschreibung| der Installationsassistent soll uns bei der Plattforminstallation aufrufen|
 
 |Ausgang|postSamples|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CInstall|
 |Beschreibung| wir wollen bei Bedarf Beispieldaten erzeugen|
 
 |Ausgang|getDescFiles|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| TDocuView|
 |Beschreibung| die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen|
 
 |Ausgang|getComponentProfiles|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| TApiConfiguration|
 |Beschreibung| damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden|
 
 
-Stand 30.06.2017
+Stand 25.07.2017

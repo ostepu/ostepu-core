@@ -11,159 +11,170 @@
   -
  -->
 
-## Eingänge
----------------
+Die LExerciseSheet bietet Befehle zum Behandeln von Übungsserien an.
+
+| Themen |
+| :- |
+| [Befehle/Eingänge (Commands.json)](#eingaenge) |
+| [Ausgänge (Component.json => Links)](#ausgaenge) |
+| [Anbindungen (Component.json => Connector)](#anbindungen) |
+
+## <a name='eingaenge'></a>Befehle/Eingänge (Commands.json)
+Diese Befehle bietet diese Komponente als Aufruf an.
 
 |||
-| :----------- |:-----: |
-|Befehl| POST<br>/exercisesheet|
+| :----------- |:----- |
+|Beschreibung| erstellt eine neue Übungsserie|
+|Befehl| POST /exercisesheet|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
-|Befehl| PUT<br>/exercisesheet/exercisesheet/:sheetid|
+| :----------- |:----- |
+|Beschreibung| ändert eine vorhandene Übungsserie|
+|Befehl| PUT /exercisesheet/exercisesheet/:sheetid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
-|Befehl| GET<br>/exercisesheet/exercisesheet/:sheetid/url|
+| :----------- |:----- |
+|Beschreibung| ermittelt die Dateiadresse des Aufgabenblattes einer Übungsserie|
+|Befehl| GET /exercisesheet/exercisesheet/:sheetid/url|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
-|Befehl| GET<br>/exercisesheet/exercisesheet/:sheetid|
+| :----------- |:----- |
+|Beschreibung| liefert eine einzelne Übungsserie|
+|Befehl| GET /exercisesheet/exercisesheet/:sheetid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
-|Befehl| GET<br>/exercisesheet/exercisesheet/:sheetid/exercise|
+| :----------- |:----- |
+|Beschreibung| ermittet eine Übungsserie mit den dazu gehörigen Aufgaben|
+|Befehl| GET /exercisesheet/exercisesheet/:sheetid/exercise|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
-|Befehl| GET<br>/exercisesheet/course/:courseid|
+| :----------- |:----- |
+|Beschreibung| liefert alle Übungsserien einer Veranstaltung|
+|Befehl| GET /exercisesheet/course/:courseid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
-|Befehl| GET<br>/exercisesheet/course/:courseid/exercise|
-|Eingabetyp| -|
-|Ausgabetyp| -|
-
-|||
-| :----------- |:-----: |
-|Befehl| GET<br>/exercisesheet/exercisesheet/:sheetid|
+| :----------- |:----- |
+|Beschreibung| liefert alle Übungsserien einer Veranstaltung und die zugehörigen Aufgaben|
+|Befehl| GET /exercisesheet/course/:courseid/exercise|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 
-## Ausgänge
----------------
+## <a name='ausgaenge'></a>Ausgänge (Component.json => Links)
+Wenn eine Komponente selbst noch Unteranfragen an anderen Komponenten stellen möchte, dann werden diese über die `Ausgänge` bearbeitet.
+Dabei kann ein Ausgang bereits auf eine Komponente gerichtet sein (`Ziel`) oder durch die Zielkomponente selbst angebunden werden (`Connector`)
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| DELETE<br>/FS/sheetFileAddress+|
+|Befehl| DELETE /FS/sheetFileAddress+|
 |Beschreibung| für den Befehl controller|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| DELETE<br>/FS/sampleFileAddress+|
+|Befehl| DELETE /FS/sampleFileAddress+|
 |Beschreibung| für den Befehl controller|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| DELETE<br>/DB/exercisesheet/exercisesheet/:sheetid|
+|Befehl| DELETE /DB/exercisesheet/exercisesheet/:sheetid|
 |Beschreibung| für den Befehl controller|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| GET<br>/DB/exercisesheet/course/:courseid/exercise|
+|Befehl| GET /DB/exercisesheet/course/:courseid/exercise|
 |Beschreibung| für den Befehl controller|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| GET<br>/DB/exercisesheet/course/:courseid|
+|Befehl| GET /DB/exercisesheet/course/:courseid|
 |Beschreibung| für den Befehl controller|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| GET<br>/DB/exercisesheet/exercisesheet/:sheetid/exercise|
+|Befehl| GET /DB/exercisesheet/exercisesheet/:sheetid/exercise|
 |Beschreibung| für den Befehl controller|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| GET<br>/DB/exercisesheet/exercisesheet/:sheetid/url|
+|Befehl| GET /DB/exercisesheet/exercisesheet/:sheetid/url|
 |Beschreibung| für den Befehl controller|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| PUT<br>/DB/exercisesheet/exercisesheet/:sheetid|
+|Befehl| PUT /DB/exercisesheet/exercisesheet/:sheetid|
 |Beschreibung| für den Befehl controller|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| POST<br>/DB/exercisesheet|
+|Befehl| POST /DB/exercisesheet|
 |Beschreibung| für den Befehl controller|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| GET<br>/hash/:hash|
+|Befehl| GET /hash/:hash|
 |Beschreibung| für den Befehl controller|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| POST<br>/DB/file|
+|Befehl| POST /DB/file|
 |Beschreibung| für den Befehl controller|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| POST<br>/FS/file|
+|Befehl| POST /FS/file|
 |Beschreibung| für den Befehl controller|
 
 ||deleteFile|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LFile|
-|Befehl| DELETE<br>/file/:fileId|
+|Befehl| DELETE /file/:fileId|
 |Beschreibung| für den Befehl deleteFile|
 
 ||getExerciseSheet|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBExerciseSheet|
-|Befehl| GET<br>/exercisesheet/exercisesheet/:sheetId|
+|Befehl| GET /exercisesheet/exercisesheet/:sheetId|
 |Beschreibung| für den Befehl getExerciseSheet|
 
 ||deleteExerciseSheet|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBExerciseSheet|
-|Befehl| DELETE<br>/exercisesheet/exercisesheet/:sheetId|
+|Befehl| DELETE /exercisesheet/exercisesheet/:sheetId|
 |Beschreibung| für den Befehl deleteExerciseSheet|
 
 
-## Anbindungen
----------------
+## <a name='anbindungen'></a>Anbindungen (Component.json => Connector)
+Eine Anbindung verlangt von einer anderen Komponente (`Ziel`) die Anbindung/Verbindung zu dieser Komponente.
+Wenn eine Anbindung den aufzurufenden Befehl vorgibt, dann ist die Notation: METHODE URL (PRIORITÄT).
 
 |Ausgang|request|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CLocalObjectRequest|
 |Beschreibung| damit LExerciseSheet als lokales Objekt aufgerufen werden kann|
 
 
-Stand 30.06.2017
+Stand 25.07.2017

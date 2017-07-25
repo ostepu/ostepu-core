@@ -11,57 +11,80 @@
   -
  -->
 
-## Eingänge
----------------
+Die LFile bietet Aufrufe an, welche das Speichern und Löschen von Dateien erlauben
+
+| Themen |
+| :- |
+| [Befehle/Eingänge (Commands.json)](#eingaenge) |
+| [Ausgänge (Component.json => Links)](#ausgaenge) |
+| [Anbindungen (Component.json => Connector)](#anbindungen) |
+
+## <a name='eingaenge'></a>Befehle/Eingänge (Commands.json)
+Diese Befehle bietet diese Komponente als Aufruf an.
 
 |||
-| :----------- |:-----: |
-|Befehl| POST<br>/file(/)|
+| :----------- |:----- |
+|Beschreibung| über diesen Befehl können Dateien in der Plattform hinterlegt werden (Datenbank+Dateisystem)|
+|Befehl| POST /file(/)|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
-|Befehl| DELETE<br>/file/:fileid(/)|
+| :----------- |:----- |
+|Beschreibung| über diesen Befehl können Dateien sauber aus der Plattform entfernt werden (Datenbank+Dateisystem)|
+|Befehl| DELETE /file/:fileid(/)|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 
-## Ausgänge
----------------
+## <a name='ausgaenge'></a>Ausgänge (Component.json => Links)
+Wenn eine Komponente selbst noch Unteranfragen an anderen Komponenten stellen möchte, dann werden diese über die `Ausgänge` bearbeitet.
+Dabei kann ein Ausgang bereits auf eine Komponente gerichtet sein (`Ziel`) oder durch die Zielkomponente selbst angebunden werden (`Connector`)
 
 ||fileDb|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBFile|
-|Befehl| GET<br>/file/hash/:hash|
-|Beschreibung| für den Befehl fileDb|
+|Befehl| GET /file/hash/:hash|
+|Beschreibung| zum Speichern/Löschen von Dateien in der Datenbank|
 
 ||fileDb|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBFile|
-|Befehl| DELETE<br>/file/:fileid|
-|Beschreibung| für den Befehl fileDb|
+|Befehl| DELETE /file/file/:fileid|
+|Beschreibung| zum Speichern/Löschen von Dateien in der Datenbank|
+
+||fileDb|
+| :----------- |:----- |
+|Ziel| DBFile|
+|Befehl| POST /file|
+|Beschreibung| zum Speichern/Löschen von Dateien in der Datenbank|
 
 ||file|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| FSFile|
-|Befehl| POST<br>/file|
-|Beschreibung| für den Befehl file|
+|Befehl| POST /file|
+|Beschreibung| zum Speichern/Löschen von Dateien im Dateisystem|
 
 ||file|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| FSFile|
-|Befehl| DELETE<br>/file/:adress|
-|Beschreibung| für den Befehl file|
+|Befehl| DELETE /file/:adress|
+|Beschreibung| zum Speichern/Löschen von Dateien im Dateisystem|
 
 
-## Anbindungen
----------------
+## <a name='anbindungen'></a>Anbindungen (Component.json => Connector)
+Eine Anbindung verlangt von einer anderen Komponente (`Ziel`) die Anbindung/Verbindung zu dieser Komponente.
+Wenn eine Anbindung den aufzurufenden Befehl vorgibt, dann ist die Notation: METHODE URL (PRIORITÄT).
 
 |Ausgang|request|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CLocalObjectRequest|
 |Beschreibung| damit LFile als lokales Objekt aufgerufen werden kann|
 
+|Ausgang|getDescFiles|
+| :----------- |:----- |
+|Ziel| TDocuView|
+|Beschreibung| die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen|
 
-Stand 30.06.2017
+
+Stand 25.07.2017

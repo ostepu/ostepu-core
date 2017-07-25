@@ -13,13 +13,19 @@
 
 die CHelp ist ein zentraler Sammelpunkt aller Hilfedateien
 
-## Eingänge
----------------
+| Themen |
+| :- |
+| [Befehle/Eingänge (Commands.json)](#eingaenge) |
+| [Ausgänge (Component.json => Links)](#ausgaenge) |
+| [Anbindungen (Component.json => Connector)](#anbindungen) |
+
+## <a name='eingaenge'></a>Befehle/Eingänge (Commands.json)
+Diese Befehle bietet diese Komponente als Aufruf an.
 
 ||getHelp|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| gibt eine Hilfedatei aus (dazu werden .md-Dateien in HTML umgewandelt)|
-|Befehl|  GET <br>/help/:language/:path+|
+|Befehl|  GET  /help/:language/:path+|
 |Eingabetyp| -|
 |Ausgabetyp| binary|
 |||
@@ -30,62 +36,69 @@ die CHelp ist ein zentraler Sammelpunkt aller Hilfedateien
 |Regex|%^([a-zA-Z0-9\.\-_]+)$%|
 
 ||getSystemStatus|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| prüft, ob das System ein Lebenszeichen von sich gibt (dazu wird ein einfache Datenbankanfrage ausgeführt)|
-|Befehl|  GET <br>/status|
+|Befehl|  GET  /status|
 |Eingabetyp| -|
 |Ausgabetyp| binary|
 
 ||addPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| installiert die zugehörige Tabelle und die Prozeduren für diese Plattform|
-|Befehl| POST<br>/platform|
+|Befehl| POST /platform|
 |Eingabetyp| Platform|
 |Ausgabetyp| Platform|
 
 ||deletePlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| entfernt die Komponente und ihre installierten Bestandteile aus der Plattform|
-|Befehl| DELETE<br>/platform|
+|Befehl| DELETE /platform|
 |Eingabetyp| -|
 |Ausgabetyp| Platform|
 
 ||getExistsPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| prüft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollständig installiert ist|
-|Befehl| GET<br>/link/exists/platform|
+|Befehl| GET /link/exists/platform|
 |Eingabetyp| -|
 |Ausgabetyp| Platform|
 
 ||getApiProfiles|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren|
-|Befehl| GET<br>/api/profiles|
+|Befehl| GET /api/profiles|
 |Eingabetyp| -|
 |Ausgabetyp| GateProfile|
 
 
-## Ausgänge
----------------
+## <a name='ausgaenge'></a>Ausgänge (Component.json => Links)
+Wenn eine Komponente selbst noch Unteranfragen an anderen Komponenten stellen möchte, dann werden diese über die `Ausgänge` bearbeitet.
+Dabei kann ein Ausgang bereits auf eine Komponente gerichtet sein (`Ziel`) oder durch die Zielkomponente selbst angebunden werden (`Connector`)
 
 
-## Anbindungen
----------------
+## <a name='anbindungen'></a>Anbindungen (Component.json => Connector)
+Eine Anbindung verlangt von einer anderen Komponente (`Ziel`) die Anbindung/Verbindung zu dieser Komponente.
+Wenn eine Anbindung den aufzurufenden Befehl vorgibt, dann ist die Notation: METHODE URL (PRIORITÄT).
 
 |Ausgang|request|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CLocalObjectRequest|
 |Beschreibung| damit CHelp als lokales Objekt aufgerufen werden kann|
 
 |Ausgang|postPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CInstall|
 |Beschreibung| der Installationsassistent soll uns bei der Plattforminstallation aufrufen|
 
 |Ausgang|getComponentProfiles|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| TApiConfiguration|
 |Beschreibung| damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden|
 
+|Ausgang|getDescFiles|
+| :----------- |:----- |
+|Ziel| TDocuView|
+|Beschreibung| die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen|
 
-Stand 30.06.2017
+
+Stand 25.07.2017

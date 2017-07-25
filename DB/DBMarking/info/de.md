@@ -8,6 +8,7 @@
   -
   - @author Till Uhlig <till.uhlig@student.uni-halle.de>
   - @date 2015,2017
+  -
  -->
 
 Die DBMarking ermöglicht den Zugriff auf die `Marking` Tabelle der Datenbank, dabei sollen Korrekturen, zu Einsendungen, verwaltet werden. Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle gehört die `Marking` Datenstruktur.
@@ -28,20 +29,26 @@ Die DBMarking ermöglicht den Zugriff auf die `Marking` Tabelle der Datenbank, d
 |M_hideFile|TINYINT NOT NULL DEFAULT 0| ein Korrektur kann ausgeblendet werden, wenn beispielweise ein manuelle Nachkorrektur vorgenommen wurde (1 = 
 ausgeblendet, 0 = sichtbar) |-|
 
-## Eingänge
----------------
+| Themen |
+| :- |
+| [Befehle/Eingänge (Commands.json)](#eingaenge) |
+| [Ausgänge (Component.json => Links)](#ausgaenge) |
+| [Anbindungen (Component.json => Connector)](#anbindungen) |
+
+## <a name='eingaenge'></a>Befehle/Eingänge (Commands.json)
+Diese Befehle bietet diese Komponente als Aufruf an.
 
 ||getExistsPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| prüft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollständig installiert ist|
-|Befehl| GET<br>/link/exists/platform|
+|Befehl| GET /link/exists/platform|
 |Eingabetyp| -|
 |Ausgabetyp| Platform|
 
 ||getMarking|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert eine einzelne Korrektur|
-|Befehl| GET<br>/marking/marking/:mid(/:sub)|
+|Befehl| GET /marking/marking/:mid(/:sub)|
 |Eingabetyp| -|
 |Ausgabetyp| Marking|
 |||
@@ -51,9 +58,9 @@ ausgeblendet, 0 = sichtbar) |-|
 |Beschreibung|die ID einer Korrektur (`Marking`)|
 
 ||getExerciseMarkings|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert alle Korrekturen einer Aufgabe|
-|Befehl| GET<br>/marking/exercise/:eid(/:sub)|
+|Befehl| GET /marking/exercise/:eid(/:sub)|
 |Eingabetyp| -|
 |Ausgabetyp| Marking|
 |||
@@ -63,9 +70,9 @@ ausgeblendet, 0 = sichtbar) |-|
 |Beschreibung|die ID einer Aufgabe (`Exercise`)|
 
 ||editMarking|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| editiert eine Korrektur|
-|Befehl| PUT<br>/marking/marking/:mid|
+|Befehl| PUT /marking/marking/:mid|
 |Eingabetyp| Marking|
 |Ausgabetyp| Marking|
 |||
@@ -75,9 +82,9 @@ ausgeblendet, 0 = sichtbar) |-|
 |Beschreibung|die ID einer Korrektur (`Marking`)|
 
 ||getTutorSheetMarkings|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert Korrekturen eines Kontrolleurs|
-|Befehl| GET<br>/marking/exercisesheet/:esid/tutor/:userid(/:sub)|
+|Befehl| GET /marking/exercisesheet/:esid/tutor/:userid(/:sub)|
 |Eingabetyp| -|
 |Ausgabetyp| Marking|
 |||
@@ -90,16 +97,16 @@ ausgeblendet, 0 = sichtbar) |-|
 |Beschreibung|die ID eines Nutzers oder ein Nuzername (`User`)|
 
 ||addMarking|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| fügt eine neue Korrektur ein|
-|Befehl| POST<br>/marking|
+|Befehl| POST /marking|
 |Eingabetyp| Marking|
 |Ausgabetyp| Marking|
 
 ||getCourseUserGroupMarkings|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| gibt alle Korrekturen eines Nutzers und seiner zugehörigen Gruppe aus|
-|Befehl| GET<br>/marking/course/:courseid/user/:userid(/:sub)|
+|Befehl| GET /marking/course/:courseid/user/:userid(/:sub)|
 |Eingabetyp| -|
 |Ausgabetyp| Marking|
 |||
@@ -112,9 +119,9 @@ ausgeblendet, 0 = sichtbar) |-|
 |Beschreibung|die ID eines Nutzers oder ein Nuzername (`User`)|
 
 ||getSubmissionMarking|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert alle Korrekturen zu einer Einsendung|
-|Befehl| GET<br>/marking/submission/:suid(/:sub)|
+|Befehl| GET /marking/submission/:suid(/:sub)|
 |Eingabetyp| -|
 |Ausgabetyp| Marking|
 |||
@@ -124,9 +131,9 @@ ausgeblendet, 0 = sichtbar) |-|
 |Beschreibung|die ID einer Einsendung (`Submission`)|
 
 ||deleteMarking|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| entfernt eine Korrektur|
-|Befehl| DELETE<br>/marking/marking/:mid|
+|Befehl| DELETE /marking/marking/:mid|
 |Eingabetyp| -|
 |Ausgabetyp| Marking|
 |||
@@ -136,9 +143,9 @@ ausgeblendet, 0 = sichtbar) |-|
 |Beschreibung|die ID einer Korrektur (`Marking`)|
 
 ||getCourseMarkings|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| ermittelt alle Korrekturen einer Veranstaltung|
-|Befehl| GET<br>/marking/course/:courseid(/:sub)|
+|Befehl| GET /marking/course/:courseid(/:sub)|
 |Eingabetyp| -|
 |Ausgabetyp| Marking|
 |||
@@ -148,9 +155,9 @@ ausgeblendet, 0 = sichtbar) |-|
 |Beschreibung|eine Veranstaltungs ID (`Course`)|
 
 ||getSheetMarkings|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| ermittelt alle Korrekturen einer Übungsserie|
-|Befehl| GET<br>/marking/exercisesheet/:esid(/:sub)|
+|Befehl| GET /marking/exercisesheet/:esid(/:sub)|
 |Eingabetyp| -|
 |Ausgabetyp| Marking|
 |||
@@ -160,9 +167,9 @@ ausgeblendet, 0 = sichtbar) |-|
 |Beschreibung|die ID einer Übungsserie (`ExerciseSheet`)|
 
 ||getTutorExerciseMarkings|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| ermittelt alle Korrekturen eines Tutors anhand einer Aufgaben-ID|
-|Befehl| GET<br>/marking/exercise/:eid/tutor/:userid(/:sub)|
+|Befehl| GET /marking/exercise/:eid/tutor/:userid(/:sub)|
 |Eingabetyp| -|
 |Ausgabetyp| Marking|
 |||
@@ -175,23 +182,23 @@ ausgeblendet, 0 = sichtbar) |-|
 |Beschreibung|die ID eines Nutzers oder ein Nuzername (`User`)|
 
 ||postSamples|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| erzeugt Zufallsdaten (courseAmount = Anzahl der Veranstaltungen, userAmount = Anzahl der Nutzer), anhand der Vorgabe|
-|Befehl| POST<br>/samples/course/:courseAmount/user/:userAmount|
+|Befehl| POST /samples/course/:courseAmount/user/:userAmount|
 |Eingabetyp| -|
 |Ausgabetyp| Query|
 
 ||getAllMarkings|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| ermittelt alle Korrekturen|
-|Befehl| GET<br>/marking(/:sub)|
+|Befehl| GET /marking(/:sub)|
 |Eingabetyp| -|
 |Ausgabetyp| Marking|
 
 ||getUserGroupMarkings|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| gibt alle Korrekturen eines Nutzers und seiner zugehörigen Gruppe aus|
-|Befehl| GET<br>/marking/exercisesheet/:esid/user/:userid(/:sub)|
+|Befehl| GET /marking/exercisesheet/:esid/user/:userid(/:sub)|
 |Eingabetyp| -|
 |Ausgabetyp| Marking|
 |||
@@ -204,16 +211,16 @@ ausgeblendet, 0 = sichtbar) |-|
 |Beschreibung|die ID eines Nutzers oder ein Nuzername (`User`)|
 
 ||deletePlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| entfernt die Komponente und ihre installierten Bestandteile aus der Plattform|
-|Befehl| DELETE<br>/platform|
+|Befehl| DELETE /platform|
 |Eingabetyp| -|
 |Ausgabetyp| Platform|
 
 ||deleteSheetMarkings|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| entfernt alle Korrekturen einer Übungsserie|
-|Befehl| DELETE<br>/marking/marking/exercisesheet/:esid|
+|Befehl| DELETE /marking/marking/exercisesheet/:esid|
 |Eingabetyp| -|
 |Ausgabetyp| Marking|
 |||
@@ -223,172 +230,174 @@ ausgeblendet, 0 = sichtbar) |-|
 |Beschreibung|die ID einer Übungsserie (`ExerciseSheet`)|
 
 ||getSamplesInfo|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert die Bezeichner der betroffenen Tabellen|
-|Befehl| GET<br>/samples|
+|Befehl| GET /samples|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 ||addPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| installiert die zugehörige Tabelle und die Prozeduren für diese Plattform|
-|Befehl| POST<br>/platform|
+|Befehl| POST /platform|
 |Eingabetyp| Platform|
 |Ausgabetyp| Platform|
 
 ||getApiProfiles|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren|
-|Befehl| GET<br>/api/profiles|
+|Befehl| GET /api/profiles|
 |Eingabetyp| -|
 |Ausgabetyp| GateProfile|
 
 
-## Ausgänge
----------------
+## <a name='ausgaenge'></a>Ausgänge (Component.json => Links)
+Wenn eine Komponente selbst noch Unteranfragen an anderen Komponenten stellen möchte, dann werden diese über die `Ausgänge` bearbeitet.
+Dabei kann ein Ausgang bereits auf eine Komponente gerichtet sein (`Ziel`) oder durch die Zielkomponente selbst angebunden werden (`Connector`)
 
 ||editMarking|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl editMarking|
 
 ||deleteMarking|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl deleteMarking|
 
 ||deleteSheetMarkings|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl deleteSheetMarkings|
 
 ||addMarking|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl addMarking|
 
 ||postSamples|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl postSamples|
 
 ||deletePlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQuerySetup|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl deletePlatform|
 
 ||addPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQuerySetup|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl addPlatform|
 
 ||getMarking|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBMarkingGetMarking/:mid/:sub|
+|Befehl| GET /query/procedure/DBMarkingGetMarking/:mid/:sub|
 |Beschreibung| für den Befehl getMarking|
 
 ||getSubmissionMarking|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBMarkingGetSubmissionMarking/:suid/:sub|
+|Befehl| GET /query/procedure/DBMarkingGetSubmissionMarking/:suid/:sub|
 |Beschreibung| für den Befehl getSubmissionMarking|
 
 ||getAllMarkings|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBExerciseGetAllMarkings/:sub|
+|Befehl| GET /query/procedure/DBExerciseGetAllMarkings/:sub|
 |Beschreibung| für den Befehl getAllMarkings|
 
 ||getCourseMarkings|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBMarkingGetCourseMarkings/:courseid/:sub|
+|Befehl| GET /query/procedure/DBMarkingGetCourseMarkings/:courseid/:sub|
 |Beschreibung| für den Befehl getCourseMarkings|
 
 ||getExerciseMarkings|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBMarkingGetExerciseMarkings/:eid/:sub|
+|Befehl| GET /query/procedure/DBMarkingGetExerciseMarkings/:eid/:sub|
 |Beschreibung| für den Befehl getExerciseMarkings|
 
 ||getSheetMarkings|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBMarkingGetSheetMarkings/:esid/:sub|
+|Befehl| GET /query/procedure/DBMarkingGetSheetMarkings/:esid/:sub|
 |Beschreibung| für den Befehl getSheetMarkings|
 
 ||getTutorCourseMarkings|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBMarkingGetTutorCourseMarkings/:courseid/:userid/:sub|
+|Befehl| GET /query/procedure/DBMarkingGetTutorCourseMarkings/:courseid/:userid/:sub|
 |Beschreibung| für den Befehl getTutorCourseMarkings|
 
 ||getTutorExerciseMarkings|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBMarkingGetTutorExerciseMarkings/:eid/:userid/:sub|
+|Befehl| GET /query/procedure/DBMarkingGetTutorExerciseMarkings/:eid/:userid/:sub|
 |Beschreibung| für den Befehl getTutorExerciseMarkings|
 
 ||getTutorSheetMarkings|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBMarkingGetTutorSheetMarkings/:esid/:userid/:sub|
+|Befehl| GET /query/procedure/DBMarkingGetTutorSheetMarkings/:esid/:userid/:sub|
 |Beschreibung| für den Befehl getTutorSheetMarkings|
 
 ||getUserGroupMarkings|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBMarkingGetUserGroupMarkings/:esid/:userid/:sub|
+|Befehl| GET /query/procedure/DBMarkingGetUserGroupMarkings/:esid/:userid/:sub|
 |Beschreibung| für den Befehl getUserGroupMarkings|
 
 ||getCourseUserGroupMarkings|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBMarkingGetCourseUserGroupMarkings/:courseid/:userid/:sub|
+|Befehl| GET /query/procedure/DBMarkingGetCourseUserGroupMarkings/:courseid/:userid/:sub|
 |Beschreibung| für den Befehl getCourseUserGroupMarkings|
 
 ||getExistsPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBMarkingGetExistsPlatform|
+|Befehl| GET /query/procedure/DBMarkingGetExistsPlatform|
 |Beschreibung| für den Befehl getExistsPlatform|
 
 
-## Anbindungen
----------------
+## <a name='anbindungen'></a>Anbindungen (Component.json => Connector)
+Eine Anbindung verlangt von einer anderen Komponente (`Ziel`) die Anbindung/Verbindung zu dieser Komponente.
+Wenn eine Anbindung den aufzurufenden Befehl vorgibt, dann ist die Notation: METHODE URL (PRIORITÄT).
 
 |Ausgang|request|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CLocalObjectRequest|
 |Beschreibung| damit DBMarking als lokales Objekt aufgerufen werden kann|
 
 |Ausgang|postPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CInstall|
 |Beschreibung| der Installationsassistent soll uns bei der Plattforminstallation aufrufen|
 
 |Ausgang|postSamples|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CInstall|
 |Beschreibung| wir wollen bei Bedarf Beispieldaten erzeugen|
 
 |Ausgang|getDescFiles|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| TDocuView|
 |Beschreibung| die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen|
 
 |Ausgang|getComponentProfiles|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| TApiConfiguration|
 |Beschreibung| damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden|
 
 
-Stand 30.06.2017
+Stand 25.07.2017

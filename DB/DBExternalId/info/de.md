@@ -8,6 +8,7 @@
   -
   - @author Till Uhlig <till.uhlig@student.uni-halle.de>
   - @date 2015,2017
+  -
  -->
 
 Die DBExternalId ermöglicht den Zugriff auf die `ExternalId` Tabelle der Datenbank, dabei sollen externe Zuordnungsnummern für Nutzerkonten verwaltet werden. Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle gehört die `ExternalId` Datenstruktur.
@@ -17,20 +18,26 @@ Die DBExternalId ermöglicht den Zugriff auf die `ExternalId` Tabelle der Datenb
 |EX_id|VARCHAR(255) NOT NULL| die externe ID, Bsp.: die StudIP ID |UNIQUE|
 |C_id|INT NOT NULL| ein Verweis auf die zugehörige Veranstaltung (sodass in jeder Veranstaltung eine eigene externe ID vergeben werden kann) |-|
 
-## Eingänge
----------------
+| Themen |
+| :- |
+| [Befehle/Eingänge (Commands.json)](#eingaenge) |
+| [Ausgänge (Component.json => Links)](#ausgaenge) |
+| [Anbindungen (Component.json => Connector)](#anbindungen) |
+
+## <a name='eingaenge'></a>Befehle/Eingänge (Commands.json)
+Diese Befehle bietet diese Komponente als Aufruf an.
 
 ||getExistsPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| prüft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollständig installiert ist|
-|Befehl| GET<br>/link/exists/platform|
+|Befehl| GET /link/exists/platform|
 |Eingabetyp| -|
 |Ausgabetyp| Platform|
 
 ||getExternalId|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert einen einzelnen Eintrag anhand der ID|
-|Befehl| GET<br>/externalid/externalid/:exid|
+|Befehl| GET /externalid/externalid/:exid|
 |Eingabetyp| -|
 |Ausgabetyp| ExternalId|
 |||
@@ -40,23 +47,23 @@ Die DBExternalId ermöglicht den Zugriff auf die `ExternalId` Tabelle der Datenb
 |Beschreibung|die ID einer externen ID (`ExternalId`)|
 
 ||addPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| installiert die zugehörige Tabelle und die Prozeduren für diese Plattform|
-|Befehl| POST<br>/platform|
+|Befehl| POST /platform|
 |Eingabetyp| Platform|
 |Ausgabetyp| Platform|
 
 ||addExternalId|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| fügt einen neuen Eintrag ein|
-|Befehl| POST<br>/externalid|
+|Befehl| POST /externalid|
 |Eingabetyp| ExternalId|
 |Ausgabetyp| ExternalId|
 
 ||editExternalId|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| editiert einen Eintrag|
-|Befehl| PUT<br>/externalid/externalid/:exid|
+|Befehl| PUT /externalid/externalid/:exid|
 |Eingabetyp| ExternalId|
 |Ausgabetyp| ExternalId|
 |||
@@ -66,9 +73,9 @@ Die DBExternalId ermöglicht den Zugriff auf die `ExternalId` Tabelle der Datenb
 |Beschreibung|die ID einer externen ID (`ExternalId`)|
 
 ||getCourseExternalIds|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert alle Einträge einer Veranstaltung|
-|Befehl| GET<br>/externalid/course/:courseid|
+|Befehl| GET /externalid/course/:courseid|
 |Eingabetyp| -|
 |Ausgabetyp| ExternalId|
 |||
@@ -78,23 +85,23 @@ Die DBExternalId ermöglicht den Zugriff auf die `ExternalId` Tabelle der Datenb
 |Beschreibung|eine Veranstaltungs ID (`Course`)|
 
 ||getAllExternalIds|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| ermittelt alle Einträge|
-|Befehl| GET<br>/externalid|
+|Befehl| GET /externalid|
 |Eingabetyp| -|
 |Ausgabetyp| ExternalId|
 
 ||deletePlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| entfernt die Komponente und ihre installierten Bestandteile aus der Plattform|
-|Befehl| DELETE<br>/platform|
+|Befehl| DELETE /platform|
 |Eingabetyp| -|
 |Ausgabetyp| Platform|
 
 ||deleteExternalId|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| entfernt einen Eintrag anhand der ID|
-|Befehl| DELETE<br>/externalid/externalid/:exid|
+|Befehl| DELETE /externalid/externalid/:exid|
 |Eingabetyp| -|
 |Ausgabetyp| ExternalId|
 |||
@@ -104,93 +111,95 @@ Die DBExternalId ermöglicht den Zugriff auf die `ExternalId` Tabelle der Datenb
 |Beschreibung|die ID einer externen ID (`ExternalId`)|
 
 ||getApiProfiles|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren|
-|Befehl| GET<br>/api/profiles|
+|Befehl| GET /api/profiles|
 |Eingabetyp| -|
 |Ausgabetyp| GateProfile|
 
 
-## Ausgänge
----------------
+## <a name='ausgaenge'></a>Ausgänge (Component.json => Links)
+Wenn eine Komponente selbst noch Unteranfragen an anderen Komponenten stellen möchte, dann werden diese über die `Ausgänge` bearbeitet.
+Dabei kann ein Ausgang bereits auf eine Komponente gerichtet sein (`Ziel`) oder durch die Zielkomponente selbst angebunden werden (`Connector`)
 
 ||editExternalId|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl editExternalId|
 
 ||deleteExternalId|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl deleteExternalId|
 
 ||addExternalId|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl addExternalId|
 
 ||deletePlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQuerySetup|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl deletePlatform|
 
 ||addPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQuerySetup|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl addPlatform|
 
 ||getExternalId|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBExternalIdGetExternalId/:exid|
+|Befehl| GET /query/procedure/DBExternalIdGetExternalId/:exid|
 |Beschreibung| für den Befehl getExternalId|
 
 ||getAllExternalIds|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBExternalIdGetAllExternalIds|
+|Befehl| GET /query/procedure/DBExternalIdGetAllExternalIds|
 |Beschreibung| für den Befehl getAllExternalIds|
 
 ||getCourseExternalIds|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBExternalIdGetCourseExternalIds/:courseid|
+|Befehl| GET /query/procedure/DBExternalIdGetCourseExternalIds/:courseid|
 |Beschreibung| für den Befehl getCourseExternalIds|
 
 ||getExistsPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBCourseGetExistsPlatform|
+|Befehl| GET /query/procedure/DBCourseGetExistsPlatform|
 |Beschreibung| für den Befehl getExistsPlatform|
 
 
-## Anbindungen
----------------
+## <a name='anbindungen'></a>Anbindungen (Component.json => Connector)
+Eine Anbindung verlangt von einer anderen Komponente (`Ziel`) die Anbindung/Verbindung zu dieser Komponente.
+Wenn eine Anbindung den aufzurufenden Befehl vorgibt, dann ist die Notation: METHODE URL (PRIORITÄT).
 
 |Ausgang|request|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CLocalObjectRequest|
 |Beschreibung| damit DBExternalId als lokales Objekt aufgerufen werden kann|
 
 |Ausgang|postPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CInstall|
 |Beschreibung| der Installationsassistent soll uns bei der Plattforminstallation aufrufen|
 
 |Ausgang|getDescFiles|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| TDocuView|
 |Beschreibung| die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen|
 
 |Ausgang|getComponentProfiles|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| TApiConfiguration|
 |Beschreibung| damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden|
 
 
-Stand 30.06.2017
+Stand 25.07.2017

@@ -8,129 +8,151 @@
   -
   - @author Till Uhlig <till.uhlig@student.uni-halle.de>
   - @date 2015,2017
+  -
  -->
 
-## Eingänge
----------------
+Über diese Komponente können Einsendungen im System hinterlegt werden. Sie speichert die Einsendung, Einsendungsdatei und führt nachgeschaltene Verarbeitungen aus. Die Verarbeitungen müssen für die jeweilige Aufgabe definiert sein.
+
+| Themen |
+| :- |
+| [Befehle/Eingänge (Commands.json)](#eingaenge) |
+| [Ausgänge (Component.json => Links)](#ausgaenge) |
+| [Anbindungen (Component.json => Connector)](#anbindungen) |
+
+## <a name='eingaenge'></a>Befehle/Eingänge (Commands.json)
+Diese Befehle bietet diese Komponente als Aufruf an.
 
 |||
-| :----------- |:-----: |
-|Befehl| post<br>/submission|
+| :----------- |:----- |
+|Beschreibung| Dieser Befehl nimmt eine Einsendung entgeben und speichert diese im System. Dabei werden Verarbeitungen ausgeführt.|
+|Befehl| post /submission|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
-|Befehl| post<br>/process|
+| :----------- |:----- |
+|Beschreibung| Zum Anlegen oder Ändern von Verarbeitungseinträgen|
+|Befehl| post /process|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
-|Befehl| post<br>/course|
+| :----------- |:----- |
+|Beschreibung| Installiert diese Komponente und nich nachgeschaltenen Komponenten in eine Veranstaltung|
+|Befehl| post /course|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
-|Befehl| delete<br>/course/:courseid|
+| :----------- |:----- |
+|Beschreibung| entfernt die Komponente und nachgeschaltene Komponenten aus der Veranstaltung|
+|Befehl| delete /course/:courseid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
-|Befehl| get<br>/link/exists/course/:courseid|
+| :----------- |:----- |
+|Beschreibung| prüft, ob die Komponente korrekt installiert ist|
+|Befehl| get /link/exists/course/:courseid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 
-## Ausgänge
----------------
+## <a name='ausgaenge'></a>Ausgänge (Component.json => Links)
+Wenn eine Komponente selbst noch Unteranfragen an anderen Komponenten stellen möchte, dann werden diese über die `Ausgänge` bearbeitet.
+Dabei kann ein Ausgang bereits auf eine Komponente gerichtet sein (`Ziel`) oder durch die Zielkomponente selbst angebunden werden (`Connector`)
 
 ||submission|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LSubmission|
-|Befehl| POST<br>/submission|
-|Beschreibung| für den Befehl submission|
+|Befehl| POST /submission|
+|Beschreibung| zum Speichern der Einsendung und Einsendungsdatei|
 
 ||marking|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LMarking|
-|Befehl| POST<br>/marking|
-|Beschreibung| für den Befehl marking|
+|Befehl| POST /marking|
+|Beschreibung| zum Speichern der Korrekturen, falls die Verarbeitungen eine Korrektur erzeugt haben|
 
 ||processorDb|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBProcess|
-|Befehl| POST<br>/process|
-|Beschreibung| für den Befehl processorDb|
+|Befehl| POST /process|
+|Beschreibung| Zum Abrufen der Verarbeitungen für diese Aufgabe. Zudem wird dieser Ausgang genutzt, um neue Verarbeitungen zu speichern und zu ändern.|
 
 ||processorDb|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBProcess|
-|Befehl| GET<br>/process/exercise/:exerciseid|
-|Beschreibung| für den Befehl processorDb|
+|Befehl| PUT /process/process/:processid|
+|Beschreibung| Zum Abrufen der Verarbeitungen für diese Aufgabe. Zudem wird dieser Ausgang genutzt, um neue Verarbeitungen zu speichern und zu ändern.|
+
+||processorDb|
+| :----------- |:----- |
+|Ziel| DBProcess|
+|Befehl| GET /process/exercise/:exerciseid|
+|Beschreibung| Zum Abrufen der Verarbeitungen für diese Aufgabe. Zudem wird dieser Ausgang genutzt, um neue Verarbeitungen zu speichern und zu ändern.|
 
 ||attachment|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBProcessAttachment|
-|Befehl| POST<br>/attachment|
-|Beschreibung| für den Befehl attachment|
+|Befehl| POST /attachment|
+|Beschreibung| zum Speichern der Verarbeitunsanhänge|
 
 ||workFiles|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBProcessWorkFiles|
-|Befehl| POST<br>/attachment|
-|Beschreibung| für den Befehl workFiles|
+|Befehl| POST /attachment|
+|Beschreibung| zum Speichern der Arbeitsdaten einer Verarbeitung|
 
 ||getExerciseExerciseFileType|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBExerciseFileType|
-|Befehl| GET<br>/exercisefiletype/exercise/:eid|
-|Beschreibung| für den Befehl getExerciseExerciseFileType|
+|Befehl| GET /exercisefiletype/exercise/:eid|
+|Beschreibung| zum Abrufen der erlaubten Dateitypen einer Aufgabe|
 
 ||file|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LFile|
-|Befehl| POST<br>/file|
-|Beschreibung| für den Befehl file|
+|Befehl| POST /file|
+|Beschreibung| zum Speichern von Dateien|
 
 ||postCourse|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBProcess|
-|Befehl| GET<br>/link/exists/course/:courseid|
-|Beschreibung| für den Befehl postCourse|
+|Befehl| GET /link/exists/course/:courseid|
+|Beschreibung| um nachgeschaltene Komponenten in die Veranstaltung installieren zu können|
 
 ||postCourse|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBProcess|
-|Befehl| POST<br>/course|
-|Beschreibung| für den Befehl postCourse|
+|Befehl| POST /course|
+|Beschreibung| um nachgeschaltene Komponenten in die Veranstaltung installieren zu können|
 
 ||postCourse|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBProcess|
-|Befehl| DELETE<br>/course/course/:courseid|
-|Beschreibung| für den Befehl postCourse|
+|Befehl| DELETE /course/course/:courseid|
+|Beschreibung| um nachgeschaltene Komponenten in die Veranstaltung installieren zu können|
 
 
-## Anbindungen
----------------
+## <a name='anbindungen'></a>Anbindungen (Component.json => Connector)
+Eine Anbindung verlangt von einer anderen Komponente (`Ziel`) die Anbindung/Verbindung zu dieser Komponente.
+Wenn eine Anbindung den aufzurufenden Befehl vorgibt, dann ist die Notation: METHODE URL (PRIORITÄT).
 
 |Ausgang|deleteCourse|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LCourse|
 |Beschreibung| wenn eine Veranstaltung gelöscht wird, dann müssen auch unsere Tabellen entfernt werden|
 
 |Ausgang|postCourse|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LCourse|
 |Beschreibung| wenn eine neue Veranstaltung angelegt wird, dann wollen wir auch aufgerufen werden|
 
 |Ausgang|request|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CLocalObjectRequest|
 |Beschreibung| damit LProcessor als lokales Objekt aufgerufen werden kann|
 
 
-Stand 30.06.2017
+Stand 25.07.2017

@@ -8,6 +8,7 @@
   -
   - @author Till Uhlig <till.uhlig@student.uni-halle.de>
   - @date 2015,2017
+  -
  -->
 
 Die DBSubmission ermöglicht den Zugriff auf die `Submission` Tabelle der Datenbank, dabei sollen studentische Einsendungen verwaltet werden. Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle gehört die `Submission` Datenstruktur.
@@ -26,13 +27,19 @@ Die DBSubmission ermöglicht den Zugriff auf die `Submission` Tabelle der Datenb
 |S_leaderId|INT NULL| ein Verweis auf das Nutzerkonto des Gruppenführers |-|
 |S_hideFile|TINYINT NOT NULL DEFAULT 0| ein Einsendung kann ausgeblendet werden, wenn beispielweise ein manuelle Nachkorrektur vorgenommen wurde (1 = ausgeblendet, 0 = sichtbar) |-|
 
-## Eingänge
----------------
+| Themen |
+| :- |
+| [Befehle/Eingänge (Commands.json)](#eingaenge) |
+| [Ausgänge (Component.json => Links)](#ausgaenge) |
+| [Anbindungen (Component.json => Connector)](#anbindungen) |
+
+## <a name='eingaenge'></a>Befehle/Eingänge (Commands.json)
+Diese Befehle bietet diese Komponente als Aufruf an.
 
 ||getSheetSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| gibt alle Einsendungen einer Übungsserie|
-|Befehl| GET<br>/submission/exercisesheet/:esid|
+|Befehl| GET /submission/exercisesheet/:esid|
 |Eingabetyp| -|
 |Ausgabetyp| Submission|
 |||
@@ -42,16 +49,16 @@ Die DBSubmission ermöglicht den Zugriff auf die `Submission` Tabelle der Datenb
 |Beschreibung|die ID einer Übungsserie (`ExerciseSheet`)|
 
 ||postSamples|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| erzeugt Zufallsdaten (courseAmount = Anzahl der Veranstaltungen, userAmount = Anzahl der Nutzer), anhand der Vorgabe|
-|Befehl| POST<br>/samples/course/:courseAmount/user/:userAmount|
+|Befehl| POST /samples/course/:courseAmount/user/:userAmount|
 |Eingabetyp| -|
 |Ausgabetyp| Query|
 
 ||getGroupCourseSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| gibt die Einsendungen einer Gruppe zu einer Veranstaltung|
-|Befehl| GET<br>/submission/group/user/:userid/course/:courseid|
+|Befehl| GET /submission/group/user/:userid/course/:courseid|
 |Eingabetyp| -|
 |Ausgabetyp| Submission|
 |||
@@ -64,23 +71,23 @@ Die DBSubmission ermöglicht den Zugriff auf die `Submission` Tabelle der Datenb
 |Beschreibung|eine Veranstaltungs ID (`Course`)|
 
 ||addPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| installiert die zugehörige Tabelle und die Prozeduren für diese Plattform|
-|Befehl| POST<br>/platform|
+|Befehl| POST /platform|
 |Eingabetyp| Platform|
 |Ausgabetyp| Platform|
 
 ||getExistsPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| prüft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollständig installiert ist|
-|Befehl| GET<br>/link/exists/platform|
+|Befehl| GET /link/exists/platform|
 |Eingabetyp| -|
 |Ausgabetyp| Platform|
 
 ||getGroupSelectedSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert nur die selektierten Einsendungen einer Gruppe (nur diese gehen in die Bewertung ein)|
-|Befehl| GET<br>/submission/group/user/:userid/exercisesheet/:esid/selected|
+|Befehl| GET /submission/group/user/:userid/exercisesheet/:esid/selected|
 |Eingabetyp| -|
 |Ausgabetyp| Submission|
 |||
@@ -90,9 +97,9 @@ Die DBSubmission ermöglicht den Zugriff auf die `Submission` Tabelle der Datenb
 |Beschreibung|die ID einer Übungsserie (`ExerciseSheet`)|
 
 ||getGroupSelectedExerciseSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| gibt die selektierten Einsendungen einer Gruppe zu einer Aufgabe|
-|Befehl| GET<br>/submission/group/user/:userid/exercise/:eid/selected|
+|Befehl| GET /submission/group/user/:userid/exercise/:eid/selected|
 |Eingabetyp| -|
 |Ausgabetyp| Submission|
 |||
@@ -102,9 +109,9 @@ Die DBSubmission ermöglicht den Zugriff auf die `Submission` Tabelle der Datenb
 |Beschreibung|die ID einer Aufgabe (`Exercise`)|
 
 ||getUserExerciseSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| gibt alle Einsendungen eines Nutzers zu einer Aufgabe zurück|
-|Befehl| GET<br>/submission/user/:userid/exercise/:eid|
+|Befehl| GET /submission/user/:userid/exercise/:eid|
 |Eingabetyp| -|
 |Ausgabetyp| Submission|
 |||
@@ -114,9 +121,9 @@ Die DBSubmission ermöglicht den Zugriff auf die `Submission` Tabelle der Datenb
 |Beschreibung|die ID einer Aufgabe (`Exercise`)|
 
 ||deleteSubmission|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| entfernt eine Einsendung (damit werden auch Korrekturen entfernt und vergebene Punkte)|
-|Befehl| DELETE<br>/submission/submission/:suid|
+|Befehl| DELETE /submission/submission/:suid|
 |Eingabetyp| -|
 |Ausgabetyp| Submission|
 |||
@@ -126,9 +133,9 @@ Die DBSubmission ermöglicht den Zugriff auf die `Submission` Tabelle der Datenb
 |Beschreibung|die ID einer Einsendung (`Submission`)|
 
 ||getUserSheetSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| gibt alle Einsendungen eines Nutzers zu einer Übungsserie zurück|
-|Befehl| GET<br>/submission/user/:userid/exercisesheet/:esid|
+|Befehl| GET /submission/user/:userid/exercisesheet/:esid|
 |Eingabetyp| -|
 |Ausgabetyp| Submission|
 |||
@@ -138,16 +145,16 @@ Die DBSubmission ermöglicht den Zugriff auf die `Submission` Tabelle der Datenb
 |Beschreibung|die ID einer Übungsserie (`ExerciseSheet`)|
 
 ||getAllSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert alle Einsendungen (für alle Veranstaltungen), es kann aber ein bestimmter Zeitraum eingegrenzt und sich auf selektierte Einsendungen festgelegt werden|
-|Befehl| GET<br>/submission(/:selected)(/date/begin/:beginStamp/end/:endStamp)|
+|Befehl| GET /submission(/:selected)(/date/begin/:beginStamp/end/:endStamp)|
 |Eingabetyp| -|
 |Ausgabetyp| Submission|
 
 ||getGroupSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert alle Einsendungen einer Gruppe (anhand der NutzerId eines Gruppenmitglieds und der Übungsserie)|
-|Befehl| GET<br>/submission/group/user/:userid/exercisesheet/:esid|
+|Befehl| GET /submission/group/user/:userid/exercisesheet/:esid|
 |Eingabetyp| -|
 |Ausgabetyp| Submission|
 |||
@@ -157,9 +164,9 @@ Die DBSubmission ermöglicht den Zugriff auf die `Submission` Tabelle der Datenb
 |Beschreibung|die ID einer Übungsserie (`ExerciseSheet`)|
 
 ||getCourseUserSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| gibt alle Einsendungen eines Nutzers in einer Veranstaltung|
-|Befehl| GET<br>/submission/course/:courseid/user/:userid|
+|Befehl| GET /submission/course/:courseid/user/:userid|
 |Eingabetyp| -|
 |Ausgabetyp| Submission|
 |||
@@ -172,9 +179,9 @@ Die DBSubmission ermöglicht den Zugriff auf die `Submission` Tabelle der Datenb
 |Beschreibung|die ID eines Nutzers oder ein Nuzername (`User`)|
 
 ||getSubmission|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert eine einzelne Einsendung|
-|Befehl| GET<br>/submission/submission/:suid|
+|Befehl| GET /submission/submission/:suid|
 |Eingabetyp| -|
 |Ausgabetyp| Submission|
 |||
@@ -184,9 +191,9 @@ Die DBSubmission ermöglicht den Zugriff auf die `Submission` Tabelle der Datenb
 |Beschreibung|die ID einer Einsendung (`Submission`)|
 
 ||getGroupExerciseSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| gibt die Einsendungen einer Gruppe zu einer Aufgabe|
-|Befehl| GET<br>/submission/group/user/:userid/exercise/:eid|
+|Befehl| GET /submission/group/user/:userid/exercise/:eid|
 |Eingabetyp| -|
 |Ausgabetyp| Submission|
 |||
@@ -196,9 +203,9 @@ Die DBSubmission ermöglicht den Zugriff auf die `Submission` Tabelle der Datenb
 |Beschreibung|die ID einer Aufgabe (`Exercise`)|
 
 ||getSelectedExerciseSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| gibt alle selektierten Einsendungen einer Aufgabe|
-|Befehl| GET<br>/submission/exercise/:eid/selected|
+|Befehl| GET /submission/exercise/:eid/selected|
 |Eingabetyp| -|
 |Ausgabetyp| Submission|
 |||
@@ -208,16 +215,16 @@ Die DBSubmission ermöglicht den Zugriff auf die `Submission` Tabelle der Datenb
 |Beschreibung|die ID einer Aufgabe (`Exercise`)|
 
 ||addSubmission|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| fügt eine neue Einsendung ein|
-|Befehl| POST<br>/submission|
+|Befehl| POST /submission|
 |Eingabetyp| Submission|
 |Ausgabetyp| Submission|
 
 ||getCourseSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| gibt alle Einsendungen einer Veranstaltung|
-|Befehl| GET<br>/submission/course/:courseid|
+|Befehl| GET /submission/course/:courseid|
 |Eingabetyp| -|
 |Ausgabetyp| Submission|
 |||
@@ -227,9 +234,9 @@ Die DBSubmission ermöglicht den Zugriff auf die `Submission` Tabelle der Datenb
 |Beschreibung|eine Veranstaltungs ID (`Course`)|
 
 ||getGroupSelectedCourseSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| gibt die selektierten Einsendungen einer Gruppe zu einer Veranstaltung|
-|Befehl| GET<br>/submission/group/user/:userid/course/:courseid/selected|
+|Befehl| GET /submission/group/user/:userid/course/:courseid/selected|
 |Eingabetyp| -|
 |Ausgabetyp| Submission|
 |||
@@ -239,9 +246,9 @@ Die DBSubmission ermöglicht den Zugriff auf die `Submission` Tabelle der Datenb
 |Beschreibung|eine Veranstaltungs ID (`Course`)|
 
 ||getSelectedCourseUserSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| gibt alle selektierten Einsendungen eines Nutzers in einer Veranstaltung|
-|Befehl| GET<br>/submission/course/:courseid/user/:userid/selected|
+|Befehl| GET /submission/course/:courseid/user/:userid/selected|
 |Eingabetyp| -|
 |Ausgabetyp| Submission|
 |||
@@ -254,9 +261,9 @@ Die DBSubmission ermöglicht den Zugriff auf die `Submission` Tabelle der Datenb
 |Beschreibung|die ID eines Nutzers oder ein Nuzername (`User`)|
 
 ||editSubmission|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| editiert eine existierende Einsendung|
-|Befehl| PUT<br>/submission/submission/:suid|
+|Befehl| PUT /submission/submission/:suid|
 |Eingabetyp| Submission|
 |Ausgabetyp| Submission|
 |||
@@ -266,16 +273,16 @@ Die DBSubmission ermöglicht den Zugriff auf die `Submission` Tabelle der Datenb
 |Beschreibung|die ID einer Einsendung (`Submission`)|
 
 ||deletePlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| entfernt die Komponente und ihre installierten Bestandteile aus der Plattform|
-|Befehl| DELETE<br>/platform|
+|Befehl| DELETE /platform|
 |Eingabetyp| -|
 |Ausgabetyp| Platform|
 
 ||getSelectedSheetSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| gibt alle selektierten Einsendungen einer Übungsserie|
-|Befehl| GET<br>/submission/exercisesheet/:esid/selected|
+|Befehl| GET /submission/exercisesheet/:esid/selected|
 |Eingabetyp| -|
 |Ausgabetyp| Submission|
 |||
@@ -285,16 +292,16 @@ Die DBSubmission ermöglicht den Zugriff auf die `Submission` Tabelle der Datenb
 |Beschreibung|die ID einer Übungsserie (`ExerciseSheet`)|
 
 ||getSamplesInfo|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert die Bezeichner der betroffenen Tabellen|
-|Befehl| GET<br>/samples|
+|Befehl| GET /samples|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 ||getExerciseSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| gibt alle Einsendungen zu einer Aufgabe zurück|
-|Befehl| GET<br>/submission/exercise/:eid|
+|Befehl| GET /submission/exercise/:eid|
 |Eingabetyp| -|
 |Ausgabetyp| Submission|
 |||
@@ -304,188 +311,190 @@ Die DBSubmission ermöglicht den Zugriff auf die `Submission` Tabelle der Datenb
 |Beschreibung|die ID einer Aufgabe (`Exercise`)|
 
 ||getApiProfiles|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren|
-|Befehl| GET<br>/api/profiles|
+|Befehl| GET /api/profiles|
 |Eingabetyp| -|
 |Ausgabetyp| GateProfile|
 
 
-## Ausgänge
----------------
+## <a name='ausgaenge'></a>Ausgänge (Component.json => Links)
+Wenn eine Komponente selbst noch Unteranfragen an anderen Komponenten stellen möchte, dann werden diese über die `Ausgänge` bearbeitet.
+Dabei kann ein Ausgang bereits auf eine Komponente gerichtet sein (`Ziel`) oder durch die Zielkomponente selbst angebunden werden (`Connector`)
 
 ||editSubmission|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl editSubmission|
 
 ||deleteSubmission|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl deleteSubmission|
 
 ||addSubmission|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl addSubmission|
 
 ||postSamples|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl postSamples|
 
 ||deletePlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQuerySetup|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl deletePlatform|
 
 ||addPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQuerySetup|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl addPlatform|
 
 ||getAllSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBSubmissionGetAllSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:selected/:beginStamp/:endStamp|
+|Befehl| GET /query/procedure/DBSubmissionGetAllSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:selected/:beginStamp/:endStamp|
 |Beschreibung| für den Befehl getAllSubmissions|
 
 ||getCourseSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBSubmissionGetCourseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:exerciseProfile/:courseid|
+|Befehl| GET /query/procedure/DBSubmissionGetCourseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:exerciseProfile/:courseid|
 |Beschreibung| für den Befehl getCourseSubmissions|
 
 ||getCourseUserSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBSubmissionGetCourseUserSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:courseid/:userid|
+|Befehl| GET /query/procedure/DBSubmissionGetCourseUserSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:courseid/:userid|
 |Beschreibung| für den Befehl getCourseUserSubmissions|
 
 ||getExerciseSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBSubmissionGetExerciseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:eid|
+|Befehl| GET /query/procedure/DBSubmissionGetExerciseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:eid|
 |Beschreibung| für den Befehl getExerciseSubmissions|
 
 ||getGroupCourseSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBSubmissionGetGroupCourseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:exerciseProfile/:groupProfile/:userid/:courseid|
+|Befehl| GET /query/procedure/DBSubmissionGetGroupCourseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:exerciseProfile/:groupProfile/:userid/:courseid|
 |Beschreibung| für den Befehl getGroupCourseSubmissions|
 
 ||getGroupExerciseSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBSubmissionGetGroupExerciseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:groupProfile/:userid/:eid|
+|Befehl| GET /query/procedure/DBSubmissionGetGroupExerciseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:groupProfile/:userid/:eid|
 |Beschreibung| für den Befehl getGroupExerciseSubmissions|
 
 ||getGroupSelectedCourseSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBSubmissionGetGroupSelectedCourseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:exerciseProfile/:groupProfile/:userid/:courseid|
+|Befehl| GET /query/procedure/DBSubmissionGetGroupSelectedCourseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:exerciseProfile/:groupProfile/:userid/:courseid|
 |Beschreibung| für den Befehl getGroupSelectedCourseSubmissions|
 
 ||getGroupSelectedExerciseSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBSubmissionGetGroupSelectedExerciseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:groupProfile/:userid/:eid|
+|Befehl| GET /query/procedure/DBSubmissionGetGroupSelectedExerciseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:groupProfile/:userid/:eid|
 |Beschreibung| für den Befehl getGroupSelectedExerciseSubmissions|
 
 ||getGroupSelectedSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBSubmissionGetGroupSelectedSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:exerciseProfile/:groupProfile/:userid/:esid|
+|Befehl| GET /query/procedure/DBSubmissionGetGroupSelectedSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:exerciseProfile/:groupProfile/:userid/:esid|
 |Beschreibung| für den Befehl getGroupSelectedSubmissions|
 
 ||getGroupSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBSubmissionGetGroupSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:exerciseProfile/:groupProfile/:userid/:esid|
+|Befehl| GET /query/procedure/DBSubmissionGetGroupSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:exerciseProfile/:groupProfile/:userid/:esid|
 |Beschreibung| für den Befehl getGroupSubmissions|
 
 ||getSelectedCourseUserSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBSubmissionGetSelectedCourseUserSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:exerciseProfile/:courseid/:userid|
+|Befehl| GET /query/procedure/DBSubmissionGetSelectedCourseUserSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:exerciseProfile/:courseid/:userid|
 |Beschreibung| für den Befehl getSelectedCourseUserSubmissions|
 
 ||getSelectedExerciseSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBSubmissionGetSelectedExerciseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:eid|
+|Befehl| GET /query/procedure/DBSubmissionGetSelectedExerciseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:eid|
 |Beschreibung| für den Befehl getSelectedExerciseSubmissions|
 
 ||getSelectedSheetSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBSubmissionGetSelectedSheetSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:esid|
+|Befehl| GET /query/procedure/DBSubmissionGetSelectedSheetSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:esid|
 |Beschreibung| für den Befehl getSelectedSheetSubmissions|
 
 ||getSheetSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBSubmissionGetSheetSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:esid|
+|Befehl| GET /query/procedure/DBSubmissionGetSheetSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:esid|
 |Beschreibung| für den Befehl getSheetSubmissions|
 
 ||getSubmission|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBSubmissionGetSubmission/:profile/:selectedSubmissionProfile/:fileProfile/:suid|
+|Befehl| GET /query/procedure/DBSubmissionGetSubmission/:profile/:selectedSubmissionProfile/:fileProfile/:suid|
 |Beschreibung| für den Befehl getSubmission|
 
 ||getUserExerciseSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBSubmissionGetUserExerciseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:userid/:eid|
+|Befehl| GET /query/procedure/DBSubmissionGetUserExerciseSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:userid/:eid|
 |Beschreibung| für den Befehl getUserExerciseSubmissions|
 
 ||getUserSheetSubmissions|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBSubmissionGetUserSheetSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:userid/:esid|
+|Befehl| GET /query/procedure/DBSubmissionGetUserSheetSubmissions/:profile/:selectedSubmissionProfile/:fileProfile/:userid/:esid|
 |Beschreibung| für den Befehl getUserSheetSubmissions|
 
 ||getExistsPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBSubmissionGetExistsPlatform/:profile|
+|Befehl| GET /query/procedure/DBSubmissionGetExistsPlatform/:profile|
 |Beschreibung| für den Befehl getExistsPlatform|
 
 
-## Anbindungen
----------------
+## <a name='anbindungen'></a>Anbindungen (Component.json => Connector)
+Eine Anbindung verlangt von einer anderen Komponente (`Ziel`) die Anbindung/Verbindung zu dieser Komponente.
+Wenn eine Anbindung den aufzurufenden Befehl vorgibt, dann ist die Notation: METHODE URL (PRIORITÄT).
 
 |Ausgang|request|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CLocalObjectRequest|
 |Beschreibung| damit DBSubmission als lokales Objekt aufgerufen werden kann|
 
 |Ausgang|postPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CInstall|
 |Beschreibung| der Installationsassistent soll uns bei der Plattforminstallation aufrufen|
 
 |Ausgang|postSamples|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CInstall|
 |Beschreibung| wir wollen bei Bedarf Beispieldaten erzeugen|
 
 |Ausgang|getDescFiles|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| TDocuView|
 |Beschreibung| die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen|
 
 |Ausgang|getComponentProfiles|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| TApiConfiguration|
 |Beschreibung| damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden|
 
 
-Stand 30.06.2017
+Stand 25.07.2017

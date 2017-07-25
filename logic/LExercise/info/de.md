@@ -11,72 +11,81 @@
   -
  -->
 
-## Eingänge
----------------
+Die LExercise bietet Anfragen für Übungsaufgaben an. Dabei enthält sie zunächst nur einen Befehl zum Speichern neuer Übungsaufgaben.
+
+| Themen |
+| :- |
+| [Befehle/Eingänge (Commands.json)](#eingaenge) |
+| [Ausgänge (Component.json => Links)](#ausgaenge) |
+
+## <a name='eingaenge'></a>Befehle/Eingänge (Commands.json)
+Diese Befehle bietet diese Komponente als Aufruf an.
 
 |||
-| :----------- |:-----: |
-|Befehl| POST<br>/exercise|
+| :----------- |:----- |
+|Beschreibung| Dieser Befehl erlaubt das Anlegen neuer Übungsaufgaben|
+|Befehl| POST /exercise|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 
-## Ausgänge
----------------
+## <a name='ausgaenge'></a>Ausgänge (Component.json => Links)
+Wenn eine Komponente selbst noch Unteranfragen an anderen Komponenten stellen möchte, dann werden diese über die `Ausgänge` bearbeitet.
+Dabei kann ein Ausgang bereits auf eine Komponente gerichtet sein (`Ziel`) oder durch die Zielkomponente selbst angebunden werden (`Connector`)
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| POST<br>/FS/file|
-|Beschreibung| für den Befehl controller|
+|Befehl| POST /FS/file|
+|Beschreibung| über diesen Ausgang werden diverse Anfragen behandelt|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| POST<br>/DB/file|
-|Beschreibung| für den Befehl controller|
+|Befehl| POST /DB/file|
+|Beschreibung| über diesen Ausgang werden diverse Anfragen behandelt|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| GET<br>/hash/:hash|
-|Beschreibung| für den Befehl controller|
+|Befehl| GET /hash/:hash|
+|Beschreibung| über diesen Ausgang werden diverse Anfragen behandelt|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| POST<br>/DB/exercise|
-|Beschreibung| für den Befehl controller|
+|Befehl| POST /DB/exercise|
+|Beschreibung| über diesen Ausgang werden diverse Anfragen behandelt|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| POST<br>/DB/exercisefiletype|
-|Beschreibung| für den Befehl controller|
+|Befehl| POST /DB/exercisefiletype|
+|Beschreibung| über diesen Ausgang werden diverse Anfragen behandelt|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| GET<br>/DB/exercise/:exerciseid|
-|Beschreibung| für den Befehl controller|
+|Befehl| GET /DB/exercise/:exerciseid|
+|Beschreibung| über diesen Ausgang werden diverse Anfragen behandelt|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| DELETE<br>/DB/exercise/exercise/:$exerciseid|
-|Beschreibung| für den Befehl controller|
+|Befehl| DELETE /DB/exercise/exercise/:$exerciseid|
+|Beschreibung| über diesen Ausgang werden diverse Anfragen behandelt|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| PUT<br>/DB/exercise/:exerciseid|
-|Beschreibung| für den Befehl controller|
+|Befehl| PUT /DB/exercise/:exerciseid|
+|Beschreibung| über diesen Ausgang werden diverse Anfragen behandelt|
 
 ||postAttachment|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LAttachment|
-|Befehl| POST<br>/attachment|
-|Beschreibung| für den Befehl postAttachment|
+|Befehl| POST /attachment|
+|Beschreibung| zum Speichern von Übungsanhängen|
 
 
-Stand 30.06.2017
+Stand 25.07.2017

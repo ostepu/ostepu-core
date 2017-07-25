@@ -11,57 +11,70 @@
   -
  -->
 
-Die FSControl ist ein zentraler Ansprechpartner für alle Komponenten der Dateisystemschicht.
+Die FSControl ist ein zentraler Ansprechpartner für alle Komponenten der Dateisystemschicht. (DEPRECATED)
 
-## Eingänge
----------------
+| Themen |
+| :- |
+| [Befehle/Eingänge (Commands.json)](#eingaenge) |
+| [Ausgänge (Component.json => Links)](#ausgaenge) |
+| [Anbindungen (Component.json => Connector)](#anbindungen) |
+
+## <a name='eingaenge'></a>Befehle/Eingänge (Commands.json)
+Diese Befehle bietet diese Komponente als Aufruf an.
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| diese Anfrage behandelt eingehende POST-Anfragen|
-|Befehl| POST<br>/:data+|
+|Befehl| POST /:data+|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| diese Anfrage behandelt eingehende PUT-Anfragen|
-|Befehl| PUT<br>/:data+|
+|Befehl| PUT /:data+|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| diese Anfrage behandelt eingehende GET-Anfragen|
-|Befehl| GET<br>/:data+|
+|Befehl| GET /:data+|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| diese Anfrage behandelt eingehende DELETE-Anfragen|
-|Befehl| DELETE<br>/:data+|
+|Befehl| DELETE /:data+|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
-|Befehl| INFO<br>/:data+|
+| :----------- |:----- |
+|Befehl| INFO /:data+|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 
-## Ausgänge
----------------
+## <a name='ausgaenge'></a>Ausgänge (Component.json => Links)
+Wenn eine Komponente selbst noch Unteranfragen an anderen Komponenten stellen möchte, dann werden diese über die `Ausgänge` bearbeitet.
+Dabei kann ein Ausgang bereits auf eine Komponente gerichtet sein (`Ziel`) oder durch die Zielkomponente selbst angebunden werden (`Connector`)
 
 
-## Anbindungen
----------------
+## <a name='anbindungen'></a>Anbindungen (Component.json => Connector)
+Eine Anbindung verlangt von einer anderen Komponente (`Ziel`) die Anbindung/Verbindung zu dieser Komponente.
+Wenn eine Anbindung den aufzurufenden Befehl vorgibt, dann ist die Notation: METHODE URL (PRIORITÄT).
 
 |Ausgang|request|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CLocalObjectRequest|
 |Beschreibung| damit FSControl als lokales Objekt aufgerufen werden kann|
 
+|Ausgang|getDescFiles|
+| :----------- |:----- |
+|Ziel| TDocuView|
+|Beschreibung| die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen|
 
-Stand 30.06.2017
+
+Stand 25.07.2017

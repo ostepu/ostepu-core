@@ -11,87 +11,105 @@
   -
  -->
 
-## Eingänge
----------------
+Die LExtension verwaltet Komponenten welche an eine Veranstaltung angehangen werden können. Dazu müssen sich diese Komponenten am 'extension'-Ausgang registrieren und selbst über POST /course installierbar sein.
+
+| Themen |
+| :- |
+| [Befehle/Eingänge (Commands.json)](#eingaenge) |
+| [Ausgänge (Component.json => Links)](#ausgaenge) |
+| [Anbindungen (Component.json => Connector)](#anbindungen) |
+
+## <a name='eingaenge'></a>Befehle/Eingänge (Commands.json)
+Diese Befehle bietet diese Komponente als Aufruf an.
 
 |||
-| :----------- |:-----: |
-|Befehl| post<br>/link/course/:courseid/extension/:name|
+| :----------- |:----- |
+|Beschreibung| installiert eine Veranstaltungserweiterung|
+|Befehl| post /link/course/:courseid/extension/:name|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
-|Befehl| delete<br>/link/course/:courseid/extension/:name|
+| :----------- |:----- |
+|Beschreibung| entfernt eine Erweiterung aus einer Veranstaltung|
+|Befehl| delete /link/course/:courseid/extension/:name|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
-|Befehl| delete<br>/link/course/:courseid|
+| :----------- |:----- |
+|Beschreibung| entfernt die Komponente aus der Veranstaltung|
+|Befehl| delete /link/course/:courseid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
-|Befehl| get<br>/link/exists/course/:courseid/extension/:name|
+| :----------- |:----- |
+|Beschreibung| prüft, ob eine Erweiterung in einer Veranstatung installiert ist|
+|Befehl| get /link/exists/course/:courseid/extension/:name|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
-|Befehl| get<br>/link/course/:courseid/extension|
+| :----------- |:----- |
+|Beschreibung| ermittelt alle installierten Erweiterungen einer Veranstaltung|
+|Befehl| get /link/course/:courseid/extension|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
-|Befehl| get<br>/link/extension|
+| :----------- |:----- |
+|Beschreibung| ermittelt alle installierbaren Erweiterungen|
+|Befehl| get /link/extension|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
-|Befehl| get<br>/link/exists/extension/:name|
+| :----------- |:----- |
+|Beschreibung| prüft, ob eine bestimmte Erweiterung existiert|
+|Befehl| get /link/exists/extension/:name|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
-|Befehl| get<br>/link/extension/:name|
+| :----------- |:----- |
+|Beschreibung| ermittelt die Komponentendaten einer Erweiterung|
+|Befehl| get /link/extension/:name|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 
-## Ausgänge
----------------
+## <a name='ausgaenge'></a>Ausgänge (Component.json => Links)
+Wenn eine Komponente selbst noch Unteranfragen an anderen Komponenten stellen möchte, dann werden diese über die `Ausgänge` bearbeitet.
+Dabei kann ein Ausgang bereits auf eine Komponente gerichtet sein (`Ziel`) oder durch die Zielkomponente selbst angebunden werden (`Connector`)
 
 ||extension|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| |
-|Befehl| DELETE<br>/course/:courseid|
-|Beschreibung| für den Befehl extension|
+|Befehl| DELETE /course/:courseid|
+|Beschreibung| An diesen Ausgang können sich die Komponenten hängen, welche als Veranstaltungserweiterung nutzbar sein wollen.|
 
 ||extension|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| |
-|Befehl| POST<br>/course|
-|Beschreibung| für den Befehl extension|
+|Befehl| POST /course|
+|Beschreibung| An diesen Ausgang können sich die Komponenten hängen, welche als Veranstaltungserweiterung nutzbar sein wollen.|
 
 ||extension|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| |
-|Befehl| GET<br>/link/exists/course/:courseid|
-|Beschreibung| für den Befehl extension|
+|Befehl| GET /link/exists/course/:courseid|
+|Beschreibung| An diesen Ausgang können sich die Komponenten hängen, welche als Veranstaltungserweiterung nutzbar sein wollen.|
 
 
-## Anbindungen
----------------
+## <a name='anbindungen'></a>Anbindungen (Component.json => Connector)
+Eine Anbindung verlangt von einer anderen Komponente (`Ziel`) die Anbindung/Verbindung zu dieser Komponente.
+Wenn eine Anbindung den aufzurufenden Befehl vorgibt, dann ist die Notation: METHODE URL (PRIORITÄT).
 
 |Ausgang|request|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CLocalObjectRequest|
 |Beschreibung| damit LExtension als lokales Objekt aufgerufen werden kann|
 
 
-Stand 30.06.2017
+Stand 25.07.2017

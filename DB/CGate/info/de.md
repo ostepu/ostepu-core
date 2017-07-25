@@ -13,40 +13,53 @@
 
 Die CGate stellt zugangskontrollierte Zugänge zu internen Komponenten bereit.
 
-## Eingänge
----------------
+| Themen |
+| :- |
+| [Befehle/Eingänge (Commands.json)](#eingaenge) |
+| [Ausgänge (Component.json => Links)](#ausgaenge) |
+| [Anbindungen (Component.json => Connector)](#anbindungen) |
+
+## <a name='eingaenge'></a>Befehle/Eingänge (Commands.json)
+Diese Befehle bietet diese Komponente als Aufruf an.
 
 ||call|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| über diese Anfrage werden alle Interface-Anfragen behandelt|
-|Befehl| PUT,GET,HEAD,OPTIONS,POST,DELETE<br>/interface/:profile/:component/:path+|
+|Befehl| PUT,GET,HEAD,OPTIONS,POST,DELETE /interface/:profile/:component/:path+|
 |Eingabetyp| binary|
 |Ausgabetyp| binary|
 
 
-## Ausgänge
----------------
+## <a name='ausgaenge'></a>Ausgänge (Component.json => Links)
+Wenn eine Komponente selbst noch Unteranfragen an anderen Komponenten stellen möchte, dann werden diese über die `Ausgänge` bearbeitet.
+Dabei kann ein Ausgang bereits auf eine Komponente gerichtet sein (`Ziel`) oder durch die Zielkomponente selbst angebunden werden (`Connector`)
 
 ||getComponentProfileWithAuthLogin|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBGate|
-|Befehl| GET<br>/gateprofile/gateprofile/:profName/auth/:authType/component/:component/login/:login|
+|Befehl| GET /gateprofile/gateprofile/:profName/auth/:authType/component/:component/login/:login|
 |Beschreibung| für den Befehl getComponentProfileWithAuthLogin|
 
 ||getComponentProfileWithAuth|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBGate|
-|Befehl| GET<br>/gateprofile/gateprofile/:profName/auth/:authType/component/:component|
+|Befehl| GET /gateprofile/gateprofile/:profName/auth/:authType/component/:component|
 |Beschreibung| für den Befehl getComponentProfileWithAuth|
 
 
-## Anbindungen
----------------
+## <a name='anbindungen'></a>Anbindungen (Component.json => Connector)
+Eine Anbindung verlangt von einer anderen Komponente (`Ziel`) die Anbindung/Verbindung zu dieser Komponente.
+Wenn eine Anbindung den aufzurufenden Befehl vorgibt, dann ist die Notation: METHODE URL (PRIORITÄT).
 
 |Ausgang|request|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CLocalObjectRequest|
 |Beschreibung| damit CGate als lokales Objekt aufgerufen werden kann|
 
+|Ausgang|getDescFiles|
+| :----------- |:----- |
+|Ziel| TDocuView|
+|Beschreibung| die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen|
 
-Stand 30.06.2017
+
+Stand 25.07.2017

@@ -11,41 +11,47 @@
   -
  -->
 
+(DEPRECATED) Über diese Komponente können verschiedene angehangene Komponenten angesprochen werden. Diese Methode sollte nicht mehr verwendet werden, weil sie fehleranfällig ist.
+
 | Themen |
 | :- |
-| [Befehle/Eingänge (Commands.json)](#Eingaenge) |
-| [Ausgänge (Component.json => Links)](#Ausgaenge) |
-| [Anbindungen (Component.json => Connector)](#Anbindungen) |
+| [Befehle/Eingänge (Commands.json)](#eingaenge) |
+| [Ausgänge (Component.json => Links)](#ausgaenge) |
+| [Anbindungen (Component.json => Connector)](#anbindungen) |
 
-## Befehle/Eingänge (Commands.json)  {#Eingaenge}
+## <a name='eingaenge'></a>Befehle/Eingänge (Commands.json)
 Diese Befehle bietet diese Komponente als Aufruf an.
 
 |||
 | :----------- |:----- |
+|Beschreibung| Dieser Befehl behandelt POST anfragen und leitet sie an die entsprechende Komponente weiter.|
 |Befehl| POST /:string+|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
 | :----------- |:----- |
+|Beschreibung| Dieser Befehl behandelt PUT anfragen und leitet sie an die entsprechende Komponente weiter.|
 |Befehl| PUT /:string+|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
 | :----------- |:----- |
+|Beschreibung| Dieser Befehl behandelt GET anfragen und leitet sie an die entsprechende Komponente weiter.|
 |Befehl| GET /:string+|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
 | :----------- |:----- |
+|Beschreibung| Dieser Befehl behandelt DELETE anfragen und leitet sie an die entsprechende Komponente weiter.|
 |Befehl| DELETE /:string+|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 
-## Ausgänge (Component.json => Links)  {#Ausgaenge}
+## <a name='ausgaenge'></a>Ausgänge (Component.json => Links)
 Wenn eine Komponente selbst noch Unteranfragen an anderen Komponenten stellen möchte, dann werden diese über die `Ausgänge` bearbeitet.
 Dabei kann ein Ausgang bereits auf eine Komponente gerichtet sein (`Ziel`) oder durch die Zielkomponente selbst angebunden werden (`Connector`)
 
@@ -53,52 +59,52 @@ Dabei kann ein Ausgang bereits auf eine Komponente gerichtet sein (`Ziel`) oder 
 | :----------- |:----- |
 |Ziel| DBControl|
 |Befehl| POST /path+|
-|Beschreibung| für den Befehl database|
+|Beschreibung| über diesen Ausgang werden DB-Komponenten (Datenbank) angefragt|
 
 ||database|
 | :----------- |:----- |
 |Ziel| DBControl|
 |Befehl| GET /path+|
-|Beschreibung| für den Befehl database|
+|Beschreibung| über diesen Ausgang werden DB-Komponenten (Datenbank) angefragt|
 
 ||database|
 | :----------- |:----- |
 |Ziel| DBControl|
 |Befehl| PUT /path+|
-|Beschreibung| für den Befehl database|
+|Beschreibung| über diesen Ausgang werden DB-Komponenten (Datenbank) angefragt|
 
 ||database|
 | :----------- |:----- |
 |Ziel| DBControl|
 |Befehl| DELETE /path+|
-|Beschreibung| für den Befehl database|
+|Beschreibung| über diesen Ausgang werden DB-Komponenten (Datenbank) angefragt|
 
 ||filesystem|
 | :----------- |:----- |
 |Ziel| FSControl|
 |Befehl| POST /path+|
-|Beschreibung| für den Befehl filesystem|
+|Beschreibung| über diesen Ausgang werden FS-Komponenten (Dateisystem) angefragt|
 
 ||filesystem|
 | :----------- |:----- |
 |Ziel| FSControl|
 |Befehl| GET /path+|
-|Beschreibung| für den Befehl filesystem|
+|Beschreibung| über diesen Ausgang werden FS-Komponenten (Dateisystem) angefragt|
 
 ||filesystem|
 | :----------- |:----- |
 |Ziel| FSControl|
 |Befehl| PUT /path+|
-|Beschreibung| für den Befehl filesystem|
+|Beschreibung| über diesen Ausgang werden FS-Komponenten (Dateisystem) angefragt|
 
 ||filesystem|
 | :----------- |:----- |
 |Ziel| FSControl|
 |Befehl| DELETE /path+|
-|Beschreibung| für den Befehl filesystem|
+|Beschreibung| über diesen Ausgang werden FS-Komponenten (Dateisystem) angefragt|
 
 
-## Anbindungen (Component.json => Connector) {#Anbindungen}
+## <a name='anbindungen'></a>Anbindungen (Component.json => Connector)
 Eine Anbindung verlangt von einer anderen Komponente (`Ziel`) die Anbindung/Verbindung zu dieser Komponente.
 Wenn eine Anbindung den aufzurufenden Befehl vorgibt, dann ist die Notation: METHODE URL (PRIORITÄT).
 
@@ -108,4 +114,4 @@ Wenn eine Anbindung den aufzurufenden Befehl vorgibt, dann ist die Notation: MET
 |Beschreibung| damit LController als lokales Objekt aufgerufen werden kann|
 
 
-Stand 30.06.2017
+Stand 25.07.2017

@@ -11,72 +11,84 @@
   -
  -->
 
-## Eingänge
----------------
+Diese Komponente bietet Befehle zum Anlegen, Abrufen, Löschen und Ändern von Aufgabenanhängen.
+
+| Themen |
+| :- |
+| [Befehle/Eingänge (Commands.json)](#eingaenge) |
+| [Ausgänge (Component.json => Links)](#ausgaenge) |
+
+## <a name='eingaenge'></a>Befehle/Eingänge (Commands.json)
+Diese Befehle bietet diese Komponente als Aufruf an.
 
 |||
-| :----------- |:-----: |
-|Befehl| POST<br>/attachment|
+| :----------- |:----- |
+|Beschreibung| speichert einen neuen Anhang|
+|Befehl| POST /attachment|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
-|Befehl| GET<br>'/attachment/attachment/:attachmentid|
+| :----------- |:----- |
+|Beschreibung| ruft einen Anhang ab|
+|Befehl| GET '/attachment/attachment/:attachmentid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
-|Befehl| DELETE<br>/attachment/attachment/:attachmentid|
+| :----------- |:----- |
+|Beschreibung| entfernt einen Anhang aus dem System|
+|Befehl| DELETE /attachment/attachment/:attachmentid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
-|Befehl| PUT<br>/attachment/attachment/:attachmentid|
+| :----------- |:----- |
+|Beschreibung| ändert einen Anhang|
+|Befehl| PUT /attachment/attachment/:attachmentid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 
-## Ausgänge
----------------
+## <a name='ausgaenge'></a>Ausgänge (Component.json => Links)
+Wenn eine Komponente selbst noch Unteranfragen an anderen Komponenten stellen möchte, dann werden diese über die `Ausgänge` bearbeitet.
+Dabei kann ein Ausgang bereits auf eine Komponente gerichtet sein (`Ziel`) oder durch die Zielkomponente selbst angebunden werden (`Connector`)
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| POST<br>/DB/attachment|
-|Beschreibung| für den Befehl controller|
+|Befehl| POST /DB/attachment|
+|Beschreibung| über diesen Ausgang werden die Anhänge behandelt|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| GET<br>/DB/attachment/attachment/:attachmentid|
-|Beschreibung| für den Befehl controller|
+|Befehl| GET /DB/attachment/attachment/:attachmentid|
+|Beschreibung| über diesen Ausgang werden die Anhänge behandelt|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| DELETE<br>/DB/attachment/:attachmentid|
-|Beschreibung| für den Befehl controller|
+|Befehl| DELETE /DB/attachment/:attachmentid|
+|Beschreibung| über diesen Ausgang werden die Anhänge behandelt|
 
 ||controller|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LController|
-|Befehl| PUT<br>/DB/attachment/:attachmentid|
-|Beschreibung| für den Befehl controller|
+|Befehl| PUT /DB/attachment/:attachmentid|
+|Beschreibung| über diesen Ausgang werden die Anhänge behandelt|
 
 ||postFile|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| LFile|
-|Befehl| POST<br>/file|
-|Beschreibung| für den Befehl postFile|
+|Befehl| POST /file|
+|Beschreibung| zum Speichern von Dateien beim Anlegen/Ändern eines Anhangs|
 
 ||postAttachment|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBAttachment|
-|Befehl| POST<br>/attachment|
-|Beschreibung| für den Befehl postAttachment|
+|Befehl| POST /attachment|
+|Beschreibung| zum Speichern eines Anhangs|
 
 
-Stand 30.06.2017
+Stand 25.07.2017

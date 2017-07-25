@@ -13,4 +13,18 @@
 
 Die CAbstract hat selber keine Funktionalität und ist überwiegend als Basis für Kopien gedacht. Dabei kann sie die Komponentenkonfiguration an einem beliebigen Ort speichern, indem in der Komponentendefinition beispielsweise `"option":"confPath=UI/include/Condition/uicondition_setcondition_cconfig.json"` angegeben wird (der Speicherort der Konfiguration).
 
-Stand 30.06.2017
+| Themen |
+| :- |
+| [Anbindungen (Component.json => Connector)](#anbindungen) |
+
+## <a name='anbindungen'></a>Anbindungen (Component.json => Connector)
+Eine Anbindung verlangt von einer anderen Komponente (`Ziel`) die Anbindung/Verbindung zu dieser Komponente.
+Wenn eine Anbindung den aufzurufenden Befehl vorgibt, dann ist die Notation: METHODE URL (PRIORITÄT).
+
+|Ausgang|getDescFiles|
+| :----------- |:----- |
+|Ziel| TDocuView|
+|Beschreibung| die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen|
+
+
+Stand 25.07.2017

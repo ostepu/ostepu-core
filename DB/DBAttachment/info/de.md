@@ -13,122 +13,135 @@
 
 Die DBAttachment ermöglicht den Zugriff auf die `Attachment` Tabelle der Datenbank. Diese verwaltet Anhänge für Aufgaben (`Exercise`). Dazu wird bei einem `POST /course` Aufruf die nachstehende Tabelle erzeugt.
 
-## Eingänge
----------------
+| Themen |
+| :- |
+| [Befehle/Eingänge (Commands.json)](#eingaenge) |
+| [Ausgänge (Component.json => Links)](#ausgaenge) |
+| [Anbindungen (Component.json => Connector)](#anbindungen) |
+
+## <a name='eingaenge'></a>Befehle/Eingänge (Commands.json)
+Diese Befehle bietet diese Komponente als Aufruf an.
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| ermittelt alle Anhänge einer Übungsserie|
-|Befehl| get<br>/attachment/exercisesheet/:esid|
+|Befehl| get /attachment/exercisesheet/:esid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| editiert einen Anhang|
-|Befehl| put<br>/attachment(/attachment)/:aid|
+|Befehl| put /attachment(/attachment)/:aid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert einen einzelnen Anhang zurück|
-|Befehl| get<br>/attachment(/attachment)/:aid|
+|Befehl| get /attachment(/attachment)/:aid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| entfernt die Anhänge einer Aufgabe|
-|Befehl| delete<br>/attachment/exercise/:eid|
+|Befehl| delete /attachment/exercise/:eid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| entfernt die Komponente aus der Plattform|
-|Befehl| DELETE<br>/platform|
+|Befehl| DELETE /platform|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| löscht einen Anhang anhand der Aufgabe und der Datei|
-|Befehl| delete<br>/attachment/exercise/:eid/file/:fileid|
+|Befehl| delete /attachment/exercise/:eid/file/:fileid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| fügt einen Anhang ein|
-|Befehl| post<br>/attachment|
+|Befehl| post /attachment|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| ermittelt alle Anhänge zu einer Aufgabe|
-|Befehl| get<br>/attachment/exercise/:eid|
+|Befehl| get /attachment/exercise/:eid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| entfernt einen Anhang|
-|Befehl| delete<br>/attachment(/attachment)/:aid|
+|Befehl| delete /attachment(/attachment)/:aid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| installiert die Komponente in die Plattform|
-|Befehl| POST<br>/platform|
+|Befehl| POST /platform|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert alle Anhänge der Plattform|
-|Befehl| get<br>/attachment(/attachment)|
+|Befehl| get /attachment(/attachment)|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| prüft, ob die Komponente korrekt in die Plattform installiert wurde|
-|Befehl| GET<br>/link/exists/platform|
+|Befehl| GET /link/exists/platform|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 
-## Ausgänge
----------------
+## <a name='ausgaenge'></a>Ausgänge (Component.json => Links)
+Wenn eine Komponente selbst noch Unteranfragen an anderen Komponenten stellen möchte, dann werden diese über die `Ausgänge` bearbeitet.
+Dabei kann ein Ausgang bereits auf eine Komponente gerichtet sein (`Ziel`) oder durch die Zielkomponente selbst angebunden werden (`Connector`)
 
 ||out|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQuery|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl out|
 
 ||out2|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQuery2|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl out2|
 
 
-## Anbindungen
----------------
+## <a name='anbindungen'></a>Anbindungen (Component.json => Connector)
+Eine Anbindung verlangt von einer anderen Komponente (`Ziel`) die Anbindung/Verbindung zu dieser Komponente.
+Wenn eine Anbindung den aufzurufenden Befehl vorgibt, dann ist die Notation: METHODE URL (PRIORITÄT).
 
 |Ausgang|request|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CLocalObjectRequest|
 |Beschreibung| damit DBAttachment als lokales Objekt aufgerufen werden kann|
 
 |Ausgang|postPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CInstall|
 |Beschreibung| der Installationsassistent soll uns bei der Plattforminstallation aufrufen|
 
+|Ausgang|getDescFiles|
+| :----------- |:----- |
+|Ziel| TDocuView|
+|Beschreibung| die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen|
 
-Stand 30.06.2017
+
+Stand 25.07.2017

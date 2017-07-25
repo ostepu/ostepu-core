@@ -8,6 +8,7 @@
   -
   - @author Till Uhlig <till.uhlig@student.uni-halle.de>
   - @date 2015,2017
+  -
  -->
 
 Die DBUser ermöglicht den Zugriff auf die `User` Tabelle der Datenbank, dabei sollen Nutzerdaten verwaltet werden. Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.
@@ -30,20 +31,26 @@ Die DBUser ermöglicht den Zugriff auf die `User` Tabelle der Datenbank, dabei s
 |U_comment      |VARCHAR(255) NULL| ein Kommentar zu diesem Nutzerkonto (wird nicht verwendet) |-|
 |U_lang         |CHAR(2) NOT NULL DEFAULT 'de'| die bevorzugte Sprache des Nutzers als Kürzel (Bsp.: de, en) |-|
 
-## Eingänge
----------------
+| Themen |
+| :- |
+| [Befehle/Eingänge (Commands.json)](#eingaenge) |
+| [Ausgänge (Component.json => Links)](#ausgaenge) |
+| [Anbindungen (Component.json => Connector)](#anbindungen) |
+
+## <a name='eingaenge'></a>Befehle/Eingänge (Commands.json)
+Diese Befehle bietet diese Komponente als Aufruf an.
 
 ||postSamples|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| erzeugt Zufallsdaten (courseAmount = Anzahl der Veranstaltungen, userAmount = Anzahl der Nutzer), anhand der Vorgabe|
-|Befehl| POST<br>/samples/course/:courseAmount/user/:userAmount|
+|Befehl| POST /samples/course/:courseAmount/user/:userAmount|
 |Eingabetyp| -|
 |Ausgabetyp| Query|
 
 ||removeUser|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| setzt U_flag = 0 und löst damit das Entfernen der persönlichen Nutzerdaten aus (entfernt das Nutzerkonto nicht), zusätzlich wird eine eventuell aktive Session entfernt|
-|Befehl| DELETE<br>/user/user/:userid|
+|Befehl| DELETE /user/user/:userid|
 |Eingabetyp| -|
 |Ausgabetyp| User|
 |||
@@ -53,9 +60,9 @@ Die DBUser ermöglicht den Zugriff auf die `User` Tabelle der Datenbank, dabei s
 |Beschreibung|die ID eines Nutzers oder ein Nuzername (`User`)|
 
 ||getCourseUserByStatus|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert Nutzerdaten, mit einem bestimmten Status (siehe CourseStatus::getStatusDefinition()) in dieser Veranstaltung|
-|Befehl| GET<br>/user/course/:courseid/status/:statusid|
+|Befehl| GET /user/course/:courseid/status/:statusid|
 |Eingabetyp| -|
 |Ausgabetyp| User|
 |||
@@ -68,16 +75,16 @@ Die DBUser ermöglicht den Zugriff auf die `User` Tabelle der Datenbank, dabei s
 |Beschreibung|die ID eines Veranstaltungsstatus (siehe `DBCourseStatus::getStatusDefinition()`)|
 
 ||getExistsPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| prüft, ob die Tabelle und die Prozeduren existieren|
-|Befehl| GET<br>/link/exists/platform|
+|Befehl| GET /link/exists/platform|
 |Eingabetyp| -|
 |Ausgabetyp| Platform|
 
 ||removeUserPermanent|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| entfernt das Nutzerkonto entgültig mit allen Konsequenzen (eventuell sind Einsendungen und damit auch Gruppenmitglieder betroffen)|
-|Befehl| DELETE<br>/user/user/:userid/permanent|
+|Befehl| DELETE /user/user/:userid/permanent|
 |Eingabetyp| -|
 |Ausgabetyp| User|
 |||
@@ -87,9 +94,9 @@ Die DBUser ermöglicht den Zugriff auf die `User` Tabelle der Datenbank, dabei s
 |Beschreibung|die ID eines Nutzers oder ein Nuzername (`User`)|
 
 ||getUser|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert einen einzelnen Nutzer (anhand des Nutzernamens oder der ID)|
-|Befehl| GET<br>/user/user/:userid|
+|Befehl| GET /user/user/:userid|
 |Eingabetyp| -|
 |Ausgabetyp| User|
 |||
@@ -99,9 +106,9 @@ Die DBUser ermöglicht den Zugriff auf die `User` Tabelle der Datenbank, dabei s
 |Beschreibung|die ID eines Nutzers oder ein Nuzername (`User`)|
 
 ||getGroupMember|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert alle Gruppenangehörigen eines Nutzers in einer bestimmten Übungsserie (dabei ist es egal, ob dieser Nutzer Gruppenführer oder Mitglied ist)|
-|Befehl| GET<br>/user/group/user/:userid/exercisesheet/:esid|
+|Befehl| GET /user/group/user/:userid/exercisesheet/:esid|
 |Eingabetyp| -|
 |Ausgabetyp| User|
 |||
@@ -111,16 +118,16 @@ Die DBUser ermöglicht den Zugriff auf die `User` Tabelle der Datenbank, dabei s
 |Beschreibung|die ID einer Übungsserie (`ExerciseSheet`)|
 
 ||addUser|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| fügt eine neues Nutzerkonto ein|
-|Befehl| POST<br>/user|
+|Befehl| POST /user|
 |Eingabetyp| User|
 |Ausgabetyp| User|
 
 ||editUser|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| editiert ein vorhandenes Nutzerkonto|
-|Befehl| PUT<br>/user/user/:userid|
+|Befehl| PUT /user/user/:userid|
 |Eingabetyp| User|
 |Ausgabetyp| User|
 |||
@@ -130,16 +137,16 @@ Die DBUser ermöglicht den Zugriff auf die `User` Tabelle der Datenbank, dabei s
 |Beschreibung|die ID eines Nutzers oder ein Nuzername (`User`)|
 
 ||addPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| installiert die zugehörige Tabelle und die Prozeduren für diese Plattform|
-|Befehl| POST<br>/platform|
+|Befehl| POST /platform|
 |Eingabetyp| Platform|
 |Ausgabetyp| Platform|
 
 ||getUserByStatus|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert Nutzerdaten, mit einem bestimmten Status (siehe CourseStatus::getStatusDefinition()), für alle Veranstaltungen|
-|Befehl| GET<br>/user/status/:statusid|
+|Befehl| GET /user/status/:statusid|
 |Eingabetyp| -|
 |Ausgabetyp| User|
 |||
@@ -149,23 +156,23 @@ Die DBUser ermöglicht den Zugriff auf die `User` Tabelle der Datenbank, dabei s
 |Beschreibung|die ID eines Veranstaltungsstatus (siehe `DBCourseStatus::getStatusDefinition()`)|
 
 ||getUsers|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert alle existierenden Nutzerkonten (gesperrte und aktive)|
-|Befehl| GET<br>/user|
+|Befehl| GET /user|
 |Eingabetyp| -|
 |Ausgabetyp| User|
 
 ||deletePlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| entfernt die Tabelle und Prozeduren aus der Plattform|
-|Befehl| DELETE<br>/platform|
+|Befehl| DELETE /platform|
 |Eingabetyp| -|
 |Ausgabetyp| Platform|
 
 ||getIncreaseUserFailedLogin|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| setzt `U_failed_logins` auf den aktuellen Zeitstempel (damit klar ist, wann der letzte fehlerhafte Loginversuch war)|
-|Befehl| GET<br>/user/user/:userid/IncFailedLogin|
+|Befehl| GET /user/user/:userid/IncFailedLogin|
 |Eingabetyp| -|
 |Ausgabetyp| User|
 |||
@@ -175,16 +182,16 @@ Die DBUser ermöglicht den Zugriff auf die `User` Tabelle der Datenbank, dabei s
 |Beschreibung|die ID eines Nutzers oder ein Nuzername (`User`)|
 
 ||getSamplesInfo|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert die Bezeichner der betroffenen Tabellen|
-|Befehl| GET<br>/samples|
+|Befehl| GET /samples|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 ||getCourseMember|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert alle Nutzer zu einer Veranstaltung|
-|Befehl| GET<br>/user/course/:courseid|
+|Befehl| GET /user/course/:courseid|
 |Eingabetyp| -|
 |Ausgabetyp| User|
 |||
@@ -194,145 +201,148 @@ Die DBUser ermöglicht den Zugriff auf die `User` Tabelle der Datenbank, dabei s
 |Beschreibung|eine Veranstaltungs ID (`Course`)|
 
 ||getApiProfiles|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren|
-|Befehl| GET<br>/api/profiles|
+|Befehl| GET /api/profiles|
 |Eingabetyp| -|
 |Ausgabetyp| GateProfile|
 
 
-## Ausgänge
----------------
+## <a name='ausgaenge'></a>Ausgänge (Component.json => Links)
+Wenn eine Komponente selbst noch Unteranfragen an anderen Komponenten stellen möchte, dann werden diese über die `Ausgänge` bearbeitet.
+Dabei kann ein Ausgang bereits auf eine Komponente gerichtet sein (`Ziel`) oder durch die Zielkomponente selbst angebunden werden (`Connector`)
 
 ||editUser|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl editUser|
 
 ||removeUser|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl removeUser|
 
 ||removeUserPermanent|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl removeUserPermanent|
 
 ||addUser|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl addUser|
 
 ||deletePlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQuerySetup|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl deletePatform|
 
 ||addPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQuerySetup|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl addPlatform|
 
 ||postSamples|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| POST<br>/query|
+|Befehl| POST /query|
 |Beschreibung| für den Befehl postSamples|
 
 ||getUser|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBUserGetUser/:profile/:userid|
+|Befehl| GET /query/procedure/DBUserGetUser/:profile/:userid|
 |Beschreibung| für den Befehl getUser|
 
 ||getUsers|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBUserGetUsers/:profile|
+|Befehl| GET /query/procedure/DBUserGetUsers/:profile|
 |Beschreibung| für den Befehl getUsers|
 
 ||getCourseMember|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBUserGetCourseMember/:profile/:courseid|
+|Befehl| GET /query/procedure/DBUserGetCourseMember/:profile/:courseid|
 |Beschreibung| für den Befehl getCourseMember|
 
 ||getGroupMember|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBUserGetGroupMember/:profile/:esid/:userid|
+|Befehl| GET /query/procedure/DBUserGetGroupMember/:profile/:esid/:userid|
 |Beschreibung| für den Befehl getGroupMember|
 
 ||getUserByStatus|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBUserGetUserByStatus/:profile/:statusid|
+|Befehl| GET /query/procedure/DBUserGetUserByStatus/:profile/:statusid|
 |Beschreibung| für den Befehl getUserByStatus|
 
 ||getCourseUserByStatus|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBUserGetCourseUserByStatus/:profile/:courseid/:statusid|
+|Befehl| GET /query/procedure/DBUserGetCourseUserByStatus/:profile/:courseid/:statusid|
 |Beschreibung| für den Befehl getCoursUserByStatus|
 
 ||getIncreaseUserFailedLogin|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryWrite|
-|Befehl| GET<br>/query/procedure/DBUserGetIncreaseUserFailedLogin/:profile/:userid|
+|Befehl| GET /query/procedure/DBUserGetIncreaseUserFailedLogin/:profile/:userid|
 |Beschreibung| für den Befehl getIncreaseUserFailedLogin|
 
 ||getExistsPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBUserGetExistsPlatform/:profile|
+|Befehl| GET /query/procedure/DBUserGetExistsPlatform/:profile|
 |Beschreibung| für den Befehl getExsistsPlatform|
 
 ||getSamplesInfo|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQueryRead|
-|Befehl| GET<br>/query/procedure/DBUserGetExistsPlatform/:profile|
+|Befehl| GET /query/procedure/DBUserGetExistsPlatform/:profile|
 |Beschreibung| für den Befehl getSamplesInfo|
 
 
-## Anbindungen
----------------
+## <a name='anbindungen'></a>Anbindungen (Component.json => Connector)
+Eine Anbindung verlangt von einer anderen Komponente (`Ziel`) die Anbindung/Verbindung zu dieser Komponente.
+Wenn eine Anbindung den aufzurufenden Befehl vorgibt, dann ist die Notation: METHODE URL (PRIORITÄT).
 
 |Ausgang|request|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CLocalObjectRequest|
 |Beschreibung| damit DBUser als lokales Objekt aufgerufen werden kann|
 
 |Ausgang|postPlatform|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CInstall|
 |Beschreibung| der Installationsassistent soll uns bei der Plattforminstallation aufrufen|
 
 |Ausgang|postSamples|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CInstall|
 |Beschreibung| wir wollen bei Bedarf Beispieldaten erzeugen|
 
 |Ausgang|getAlive|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CHelp|
 |Beschreibung| soll CHelp mitteilen, ob die Datenbank erreichbar ist, indem die Existenz der User-Tabelle geprüft wird|
+|| GET /link/exists/platform|
 
 |Ausgang|getDescFiles|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| TDocuView|
 |Beschreibung| die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen|
 
 |Ausgang|getComponentProfiles|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| TApiConfiguration|
 |Beschreibung| damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden|
 
 
-Stand 30.06.2017
+Stand 25.07.2017

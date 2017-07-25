@@ -8,84 +8,93 @@
   -
   - @author Till Uhlig <till.uhlig@student.uni-halle.de>
   - @date 2017
+  -
  -->
 
 Die DBOOP ermöglicht den Zugriff auf die `Testcase_X` Tabellen der Datenbank, diese verwalten die Testfälle für die automatische Vorkorrektur der LOOP. Dazu wird bei einem `POST /course` Aufruf die nachstehende Tabelle erzeugt.
 
-## Eingänge
----------------
+| Themen |
+| :- |
+| [Befehle/Eingänge (Commands.json)](#eingaenge) |
+| [Ausgänge (Component.json => Links)](#ausgaenge) |
+| [Anbindungen (Component.json => Connector)](#anbindungen) |
+
+## <a name='eingaenge'></a>Befehle/Eingänge (Commands.json)
+Diese Befehle bietet diese Komponente als Aufruf an.
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| installiert die Komponente in die Veranstaltung|
-|Befehl| post<br>(/:pre)/course|
+|Befehl| post (/:pre)/course|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| entfernt die Komponente aus der Veranstaltung|
-|Befehl| delete<br>(/:pre)/course/:courseid|
+|Befehl| delete (/:pre)/course/:courseid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| fügt einen neuen Testfall ein|
-|Befehl| post<br>(/:pre)/insert|
+|Befehl| post (/:pre)/insert|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| sperrt den nächsten unbearbeiteten Testfall und liefert ihn zurück|
-|Befehl| get<br>(/:pre)/pop|
+|Befehl| get (/:pre)/pop|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| editiert einen Testfall|
-|Befehl| put<br>(/:pre)/testcase(/testcase)/:testcaseid|
+|Befehl| put (/:pre)/testcase(/testcase)/:testcaseid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 |||
-| :----------- |:-----: |
+| :----------- |:----- |
 |Beschreibung| ermittelt einen Testfall zu einer Einsendung|
-|Befehl| get<br>(/:pre)/testcase/submission/:sid/course/:cid|
+|Befehl| get (/:pre)/testcase/submission/:sid/course/:cid|
 |Eingabetyp| -|
 |Ausgabetyp| -|
 
 
-## Ausgänge
----------------
+## <a name='ausgaenge'></a>Ausgänge (Component.json => Links)
+Wenn eine Komponente selbst noch Unteranfragen an anderen Komponenten stellen möchte, dann werden diese über die `Ausgänge` bearbeitet.
+Dabei kann ein Ausgang bereits auf eine Komponente gerichtet sein (`Ziel`) oder durch die Zielkomponente selbst angebunden werden (`Connector`)
 
 ||out|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQuery2|
-|Befehl| POST<br>/query/:abc|
+|Befehl| POST /query/:abc|
 |Beschreibung| über diesen Ausgang werden alle Datenbankanfragen ausgeführt|
 
 ||getCourse|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| DBQuery2|
-|Befehl| GET<br>/query/procedure/DBCourseGetCourse/:courseid|
+|Befehl| GET /query/procedure/DBCourseGetCourse/:courseid|
 |Beschreibung| für den Befehl getCourse|
 
 
-## Anbindungen
----------------
+## <a name='anbindungen'></a>Anbindungen (Component.json => Connector)
+Eine Anbindung verlangt von einer anderen Komponente (`Ziel`) die Anbindung/Verbindung zu dieser Komponente.
+Wenn eine Anbindung den aufzurufenden Befehl vorgibt, dann ist die Notation: METHODE URL (PRIORITÄT).
 
 |Ausgang|request|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| CLocalObjectRequest|
 |Beschreibung| damit DBOOP als lokales Objekt aufgerufen werden kann|
 
 |Ausgang|getDescFiles|
-| :----------- |:-----: |
+| :----------- |:----- |
 |Ziel| TDocuView|
 |Beschreibung| die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen|
 
 
-Stand 30.06.2017
+Stand 25.07.2017
