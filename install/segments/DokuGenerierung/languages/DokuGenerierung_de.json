@@ -1,0 +1,10 @@
+{
+    "main": {
+        "title": "Komponentendokumentation generieren",
+        "description": "Hier werden Skripte angeboten, welche die Erzeugung der Komponentenbeschreibungen (de.md) erleichtern sollen."
+    },
+    "generateConfFiles": {
+        "desc": "Hier werden die 'Description'-Einträge der Commands.json und Component.json generiert. Zudem werden die Einträge dieser Dateien sortiert.",
+        "exec": "Ausführen"
+    }
+}
