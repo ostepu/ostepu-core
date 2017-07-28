@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file node.php
  *
@@ -7,110 +8,118 @@
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
  * @date 2015-2016
  */
-
-
-class node implements JsonSerializable
-{
+class node implements JsonSerializable {
 
     /**
      * @var $id int Die eindeutige ID des Knotens.
      */
-    public $id=null;
+    public $id = null;
 
     /**
      * @var $name string Der Name des Knotens.
      */
-    public $name=null;
+    public $name = null;
 
     /**
      * @var $childs int[] Die IDs der Kinder dieses Knotens.
      */
-    public $childs=array();
+    public $childs = array();
 
     /**
      * @var $parent int Die ID des Vaters oder null bei der Wurzel
      */
-    public $parent=null;
-
+    public $parent = null;
 
     /**
      * @var $executionTime int Die Ausführungszeit im Knoten in ms
      * Dieser Wert muss aus $beginTime und $endTime berechnet werden
      */
-    public $executionTime=null;
+    public $executionTime = null;
 
     /**
      * @var $beginTime int Der Zeitstempel,
      * bei dem der Knoten betreten wurde (in ms).
      */
-    public $beginTime=null;
+    public $beginTime = null;
 
     /**
      * @var $endTime int Der Zeitstempel,
      * bei dem der Knoten verlassen wurde (in ms).
      */
-    public $endTime=null;
-
+    public $endTime = null;
 
     /**
      * @var $result string Das Berechnungsergebnis des Knotens.
      */
-    public $result=null;
+    public $result = null;
 
     /**
      * @var $input string Die Eingabe für den Knoten
      */
-    public $input=null;
+    public $input = null;
 
     /**
      * @var $resultHash string Der Hash von $result.
      */
-    public $resultHash=null;
+    public $resultHash = null;
 
     /**
      * @var $nodeType string Der bestimmte Typ des Knotens
      * (Arbeiter, Quelle, ...)
      */
-    public $nodeType=null;
-
+    public $nodeType = null;
 
     /**
      * @var $parallelGroup int Die ID der Gruppe, zu welcher der Knoten gehört
      * sofern er mit anderen Knoten in einer parallelen Anfrage
      * ausgeführt wurde
      */
-    public $parallelGroup=null;
+    public $parallelGroup = null;
 
     /**
      * @var $method string Die HTTP Aufrufmethode des Knotens (GET, POST, ...)
      */
-    public $method=null;
+    public $method = null;
 
     /**
      * @var $URI string Die aufgerufene URI
      * Bsp.: /user
      */
-    public $URI=null;
-    public $path=null;
-    public $mimeType=null;
+    public $URI = null;
+    
+    /*
+     * ein Teil des lokalen Pfades zur Komponente (für DBUser dann sowas wie
+     * DB/DBUser)
+     */
+    public $path = null;
+    
+    /*
+     * der mime-Type des Resultats
+     */
+    public $mimeType = null;
+    
+    /*
+     * gibt an, ob das Resultat des Knotens im Cache hinterlegt wurde
+     * true = ja, false = nein
+     */
+    public $storedResult = false;
 
     /**
      * @var $status Der HTTP-Status
      */
-    public $status=null;
+    public $status = null;
 
     /**
      * @var $label Hier kann für Berechnungen etwas vermerkt werden
      */
-    public $label=null;
+    public $label = null;
 
     /**
      * Prüft, ob der Knoten ein Blatt/Quelle ist
      *
      * @return true = ist ein Blatt, false = ist kein Blatt
      */
-    public function isLeaf()
-    {
+    public function isLeaf() {
         return empty($this->childs) ? true : false;
     }
 
@@ -119,18 +128,16 @@ class node implements JsonSerializable
      *
      * @return true = ist die Wurzel, false = ist nicht die Wurzel
      */
-    public function isRoot()
-    {
+    public function isRoot() {
         return $this->parent === null ? true : false;
     }
 
     /**
      * Fügt eine Kante an einen Knoten an
      */
-    public function addEdge($newChildId)
-    {
+    public function addEdge($newChildId) {
         if ($newChildId !== null) {
-            if (!in_array($newChildId, $this->childs)){
+            if (!in_array($newChildId, $this->childs)) {
                 $this->childs[] = $newChildId;
             }
         }
@@ -141,9 +148,9 @@ class node implements JsonSerializable
      * 
      * @return String der TAG
      */
-    public function generateUTag()
-    {
-        return md5($this->method.'_'.$this->URL);
+
+    public function generateUTag() {
+        return md5($this->method . '_' . $this->URL);
     }
 
     /*
@@ -151,8 +158,8 @@ class node implements JsonSerializable
      * 
      * @return String der TAG
      */
-    public function generateETag()
-    {
+
+    public function generateETag() {
         if (!is_string($this->result)) {
             $this->result = json_encode($this->result);
         }
@@ -165,15 +172,14 @@ class node implements JsonSerializable
      *
      * @param $data an assoc array with the object informations
      */
-    public function __construct($data = array( ))
-    {
+    public function __construct($data = array()) {
         if ($data === null) {
-            $data = array( );
+            $data = array();
         }
 
         foreach ($data as $key => $value) {
             if (isset($key)) {
-                $func = 'set' . strtoupper($key[0]).substr($key, 1);
+                $func = 'set' . strtoupper($key[0]) . substr($key, 1);
                 $methodVariable = array($this, $func);
                 if (is_callable($methodVariable)) {
                     $this->$func($value);
@@ -192,8 +198,7 @@ class node implements JsonSerializable
      *
      * @return the json encoded object
      */
-    public static function encodeNode($data, $extended = false)
-    {
+    public static function encodeNode($data, $extended = false) {
         return json_encode($data);
     }
 
@@ -206,8 +211,7 @@ class node implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeNode($data, $decode = true)
-    {
+    public static function decodeNode($data, $decode = true) {
         if ($decode && $data === null) {
             $data = '{}';
         }
@@ -217,12 +221,11 @@ class node implements JsonSerializable
         }
 
         if (is_array($data)) {
-            $result = array( );
+            $result = array();
             foreach ($data as $key => $value) {
                 $result[] = new node($value);
             }
             return $result;
-
         } else {
             return new node($data);
         }
@@ -233,9 +236,8 @@ class node implements JsonSerializable
      * 
      * @return ein assoziatives Array welches das Element darstellt
      */
-    public function jsonSerialize()
-    {
-        $list = array( );
+    public function jsonSerialize() {
+        $list = array();
         if ($this->id !== null) {
             $list['id'] = $this->id;
         }
@@ -287,6 +289,10 @@ class node implements JsonSerializable
         if ($this->endTime !== null && !empty($this->endTime)) {
             $list['endTime'] = $this->endTime;
         }
+        if ($this->storedResult !== null && !empty($this->storedResult)) {
+            $list['storedResult'] = $this->storedResult;
+        }
         return $list;
     }
+
 }

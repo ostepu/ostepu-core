@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file cacheAccess.php
  *
@@ -7,19 +8,16 @@
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
  * @date 2016
  */
-
-
 if (file_exists(dirname(__FILE__) . '/../vendor/phpfastcache/phpfastcache.php')) {
     include_once(dirname(__FILE__) . '/../vendor/phpfastcache/phpfastcache.php');
 }
 
-class cacheAccess
-{
+class cacheAccess {
+
     /**
      * @var phpFastCache $_cache Enthält den Zugang zum CacheServer
      */
     private static $_cache = null;
-
 
     /**
      * Speichert einen Datensatz
@@ -28,8 +26,7 @@ class cacheAccess
      * @param string $value Der Datensatz
      * @return bool true = Erfolgreich, false = Fehler
      */
-    public static function storeData($key, $value, $time = 43200)
-    {
+    public static function storeData($key, $value, $time = 43200) {
         if (self::$_cache === null) {
             phpFastCache::setup(phpFastCache::$config);
             self::$_cache = phpFastCache();
@@ -45,9 +42,8 @@ class cacheAccess
      * @param string $key Der Schlüssel
      * @return bool true = Erfolgreich, false = Fehler
      */
-    public static function removeData($key)
-    {
-        if (self::$_cache===null) {
+    public static function removeData($key) {
+        if (self::$_cache === null) {
             phpFastCache::setup(phpFastCache::$config);
             self::$_cache = phpFastCache();
         }
@@ -61,8 +57,7 @@ class cacheAccess
      * @param string $key der Schlüssel
      * @return string Der Datensatz oder null im Fehlerfall
      */
-    public static function loadData($key)
-    {
+    public static function loadData($key) {
         if (self::$_cache === null) {
             phpFastCache::setup(phpFastCache::$config);
             self::$_cache = phpFastCache();
@@ -87,8 +82,7 @@ class cacheAccess
      * @return string[] Die Datensätze oder null im Fehlerfall,
      *                                           Bsp.: array('a',null,'b')
      */
-    public static function loadDataArray($keys)
-    {
+    public static function loadDataArray($keys) {
         if (self::$_cache === null) {
             phpFastCache::setup(phpFastCache::$config);
             self::$_cache = phpFastCache();
@@ -108,14 +102,19 @@ class cacheAccess
 
         return $res;
     }
-    
-    public static function touch($key)
-    {
+
+    /*
+     * gibt zurück ob eine Datei im Cache existiert und verlängert dabei
+     * deren Lebensdauer, sodass sie in nächster Zeit nicht automatisch
+     * gelöscht wird
+     */
+    public static function touch($key) {
         if (self::$_cache === null) {
             phpFastCache::setup(phpFastCache::$config);
             self::$_cache = phpFastCache();
         }
-        
+
         return self::$_cache->touch($key);
     }
+
 }

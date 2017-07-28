@@ -350,14 +350,7 @@ class Request
                                 $result['headers'] = array_merge(array(),Request::http_parse_headers_short(headers_list()));
                                 header_remove();
                                 
-                                //if (!isset($result['headers']['Cachesid'])){
-                                    //$newSid = QEPGenerator::getNextSid();
-                                    $result['headers']['Cachesid'] = $newSid;
-                                   // Logger::Log('newSid: '.$newSid, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', true, LogLevel::DEBUG);
-
-                                    //QEPGenerator::setCacheSid($newSid);
-                                //}
-                                //$result['headers']['Cachesid'] = $newSid;
+                               $result['headers']['Cachesid'] = $newSid;
                                 ob_end_clean();
                                 //header_remove();
 
