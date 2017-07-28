@@ -14,7 +14,7 @@ include_once(dirname(__FILE__) . '/node.php');
 class tree implements JsonSerializable
 {
     /**
-     * @var $elements node[] Enthält die Knoten des Baums
+     * @var $this->elements node[] Enthält die Knoten des Baums
      */
     public $elements=array();
 
@@ -81,16 +81,16 @@ class tree implements JsonSerializable
      */
     public function getPrecedingSiblingId($objId)
     {
-        if ($elements[$objId]->parent === null) {
+        if ($this->elements[$objId]->parent === null) {
             return null;
         }
-        $parent = $elements[$objId]->parent;
-        $parentChilds = $elements[$parent]->childs;
+        $parent = $this->elements[$objId]->parent;
+        $parentChilds = $this->elements[$parent]->childs;
         $objPos = array_search($objId, $parentChilds);
         if ($objPos === false || $objPos === 0) {
             return null;
         }
-        return array($elements[$parent]->childs[$objPos-1]);
+        return array($this->elements[$parent]->childs[$objPos-1]);
     }
 
     /**
@@ -112,16 +112,16 @@ class tree implements JsonSerializable
      */
     public function getFollowingSiblingId($objId)
     {
-        if ($elements[$objId]->parent === null) {
+        if ($this->elements[$objId]->parent === null) {
             return null;
         }
-        $parent = $elements[$objId]->parent;
-        $parentChilds = $elements[$parent]->childs;
+        $parent = $this->elements[$objId]->parent;
+        $parentChilds = $this->elements[$parent]->childs;
         $objPos = array_search($objId, $parentChilds);
         if ($objPos === false || $objPos === count($parentChilds)-1) {
             return null;
         }
-        return array($elements[$parent]->childs[$objPos+1]);
+        return array($this->elements[$parent]->childs[$objPos+1]);
     }
 
     /**
@@ -266,6 +266,16 @@ class tree implements JsonSerializable
 
         return $this->elements[$objId]->parent;
     }
+    
+    public function hasParent($objId)
+    {
+        if ($objId === null || !isset($this->elements[$objId])) {
+            // es handelt sich um keinen Knoten
+            return null;
+        }
+
+        return $this->elements[$objId]->parent !== null;
+    }
 
     /**
      * Prüft, ob ein Pfad zwischen den beiden Knoten existiert
@@ -322,23 +332,33 @@ class tree implements JsonSerializable
      */
     public function extractSubtree($objId)
     {
+        if ($objId === null){
+            return new tree();
+        }
+        
         $resultList = array();
-        $currentList = array($objId=>$this->elements[$objId]);
+        $firstElement = clone $this->elements[$objId];
+        $firstElement->parent = null;
+        $currentList = array($objId=>$firstElement);
 
-        while (count($currentList>0)) {
+        while (count($currentList)>0) {
             $tmp = array_merge(array(), $currentList);
             $currentList=array();
             foreach ($tmp as $key => $elem) {
-                $resultList[$key] = $elem;
-                foreach ($this->elements[$key]->childs as $child) {
-                    $currentList[$child->id] = $child;
+                $resultList[$elem->id] = $elem;
+                if (!$elem->isLeaf()){
+                    $childs = $this->elements[$key]->childs;
+                    foreach ($childs as $child) {
+                        $currentList[$child->id] = $child;
+                    }
                 }
             }
         }
 
-        $tree = new tree();
+        $myClass = get_class($this);
+        $tree = new $myClass();
         $tree->elements = $resultList;
-        return $resultList;
+        return $tree;
     }
 
     /**

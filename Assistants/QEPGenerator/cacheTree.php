@@ -21,10 +21,19 @@ class cacheTree extends tree implements JsonSerializable
 
     /**
      * @var $_groups int[][]
-     * Enthält die Gruppen und die IDs der zugehörigen Knoten
+     * Enthält die Gruppen und die IDs der zugehörigen Knoten.
+     * Eine Gruppe enthält Knoten, welche parallel ausgeführt werden können
      * Struktur: $_groups[Gruppennummer] = array(Mitglied0,Mitglied1,Mitglied2)
      */
     private $_groups=array();
+    
+    /*
+     * hier werden die bearbeiten Knoten gespeichert (KEY) und ob sie sich
+     * geändert haben (VALUE), 1 = verändert, 0 = unverändert
+     */
+    private $_changedNodes=array();
+    
+    
 
     /**
      * @var $_mapMethods int[]
@@ -33,6 +42,7 @@ class cacheTree extends tree implements JsonSerializable
      */
     private static $_mapMethods = array('GET'=>0,
                                         'HEAD'=>0,
+                                        'OPTIONS'=>0,
                                         'POST'=>1,
                                         'PUT'=>1,
                                         'DELETE'=>1,
@@ -42,7 +52,7 @@ class cacheTree extends tree implements JsonSerializable
      * Berechnet die Gruppenzugehörigkeit der Knoten und speichert
      * diese in $this->_groups
      */
-    public function computeGroups()
+    private function computeGroups()
     {
         // entferne alle bisher berechneten Gruppen
         $this->resetGroups();
@@ -88,6 +98,25 @@ class cacheTree extends tree implements JsonSerializable
 
         // die Methode ist bekannt und kann daher übersetzt werden
         return self::$_mapMethods[$method];
+    }
+    
+    public function getComputationState($objId){
+        if (isset($this->_changedNodes[$objId])){
+            return $this->_changedNodes[$objId];
+        }
+        return null;
+    }
+    
+    public function setChanged($objId, $state){
+        $this->_changedNodes[$objId] = $state;
+    }
+    
+    /*
+     * wenn Knoten abgearbeitet wurden, dann muss geprüft werden,
+     * ob Knoten übersprungen werden können
+     */
+    public function computeProgress(){
+        // ??? //
     }
 
     /**
@@ -168,7 +197,7 @@ class cacheTree extends tree implements JsonSerializable
      * @param int $objId Die ID eines Knotens
      * @return int Der resultierende Status (0 = frei, 1 = abhängig)
      */
-    public function getElementTypeState($objId)
+    private function getElementTypeState($objId)
     {
         if ($objId === null || !isset($this->elements[$objId])) {
             // es handelt sich um keinen Knoten
@@ -199,7 +228,7 @@ class cacheTree extends tree implements JsonSerializable
      * @return int Der Aufruftyp des Knotens
      *                           (0 = parallel, 1 = seriell), Fehler = 0
      */
-    public function getElementType($objId)
+    private function getElementType($objId)
     {
         if ($objId === null || !isset($this->elements[$objId])) {
             // es handelt sich um keinen Knoten
@@ -234,7 +263,7 @@ class cacheTree extends tree implements JsonSerializable
 
     /**
      * Berechnet die Abhängigkeiten aller Knoten
-     * und speichert diese in $this->dependenced
+     * und speichert diese in $this->_dependenced
      */
     public function computeDependencies()
     {
@@ -242,24 +271,31 @@ class cacheTree extends tree implements JsonSerializable
         $this->computeGroups();
 
         $keys = $this->getIds();
-        $firstKey = array_shift($keys);
-        $_dependenced[$firstKey]=0;
 
         foreach ($keys as $key) {
-            $parentState = $this->getElementState($this->getParent($key));
+            $parentState = 0;
+            if ($this->hasParent($key)){
+                $parentState = $this->getElementState($this->getParent($key));
+            }
             $previousElementState = $this->getElementState(
-                $this->getLeftNeighborId(
+                $this->getPrecedingSiblingId(
                     $key
                 )
             );
             $typeState = $this->getElementTypeState($key);
-            $methodState = $this->getMethodState($key);
-            $this->dependenced[$key] = max(
-                $parentState,
-                $previousElementState,
-                $typeState,
-                $methodState
-            );
+            $myMethod = $this->elements[$key]->method;
+            $methodState = $this->getMethodState($myMethod);
+            $changedAfterComputation = $this->getComputationState($key);
+            if ($changedAfterComputation !== null){
+                // dieser Knoten muss nicht weiter betrachtet werden
+            } else {
+                $this->dependenced[$key] = max(
+                    $parentState,
+                    $previousElementState,
+                    $typeState,
+                    $methodState
+                );
+            }
         }
     }
 
@@ -283,8 +319,8 @@ class cacheTree extends tree implements JsonSerializable
     {
         $list = array();
         foreach ($this->dependenced as $key => $value) {
-            if (!$value) {
-                $list[$key];
+            if ($value === 0) {
+                $list[$key]=$key;
             }
         }
         return $list;
@@ -322,7 +358,18 @@ class cacheTree extends tree implements JsonSerializable
      */
     private function resetDependencies()
     {
-        $this->dependenced = array();
+        $this->_dependenced = array();
+    }
+    
+    /*
+     * entfernt Bestandteile aus dem Baum, welche wir nicht mit in den Cache verschieben wollen
+     */    
+    public function cleanTree(){
+        foreach ($this->elements as $key => $value){
+            $value->result = null;
+            $value->input = null;
+            $value->label = null;
+        }        
     }
 
     /**
@@ -331,5 +378,48 @@ class cacheTree extends tree implements JsonSerializable
     public function jsonSerialize()
     {
         return parent::jsonSerialize();
+    }
+    
+        /**
+     * encodes an object to json
+     *
+     * @param $data the object
+     *
+     * @return the json encoded object
+     */
+    public static function encodeCacheTree($data)
+    {
+        return json_encode($data);
+    }
+
+    /**
+     * decodes $data to an object
+     *
+     * @param string $data json encoded data (decode=true)
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
+     *
+     * @return the object
+     */
+    public static function decodeCacheTree($data, $decode = true)
+    {
+        if ($decode && $data === null) {
+            $data = '{}';
+        }
+
+        if ($decode) {
+            $data = json_decode($data);
+        }
+
+        if (is_array($data)) {
+            $result = array( );
+            foreach ($data as $key => $value) {
+                $result[] = new cacheTree($value);
+            }
+            return $result;
+
+        } else {
+            return new cacheTree($data);
+        }
     }
 }

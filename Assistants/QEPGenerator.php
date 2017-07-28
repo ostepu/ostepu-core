@@ -40,8 +40,18 @@ class QEPGenerator
     private static $activeTree = false;
     private static $changedTree = false;
     private static $rootNode = null;
+    private static $cachedData = array();
     
+    /*
+     * enthält die Konfiguration des QEPGenerators (wird von loadConfig geladen)
+     * Der Zugriff erfolgt über getConf($field)
+     */
     private static $conf = null;
+    
+    /*
+     * lädt die die Konfiguration des QEPGenerators aus der config.json,
+     * falls sie noch nicht geladen wurde
+     */
     private static function loadConfig()
     {
         if (self::$conf !== null){
@@ -55,11 +65,22 @@ class QEPGenerator
         }
     }
     
+    /*
+     * liefert die Sandardkonfiguration
+     * 
+     * @return String[] die Konfiguration
+     */
     public static function getDefaultConf()
     {
         return array('enabled'=>false,'makeTree'=>false, 'treePath'=>dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'path');
     }
     
+    /*
+     * liefert einen Wert aus der Konfiguration
+     * 
+     * @param $field das Feld, dessen Wert verlangt wird
+     * @return der Wert oder null (wenn er nicht existiert)
+     */
     public static function getConf($field)
     {
         if (isset(self::$conf[$field])){
@@ -68,6 +89,12 @@ class QEPGenerator
         return null;
     }
 
+    /*
+     * setzt einen Wert in der Konfiguration
+     * 
+     * @param $field das Feld
+     * @param $value der neue Wert
+     */
     public static function setConf($field, $value)
     {
         self::$conf[$field] = $value;
@@ -146,7 +173,6 @@ class QEPGenerator
 
     /**
      * Setzt alle Daten des Managers auf den Standartwert zurück.
-     * Dabei bleiben $enabled und $makeTree unverändert.
      */
     public static function reset()
     {
@@ -185,15 +211,32 @@ class QEPGenerator
      *
      * @param string $URL
      * @param string $method
-     * @return string Die zum Aufruf gehörenden Daten der null, wenn keine vorhanden sind
+     * @return string Die zum Aufruf gehörenden Daten oder null, wenn keine vorhanden sind
      */
     public static function getCachedDataByURL($URL, $method)
     {
-        /*if (!self::$enabled) return null;
+        self::loadConfig();
+        
+        if (!self::getConf('enabled')) {
+            return null;
+        }
 
-        $uTag = md5($method.'_'.$URL);
-        if (isset(self::$cachedData[$uTag]))
-            return self::$cachedData[$uTag];*/
+        $uTag = self::generateUTag($URL, $method);
+        
+        // wenn wir den Datensatz bereits im Arbeitsseicher haben, dann nehmen
+        // wir gleich diesen Datensatz
+        if (isset(self::$cachedData[$uTag])) {
+            return self::$cachedData[$uTag];
+        }
+        
+        // ansonsten fragen wir den Cacheserver, ob er den Datensatz besitzt
+        $res = cacheAccess::loadData($uTag);
+        if ($res !== null){
+            // es wurde eine Datensatz gefunden
+            return json_decode($res);
+        } else {
+            // der Cacheserver besitzt den Datensatz nicht
+        }
 
         return null;
     }
@@ -237,6 +280,7 @@ class QEPGenerator
             $elem->endTime = microtime(true);
             $elem->status = $targetStatus;
             $elem->result = $targetContent;
+            $elem->resultHash = $elem->generateETag();
             $elem->mimeType = $mimeType;
             $elem->path = $path;
 
@@ -275,6 +319,26 @@ class QEPGenerator
             file_put_contents(self::getConf('treePath'). DIRECTORY_SEPARATOR .$root->name. DIRECTORY_SEPARATOR .$root->name.'_'.$root->id.'_tree.json',json_encode($tree));
         }
 
+        if (self::getConf('enabled') === true){
+            $root = self::$tree->getElementById(self::$tree->findRoot());
+            if ($root !== null){
+                foreach ($root->childs as $childID){
+                    $subTree = $tree->extractSubtree($childID);
+                    $subTree->cleanTree();
+                    $subRootId = $subTree->findRoot();
+                    
+                    if ($subRootId === null){
+                        // es ist ein Problem aufgetreten, die Wurzel konnte
+                        // nicht ermittelt werden
+                        continue;
+                    }
+                    
+                    $subRoot = $subTree->getElementById($subRootId);
+                    $uTag = self::generateUTag($subRoot->URI, $subRoot->method);
+                    cacheAccess::storeData('tree_'.$uTag, json_encode($subTree));
+                }
+            }
+        }
     }
 
     public static function saveNode($elem, $path = null)
@@ -316,22 +380,24 @@ class QEPGenerator
         self::$rootNode = new PathObject(null, null, $graphName, null ,null, null);*/
     }
 
-    public static function cacheData($sid, $content)
+    public static function cacheData($sid, $content, $status)
     {
         self::loadConfig();
         
         if (!self::getConf('enabled')) return;
+        if ($sid === null) return;
+        if (self::$tree === null) return;
+        
         $elem = self::$tree->getElementById($sid);
         if ($elem !== null){
-            $uTag = $elem->generateUTag();
             $eTag = self::generateETag($content);
-            cacheAccess::storeData('data_'.$eTag,$content);
+            cacheAccess::storeData('data_'.$eTag,json_encode(new DataObject($content,$status)));
         }
     }
 
     public static function cacheDataSimple($sid, $Name, $URL, $content, $status, $method)
     {
-        /*if (self::$enabled && strpos($URL,'/UI/')===false && strtoupper($method)=='GET') { // ??????
+        /*if (self::getConf('enabled') && strpos($URL,'/UI/')===false && strtoupper($method)=='GET') { // ??????
             $uTag = md5($URL);
 
             if (!isset(self::$cachedData[$uTag])) {
@@ -341,7 +407,7 @@ class QEPGenerator
             }
         }
 
-        if ((self::$enabled || self::$makeTree) && $sid===SID::$currentBaseSID) {
+        if ((self::getConf('enabled') || self::$makeTree) && $sid===SID::$currentBaseSID) {
             self::finishRequest($sid, null, 'BEGIN', null, $content, $status, null, null);
             self::savePath($URL,$method);
         }*/
@@ -359,6 +425,15 @@ class QEPGenerator
             return md5(json_encode($data));
         }
         return md5($data);
+    }
+    
+    /*
+     * generiert einen TAG anhand der URL und der Methode
+     * 
+     * @return string Der MD5 Hash (32 Zeichen)
+     */
+    public static function generateUTag($URL, $method){
+        return md5($method.'_'.$URL);
     }
 
     /**
@@ -392,50 +467,81 @@ class QEPGenerator
     {
         self::loadConfig();
         
-        if (self::getConf('enabled') !== true) return;
+        if (self::getConf('enabled') !== true) {
+            // das Cachesystem ist deaktiviert
+            return;
+        }
+        
         if (!in_array('phpFastCache', get_declared_classes())) {
             return;
         }
 
         if (self::$activeTree) {
+            // es wird bereits ein Baum bearbeitet
             return;
         }
+        
         if (self::$tree !== null) {
+            // wir haben schon einen Baum geladen
             return;
         }
+        
         if (strtoupper($method)!='GET' && self::getConf('makeTree') !== true) {
+            // die Anfrage ist keine GET und die Erstellung des Anfragegraphen
+            // ist nicht erwünscht
             return;
         }
 
-        $uTag = md5($method.'_'.$URL);
+        $uTag = self::generateUTag($URL, $method);
         self::$activeTree=true;
         self::$changedTree=true;
 
         self::$tree = cacheAccess::loadData('tree_'.$uTag);
 
         if (self::$tree===null) {
-            if (SID::getRoot() === 0) {
-                ///file_put_contents(dirname(__FILE__) . '/../calls.log','');
-            }
+            // es wurde keine gespeicherte Baumdefinition gefunden, sodass wir
+            // die aktuelle Anfrage aufzeichnen müssen
 
             self::$changedTree=false;
             self::reset();
             self::init();
-            
-            if (SID::getRoot() === 0) {
-                $elem = self::$tree->getElementById(SID::getRoot());
-                @Einstellungen::deleteDir(dirname(__FILE__).'/../path/'.$elem->name);
-                @unlink(dirname(__FILE__).'/../path/'.$elem->name.'.html');
-                ////Logger::Log('deleteDir: '.dirname(__FILE__).'/../path/'.$elem->name, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', false, LogLevel::DEBUG);
-            }
 
-            ////Logger::Log('no tree', LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', false, LogLevel::DEBUG);
             return;
         } else {
-            ////Logger::Log('tree found', LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', false, LogLevel::DEBUG);
+            // es wurde eine gespeicherte Baumdefinition gefunden
         }
 
-        self::$tree = tree::decodeTree(self::$tree);
+        self::$tree = cacheTree::decodeCacheTree(self::$tree);
+
+        // jetzt können wir diesen Baum nutzen, um unsere Anfragen abzuarbeiten
+        
+        self::$tree->computeDependencies();
+        $nextElements = self::$tree->extractMinComputable();
+            
+        while(count($nextElements)>0){
+            foreach($nextElements as $elemId){
+                $elem = self::$tree->elements[$elemId];
+                
+                /// !!! an dieser Stelle wird der tree gekillt
+                $answ = Request::custom($elem->method, $elem->URI, array(),  '', true);
+
+                if (!isset($answ['headers']['Etag']) || $answ['headers']['Etag']!=$elem->resultHash || $answ['status'] != $elem->status) {
+                    // der Zustand hat sich verändert oder die generierung des ETag funktioniert nicht
+                    self::$tree->setChanged($elemId, 1);
+                } else {
+                    // der Zustand hat sich nicht verändert
+                    self::$tree->setChanged($elemId, 0);
+                }
+            }
+             
+            self::$tree->computeProgress();
+            
+            self::$tree->computeDependencies();
+            $nextElements = self::$tree->extractMinComputable();
+        }
+        echo "OK";
+       exit(0);
+        
         /*$result = cacheAccess::loadData('data_'.$list[self::getFirstIndex($list)]['eTag']);
         if ($result===null) {
             self::$changedTree=false;

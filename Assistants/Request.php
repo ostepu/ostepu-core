@@ -257,18 +257,14 @@ class Request
                         $sid = QEPGenerator::getNextSid();
                         QEPGenerator::setCacheSid($sid);
                         QEPGenerator::getTree($target, $method);
-                        //Logger::Log("call me: $sid, $method $target", LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', true, LogLevel::DEBUG);
-
+                        
                         $targetBeginTime = microtime(true);
-                        //////$cachedData = QEPGenerator::getCachedDataByURL($target, $method);
-                        //Logger::Log("++".$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', true, LogLevel::DEBUG);
-
-
+                        $cachedData = QEPGenerator::getCachedDataByURL($target, $method);
+                        
                         if (isset($cacheData) && $cachedData!==null){
                             $result['content'] = $cachedData->content;
                             $result['status'] = $cachedData->status;
-                            ///Logger::Log('out>> '.$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
-                            //////QEPGenerator::cacheData($sid, $com->getTargetName(), $target, $result['content'], $result['status'], $method);
+                            QEPGenerator::cacheData($sid, $result['content'], $result['status']);
                         } else {
                             $args = array(
                                           'REQUEST_METHOD' => $method,
@@ -337,8 +333,7 @@ class Request
                                 $newSid = QEPGenerator::getNextSid();
                                 QEPGenerator::setCacheSid($newSid);
                                 QEPGenerator::createNode($newSid, $com->getTargetName(), $method, $target, $content);
-                                ////Logger::Log('newSid: '.$newSid, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', true, LogLevel::DEBUG);
-
+                                
                                 // merkt sich das alte Arbeitsverzeichnis
                                 $pathOld = getcwd();
                                 @chdir(dirname($tar));
@@ -389,12 +384,8 @@ class Request
                             }
 
                             $targetSid = (isset($result['headers']['Cachesid']) ? $result['headers']['Cachesid'] : null);
+                            QEPGenerator::cacheData($targetSid, $result['content'], $result['status']);
                             QEPGenerator::releaseNode($targetSid, $result['content'], $result['status'], $com->getLocalPath(), (isset($result['headers']['Content-Type']) ? $result['headers']['Content-Type'] : null));
-                            //////QEPGenerator::addPath($sid, $targetSid, $com->getTargetName(), $target, $method, $result['status']);
-                            //////QEPGenerator::finishRequest($targetSid, $h.'/'.$com->getLocalPath(), $com->getTargetName(), $target, $result['content'], $result['status'], $method, $content);
-                            //////QEPGenerator::cacheData($sid, $com->getTargetName(), $target, $result['content'], $result['status'], $method);
-                            ///Logger::Log('in<< '.$method.' '.$com->getClassName().$add, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
-
                         }
 
                         $done=true;

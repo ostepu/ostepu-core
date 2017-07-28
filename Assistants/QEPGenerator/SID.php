@@ -8,7 +8,6 @@
  * @date 2015-2016
  */
 
-
 class SID
 {
     /**
@@ -21,6 +20,11 @@ class SID
      */
     private static $_maxSid = -1;
 
+    /*
+     * prüft, ob die aktuelle SID die Wurzel seines Baums ist
+     * 
+     * @return true = ist Wurzel, false = er ist nicht die Wurzel
+     */
     public static function isRoot()
     {
         $id = self::getSid();
@@ -30,6 +34,11 @@ class SID
         return true;
     }
 
+    /*
+     * liefert die SID des aktuellen Wurzelknotens
+     * 
+     * @return die SID der Wurzel
+     */
     public static function getRoot()
     {
         return self::$_currentBaseSID;
@@ -63,6 +72,10 @@ class SID
         return self::$_maxSid;
     }
 
+    /*
+     * ermittelt die SID dieses Prozesses
+     * @return die SID, null = keine SID gefunden
+     */
     public static function getSid()
     {
         $header = array_merge(

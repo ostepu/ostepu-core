@@ -28,7 +28,7 @@ class node implements JsonSerializable
     public $childs=array();
 
     /**
-     * @var $parent int Die ID des Vaters.
+     * @var $parent int Die ID des Vaters oder null bei der Wurzel
      */
     public $parent=null;
 
@@ -136,17 +136,28 @@ class node implements JsonSerializable
         }
     }
 
+    /*
+     * berechnet den TAG des Knotens anhand der URL und der Methode
+     * 
+     * @return String der TAG
+     */
     public function generateUTag()
     {
         return md5($this->method.'_'.$this->URL);
     }
 
+    /*
+     * berechnet einen TAG anhand des Inhalts (result)
+     * 
+     * @return String der TAG
+     */
     public function generateETag()
     {
-        if (!is_string($this->content)) {
-            $this->content = json_encode($this->content);
+        if (!is_string($this->result)) {
+            $this->result = json_encode($this->result);
         }
-        return md5($this->content);
+        $this->resultHash = md5($this->result);
+        return $this->resultHash;
     }
 
     /**
@@ -218,7 +229,9 @@ class node implements JsonSerializable
     }
 
     /**
-     * ???
+     * dient der serialisierung des Objekts
+     * 
+     * @return ein assoziatives Array welches das Element darstellt
      */
     public function jsonSerialize()
     {

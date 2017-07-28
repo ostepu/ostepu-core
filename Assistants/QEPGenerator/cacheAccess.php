@@ -28,7 +28,7 @@ class cacheAccess
      * @param string $value Der Datensatz
      * @return bool true = Erfolgreich, false = Fehler
      */
-    public static function storeData($key, $value)
+    public static function storeData($key, $value, $time = 43200)
     {
         if (self::$_cache === null) {
             phpFastCache::setup(phpFastCache::$config);
@@ -36,7 +36,7 @@ class cacheAccess
         }
         ///Logger::Log('store: '.$key, LogLevel::DEBUG, false,dirname(__FILE__) . '/../calls.log');
 
-        return self::$_cache->set($key, gzcompress($value), 43200);
+        return self::$_cache->set($key, gzcompress($value), $time);
     }
 
     /**
@@ -107,5 +107,15 @@ class cacheAccess
         }
 
         return $res;
+    }
+    
+    public static function touch($key)
+    {
+        if (self::$_cache === null) {
+            phpFastCache::setup(phpFastCache::$config);
+            self::$_cache = phpFastCache();
+        }
+        
+        return self::$_cache->touch($key);
     }
 }
