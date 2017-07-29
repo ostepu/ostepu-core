@@ -45,7 +45,7 @@ class QEPGenerator {
 
     /*
      * hier werden Anfrageergebnisse Zwischengespeichert
-     * KEY = UTag, VALUE = der Anfrageinhalt als Array (Content, Status)
+     * KEY = ETag, VALUE = der Anfrageinhalt als Array (Content, Status)
      */
     private static $cachedData = array();
 
@@ -488,7 +488,101 @@ class QEPGenerator {
      * ob Knoten übersprungen werden können
      */
     public static function computeProgress() {
-        // ??? //
+        self::$tree->resetAllLabel();
+        $leafs = self::$tree->getLeafs();
+        
+        $nextElements = $leafs;
+        
+        // label: 0 = unverändert, 1 = verändert, 2 = muss berechnet werden
+        
+        for ($i=0;$i<count($nextElements);$i++){
+            $elemId = $nextElements[$i];
+            $elem = self::$tree->getElementById($elemId);
+            $elemState = self::$tree->getChangedState($elemId);
+            
+            if ($elemState !== null){
+                // der Knoten wurde bereits bearbeitet
+                continue;
+            }
+            
+            if ($elem->hasChilds()){
+                $childs = $elem->getChilds();
+                
+                foreach($childs as $childId){
+                    $child = self::$tree->getElementById($childId);
+                    $childState = self::$tree->getChangedState($childId);
+                            
+                    if ($childState !== null && $childState === 1){
+                        // wenn sich eines meiner Kinder verändert hat, dann muss
+                        // ich neu berechnet werden, dazu werden wir nun versuchen
+                        // mein Kinder aus dem Cache/Arbeitsspeicher zu laden
+                        
+                        $changedChildFound = false;
+                        foreach($childs as $childId){
+                            $child = self::$tree->getElementById($childId);
+                            
+                            if ($childState !== null && $childState == 1){
+                                // wenn dann das Kind erreicht wurde, welches sich
+                                // verändert hat, dann müssen die nachfolgenden Kinder
+                                // eventuell eh neu berechnet werden
+                                $changedChildFound=true;
+                            }
+                            
+                            if ($childState !== null && $childState == 0){
+                                // dieses Kind hat sich nicht verändert und
+                                // kann aus dem Cache geladen werden
+                                $tag = $child->resultHash;
+                                $availableChild = false;
+                                
+                                // prüfe, ob der Inhalt vielleicht schon im
+                                // Arbeitsspeicher liegt
+                                if (!$changedChildFound && !$availableChild && isset(self::$cachedData[$tag])){
+                                    $availableChild=true;
+                                }
+                                
+                                // ansonsten muss er aus dem cache geladen werden
+                                if (!$changedChildFound && !$availableChild && $child->storedResult){
+                                    $data = cacheAccess::loadData('data_' . $tag);
+                                    if ($data !== null){
+                                        $availableChild=true;
+                                        self::$cachedData[$tag] = $data;
+                                    }
+                                }
+                                
+                                $elementsInChildTree = self::$tree->getElementsInSubtree($childId);
+                                if ($availableChild){
+                                    // wenn das Kind nun verfügbar ist, dann können
+                                    // wir dieses Kind und dessen Kinder als "positiv" bearbeitet markieren
+                                    foreach($elementsInChildTree as $key){
+                                        if (self::$tree->getChangedState($key) === null){
+                                            self::$tree->setChanged($key, 0);
+                                        }
+                                    }
+                                } else {
+                                    // wenn wir das Kind soweit nicht laden konnten, dann muss es
+                                    // trotzdem gesperrt werden, weil der Vater sowieso berechnet werden muss
+                                    foreach($elementsInChildTree as $key){
+                                        if (self::$tree->getChangedState($key) === null){
+                                            self::$tree->setChanged($key, 1);
+                                        }                                     
+                                    }
+                                }
+                           }                        
+                        }
+                        break;
+                    }
+                }
+            } else {
+                // ein Blatt
+                // mit dem Blatt müssen wir nichts weiter machen
+            }
+            
+            if ($elem->hasParent()){
+                $nextElements[] = $elem->parent;
+            }
+        }
+        
+        
     }
     
     /**

@@ -113,6 +113,18 @@ class node implements JsonSerializable {
      * @var $label Hier kann für Berechnungen etwas vermerkt werden
      */
     public $label = null;
+    
+    public function hasChilds(){
+        return count($this->childs)>0;
+    }
+    
+    public function getChilds(){
+        return $this->childs;
+    }
+    
+    public function hasParent(){
+        return $parent !== null;
+    }
 
     /**
      * Prüft, ob der Knoten ein Blatt/Quelle ist

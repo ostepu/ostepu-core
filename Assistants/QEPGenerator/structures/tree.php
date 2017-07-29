@@ -33,6 +33,24 @@ class tree implements JsonSerializable {
     public function getElements() {
         return $this->elements;
     }
+    
+    /*
+     * ermittelt alle Blätter des Baums
+     */
+    public function getLeafs(){
+        $root = $this->findRoot();
+        $nextElements = array($root);
+        $leafs = array();
+        
+        for ($i=0;$i<count($nextElements);$i++){
+            $child = $nextElements[$i];
+            $elem = $this->getElementById($child);
+            if ($elem->isLeaf()){
+                $leafs[] = $elem->id;
+            }
+        }
+        return $leafs;
+    }
 
     /*
      * gibt die direkten Kinder des Knotens zurück
@@ -397,6 +415,23 @@ class tree implements JsonSerializable {
             }
         }
         return null;
+    }
+    
+    /*
+     * ermittelt alle IDs der Knoten, welche sich in diesem Unterbaum befinden
+     * 
+     * @param int $objId die ID der Wurzel des Teilbaums welcher ermittelt werden soll
+     * @return int[] die IDs der Elemente
+     */
+    public function getElementsInSubtree($objId){
+        $elements = array($objId);
+        for ($i=0;$i<count($elements);$i++){
+            $key = $elements[$i];
+            if ($this->hasChilds($key)){
+                $elements = array_merge($elements, $this->getChilds($key));
+            }
+        }
+        return $elements;
     }
 
     /**

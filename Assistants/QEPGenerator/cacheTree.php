@@ -45,27 +45,32 @@ class cacheTree extends tree implements JsonSerializable {
         'DELETE' => 1,
         'DEFAULT' => 1);
 
-    public static function allLeafsComputed($objId) {
+    public static function allLeafsComputedAndUnchanged($objId) {
         $firstElement = $this->getElementById($objId);
         $nextElements = $firstElement->childs; // die IDs der Kinder
         
-        while(count($nextElements)>0){
-            foreach($nextElements as $child){
-                if (!$this->hasChilds($child)){
-                    // wenn er keine Kinder hat, dann muss er berechnet sein
-                    if (isset($this->_changedNodes[$child])){
-                        $changed = $this->_changedNodes[$child];
-                        
-                    } else {
-                        // dieses Blatt muss erst noch berechnet werden, damit
-                        // kann $objId auch nicht als voll berechnet angesehen
-                        // werden
-                        return false;
-                    }
-                } else {
-                    // wenn er Kinder besitzt, dann müssen wir dort weiterrechnen
-                    $nextElements = array_merge($nextElements, $this->getChilds($child));
+        for ($i=0;$i<count($nextElements);$i++){
+            $child = $nextElements[$i];
+        
+            // wenn der Knoten bereits berechnet wurde, dann sollte er lieber
+            // unverändert sein
+            if (isset($this->_changedNodes[$child])){
+                $changed = $this->_changedNodes[$child];
+                if ($changed===1){
+                    // der Knoten ist nicht unverändert, sodass dessen Vater
+                    // neu berechnet werden muss
+                    return false;
                 }
+            }
+
+            if (!$this->hasChilds($child)){
+                // dieses Blatt muss erst noch berechnet werden, damit
+                // kann $objId auch nicht als voll berechnet angesehen
+                // werden
+                return false;
+            } else {
+                // wenn er Kinder besitzt, dann müssen wir dort weiterrechnen
+                $nextElements = array_merge($nextElements, $this->getChilds($child));
             }
         }
         
