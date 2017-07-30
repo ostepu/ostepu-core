@@ -35,12 +35,20 @@ include_once (dirname(__FILE__) . '/QEPGenerator/cacheTree.php');
 include_once (dirname(__FILE__) . '/QEPGenerator/structures/DataObject.php');
 
 class QEPGenerator {
+
     /*
      * der aktuelle Anfragebaum
      */
-
     public static $tree = null;
+    
+    /*
+     * 
+     */
     private static $activeTree = false;
+    
+    /*
+     * 
+     */
     private static $changedTree = false;
 
     /*
@@ -53,7 +61,7 @@ class QEPGenerator {
      * gibt an, ob der Baum auf jeden Fall ohne die Hilfe des Caches aufgezeichnet
      * werden soll (true = ignoriere Cache, false = normale Nutzung)
      */
-    private static $ignoreCachedTree = false;
+    private static $ignoreTreeCache = false;
 
 
     /*
@@ -67,15 +75,28 @@ class QEPGenerator {
      * 
      * @return array der Baum, die SID-Daten
      */
-
-    private static function storeTree() {
+    private static function storeTree() {        
+        if (self::$ignoreTreeCache){
+            return;
+        }
+        
+        $myTree = null;
+        if (self::$tree !== null){
+            $myTree = clone self::$tree;
+        }
+        
         $restoreData = array('SID' => SID::storeSid());
-        $cacheTreeData = array('activeTree' => self::$activeTree, 'changedTree' => self::$changedTree, 'tree' => clone self::$tree);
+        $cacheTreeData = array('activeTree' => self::$activeTree, 'changedTree' => self::$changedTree, 'tree' => $myTree);
         self::reset();
         $restoreData['CacheTree'] = $cacheTreeData;
         return $restoreData;
     }
 
+    /*
+     * stellt den Baum anhand von $data (zuvor mit storeTree ermittelt) wieder her
+     * 
+     * @param array $data die Daten des Baums
+     */
     private static function restoreTree($data) {
         SID::restoreSid($data['SID']);
         self::$activeTree = $data['CacheTree']['activeTree'];
@@ -248,18 +269,18 @@ class QEPGenerator {
 
         // wenn wir den Datensatz bereits im Arbeitsseicher haben, dann nehmen
         // wir gleich diesen Datensatz
-        if (isset(self::$cachedData[$uTag])) {
-            return self::$cachedData[$uTag];
+        if (isset(self::$cachedData['data_'.$uTag])) {
+            return self::$cachedData['data_'.$uTag];
         }
 
-        // ansonsten fragen wir den Cacheserver, ob er den Datensatz besitzt
-        $res = cacheAccess::loadData($uTag);
+        /*// ansonsten fragen wir den Cacheserver, ob er den Datensatz besitzt
+        $res = cacheAccess::loadData('data_'.$uTag);
         if ($res !== null) {
             // es wurde eine Datensatz gefunden
             return json_decode($res);
         } else {
             // der Cacheserver besitzt den Datensatz nicht
-        }
+        }*/
 
         return null;
     }
@@ -416,24 +437,6 @@ class QEPGenerator {
         }
     }
 
-    public static function cacheDataSimple($sid, $Name, $URL, $content, $status,
-            $method) {
-        /* if (self::getConf('enabled') && strpos($URL,'/UI/')===false && strtoupper($method)=='GET') { // ??????
-          $uTag = md5($URL);
-
-          if (!isset(self::$cachedData[$uTag])) {
-          self::$cachedData[$uTag] = new DataObject($content,$status);
-          $componentTag = $Name;
-          $eTag = self::generateETag($content);
-          }
-          }
-
-          if ((self::getConf('enabled') || self::$makeTree) && $sid===SID::$currentBaseSID) {
-          self::finishRequest($sid, null, 'BEGIN', null, $content, $status, null, null);
-          self::savePath($URL,$method);
-          } */
-    }
-
     /**
      * Ermittelt einen Hash zu $data
      *
@@ -505,6 +508,8 @@ class QEPGenerator {
                 continue;
             }
             
+            $changedChildFound = false;
+            
             if ($elem->hasChilds()){
                 $childs = $elem->getChilds();
                 
@@ -517,7 +522,6 @@ class QEPGenerator {
                         // ich neu berechnet werden, dazu werden wir nun versuchen
                         // mein Kinder aus dem Cache/Arbeitsspeicher zu laden
                         
-                        $changedChildFound = false;
                         foreach($childs as $childId){
                             $child = self::$tree->getElementById($childId);
                             
@@ -569,8 +573,14 @@ class QEPGenerator {
                                 }
                            }                        
                         }
+                        
                         break;
                     }
+                }
+                
+                if (!$changedChildFound){
+                    // alle Kinder sind unverändert
+                    self::$tree->setChanged($elemId, 0);
                 }
             } else {
                 // ein Blatt
@@ -579,6 +589,25 @@ class QEPGenerator {
             
             if ($elem->hasParent()){
                 $nextElements[] = $elem->parent;
+            } else {
+                // $elemId ist die Wurzel und kann nun aus dem cache geladen werden
+                $tag = $elem->resultHash;
+                $availableData = false;
+
+                // prüfe, ob der Inhalt vielleicht schon im
+                // Arbeitsspeicher liegt
+                if (!$availableData && isset(self::$cachedData[$tag])){
+                    $availableData=true;
+                }
+
+                // ansonsten muss er aus dem cache geladen werden
+                if (!$availableData && $elem->storedResult){
+                    $data = cacheAccess::loadData('data_' . $tag);
+                    if ($data !== null){
+                        $availableData=true;
+                        self::$cachedData[$tag] = $data;
+                    }
+                }
             }
         }
         
@@ -625,7 +654,7 @@ class QEPGenerator {
 
         // wenn tempTree=true, dann soll der Baum wirklich aufgezeichnet werden
         // und nicht über den Cache bearbeitet werden
-        if (self::$ignoreCachedTree) {
+        if (self::$ignoreTreeCache) {
             self::$tree = null;
         } else {
             self::$tree = cacheAccess::loadData('tree_' . $uTag);
@@ -658,7 +687,7 @@ class QEPGenerator {
                 // der Aufruf der nachfolgenden Knoten soll unseren bisher berechneten
                 // Baum nicht beeinflussen
                 $currentCacheTreeConfiguration = self::storeTree();
-                self::$ignoreCachedTree = true;
+                self::$ignoreTreeCache = true;
 
                 $answ = Request::custom($elem->method, $elem->URI, array(), '', true);
 
@@ -667,7 +696,7 @@ class QEPGenerator {
 
                 // hier wird die Konfiguration unseres Baums wiederhergestellt
                 self::restoreTree($currentCacheTreeConfiguration);
-                self::$ignoreCachedTree = false;
+                self::$ignoreTreeCache = false;
 
                 if (!isset($answ['headers']['Etag']) || $answ['headers']['Etag'] != $elem->resultHash || $answ['status'] != $elem->status) {
                     // der Zustand hat sich verändert oder die generierung des ETag funktioniert nicht
@@ -683,8 +712,8 @@ class QEPGenerator {
             self::$tree->computeDependencies();
             $nextElements = self::$tree->extractMinComputable();
         }
-        echo "OK";
-        exit(0);
+        ///echo "OK";
+        ///exit(0);
     }
 
 }

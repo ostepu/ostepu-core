@@ -374,17 +374,19 @@ class tree implements JsonSerializable {
         $resultList = array();
         $firstElement = clone $this->elements[$objId];
         $firstElement->parent = null;
-        $currentList = array($objId => $firstElement);
+        $currentList = array($objId);
 
         while (count($currentList) > 0) {
             $tmp = array_merge(array(), $currentList);
             $currentList = array();
-            foreach ($tmp as $key => $elem) {
+            foreach ($tmp as $key) {
+                $elem = $this->getElementById($key);
                 $resultList[$elem->id] = $elem;
                 if (!$elem->isLeaf()) {
                     $childs = $this->elements[$key]->childs;
-                    foreach ($childs as $child) {
-                        $currentList[$child->id] = $child;
+                    foreach ($childs as $childId) {
+                        $child = $this->getElementById($childId);
+                        $currentList[] = $child->id;
                     }
                 }
             }

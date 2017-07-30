@@ -31,7 +31,7 @@ class cacheAccess {
             phpFastCache::setup(phpFastCache::$config);
             self::$_cache = phpFastCache();
         }
-        ///Logger::Log('store: '.$key, LogLevel::DEBUG, false,dirname(__FILE__) . '/../calls.log');
+        Logger::Log('store: '.$key, LogLevel::DEBUG, false,dirname(__FILE__) . '/../calls.log');
 
         return self::$_cache->set($key, gzcompress($value), $time);
     }
@@ -62,7 +62,7 @@ class cacheAccess {
             phpFastCache::setup(phpFastCache::$config);
             self::$_cache = phpFastCache();
         }
-        ///Logger::Log('load: '.$key, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+        Logger::Log('load: '.$key, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
 
         $res = self::$_cache->get($key);
         if ($res === null) {
