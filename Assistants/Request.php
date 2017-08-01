@@ -377,7 +377,6 @@ class Request
                             }
 
                             $targetSid = (isset($result['headers']['Cachesid']) ? $result['headers']['Cachesid'] : null);
-                            QEPGenerator::cacheData($targetSid, $result['content'], $result['status']);
                             QEPGenerator::releaseNode($targetSid, $result['content'], $result['status'], $com->getLocalPath(), (isset($result['headers']['Content-Type']) ? $result['headers']['Content-Type'] : null));
                         }
 
