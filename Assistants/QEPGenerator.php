@@ -53,7 +53,7 @@ class QEPGenerator {
 
     /*
      * hier werden Anfrageergebnisse Zwischengespeichert
-     * KEY = ETag, VALUE = der Anfrageinhalt als Array (Content, Status)
+     * KEY = UTag, VALUE = der Anfrageinhalt als Array (Content, Status)
      */
     private static $cachedData = array();
 
@@ -336,6 +336,8 @@ class QEPGenerator {
 
         if (SID::isRoot()) {
             // Die Wurzel der Anfrage wurde bearbeitet
+            self::cacheData($targetSid, $targetContent, $targetStatus);
+            
             $elem = self::$tree->getElementById(self::$tree->findRoot());
             if ($elem !== null) {
                 $elem->endTime = microtime(true);
@@ -431,8 +433,8 @@ class QEPGenerator {
 
         $elem = self::$tree->getElementById($sid);
         if ($elem !== null) {
-            $eTag = self::generateETag($content);
-            cacheAccess::storeData('data_' . $eTag, json_encode(new DataObject($content, $status)));
+            $uTag = $elem->generateUTag();
+            cacheAccess::storeData('data_' . $uTag, json_encode(new DataObject($content, $status)));
             $elem->storedResult=true;
         }
     }
@@ -535,7 +537,7 @@ class QEPGenerator {
                             if ($childState !== null && $childState == 0){
                                 // dieses Kind hat sich nicht verändert und
                                 // kann aus dem Cache geladen werden
-                                $tag = $child->resultHash;
+                                $tag = $child->generateUTag();
                                 $availableChild = false;
                                 
                                 // prüfe, ob der Inhalt vielleicht schon im
@@ -591,7 +593,7 @@ class QEPGenerator {
                 $nextElements[] = $elem->parent;
             } else {
                 // $elemId ist die Wurzel und kann nun aus dem cache geladen werden
-                $tag = $elem->resultHash;
+                $tag = $elem->generateUTag();
                 $availableData = false;
 
                 // prüfe, ob der Inhalt vielleicht schon im
