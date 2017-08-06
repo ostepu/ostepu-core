@@ -2,6 +2,5 @@ RewriteEngine On
 RewriteCond %{HTTP_HOST} !^localhost(:\d+)?$
 RewriteCond %{REQUEST_METHOD} !^GET$ [OR]
 RewriteCond %{THE_REQUEST} !(.)*\/CContent\/content(\/.)+(\.(.+))?
-
-
+RewriteRule ^ - [F]
 RewriteRule ^ index.php [QSA,L]
