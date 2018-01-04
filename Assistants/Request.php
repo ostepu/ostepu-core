@@ -321,7 +321,7 @@ class Request
                             include_once($tar);
 
                             $oldStatus = http_response_code();
-                            $oldHeader = array_merge(array(),headers_list());
+                            $oldHeader = array_merge(array(),php_sapi_name() === 'cli' ? xdebug_get_headers() : headers_list());
                             header_remove();
                             http_response_code(0);
 
@@ -347,7 +347,7 @@ class Request
                             
                                 $result['content'] = ob_get_contents();
                                 QEPGenerator::setETag($result['content']);
-                                $result['headers'] = array_merge(array(),Request::http_parse_headers_short(headers_list()));
+                                $result['headers'] = array_merge(array(),Request::http_parse_headers_short(php_sapi_name() === 'cli' ? xdebug_get_headers() : headers_list()));
                                 header_remove();
                                 
                                $result['headers']['Cachesid'] = $newSid;

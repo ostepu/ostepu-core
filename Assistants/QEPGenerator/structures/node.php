@@ -123,7 +123,7 @@ class node implements JsonSerializable {
     }
     
     public function hasParent(){
-        return $parent !== null;
+        return $this->parent !== null;
     }
 
     /**

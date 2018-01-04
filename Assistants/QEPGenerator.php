@@ -32,6 +32,7 @@ if (file_exists(dirname(__FILE__) . '/vendor/phpfastcache/phpfastcache.php')) {
 include_once (dirname(__FILE__) . '/QEPGenerator/cacheAccess.php');
 include_once (dirname(__FILE__) . '/QEPGenerator/SID.php');
 include_once (dirname(__FILE__) . '/QEPGenerator/cacheTree.php');
+include_once (dirname(__FILE__) . '/QEPGenerator/cacheLogger.php');
 include_once (dirname(__FILE__) . '/QEPGenerator/structures/DataObject.php');
 
 class QEPGenerator {
@@ -40,6 +41,11 @@ class QEPGenerator {
      * der aktuelle Anfragebaum
      */
     public static $tree = null;
+    
+    /*
+     * dieser Bezeichner wird in den Logeinträgen dieser Datei verwendet
+     */
+    private static $logName = 'QEPGenerator';
     
     /*
      * 
@@ -79,13 +85,17 @@ class QEPGenerator {
         if (self::$ignoreTreeCache){
             return;
         }
-        
+                
         $myTree = null;
         if (self::$tree !== null){
             $myTree = clone self::$tree;
         }
         
-        $restoreData = array('SID' => SID::storeSid());
+        $mySID = SID::storeSid();
+        
+        cacheLogger::Log(__function__.': '.$mySID['sid'], self::$logName);
+        
+        $restoreData = array('SID' => $mySID);
         $cacheTreeData = array('activeTree' => self::$activeTree, 'changedTree' => self::$changedTree, 'tree' => $myTree);
         self::reset();
         $restoreData['CacheTree'] = $cacheTreeData;
@@ -98,6 +108,7 @@ class QEPGenerator {
      * @param array $data die Daten des Baums
      */
     private static function restoreTree($data) {
+        cacheLogger::Log(__function__.': '.$data['SID']['sid'], self::$logName);
         SID::restoreSid($data['SID']);
         self::$activeTree = $data['CacheTree']['activeTree'];
         self::$changedTree = $data['CacheTree']['changedTree'];
@@ -108,8 +119,9 @@ class QEPGenerator {
      * lädt die die Konfiguration des QEPGenerators aus der config.json,
      * falls sie noch nicht geladen wurde
      */
-
     private static function loadConfig() {
+        cacheLogger::enableLog();
+        
         if (self::$conf !== null) {
             return;
         }
@@ -126,7 +138,6 @@ class QEPGenerator {
      * 
      * @return String[] die Konfiguration
      */
-
     public static function getDefaultConf() {
         return array('enabled' => false, 'makeTree' => false, 'treePath' => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'path');
     }
@@ -137,7 +148,6 @@ class QEPGenerator {
      * @param $field das Feld, dessen Wert verlangt wird
      * @return der Wert oder null (wenn er nicht existiert)
      */
-
     public static function getConf($field) {
         if (isset(self::$conf[$field])) {
             return self::$conf[$field];
@@ -151,7 +161,6 @@ class QEPGenerator {
      * @param $field das Feld
      * @param $value der neue Wert
      */
-
     public static function setConf($field, $value) {
         self::$conf[$field] = $value;
     }
@@ -229,7 +238,7 @@ class QEPGenerator {
         //SID::reset();
     }
 
-    public static function init() {
+    private static function init() {
         self::$tree = new cacheTree();
         // initialisiere Wurzel
         $graphName = $_SERVER['SCRIPT_NAME'];
@@ -237,7 +246,7 @@ class QEPGenerator {
         $newNode = new node(array('id' => SID::getRoot(),
             'name' => $graphName,
             'beginTime' => microtime(true)));
-        ////Logger::Log('currentRoot: '.SID::getRoot(), LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', true, LogLevel::DEBUG);
+        cacheLogger::Log(__function__.': currentRoot='.SID::getRoot(), self::$logName);
         self::$tree->addNode($newNode);
         self::$activeTree = true;
     }
@@ -248,7 +257,22 @@ class QEPGenerator {
      * @return string Die URL
      */
     public static function generateURL() {
-        return $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+        $requestScheme = 'unknown';
+        if (isset($_SERVER['REQUEST_SCHEME'])){
+            $requestScheme=$_SERVER['REQUEST_SCHEME'];
+        }
+        
+        $serverName = 'unknown';
+        if (isset($_SERVER['SERVER_NAME'])){
+            $serverName=$_SERVER['SERVER_NAME'];
+        }
+        
+        $requestUri = '/unknown';
+        if (isset($_SERVER['REQUEST_URI'])){
+            $requestUri=$_SERVER['REQUEST_URI'];
+        }
+        
+        return $requestScheme . '://' . $serverName . $requestUri;
     }
 
     /**
@@ -266,22 +290,26 @@ class QEPGenerator {
         }
 
         $uTag = self::generateUTag($URL, $method);
+        
+        cacheLogger::Log(__function__.': URL='.$URL.' method='.$method.' uTag='.$uTag, self::$logName);
 
         // wenn wir den Datensatz bereits im Arbeitsseicher haben, dann nehmen
         // wir gleich diesen Datensatz
         if (isset(self::$cachedData['data_'.$uTag])) {
+            cacheLogger::Log(__function__.': Datensatz data_'.$uTag.' gefunden', self::$logName);
             return self::$cachedData['data_'.$uTag];
         }
 
-        /*// ansonsten fragen wir den Cacheserver, ob er den Datensatz besitzt
+        // ansonsten fragen wir den Cacheserver, ob er den Datensatz besitzt
         $res = cacheAccess::loadData('data_'.$uTag);
         if ($res !== null) {
             // es wurde eine Datensatz gefunden
             return json_decode($res);
         } else {
             // der Cacheserver besitzt den Datensatz nicht
-        }*/
+        }
 
+        cacheLogger::Log(__function__.': Datensatz data_'.$uTag.' nicht gefunden', self::$logName);
         return null;
     }
 
@@ -304,6 +332,8 @@ class QEPGenerator {
                 'input' => $input,
                 'beginTime' => microtime(true)));
             self::$tree->addNode($newNode);
+        } else {
+            // der Knoten existiert bereits
         }
     }
 
@@ -337,16 +367,21 @@ class QEPGenerator {
         if (SID::isRoot()) {
             // Die Wurzel der Anfrage wurde bearbeitet
             self::cacheData($targetSid, $targetContent, $targetStatus);
+                
+            // wenn sich der Baum verändert hat, dann speichern wir ihn
+            if (self::$changedTree){
+                $elem = self::$tree->getElementById(self::$tree->findRoot());
+                if ($elem !== null) {
+                    $elem->endTime = microtime(true);
+                }
+                self::$tree->computeExecutionTime();
+                foreach (self::$tree->getElements() as $elem) {
+                    self::saveNode($elem);
+                }
+                
+                self::saveTree(self::$tree);
+            }
             
-            $elem = self::$tree->getElementById(self::$tree->findRoot());
-            if ($elem !== null) {
-                $elem->endTime = microtime(true);
-            }
-            self::$tree->computeExecutionTime();
-            foreach (self::$tree->getElements() as $elem) {
-                self::saveNode($elem);
-            }
-            self::saveTree(self::$tree);
             self::reset();
         }
     }
@@ -364,16 +399,28 @@ class QEPGenerator {
         }
 
         if (self::getConf('enabled') === true) {
+            cacheLogger::Log(__function__.': der Baum wird gespeichert', self::$logName);
             $root = self::$tree->getElementById(self::$tree->findRoot());
             if ($root !== null) {
+            cacheLogger::Log(__function__.' Baum >>>>>>>>>>>>>>', self::$logName);
+            cacheLogger::Log(json_encode(self::$tree), self::$logName);
+            cacheLogger::Log('<<<<<<<<<<<<<<<<<<<<<<<<<', self::$logName);
+                    
                 foreach ($root->childs as $childID) {
                     $subTree = $tree->extractSubtree($childID);
+
+                    cacheLogger::Log(__function__." extract $childID >>>>>>>>>>>>>>", self::$logName);
+                    cacheLogger::Log(json_encode($subTree), self::$logName);
+                    cacheLogger::Log('<<<<<<<<<<<<<<<<<<<<<<<<<', self::$logName);
+                    
                     $subTree->cleanTree();
                     $subRootId = $subTree->findRoot();
+                        
 
                     if ($subRootId === null) {
                         // es ist ein Problem aufgetreten, die Wurzel konnte
                         // nicht ermittelt werden
+                        cacheLogger::LogError(__FILE__.':'.__function__.':'.__LINE__.' die Wurzel konnte nicht ermittelt werden', self::$logName);
                         continue;
                     }
 
@@ -424,12 +471,17 @@ class QEPGenerator {
     public static function cacheData($sid, $content, $status) {
         self::loadConfig();
 
-        if (!self::getConf('enabled'))
+        if (!self::getConf('enabled')) {
             return;
-        if ($sid === null)
+        }
+        if ($sid === null) {
             return;
-        if (self::$tree === null)
+        }
+        if (self::$tree === null) {
             return;
+        }
+
+        cacheLogger::Log(__function__.': sid='.$sid, self::$logName);
 
         $elem = self::$tree->getElementById($sid);
         if ($elem !== null) {
@@ -493,6 +545,8 @@ class QEPGenerator {
      * ob Knoten übersprungen werden können
      */
     public static function computeProgress() {
+        cacheLogger::Log(__function__, self::$logName);
+       
         self::$tree->resetAllLabel();
         $leafs = self::$tree->getLeafs();
         
@@ -652,9 +706,9 @@ class QEPGenerator {
 
         $uTag = self::generateUTag($URL, $method);
         self::$activeTree = true;
-        self::$changedTree = true;
+        self::$changedTree = false;
 
-        // wenn tempTree=true, dann soll der Baum wirklich aufgezeichnet werden
+        // wenn ignoreTreeCache=true, dann soll der Baum wirklich aufgezeichnet werden
         // und nicht über den Cache bearbeitet werden
         if (self::$ignoreTreeCache) {
             self::$tree = null;
@@ -665,14 +719,17 @@ class QEPGenerator {
         if (self::$tree === null) {
             // es wurde keine gespeicherte Baumdefinition gefunden, sodass wir
             // die aktuelle Anfrage aufzeichnen müssen
+            cacheLogger::Log(__function__.': neuer Baum', self::$logName);
 
-            self::$changedTree = false;
             self::reset();
             self::init();
+            self::$changedTree = true;
 
             return;
         } else {
             // es wurde eine gespeicherte Baumdefinition gefunden
+            cacheLogger::Log(__function__.': Baum wurde geladen', self::$logName);
+            self::$changedTree = false;
         }
 
         self::$tree = cacheTree::decodeCacheTree(self::$tree);

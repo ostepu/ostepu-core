@@ -12,13 +12,20 @@ if (file_exists(dirname(__FILE__) . '/../vendor/phpfastcache/phpfastcache.php'))
     include_once(dirname(__FILE__) . '/../vendor/phpfastcache/phpfastcache.php');
 }
 
-class cacheAccess {
+include_once(dirname(__FILE__) . '/cacheLogger.php');
+
+class cacheAccess{
 
     /**
      * @var phpFastCache $_cache Enthält den Zugang zum CacheServer
      */
     private static $_cache = null;
-
+    
+    /*
+     * dieser Bezeichner wird in den Logeinträgen dieser Datei verwendet
+     */
+    private static $logName = 'cacheAccess';
+    
     /**
      * Speichert einen Datensatz
      *
@@ -31,7 +38,7 @@ class cacheAccess {
             phpFastCache::setup(phpFastCache::$config);
             self::$_cache = phpFastCache();
         }
-        Logger::Log('store: '.$key, LogLevel::DEBUG, false,dirname(__FILE__) . '/../calls.log');
+        cacheLogger::Log('store: '.$key, self::$logName);
 
         return self::$_cache->set($key, gzcompress($value), $time);
     }
@@ -47,7 +54,7 @@ class cacheAccess {
             phpFastCache::setup(phpFastCache::$config);
             self::$_cache = phpFastCache();
         }
-        ///Logger::Log('delete: '.$key, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+        cacheLogger::Log('delete: '.$key, self::$logName);
         return self::$_cache->delete($key);
     }
 
@@ -62,7 +69,7 @@ class cacheAccess {
             phpFastCache::setup(phpFastCache::$config);
             self::$_cache = phpFastCache();
         }
-        Logger::Log('load: '.$key, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+        cacheLogger::Log('load: '.$key, self::$logName);
 
         $res = self::$_cache->get($key);
         if ($res === null) {
@@ -87,7 +94,7 @@ class cacheAccess {
             phpFastCache::setup(phpFastCache::$config);
             self::$_cache = phpFastCache();
         }
-        ///Logger::Log('load: '.implode(':',$keys), LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+        cacheLogger::Log('load: '.implode(':',$keys), self::$logName);
 
         $res = self::$_cache->getMulti($keys);
         foreach ($res as &$re) {

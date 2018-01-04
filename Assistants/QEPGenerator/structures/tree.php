@@ -35,18 +35,15 @@ class tree implements JsonSerializable {
     }
     
     /*
-     * ermittelt alle Blätter des Baums
+     * ermittelt die IDs aller Blätter des Baums
+     * @return int[] die IDs der Blätter
      */
     public function getLeafs(){
-        $root = $this->findRoot();
-        $nextElements = array($root);
         $leafs = array();
         
-        for ($i=0;$i<count($nextElements);$i++){
-            $child = $nextElements[$i];
-            $elem = $this->getElementById($child);
+        foreach ($this->elements as $key => $elem){
             if ($elem->isLeaf()){
-                $leafs[] = $elem->id;
+                $leafs[] = $key;
             }
         }
         return $leafs;
@@ -86,6 +83,7 @@ class tree implements JsonSerializable {
      * @param array [$value = null] Die neue Elementliste
      */
     public function setElements($value = null) {
+        asort($value);
         $this->elements = $value;
     }
 
@@ -128,98 +126,127 @@ class tree implements JsonSerializable {
      * Sucht den direkten linken Nachbarn eines Knotens
      *
      * @param int   $objId Die ID eines Knotens
-     * @return int[] der Nachbarknoten, null im Fehlerfall
+     * @return int der Nachbarknoten, null im Fehlerfall
      */
-    public function getPrecedingSiblingId($objId) {
+    public function getPrecedingSibling($objId) {
         if ($this->elements[$objId]->parent === null) {
             return null;
         }
         $parent = $this->elements[$objId]->parent;
         $parentChilds = $this->elements[$parent]->childs;
         $objPos = array_search($objId, $parentChilds);
-        if ($objPos === false || $objPos === 0) {
+        if ($objPos === false) {
             return null;
         }
-        return array($this->elements[$parent]->childs[$objPos - 1]);
-    }
-
-    /**
-     * Sucht den direkten linken Nachbarn eines Knotens
-     *
-     * @param int    $objId Die ID eines Knotens
-     * @return node[] der Nachbarknoten, null im Fehlerfall
-     */
-    public function getPrecedingSibling($objId) {
-        return $this->getElementById($this->getPrecedingSiblingId($objId));
+        if ($objPos === 0){
+            return null;
+        }
+        return $this->elements[$parent]->childs[$objPos - 1];
     }
 
     /**
      * Sucht den direkten rechten Nachbarn eines Knotens
      *
      * @param int   $objId Die ID eines Knotens
-     * @return int[] der Nachbarknoten, null im Fehlerfall
+     * @return int der Nachbarknoten, null im Fehlerfall
      */
-    public function getFollowingSiblingId($objId) {
+    public function getFollowingSibling($objId) {
         if ($this->elements[$objId]->parent === null) {
             return null;
         }
         $parent = $this->elements[$objId]->parent;
         $parentChilds = $this->elements[$parent]->childs;
         $objPos = array_search($objId, $parentChilds);
-        if ($objPos === false || $objPos === count($parentChilds) - 1) {
+        if ($objPos === false) {
             return null;
         }
-        return array($this->elements[$parent]->childs[$objPos + 1]);
-    }
-
-    /**
-     * Sucht den direkten rechten Nachbarn eines Knotens
-     *
-     * @param int    $objId Die ID eines Knotens
-     * @return node[] der Nachbarknoten, null im Fehlerfall
-     */
-    public function getFollowingSibling($objId) {
-        return $this->getElementById($this->getFollowingSiblingId($objId));
+        if ($objPos === count($parentChilds) - 1){
+            return null;
+        }
+        return $this->elements[$parent]->childs[$objPos + 1];
     }
 
     /**
      * Sucht alle Nachfahren eines Knotens
      *
      * @param int    $objId Die ID eines Knotens
-     * @return node[] eine Liste mit Nachfahren, null im Fehlerfall
+     * @return int[] eine Liste mit Nachfahren, null im Fehlerfall
      */
     public function getDescendant($objId) {
-        
+        $subtree = $this->getElementsInSubtree($objId);
+        $pos = array_search($objId, $subtree);
+        unset($subtree[$pos]);
+        sort($subtree);
+        return $subtree;
     }
 
     /**
      * Sucht alle Vorfahren eines Knotens
      *
      * @param int    $objId Die ID eines Knotens
-     * @return node[] eine Liste mit Vorfahren, null im Fehlerfall
+     * @return int[] eine Liste mit Vorfahren, null im Fehlerfall
      */
     public function getAncestor($objId) {
+        if (!isset($this->elements[$objId])){
+            return array();
+        }
         
+        $ancestor = array();
+        $current = $objId; 
+        while(true){
+            $elem = $this->getElementById($current);
+            if ($elem->hasParent()){
+                $current=$elem->parent;
+                $ancestor[] = $current;
+            } else 
+                break;
+        }
+        return $ancestor;
     }
 
     /**
      * Sucht alle rechten Nachbarn eines Knotens
      *
      * @param int    $objId Die ID eines Knotens
-     * @return node[] eine Liste mit Nachbarn, null im Fehlerfall
+     * @return int[] eine Liste mit Nachbarn, null im Fehlerfall
      */
     public function getFollowingSiblings($objId) {
-        
+        if ($this->elements[$objId]->parent === null) {
+            return null;
+        }
+        $parent = $this->elements[$objId]->parent;
+        $parentChilds = $this->elements[$parent]->childs;
+        $objPos = array_search($objId, $parentChilds);
+        if ($objPos === false) {
+            return null;
+        }
+        if ($objPos === count($parentChilds) - 1){
+            return array();
+        }
+        return array_slice($this->elements[$parent]->childs, $objPos+1);
     }
 
     /**
      * Sucht alle linken Nachbarn eines Knotens
      *
      * @param int    $objId Die ID eines Knotens
-     * @return node[] eine Liste mit Nachbarn, null im Fehlerfall
+     * @return int[] eine Liste mit Nachbarn, null im Fehlerfall
      */
     public function getPrecedingSiblings($objId) {
-        
+        if ($this->elements[$objId]->parent === null) {
+            return null;
+        }
+        $parent = $this->elements[$objId]->parent;
+        $parentChilds = $this->elements[$parent]->childs;
+        $objPos = array_search($objId, $parentChilds);
+        if ($objPos === false) {
+            return null;
+        }
+        if ($objPos === 0){
+            return array();
+        }
+
+        return array_slice($this->elements[$parent]->childs, 0, $objPos);
     }
 
     /**
@@ -228,9 +255,9 @@ class tree implements JsonSerializable {
      * @param int $objId Die ID des zu entfernenden Wurzelknotens
      */
     public function removeSubtree($objId) {
-        $list = $this->extractSubtree($objId);
+        $subtree = $this->extractSubtree($objId);
         $idList = array();
-        foreach ($list as $key => $elem) {
+        foreach ($subtree->getElements() as $key => $elem) {
             $idList[] = $key;
         }
 
@@ -254,7 +281,9 @@ class tree implements JsonSerializable {
      * @param string $newNode Der neue Knoten
      */
     public function addNode($newNode) {
-        $this->elements[$newNode->id] = $newNode;
+        if ($newNode!==null){
+            $this->elements[$newNode->id] = $newNode;
+        }
     }
 
     /**
@@ -330,19 +359,15 @@ class tree implements JsonSerializable {
         }
 
         if (!$inverted) {
-            $currentList = array($objId => $this->elements[$objId]);
-
-            while (count($currentList > 0)) {
-                $tmp = array_merge(array(), $currentList);
-                $currentList = array();
-                foreach ($tmp as $key => $elem) {
-                    foreach ($this->elements[$key]->childs as $child) {
-                        if ($child->id === $to) {
-                            return true;
-                        }
-                        $currentList[$child->id] = $child;
-                    }
+            $pos = $this->elements[$to];
+            while (true) {
+                if ($pos->id === $from) {
+                    return true;
                 }
+                if ($pos->parent === null) {
+                    return false;
+                }
+                $pos = $this->elements[$pos->parent];
             }
         } else {
             $pos = $this->elements[$from];
@@ -371,17 +396,20 @@ class tree implements JsonSerializable {
             return new tree();
         }
 
-        $resultList = array();
         $firstElement = clone $this->elements[$objId];
         $firstElement->parent = null;
-        $currentList = array($objId);
+        $resultList = array($objId=>$firstElement);
+        $currentList=array();
+        if (!$firstElement->isLeaf()) {
+            $currentList = $firstElement->childs;
+        }
 
         while (count($currentList) > 0) {
             $tmp = array_merge(array(), $currentList);
             $currentList = array();
             foreach ($tmp as $key) {
                 $elem = $this->getElementById($key);
-                $resultList[$elem->id] = $elem;
+                $resultList[$elem->id] = clone $elem;
                 if (!$elem->isLeaf()) {
                     $childs = $this->elements[$key]->childs;
                     foreach ($childs as $childId) {
@@ -394,7 +422,7 @@ class tree implements JsonSerializable {
 
         $myClass = get_class($this);
         $tree = new $myClass();
-        $tree->elements = $resultList;
+        $tree->setElements($resultList);
         return $tree;
     }
 
@@ -410,9 +438,9 @@ class tree implements JsonSerializable {
      */
     public function getSubtree($nodeName, $URI, $method) {
         foreach ($this->elements as $key => $elem) {
-            if ($elem->name == $nodeName &&
-                    $elem->URI === $URI &&
-                    $elem->method === $method) {
+            if (($elem->name == $nodeName) &&
+                    ($elem->URI === $URI) &&
+                    ($elem->method === $method)) {
                 return $key;
             }
         }
@@ -433,6 +461,7 @@ class tree implements JsonSerializable {
                 $elements = array_merge($elements, $this->getChilds($key));
             }
         }
+        sort($elements);
         return $elements;
     }
 
@@ -462,19 +491,34 @@ class tree implements JsonSerializable {
 
     /**
      * Sucht die Wurzel (aufwändig und nur im Sonderfall notwendig)
+     * Achtung: nur der ersten Knoten ohne Elternknoten wird zurückgegeben
      *
      * @return int Die ID der Wurzel oder null im Fehlerfall
      */
     public function findRoot() {
         foreach ($this->elements as $key => $elem) {
             if ($elem->parent === null) {
-                // der Wurzelknoten wurde gefunden
+                // ein Wurzelknoten wurde gefunden
                 return $key;
             }
         }
 
         // es konnte kein Wurzelknoten gefunden werden
         return null;
+    }
+    
+    /**
+     * prüft, ob der Baum stark zusammenhängend ist
+     *
+     * @return bool, true = alle Knoten sind irgendwie verbunden, false = unverbundene Knoten
+     */
+    public function strongConnected(){
+        foreach($this->elements as $key => $elem){
+            if (!$elem->hasParent() && !$elem->hasChilds()){
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -498,7 +542,7 @@ class tree implements JsonSerializable {
         if (!isset($this->elements[$objId])) {
             return false;
         }
-        return $this->elements[$objId] === $state;
+        return $this->elements[$objId]->label === $state;
     }
 
     /**
@@ -514,7 +558,50 @@ class tree implements JsonSerializable {
         if (!isset($this->elements[$objId])) {
             return true;
         }
-        return $this->elements[$objId] !== $state;
+        return $this->elements[$objId]->label !== $state;
+    }
+    
+    /**
+     * setzt $label eines Knotens $objId
+     *
+     * @param int   $objId Die ID eines Knotens
+     * @param mixed $state Ein Wert,
+     *                      welchen das $label des Knotens erhalten soll
+     * @return bool  true = $label wurde gesetzt, false = sonst (Fehler)
+     */
+    public function setLabel($objId, $state) {
+        if (!isset($this->elements[$objId])) {
+            return false;
+        }
+        $this->elements[$objId]->label = $state;
+        return true;
+    }
+    
+    /**
+     * setzt $label eines Knotens $objId auf null
+     *
+     * @param int   $objId Die ID eines Knotens
+     * @return bool  true = $label wurde gesetzt, false = sonst (Fehler)
+     */
+    public function unsetLabel($objId) {
+        if (!isset($this->elements[$objId])) {
+            return false;
+        }
+        $this->elements[$objId]->label = null;
+        return true;
+    }
+    
+    /**
+     * gibt $label eines Knotens $objId
+     *
+     * @param int   $objId Die ID eines Knotens
+     * @return mixed  der Wert oder null im Fehlerfall bzw. wenn nicht gesetzt
+     */
+    public function getLabel($objId) {
+        if (!isset($this->elements[$objId])) {
+            return null;
+        }
+        return $this->elements[$objId]->label;
     }
 
     /**
@@ -600,6 +687,16 @@ class tree implements JsonSerializable {
             $list['elements'] = array_values($this->elements);
         }
         return $list;
+    }
+    
+    /**
+     * entfernt alle Kanten aus dem Baum
+     */
+    public function removeAllEdges(){
+        foreach($this->elements as $key => $value){
+            $value->parent=null;
+            $value->childs=array();
+        }
     }
 
 }
