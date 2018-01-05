@@ -352,21 +352,21 @@ class QEPGeneratorTest extends PHPUnit_Framework_TestCase {
         $this->simpleTree();
         QEPGenerator::$tree = $this->tree;
 
-        QEPGenerator::cacheData(1, 'ABC', 200);
+        self::assertEquals(true, QEPGenerator::cacheData(1, 'ABC', 200));
         $data2 = QEPGenerator::getCachedDataByURL("http://A", "GET");
         self::assertEquals('ABC', $data2->content);
 
-        QEPGenerator::cacheData(1, 'ABC2', 200);
+        self::assertEquals(true, QEPGenerator::cacheData(1, 'ABC2', 200));
         $data2 = QEPGenerator::getCachedDataByURL("http://A", "GET");
         self::assertEquals('ABC2', $data2->content);
 
-        QEPGenerator::cacheData(1, 122, 200);
+        self::assertEquals(true, QEPGenerator::cacheData(1, json_encode(122), 200));
         $data2 = QEPGenerator::getCachedDataByURL("http://A", "GET");
         self::assertEquals(122, $data2->content);
 
-        QEPGenerator::cacheData(1, [1,'A'=>2,3,4], 200);
+        self::assertEquals(true, QEPGenerator::cacheData(1, json_encode([1,'A'=>2,3,4]), 200));
         $data2 = QEPGenerator::getCachedDataByURL("http://A", "GET");
-        self::assertEquals([1,'A'=>2,3,4], $data2->content);
+        self::assertEquals(json_encode([1,'A'=>2,3,4]), $data2->content);
     }
 
     /**

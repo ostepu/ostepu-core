@@ -469,16 +469,20 @@ class QEPGenerator {
      * $param $status der HTTP-Status
      */
     public static function cacheData($sid, $content, $status) {
+        if (!is_string($content)){
+            throw new Exception('content muss ein String sein!!!');
+        }
+        
         self::loadConfig();
 
         if (!self::getConf('enabled')) {
-            return;
+            return false;
         }
         if ($sid === null) {
-            return;
+            return false;
         }
         if (self::$tree === null) {
-            return;
+            return false;
         }
 
         cacheLogger::Log(__function__.': sid='.$sid, self::$logName);
@@ -486,9 +490,20 @@ class QEPGenerator {
         $elem = self::$tree->getElementById($sid);
         if ($elem !== null) {
             $uTag = $elem->generateUTag();
-            cacheAccess::storeData('data_' . $uTag, json_encode(new DataObject($content, $status)));
-            $elem->storedResult=true;
+        
+            // speichert das Element im Arbeitsspeicher
+            if (isset(self::$cachedData['data_'.$uTag])){
+                self::$cachedData['data_'.$uTag] = new DataObject($content, $status);
+            }
+        
+            $res = cacheAccess::storeData('data_' . $uTag, json_encode(new DataObject($content, $status)));
+            if ($res){
+                $elem->storedResult=true;
+            }
+            return $res;
+            
         }
+        return false;
     }
 
     /**

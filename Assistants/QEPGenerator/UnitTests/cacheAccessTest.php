@@ -36,9 +36,9 @@ class cacheAccessTest extends PHPUnit_Framework_TestCase {
      */
     public function testStoreData() {
         self::assertEquals(null, cacheAccess::loadData('A'));
-        cacheAccess::storeData('A', 'AA');
+        self::assertEquals(true, cacheAccess::storeData('A', 'AA'));
         self::assertEquals('AA', cacheAccess::loadData('A'));
-        cacheAccess::storeData('B', 'BB');
+        self::assertEquals(true, cacheAccess::storeData('B', 'BB'));
         self::assertEquals('AA', cacheAccess::loadData('A'));
         self::assertEquals('BB', cacheAccess::loadData('B'));
     }
@@ -48,13 +48,13 @@ class cacheAccessTest extends PHPUnit_Framework_TestCase {
      */
     public function testRemoveData() {
         self::assertEquals(null, cacheAccess::loadData('A'));
-        cacheAccess::storeData('A', 'AA');
+        self::assertEquals(true, cacheAccess::storeData('A', 'AA'));
         self::assertEquals('AA', cacheAccess::loadData('A'));
         cacheAccess::removeData('A');
         self::assertEquals(null, cacheAccess::loadData('A'));
         cacheAccess::removeData('A');
         self::assertEquals(null, cacheAccess::loadData('A'));
-        cacheAccess::storeData('A', 'AA');
+        self::assertEquals(true, cacheAccess::storeData('A', 'AA'));
         self::assertEquals('AA', cacheAccess::loadData('A'));
     }
 
@@ -62,8 +62,8 @@ class cacheAccessTest extends PHPUnit_Framework_TestCase {
      * @covers cacheAccess::loadData
      */
     public function testLoadData() {
-        cacheAccess::storeData('A', 'AA');
-        cacheAccess::storeData('B', 'BB');
+        self::assertEquals(true, cacheAccess::storeData('A', 'AA'));
+        self::assertEquals(true, cacheAccess::storeData('B', 'BB'));
         self::assertEquals('AA', cacheAccess::loadData('A'));
         self::assertEquals('BB', cacheAccess::loadData('B'));
         self::assertEquals(null, cacheAccess::loadData('C'));
@@ -73,8 +73,8 @@ class cacheAccessTest extends PHPUnit_Framework_TestCase {
      * @covers cacheAccess::loadDataArray
      */
     public function testLoadDataArray() {
-        cacheAccess::storeData('A', 'AA');
-        cacheAccess::storeData('B', 'BB');
+        self::assertEquals(true, cacheAccess::storeData('A', 'AA'));
+        self::assertEquals(true, cacheAccess::storeData('B', 'BB'));
         self::assertEquals(['A'=>'AA','B'=>'BB','C'=>null], cacheAccess::loadDataArray(['A','B','C']));
         self::assertEquals(['C'=>null,'B'=>'BB','A'=>'AA'], cacheAccess::loadDataArray(['C','B','A']));
         self::assertEquals(['C'=>null,'A'=>'AA','A'=>'AA'], cacheAccess::loadDataArray(['C','A','A']));
@@ -87,7 +87,7 @@ class cacheAccessTest extends PHPUnit_Framework_TestCase {
      */
     public function testTouch() {
         self::assertEquals(false, cacheAccess::touch('A'));
-        cacheAccess::storeData('A', 'AA');
+        self::assertEquals(true, cacheAccess::storeData('A', 'AA'));
         self::assertEquals(true, cacheAccess::touch('A'));
         self::assertEquals(false, cacheAccess::touch('B'));
     }

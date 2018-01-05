@@ -341,7 +341,6 @@ class treeTest extends PHPUnit_Framework_TestCase {
 
     /**
      * @covers tree::pathExists
-     * @todo   Implement testPathExists().
      */
     public function testPathExists() {
         self::assertFalse($this->tree->pathExists(1, 2));
@@ -355,7 +354,6 @@ class treeTest extends PHPUnit_Framework_TestCase {
 
     /**
      * @covers tree::extractSubtree
-     * @todo   Implement testExtractSubtree().
      */
     public function testExtractSubtree() {
         $mytree = $this->tree->extractSubtree(2);
@@ -417,18 +415,29 @@ class treeTest extends PHPUnit_Framework_TestCase {
 
     /**
      * @covers tree::sortTree
-     * @todo   Implement testSortTree().
      */
     public function testSortTree() {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $this->tree->addNode($this->nodeF);
+        $this->tree->addNode($this->nodeD);
+        $this->tree->addNode($this->nodeA);
+        $this->tree->addNode($this->nodeE);
+        $this->tree->addNode($this->nodeC);
+        $this->tree->addNode($this->nodeB);
+        self::assertEquals([1,2,6,4,5,3], $this->tree->getIds());
+        
+        $this->tree->addEdge(1, 6);
+        $this->tree->addEdge(1, 4);
+        $this->tree->addEdge(1, 2);
+        $this->tree->addEdge(1, 3);
+        self::assertEquals([6,4,2,3], $this->tree->getChilds(1));
+        
+        $this->tree->sortTree();
+        self::assertEquals([1,2,3,4,5,6], $this->tree->getIds());
+        self::assertEquals([2,3,4,6], $this->tree->getChilds(1));
     }
 
     /**
      * @covers tree::findRoot
-     * @todo   Implement testFindRoot().
      */
     public function testFindRoot() {
         self::assertEquals(1, $this->tree->findRoot()); 
