@@ -1,5 +1,6 @@
 <?php
 include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
+include_once dirname(__FILE__) . '/../../Assistants/Structures.php';
 
 /**
  * ???
@@ -177,6 +178,7 @@ class UIMarkingTool2
     public function postUpload( $callName, $input, $params = array() )
     {
 		global $_SESSION;
+		$timestamp = time(); //nur für Dateiuploads
 		
         $response = null;
         parse_str($input, $postData); // parst die eingehenden Formulardaten nach $postData
@@ -310,6 +312,37 @@ class UIMarkingTool2
 							$s["accepted"] = $v;
 						}
 					}
+					if (isset($task["userFile_new_blob"])) {
+						$path = tempnam(sys_get_temp_dir(), 'MT2');
+						$data = $task["userFile_new_blob"];
+						$ind = strpos($data, ';');
+						if ($ind !== false)
+							$data = substr($data, $ind+1);
+						$ind = strpos($data, ',');
+						if ($ind !== false)
+							switch (substr($data, 0, $ind)) {
+								case "base64": $data = base64_decode(substr($data, $ind+1)); break;
+							}
+						file_put_contents($path, $data);
+						
+						$uploadFile = File::createFile(null,$task["userFile_new_name"],null,$timestamp,null,null);
+                        $uploadFile->setBody(Reference::createReference($path));
+						
+						$uploadSubmission = Submission::createSubmission(null,$s["studentId"],null,$task["exerciseId"],$s['comment'],1,$timestamp,null,$task["leaderId"]);
+                        $uploadSubmission->setFile($uploadFile);
+                        // $uploadSubmission->setExerciseName($s["exerciseName"]);
+                        $uploadSubmission->setSelectedForGroup('1');
+						
+						$rawData = $this->_component->call('setSubmission',
+							array(), Submission::encodeSubmission($uploadSubmission), 
+							200, $positive, array(), $negative, array());
+							
+						var_dump(Submission::encodeSubmission($uploadSubmission));
+						var_dump($rawData);
+						if ($rawData !== false) {
+							$exercise["submission"] = $s = json_decode($rawData, true);
+						}
+					}
 					if ($changed) {
 						updateSubmission($s["id"], $s["accepted"]);
 					}
@@ -339,6 +372,7 @@ class UIMarkingTool2
 							$m["status"] = $v;
 						}
 					}
+					
 					if ($changed) {
 						saveMarking($m["points"],
 							$m["tutorComment"],

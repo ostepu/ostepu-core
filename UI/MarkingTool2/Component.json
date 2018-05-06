@@ -11,7 +11,15 @@
                 "method": "GET",
                 "path": "/markingtool/course/:cid/sheet/:sid"
             }]
-        }
+        },
+		{
+			"name": "setSubmission",
+			"target": "LProcessor",
+			"links": [{
+				"method": "POST",
+				"path": "/submission"
+			}]
+		}
     ],
     "connector": [
         {
