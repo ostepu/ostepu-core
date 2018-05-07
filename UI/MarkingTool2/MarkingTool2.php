@@ -1,5 +1,6 @@
 <?php
 include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
+include_once dirname(__FILE__) . '/../../Assistants/Structures.php';
 
 /**
  * ???
@@ -177,6 +178,7 @@ class UIMarkingTool2
     public function postUpload( $callName, $input, $params = array() )
     {
 		global $_SESSION;
+		$timestamp = time(); //nur für Dateiuploads
 		
         $response = null;
         parse_str($input, $postData); // parst die eingehenden Formulardaten nach $postData
@@ -190,15 +192,6 @@ class UIMarkingTool2
         if ($loggedIn !== true){
             return Model::isOk(json_encode($loggedIn, JSON_PRETTY_PRINT));
         }
-		
-        /* sid und cid existieren hier garantiert
-        elseif (!isset($_GET["cid"]) || !isset($_GET["sid"])) {
-            $response = array(
-                "success" => false,
-                "error" => "noCourseOrSheetSetted",
-                "hint" => 'GET variables $cid and/or $sid not setted'
-            );
-        }*/
         
         if (!isset($postData["tasks"])) {
             $response = array(
@@ -309,7 +302,88 @@ class UIMarkingTool2
                 }
                 //Schritt 4 - Speichere neuen Zustand
                 //Schritt 4.1 - Speichere Daten zur Submission (Einsendung)
-                //Schritt 4.2 - Speichere Daten zum Marking (Korrektur)
+                if ($sub) {
+					$s = &$exercise["submission"];
+					$changed = false;
+					if (isset($task["accepted_new"])) {
+						$v = intval(boolval($task["accepted_new"]));
+						if ($v >=0 && $v <= 1) {
+							$changed = true;
+							$s["accepted"] = $v;
+						}
+					}
+					if (isset($task["userFile_new_blob"])) {
+						$path = tempnam(sys_get_temp_dir(), 'MT2');
+						$data = $task["userFile_new_blob"];
+						$ind = strpos($data, ';');
+						if ($ind !== false)
+							$data = substr($data, $ind+1);
+						$ind = strpos($data, ',');
+						if ($ind !== false)
+							switch (substr($data, 0, $ind)) {
+								case "base64": $data = base64_decode(substr($data, $ind+1)); break;
+							}
+						file_put_contents($path, $data);
+						
+						$uploadFile = File::createFile(null,$task["userFile_new_name"],null,$timestamp,null,null);
+                        $uploadFile->setBody(Reference::createReference($path));
+						
+						$uploadSubmission = Submission::createSubmission(null,$s["studentId"],null,$task["exerciseId"],$s['comment'],1,$timestamp,null,$task["leaderId"]);
+                        $uploadSubmission->setFile($uploadFile);
+                        // $uploadSubmission->setExerciseName($s["exerciseName"]);
+                        $uploadSubmission->setSelectedForGroup('1');
+						
+						$rawData = $this->_component->call('setSubmission',
+							array(), Submission::encodeSubmission($uploadSubmission), 
+							200, $positive, array(), $negative, array());
+							
+						var_dump(Submission::encodeSubmission($uploadSubmission));
+						var_dump($rawData);
+						if ($rawData !== false) {
+							$exercise["submission"] = $s = json_decode($rawData, true);
+						}
+					}
+					if ($changed) {
+						updateSubmission($s["id"], $s["accepted"]);
+					}
+				}
+				//Schritt 4.2 - Speichere Daten zum Marking (Korrektur)
+				if ($mark) {
+					$m = &$exercise["submission"]["marking"];
+					$changed = false;
+					if (isset($task["points_new"])) {
+						$v = floatval($task["points_new"]);
+						if ($v >= 0) {
+							$changed = true;
+							$m["points"] = $v;
+						}
+					}
+					if (isset($task["tutorComment_new"])) {
+						$v = strval($task["tutorComment_new"]);
+						if ($v !== null) {
+							$changed = true;
+							$m["tutorComment"] = $v;
+						}
+					}
+					if (isset($task["status_new"])) {
+						$v = intval($task["status_new"]);
+						if ($v >= 0) { //TODO: Max marking status
+							$changed = true;
+							$m["status"] = $v;
+						}
+					}
+					
+					if ($changed) {
+						saveMarking($m["points"],
+							$m["tutorComment"],
+							$m["status"],
+							$m["submissionId"],
+							$m["id"],
+							$exercise["submission"]["leaderId"],
+							$uid,
+							$exercise["id"]);
+					}
+				}
             }
         }
         // if (!$response["success"] && !isset($response["hint"]))
