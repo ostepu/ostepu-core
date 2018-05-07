@@ -37,9 +37,12 @@ class MimeReader {
             if (class_exists('\Mimey\MimeTypes')){
                 $mimes = new \Mimey\MimeTypes;
                 $path_parts = pathinfo($file);
+                $newMime = null;
 
                 // Convert extension to MIME type:
-                $mime = $mimes->getMimeType($path_parts['extension']);
+                if (isset($path_parts['extension'])){
+                    $mime = $mimes->getMimeType($path_parts['extension']);
+                }
                 
                 if ($mime !== null){
                     return $mime;
@@ -68,9 +71,12 @@ class MimeReader {
             if (class_exists('\Mimey\MimeTypes')){
                 $mimes = new \Mimey\MimeTypes;
                 $path_parts = pathinfo($file);
+                $newMime = null;
 
                 // Convert extension to MIME type:
-                $newMime = $mimes->getMimeType($path_parts['extension']);
+                if (isset($path_parts['extension'])){
+                    $newMime = $mimes->getMimeType($path_parts['extension']);
+                }
                 
                 if ($newMime !== null){
                     return $newMime;
