@@ -257,18 +257,14 @@ class Request
                         $sid = QEPGenerator::getNextSid();
                         QEPGenerator::setCacheSid($sid);
                         QEPGenerator::getTree($target, $method);
-                        //Logger::Log("call me: $sid, $method $target", LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', true, LogLevel::DEBUG);
-
+                        
                         $targetBeginTime = microtime(true);
-                        //////$cachedData = QEPGenerator::getCachedDataByURL($target, $method);
-                        //Logger::Log("++".$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', true, LogLevel::DEBUG);
-
-
+                        $cachedData = QEPGenerator::getCachedDataByURL($target, $method);
+                        
                         if (isset($cacheData) && $cachedData!==null){
                             $result['content'] = $cachedData->content;
                             $result['status'] = $cachedData->status;
-                            ///Logger::Log('out>> '.$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
-                            //////QEPGenerator::cacheData($sid, $com->getTargetName(), $target, $result['content'], $result['status'], $method);
+                            QEPGenerator::cacheData($sid, $result['content'], $result['status']);
                         } else {
                             $args = array(
                                           'REQUEST_METHOD' => $method,
@@ -325,7 +321,7 @@ class Request
                             include_once($tar);
 
                             $oldStatus = http_response_code();
-                            $oldHeader = array_merge(array(),headers_list());
+                            $oldHeader = array_merge(array(),php_sapi_name() === 'cli' ? xdebug_get_headers() : headers_list());
                             header_remove();
                             http_response_code(0);
 
@@ -337,8 +333,7 @@ class Request
                                 $newSid = QEPGenerator::getNextSid();
                                 QEPGenerator::setCacheSid($newSid);
                                 QEPGenerator::createNode($newSid, $com->getTargetName(), $method, $target, $content);
-                                ////Logger::Log('newSid: '.$newSid, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', true, LogLevel::DEBUG);
-
+                                
                                 // merkt sich das alte Arbeitsverzeichnis
                                 $pathOld = getcwd();
                                 @chdir(dirname($tar));
@@ -352,17 +347,10 @@ class Request
                             
                                 $result['content'] = ob_get_contents();
                                 QEPGenerator::setETag($result['content']);
-                                $result['headers'] = array_merge(array(),Request::http_parse_headers_short(headers_list()));
+                                $result['headers'] = array_merge(array(),Request::http_parse_headers_short(php_sapi_name() === 'cli' ? xdebug_get_headers() : headers_list()));
                                 header_remove();
                                 
-                                //if (!isset($result['headers']['Cachesid'])){
-                                    //$newSid = QEPGenerator::getNextSid();
-                                    $result['headers']['Cachesid'] = $newSid;
-                                   // Logger::Log('newSid: '.$newSid, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log', 'CACHE', true, LogLevel::DEBUG);
-
-                                    //QEPGenerator::setCacheSid($newSid);
-                                //}
-                                //$result['headers']['Cachesid'] = $newSid;
+                               $result['headers']['Cachesid'] = $newSid;
                                 ob_end_clean();
                                 //header_remove();
 
@@ -390,11 +378,6 @@ class Request
 
                             $targetSid = (isset($result['headers']['Cachesid']) ? $result['headers']['Cachesid'] : null);
                             QEPGenerator::releaseNode($targetSid, $result['content'], $result['status'], $com->getLocalPath(), (isset($result['headers']['Content-Type']) ? $result['headers']['Content-Type'] : null));
-                            //////QEPGenerator::addPath($sid, $targetSid, $com->getTargetName(), $target, $method, $result['status']);
-                            //////QEPGenerator::finishRequest($targetSid, $h.'/'.$com->getLocalPath(), $com->getTargetName(), $target, $result['content'], $result['status'], $method, $content);
-                            //////QEPGenerator::cacheData($sid, $com->getTargetName(), $target, $result['content'], $result['status'], $method);
-                            ///Logger::Log('in<< '.$method.' '.$com->getClassName().$add, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
-
                         }
 
                         $done=true;

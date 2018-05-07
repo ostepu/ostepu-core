@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file cacheAccess.php
  *
@@ -7,20 +8,24 @@
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
  * @date 2016
  */
-
-
 if (file_exists(dirname(__FILE__) . '/../vendor/phpfastcache/phpfastcache.php')) {
     include_once(dirname(__FILE__) . '/../vendor/phpfastcache/phpfastcache.php');
 }
 
-class cacheAccess
-{
+include_once(dirname(__FILE__) . '/cacheLogger.php');
+
+class cacheAccess{
+
     /**
      * @var phpFastCache $_cache Enthält den Zugang zum CacheServer
      */
     private static $_cache = null;
-
-
+    
+    /*
+     * dieser Bezeichner wird in den Logeinträgen dieser Datei verwendet
+     */
+    private static $logName = 'cacheAccess';
+    
     /**
      * Speichert einen Datensatz
      *
@@ -28,15 +33,14 @@ class cacheAccess
      * @param string $value Der Datensatz
      * @return bool true = Erfolgreich, false = Fehler
      */
-    public static function storeData($key, $value)
-    {
+    public static function storeData($key, $value, $time = 43200) {
         if (self::$_cache === null) {
             phpFastCache::setup(phpFastCache::$config);
             self::$_cache = phpFastCache();
         }
-        ///Logger::Log('store: '.$key, LogLevel::DEBUG, false,dirname(__FILE__) . '/../calls.log');
+        cacheLogger::Log('store: '.$key, self::$logName);
 
-        return self::$_cache->set($key, gzcompress($value), 43200);
+        return self::$_cache->set($key, gzcompress($value), $time);
     }
 
     /**
@@ -45,13 +49,12 @@ class cacheAccess
      * @param string $key Der Schlüssel
      * @return bool true = Erfolgreich, false = Fehler
      */
-    public static function removeData($key)
-    {
-        if (self::$_cache===null) {
+    public static function removeData($key) {
+        if (self::$_cache === null) {
             phpFastCache::setup(phpFastCache::$config);
             self::$_cache = phpFastCache();
         }
-        ///Logger::Log('delete: '.$key, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+        cacheLogger::Log('delete: '.$key, self::$logName);
         return self::$_cache->delete($key);
     }
 
@@ -61,13 +64,12 @@ class cacheAccess
      * @param string $key der Schlüssel
      * @return string Der Datensatz oder null im Fehlerfall
      */
-    public static function loadData($key)
-    {
+    public static function loadData($key) {
         if (self::$_cache === null) {
             phpFastCache::setup(phpFastCache::$config);
             self::$_cache = phpFastCache();
         }
-        ///Logger::Log('load: '.$key, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+        cacheLogger::Log('load: '.$key, self::$logName);
 
         $res = self::$_cache->get($key);
         if ($res === null) {
@@ -87,13 +89,12 @@ class cacheAccess
      * @return string[] Die Datensätze oder null im Fehlerfall,
      *                                           Bsp.: array('a',null,'b')
      */
-    public static function loadDataArray($keys)
-    {
+    public static function loadDataArray($keys) {
         if (self::$_cache === null) {
             phpFastCache::setup(phpFastCache::$config);
             self::$_cache = phpFastCache();
         }
-        ///Logger::Log('load: '.implode(':',$keys), LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+        cacheLogger::Log('load: '.implode(':',$keys), self::$logName);
 
         $res = self::$_cache->getMulti($keys);
         foreach ($res as &$re) {
@@ -108,4 +109,19 @@ class cacheAccess
 
         return $res;
     }
+
+    /*
+     * gibt zurück ob eine Datei im Cache existiert und verlängert dabei
+     * deren Lebensdauer, sodass sie in nächster Zeit nicht automatisch
+     * gelöscht wird
+     */
+    public static function touch($key) {
+        if (self::$_cache === null) {
+            phpFastCache::setup(phpFastCache::$config);
+            self::$_cache = phpFastCache();
+        }
+
+        return self::$_cache->touch($key);
+    }
+
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file DataObject.php
  *
@@ -7,10 +8,7 @@
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
  * @date 2016
  */
-
-
-class DataObject
-{
+class DataObject {
 
     /**
      * Der Konstruktor
@@ -19,8 +17,7 @@ class DataObject
      * @param int $_status Der Status
      * @param string $_eTag Ein optionaler Hashwert
      */
-    public function __construct($_content, $_status, $_eTag = null)
-    {
+    public function __construct($_content, $_status, $_eTag = null) {
         $this->content = $_content;
         $this->status = $_status;
         $this->eTag = $_eTag;
@@ -40,4 +37,5 @@ class DataObject
      * @var string $eTag Der Hash der Anfrage (MD5)
      */
     public $eTag = null;
+
 }
