@@ -135,7 +135,7 @@ class FSBinder
              file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
 
             // the file was found
-            $mime = MimeReader::get_mime($this->config['DIR']['files'].'/'.$filePath);
+            $mime = MimeReader::get_mime($this->config['DIR']['files'].'/'.$filePath.'/'.$params['filename']);
             Model::header('Content-Type',$mime);
             Model::header('Content-Disposition',"filename=\"".$params['filename']."\"");
             Model::header('Content-Length',filesize($this->config['DIR']['files'].'/'.$filePath));
