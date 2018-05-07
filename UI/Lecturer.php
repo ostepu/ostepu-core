@@ -47,14 +47,12 @@ $postValidation->resetNotifications()->resetErrors();
 if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
     $postDeleteSheetValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
       ->addSet('deleteSheetWarning',
-               ['set_default'=>null,
-                'valid_identifier',
+               ['valid_identifier',
                 'satisfy_not_equals_field'=>'deleteSheet',
                 'on_error'=>['type'=>'error',
                              'text'=>Language::Get('main','errorDeleteSheetWarningValidation', $langTemplate)]])
       ->addSet('deleteSheet',
-               ['set_default'=>null,
-                'valid_identifier',
+               ['valid_identifier',
                 'satisfy_not_equals_field'=>'deleteSheetWarning',
                 'on_error'=>['type'=>'error',
                              'text'=>Language::Get('main','errorDeleteSheetValidation', $langTemplate)]])

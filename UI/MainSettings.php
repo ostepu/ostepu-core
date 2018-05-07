@@ -84,7 +84,6 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                                  'text'=>Language::Get('main','invalidExerciseType', $langTemplate)]])
           ->addSet('plugins',
                    ['is_array',
-                    'set_default'=>null,
                     'perform_this_array'=>[[['key_all'],
                                       ['valid_identifier']]],
                     'on_error'=>['type'=>'error',
@@ -253,7 +252,6 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                                  'text'=>Language::Get('main','invalidUserName', $langTemplate)]])
           ->addSet('email',
                    ['valid_email',
-                   'set_default'=>null,
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidMail', $langTemplate)]])
           ->addSet('password',
