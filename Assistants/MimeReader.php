@@ -37,7 +37,6 @@ class MimeReader {
             if (class_exists('\Mimey\MimeTypes')){
                 $mimes = new \Mimey\MimeTypes;
                 $path_parts = pathinfo($file);
-                $newMime = null;
 
                 // Convert extension to MIME type:
                 if (isset($path_parts['extension'])){
