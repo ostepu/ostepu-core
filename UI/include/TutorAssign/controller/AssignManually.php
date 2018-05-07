@@ -13,12 +13,10 @@
 
 $postAssignManuallyTypeValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
   ->addSet('actionAssignAllProposals',
-       ['set_default'=>null,
-        'on_error'=>['type'=>'error',
+       ['on_error'=>['type'=>'error',
                      'text'=>Language::Get('main','errorValidateAssignAllProposals', $langTemplate)]])
   ->addSet('actionAssignManually',
-       ['set_default'=>null,
-        'on_error'=>['type'=>'error',
+       ['on_error'=>['type'=>'error',
                      'text'=>Language::Get('main','errorValidateAssignManually', $langTemplate)]]);
 $foundValues = $postAssignManuallyTypeValidation->validate();
 $notifications = array_merge($notifications,$postAssignManuallyTypeValidation->getPrintableNotifications('MakeNotification'));

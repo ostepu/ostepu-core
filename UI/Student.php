@@ -61,20 +61,17 @@ if (Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUse
 
 $postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
   ->addSet('deleteSubmissionWarning',
-           ['set_default'=>null,
-            'valid_identifier',
+           ['valid_identifier',
             'satisfy_not_equals_field'=>'deleteSubmission',
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','invalidDeleteSubmissionWarning', $langTemplate)]])
   ->addSet('deleteSubmission',
-           ['set_default'=>null,
-            'valid_identifier',
+           ['valid_identifier',
             'satisfy_not_equals_field'=>'deleteSubmissionWarning',
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','invalidDeleteSubmission', $langTemplate)]])
   ->addSet('downloadMarkings',
-           ['set_default'=>null,
-            'valid_identifier',
+           ['valid_identifier',
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','invalidSheetId', $langTemplate)]])
   ->addSet('redirect',
