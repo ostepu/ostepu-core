@@ -335,7 +335,7 @@ class UIMarkingTool2
 						
 						$rawData = $this->_component->call('setSubmission',
 							array(), Submission::encodeSubmission($uploadSubmission), 
-							200, $positive, array(), $negative, array());
+							201, $positive, array(), $negative, array());
 							
 						var_dump(Submission::encodeSubmission($uploadSubmission));
 						var_dump($rawData);
