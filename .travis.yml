@@ -10,4 +10,5 @@ script:
 - pwd=$(pwd)
 - php -f install/install.php actionInstallPlugins data={\"PL\":{\"localPath\":\"${pwd}\"}} data={\"PLUG\":{\"plug_install_SLIM\":\"SLIM\"}}
 - rm -r ./Assistants/vendor/Markdown/test
-- phpunit --stderr ./
+- rm -r ./Assistants/vendor/mimey/tests
+- phpunit --stderr ./Assistants
