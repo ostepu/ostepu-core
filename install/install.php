@@ -85,8 +85,10 @@ class Installer {
             // sodass der Installationsassistent sie verwenden kann
             array_shift($_argv);
             foreach ($_argv as $arg) {
+                // wenn eine Zuweisung erkannt wird, dann wird diese zerlegt
                 if (strpos($arg, '=')!==false){
                     $elements = explode('=', $arg);
+                    // data soll JSON enthalten (Bsp.: data={"PL":"..."}
                     if ($elements[0] =="data"){
                         $tmp = json_decode($elements[1], true);
                         if (!isset($_POST['data'])) $_POST['data'] = array();
