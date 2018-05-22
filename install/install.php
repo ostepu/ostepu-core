@@ -85,8 +85,18 @@ class Installer {
             // sodass der Installationsassistent sie verwenden kann
             array_shift($_argv);
             foreach ($_argv as $arg) {
-                $_POST[$arg] = 'OK';
-                Installation::log(array('text' => 'setze $_POST[' . $arg . '] = \'OK\''));
+                if (strpos($arg, '=')!==false){
+                    $elements = explode('=', $arg);
+                    if ($elements[0] =="data"){
+                        $tmp = json_decode($elements[1], true);
+                        if (!isset($_POST['data'])) $_POST['data'] = array();
+                        $_POST['data'] = array_merge_recursive ($_POST['data'],$tmp); 
+                    }
+                    //Installation::log(array('text' => 'setze $_POST[' . $elements[0] . '] = \''.$elements[1].'\''));                    
+                } else {
+                    $_POST[$arg] = 'OK';
+                    Installation::log(array('text' => 'setze $_POST[' . $arg . '] = \'OK\''));
+                }
             }
 
             $this->CallInstall(true);

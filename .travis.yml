@@ -6,4 +6,8 @@ php:
 before_script:
   - curl -sSf -L -o phpunit https://phar.phpunit.de/phpunit-6.phar
 
-script: phpunit --stderr ./
+script: 
+- pwd=$(pwd)
+- php -f install/install.php actionInstallPlugins data={\"PL\":{\"localPath\":\"${pwd}\"}} data={\"PLUG\":{\"plug_install_SLIM\":\"SLIM\"}}
+- rm -r ./Assistants/vendor/Markdown/test
+- phpunit --stderr ./
