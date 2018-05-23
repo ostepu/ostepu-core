@@ -8,7 +8,7 @@ before_script:
 
 script: 
 - pwd=$(pwd)
-- php -f install/install.php actionInstallPlugins data={\"PL\":{\"localPath\":\"${pwd}\"}} data={\"PLUG\":{\"plug_install_SLIM\":\"SLIM\"}}
+- php -f install/install.php actionInstallPlugins data={{\"PL\":{\"localPath\":\"${pwd}\"},\"PLUG\":{\"plug_install_CORE\":\"CORE\"}}}
 - rm -r ./Assistants/vendor/Markdown/test
 - rm -r ./Assistants/vendor/mimey/tests
 - phpunit --stderr ./Assistants
