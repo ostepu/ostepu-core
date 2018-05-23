@@ -26,6 +26,13 @@ class cacheAccess{
      */
     private static $logName = 'cacheAccess';
     
+    private static function setup(){
+        phpFastCache::setup(phpFastCache::$config);
+        phpFastCache::setup("path", dirname(__FILE__));
+        phpFastCache::setup("securityKey", 'testcache');
+        self::$_cache = phpFastCache();
+    }
+    
     /**
      * Speichert einen Datensatz
      *
@@ -35,8 +42,7 @@ class cacheAccess{
      */
     public static function storeData($key, $value, $time = 43200) {
         if (self::$_cache === null) {
-            phpFastCache::setup(phpFastCache::$config);
-            self::$_cache = phpFastCache();
+            self::setup();
         }
         cacheLogger::Log('store: '.$key, self::$logName);
 
@@ -51,8 +57,7 @@ class cacheAccess{
      */
     public static function removeData($key) {
         if (self::$_cache === null) {
-            phpFastCache::setup(phpFastCache::$config);
-            self::$_cache = phpFastCache();
+            self::setup();
         }
         cacheLogger::Log('delete: '.$key, self::$logName);
         return self::$_cache->delete($key);
@@ -66,8 +71,7 @@ class cacheAccess{
      */
     public static function loadData($key) {
         if (self::$_cache === null) {
-            phpFastCache::setup(phpFastCache::$config);
-            self::$_cache = phpFastCache();
+            self::setup();
         }
         cacheLogger::Log('load: '.$key, self::$logName);
 
@@ -91,8 +95,7 @@ class cacheAccess{
      */
     public static function loadDataArray($keys) {
         if (self::$_cache === null) {
-            phpFastCache::setup(phpFastCache::$config);
-            self::$_cache = phpFastCache();
+            self::setup();
         }
         cacheLogger::Log('load: '.implode(':',$keys), self::$logName);
 
@@ -117,8 +120,7 @@ class cacheAccess{
      */
     public static function touch($key) {
         if (self::$_cache === null) {
-            phpFastCache::setup(phpFastCache::$config);
-            self::$_cache = phpFastCache();
+            self::setup();
         }
 
         return self::$_cache->touch($key);
