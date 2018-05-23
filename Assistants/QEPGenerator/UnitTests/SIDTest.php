@@ -31,7 +31,7 @@ class SIDTest extends PHPUnit_Framework_TestCase {
     
     private static function getHeader(){
         $header = array_merge(
-                array(), Request::http_parse_headers_short(php_sapi_name() === 'cli' ? xdebug_get_headers() : headers_list())
+                array(), Request::http_parse_headers_short(headers_list())
         );
         return $header;
     }

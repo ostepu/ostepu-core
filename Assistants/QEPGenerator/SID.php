@@ -73,7 +73,7 @@ class SID {
      */
     public static function getNextSid() {
         $header = array_merge(
-                array(), Request::http_parse_headers_short(php_sapi_name() === 'cli' ? xdebug_get_headers() : headers_list())
+                array(), Request::http_parse_headers_short(headers_list())
         );
 
         $id = null;
@@ -98,7 +98,7 @@ class SID {
      */
     public static function getSid() {
         $header = array_merge(
-                array(), Request::http_parse_headers_short(php_sapi_name() === 'cli' ? xdebug_get_headers() : headers_list())
+                array(), Request::http_parse_headers_short(headers_list())
         );
 
         if (isset($header['Cachesid'])) {
