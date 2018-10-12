@@ -55,7 +55,10 @@ class StudIPAuthentication extends AbstractAuthentication
      */
     private $courseStatus;
     
-    private static $StudipAPI = "https://studip.uni-halle.de/ostepuGateway";
+    //private static $StudipAPI = "https://studip.uni-halle.de/ostepuGateway";
+    //private static $StudipAPI = "https://staging.studip.uni-halle.de/upgateway";
+    //private static $StudipAPI = "https://staging.studip.uni-halle.de/plugins.php/mluupgatewayplugin/request";
+    private static $StudipAPI = "https://studip.uni-halle.de/plugins.php/mluupgatewayplugin/request";
     
     /**
      * The default constructor which logs the user in, if uid, cid and sid is given in GET Parameters.
@@ -143,7 +146,8 @@ class StudIPAuthentication extends AbstractAuthentication
     public function checkUserInStudip($uid, $sid)
     {
         $message=null;
-        $query = StudIPAuthentication::$StudipAPI . "/request.php?cmd=check_user&uid={$uid}&sid={$sid}";
+        //$query = StudIPAuthentication::$StudipAPI . "/request.php?cmd=check_user&uid={$uid}&sid={$sid}";
+        $query = StudIPAuthentication::$StudipAPI . "?cmd=check_user&uid={$uid}&sid={$sid}";
         $check = http_get($query, false, $message);
         ///$check = "OK";$message=200;
 ///Logger::Log("check_user_url: ".$query, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
@@ -197,15 +201,19 @@ class StudIPAuthentication extends AbstractAuthentication
     public function getUserInStudip($uid)
     {
         $message=null;
-        $query = StudIPAuthentication::$StudipAPI . "/request.php?cmd=get_user&uid={$uid}";
+        //$query = StudIPAuthentication::$StudipAPI . "/request.php?cmd=get_user&uid={$uid}";
+        $query = StudIPAuthentication::$StudipAPI . "?cmd=get_user&uid={$uid}";
         $getUserData = http_get($query, false, $message);
         ///$getUserData = "Till:Uhlig:-:hash:acfmr:211203809";$message=200;
 ///Logger::Log("get_user_url: ".$query, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
 ///Logger::Log("get_user_message: ".$message, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
 ///Logger::Log("get_user_result: ".$getUserData, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
         if ($message == 200 && $getUserData != "not found") {
+
             // convert output to our user structure
-            $getUserData = explode(":", utf8_encode($getUserData));
+            //$getUserData = explode(":", utf8_encode($getUserData));
+            // seit StudIP 4.0 wird Antwort bereits UTF8 kodiert
+            $getUserData = explode(":", $getUserData);
 
             $getUserData = cleanInput($getUserData);
 
@@ -226,7 +234,8 @@ class StudIPAuthentication extends AbstractAuthentication
     public function getUserStatusInStudip($uid, $vid)
     {
         $message=null;
-        $query = StudIPAuthentication::$StudipAPI . "/request.php?cmd=get_user_status&uid={$uid}&vid={$vid}";
+        //$query = StudIPAuthentication::$StudipAPI . "/request.php?cmd=get_user_status&uid={$uid}&vid={$vid}";
+        $query = StudIPAuthentication::$StudipAPI . "?cmd=get_user_status&uid={$uid}&vid={$vid}";
         $status = http_get($query, false, $message);
         ///$status = "dozent";$message=200;
 ///Logger::Log("get_user_status_url: ".$query, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
@@ -247,7 +256,8 @@ class StudIPAuthentication extends AbstractAuthentication
     public function getCourseInStudip($vid)
     {
         $message=null;
-        $query = StudIPAuthentication::$StudipAPI . "/request.php?cmd=get_title&vid={$vid}";
+        //$query = StudIPAuthentication::$StudipAPI . "/request.php?cmd=get_title&vid={$vid}";
+        $query = StudIPAuthentication::$StudipAPI . "?cmd=get_title&vid={$vid}";
         $title = http_get($query, false, $message);
         ///$title = "Veranstaltung";$message=200;
 ///Logger::Log("get_title_url: ".$query, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
@@ -255,7 +265,8 @@ class StudIPAuthentication extends AbstractAuthentication
 ///Logger::Log("get_title_result: ".$title, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
 
         if ($message == 200 && $title != "not found") {
-            $query = StudIPAuthentication::$StudipAPI . "/request.php?cmd=get_semester&vid={$vid}";
+            //$query = StudIPAuthentication::$StudipAPI . "/request.php?cmd=get_semester&vid={$vid}";
+            $query = StudIPAuthentication::$StudipAPI . "?cmd=get_semester&vid={$vid}";
             $semester = http_get($query, false, $message);
             ///$semester="SS 2015";$message=200;
 ///Logger::Log("get_semester_url: ".$query, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
@@ -265,7 +276,10 @@ class StudIPAuthentication extends AbstractAuthentication
             if ($message == 200 && $semester != "not found") {
                 if (substr($semester,0,2)==='WS')
                     $semester = substr($semester,0,-2).'20'.substr($semester,-2);
-                return Course::createCourse(null,utf8_encode($title),$semester,1);
+                //return Course::createCourse(null,utf8_encode($title),$semester,1);
+                // seit StudIP 4.0 wird Antwort bereits UTF8 kodiert
+                return Course::createCourse(null,$title,$semester,1);
+
             }
         }
 

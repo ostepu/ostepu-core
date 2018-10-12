@@ -1948,10 +1948,23 @@ class LGetSite
         unset($computedSubmissions);
 
         $allGroups = array();
+        $myLeader = array(); // soll zu einem Nutzer den Gruppenleiter enthalten
         foreach ($groups as $group){
             if (!isset($allGroups[$group['sheetId']]))
                 $allGroups[$group['sheetId']] = array();
+            if (!isset($myLeader[$group['sheetId']]))
+                $myLeader[$group['sheetId']] = array();
+            
             $allGroups[$group['sheetId']][$group['leader']['id']] = $group;
+            
+            // ein Gruppenleiter ist sein eigener Leiter
+            $myLeader[$group['sheetId']][$group['leader']['id']] = $group['leader']['id'];
+            
+            // jetzt wird für alle Gruppenmitglieder der Leiter gesetzt
+            if (isset($group['members'])){
+                foreach ($group['members'] as $member){
+                    $myLeader[$group['sheetId']][$member['id']] = $group['leader']['id'];
+            }}
         }
         unset($groups);
 
@@ -1962,7 +1975,7 @@ class LGetSite
         $studentMarkings = array();
         foreach ($allMarkings as $marking) {
             $studentID = $marking['submission']['studentId'];
-            $leaderID = $marking['submission']['leaderId'];
+            $leaderID = $myLeader[$marking['submission']['exerciseSheetId']][$studentID]; //$marking['submission']['leaderId'];
             if (!isset($studentMarkings[$studentID]))
                 $studentMarkings[$studentID] = array();
             if (!isset($studentMarkings[$leaderID]))

@@ -28,9 +28,12 @@ DECLARE exit handler for sqlwarning
 END;
 
 START TRANSACTION;
-SET @groupAll = (SELECT concat("SELECT OOP_id, TableName INTO @SID, @Table FROM \(",group_concat(concat("SELECT OOP_id,OOP_status,'", table_name,"' as TableName FROM `", table_name,"` WHERE OOP_status = 0 FOR UPDATE") separator ' UNION ALL ')," LIMIT 1) A WHERE A.OOP_status = 0") 
+SET SESSION group_concat_max_len = 2048;
+
+SET @groupAll = (SELECT concat("SELECT OOP_id, TableName INTO @SID, @Table FROM (",group_concat(concat("SELECT OOP_id,OOP_status,'", Q.table_name,"' as TableName FROM `", table_name,"` WHERE OOP_status = 0 FOR UPDATE") separator ' UNION ALL ')," LIMIT 1) A WHERE A.OOP_status = 0") 
+FROM (select table_name
 FROM information_schema.tables
-WHERE table_name LIKE 'Testcase_%');
+WHERE table_name LIKE 'Testcase_%' order by CREATE_TIME desc limit 25) Q);
 
 PREPARE stmt1 FROM @groupAll;
 EXECUTE stmt1;
