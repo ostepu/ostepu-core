@@ -88,6 +88,13 @@ class Anfragegraph {
         file_put_contents($confFile, json_encode($confContent));
     }
 
+    public static function checkExecutability($data) {
+        Installation::log(array('text' => Installation::Get('main', 'functionBegin')));
+        $res = array(['name' => 'dot', 'exec' => 'dot -V', 'desc' => 'dot -V']);
+        Installation::log(array('text' => Installation::Get('main', 'functionEnd')));
+        return $res;
+    }
+
     public static function show($console, $result, $data) {
         // das Segment soll nur gezeichnet werden, wenn der Nutzer eingeloggt ist
         if (!Einstellungen::$accessAllowed) {
