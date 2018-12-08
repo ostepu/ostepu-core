@@ -11,12 +11,12 @@
  * @author Till Uhlig <till.uhlig@student.uni-halle.de>
  * @date 2013-2015
  */
-include_once ( dirname(__FILE__) . '/Object.php' );
+include_once ( dirname(__FILE__) . '/StructureObject.php' );
 
 /**
  * the course status structure
  */
-class CourseStatus extends Object implements JsonSerializable {
+class CourseStatus extends StructureObject implements JsonSerializable {
 
     /**
      * @var Course $course A course.

@@ -11,12 +11,12 @@
  * @date 2014-2015
  */
 
-include_once ( dirname( __FILE__ ) . '/Object.php' );
+include_once ( dirname( __FILE__ ) . '/StructureObject.php' );
 
 /**
  * the Process structure
  */
-class Process extends Object implements JsonSerializable
+class Process extends StructureObject implements JsonSerializable
 {
 
     /**

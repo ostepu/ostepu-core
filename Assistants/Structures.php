@@ -13,7 +13,7 @@
  * @date 2013-2015
  */
  
-include_once ( dirname( __FILE__ ) . '/Structures/Object.php' );
+include_once ( dirname( __FILE__ ) . '/Structures/StructureObject.php' );
 
 include_once ( dirname( __FILE__ ) . '/Structures/ApprovalCondition.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/Attachment.php' );

@@ -13,12 +13,12 @@
  * @date 2014
  */
 
-include_once ( dirname( __FILE__ ) . '/Object.php' );
+include_once ( dirname( __FILE__ ) . '/StructureObject.php' );
 
 /**
  * the exercise file type structure
  */
-class ExerciseFileType extends Object implements JsonSerializable
+class ExerciseFileType extends StructureObject implements JsonSerializable
 {
 
     /**

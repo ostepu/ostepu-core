@@ -11,12 +11,12 @@
  * @date 2013-2015
  */
 
-include_once ( dirname( __FILE__ ) . '/Object.php' );
+include_once ( dirname( __FILE__ ) . '/StructureObject.php' );
 
 /**
  * the invitation structure
  */
-class Invitation extends Object implements JsonSerializable
+class Invitation extends StructureObject implements JsonSerializable
 {
 
     /**

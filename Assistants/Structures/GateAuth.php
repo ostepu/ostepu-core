@@ -1,10 +1,10 @@
 <?php
-include_once ( dirname( __FILE__ ) . '/Object.php' );
+include_once ( dirname( __FILE__ ) . '/StructureObject.php' );
 
 /**
  * the gate auth structure
  */
-class GateAuth extends Object implements JsonSerializable
+class GateAuth extends StructureObject implements JsonSerializable
 {
 
     /**

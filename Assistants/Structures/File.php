@@ -13,12 +13,12 @@
  * @date 2013-2015
  */
 
-include_once ( dirname( __FILE__ ) . '/Object.php' );
+include_once ( dirname( __FILE__ ) . '/StructureObject.php' );
 
 /**
  * the file structure
  */
-class File extends Object implements JsonSerializable
+class File extends StructureObject implements JsonSerializable
 {
 
     /**

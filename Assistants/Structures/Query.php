@@ -11,12 +11,12 @@
  * @date 2013-2016
  */
 
-include_once ( dirname( __FILE__ ) . '/Object.php' );
+include_once ( dirname( __FILE__ ) . '/StructureObject.php' );
 
 /**
  * this class is for querying SQL statemets
  */
-class Query extends Object implements JsonSerializable
+class Query extends StructureObject implements JsonSerializable
 {
 
     /**

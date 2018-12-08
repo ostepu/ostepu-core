@@ -11,12 +11,12 @@
  * @date 2014-2015
  */
 
-include_once ( dirname( __FILE__ ) . '/Object.php' );
+include_once ( dirname( __FILE__ ) . '/StructureObject.php' );
 
 /**
  * the selected submission structure
  */
-class SelectedSubmission extends Object implements JsonSerializable
+class SelectedSubmission extends StructureObject implements JsonSerializable
 {
 
     /**

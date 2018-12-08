@@ -1,6 +1,6 @@
 <?php
 /**
- * @file Object.php
+ * @file StructureObject.php
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
  *
@@ -13,9 +13,9 @@
 
 
 /**
- * the Object class is the parent class of all api structures
+ * the StructureObject class is the parent class of all api structures
  */
-abstract class Object
+abstract class StructureObject
 {
 
     /**

@@ -17,12 +17,12 @@
  * @author Florian Lücke <florian.luecke@gmail.com>
  * @date 2014
  */
-include_once ( dirname(__FILE__) . '/Object.php' );
+include_once ( dirname(__FILE__) . '/StructureObject.php' );
 
 /**
  * the marking structure
  */
-class Marking extends Object implements JsonSerializable {
+class Marking extends StructureObject implements JsonSerializable {
 
     /**
      * @var string $id The identifier of this marking.

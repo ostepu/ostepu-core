@@ -1,10 +1,10 @@
 <?php
-include_once ( dirname( __FILE__ ) . '/Object.php' );
+include_once ( dirname( __FILE__ ) . '/StructureObject.php' );
 
 /**
  * the gate rule structure
  */
-class GateRule extends Object implements JsonSerializable
+class GateRule extends StructureObject implements JsonSerializable
 {
 
     /**
