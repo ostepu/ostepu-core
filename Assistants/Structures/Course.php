@@ -467,6 +467,7 @@ class Course extends StructureObject implements JsonSerializable
         for($i=0;$i<count($res);$i++){
             if (isset($res[$i]['exerciseSheets']) && is_array($res[$i]['exerciseSheets'])){
                 $res[$i]['exerciseSheets'] = array_unique($res[$i]['exerciseSheets']);
+                $res[$i]['exerciseSheets'] = array_values($res[$i]['exerciseSheets']);
             }
         }
         
