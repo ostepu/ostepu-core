@@ -61,17 +61,20 @@ if (Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUse
 
 $postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
   ->addSet('deleteSubmissionWarning',
-           ['valid_identifier',
+           ['set_default'=>'000',
+            'valid_identifier',
             'satisfy_not_equals_field'=>'deleteSubmission',
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','invalidDeleteSubmissionWarning', $langTemplate)]])
   ->addSet('deleteSubmission',
-           ['valid_identifier',
+           ['set_default'=>'001',
+            'valid_identifier',
             'satisfy_not_equals_field'=>'deleteSubmissionWarning',
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','invalidDeleteSubmission', $langTemplate)]])
   ->addSet('downloadMarkings',
-           ['valid_identifier',
+           ['set_default'=>'000',
+            'valid_identifier',
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','invalidSheetId', $langTemplate)]])
   ->addSet('redirect',
@@ -112,9 +115,9 @@ if ($postValidation->isValid() && isset($postResults['redirect'])) {
     }
 }
 
-if (isset($postResults['deleteSubmissionWarning'])) {
+if (isset($postResults['deleteSubmissionWarning']) && $postResults['deleteSubmissionWarning'] !== '000') {
     $notifications[] = MakeNotification('warning', Language::Get('main','askDeleteSubmission', $langTemplate));
-} elseif (isset($postResults['deleteSubmission'])) {
+} elseif (isset($postResults['deleteSubmission']) && $postResults['deleteSubmission'] !== '001') {
     $suid = $postResults['deleteSubmission'];
 
     // extractes the studentId of the submission
@@ -145,7 +148,7 @@ if (isset($postResults['deleteSubmissionWarning'])) {
         }
     }
 
-} elseif (isset($postResults['downloadMarkings'])) {
+} elseif (isset($postResults['downloadMarkings']) && $postResults['downloadMarkings'] !== '000') {
     downloadMarkingsForSheet($selectedUser, $postResults['downloadMarkings']);
 }
 
