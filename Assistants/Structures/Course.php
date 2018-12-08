@@ -462,6 +462,14 @@ class Course extends StructureObject implements JsonSerializable
                                                      $SheetExtension,
                                                      $CourseExtension
                                                      );
+
+        # removes duplicates
+        for($i=0;$i<count($res);$i++){
+            if (isset($res[$i]['exerciseSheets']) && is_array($res[$i]['exerciseSheets'])){
+                $res[$i]['exerciseSheets'] = array_unique($res[$i]['exerciseSheets']);
+            }
+        }
+        
         if ($isResult){
             $res = Course::decodeCourse($res,false);
             if ( $singleResult == true ){
