@@ -1,10 +1,51 @@
 [
-    {    "method":"POST", "path":"/exercisesheet" },
-    {    "method":"PUT", "path":"/exercisesheet/exercisesheet/:sheetid" },
-    {    "method":"GET", "path":"/exercisesheet/exercisesheet/:sheetid/url" },
-    {    "method":"GET", "path":"/exercisesheet/exercisesheet/:sheetid" },
-    {    "method":"GET", "path":"/exercisesheet/exercisesheet/:sheetid/exercise" },
-    {    "method":"GET", "path":"/exercisesheet/course/:courseid" },
-    {    "method":"GET", "path":"/exercisesheet/course/:courseid/exercise" },
-    {    "method":"GET", "path":"/exercisesheet/exercisesheet/:sheetid" }
+    {
+        "path": "\/exercisesheet",
+        "method": "POST",
+        "description": {
+            "de": "erstellt eine neue Übungsserie"
+        }
+    },
+    {
+        "path": "\/exercisesheet\/exercisesheet\/:sheetid",
+        "method": "PUT",
+        "description": {
+            "de": "ändert eine vorhandene Übungsserie"
+        }
+    },
+    {
+        "path": "\/exercisesheet\/exercisesheet\/:sheetid\/url",
+        "method": "GET",
+        "description": {
+            "de": "ermittelt die Dateiadresse des Aufgabenblattes einer Übungsserie"
+        }
+    },
+    {
+        "path": "\/exercisesheet\/exercisesheet\/:sheetid",
+        "method": "GET",
+        "description": {
+            "de": "liefert eine einzelne Übungsserie"
+        }
+    },
+    {
+        "path": "\/exercisesheet\/exercisesheet\/:sheetid\/exercise",
+        "method": "GET",
+        "description": {
+            "de": "ermittet eine Übungsserie mit den dazu gehörigen Aufgaben"
+        }
+    },
+    {
+        "path": "\/exercisesheet\/course\/:courseid",
+        "method": "GET",
+        "description": {
+            "de": "liefert alle Übungsserien einer Veranstaltung"
+        }
+    },
+    {
+        "path": "\/exercisesheet\/course\/:courseid\/exercise",
+        "method": "GET",
+        "description": {
+            "de": "liefert alle Übungsserien einer Veranstaltung und die zugehörigen Aufgaben"
+        }
+    }
 ]

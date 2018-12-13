@@ -1,12 +1,72 @@
 [
-    {    "method":"put", "path":"(/:pre)/attachment(/attachment)/:aid" },
-    {    "method":"delete", "path":"(/:pre)/attachment(/attachment)/:aid" },
-    {    "method":"post", "path":"(/:pre)/attachment" },
-    {    "method":"get", "path":"(/:pre)/link/exists/course/:courseid" },
-    {    "method":"get", "path":"(/:pre)/attachment(/attachment)/:aid" },
-    {    "method":"get", "path":"(/:pre)/attachment/exercise/:eid" },
-    {    "method":"get", "path":"(/:pre)/attachment/course/:courseid" },
-    {    "method":"get", "path":"(/:pre)/attachment/exercisesheet/:esid" },
-    {    "method":"delete", "path":"(/:pre)/course" },
-    {    "method":"post", "path":"(/:pre)/course/:courseid" }
+    {
+        "path": "(\/:pre)\/course",
+        "method": "delete",
+        "description": {
+            "de": "entfernt die Komponente aus der Veranstaltung"
+        }
+    },
+    {
+        "path": "(\/:pre)\/link\/exists\/course\/:courseid",
+        "method": "get",
+        "description": {
+            "de": "prüft, ob die Komponente korrekt in die Veranstaltung installiert wurde"
+        }
+    },
+    {
+        "path": "(\/:pre)\/attachment\/course\/:courseid",
+        "method": "get",
+        "description": {
+            "de": "gibt die Anhänge der Veranstaltung zurück"
+        }
+    },
+    {
+        "path": "(\/:pre)\/attachment",
+        "method": "post",
+        "description": {
+            "de": "fügt einen neuen Eintrag hinzu"
+        }
+    },
+    {
+        "path": "(\/:pre)\/attachment(\/attachment)\/:aid",
+        "method": "put",
+        "description": {
+            "de": "editiert einen einzelnen Anhang"
+        }
+    },
+    {
+        "path": "(\/:pre)\/attachment\/exercise\/:eid",
+        "method": "get",
+        "description": {
+            "de": "ermittelt alle Anhänge einer Veranstaltung"
+        }
+    },
+    {
+        "path": "(\/:pre)\/attachment(\/attachment)\/:aid",
+        "method": "get",
+        "description": {
+            "de": "gibt eine einzelne Veranstaltung aus"
+        }
+    },
+    {
+        "path": "(\/:pre)\/attachment\/exercisesheet\/:esid",
+        "method": "get",
+        "description": {
+            "de": "ermittelt alle Anhänge einer Übungsserie"
+        }
+    },
+    {
+        "path": "(\/:pre)\/attachment(\/attachment)\/:aid",
+        "method": "delete",
+        "description": {
+            "de": "entfernt einen einzelnen Anhang"
+        }
+    },
+    {
+        "path": "(\/:pre)\/course\/:courseid",
+        "method": "post",
+        "description": {
+            "de": "installiert die Komponente in die Veranstaltung"
+        }
+    }
 ]

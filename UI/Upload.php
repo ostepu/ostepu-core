@@ -158,6 +158,10 @@ if ($postValidation->isValid() && $postResults['action'] === 'submit') {
 
         if ($postSubmitValidation->isValid()){
             foreach ($foundValues['exercises'] as $key => $exercise) {
+                if (!isset($exercise['exerciseID'])){
+                    continue;
+                }
+                
                 $exerciseId = cleanInput($exercise['exerciseID']);
                 $fileName = "file{$exerciseId}";
 

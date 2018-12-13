@@ -19,6 +19,7 @@
 ?>
 
 <?php $langTemplate='ExerciseSheet';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+<?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uiexercisesheettutor_cconfig.json'); ?>
 
 <?php
 if (isset($notifications)){
@@ -34,6 +35,9 @@ if (isset($notifications)){
     echo "</div>";
 }
 ?>
+
+<?php // gibt den Inhalt des getTop-Eingangs aus
+    echo pageLib::getContent('getTop', $this->content, $pageComponent); ?>
 
 <?php if (!empty($sheets)): ?>
     <?php foreach ($sheets as $sheet):?>
@@ -110,7 +114,7 @@ if (isset($notifications)){
                             <?php $fileURL = generateDownloadURL($exercise['attachment']); ?>
 
                             <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain" target="_blank">
-                                <img src="Images/Attachment.png" />
+                                <img src="<?php echo generateCommonFileUrl('img/Attachment.png');?>" />
                             </a>
                         <?php endif; ?>
                         </div>
@@ -224,20 +228,17 @@ if (isset($notifications)){
                             <?php echo Language::Get('sheetMenu','markingTool', $langTemplate); ?>
                         </a>
                     </li>
-                    <li>
-                        <a class="text-button" href="MarkingTool2.php?cid=<?php echo $user['courses'][0]['course']['id'],
-                                                         '&sid=',
-                                                         $sheet['id']; ?>">
-                            <?php echo Language::Get('sheetMenu','markingTool2', $langTemplate); ?>
-                        </a>
-                    </li>
-                            
+                    
+                     <?php // gibt den Inhalt des getSheetNavigation-Eingangs aus
+                        echo pageLib::getContent('getSheetNavigation', $this->content, $pageComponent, array('cid'=>$user['courses'][0]['course']['id'], 'sid'=>$sheet['id'])); ?>
+                    
                     <?php if (isset($redirect)){ 
                         $redirect2 = array_reverse($redirect);
                         foreach($redirect2 as $red) {
                             if ($red['location'] !== 'sheet') continue;
                             echo '<li>'.createRedirectButton($red,$sheet['id']).'</li>';
                         }} ?>
+                     
                 </ol>
             </div>
         </div>

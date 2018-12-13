@@ -1,24 +1,163 @@
 [
-    {    "method":"GET", "path":"/tutorassign/user/:userid/course/:courseid/exercisesheet/:sheetid" },
-    {    "method":"GET", "path":"/student/user/:userid/course/:courseid" },
-    {    "method":"GET", "path":"/accountsettings/user/:userid" },
-    {    "method":"GET", "path":"/createsheet/user/:userid/course/:courseid" },
-    {    "method":"GET", "path":"/index/user/:userid" },
-    {    "method":"GET", "path":"/coursemanagement/user/:userid/course/:courseid" },
-    {    "method":"GET", "path":"/mainsettings/user/:userid" },
-    {    "method":"GET", "path":"/upload/user/:userid/course/:courseid/exercisesheet/:sheetid" },
-    {    "method":"GET", "path":"/tutorupload/user/:userid/course/:courseid/exercisesheet/:sheetid" },
-    {    "method":"GET", "path":"/markingtool/user/:userid/course/:courseid/exercisesheet/:sheetid" },
-    {    "method":"GET", "path":"/markingtool/user/:userid/course/:courseid/exercisesheet/:sheetid/tutor/:tutorid" },
-    {    "method":"GET", "path":"/markingtool/user/:userid/course/:courseid/exercisesheet/:sheetid/status/:statusid" },
-    {    "method":"GET", "path":"/markingtool/user/:userid/course/:courseid/exercisesheet/:sheetid/tutor/:tutorid/status/:statusid" },
-    {    "method":"GET", "path":"/uploadhistory/user/:userid/course/:courseid/exercisesheet/:sheetid/uploaduser/:uploaduserid" },
-    {    "method":"GET", "path":"/uploadhistoryoptions/user/:userid/course/:courseid" },
-    {    "method":"GET", "path":"/tutor/user/:userid/course/:courseid" },
-    {    "method":"GET", "path":"/admin/user/:userid/course/:courseid" },
-    {    "method":"GET", "path":"/lecturer/user/:userid/course/:courseid" },
-    {    "method":"GET", "path":"/group/user/:userid/course/:courseid/exercisesheet/:sheetid" },
-    {    "method":"GET", "path":"/condition/user/:userid/course/:courseid" },
-    {    "method":"GET", "path":"/condition/user/:userid/course/:courseid/lastsheet/:maxsid" },
-    {    "method":"GET", "path":"/condition/user/:userid/course/:courseid/firstsheet/:minsid/lastsheet/:maxsid" }
+    {
+        "path": "\/tutorassign\/user\/:userid\/course\/:courseid\/exercisesheet\/:sheetid",
+        "method": "GET",
+        "description": {
+            "de": "die Datengrundlage der Zuweisungsseite (Einsendungszuweisung)"
+        }
+    },
+    {
+        "path": "\/student\/user\/:userid\/course\/:courseid",
+        "method": "GET",
+        "description": {
+            "de": "die Datengrundlage der Studentenseite"
+        }
+    },
+    {
+        "path": "\/accountsettings\/user\/:userid",
+        "method": "GET",
+        "description": {
+            "de": "die Datengrundlage der Accountseite"
+        }
+    },
+    {
+        "path": "\/createsheet\/user\/:userid\/course\/:courseid",
+        "method": "GET",
+        "description": {
+            "de": "die Datengrundlage der Seite zum Erstellen von Übungsserien"
+        }
+    },
+    {
+        "path": "\/index\/user\/:userid",
+        "method": "GET",
+        "description": {
+            "de": "die Datengrundlage der Übersichtsseite"
+        }
+    },
+    {
+        "path": "\/coursemanagement\/user\/:userid\/course\/:courseid",
+        "method": "GET",
+        "description": {
+            "de": "die Datengrundlage der Kursverwaltung"
+        }
+    },
+    {
+        "path": "\/mainsettings\/user\/:userid",
+        "method": "GET",
+        "description": {
+            "de": "die Datengrundlage der Plattformverwaltung"
+        }
+    },
+    {
+        "path": "\/upload\/user\/:userid\/course\/:courseid\/exercisesheet\/:sheetid",
+        "method": "GET",
+        "description": {
+            "de": "die Datengrundlage der Uploadseite für Studenten"
+        }
+    },
+    {
+        "path": "\/tutorupload\/user\/:userid\/course\/:courseid\/exercisesheet\/:sheetid",
+        "method": "GET",
+        "description": {
+            "de": "die Datengrundlage der Uploadseite für die Korrekturarchive der Tutoren"
+        }
+    },
+    {
+        "path": "\/markingtool\/user\/:userid\/course\/:courseid\/exercisesheet\/:sheetid",
+        "method": "GET",
+        "description": {
+            "de": "die Datengrundlage des Korrekturasistenten"
+        }
+    },
+    {
+        "path": "\/markingtool\/user\/:userid\/course\/:courseid\/exercisesheet\/:sheetid\/tutor\/:tutorid",
+        "method": "GET",
+        "description": {
+            "de": "die Datengrundlage der Korrekturassistenten (ein Tutor ist vorausgewählt)"
+        }
+    },
+    {
+        "path": "\/markingtool\/user\/:userid\/course\/:courseid\/exercisesheet\/:sheetid\/status\/:statusid",
+        "method": "GET",
+        "description": {
+            "de": "die Datengrundlage der Korrekturassistenten (nur Einträge mit einem bestimmten Korrekturstatus)"
+        }
+    },
+    {
+        "path": "\/markingtool\/user\/:userid\/course\/:courseid\/exercisesheet\/:sheetid\/tutor\/:tutorid\/status\/:statusid",
+        "method": "GET",
+        "description": {
+            "de": "die Datengrundlage der Korrekturassistenten (ein Tutor ist ausgewählt + ein ausgewählter Status)"
+        }
+    },
+    {
+        "path": "\/markingtool\/course\/:courseid\/sheet\/:sheetid(\/)",
+        "method": "GET",
+        "description": {
+            "de": "die Datengrundlage der Korrekturassistenten 2.0 (veränderte Struktur)"
+        }
+    },
+    {
+        "path": "\/uploadhistory\/user\/:userid\/course\/:courseid\/exercisesheet\/:sheetid\/uploaduser\/:uploaduserid",
+        "method": "GET",
+        "description": {
+            "de": "die Datengrundlage der Einsendungsverlaufs"
+        }
+    },
+    {
+        "path": "\/uploadhistoryoptions\/user\/:userid\/course\/:courseid",
+        "method": "GET",
+        "description": {
+            "de": "die Datengrundlage des Auswahlbereits des Einsendungsverlaufs"
+        }
+    },
+    {
+        "path": "\/tutor\/user\/:userid\/course\/:courseid",
+        "method": "GET",
+        "description": {
+            "de": "die Datengrundlage der Tutorenseite"
+        }
+    },
+    {
+        "path": "\/admin\/user\/:userid\/course\/:courseid",
+        "method": "GET",
+        "description": {
+            "de": "die Datengrundlage der Adminseite"
+        }
+    },
+    {
+        "path": "\/lecturer\/user\/:userid\/course\/:courseid",
+        "method": "GET",
+        "description": {
+            "de": "die Datengrundlage der Dozentenseite"
+        }
+    },
+    {
+        "path": "\/group\/user\/:userid\/course\/:courseid\/exercisesheet\/:sheetid",
+        "method": "GET",
+        "description": {
+            "de": "die Datengrundlage der Gruppenseite"
+        }
+    },
+    {
+        "path": "\/condition\/user\/:userid\/course\/:courseid",
+        "method": "GET",
+        "description": {
+            "de": "die Datengrundlage der Zulassungsübersicht"
+        }
+    },
+    {
+        "path": "\/condition\/user\/:userid\/course\/:courseid\/lastsheet\/:maxsid",
+        "method": "GET",
+        "description": {
+            "de": "die Datengrundlage der Zulassungsübersicht (mit Angabe der letzten anzuzeigenden Serie)"
+        }
+    },
+    {
+        "path": "\/condition\/user\/:userid\/course\/:courseid\/firstsheet\/:minsid\/lastsheet\/:maxsid",
+        "method": "GET",
+        "description": {
+            "de": "die Datengrundlage der Zulassungsübersicht (mit der Angabe der anzuzeigenden Übungsserien)"
+        }
+    }
 ]

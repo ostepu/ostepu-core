@@ -11,12 +11,12 @@
  * @date 2013-2015
  */
 
-include_once ( dirname( __FILE__ ) . '/Object.php' );
+include_once ( dirname( __FILE__ ) . '/StructureObject.php' );
 
 /**
  * the course structure
  */
-class Course extends Object implements JsonSerializable
+class Course extends StructureObject implements JsonSerializable
 {
 
     /**
@@ -462,6 +462,15 @@ class Course extends Object implements JsonSerializable
                                                      $SheetExtension,
                                                      $CourseExtension
                                                      );
+
+        # removes duplicates
+        for($i=0;$i<count($res);$i++){
+            if (isset($res[$i]['exerciseSheets']) && is_array($res[$i]['exerciseSheets'])){
+                $res[$i]['exerciseSheets'] = array_unique($res[$i]['exerciseSheets']);
+                $res[$i]['exerciseSheets'] = array_values($res[$i]['exerciseSheets']);
+            }
+        }
+        
         if ($isResult){
             $res = Course::decodeCourse($res,false);
             if ( $singleResult == true ){

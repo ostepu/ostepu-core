@@ -1,27 +1,49 @@
 {
     "name": "DBQuery2",
+    "description": {
+        "de": "Die DBQuery2 ermöglicht das Ausführen von SQL-Anfragen. Dabei nutzt sie die mysqli-Erweiterung von PHP."
+    },
     "version": "1.0",
     "classFile": "DBQuery2.php",
     "className": "DBQuery2",
     "files": [
-        {"path": ".htaccess"},
-        {"path": "DBQuery2.php"},
-        {"path": "index.php"},
-        {"path": "Commands.json"},
-        {"path": "info/"}
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBQuery2.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "info\/"
+        }
     ],
     "connector": [
         {
             "name": "request",
-            "target": "CLocalObjectRequest"
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit DBQuery2 als lokales Objekt aufgerufen werden kann"
+            }
         },
         {
             "name": "getDescFiles",
-            "target": "TDocuView"
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
+            }
         },
         {
             "name": "getComponentProfiles",
-            "target": "TApiConfiguration"
+            "target": "TApiConfiguration",
+            "description": {
+                "de": "damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden"
+            }
         }
     ]
 }

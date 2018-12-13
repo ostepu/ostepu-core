@@ -1,0 +1,19 @@
+{
+    "name": "Aufgabendatenbank",
+    "version": "1.0",
+    "versionDate": "08.12.2018",
+    "description":{"de":"Dieses Paket erweitert den Installationsassistenten um die Installationselemente für die Aufgabendatenbank. Um dieses Paket verwenden zu können, muss die Aufgabendatenbank bereits eingerichtet sein. Sie finden weitere Informationen auf der angegebenen Webseite."},
+    "descUrl":"https://github.com/ostepu/ostepu-aufgabendatenbank",
+    "files": [
+        {
+            "path": "install/segments/ext_aufgabendatenbank/",
+            "type": "git",
+            "params": {
+                "name": "aufgabendatenbank",
+                "branch": "master",
+                "URL": "https://github.com/ostepu/ostepu-aufgabendatenbank.git",
+                "path": "install/segments/ext_aufgabendatenbank/"
+            }
+        }
+    ]
+}

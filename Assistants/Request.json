@@ -1,11 +1,21 @@
 {
-  "name":"CLocalObjectRequest",
-  "version":"1.0",
-  "type":"clone",
-  "base":"CAbstract",
-  "baseURI":"/localObjectRequest",
-  "option":"confPath=Assistants/request_cconfig.json",
-  "links":[
-    {"name":"request","target":"","links":[]}
-  ]
+    "name": "CLocalObjectRequest",
+    "option": "confPath=Assistants\/request_cconfig.json",
+    "description": {
+        "de": "Diese Komponentendefinition gehört zur Assistants/Request.php und sammelt alle Komponenten ein, welche lokal als PHP-Skript aufrufbar sind."
+    },
+    "version": "1.0",
+    "baseURI": "\/localObjectRequest",
+    "base": "CAbstract",
+    "type": "clone",
+    "links": [
+        {
+            "name": "request",
+            "target": "",
+            "description": {
+                "de": "An diesen Ausgang können Komponenten gehangen werden, welche lokal als PHP-Skript aufrufbar sind, sodass ein langsamer HTTP-Aufruf vermieden werden kann."
+            },
+            "links": []
+        }
+    ]
 }

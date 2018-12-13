@@ -13,4 +13,14 @@
 
 require_once ( dirname( __FILE__ ) . '/DBMarking.php' );
 
+Logger::Log(
+            'begin DBMarking',
+            LogLevel::DEBUG
+            );
+
 new DBMarking();
+
+Logger::Log(
+            'end DBMarking',
+            LogLevel::DEBUG
+            );

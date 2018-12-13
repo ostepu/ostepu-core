@@ -3,17 +3,15 @@
   -
   - @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
   -
-  - @package OSTEPU (https://github.com/ostepu/system)
+  - @package OSTEPU (https://github.com/ostepu/ostepu-core)
   - @since 0.3.4
   -
   - @author Till Uhlig <till.uhlig@student.uni-halle.de>
-  - @date 2015
+  - @date 2015,2017
+  -
  -->
 
-#### Datenbank
-Die DBCourse ermöglicht den Zugriff auf die `Course` Tabelle der Datenbank, dabei sollen
-Veranstaltungen verwaltet werden.
-Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.
+Die DBCourse ermöglicht den Zugriff auf die `Course` Tabelle der Datenbank, dabei sollen Veranstaltungen verwaltet werden. Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle gehört die `Course` Datenstruktur.
 
 | Spalte           | Struktur  | Beschreibung | Besonderheit |
 | :------------    |:--------:| :---------------| -----: |
@@ -22,53 +20,224 @@ Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.
 |C_semester        |VARCHAR(60) NULL|Das Semester. Bsp.: SS 2015 und WS 2014/2015, dieses Format muss eingehalten werden|-|
 |C_defaultGroupSize|INT NOT NULL DEFAULT 1|Die Standardgruppengröße, als Vorgabe beim erzeugen neuer Übungsserien|-|
 
-#### Datenstruktur
-Zu dieser Tabelle gehört die `Course` Datenstruktur.
+| Themen |
+| :- |
+| [Befehle/Eingänge (Commands.json)](#eingaenge) |
+| [Ausgänge (Component.json => Links)](#ausgaenge) |
+| [Anbindungen (Component.json => Connector)](#anbindungen) |
 
-#### Veranstaltungserstellung
-Beim Erzeugen einer neuen Veranstaltung wird versucht, Einstellungen in die zugehörige `Setting_X` Tabelle einzutragen.
-Dazu muss der `POST /course` Aufruf möglicherweise zweifach an diese Komponente gerichtet werden.
+## <a name='eingaenge'></a>Befehle/Eingänge (Commands.json)
+Diese Befehle bietet diese Komponente als Aufruf an.
 
-| Bezeichnung  | Typ  | Beschreibung | Vorgabewert |
-| :----------- |:----:| :------------| ----------: |
-|RegistrationPeriodEnd|TIMESTAMP|Wird bei der Registrierung neuer Nutzer verwendet und soll das Ende der Anmeldeperiode festlegen (danach soll kein CourseStatus mehr erstellt werden können, wird nicht durch die Datenbank geprüft). 0 = ohne Anmeldesperre, >0 (Unix-Zeitstempel) hier endet die Anmeldefrist |0|
-|AllowLateSubmissions|BOOL|Soll festlegen, ob Studenten verspätet Einsendungen einreichen können. 0 = Nein, 1 = Ja|1|
+||getExistsPlatform|
+| :----------- |:----- |
+|Beschreibung| prüft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollständig installiert ist|
+|Befehl| GET /link/exists/platform|
+|Eingabetyp| -|
+|Ausgabetyp| Platform|
 
-#### Eingänge
-- courseid = eine Veranstaltungs ID (`Course`)
-- userid = die ID eines Nutzers (`User`)
+||editCourse|
+| :----------- |:----- |
+|Beschreibung| editiert einen Eintrag|
+|Befehl| PUT /course/course/:courseid|
+|Eingabetyp| Course|
+|Ausgabetyp| Course|
+|||
+||Patzhalter|
+|Name|courseid|
+|Regex|%^([0-9_]+)$%|
+|Beschreibung|eine Veranstaltungs ID (`Course`)|
 
-| Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
-| :----------- |:-----------:| :---------:| :----- | :----------- |
-|editCourse|Course|Course|PUT<br>/course(/course)/:courseid|verändert eine existierende Veranstaltung|
-|deleteCourse|-|Course|DELETE<br>/course(/course)/:courseid|entfernt eine existierende Veranstaltung (auch wenn die Veranstaltung nicht existiert ist die Antwort positiv)|
-|addCourse|Course|Course|POST<br>/course|erzeugt eine neue Veranstaltung (doppelte Aufrufe erzeugen die Veranstaltung mehrfach)|
-|getCourse|-|Course|GET<br>/course(/course)/:courseid|liefert die Daten einer einzelnen Veranstaltung|
-|getAllCourses|-|Course|GET<br>/course(/course)|liefert alle Veranstaltungen|
-|getUserCourses|-|Course|GET<br>/course/user/:userid|gibt die von einem bestimmten Nutzer besuchten Veranstaltungen zurück|
-|addPlatform|Platform|Platform|POST<br>/platform|installiert die zugehörige Tabelle und die Prozeduren für diese Plattform|
-|deletePlatform|-|Platform|DELETE<br>/platform|entfernt die Tabelle und Prozeduren aus der Plattform|
-|getExistsPlatform|-|Platform|GET<br>/link/exists/platform| prüft, ob die Tabelle und die Prozeduren existieren |
-|getSamplesInfo|-|-|GET<br>/samples|???|
-|postSamples|-|Query|POST<br>/samples/course/:courseAmount<br>/user/:userAmount| erzeugt Zufallsdaten (courseAmount = Anzahl der Veranstaltungen, userAmount = Anzahl der Nutzer), anhand der Vorgabe |
+||getUserCourses|
+| :----------- |:----- |
+|Beschreibung| ermittelt die Veranstaltungen eines Nutzers|
+|Befehl| GET /course/user/:userid|
+|Eingabetyp| -|
+|Ausgabetyp| Course|
+|||
+||Patzhalter|
+|Name|userid|
+|Regex|%^([0-9_]+)$%|
+|Beschreibung|die ID eines Nutzers oder ein Nuzername (`User`)|
 
-#### Ausgänge
-- courseid = eine Veranstaltungs ID (`Course`)
-- userid = die ID eines Nutzers (`User`)
+||addCourse|
+| :----------- |:----- |
+|Beschreibung| fügt DBCourse zur Veranstaltung hinzu bzw. fügt eine neue Veranstaltung ein|
+|Befehl| POST /course|
+|Eingabetyp| Course|
+|Ausgabetyp| Course|
 
-| Bezeichnung  | Ziel  | Verwendung | Beschreibung |
-| :----------- |:----- | :--------- | :----------- |
-|out2|DBQuery2|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
-|getCourse|DBQuery2|GET<br>/query/procedure<br>/DBCourseGetCourse/:courseid| Prozeduraufruf |
-|getAllCourses|DBQuery2|GET<br>/query/procedure<br>/DBCourseGetAllCourses| Prozeduraufruf |
-|getUserCourses|DBQuery2|GET<br>/query/procedure<br>/DBCourseGetUserCourses/:userid| Prozeduraufruf |
-|getExistsPlatform|DBQuery2|GET<br>/query/procedure<br>/DBCourseGetExistsPlatform| Prozeduraufruf |
-|getSamplesInfo|DBQuery2|GET<br>/query/procedure<br>/DBCourseGetExistsPlatform| Prozeduraufruf |
+||postSamples|
+| :----------- |:----- |
+|Beschreibung| erzeugt Zufallsdaten (courseAmount = Anzahl der Veranstaltungen, userAmount = Anzahl der Nutzer), anhand der Vorgabe|
+|Befehl| POST /samples/course/:courseAmount/user/:userAmount|
+|Eingabetyp| -|
+|Ausgabetyp| Query|
 
-#### Anbindungen
-| Bezeichnung  | Ziel  | Priorität | Beschreibung |
-| :----------- |:----- | :--------:| :------------|
-|request|CLocalObjectRequest|-| damit DBCourse als lokales Objekt aufgerufen werden kann |
-|postCourse|LCourse|300| damit erzwingen wir einen erneuten POST<br>/course Aufruf, nachdem alle mit diesem Ausgang verbundenen Verbindungen aufgerufen wurden |
+||getCourse|
+| :----------- |:----- |
+|Beschreibung| liefert einen einzelnen Eintrag|
+|Befehl| GET /course/course/:courseid|
+|Eingabetyp| -|
+|Ausgabetyp| Course|
+|||
+||Patzhalter|
+|Name|courseid|
+|Regex|%^([0-9_]+)$%|
+|Beschreibung|eine Veranstaltungs ID (`Course`)|
 
-Stand 13.06.2015
+||getAllCourses|
+| :----------- |:----- |
+|Beschreibung| liefert alle Einträge|
+|Befehl| GET /course|
+|Eingabetyp| -|
+|Ausgabetyp| Course|
+
+||deletePlatform|
+| :----------- |:----- |
+|Beschreibung| entfernt die Komponente und ihre installierten Bestandteile aus der Plattform|
+|Befehl| DELETE /platform|
+|Eingabetyp| -|
+|Ausgabetyp| Platform|
+
+||deleteCourse|
+| :----------- |:----- |
+|Beschreibung| entfernt die Komponente aus der Veranstaltung bzw. löscht den Eintrag|
+|Befehl| DELETE /course/course/:courseid|
+|Eingabetyp| -|
+|Ausgabetyp| Course|
+|||
+||Patzhalter|
+|Name|courseid|
+|Regex|%^([0-9_]+)$%|
+|Beschreibung|eine Veranstaltungs ID (`Course`)|
+
+||getSamplesInfo|
+| :----------- |:----- |
+|Beschreibung| liefert die Bezeichner der betroffenen Tabellen|
+|Befehl| GET /samples|
+|Eingabetyp| -|
+|Ausgabetyp| -|
+
+||addPlatform|
+| :----------- |:----- |
+|Beschreibung| installiert die zugehörige Tabelle und die Prozeduren für diese Plattform|
+|Befehl| POST /platform|
+|Eingabetyp| Platform|
+|Ausgabetyp| Platform|
+
+||getApiProfiles|
+| :----------- |:----- |
+|Beschreibung| liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren|
+|Befehl| GET /api/profiles|
+|Eingabetyp| -|
+|Ausgabetyp| GateProfile|
+
+
+## <a name='ausgaenge'></a>Ausgänge (Component.json => Links)
+Wenn eine Komponente selbst noch Unteranfragen an andere Komponenten stellen möchte, dann werden diese über die `Ausgänge` bearbeitet.
+Dabei kann ein Ausgang bereits auf eine Komponente gerichtet sein (`Ziel`) oder durch die Zielkomponente selbst angebunden werden (`Connector`)
+
+||editCourse|
+| :----------- |:----- |
+|Ziel| DBQueryWrite|
+|Befehl| POST /query|
+|Beschreibung| für den Befehl editCourse|
+
+||deleteCourse|
+| :----------- |:----- |
+|Ziel| DBQueryWrite|
+|Befehl| POST /query|
+|Beschreibung| für den Befehl deleteCourse|
+
+||addCourse|
+| :----------- |:----- |
+|Ziel| DBQueryWrite|
+|Befehl| POST /query|
+|Beschreibung| für den Befehl addCourse|
+
+||deletePlatform|
+| :----------- |:----- |
+|Ziel| DBQuerySetup|
+|Befehl| POST /query|
+|Beschreibung| für den Befehl deletePlatform|
+
+||addPlatform|
+| :----------- |:----- |
+|Ziel| DBQuerySetup|
+|Befehl| POST /query|
+|Beschreibung| für den Befehl addPlatform|
+
+||postSamples|
+| :----------- |:----- |
+|Ziel| DBQueryWrite|
+|Befehl| POST /query|
+|Beschreibung| für den Befehl postSamples|
+
+||getCourse|
+| :----------- |:----- |
+|Ziel| DBQueryRead|
+|Befehl| GET /query/procedure/DBCourseGetCourse/:profile/:exerciseSheetProfile/:settingProfile/:courseid|
+|Beschreibung| für den Befehl getCourse|
+
+||getAllCourses|
+| :----------- |:----- |
+|Ziel| DBQueryRead|
+|Befehl| GET /query/procedure/DBCourseGetAllCourses/:profile/:exerciseSheetProfile|
+|Beschreibung| für den Befehl getAllCourses|
+
+||getUserCourses|
+| :----------- |:----- |
+|Ziel| DBQueryRead|
+|Befehl| GET /query/procedure/DBCourseGetUserCourses/:profile/:exerciseSheetProfile/:userid|
+|Beschreibung| für den Befehl getUserCourses|
+
+||getExistsPlatform|
+| :----------- |:----- |
+|Ziel| DBQueryRead|
+|Befehl| GET /query/procedure/DBCourseGetExistsPlatform/:profile|
+|Beschreibung| für den Befehl getExistsPlatform|
+
+||getSamplesInfo|
+| :----------- |:----- |
+|Ziel| DBQueryRead|
+|Befehl| GET /query/procedure/DBCourseGetExistsPlatform/:profile|
+|Beschreibung| für den Befehl getSamplesInfo|
+
+
+## <a name='anbindungen'></a>Anbindungen (Component.json => Connector)
+Eine Anbindung verlangt von einer anderen Komponente (`Ziel`) die Anbindung/Verbindung zu dieser Komponente.
+Wenn eine Anbindung den aufzurufenden Befehl vorgibt, dann ist die Notation: METHODE URL (PRIORITÄT).
+
+|Ausgang|request|
+| :----------- |:----- |
+|Ziel| CLocalObjectRequest|
+|Beschreibung| damit DBCourse als lokales Objekt aufgerufen werden kann|
+
+|Ausgang|postPlatform|
+| :----------- |:----- |
+|Ziel| CInstall|
+|Beschreibung| der Installationsassistent soll uns bei der Plattforminstallation aufrufen|
+
+|Ausgang|postSamples|
+| :----------- |:----- |
+|Ziel| CInstall|
+|Beschreibung| wir wollen bei Bedarf Beispieldaten erzeugen|
+
+|Ausgang|postCourse|
+| :----------- |:----- |
+|Ziel| LCourse|
+|Beschreibung| wenn eine neue Veranstaltung angelegt wird, dann wollen wir auch aufgerufen werden|
+
+|Ausgang|getDescFiles|
+| :----------- |:----- |
+|Ziel| TDocuView|
+|Beschreibung| die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen|
+
+|Ausgang|getComponentProfiles|
+| :----------- |:----- |
+|Ziel| TApiConfiguration|
+|Beschreibung| damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden|
+
+
+Stand 25.07.2017

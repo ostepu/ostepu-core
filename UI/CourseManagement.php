@@ -64,8 +64,8 @@ $postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','invalidAction', $langTemplate)]])
   ->addSet('sortUsers',
-           ['satisfy_in_list'=>['lastName','firstName','userName'],
-            'set_default'=>'lastName',
+           ['set_default'=>'lastName',
+            'satisfy_in_list'=>['lastName','firstName','userName'],
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','invalidSortUser', $langTemplate)]])
   ->addSet('actionSortUsers',

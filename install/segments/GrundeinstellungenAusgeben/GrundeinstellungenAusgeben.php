@@ -112,7 +112,8 @@ class GrundeinstellungenAusgeben {
                 Installation::log(array('text' => Installation::Get('database', 'dropSchemaSql', self::$langTemplate, array('sql' => $sql))));
                 $oldName = $data['DB']['db_name'];
                 $data['DB']['db_name'] = null;
-                $result = DBRequest::request($sql, false, $data);
+                $result = DBRequest::request2($sql, false, $data);
+                $result=$result[0];
                 Installation::log(array('text' => Installation::Get('database', 'dropSchemaResult', self::$langTemplate, array('res' => json_encode($result)))));
                 if ($result['errno'] !== 0) {
                     $fail = true;
@@ -129,7 +130,8 @@ class GrundeinstellungenAusgeben {
             Installation::log(array('text' => Installation::Get('database', 'createSchemaSql', self::$langTemplate, array('sql' => $sql))));
             $oldName = $data['DB']['db_name'];
             $data['DB']['db_name'] = null;
-            $result = DBRequest::request($sql, false, $data);
+            $result = DBRequest::request2($sql, false, $data);
+            $result=$result[0];
             Installation::log(array('text' => Installation::Get('database', 'dropSchemaResult', self::$langTemplate, array('res' => json_encode($result)))));
             if ($result["errno"] !== 0) {
                 $fail = true;

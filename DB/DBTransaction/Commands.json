@@ -1,151 +1,242 @@
 [
     {
-        "name": "deleteTransaction",
-        "outputType": "Transaction",
-        "inputType": "",
-        "method": "delete",
+        "name": "addSheetTransaction",
+        "path": "\/transaction\/exercisesheet\/:esid",
+        "method": "post",
+        "description": {
+            "de": "erzeugt eine Transaktion (anhand der ID einer Übungsserie)"
+        },
         "placeholder": [
             {
-                "name": "auid",
-                "regex": "%^([a-zA-Z0-9_]+)$%"
-            },
-            {
-                "name": "tid",
-                "regex": "%^([a-z0-9_]+)$%"
+                "name": "esid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Übungsserie (`ExercisehSheet`)"
+                }
             }
         ],
-        "path": "/transaction/authentication/:auid/transaction/:tid"
+        "inputType": "Transaction",
+        "outputType": "Transaction"
     },
     {
         "name": "deleteTransactionShort",
-        "outputType": "Transaction",
-        "inputType": "",
+        "path": "\/transaction\/transaction\/:tid",
         "method": "delete",
-        "placeholder": [{
-            "name": "tid",
-            "regex": "%^([a-z0-9_]+)$%"
-        }],
-        "path": "/transaction/transaction/:tid"
+        "description": {
+            "de": "entfernt eine Transaktion (ohne das Sicherheitswort)"
+        },
+        "placeholder": [
+            {
+                "name": "tid",
+                "regex": "%^([a-z0-9_]+)$%",
+                "description": {
+                    "de": "eine Transaktionsnummer"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Transaction"
     },
     {
-        "name": "getExistsCourseTransactions",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "Course",
-        "inputType": "",
-        "method": "get",
-        "placeholder": [{
-            "name": "courseid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/link/exists/course/:courseid"
-    },
-    {
-        "name": "getTransaction",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "Course",
-        "inputType": "",
-        "method": "get",
+        "name": "deleteTransaction",
+        "path": "\/transaction\/authentication\/:auid\/transaction\/:tid",
+        "method": "delete",
+        "description": {
+            "de": "entfernt eine Transaktion"
+        },
         "placeholder": [
             {
                 "name": "auid",
-                "regex": "%^([a-zA-Z0-9_]+)$%"
+                "regex": "%^([a-zA-Z0-9_]+)$%",
+                "description": {
+                    "de": "das zur Transaktion gehörige Sicherheitswort (durch den Ersteller festgelegt)"
+                }
             },
             {
                 "name": "tid",
-                "regex": "%^([a-z0-9_]+)$%"
+                "regex": "%^([a-z0-9_]+)$%",
+                "description": {
+                    "de": "eine Transaktionsnummer"
+                }
             }
         ],
-        "path": "/transaction/authentication/:auid/transaction/:tid"
-    },
-    {
-        "name": "getTransactionShort",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "Course",
         "inputType": "",
-        "method": "get",
-        "placeholder": [{
-            "name": "tid",
-            "regex": "%^([a-z0-9_]+)$%"
-        }],
-        "path": "/transaction/transaction/:tid"
-    },
-    {
-        "name": "getAmountOfExpiredTransactions",
-        "outputType": "",
-        "inputType": "",
-        "method": "get",
-        "placeholder": [{
-            "name": "courseid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/clean/course/:courseid"
+        "outputType": "Transaction"
     },
     {
         "name": "cleanTransactions",
-        "outputType": "Transaction",
-        "inputType": "",
+        "path": "\/clean\/course\/:courseid",
         "method": "delete",
-        "placeholder": [{
-            "name": "courseid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/clean/course/:courseid"
-    },
-    {
-        "name": "deleteCourse",
-        "outputType": "Course",
+        "description": {
+            "de": "entfernt alle abgelaufenen Transaktionsnummern aus `Transaction_X`"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                }
+            }
+        ],
         "inputType": "",
-        "method": "delete",
-        "path": "/course"
+        "outputType": "Transaction"
     },
     {
-        "name": "addCourse",
+        "name": "getTransaction",
+        "path": "\/transaction\/authentication\/:auid\/transaction\/:tid",
+        "method": "get",
+        "description": {
+            "de": "liefert eine Transaktion und deren Daten+Inhalt"
+        },
+        "placeholder": [
+            {
+                "name": "auid",
+                "regex": "%^([a-zA-Z0-9_]+)$%",
+                "description": {
+                    "de": "das zur Transaktion gehörige Geheimwort (durch den Ersteller festgelegt)"
+                }
+            },
+            {
+                "name": "tid",
+                "regex": "%^([a-z0-9_]+)$%",
+                "description": {
+                    "de": "???"
+                }
+            }
+        ],
+        "inputType": "",
         "outputType": "Course",
-        "inputType": "Course",
-        "method": "post",
-        "path": "/course"
-    },
-    {
-        "name": "addSheetTransaction",
-        "outputType": "Transaction",
-        "inputType": "Transaction",
-        "method": "post",
-        "placeholder": [{
-            "name": "esid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/transaction/exercisesheet/:esid"
-    },
-    {
-        "name": "addTransaction",
-        "outputType": "Transaction",
-        "inputType": "Transaction",
-        "method": "post",
-        "placeholder": [{
-            "name": "courseid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/transaction/course/:courseid"
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
     },
     {
         "name": "addExerciseTransaction",
-        "outputType": "Transaction",
-        "inputType": "Transaction",
+        "path": "\/transaction\/exercise\/:eid",
         "method": "post",
-        "placeholder": [{
-            "name": "eid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/transaction/exercise/:eid"
+        "description": {
+            "de": "erzeugt eine Transaktion (anhand der ID einer Aufgabe)"
+        },
+        "placeholder": [
+            {
+                "name": "eid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Aufgabe (`Exercise`)"
+                }
+            }
+        ],
+        "inputType": "Transaction",
+        "outputType": "Transaction"
+    },
+    {
+        "name": "getTransactionShort",
+        "path": "\/transaction\/transaction\/:tid",
+        "method": "get",
+        "description": {
+            "de": "liefert eine Transaktion und deren Daten+Inhalt (ohne das Geheimwort)"
+        },
+        "placeholder": [
+            {
+                "name": "tid",
+                "regex": "%^([a-z0-9_]+)$%",
+                "description": {
+                    "de": "eine Transaktionsnummer"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Course",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
+    },
+    {
+        "name": "getAmountOfExpiredTransactions",
+        "path": "\/clean\/course\/:courseid",
+        "method": "get",
+        "description": {
+            "de": "ermittelt die Anzahl der abgelaufenen Transaktionsnummern in `Transaction_X`"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": ""
+    },
+    {
+        "name": "addCourse",
+        "path": "\/course",
+        "method": "post",
+        "description": {
+            "de": "fügt DBTransaction zur Veranstaltung hinzu (erzeugt `Transaction_X`)"
+        },
+        "inputType": "Course",
+        "outputType": "Course"
+    },
+    {
+        "name": "getExistsCourseTransactions",
+        "path": "\/link\/exists\/course\/:courseid",
+        "method": "get",
+        "description": {
+            "de": "prüft, ob die Tabellen zur Veranstaltung korrekt installiert sind"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Course",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
+    },
+    {
+        "name": "addTransaction",
+        "path": "\/transaction\/course\/:courseid",
+        "method": "post",
+        "description": {
+            "de": "erzeugt eine neue Transaktion"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                }
+            }
+        ],
+        "inputType": "Transaction",
+        "outputType": "Transaction"
+    },
+    {
+        "name": "deleteCourse",
+        "path": "\/course",
+        "method": "delete",
+        "description": {
+            "de": "entfernt die `Transaction_X` Tabelle"
+        },
+        "inputType": "",
+        "outputType": "Course"
     },
     {
         "name": "getApiProfiles",
-        "outputType": "GateProfile",
-        "inputType": "",
+        "path": "\/api\/profiles",
         "method": "GET",
-        "path": "/api/profiles"
+        "description": {
+            "de": "liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren"
+        },
+        "inputType": "",
+        "outputType": "GateProfile"
     }
 ]

@@ -34,13 +34,15 @@ if (is_null($user)) {
     $user = array();
 }
 
-$menu = MakeNavigationElement($user,
+$user2 = $user;
+unset($user2['courses']); // damit der Header+Navigation nicht denkt er sei in einer Veranstaltung
+$menu = MakeNavigationElement($user2,
                               PRIVILEGE_LEVEL::STUDENT,true,true
                               );
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
-$h->bind($user);
+$h->bind($user2);
 $h->bind(array('name' => Language::Get('main','title', $langTemplate),
                'hideBackLink' => 'true',
                'notificationElements' => $notifications,

@@ -1,12 +1,20 @@
 {
     "name": "DBQueryRead",
+    "description": {
+        "de": "Diese Komponente bietet auf Basis der DBQuery2 einen Datenbankzugang an. Dieser wird dabei auf lesende Anfragen beschränkt."
+    },
     "version": "1.0",
-    "type": "clone",
+    "baseURI": "\/profile\/read",
     "base": "DBQuery2",
-    "baseURI": "/profile/read",
-    "connector": [{
-        "name": "postPlatformReadUser",
-        "target": "CInstall",
-        "priority": "10"
-    }]
+    "type": "clone",
+    "connector": [
+        {
+            "name": "postPlatformReadUser",
+            "target": "CInstall",
+            "description": {
+                "de": "der Installationsassistent soll uns bei der Installation des Read-User aufrufen"
+            },
+            "priority": "10"
+        }
+    ]
 }

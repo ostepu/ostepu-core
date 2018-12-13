@@ -1,6 +1,30 @@
 [
-    {"method":"POST", "path":"/attachment" },
-    {"method":"GET", "path":"'/attachment/attachment/:attachmentid" },
-    {"method":"DELETE", "path":"/attachment/attachment/:attachmentid" },
-    {"method":"PUT", "path":"/attachment/attachment/:attachmentid" }
+    {
+        "path": "\/attachment",
+        "method": "POST",
+        "description": {
+            "de": "speichert einen neuen Anhang"
+        }
+    },
+    {
+        "path": "'\/attachment\/attachment\/:attachmentid",
+        "method": "GET",
+        "description": {
+            "de": "ruft einen Anhang ab"
+        }
+    },
+    {
+        "path": "\/attachment\/attachment\/:attachmentid",
+        "method": "DELETE",
+        "description": {
+            "de": "entfernt einen Anhang aus dem System"
+        }
+    },
+    {
+        "path": "\/attachment\/attachment\/:attachmentid",
+        "method": "PUT",
+        "description": {
+            "de": "ändert einen Anhang"
+        }
+    }
 ]

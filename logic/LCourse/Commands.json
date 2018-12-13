@@ -1,8 +1,44 @@
 [
-    {    "method":"post", "path":"/course" },
-    {    "method":"put", "path":"/course/course/:courseid" },
-    {    "method":"delete", "path":"/course/course/:courseid" },
-    {    "method":"post", "path":"/course/course/:courseid/user/:userid/status/:status" },
-    {    "method":"get", "path":"/course/course/:courseid/user" },
-    {    "method":"get", "path":"/course/user/:userid" }
+    {
+        "path": "\/course",
+        "method": "post",
+        "description": {
+            "de": "zum Erstellen einer neuen Veranstaltung"
+        }
+    },
+    {
+        "path": "\/course\/course\/:courseid",
+        "method": "put",
+        "description": {
+            "de": "ändert eine Veranstaltung"
+        }
+    },
+    {
+        "path": "\/course\/course\/:courseid",
+        "method": "delete",
+        "description": {
+            "de": "entfernt eine Veranstaltung aus dem System"
+        }
+    },
+    {
+        "path": "\/course\/course\/:courseid\/user\/:userid\/status\/:status",
+        "method": "post",
+        "description": {
+            "de": "trägt einen Nutzer in eine Veranstaltung"
+        }
+    },
+    {
+        "path": "\/course\/course\/:courseid\/user",
+        "method": "get",
+        "description": {
+            "de": "ermittelt alle Nutzer einer Veranstaltung"
+        }
+    },
+    {
+        "path": "\/course\/user\/:userid",
+        "method": "get",
+        "description": {
+            "de": "ermittelt alle Veranstaltungen eines Nutzers"
+        }
+    }
 ]

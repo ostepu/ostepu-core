@@ -31,6 +31,10 @@
  * Logger::Log("test3");
  * @endcode
  */
+ 
+if (file_exists(dirname(__FILE__).'/../UI/include/Config.php')){
+    include_once(dirname(__FILE__).'/../UI/include/Config.php');
+}
 
 /**
  * A Logger Class.
@@ -44,26 +48,46 @@ class Logger
      */
     static $logFile = 'php://stderr';
     
-    static $defaultLogLevel = LogLevel::NONE;
+    static $defaultLogLevel = LogLevel::ERROR;
 
     /**
      * Log a message to the log file.
      *
      * @param mixed $message The log message.
      * @param int $logLevel One of the constants defined in the class LogLevel.
+     * @param boolean $trace Enables or disables the trace mechanism (true = enabled, false = disabled).
      * @param string $logFile An alternative location for the log.
+     * @param string $name Sets a custom identifier for this log entry.
+     * @param boolean $timestamp Adds the timestamp to the log message (true = enabled, false = disabled).
+     * @param string $currentLogLevel Sets a custom log level for this call.
      * @return nothing
      */
     public static function Log($message,
                                $logLevel = LogLevel::INFO,
-                               $trace = true,
+                               $trace = NULL,
                                $logFile = NULL,
-                               $name = 'Logger',
-                               $timestamp = true,
+                               $name = NULL,
+                               $timestamp = NULL,
                                $currentLogLevel = null)
     {
+        if ($name === null){
+            $name = 'Logger';
+        }
+        
+        if ($trace === null){
+            $trace = true;
+        }
+        
+        if ($timestamp === null){
+            $timestamp = true;
+        }
+        
         if (!isset($currentLogLevel)){
-            $currentLogLevel = self::$defaultLogLevel; //error_reporting();
+            if (isset($GLOBALS['logLevel'])){
+                $currentLogLevel = intval($GLOBALS['logLevel']);
+            } else {
+                $currentLogLevel = self::$defaultLogLevel;
+            }
         }
         
         // if the function is called with the no prority don't log anything

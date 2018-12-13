@@ -17,12 +17,12 @@
 
  */
 
-include_once ( dirname( __FILE__ ) . '/Object.php' );
+include_once ( dirname( __FILE__ ) . '/StructureObject.php' );
 
 /**
  * the Notification structure
  */
-class Notification extends Object implements JsonSerializable
+class Notification extends StructureObject implements JsonSerializable
 {
 
     /**

@@ -13,4 +13,14 @@
 
 require_once ( dirname( __FILE__ ) . '/DBGroup.php' );
 
+Logger::Log(
+            'begin DBGroup',
+            LogLevel::DEBUG
+            );
+
 new DBGroup();
+
+Logger::Log(
+            'end DBGroup',
+            LogLevel::DEBUG
+            );

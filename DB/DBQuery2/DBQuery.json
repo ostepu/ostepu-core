@@ -1,7 +1,10 @@
 {
-  "name":"DBQuery",
-  "version":"1.0",
-  "type":"clone",
-  "base":"DBQuery2",
-  "baseURI":""
+    "name": "DBQuery",
+    "description": {
+        "de": "(DEPRECATED) Diese Komponente dient nur noch der Abwärtskompaitiblität und wurde als Datenbankzugang durch DBQuery2 ersetzt"
+    },
+    "version": "1.0",
+    "baseURI": "",
+    "base": "DBQuery2",
+    "type": "clone"
 }

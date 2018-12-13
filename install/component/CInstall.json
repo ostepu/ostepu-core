@@ -1,17 +1,69 @@
 {
-  "name":"CInstall",
-  "version":"1.0",
-  "type":"clone",
-  "base":"CAbstract",
-  "baseURI":"/cinstall",
-  "option":"confPath=install/component/cinstall_cconfig.json",
-  "links":[
-    {"name":"postPlatform","target":"","links":[]},
-    {"name":"postPlatformReadUser","target":"","links":[]},
-    {"name":"postPlatformWriteUser","target":"","links":[]},
-    {"name":"postPlatformSetupUser","target":"","links":[]},
-    {"name":"getCleanAmount","target":"","links":[]},
-    {"name":"deleteClean","target":"","links":[]},
-    {"name":"postSamples","target":"","links":[]}
-  ]
+    "name": "CInstall",
+    "option": "confPath=install\/component\/cinstall_cconfig.json",
+    "description": {
+        "de": "Die CInstall ist die Komponente des Installationsassistenten. Sie stellt Ausgänge zur Verfügung an welche sich andere Komponenten anhängen können um beim Eintreten eines bestimmten Ereignisses aufgerufen zu werden."
+    },
+    "version": "1.0",
+    "baseURI": "\/cinstall",
+    "base": "CAbstract",
+    "type": "clone",
+    "links": [
+        {
+            "name": "postPlatform",
+            "target": "",
+            "description": {
+                "de": "An diesem Ausgang werden Komponenten beim Erstellen der Plattform aufgerufen"
+            },
+            "links": []
+        },
+        {
+            "name": "postPlatformReadUser",
+            "target": "",
+            "description": {
+                "de": "Wenn der Read-Nutzer erzeugt wird, dann sollen über diesen Ausgang weitere Komponenten aufgerufen werden können."
+            },
+            "links": []
+        },
+        {
+            "name": "postPlatformWriteUser",
+            "target": "",
+            "description": {
+                "de": "Wenn der Write-Nutzer erzeugt wird, dann sollen über diesen Ausgang weitere Komponenten aufgerufen werden können."
+            },
+            "links": []
+        },
+        {
+            "name": "postPlatformSetupUser",
+            "target": "",
+            "description": {
+                "de": "Wenn der Setup-Nutzer erzeugt wird, dann sollen über diesen Ausgang weitere Komponenten aufgerufen werden können."
+            },
+            "links": []
+        },
+        {
+            "name": "getCleanAmount",
+            "target": "",
+            "description": {
+                "de": "an diesem Ausgang sollen mögliche Bereinigenugen gesammelt werden (andere Komponenten können sich hier anhängen)"
+            },
+            "links": []
+        },
+        {
+            "name": "deleteClean",
+            "target": "",
+            "description": {
+                "de": "um das System zu bereinigen sollen diese Komponenten aufgerufen werden (andere Komponenten können sich hier anhängen)"
+            },
+            "links": []
+        },
+        {
+            "name": "postSamples",
+            "target": "",
+            "description": {
+                "de": "zum Erzeugen von Beispieldaten (andere Komponenten können sich hier anhängen)"
+            },
+            "links": []
+        }
+    ]
 }

@@ -1,132 +1,222 @@
 {
     "name": "DBCourse",
+    "description": {
+        "de": "Die DBCourse ermöglicht den Zugriff auf die `Course` Tabelle der Datenbank, dabei sollen Veranstaltungen verwaltet werden. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle gehört die `Course` Datenstruktur.\n\n| Spalte           | Struktur  | Beschreibung | Besonderheit |\n| :------------    |:--------:| :---------------| -----: |\n|C_id              |INT NOT NULL|Der Primärschlüssel einer Veranstaltung|UNIQUE,<br>AUTO_INCREMENT|\n|C_name            |VARCHAR(120) NULL|Der Name der Veranstaltung|-|\n|C_semester        |VARCHAR(60) NULL|Das Semester. Bsp.: SS 2015 und WS 2014\/2015, dieses Format muss eingehalten werden|-|\n|C_defaultGroupSize|INT NOT NULL DEFAULT 1|Die Standardgruppengröße, als Vorgabe beim erzeugen neuer Übungsserien|-|"
+    },
     "version": "1.0",
     "classFile": "DBCourse.php",
     "className": "DBCourse",
     "files": [
-        {"path": ".htaccess"},
-        {"path": "DBCourse.php"},
-        {"path": "index.php"},
-        {"path": "Commands.json"},
-        {"path": "CourseSample.json"},
-        {"path": "Sql/"},
-        {"path": "info/"}
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBCourse.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "CourseSample.json"
+        },
+        {
+            "path": "Sql\/"
+        },
+        {
+            "path": "info\/"
+        }
     ],
     "links": [
         {
             "name": "editCourse",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl editCourse"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deleteCourse",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deleteCourse"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addCourse",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl addCourse"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deletePlatform",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deletePlatform"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addPlatform",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl addPlatform"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "postSamples",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl postSamples"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "getCourse",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBCourseGetCourse/:profile/:exerciseSheetProfile/:settingProfile/:courseid"
-            }]
+            "description": {
+                "de": "für den Befehl getCourse"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBCourseGetCourse\/:profile\/:exerciseSheetProfile\/:settingProfile\/:courseid"
+                }
+            ]
         },
         {
             "name": "getAllCourses",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBCourseGetAllCourses/:profile/:exerciseSheetProfile"
-            }]
+            "description": {
+                "de": "für den Befehl getAllCourses"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBCourseGetAllCourses\/:profile\/:exerciseSheetProfile"
+                }
+            ]
         },
         {
             "name": "getUserCourses",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBCourseGetUserCourses/:profile/:exerciseSheetProfile/:userid"
-            }]
+            "description": {
+                "de": "für den Befehl getUserCourses"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBCourseGetUserCourses\/:profile\/:exerciseSheetProfile\/:userid"
+                }
+            ]
         },
         {
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBCourseGetExistsPlatform/:profile"
-            }]
+            "description": {
+                "de": "für den Befehl getExistsPlatform"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBCourseGetExistsPlatform\/:profile"
+                }
+            ]
         },
         {
             "name": "getSamplesInfo",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBCourseGetExistsPlatform/:profile"
-            }]
+            "description": {
+                "de": "für den Befehl getSamplesInfo"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBCourseGetExistsPlatform\/:profile"
+                }
+            ]
         }
     ],
     "connector": [
         {
             "name": "request",
-            "target": "CLocalObjectRequest"
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit DBCourse als lokales Objekt aufgerufen werden kann"
+            }
         },
         {
             "name": "postPlatform",
-            "target": "CInstall"
+            "target": "CInstall",
+            "description": {
+                "de": "der Installationsassistent soll uns bei der Plattforminstallation aufrufen"
+            }
         },
         {
             "name": "postSamples",
-            "target": "CInstall"
+            "target": "CInstall",
+            "description": {
+                "de": "wir wollen bei Bedarf Beispieldaten erzeugen"
+            }
         },
         {
             "name": "postCourse",
             "target": "LCourse",
+            "description": {
+                "de": "wenn eine neue Veranstaltung angelegt wird, dann wollen wir auch aufgerufen werden"
+            },
             "priority": 300
         },
         {
             "name": "getDescFiles",
-            "target": "TDocuView"
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
+            }
         },
         {
             "name": "getComponentProfiles",
-            "target": "TApiConfiguration"
+            "target": "TApiConfiguration",
+            "description": {
+                "de": "damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden"
+            }
         }
     ]
 }

@@ -1,114 +1,185 @@
 [
     {
-        "name": "editSetting",
-        "outputType": "Setting",
-        "inputType": "Setting",
-        "method": "put",
-        "placeholder": [{
-            "name": "setid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/setting/setting/:setid"
-    },
-    {
-        "name": "deleteSetting",
-        "outputType": "Setting",
-        "inputType": "",
-        "method": "delete",
-        "placeholder": [{
-            "name": "setid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/setting/setting/:setid"
-    },
-    {
-        "name": "addSetting",
-        "outputType": "Setting",
-        "inputType": "Setting",
+        "name": "addCourse",
+        "path": "\/course",
         "method": "post",
-        "placeholder": [{
-            "name": "courseid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/setting/course/:courseid"
+        "description": {
+            "de": "fügt DBSetting zur Veranstaltung hinzu"
+        },
+        "inputType": "Course",
+        "outputType": "Course"
     },
     {
         "name": "getExistsCourseSettings",
-        "callback": "getMatch",
-        "outputType": "Setting",
-        "inputType": "",
+        "path": "\/link\/exists\/course\/:courseid",
         "method": "get",
-        "placeholder": [{
-            "name": "courseid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/link/exists/course/:courseid"
-    },
-    {
-        "name": "getCourseSettings",
-        "callback": "getMatch",
-        "outputType": "Setting",
-        "inputType": "",
-        "method": "get",
-        "placeholder": [{
-            "name": "courseid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/setting/course/:courseid"
-    },
-    {
-        "name": "getSetting",
-        "callback": "getMatch",
-        "outputType": "Setting",
-        "inputType": "",
-        "method": "get",
-        "placeholder": [{
-            "name": "setid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/setting/setting/:setid"
-    },
-    {
-        "name": "getSettingByName",
-        "callback": "getMatch",
-        "outputType": "Setting",
-        "inputType": "",
-        "method": "get",
+        "description": {
+            "de": "prüft, ob DBSettings für diese Veranstaltung installiert wurde"
+        },
         "placeholder": [
             {
                 "name": "courseid",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                },
+                "regex": "%^([0-9_]+)$%"
+            }
+        ],
+        "inputType": "",
+        "outputType": "Setting",
+        "callback": "getMatch"
+    },
+    {
+        "name": "getSettingByName",
+        "path": "\/setting\/course\/:courseid\/name\/:setname",
+        "method": "get",
+        "description": {
+            "de": "ermittelt einen Eintrag anhand des Namens (`SET_name`)"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                },
                 "regex": "%^([0-9_]+)$%"
             },
             {
                 "name": "setname",
+                "description": {
+                    "de": "der Name einer Einstellung `SET_name` aus `Setting`"
+                },
                 "regex": "%^([a-zA-Z0-9_]+)$%"
             }
         ],
-        "path": "/setting/course/:courseid/name/:setname"
+        "inputType": "",
+        "outputType": "Setting",
+        "callback": "getMatch"
+    },
+    {
+        "name": "addSetting",
+        "path": "\/setting\/course\/:courseid",
+        "method": "post",
+        "description": {
+            "de": "fügt einen neuen Setting-Eintrag ein"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                },
+                "regex": "%^([0-9_]+)$%"
+            }
+        ],
+        "inputType": "Setting",
+        "outputType": "Setting"
+    },
+    {
+        "name": "editSetting",
+        "path": "\/setting\/setting\/:setid",
+        "method": "put",
+        "description": {
+            "de": "editiert einen Eintrag"
+        },
+        "placeholder": [
+            {
+                "name": "setid",
+                "description": {
+                    "de": "die ID einer Einstellung (`Setting_X`), bestehend aus der ID und der Veranstaltung"
+                },
+                "regex": "%^([0-9_]+)$%"
+            }
+        ],
+        "inputType": "Setting",
+        "outputType": "Setting"
+    },
+    {
+        "name": "getSetting",
+        "path": "\/setting\/setting\/:setid",
+        "method": "get",
+        "description": {
+            "de": "liefert ein einzelnes Setting anhand seiner ID"
+        },
+        "placeholder": [
+            {
+                "name": "setid",
+                "description": {
+                    "de": "die ID einer Einstellung (`Setting_X`), bestehend aus der ID und der Veranstaltung"
+                },
+                "regex": "%^([0-9_]+)$%"
+            }
+        ],
+        "inputType": "",
+        "outputType": "Setting",
+        "callback": "getMatch"
+    },
+    {
+        "name": "getCourseSettings",
+        "path": "\/setting\/course\/:courseid",
+        "method": "get",
+        "description": {
+            "de": "ermittelt alle Settings einer Veranstaltung"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                },
+                "regex": "%^([0-9_]+)$%"
+            }
+        ],
+        "inputType": "",
+        "outputType": "Setting",
+        "callback": "getMatch"
     },
     {
         "name": "deleteCourse",
-        "outputType": "Course",
-        "inputType": "",
+        "path": "\/course\/:courseid",
         "method": "delete",
-        "placeholder": [{
-            "name": "courseid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/course/:courseid"
+        "description": {
+            "de": "entfernt die Komponente aus der Veranstaltung"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                },
+                "regex": "%^([0-9_]+)$%"
+            }
+        ],
+        "inputType": "",
+        "outputType": "Course"
     },
     {
-        "name": "addCourse",
-        "outputType": "Course",
-        "inputType": "Course",
-        "method": "post",
-        "path": "/course"
+        "name": "deleteSetting",
+        "path": "\/setting\/setting\/:setid",
+        "method": "delete",
+        "description": {
+            "de": "entfernt einen Setting-Eintrag"
+        },
+        "placeholder": [
+            {
+                "name": "setid",
+                "description": {
+                    "de": "die ID einer Einstellung (`Setting_X`), bestehend aus der ID und der Veranstaltung"
+                },
+                "regex": "%^([0-9_]+)$%"
+            }
+        ],
+        "inputType": "",
+        "outputType": "Setting"
     },
     {
         "name": "getApiProfiles",
-        "outputType": "GateProfile",
-        "inputType": "",
+        "path": "\/api\/profiles",
         "method": "GET",
-        "path": "/api/profiles"
+        "description": {
+            "de": "liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren"
+        },
+        "inputType": "",
+        "outputType": "GateProfile"
     }
 ]

@@ -1,198 +1,334 @@
 {
     "name": "DBGate",
+    "description": {
+        "de": "Die DBGate ermöglicht den Zugriff auf die `GateAuth`, `GateProfile` und `GateRule` Tabellen der Datenbank. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt."
+    },
     "version": "1.0",
     "classFile": "DBGate.php",
     "className": "DBGate",
     "files": [
-        {"path": ".htaccess"},
-        {"path": "DBGate.php"},
-        {"path": "index.php"},
-        {"path": "Commands.json"},
-        {"path": "Sql/"},
-        {"path": "info/"}
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBGate.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "Sql\/"
+        },
+        {
+            "path": "info\/"
+        }
     ],
     "links": [
         {
             "name": "editGateProfile",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl editGateProfile"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "editGateAuth",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl editGateAuth"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "editGateRule",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl editGateRule"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deleteGateProfile",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deleteGateProfile"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deleteGateProfileByName",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deleteGateProfileByName"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deleteGateRule",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deleteGateRule"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deleteGateAuth",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deleteGateAuth"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addGateProfile",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl addGateProfile"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addGateRule",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl addGateRule"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addGateAuth",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl addGateAuth"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deletePlatform",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deletePlatform"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addPlatform",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl addPlatform"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "getAllProfiles",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBGateGetAllGateProfiles/:profile/:authProfile/:ruleProfile"
-            }]
+            "description": {
+                "de": "für den Befehl getAllProfiles"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBGateGetAllGateProfiles\/:profile\/:authProfile\/:ruleProfile"
+                }
+            ]
         },
         {
             "name": "getProfile",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBGateGetGateProfile/:profile/:authProfile/:ruleProfile/:gpid"
-            }]
+            "description": {
+                "de": "für den Befehl getProfile"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBGateGetGateProfile\/:profile\/:authProfile\/:ruleProfile\/:gpid"
+                }
+            ]
         },
         {
             "name": "getProfileByName",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBGateGetGateProfileByName/:profile/:authProfile/:ruleProfile/:name"
-            }]
+            "description": {
+                "de": "für den Befehl getProfileByName"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBGateGetGateProfileByName\/:profile\/:authProfile\/:ruleProfile\/:name"
+                }
+            ]
         },
         {
             "name": "getProfilesByAuth",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBGateGetGateProfilesByAuth/:profile/:authProfile/:ruleProfile/:authType"
-            }]
+            "description": {
+                "de": "für den Befehl getProfilesByAuth"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBGateGetGateProfilesByAuth\/:profile\/:authProfile\/:ruleProfile\/:authType"
+                }
+            ]
         },
         {
             "name": "getProfilesByComponent",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBGateGetGateProfilesByComponent/:profile/:authProfile/:ruleProfile/:component"
-            }]
+            "description": {
+                "de": "für den Befehl getProfilesByComponent"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBGateGetGateProfilesByComponent\/:profile\/:authProfile\/:ruleProfile\/:component"
+                }
+            ]
         },
         {
             "name": "getProfileWithAuth",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBGateGetGateProfileWithAuth/:profile/:authProfile/:ruleProfile/:gpid/:authType"
-            }]
+            "description": {
+                "de": "für den Befehl getProfileWithAuth"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBGateGetGateProfileWithAuth\/:profile\/:authProfile\/:ruleProfile\/:gpid\/:authType"
+                }
+            ]
         },
         {
             "name": "getComponentProfileWithAuth",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBGateGetComponentGateProfileWithAuth/:profile/:authProfile/:ruleProfile/:profName/:authType/:component"
-            }]
+            "description": {
+                "de": "für den Befehl getComponentProfileWithAuth"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBGateGetComponentGateProfileWithAuth\/:profile\/:authProfile\/:ruleProfile\/:gpname\/:authType\/:component"
+                }
+            ]
         },
         {
             "name": "getComponentProfileWithAuthLogin",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBGateGetComponentGateProfileWithAuthLogin/:profile/:authProfile/:ruleProfile/:profName/:authType/:component/:login"
-            }]
+            "description": {
+                "de": "für den Befehl getComponentProfileWithAuthLogin"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBGateGetComponentGateProfileWithAuthLogin\/:profile\/:authProfile\/:ruleProfile\/:gpname\/:authType\/:component\/:login"
+                }
+            ]
         },
         {
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBGateGetExistsPlatform/:profile"
-            }]
+            "description": {
+                "de": "für den Befehl getExistsPlatform"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBGateGetExistsPlatform\/:profile"
+                }
+            ]
         }
     ],
     "connector": [
         {
             "name": "request",
-            "target": "CLocalObjectRequest"
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit DBGate als lokales Objekt aufgerufen werden kann"
+            }
         },
         {
             "name": "postPlatform",
-            "target": "CInstall"
+            "target": "CInstall",
+            "description": {
+                "de": "der Installationsassistent soll uns bei der Plattforminstallation aufrufen"
+            }
+        },
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
+            }
         },
         {
             "name": "getComponentProfiles",
-            "target": "TApiConfiguration"
+            "target": "TApiConfiguration",
+            "description": {
+                "de": "damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden"
+            }
         }
     ]
 }

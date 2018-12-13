@@ -1,96 +1,164 @@
 [
     {
+        "name": "getExistsPlatform",
+        "path": "\/link\/exists\/platform",
+        "method": "GET",
+        "description": {
+            "de": "prüft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollständig installiert ist"
+        },
+        "inputType": "",
+        "outputType": "Platform",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
+    },
+    {
         "name": "editCourse",
-        "outputType": "Course",
-        "inputType": "Course",
+        "path": "\/course\/course\/:courseid",
         "method": "PUT",
-        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],
-        "path": "/course/course/:courseid"
-    },
-    {
-        "name": "deleteCourse",
-        "outputType": "Course",
-        "inputType": "",
-        "method": "DELETE",
-        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],
-        "path": "/course/course/:courseid"
-    },
-    {
-        "name": "addCourse",
-        "outputType": "Course",
+        "description": {
+            "de": "editiert einen Eintrag"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                }
+            }
+        ],
         "inputType": "Course",
-        "method": "POST",
-        "path": "/course"
-    },
-    {
-        "name": "getCourse",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "Course",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],
-        "path": "/course/course/:courseid"
-    },
-    {
-        "name": "getAllCourses",
-        "callback": "getMatch",
-        "outputType": "Course",
-        "inputType": "",
-        "method": "GET",
-        "path": "/course"
+        "outputType": "Course"
     },
     {
         "name": "getUserCourses",
-        "callback": "getMatch",
+        "path": "\/course\/user\/:userid",
+        "method": "GET",
+        "description": {
+            "de": "ermittelt die Veranstaltungen eines Nutzers"
+        },
+        "placeholder": [
+            {
+                "name": "userid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
+                }
+            }
+        ],
+        "inputType": "",
         "outputType": "Course",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"userid","regex":"%^([0-9_]+)$%"}],
-        "path": "/course/user/:userid"
+        "callback": "getMatch"
     },
     {
-        "name": "addPlatform",
-        "outputType": "Platform",
-        "inputType": "Platform",
+        "name": "addCourse",
+        "path": "\/course",
         "method": "POST",
-        "path": "/platform"
-    },
-    {
-        "name": "deletePlatform",
-        "outputType": "Platform",
-        "inputType": "",
-        "method": "DELETE",
-        "path": "/platform"
-    },
-    {
-        "name": "getExistsPlatform",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "Platform",
-        "inputType": "",
-        "method": "GET",
-        "path": "/link/exists/platform"
-    },
-    {
-        "name": "getSamplesInfo",
-        "outputType": "",
-        "inputType": "",
-        "method": "GET",
-        "path": "/samples"
+        "description": {
+            "de": "fügt DBCourse zur Veranstaltung hinzu bzw. fügt eine neue Veranstaltung ein"
+        },
+        "inputType": "Course",
+        "outputType": "Course"
     },
     {
         "name": "postSamples",
-        "outputType": "Query",
-        "inputType": "",
+        "path": "\/samples\/course\/:courseAmount\/user\/:userAmount",
         "method": "POST",
-        "path": "/samples/course/:courseAmount/user/:userAmount"
+        "description": {
+            "de": "erzeugt Zufallsdaten (courseAmount = Anzahl der Veranstaltungen, userAmount = Anzahl der Nutzer), anhand der Vorgabe"
+        },
+        "inputType": "",
+        "outputType": "Query"
+    },
+    {
+        "name": "getCourse",
+        "path": "\/course\/course\/:courseid",
+        "method": "GET",
+        "description": {
+            "de": "liefert einen einzelnen Eintrag"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Course",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
+    },
+    {
+        "name": "getAllCourses",
+        "path": "\/course",
+        "method": "GET",
+        "description": {
+            "de": "liefert alle Einträge"
+        },
+        "inputType": "",
+        "outputType": "Course",
+        "callback": "getMatch"
+    },
+    {
+        "name": "deletePlatform",
+        "path": "\/platform",
+        "method": "DELETE",
+        "description": {
+            "de": "entfernt die Komponente und ihre installierten Bestandteile aus der Plattform"
+        },
+        "inputType": "",
+        "outputType": "Platform"
+    },
+    {
+        "name": "deleteCourse",
+        "path": "\/course\/course\/:courseid",
+        "method": "DELETE",
+        "description": {
+            "de": "entfernt die Komponente aus der Veranstaltung bzw. löscht den Eintrag"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Course"
+    },
+    {
+        "name": "getSamplesInfo",
+        "path": "\/samples",
+        "method": "GET",
+        "description": {
+            "de": "liefert die Bezeichner der betroffenen Tabellen"
+        },
+        "inputType": "",
+        "outputType": ""
+    },
+    {
+        "name": "addPlatform",
+        "path": "\/platform",
+        "method": "POST",
+        "description": {
+            "de": "installiert die zugehörige Tabelle und die Prozeduren für diese Plattform"
+        },
+        "inputType": "Platform",
+        "outputType": "Platform"
     },
     {
         "name": "getApiProfiles",
-        "outputType": "GateProfile",
-        "inputType": "",
+        "path": "\/api\/profiles",
         "method": "GET",
-        "path": "/api/profiles"
+        "description": {
+            "de": "liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren"
+        },
+        "inputType": "",
+        "outputType": "GateProfile"
     }
 ]

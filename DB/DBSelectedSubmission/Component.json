@@ -1,152 +1,254 @@
 {
     "name": "DBSelectedSubmission",
+    "description": {
+        "de": "Die DBSelectedSubmission ermöglicht den Zugriff auf die `SelectedSubmission` Tabelle der Datenbank, dabei sollen für einen Gruppeneintrag ausgewählte Einsendungen (für eine Aufgabe) verwaltet werden. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle gehört die `SelectedSubmission` Datenstruktur.\n\n| Spalte        | Struktur  | Beschreibung | Besonderheit |\n| :------       |:---------:| :------------| -----------: |\n|U_id_leader|INT NOT NULL| ein Verweis auf ein Nutzerkonto, welches die Gruppe repräsentiert |-|\n|S_id_selected|INT NOT NULL| ein Verweis auf die ausgewählte Einsendung |UNIQUE|\n|E_id|INT NOT NULL| ein Verweis auf die zugehörige Aufgabe |-|\n|ES_id|INT NULL| ein Verweis auf die Übungsserie |-|"
+    },
     "version": "1.0",
     "classFile": "DBSelectedSubmission.php",
     "className": "DBSelectedSubmission",
     "files": [
-        {"path": ".htaccess"},
-        {"path": "DBSelectedSubmission.php"},
-        {"path": "index.php"},
-        {"path": "Commands.json"},
-        {"path": "SelectedSubmissionSample.json"},
-        {"path": "Sql/"},
-        {"path": "info/"}
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBSelectedSubmission.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "SelectedSubmissionSample.json"
+        },
+        {
+            "path": "Sql\/"
+        },
+        {
+            "path": "info\/"
+        }
     ],
     "links": [
         {
             "name": "editSelectedSubmission",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl editSelectedSubmission"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "editSubmissionSelectedSubmission",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl editSubmissionSelectedSubmission"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deleteSelectedSubmission",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deleteSelectedSubmission"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deleteUserSheetSelectedSubmission",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deleteUserSheetSelectedSubmission"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deleteSubmissionSelectedSubmission",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deleteSubmissionSelectedSubmission"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addSelectedSubmission",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl addSelectedSubmission"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "postSamples",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl postSamples"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deletePlatform",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deletePlatform"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addPlatform",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl addPlatform"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "getCourseSelected",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBSelectedSubmissionGetCourseSelected/:courseid"
-            }]
+            "description": {
+                "de": "für den Befehl getCourseSelected"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBSelectedSubmissionGetCourseSelected\/:courseid"
+                }
+            ]
         },
         {
             "name": "getExerciseSelected",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBSelectedSubmissionGetExerciseSelected/:eid"
-            }]
+            "description": {
+                "de": "für den Befehl getExerciseSelected"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBSelectedSubmissionGetExerciseSelected\/:eid"
+                }
+            ]
         },
         {
             "name": "getSheetSelected",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBSelectedSubmissionGetSheetSelected/:esid"
-            }]
+            "description": {
+                "de": "für den Befehl getSheetSelected"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBSelectedSubmissionGetSheetSelected\/:esid"
+                }
+            ]
         },
         {
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBSelectedSubmissionGetExistsPlatform"
-            }]
+            "description": {
+                "de": "für den Befehl getExistsPlatform"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBSelectedSubmissionGetExistsPlatform"
+                }
+            ]
         },
         {
             "name": "getSamplesInfo",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBSelectedSubmissionGetExistsPlatform"
-            }]
+            "description": {
+                "de": "für den Befehl getSamplesInfo"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBSelectedSubmissionGetExistsPlatform"
+                }
+            ]
         }
     ],
     "connector": [
         {
             "name": "request",
-            "target": "CLocalObjectRequest"
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit DBSelectedSubmission als lokales Objekt aufgerufen werden kann"
+            }
         },
         {
             "name": "postPlatform",
-            "target": "CInstall"
+            "target": "CInstall",
+            "description": {
+                "de": "der Installationsassistent soll uns bei der Plattforminstallation aufrufen"
+            }
         },
         {
             "name": "postSamples",
             "target": "CInstall",
+            "description": {
+                "de": "wir wollen bei Bedarf Beispieldaten erzeugen"
+            },
             "priority": 150
         },
         {
             "name": "getDescFiles",
-            "target": "TDocuView"
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
+            }
         },
         {
             "name": "getComponentProfiles",
-            "target": "TApiConfiguration"
+            "target": "TApiConfiguration",
+            "description": {
+                "de": "damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden"
+            }
         }
     ]
 }

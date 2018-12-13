@@ -1,151 +1,216 @@
 {
     "name": "LTutor",
+    "description": {
+        "de": "Die LTutor bietet Aufrufe zum Verteilen der Einsendungen auf Kontrolleure, dem Abrufen von Korrekturarchiven und dem Behandeln der hochgeladenen Korrekturarchive an."
+    },
     "version": "1.0",
     "classFile": "LTutor.php",
     "className": "LTutor",
     "files": [
-        {"path": ".htaccess"},
-        {"path": "LTutor.php"},
-        {"path": "index.php"},
-        {"path": "Commands.json"}
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "LTutor.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        }
     ],
     "links": [
         {
             "name": "controller",
             "target": "LController",
+            "description": {
+                "de": "über diesen Ausgang werden diverse Aufrufe bearbeitet"
+            },
             "links": [
                 {
                     "method": "PUT",
-                    "path": "/DB/marking/:marking"
+                    "path": "\/DB\/marking\/:marking"
                 },
                 {
                     "method": "POST",
-                    "path": "/DB/file"
+                    "path": "\/DB\/file"
                 },
                 {
                     "method": "GET",
-                    "path": "/DB/file/hash/:hash"
+                    "path": "\/DB\/file\/hash\/:hash"
                 },
                 {
                     "method": "POST",
-                    "path": "/FS/file"
+                    "path": "\/FS\/file"
                 },
                 {
                     "method": "GET",
-                    "path": "/DB/user:userid"
+                    "path": "\/DB\/user:userid"
                 },
                 {
                     "method": "GET",
-                    "path": "/FS/path+"
+                    "path": "\/FS\/path+"
                 },
                 {
                     "method": "POST",
-                    "path": "/FS/zip"
+                    "path": "\/FS\/zip"
                 },
                 {
                     "method": "GET",
-                    "path": "/DB/submission/submission/:submissionid"
+                    "path": "\/DB\/submission\/submission\/:submissionid"
                 },
                 {
                     "method": "GET",
-                    "path": "/DB/user/user/:userid"
+                    "path": "\/DB\/user\/user\/:userid"
                 },
                 {
                     "method": "GET",
-                    "path": "/DB/exercise/exercisesheet/:sheetid"
+                    "path": "\/DB\/exercise\/exercisesheet\/:sheetid"
                 },
                 {
                     "method": "GET",
-                    "path": "/DB/marking/exercisesheet/:sheetid/tutor/:userid"
+                    "path": "\/DB\/marking\/exercisesheet\/:sheetid\/tutor\/:userid"
                 },
                 {
                     "method": "POST",
-                    "path": "/DB/marking"
+                    "path": "\/DB\/marking"
                 }
             ]
         },
         {
             "name": "postTransaction",
             "target": "DBTransaction",
-            "links": [{
-                "method": "POST",
-                "path": "/transaction/exercisesheet/:sheetid"
-            }]
+            "description": {
+                "de": "zum Erzeugen einer neuen Transaktionsnummer"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/transaction\/exercisesheet\/:sheetid"
+                }
+            ]
         },
         {
             "name": "getTransaction",
             "target": "DBTransaction",
+            "description": {
+                "de": "um eine Transaktionsnummer abzurufen"
+            },
             "links": []
         },
         {
             "name": "postZip",
             "target": "FSZip",
+            "description": {
+                "de": "zum Erstellen eines Archivs"
+            },
             "links": []
         },
         {
             "name": "postPdf",
             "target": "FSPdf",
+            "description": {
+                "de": "zum Erstellen einer PDF"
+            },
             "links": []
         },
         {
             "name": "postMarking",
             "target": "LMarking",
+            "description": {
+                "de": "um Korrekturen zu speichern"
+            },
             "links": []
         },
         {
             "name": "getMarking",
             "target": "DBMarking",
+            "description": {
+                "de": "um eine Korrektur abzurufen"
+            },
             "links": []
         },
         {
             "name": "getGroup",
             "target": "DBGroup",
+            "description": {
+                "de": "zum Abrufen einer Gruppe"
+            },
             "links": []
         },
         {
             "name": "getExercise",
             "target": "DBExercise",
+            "description": {
+                "de": "zum Abrufen einer Übungsaufgabe"
+            },
             "links": []
         },
         {
             "name": "getSubmission",
             "target": "DBSubmission",
+            "description": {
+                "de": "über diesen Ausgang soll eine Einsendung abgerufen werden"
+            },
             "links": []
         },
         {
             "name": "postSubmission",
             "target": "LSubmission",
+            "description": {
+                "de": "zum Speichern einer Einsendung"
+            },
             "links": []
         },
         {
             "name": "out2",
             "target": "DBQuery2",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "über diesen Ausgang werden alle übrigen Anfragen behandelt (DEPRECATED)"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "getCourse",
             "target": "DBCourse",
-            "links": [{
-                "method": "GET",
-                "path": "/course/exercisesheet/:esid"
-            }]
+            "description": {
+                "de": "zum Abrufen einer Veranstaltung anhand seiner Übungsnummer"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/course\/exercisesheet\/:esid"
+                }
+            ]
         }
     ],
     "connector": [
         {
             "name": "request",
-            "target": "CLocalObjectRequest"
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit LTutor als lokales Objekt aufgerufen werden kann"
+            }
         },
         {
             "name": "postPlatform",
-            "target": "CInstall"
+            "target": "CInstall",
+            "description": {
+                "de": "der Installationsassistent soll uns bei der Plattforminstallation aufrufen"
+            }
         },
         {
             "name": "postCourse",
             "target": "LCourse",
+            "description": {
+                "de": "wenn eine neue Veranstaltung angelegt wird, dann wollen wir auch aufgerufen werden"
+            },
             "priority": 300
         }
     ]

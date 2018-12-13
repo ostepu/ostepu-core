@@ -13,4 +13,14 @@
 
 require_once ( dirname( __FILE__ ) . '/DBProcess.php' );
 
+Logger::Log(
+            'begin DBProcess',
+            LogLevel::DEBUG
+            );
+
 new DBProcess();
+
+Logger::Log(
+            'end DBProcess',
+            LogLevel::DEBUG
+            );

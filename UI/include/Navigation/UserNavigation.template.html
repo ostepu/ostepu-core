@@ -15,6 +15,7 @@
 ?>
 
 <?php $langTemplate='UserNavigation';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+<?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uiusernavigation_cconfig.json'); ?>
 
 <!--<div class="">-->
 <?php if ($isSuperAdmin || $courseStatus > 1) { ?>
@@ -109,6 +110,12 @@
             <li>
                 <?php echo MakeInfoButton($helpPath[0],$helpPath[1]); ?>
             </li>
+        <?php } ?>
+        
+        <?php echo pageLib::getContent('getContent', $this->content, $pageComponent);?>
+        
+        <?php if (isset($privileged)) { ?>
+            <?php echo pageLib::getContent('getPrivilegedContent', $this->content, $pageComponent);?>
         <?php } ?>
 </ul>
 <?php } ?>

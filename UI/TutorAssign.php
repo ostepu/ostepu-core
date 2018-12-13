@@ -43,8 +43,7 @@ $postValidation = Validation::open($_POST, array('preRules'=>array('sanitize')))
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','invalidActionSortUser', $langTemplate)]])
   ->addSet('selectedSheet',
-           ['set_default'=>null,
-            'valid_identifier',
+           ['valid_identifier',
             'on_error'=>['type'=>'error',
                          'text'=>Language::Get('main','invalidSelectedSheet', $langTemplate)]]);
 $postResults = $postValidation->validate();

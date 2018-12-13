@@ -11,12 +11,12 @@
  * @date 2016
  */
 
-include_once ( dirname( __FILE__ ) . '/Object.php' );
+include_once ( dirname( __FILE__ ) . '/StructureObject.php' );
 
 /**
  * the Redirect structure
  */
-class Redirect extends Object implements JsonSerializable
+class Redirect extends StructureObject implements JsonSerializable
 {
 
     /**

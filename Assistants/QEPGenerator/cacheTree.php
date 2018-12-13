@@ -40,7 +40,7 @@ class cacheTree extends tree implements JsonSerializable
 
     /**
      * Berechnet die Gruppenzugehörigkeit der Knoten und speichert
-     * diese in $this->groups
+     * diese in $this->_groups
      */
     public function computeGroups()
     {
@@ -50,14 +50,14 @@ class cacheTree extends tree implements JsonSerializable
         foreach ($this->elements as $key => $elem) {
             $groupId = $elem->parallelGroup;
             if ($groupId!==null) {
-                if (!isset($this->groups[$groupId])) {
+                if (!isset($this->_groups[$groupId])) {
                     // die Gruppe wurde bisher noch nicht bearbeitet,
                     // daher muss ein neuer Slot angelegt werden
-                    $this->groups[$groupId] = array();
+                    $this->_groups[$groupId] = array();
                 }
 
                 // trage das Element in seine Gruppe ein
-                $this->groups[$groupId][] = $key;
+                $this->_groups[$groupId][] = $key;
             }
         }
     }
@@ -67,7 +67,7 @@ class cacheTree extends tree implements JsonSerializable
      */
     private function resetGroups()
     {
-        $this->groups=array();
+        $this->_groups=array();
     }
 
     /**
@@ -224,12 +224,12 @@ class cacheTree extends tree implements JsonSerializable
      */
     public function getGroupSize($groupId)
     {
-        if ($groupId === null || !isset($this->groups[$groupId])) {
+        if ($groupId === null || !isset($this->_groups[$groupId])) {
             // es handelt sich um keine Gruppe
             return 0;
         }
 
-        return count($this->groups[$groupId]);
+        return count($this->_groups[$groupId]);
     }
 
     /**

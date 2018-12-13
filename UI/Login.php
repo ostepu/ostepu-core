@@ -37,7 +37,6 @@ Authentication::preventSessionFix();
 $postValidation = Validation::open($_POST, array('preRules'=>array('')))
   ->addSet('back',
            array('valid_url_query',
-                 'set_default'=>null,
                  'on_error'=>array('type'=>'error',
                                    'text'=>Language::Get('main',Language::Get('main','invalidBackURL', $langTemplate), $langTemplate))))
   ->addSet('action',
@@ -50,7 +49,6 @@ $postValidation = Validation::open($_POST, array('preRules'=>array('')))
 $getValidation = Validation::open($_GET, array('preRules'=>array('')))
   ->addSet('back',
            array('valid_url_query',
-                 'set_default'=>null,
                  'on_error'=>array('type'=>'error',
                                    'text'=>Language::Get('main',Language::Get('main','invalidBackURL', $langTemplate), $langTemplate))));
 

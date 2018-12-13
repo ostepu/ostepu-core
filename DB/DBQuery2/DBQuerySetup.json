@@ -1,12 +1,20 @@
 {
     "name": "DBQuerySetup",
+    "description": {
+        "de": "Diese Komponente bietet auf Basis der DBQuery2 einen Datenbankzugang an. Dabei gibt es keine Beschränkungen der Anfragen."
+    },
     "version": "1.0",
-    "type": "clone",
+    "baseURI": "\/profile\/setup",
     "base": "DBQuery2",
-    "baseURI": "/profile/setup",
-    "connector": [{
-        "name": "postPlatformSetupUser",
-        "target": "CInstall",
-        "priority": "10"
-    }]
+    "type": "clone",
+    "connector": [
+        {
+            "name": "postPlatformSetupUser",
+            "target": "CInstall",
+            "description": {
+                "de": "der Installationsassistent soll uns bei der Installation des Setup-User aufrufen"
+            },
+            "priority": "10"
+        }
+    ]
 }

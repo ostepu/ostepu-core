@@ -1,131 +1,220 @@
 {
     "name": "DBInvitation",
+    "description": {
+        "de": "Die DBInvitation ermöglicht den Zugriff auf die `Invitation` Tabelle der Datenbank. Hier werden Einladungen für die Gruppenverwaltung gespeichert. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt."
+    },
     "version": "1.0",
     "classFile": "DBInvitation.php",
     "className": "DBInvitation",
     "files": [
-        {"path": ".htaccess"},
-        {"path": "DBInvitation.php"},
-        {"path": "index.php"},
-        {"path": "Commands.json"},
-        {"path": "InvitationSample.json"},
-        {"path": "Sql/"},
-        {"path": "info/"}
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBInvitation.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "InvitationSample.json"
+        },
+        {
+            "path": "Sql\/"
+        },
+        {
+            "path": "info\/"
+        }
     ],
     "links": [
         {
             "name": "editInvitation",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl editInvitation"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deleteInvitation",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deleteInvitation"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addInvitation",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl addInvitation"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deletePlatform",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deletePlatform"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addPlatform",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl addPlatform"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "getAllInvitations",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBInvitationGetAllInvitations"
-            }]
+            "description": {
+                "de": "für den Befehl getAllInvitations"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBInvitationGetAllInvitations"
+                }
+            ]
         },
         {
             "name": "getLeaderInvitations",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBInvitationGetLeaderInvitations/:userid"
-            }]
+            "description": {
+                "de": "für den Befehl getLeaderInvitations"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBInvitationGetLeaderInvitations\/:userid"
+                }
+            ]
         },
         {
             "name": "getMemberInvitations",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBInvitationGetMemberInvitations/:userid"
-            }]
+            "description": {
+                "de": "für den Befehl getMemberInvitations"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBInvitationGetMemberInvitations\/:userid"
+                }
+            ]
         },
         {
             "name": "getSheetInvitations",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBInvitationGetSheetInvitations/:esid"
-            }]
+            "description": {
+                "de": "für den Befehl getSheetInvitations"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBInvitationGetSheetInvitations\/:esid"
+                }
+            ]
         },
         {
             "name": "getSheetLeaderInvitations",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBInvitationGetSheetLeaderInvitations/:esid/:userid"
-            }]
+            "description": {
+                "de": "für den Befehl getSheetLeaderInvitations"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBInvitationGetSheetLeaderInvitations\/:esid\/:userid"
+                }
+            ]
         },
         {
             "name": "getSheetMemberInvitations",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBInvitationGetSheetMemberInvitations/:esid/:userid"
-            }]
+            "description": {
+                "de": "für den Befehl getSheetMemberInvitations"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBInvitationGetSheetMemberInvitations\/:esid\/:userid"
+                }
+            ]
         },
         {
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBCourseGetExistsPlatform"
-            }]
+            "description": {
+                "de": "für den Befehl getExistsPlatform"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBCourseGetExistsPlatform"
+                }
+            ]
         }
     ],
     "connector": [
         {
             "name": "request",
-            "target": "CLocalObjectRequest"
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit DBInvitation als lokales Objekt aufgerufen werden kann"
+            }
         },
         {
             "name": "postPlatform",
-            "target": "CInstall"
+            "target": "CInstall",
+            "description": {
+                "de": "der Installationsassistent soll uns bei der Plattforminstallation aufrufen"
+            }
         },
         {
             "name": "getDescFiles",
-            "target": "TDocuView"
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
+            }
         },
         {
             "name": "getComponentProfiles",
-            "target": "TApiConfiguration"
+            "target": "TApiConfiguration",
+            "description": {
+                "de": "damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden"
+            }
         }
     ]
 }

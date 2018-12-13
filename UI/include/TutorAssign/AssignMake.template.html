@@ -13,6 +13,7 @@
 ?>
 
 <?php $langTemplate='TutorAssign_Make';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+<?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uitutorassign_assignmake_cconfig.json'); ?>
 
 <?php
 if (isset($AssignMakeNotificationElements)) {
@@ -27,6 +28,7 @@ if (isset($AssignMakeNotificationElements)) {
     <div class="content-header">
         <?php echo MakeInfoButton('page/admin/tutorAssign','make.md'); ?>
         <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <?php echo pageLib::getContent('getHeader', $this->content, $pageComponent);?>
         <button class="text-button<?php echo (!isset($_POST['action']) || $_POST['action'] != "AssignMakeWarning") ? ' right' : '-simple  error-simple' ;?> bold critical-color"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
     </div>
 
@@ -73,6 +75,7 @@ if (isset($AssignMakeNotificationElements)) {
                 </label>
             </div>
             <?php } ?>
+            <?php echo pageLib::getContent('getContent', $this->content, $pageComponent);?>
         </div>
     </div> <!-- end: content-body-wrapper -->
 </div> <!-- end: content-element -->

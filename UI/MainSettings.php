@@ -84,7 +84,6 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                                  'text'=>Language::Get('main','invalidExerciseType', $langTemplate)]])
           ->addSet('plugins',
                    ['is_array',
-                    'set_default'=>null,
                     'perform_this_array'=>[[['key_all'],
                                       ['valid_identifier']]],
                     'on_error'=>['type'=>'error',
@@ -253,7 +252,6 @@ if ($postValidation->isValid() && $postResults['action'] !== 'noAction') {
                                  'text'=>Language::Get('main','invalidUserName', $langTemplate)]])
           ->addSet('email',
                    ['valid_email',
-                   'set_default'=>null,
                     'on_error'=>['type'=>'error',
                                  'text'=>Language::Get('main','invalidMail', $langTemplate)]])
           ->addSet('password',
@@ -434,12 +432,14 @@ $mainSettings_data['plugins'] = $plugins_data;
 
 $user_course_data = $mainSettings_data['user'];
 
-$menu = MakeNavigationElement($user_course_data,
+$user_course_data2 = $user_course_data;
+unset($user_course_data2['courses']); // damit der Header+Navigation nicht denkt er sei in einer Veranstaltung
+$menu = MakeNavigationElement($user_course_data2,
                               PRIVILEGE_LEVEL::SUPER_ADMIN,true);
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
-$h->bind($user_course_data);
+$h->bind($user_course_data2);
 $h->bind(array('name' => Language::Get('main','settings', $langTemplate),
                'backTitle' => Language::Get('main','courses', $langTemplate),
                'backURL' => 'index.php',

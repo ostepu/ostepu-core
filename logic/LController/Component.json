@@ -1,20 +1,101 @@
 {
-  "name":"LController",
-  "version":"1.0",
-  "classFile":"LController.php",
-  "className":"LController",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"LController.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"}
-  ],
-  "links":[
-    {"name":"out", "target":["LProcessor","LForm","LGetSite","LAttachment","LExercise","LTutor","LExerciseSheet","LCourse"], "links":[] },
-    {"name":"database", "target":"DBControl", "links":[{"method":"POST", "path":"/path+" },{"method":"GET", "path":"/path+" },{"method":"PUT", "path":"/path+" },{"method":"DELETE", "path":"/path+" }] },
-    {"name":"filesystem", "target":"FSControl", "links":[{"method":"POST", "path":"/path+" },{"method":"GET", "path":"/path+" },{"method":"PUT", "path":"/path+" },{"method":"DELETE", "path":"/path+" }] }
-  ],
-  "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"}
-  ]
+    "name": "LController",
+    "description": {
+        "de": "(DEPRECATED) Über diese Komponente können verschiedene angehangene Komponenten angesprochen werden. Diese Methode sollte nicht mehr verwendet werden, weil sie fehleranfällig ist."
+    },
+    "version": "1.0",
+    "classFile": "LController.php",
+    "className": "LController",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "LController.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        }
+    ],
+    "links": [
+        {
+            "name": "out",
+            "target": [
+                "LProcessor",
+                "LForm",
+                "LGetSite",
+                "LAttachment",
+                "LExercise",
+                "LTutor",
+                "LExerciseSheet",
+                "LCourse"
+            ],
+            "description": {
+                "de": "an diesen Ausgang können sich Komponenten anhägen, um als mögliches Ziel aufgenommen zu werden (nur Logic)"
+            },
+            "links": []
+        },
+        {
+            "name": "database",
+            "target": "DBControl",
+            "description": {
+                "de": "über diesen Ausgang werden DB-Komponenten (Datenbank) angefragt"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/path+"
+                },
+                {
+                    "method": "GET",
+                    "path": "\/path+"
+                },
+                {
+                    "method": "PUT",
+                    "path": "\/path+"
+                },
+                {
+                    "method": "DELETE",
+                    "path": "\/path+"
+                }
+            ]
+        },
+        {
+            "name": "filesystem",
+            "target": "FSControl",
+            "description": {
+                "de": "über diesen Ausgang werden FS-Komponenten (Dateisystem) angefragt"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/path+"
+                },
+                {
+                    "method": "GET",
+                    "path": "\/path+"
+                },
+                {
+                    "method": "PUT",
+                    "path": "\/path+"
+                },
+                {
+                    "method": "DELETE",
+                    "path": "\/path+"
+                }
+            ]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit LController als lokales Objekt aufgerufen werden kann"
+            }
+        }
+    ]
 }

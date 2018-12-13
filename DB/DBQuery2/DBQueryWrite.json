@@ -1,12 +1,20 @@
 {
     "name": "DBQueryWrite",
+    "description": {
+        "de": "Diese Komponente bietet auf Basis der DBQuery2 einen Datenbankzugang an. Dieser wird dabei auf lesende und schreibende Anfragen beschränkt. Es können keine administrativen Datenbankanfragen gestellt werden."
+    },
     "version": "1.0",
-    "type": "clone",
+    "baseURI": "\/profile\/write",
     "base": "DBQuery2",
-    "baseURI": "/profile/write",
-    "connector": [{
-        "name": "postPlatformWriteUser",
-        "target": "CInstall",
-        "priority": "10"
-    }]
+    "type": "clone",
+    "connector": [
+        {
+            "name": "postPlatformWriteUser",
+            "target": "CInstall",
+            "description": {
+                "de": "der Installationsassistent soll uns bei der Installation des Write-User aufrufen"
+            },
+            "priority": "10"
+        }
+    ]
 }

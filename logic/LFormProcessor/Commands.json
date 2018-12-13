@@ -1,18 +1,30 @@
 [
     {
+        "path": "\/link\/exists\/course\/:courseid",
         "method": "GET",
-        "path": "/link/exists/course/:courseid"
+        "description": {
+            "de": "prüft, ob die Komponente korrekt in der Veranstaltung installiert ist"
+        }
     },
     {
+        "path": "\/process",
         "method": "post",
-        "path": "/process"
+        "description": {
+            "de": "behandelt den Verarbeitungsaufruf"
+        }
     },
     {
+        "path": "\/course",
         "method": "post",
-        "path": "/course"
+        "description": {
+            "de": "fügt die Komponente einer Veranstaltung hinzu"
+        }
     },
     {
+        "path": "\/course\/:courseid",
         "method": "delete",
-        "path": "/course/:courseid"
+        "description": {
+            "de": "entfernt die Komponente aus einer Veranstaltung"
+        }
     }
 ]

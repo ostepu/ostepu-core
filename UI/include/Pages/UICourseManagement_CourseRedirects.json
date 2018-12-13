@@ -1,0 +1,37 @@
+{
+    "name": "UICourseManagement_CourseRedirects",
+    "option": "confPath=UI\/include\/CourseManagement\/uicoursemanagement_courseredirects_cconfig.json",
+    "description": {
+        "de": "Diese Komponente gehört zu einem Template und dient der Definition von Plathaltern. An diese Ausgänge\/Platzhalter können sich Komponenten anhängen und Inhalte direkt dort einfügen. Dazu müssen diese Komponenten einen Connector auf den entsprechenden Platzhalter dieser Komponenten definieren. Die Platzhalter selbst werden in dem zugehörigen Template aufgerufen und der Inhalt an der entsprechenden Stelle eingefügt."
+    },
+    "version": "1.0",
+    "baseURI": "\/uicoursemanagement_courseredirects",
+    "base": "CAbstract",
+    "type": "clone",
+    "links": [
+        {
+            "name": "getHeader",
+            "target": "",
+            "description": {
+                "de": "für den Platzhalter getHeader"
+            },
+            "links": []
+        },
+        {
+            "name": "getContentDescription",
+            "target": "",
+            "description": {
+                "de": "für den Platzhalter getContentDescription"
+            },
+            "links": []
+        },
+        {
+            "name": "getContent",
+            "target": "",
+            "description": {
+                "de": "für den Platzhalter getContent"
+            },
+            "links": []
+        }
+    ]
+}

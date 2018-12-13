@@ -2,7 +2,7 @@
     "name": "SQaLibur",
     "version": "1.0",
     "versionDate": "31.12.2016",
-    "description":{"de":"Dieses Paket erweitert den Installationsassistenten um die Installationselemente für SQaLibur."},
+    "description":{"de":"Dieses Paket erweitert den Installationsassistenten um die Installationselemente für SQaLibur. Um dieses Paket verwenden zu können, muss der Webservice von SQaLibur bereits eingerichtet sein (Java-Webanwendung). Sie finden weitere Informationen auf der angegebenen Webseite."},
     "descUrl":"https://github.com/tilluhlig/ostepu-sqalibur",
     "files": [
         {

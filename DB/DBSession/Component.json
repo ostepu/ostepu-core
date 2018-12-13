@@ -1,147 +1,246 @@
 {
     "name": "DBSession",
+    "description": {
+        "de": "Die DBSession ermöglicht den Zugriff auf die `Session` Tabelle der Datenbank, dabei sollen Sitzungen verwaltet werden. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle gehört die `Session` Datenstruktur.\n\n| Spalte     | Struktur        | Beschreibung | Besonderheit |\n| :------    |:---------:      | :------------| -----------: |\n|U_id        |INT NOT NULL     | die ID des zugehörigen Nutzers |UNIQUE|\n|SE_sessionID|CHAR(32) NOT NULL| ein md5 Hash, welcher die Sitzung identifiziert |-|"
+    },
     "version": "1.0",
     "classFile": "DBSession.php",
     "className": "DBSession",
     "files": [
-        {"path": ".htaccess"},
-        {"path": "DBSession.php"},
-        {"path": "index.php"},
-        {"path": "Commands.json"},
-        {"path": "SessionSample.json"},
-        {"path": "Sql/"},
-        {"path": "info/"}
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBSession.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "SessionSample.json"
+        },
+        {
+            "path": "Sql\/"
+        },
+        {
+            "path": "info\/"
+        }
     ],
     "links": [
         {
             "name": "editSession",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl editSession"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deleteSession",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deleteSession"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "editUserSession",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl editUserSession"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deleteUserSession",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deleteUserSession"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addSession",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl addSession"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deletePlatform",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deletePlatform"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addPlatform",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl addPlatform"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "postSamples",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl postSamples"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "getUserSession",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBSessionGetUserSession/:profile/:userid"
-            }]
+            "description": {
+                "de": "für den Befehl getUserSession"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBSessionGetUserSession\/:profile\/:userid"
+                }
+            ]
         },
         {
             "name": "getSessionUser",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBSessionGetSessionUser/:profile/:seid"
-            }]
+            "description": {
+                "de": "für den Befehl getSessionUser"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBSessionGetSessionUser\/:profile\/:seid"
+                }
+            ]
         },
         {
             "name": "getValidSession",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBSessionGetValidSession/:profile/:seid/:userid"
-            }]
+            "description": {
+                "de": "für den Befehl getValidSession"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBSessionGetValidSession\/:profile\/:seid\/:userid"
+                }
+            ]
         },
         {
             "name": "getAllSessions",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBSessionGetAllSessions/:profile"
-            }]
+            "description": {
+                "de": "für den Befehl getAllSessions"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBSessionGetAllSessions\/:profile"
+                }
+            ]
         },
         {
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBSessionGetExistsPlatform/:profile"
-            }]
+            "description": {
+                "de": "für den Befehl getExistsPlatform"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBSessionGetExistsPlatform\/:profile"
+                }
+            ]
         },
         {
             "name": "getSamplesInfo",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBSessionGetExistsPlatform/:profile"
-            }]
+            "description": {
+                "de": "für den Befehl getSamplesInfo"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBSessionGetExistsPlatform\/:profile"
+                }
+            ]
         }
     ],
     "connector": [
         {
             "name": "request",
-            "target": "CLocalObjectRequest"
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit DBSession als lokales Objekt aufgerufen werden kann"
+            }
         },
         {
             "name": "postPlatform",
-            "target": "CInstall"
+            "target": "CInstall",
+            "description": {
+                "de": "der Installationsassistent soll uns bei der Plattforminstallation aufrufen"
+            }
         },
         {
             "name": "getDescFiles",
-            "target": "TDocuView"
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
+            }
         },
         {
             "name": "getComponentProfiles",
-            "target": "TApiConfiguration"
+            "target": "TApiConfiguration",
+            "description": {
+                "de": "damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden"
+            }
         }
     ]
 }

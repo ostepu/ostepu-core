@@ -3,19 +3,19 @@
     "content":"text/html",
     "charset":"utf-8",
     "stylesheets":[
-        "css/CSSReset.css",
-        "css/Main.css",
-        "css/Exercises.css",
-        "css/Header.css",
-        "css/Forms.css",
-        "css/Navigation.css",
-        "css/Navigation.css.php",
-        "css/Notifications.css"
+        "UI/CContent/content/common/css/CSSReset.css",
+        "UI/CContent/content/common/css/Main.css",
+        "UI/CContent/content/common/css/Exercises.css",
+        "UI/CContent/content/common/css/Header.css",
+        "UI/CContent/content/common/css/Forms.css",
+        "UI/CContent/content/common/css/Navigation.css",
+        "UI/CContent/content/common/css/Navigation.css.php",
+        "UI/CContent/content/common/css/Notifications.css"
     ],
     "javascripts":[
-        "javascript/retina.js",
-        "javascript/jquery-2.0.3.min.js",
-        "javascript/keymaster.js",
-        "javascript/formsHelper.js"
+        "UI/CContent/content/common/js/retina.js",
+        "UI/CContent/content/common/js/jquery-2.0.3.min.js",
+        "UI/CContent/content/common/js/keymaster.js",
+        "UI/CContent/content/common/js/formsHelper.js"
     ]
 }

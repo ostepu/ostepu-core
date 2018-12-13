@@ -11,12 +11,12 @@
  * @date 2015
  */
 
-include_once ( dirname( __FILE__ ) . '/Object.php' );
+include_once ( dirname( __FILE__ ) . '/StructureObject.php' );
 
 /**
  * the csv structure
  */
-class Csv extends Object implements JsonSerializable
+class Csv extends StructureObject implements JsonSerializable
 {
 
     private $rows = null;

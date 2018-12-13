@@ -17,12 +17,14 @@
 ?>
 
 <?php $langTemplate='Group_InvitationsToGroup';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+<?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uigroup_invitationstogroup_cconfig.json'); ?>
 
 <input type="hidden" name="action" value="ManageInvitations">
 <div class="content-element">
     <div class="content-header">
         <?php echo MakeInfoButton('page/student/groups','invitationsToGroup.md'); ?>
         <div class="content-title left"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <?php echo pageLib::getContent('getHeader', $this->content, $pageComponent);?>
     </div>
 
     <div class="content-body-wrapper">
@@ -30,6 +32,7 @@
             <?php if ($isInGroup): ?>
                 <div class="content-description">
                     <?php echo Language::Get('main','description', $langTemplate); ?>
+                    <?php echo pageLib::getContent('getContentDescription', $this->content, $pageComponent);?>
                 </div>
             <?php endif; ?>
             <ol class="exercise-list invitation-list">
@@ -63,6 +66,7 @@
                 endforeach;
                 ?>
             </ol>
+            <?php echo pageLib::getContent('getContent', $this->content, $pageComponent);?>
         </div>
     </div> <!-- end: content-body-wrapper -->
 </div> <!-- end: content-element -->

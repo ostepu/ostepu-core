@@ -15,7 +15,7 @@ Logger::Log(
             LogLevel::DEBUG
             );
 
-// ruft die Beispielkomponente auf            
+       
 new DBOOP();
 
 Logger::Log( 

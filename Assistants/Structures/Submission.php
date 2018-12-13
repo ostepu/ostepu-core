@@ -11,12 +11,12 @@
  * @date 2013-2015
  */
 
-include_once ( dirname( __FILE__ ) . '/Object.php' );
+include_once ( dirname( __FILE__ ) . '/StructureObject.php' );
 
 /**
  * the submission structure
  */
-class Submission extends Object implements JsonSerializable
+class Submission extends StructureObject implements JsonSerializable
 {
 
     /**
@@ -322,7 +322,9 @@ class Submission extends Object implements JsonSerializable
     }
 
     /**
+     * @deprecated
      * @var int $leaderId the id of the group leader
+     * @description es ist nicht garantiert, dass dieses Feld korrekt ist (NIEMALS NUTZEN)
      */
     private $leaderId = null;
 

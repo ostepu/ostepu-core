@@ -1,7 +1,37 @@
 [
-    {"method":"POST", "path":"/:data+" },
-	{"method":"PUT", "path":"/:data+" },
-	{"method":"GET", "path":"/:data+" },
-	{"method":"DELETE", "path":"/:data+" },
-	{"method":"INFO", "path":"/:data+" }
+    {
+        "path": "\/:data+",
+        "method": "POST",
+        "description": {
+            "de": "diese Anfrage behandelt eingehende POST-Anfragen"
+        }
+    },
+    {
+        "path": "\/:data+",
+        "method": "PUT",
+        "description": {
+            "de": "diese Anfrage behandelt eingehende PUT-Anfragen"
+        }
+    },
+    {
+        "path": "\/:data+",
+        "method": "GET",
+        "description": {
+            "de": "diese Anfrage behandelt eingehende GET-Anfragen"
+        }
+    },
+    {
+        "path": "\/:data+",
+        "method": "DELETE",
+        "description": {
+            "de": "diese Anfrage behandelt eingehende DELETE-Anfragen"
+        }
+    },
+    {
+        "path": "\/:data+",
+        "method": "INFO",
+        "description": {
+            "de": "???"
+        }
+    }
 ]

@@ -13,4 +13,14 @@
 
 require_once ( dirname( __FILE__ ) . '/CAbstract.php' );
 
+Logger::Log(
+            'begin CAbstract',
+            LogLevel::DEBUG
+            );
+
 new CAbstract();
+
+Logger::Log(
+            'end CAbstract',
+            LogLevel::DEBUG
+            );

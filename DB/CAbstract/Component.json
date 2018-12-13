@@ -1,12 +1,32 @@
 {
-  "name":"CAbstract",
-  "version":"1.0",
-  "classFile":"CAbstract.php",
-  "className":"CAbstract",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"CAbstract.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"}
-  ]
+    "name": "CAbstract",
+    "description": {
+        "de": "Die CAbstract hat selber keine Funktionalität und ist überwiegend als Basis für Kopien gedacht. Dabei kann sie die Komponentenkonfiguration an einem beliebigen Ort speichern, indem in der Komponentendefinition beispielsweise `\"option\":\"confPath=UI\/include\/Condition\/uicondition_setcondition_cconfig.json\"` angegeben wird (der Speicherort der Konfiguration)."
+    },
+    "version": "1.0",
+    "classFile": "CAbstract.php",
+    "className": "CAbstract",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "CAbstract.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        }
+    ],
+    "connector": [
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
+            }
+        }
+    ]
 }

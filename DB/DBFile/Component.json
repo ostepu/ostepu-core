@@ -1,135 +1,227 @@
 {
     "name": "DBFile",
+    "description": {
+        "de": "Die DBFile ermöglicht den Zugriff auf die `File` Tabelle der Datenbank, dabei sollen Dateien (nicht der Dateiinhalt) verwaltet werden. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle gehört die `File` Datenstruktur.\n\n| Spalte        | Struktur  | Beschreibung | Besonderheit |\n| :------       |:---------:| :------------| -----------: |\n|F_id|INT NOT NULL| die ID der Datei |AUTO_INCREMENT,<br>UNIQUE|\n|F_displayName|VARCHAR(255) NULL| der Anzeigename, bekommt der Nutzer beim Herunterladen so angezeigt Bsp.: MeineDatei.txt |-|\n|F_address|CHAR(55) NOT NULL| der Pfad im Dateisystem (zum Abrufen über `FSBinder`), Bsp.: pdf\/3\/e\/1\/288361a6d62aa394feee355bd8779269a5977, die Adresse entspricht nicht immer dem Hash des Dateiinhalts |UNIQUE|\n|F_timeStamp|INT UNSIGNED NULL DEFAULT 0| der Unix-Zeitstempel der Speicherung\/des Hochladens, wird meist direkt nach dem Eingang im System gesetzt |-|\n|F_fileSize|INT NULL DEFAULT 0| die Dateigröße in Byte (entsprechend dem Dateiinhalt) |-|\n|F_hash|CHAR(40) NULL| der md5 hash |UNIQUE|\n|F_comment|VARCHAR(255) NULL| ein möglicher Dateikommentar (wird nicht verwendet) |-|\n|F_mimeType|VARCHAR(255) NULL| der mimType (siehe `Assistants\/MimeReader.php`), Bsp.: image\/png, application\/pdf |-|"
+    },
     "version": "1.0",
     "classFile": "DBFile.php",
     "className": "DBFile",
     "files": [
-        {"path": ".htaccess"},
-        {"path": "DBFile.php"},
-        {"path": "index.php"},
-        {"path": "Commands.json"},
-        {"path": "FileSample.json"},
-        {"path": "Sql/"},
-        {"path": "info/"}
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBFile.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "FileSample.json"
+        },
+        {
+            "path": "Sql\/"
+        },
+        {
+            "path": "info\/"
+        }
     ],
     "links": [
         {
             "name": "editFile",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl editFile"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "removeFile",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl removeFile"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addFile",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl addFile"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deletePlatform",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deletePlatform"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addPlatform",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl addPlatform"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "postSamples",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl postSamples"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "getFile",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBFileGetFile/:profile/:fileid"
-            }]
+            "description": {
+                "de": "für den Befehl getFile"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBFileGetFile\/:profile\/:fileid"
+                }
+            ]
         },
         {
             "name": "getAllFiles",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBFileGetAllFiles/:profile/:beginStamp/:endStamp"
-            }]
+            "description": {
+                "de": "für den Befehl getAllFiles"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBFileGetAllFiles\/:profile\/:beginStamp\/:endStamp"
+                }
+            ]
         },
         {
             "name": "getFileByHash",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBFileGetFileByHash/:profile/:hash"
-            }]
+            "description": {
+                "de": "für den Befehl getFileByHash"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBFileGetFileByHash\/:profile\/:hash"
+                }
+            ]
         },
         {
             "name": "getFileByMimeType",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBFileGetFileByMimeType/:profile/:base/:type/:beginStamp/:endStamp"
-            }]
+            "description": {
+                "de": "für den Befehl getFileByMimeType"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBFileGetFileByMimeType\/:profile\/:base\/:type\/:beginStamp\/:endStamp"
+                }
+            ]
         },
         {
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBFileGetExistsPlatform/:profile"
-            }]
+            "description": {
+                "de": "für den Befehl getExistsPlatform"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBFileGetExistsPlatform\/:profile"
+                }
+            ]
         },
         {
             "name": "getSamplesInfo",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBFileGetExistsPlatform/:profile"
-            }]
+            "description": {
+                "de": "für den Befehl getSamplesInfo"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBFileGetExistsPlatform\/:profile"
+                }
+            ]
         }
     ],
     "connector": [
         {
             "name": "request",
-            "target": "CLocalObjectRequest"
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit DBFile als lokales Objekt aufgerufen werden kann"
+            }
         },
         {
             "name": "postPlatform",
-            "target": "CInstall"
+            "target": "CInstall",
+            "description": {
+                "de": "der Installationsassistent soll uns bei der Plattforminstallation aufrufen"
+            }
         },
         {
             "name": "postSamples",
-            "target": "CInstall"
+            "target": "CInstall",
+            "description": {
+                "de": "wir wollen bei Bedarf Beispieldaten erzeugen"
+            }
         },
         {
             "name": "getDescFiles",
-            "target": "TDocuView"
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
+            }
         },
         {
             "name": "getComponentProfiles",
-            "target": "TApiConfiguration"
+            "target": "TApiConfiguration",
+            "description": {
+                "de": "damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden"
+            }
         }
     ]
 }

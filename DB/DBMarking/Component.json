@@ -1,192 +1,319 @@
 {
     "name": "DBMarking",
+    "description": {
+        "de": "Die DBMarking ermöglicht den Zugriff auf die `Marking` Tabelle der Datenbank, dabei sollen Korrekturen, zu Einsendungen, verwaltet werden. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle gehört die `Marking` Datenstruktur.\n\n| Spalte        | Struktur  | Beschreibung | Besonderheit |\n| :------       |:---------:| :------------| -----------: |\n|M_id|INT NOT NULL| die ID der Korrektur |AUTO_INCREMENT,<br>UNIQUE|\n|U_id_tutor|INT NOT NULL| ein Verweis auf das Nutzerkonto des Kontrolleurs (bei automatisch kontrollierten steht hier der Einsender) |-|\n|F_id_file|INT NULL| ein Verweis auf den Korrektureintrag |-|\n|S_id|INT NOT NULL| ein Verweis auf die Einsendung |-|\n|M_tutorComment|VARCHAR(255) NULL| ein Kommentar des Kontrolleurs |-|\n|M_outstanding|TINYINT(1) NULL DEFAULT 0| hier kann die Einsendung als \"besonders\" markiert werden (1 = besonders, 0 = normal) |-|\n|M_status|TINYINT NOT NULL DEFAULT 0| der Korrekturstatus (siehe Marking::getStatusDefinition()) |-|\n|M_points|FLOAT NULL DEFAULT 0| die durch den Kontrolleur vergebenen Punkte |-|\n|M_date|INT UNSIGNED NULL DEFAULT 0| das Datum der Korrektur (als Unix-Zeitstempel) |-|\n|E_id|INT NULL| ein Verweis auf die zugehörige Aufgabe |-|\n|ES_id|INT NULL| ein Verweis auf die Übungsserie |-|\n|M_hideFile|TINYINT NOT NULL DEFAULT 0| ein Korrektur kann ausgeblendet werden, wenn beispielweise ein manuelle Nachkorrektur vorgenommen wurde (1 = \nausgeblendet, 0 = sichtbar) |-|"
+    },
     "version": "1.0",
     "classFile": "DBMarking.php",
     "className": "DBMarking",
     "files": [
-        {"path": ".htaccess"},
-        {"path": "DBMarking.php"},
-        {"path": "index.php"},
-        {"path": "Commands.json"},
-        {"path": "MarkingSample.json"},
-        {"path": "Sql/"},
-        {"path": "info/"}
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBMarking.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "MarkingSample.json"
+        },
+        {
+            "path": "Sql\/"
+        },
+        {
+            "path": "info\/"
+        }
     ],
     "links": [
         {
             "name": "editMarking",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl editMarking"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deleteMarking",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deleteMarking"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deleteSheetMarkings",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deleteSheetMarkings"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addMarking",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl addMarking"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "postSamples",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl postSamples"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deletePlatform",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deletePlatform"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addPlatform",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl addPlatform"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "getMarking",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBMarkingGetMarking/:mid/:sub"
-            }]
+            "description": {
+                "de": "für den Befehl getMarking"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBMarkingGetMarking\/:mid\/:sub"
+                }
+            ]
         },
         {
             "name": "getSubmissionMarking",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBMarkingGetSubmissionMarking/:suid/:sub"
-            }]
+            "description": {
+                "de": "für den Befehl getSubmissionMarking"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBMarkingGetSubmissionMarking\/:suid\/:sub"
+                }
+            ]
         },
         {
             "name": "getAllMarkings",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBExerciseGetAllMarkings/:sub"
-            }]
+            "description": {
+                "de": "für den Befehl getAllMarkings"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBExerciseGetAllMarkings\/:sub"
+                }
+            ]
         },
         {
             "name": "getCourseMarkings",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBMarkingGetCourseMarkings/:courseid/:sub"
-            }]
+            "description": {
+                "de": "für den Befehl getCourseMarkings"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBMarkingGetCourseMarkings\/:courseid\/:sub"
+                }
+            ]
         },
         {
             "name": "getExerciseMarkings",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBMarkingGetExerciseMarkings/:eid/:sub"
-            }]
+            "description": {
+                "de": "für den Befehl getExerciseMarkings"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBMarkingGetExerciseMarkings\/:eid\/:sub"
+                }
+            ]
         },
         {
             "name": "getSheetMarkings",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBMarkingGetSheetMarkings/:esid/:sub"
-            }]
+            "description": {
+                "de": "für den Befehl getSheetMarkings"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBMarkingGetSheetMarkings\/:esid\/:sub"
+                }
+            ]
         },
         {
             "name": "getTutorCourseMarkings",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBMarkingGetTutorCourseMarkings/:courseid/:userid/:sub"
-            }]
+            "description": {
+                "de": "für den Befehl getTutorCourseMarkings"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBMarkingGetTutorCourseMarkings\/:courseid\/:userid\/:sub"
+                }
+            ]
         },
         {
             "name": "getTutorExerciseMarkings",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBMarkingGetTutorExerciseMarkings/:eid/:userid/:sub"
-            }]
+            "description": {
+                "de": "für den Befehl getTutorExerciseMarkings"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBMarkingGetTutorExerciseMarkings\/:eid\/:userid\/:sub"
+                }
+            ]
         },
         {
             "name": "getTutorSheetMarkings",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBMarkingGetTutorSheetMarkings/:esid/:userid/:sub"
-            }]
+            "description": {
+                "de": "für den Befehl getTutorSheetMarkings"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBMarkingGetTutorSheetMarkings\/:esid\/:userid\/:sub"
+                }
+            ]
         },
         {
             "name": "getUserGroupMarkings",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBMarkingGetUserGroupMarkings/:esid/:userid/:sub"
-            }]
+            "description": {
+                "de": "für den Befehl getUserGroupMarkings"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBMarkingGetUserGroupMarkings\/:esid\/:userid\/:sub"
+                }
+            ]
         },
         {
             "name": "getCourseUserGroupMarkings",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBMarkingGetCourseUserGroupMarkings/:courseid/:userid/:sub"
-            }]
+            "description": {
+                "de": "für den Befehl getCourseUserGroupMarkings"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBMarkingGetCourseUserGroupMarkings\/:courseid\/:userid\/:sub"
+                }
+            ]
         },
         {
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBMarkingGetExistsPlatform"
-            }]
+            "description": {
+                "de": "für den Befehl getExistsPlatform"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBMarkingGetExistsPlatform"
+                }
+            ]
         }
     ],
     "connector": [
         {
             "name": "request",
-            "target": "CLocalObjectRequest"
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit DBMarking als lokales Objekt aufgerufen werden kann"
+            }
         },
         {
             "name": "postPlatform",
-            "target": "CInstall"
+            "target": "CInstall",
+            "description": {
+                "de": "der Installationsassistent soll uns bei der Plattforminstallation aufrufen"
+            }
         },
         {
             "name": "postSamples",
             "target": "CInstall",
+            "description": {
+                "de": "wir wollen bei Bedarf Beispieldaten erzeugen"
+            },
             "priority": 160
         },
         {
             "name": "getDescFiles",
-            "target": "TDocuView"
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
+            }
         },
         {
             "name": "getComponentProfiles",
-            "target": "TApiConfiguration"
+            "target": "TApiConfiguration",
+            "description": {
+                "de": "damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden"
+            }
         }
     ]
 }

@@ -2,64 +2,91 @@
     {
         "name": "addZipPermanent",
         "seqInput": "false",
-        "outputType": "File",
-        "inputType": "File",
+        "path": "\/zip",
         "method": "POST",
-        "path": "/zip"
+        "description": {
+            "de": "erzeugt eine ZIP und speichert diese im Dateisystem"
+        },
+        "inputType": "File",
+        "outputType": "File"
     },
     {
         "name": "addZipTemporary",
+        "path": "\/zip\/:filename",
         "seqInput": "false",
-        "callback": "addZipPermanent",
-        "outputType": "binary",
-        "inputType": "File",
         "method": "POST",
-        "path": "/zip/:filename"
+        "description": {
+            "de": "diese ZIP wird nur für den aktuellen Aufruf erzeugt und zurückgegeben"
+        },
+        "inputType": "File",
+        "outputType": "binary",
+        "callback": "addZipPermanent"
     },
     {
         "name": "deleteZip",
-        "outputType": "File",
+        "path": "\/zip\/:a\/:b\/:c\/:file",
         "method": "DELETE",
-        "path": "/zip/:a/:b/:c/:file"
+        "description": {
+            "de": "löscht ein zuvor erzeugtes Archiv"
+        },
+        "outputType": "File"
     },
     {
         "name": "getZipData",
-        "outputType": "File",
+        "path": "\/zip\/:a\/:b\/:c\/:file",
         "method": "GET",
-        "path": "/zip/:a/:b/:c/:file"
+        "description": {
+            "de": "liefert die Daten rund um das Archiv (Größe, Speicherort, etc.)"
+        },
+        "outputType": "File"
     },
     {
         "name": "getZipDocument",
-        "outputType": "binary",
+        "path": "\/zip\/:a\/:b\/:c\/:file\/:filename",
         "method": "GET",
-        "path": "/zip/:a/:b/:c/:file/:filename"
+        "description": {
+            "de": "liefert den Dateiinhalt des Archivs"
+        },
+        "outputType": "binary"
     },
     {
         "name": "addPlatform",
-        "outputType": "Platform",
-        "inputType": "Platform",
+        "path": "\/platform",
         "method": "POST",
-        "path": "/platform"
+        "description": {
+            "de": "installiert die zugehörige Tabelle und die Prozeduren für diese Plattform"
+        },
+        "inputType": "Platform",
+        "outputType": "Platform"
     },
     {
         "name": "deletePlatform",
-        "outputType": "Platform",
-        "inputType": "",
+        "path": "\/platform",
         "method": "DELETE",
-        "path": "/platform"
+        "description": {
+            "de": "entfernt die Komponente und ihre installierten Bestandteile aus der Plattform"
+        },
+        "inputType": "",
+        "outputType": "Platform"
     },
     {
         "name": "getExistsPlatform",
-        "outputType": "Platform",
-        "inputType": "",
+        "path": "\/link\/exists\/platform",
         "method": "GET",
-        "path": "/link/exists/platform"
+        "description": {
+            "de": "prüft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollständig installiert ist"
+        },
+        "inputType": "",
+        "outputType": "Platform"
     },
     {
         "name": "getApiProfiles",
-        "outputType": "GateProfile",
-        "inputType": "",
+        "path": "\/api\/profiles",
         "method": "GET",
-        "path": "/api/profiles"
+        "description": {
+            "de": "liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren"
+        },
+        "inputType": "",
+        "outputType": "GateProfile"
     }
 ]

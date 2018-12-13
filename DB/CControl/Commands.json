@@ -1,17 +1,107 @@
 [
-    {"method":"put", "path":"/link/:linkid" },
-    {"method":"delete", "path":"/link/:linkid" },
-    {"method":"post", "path":"/link" },
-    {"method":"get", "path":"/link/:linkid" },
-    {"method":"put", "path":"/component/:componentid" },
-    {"method":"delete", "path":"/component/:componentid" },
-    {"method":"post", "path":"/component" },
-    {"method":"get", "path":"/tableReferences" },
-    {"method":"get", "path":"/component/:componentid" },
-    {"method":"get", "path":"/definition" },
-    {"method":"get", "path":"/definition/:componentid" },
-    {"method":"get", "path":"/definition/send" },
-    {"method":"POST", "path":"/platform"},
-    {"method":"DELETE", "path":"/platform"},
-    {"method":"GET", "path":"/link/exists/platform"}
+    {
+        "path": "\/link\/:linkid",
+        "method": "put",
+        "description": {
+            "de": "editiert eine Komponentenverbindung"
+        }
+    },
+    {
+        "path": "\/link\/:linkid",
+        "method": "delete",
+        "description": {
+            "de": "entfernt eine Verbindung"
+        }
+    },
+    {
+        "path": "\/platform",
+        "method": "DELETE",
+        "description": {
+            "de": "entfernt die Komponente aus der Veranstaltung (löscht also die zugehörigen Tabellen)"
+        }
+    },
+    {
+        "path": "\/component",
+        "method": "post",
+        "description": {
+            "de": "hinterlegt eine neue Komponente"
+        }
+    },
+    {
+        "path": "\/link\/:linkid",
+        "method": "get",
+        "description": {
+            "de": "gibt eine einzelne Verbindung zurück"
+        }
+    },
+    {
+        "path": "\/definition\/send",
+        "method": "get",
+        "description": {
+            "de": "installiert die Komponenten anhand der Definitionen, welche sich in der Datenbank befinden"
+        }
+    },
+    {
+        "path": "\/component\/:componentid",
+        "method": "put",
+        "description": {
+            "de": "editiert einen Komponenteneintrag in der Datenbank"
+        }
+    },
+    {
+        "path": "\/component\/:componentid",
+        "method": "delete",
+        "description": {
+            "de": "entfernt einen Komponenteneintrag"
+        }
+    },
+    {
+        "path": "\/component\/:componentid",
+        "method": "get",
+        "description": {
+            "de": "gibt einen einzelnen Komponenteneintrag aus"
+        }
+    },
+    {
+        "path": "\/link",
+        "method": "post",
+        "description": {
+            "de": "speichert eine neue Verbindung"
+        }
+    },
+    {
+        "path": "\/definition\/:componentid",
+        "method": "get",
+        "description": {
+            "de": "gibt die vollständige Definition einer Komponente aus"
+        }
+    },
+    {
+        "path": "\/tableReferences",
+        "method": "get",
+        "description": {
+            "de": "gibt alle Fremdschlüsselbeziehungen zwischen den Tabellen aus"
+        }
+    },
+    {
+        "path": "\/platform",
+        "method": "POST",
+        "description": {
+            "de": "installiert CControl in die Plattform (legt also die Tabellen an)"
+        }
+    },
+    {
+        "path": "\/definition",
+        "method": "get",
+        "description": {
+            "de": "gibt alle Komponentendefinitionen aus"
+        }
+    },
+    {
+        "path": "\/link\/exists\/platform",
+        "method": "GET",
+        "description": {
+            "de": "prüft, ob die CControl korrekt in die Plattform installiert wurde"
+        }
+    }
 ]

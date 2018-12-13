@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `Transaction<?php echo $profile; ?>_<?php echo $objec
   `T_durability` BIGINT NOT NULL,
   `T_authentication` varchar(140),
   `T_random` char(32) NOT NULL,
-  `T_content` TEXT,
+  `T_content` MEDIUMTEXT,
   PRIMARY KEY (`T_id`),
   UNIQUE INDEX `T_id_UNIQUE` USING BTREE (`T_id` ASC))
 ENGINE = InnoDB

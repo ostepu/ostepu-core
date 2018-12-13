@@ -1,18 +1,55 @@
 {
-  "name":"LExtension",
-  "version":"1.0",
-  "classFile":"LExtension.php",
-  "className":"LExtension",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"LExtension.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"}
-  ],
-  "links":[
-    {"name":"extension", "target":"", "links":[{"method":"DELETE", "path":"/course/:courseid" },{"method":"POST", "path":"/course" },{"method":"GET", "path":"/link/exists/course/:courseid" }] }
-  ],
-  "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"}
-  ]
+    "name": "LExtension",
+    "description": {
+        "de": "Die LExtension verwaltet Komponenten welche an eine Veranstaltung angehangen werden können. Dazu müssen sich diese Komponenten am 'extension'-Ausgang registrieren und selbst über POST /course installierbar sein."
+    },
+    "version": "1.0",
+    "classFile": "LExtension.php",
+    "className": "LExtension",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "LExtension.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        }
+    ],
+    "links": [
+        {
+            "name": "extension",
+            "target": "",
+            "description": {
+                "de": "An diesen Ausgang können sich die Komponenten hängen, welche als Veranstaltungserweiterung nutzbar sein wollen."
+            },
+            "links": [
+                {
+                    "method": "DELETE",
+                    "path": "\/course\/:courseid"
+                },
+                {
+                    "method": "POST",
+                    "path": "\/course"
+                },
+                {
+                    "method": "GET",
+                    "path": "\/link\/exists\/course\/:courseid"
+                }
+            ]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit LExtension als lokales Objekt aufgerufen werden kann"
+            }
+        }
+    ]
 }

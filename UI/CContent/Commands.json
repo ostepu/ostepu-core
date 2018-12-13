@@ -1,0 +1,50 @@
+[
+    {
+        "name": "getContent",
+        "path": "\/content\/:path+",
+        "description": {
+            "de": "über diesen Befehl können Inhalte abgerufen werden, welche am getContent Ausgang von CContent hängen. Diese müssen zuvor durch anderen Komponenten dort mit einem Pfad registriert werden."
+        },
+        "placeholder": [
+            {
+                "name": "path",
+                "regex": "%^([a-zA-Z0-9\\.\\-_]+)$%",
+                "description": {
+                    "de": "ein Pfad"
+                }
+            }
+        ],
+        "outputType": "binary"
+    },
+    {
+        "name": "addPlatform",
+        "path": "\/platform",
+        "method": "POST",
+        "description": {
+            "de": "installiert die zugehörige Tabelle und die Prozeduren für diese Plattform"
+        },
+        "inputType": "Platform",
+        "outputType": "Platform"
+    },
+    {
+        "name": "deletePlatform",
+        "path": "\/platform",
+        "method": "DELETE",
+        "description": {
+            "de": "entfernt die Komponente und ihre installierten Bestandteile aus der Plattform"
+        },
+        "inputType": "",
+        "outputType": "Platform"
+    },
+    {
+        "name": "getExistsPlatform",
+        "path": "\/link\/exists\/platform",
+        "method": "GET",
+        "description": {
+            "de": "prüft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollständig installiert ist"
+        },
+        "inputType": "",
+        "outputType": "Platform",
+        "singleOutput": "TRUE"
+    }
+]

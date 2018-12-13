@@ -29,6 +29,7 @@ include_once ( dirname(__FILE__) . '/Template.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
 include_once ( dirname(__FILE__) . '/Helpers.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Language.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/pageLib.php' );
 if (file_exists(dirname(__FILE__) . '/Config.php')) include_once dirname(__FILE__) . '/Config.php';
 
 if ($startup_error !== null){

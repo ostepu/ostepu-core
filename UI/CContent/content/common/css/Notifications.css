@@ -1,0 +1,110 @@
+/**
+ * @file Forms.css
+ * Layout styles for Notifications.
+ *
+ * @author Felix Schmidt
+ */
+
+.notification-bar {
+    padding: 7px 40px;
+    margin-top: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    word-break: break-all; 
+    border: none;
+}
+
+textarea.notification-bar{
+    outline: none;
+}
+
+.notification-box { 
+    padding: 7px 10px;    
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 150px;
+    margin-right: 10px;
+    resize:none;
+    display:inline-block;
+}
+
+.notification-list {
+    margin-bottom: 20px;
+    word-break: break-all;
+}
+.error {
+    border: 3px solid #DE3838;
+    color: #DE3838;
+    background-image: url(../img/Error.png);
+    background-repeat: no-repeat;
+    background-position: 8px 6px;
+    background-size: 18px 18px;
+}
+
+.warning {
+    border: 3px solid #f4ad32;
+    color: #f4ad32;
+    background-image: url(../img/Warning.png);
+    background-repeat: no-repeat;
+    background-position: 8px 6px;
+    background-size: 18px 18px;
+}
+
+.success {
+    border: 3px solid #2DB22D;
+    color: #2DB22D;
+    background-image: url(../img/Success.png);
+    background-repeat: no-repeat;
+    background-position: 8px 6px;
+    background-size: 18px 18px;
+}
+
+.info {
+    border: 3px solid #2b648f;
+    color: #2b648f;
+}
+
+.error-simple {
+    border: 3px dashed #DE3838;
+    color: #DE3838;
+}
+
+.error-symbol {
+    content:url("../img/Error.png");
+    width: 17px;
+    height: 17px;
+}
+
+.error-color {
+    color: #DE3838;
+}
+
+.warning-simple {
+    border: 3px dashed #f4ad32;
+    color: #f4ad32;
+}
+
+.warning-color {
+    color: #f4ad32;
+}
+
+.success-simple {
+    border: 3px dashed #2DB22D;
+    color: #2DB22D;
+}
+
+.success-color {
+    color: #2DB22D;
+}
+
+.info-simple {
+    color: #2b648f;
+    font-weight: bold;
+    border: 1px solid #2b648f;
+    border-radius: 5px;
+}
+
+.transparent-simple {
+    border: 3px dashed transparent;
+    color: transparent;
+}

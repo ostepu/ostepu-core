@@ -241,8 +241,8 @@ class Zugang
         if (!isset($data['ZV']['zv_type']) || $data['ZV']['zv_type'] == 'local' || $data['ZV']['zv_type'] == ''){
             if (is_callable($func)){
                     $temp = explode('::',$func);
-
-                    $answer = $temp[0]::$temp[1]($data, $fail, $errno, $error);
+                    $temp = array($temp[0], $temp[1]);
+                    $answer = $temp($data, $fail, $errno, $error);
                     return $answer;
             } else {
                 $error = "Funktion $func kann nicht aufgerufen werden!";

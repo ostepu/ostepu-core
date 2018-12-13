@@ -1,122 +1,204 @@
 {
     "name": "DBApprovalCondition",
+    "description": {
+        "de": "Die DBApprovalCondition ermöglicht den Zugriff auf die `ApprovalCondition` Tabelle der Datenbank, dabei sollen Zulassungsbedingungen verwaltet werden. Dazu wird bei einem `POST \/platform` Aufruf die nachstehende Tabelle erzeugt. Zu dieser Tabelle gehört die `ApprovalCondition` Datenstruktur.\n\n| Spalte        | Struktur  | Beschreibung | Besonderheit |\n| :------       |:---------:| :------------| -----------: |\n|AC_id|INT NOT NULL| die ID der Zulassungsbedingung |AUTO_INCREMENT,<br>UNIQUE|\n|C_id|INT NOT NULL| ein Verweis auf die zugehörige Veranstaltung (`Course`) |-|\n|ET_id|INT NOT NULL| ein Verweis auf einen Aufgabentyp (`ExerciseType`) |-|\n|AC_percentage|FLOAT NOT NULL DEFAULT 0| die zu erreichenden Punkte in Prozent. Bsp.: 0.5 für 50% |-|"
+    },
     "version": "1.0",
     "classFile": "DBApprovalCondition.php",
     "className": "DBApprovalCondition",
     "files": [
-        {"path": ".htaccess"},
-        {"path": "DBApprovalCondition.php"},
-        {"path": "index.php"},
-        {"path": "Commands.json"},
-        {"path": "Sql/"},
-        {"path": "info/"}
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBApprovalCondition.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "Sql\/"
+        },
+        {
+            "path": "info\/"
+        }
     ],
     "links": [
         {
             "name": "editApprovalCondition",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl editApprovalCondition"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deleteApprovalCondition",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deleteApprovalCondition"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addApprovalCondition",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl addApprovalCondition"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "postSamples",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl postSamples"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deletePlatform",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deletePlatform"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addPlatform",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl addPlatform"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "getApprovalCondition",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBApprovalConditionGetApprovalCondition/:apid"
-            }]
+            "description": {
+                "de": "für den Befehl getApprovalCondition"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBApprovalConditionGetApprovalCondition\/:apid"
+                }
+            ]
         },
         {
             "name": "getAllApprovalConditions",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBApprovalConditionGetAllApprovalConditions"
-            }]
+            "description": {
+                "de": "für den Befehl getAllApprovalConditions"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBApprovalConditionGetAllApprovalConditions"
+                }
+            ]
         },
         {
             "name": "getCourseApprovalConditions",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBApprovalConditionGetCourseApprovalConditions/:courseid"
-            }]
+            "description": {
+                "de": "für den Befehl getCourseApprovalConditions"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBApprovalConditionGetCourseApprovalConditions\/:courseid"
+                }
+            ]
         },
         {
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBApprovalConditionGetExistsPlatform"
-            }]
+            "description": {
+                "de": "für den Befehl getExistsPlatform"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBApprovalConditionGetExistsPlatform"
+                }
+            ]
         },
         {
             "name": "getSamplesInfo",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBApprovalConditionGetExistsPlatform"
-            }]
+            "description": {
+                "de": "für den Befehl getSamplesInfo"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBApprovalConditionGetExistsPlatform"
+                }
+            ]
         }
     ],
     "connector": [
         {
             "name": "request",
-            "target": "CLocalObjectRequest"
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit DBApprovalCondition als lokales Objekt aufgerufen werden kann"
+            }
         },
         {
             "name": "postPlatform",
-            "target": "CInstall"
+            "target": "CInstall",
+            "description": {
+                "de": "der Installationsassistent soll uns bei der Plattforminstallation aufrufen"
+            }
         },
         {
             "name": "getDescFiles",
-            "target": "TDocuView"
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
+            }
         },
         {
             "name": "getComponentProfiles",
-            "target": "TApiConfiguration"
+            "target": "TApiConfiguration",
+            "description": {
+                "de": "damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden"
+            }
         }
     ]
 }

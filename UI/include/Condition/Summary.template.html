@@ -1,4 +1,5 @@
 <?php $langTemplate='Condition_Summary';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+<?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uicondition_summary_cconfig.json'); ?>
 
 <?php
 if (isset($SummaryNotificationElements)) {
@@ -24,6 +25,7 @@ if (isset($SummaryNotificationElements)) {
     <div class="content-header">
         <?php echo MakeInfoButton('page/admin/condition','summary.md'); ?>
         <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <?php echo pageLib::getContent('getHeader', $this->content, $pageComponent);?>
     </div>
 
     <div class="content-body-wrapper">
@@ -146,7 +148,9 @@ if (isset($SummaryNotificationElements)) {
                     
                     print '</tr>';
                 }
-            print '</table></div>';
+                print '</table></div>';
+            
+                echo pageLib::getContent('getContent', $this->content, $pageComponent);
             } ?>
             
             <?php 
@@ -154,6 +158,6 @@ if (isset($SummaryNotificationElements)) {
                 echo Language::Get('main','noData', $langTemplate);
             }
             ?>
-        </div>
+                    </div>
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->

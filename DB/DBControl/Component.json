@@ -1,19 +1,74 @@
 {
-  "name":"DBControl",
-  "version":"1.0",
-  "classFile":"DBControl.php",
-  "className":"DBControl",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"DBControl.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"},
-    {"path":"Controller.php"}
-  ],
-  "links":[
-    {"name":"out", "target":["DBCourse","DBUser","DBAttachment","DBExercise","DBExerciseSheet","DBExerciseType","DBFile","DBSession","DBExternalId","DBApprovalCondition","DBGroup","DBInvitation","DBMarking","DBCourseStatus","DBSelectedSubmission","DBSubmission","DBExerciseFileType","CControl","DBForm","DBProcess","DBSetting"], "links":[] }
-  ],
-  "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"}
-  ]
+    "name": "DBControl",
+    "description": {
+        "de": "Diese Komponente gehört zu den veralteten Verteilerkomponenten und soll den Zugriff auf mehrere nachgeschaltene Komponenten ermöglichen. (DEPRECATED)"
+    },
+    "version": "1.0",
+    "classFile": "DBControl.php",
+    "className": "DBControl",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBControl.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "Controller.php"
+        }
+    ],
+    "links": [
+        {
+            "name": "out",
+            "target": [
+                "DBCourse",
+                "DBUser",
+                "DBAttachment",
+                "DBExercise",
+                "DBExerciseSheet",
+                "DBExerciseType",
+                "DBFile",
+                "DBSession",
+                "DBExternalId",
+                "DBApprovalCondition",
+                "DBGroup",
+                "DBInvitation",
+                "DBMarking",
+                "DBCourseStatus",
+                "DBSelectedSubmission",
+                "DBSubmission",
+                "DBExerciseFileType",
+                "CControl",
+                "DBForm",
+                "DBProcess",
+                "DBSetting"
+            ],
+            "description": {
+                "de": "über diesen Ausgang werden die nachgeschaltenen Komponenten angefragt"
+            },
+            "links": []
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit DBControl als lokales Objekt aufgerufen werden kann"
+            }
+        },
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
+            }
+        }
+    ]
 }

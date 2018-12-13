@@ -138,9 +138,12 @@ $databaseURI = $getSiteURI . "/accountsettings/user/{$uid}";
 $accountSettings_data = http_get($databaseURI, true);
 $accountSettings_data = json_decode($accountSettings_data, true);
 
+$accountSettings_data2 = $accountSettings_data;
+unset($accountSettings_data2['courses']); // damit der Header nicht denkt er sei in einer Veranstaltung
+
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
-$h->bind($accountSettings_data);
+$h->bind($accountSettings_data2);
 $h->bind(array('name' => Language::Get('main','accountSettings', $langTemplate),
                'backTitle' => Language::Get('main','course', $langTemplate),
                'backURL' => 'index.php',

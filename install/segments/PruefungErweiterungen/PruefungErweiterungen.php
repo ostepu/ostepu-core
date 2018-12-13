@@ -79,7 +79,7 @@ class PruefungErweiterungen {
         $result = array();
         // check if php extensions are existing
         $result['curl'] = self::apache_extension_exists('curl');
-        $result['mysql'] = self::apache_extension_exists('mysql');
+        //$result['mysql'] = self::apache_extension_exists('mysql'); // wird nicht mehr genutzt
         $result['mysqli'] = self::apache_extension_exists('mysqli');
         $result['json'] = self::apache_extension_exists('json');
         $result['mbstring'] = self::apache_extension_exists('mbstring');

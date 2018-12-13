@@ -13,4 +13,14 @@
 
 require_once ( dirname( __FILE__ ) . '/DBSetting.php' );
 
+Logger::Log(
+            'begin DBSetting',
+            LogLevel::DEBUG
+            );
+
  new DBSetting();
+
+Logger::Log(
+            'end DBSetting',
+            LogLevel::DEBUG
+            );

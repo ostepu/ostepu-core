@@ -1,72 +1,125 @@
 {
     "name": "LFormPredecessor",
+    "description": {
+        "de": "Diese Komponente gehört zu den Formuareingaben um LForm und DBForm. Mit LFormPredecessor werden die Eingaben der Studenten in eine PDF umgewandelt und diese als Einsendung behandelt."
+    },
     "version": "1.0",
     "classFile": "LFormPredecessor.php",
     "className": "LFormPredecessor",
     "files": [
-        {"path": ".htaccess"},
-        {"path": "LFormPredecessor.php"},
-        {"path": "index.php"},
-        {"path": "Commands.json"},
-        {"path": "info/"},
-        {"path": "help/"}
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "LFormPredecessor.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "info\/"
+        },
+        {
+            "path": "help\/"
+        }
     ],
     "links": [
         {
             "name": "formDb",
             "target": "DBForm",
-            "links": [{
-                "method": "GET",
-                "path": "/form/exercise/:exerciseid"
-            }]
+            "description": {
+                "de": "um die Formulare einer Aufgabe abzurufen"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/form\/exercise\/:exerciseid"
+                }
+            ]
         },
         {
             "name": "pdf",
             "target": "FSPdf",
-            "links": [{
-                "method": "POST",
-                "path": "/pdf"
-            }]
+            "description": {
+                "de": "zum Anlegen einer PDF"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/pdf"
+                }
+            ]
         },
         {
             "name": "postProcess",
             "target": "DBProcessList",
-            "links": [{
-                "method": "POST",
-                "path": "/process"
-            }]
+            "description": {
+                "de": "über diesen Ausgang trägt sich LFormPredecessor als Verarbeitung in eine Veranstaltung ein"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/process"
+                }
+            ]
         },
         {
             "name": "deleteProcess",
             "target": "DBProcessList",
-            "links": [{
-                "method": "DELETE",
-                "path": "/process/process/:processid"
-            }]
+            "description": {
+                "de": "entfernt LFormPredecessor als Verarbeitung aus einer Veranstaltung"
+            },
+            "links": [
+                {
+                    "method": "DELETE",
+                    "path": "\/process\/process\/:processid"
+                }
+            ]
         },
         {
             "name": "getProcess",
             "target": "DBProcessList",
-            "links": [{
-                "method": "GET",
-                "path": "/process/course/:courseid/component/:componentid"
-            }]
+            "description": {
+                "de": "um den eigenen Verarbeitungseintrag zu ermitteln"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/process\/course\/:courseid\/component\/:componentid"
+                }
+            ]
         }
     ],
     "connector": [
         {
             "name": "postCourse",
             "target": "LForm",
+            "description": {
+                "de": "wenn LForm zu einer Veranstaltung hinzugefügt wird, dann wollen auch aufgerufen werden"
+            },
             "priority": 150
         },
         {
             "name": "request",
-            "target": "CLocalObjectRequest"
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit LFormPredecessor als lokales Objekt aufgerufen werden kann"
+            }
         },
         {
             "name": "request",
             "target": "CHelp",
-            "links": [{"path": "/help/:language/extension/LFormPredecessor/LFormPredecessor.md"}]
+            "description": {
+                "de": "hier werden Hilfedateien beim zentralen Hilfesystem angemeldet, sodass sie über ihre globale Adresse abgerufen werden können"
+            },
+            "links": [
+                {
+                    "path": "\/help\/:language\/extension\/LFormPredecessor\/LFormPredecessor.md"
+                }
+            ]
         }
     ]
 }

@@ -1,0 +1,163 @@
+
+<?php //$langTemplate='MarkingTool';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<div class="loading-box">
+	<div></div>
+	<div>
+		<div></div>
+		<div class="loading-cell">
+			<div class="loading-rotator">
+				<div></div> <div></div> <div></div>
+				<div></div> <div></div> <div></div>
+				<div></div> <div></div> <div></div>
+				<div></div> <div></div> <div></div>
+			</div>
+			<div class="loading-description">
+				Lade Daten ...
+			</div>
+		</div>
+		<div></div>
+	</div>
+	<div></div>
+</div>
+<!--<?php echo json_encode($groups, JSON_PRETTY_PRINT); //var_dump($GLOBALS); ?>-->
+
+<div class="content-box">
+
+</div>
+
+<?php
+$restricted = !($restricted == 1);
+?>
+<!--Alle Daten, die zur Oberfläche übermittelt werden-->
+<script type="text/javascript">
+	MarkingTool.Editor.View.StateCodes = <?php
+		$d = array();
+		$d[] = array("key"=>"all", "value"=>"Alle");
+		$d[] = array("key"=>"notAccepted", "value"=>"nicht akzeptiert");
+		foreach ($markingStatus as $ms) {
+			$d[] = array("key"=>intval($ms["id"]), "value"=>$ms["longName"]);
+		}
+		echo json_encode($d);
+	?>;
+	MarkingTool.Editor.View.SimpleStateCodes = <?php
+		$d = array();
+		foreach ($markingStatus as $ms) {
+			$d[] = array("key"=>intval($ms["id"]), "value"=>$ms["longName"]);
+		}
+		echo json_encode($d);
+	?>;
+	MarkingTool.Editor.View.SheetCodes = <?php
+		$d = array();
+		foreach ($exerciseSheets as $sheet)
+			$d[] = array("key"=>$sheet["id"], "value"=>$sheet["sheetName"]);
+		echo json_encode($d);
+	?>;
+	MarkingTool.Editor.View.TutorCodes = <?php
+		$d = array();
+		if ($restricted) {
+			foreach ($tutors as $tutor)
+				if ($tutor["id"] == $uid)
+					$d[] = array("key"=>$tutor["id"], "value"=>$tutor['firstName'] . 
+						' ' . $tutor['lastName'] . ' ('.$tutor['userName'].')');
+		}
+		else {
+			$d[] = array("key"=>"all", "value"=>"Alle");
+			foreach ($tutors as $tutor)
+				$d[] = array("key"=>$tutor["id"], "value"=>$tutor['firstName'] . 
+					' ' . $tutor['lastName'] . ' ('.$tutor['userName'].')');
+		}
+		echo json_encode($d);
+	?>;
+	MarkingTool.Editor.Data = <?php
+		$d = array();
+		$c = 0;
+		foreach ($groups as $group) {
+			$user = array();
+			if ($restricted)
+				$user[] = array("id" => intval($group["leader"]["id"]), "name" => "", "user" => "");
+			else $user[] = array(
+				"id" => intval($group["leader"]["id"]),
+				"name" => (isset($group["leader"]["firstName"])?$group["leader"]["firstName"]:'???') . " " . (isset($group["leader"]["lastName"]) ? $group["leader"]["lastName"] : '???'),
+				"user" => $group["leader"]["userName"]
+			);
+			if (!$restricted && isset($group["member"]))
+				foreach($group["member"] as $member)
+					$user[] = array(
+						"id" => intval($member["id"]), 
+						"name" => $member["firstName"] . " " . $member["lastName"],
+						"user" => $member["userName"]
+					);
+			$tasks = array();
+			foreach ($group["exercises"] as $exercise) {
+				if ($restricted && !isset($exercise["submission"])) continue;
+				$c++;
+				$tasks[] = array(
+					"groupIndex" => count($d),
+					"leaderId" => intval($group["leader"]["id"]),
+					"id" => intval($exercise["id"]),
+					"maxPoints" => floatval($exercise["maxPoints"]),
+					"submissionId" => isset($exercise["submission"]) ? 
+						intval($exercise["submission"]["id"]) : null,
+					"markingId" => isset($exercise["submission"]["marking"]) ? 
+						$exercise["submission"]["marking"]["id"] : null,
+					"points" => isset($exercise["submission"]["marking"]["points"]) ?
+						$exercise["submission"]["marking"]["points"] : null,
+					"accepted" => isset($exercise["submission"]["accepted"]) ? 
+						intval($exercise["submission"]["accepted"]) != 0 : null,
+					"isBonus" => isset($exercise["bonus"]) ?
+						intval($exercise["bonus"]) != 0 : null,
+					"status" => isset($exercise["submission"]["marking"]["status"]) ?
+						$exercise["submission"]["marking"]["status"] : null,
+					"tutorComment" => isset($exercise["submission"]["marking"]["tutorComment"]) ?
+						$exercise["submission"]["marking"]["tutorComment"] : null,
+					"userFile" => isset($exercise["submission"]) && 
+						(!isset($exercise['submission']['hideFile']) || 
+						$exercise['submission']['hideFile'] == "0") ?
+						array (
+							"id" => intval($exercise["submission"]["file"]["fileId"]),
+							"name" => $exercise["submission"]["file"]["displayName"],
+							"url" => generateDownloadURL($exercise['submission']['file'])
+						) : null,
+					"tutorFile" => isset($exercise["submission"]["marking"]) &&
+						isset($exercise["submission"]["marking"]["file"]) &&
+						(!isset($exercise['submission']['marking']['hideFile']) || 
+						$exercise['submission']['marking']['hideFile'] == "0") ?
+						array (
+							"id" => intval($exercise["submission"]['marking']["file"]["fileId"]),
+							"name" => $exercise["submission"]['marking']["file"]["displayName"],
+							"url" => generateDownloadURL($exercise['submission']['marking']['file'])
+						) : null,
+					"studentComment" => isset($exercise["submission"]["comment"]) ?
+						$exercise["submission"]["comment"] : null,
+					"date" => isset($exercise["submission"]["date"]) ? 
+						intval($exercise["submission"]["date"]) : null,
+					"endDate" => intval($exerciseSheets[0]["endDate"]),
+					"tutor" => isset($exercise["submission"]["marking"]["tutorId"]) &&
+						isset($tutors[$exercise["submission"]["marking"]["tutorId"]]) ?
+						array(
+							"id" => intval($exercise["submission"]["marking"]["tutorId"]),
+							"name" => $tutors[$exercise["submission"]["marking"]["tutorId"]]["firstName"] .
+								" " . $tutors[$exercise["submission"]["marking"]["tutorId"]]["lastName"],
+							"user" => $tutors[$exercise["submission"]["marking"]["tutorId"]]["userName"]
+						) : null,
+					"tasknum" => isset($namesOfExercises[$exercise["id"]]) ? 
+						$namesOfExercises[$exercise["id"]] : null
+				);
+			}
+			$d[] = array(
+				"group" => $user,
+				"tasks" => $tasks
+			);
+		}
+		echo json_encode($d);
+	?>;
+	MarkingTool.Editor.Logic.TaskLeftCounter = <?php echo $c; ?>;
+	MarkingTool.Editor.Settings.RestrictedMode = <?php echo $restricted ? "true" : "false"; ?>;
+	MarkingTool.Editor.Settings.UserLevel = <?php echo $userLevel; ?>;
+	MarkingTool.Editor.Settings.BackUrl = "<?php echo $backUrl; ?>";
+	MarkingTool.Editor.Settings.Get.cid = <?php echo $cid; ?>;
+	MarkingTool.Editor.Settings.Get.sid = <?php echo $sid; ?>;
+</script>

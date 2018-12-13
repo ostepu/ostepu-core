@@ -1,116 +1,187 @@
 [
     {
-        "name": "editRedirect",
-        "outputType": "Redirect",
-        "inputType": "Redirect",
-        "method": "put",
-        "placeholder": [{
-            "name": "redid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/redirect/redirect/:redid"
-    },
-    {
-        "name": "deleteRedirect",
-        "outputType": "Redirect",
-        "inputType": "",
-        "method": "delete",
-        "placeholder": [{
-            "name": "redid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/redirect/redirect/:redid"
-    },
-    {
-        "name": "addRedirect",
-        "outputType": "Redirect",
-        "inputType": "Redirect",
+        "name": "addCourse",
+        "path": "\/course",
         "method": "post",
-        "placeholder": [{
-            "name": "courseid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/redirect/course/:courseid"
+        "description": {
+            "de": "fügt DBRedirect zur Veranstaltung hinzu"
+        },
+        "inputType": "Course",
+        "outputType": "Course"
     },
     {
         "name": "getExistsCourseRedirects",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "Course",
-        "inputType": "",
+        "path": "\/link\/exists\/course\/:courseid",
         "method": "get",
-        "placeholder": [{
-            "name": "courseid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/link/exists/course/:courseid"
-    },
-    {
-        "name": "getCourseRedirects",
-        "callback": "getMatch",
-        "outputType": "Redirect",
-        "inputType": "",
-        "method": "get",
-        "placeholder": [{
-            "name": "courseid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/redirect/course/:courseid"
-    },
-    {
-        "name": "getRedirect",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "Redirect",
-        "inputType": "",
-        "method": "get",
-        "placeholder": [{
-            "name": "redid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/redirect/redirect/:redid"
-    },
-    {
-        "name": "getRedirectByLocation",
-        "callback": "getMatch",
-        "outputType": "Redirect",
-        "inputType": "",
-        "method": "get",
+        "description": {
+            "de": "prüft, ob die Komponente korrekt für diese Veranstaltung installiert wurde"
+        },
         "placeholder": [
             {
                 "name": "courseid",
-                "regex": "%^([0-9_]+)$%"
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Course",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
+    },
+    {
+        "name": "getRedirectByLocation",
+        "path": "\/redirect\/course\/:courseid\/location\/:locname",
+        "method": "get",
+        "description": {
+            "de": "ermittelt Weiterleitungen anhand ihrer Zeichenorte"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                }
             },
             {
                 "name": "locname",
-                "regex": "%^([a-zA-Z_]+)$%"
+                "regex": "%^([a-zA-Z_]+)$%",
+                "description": {
+                    "de": "der Ortsbezeichner einer Weiterleitung, an welchem diese gezeichnet wird (beispielsweise `sheet`, für alle Übungsserien)"
+                }
             }
         ],
-        "path": "/redirect/course/:courseid/location/:locname"
+        "inputType": "",
+        "outputType": "Redirect",
+        "callback": "getMatch"
+    },
+    {
+        "name": "addRedirect",
+        "path": "\/redirect\/course\/:courseid",
+        "method": "post",
+        "description": {
+            "de": "fügt einen neuen Eintrag ein"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                }
+            }
+        ],
+        "inputType": "Redirect",
+        "outputType": "Redirect"
+    },
+    {
+        "name": "editRedirect",
+        "path": "\/redirect\/redirect\/:redid",
+        "method": "put",
+        "description": {
+            "de": "editiert eine Weiterleitung"
+        },
+        "placeholder": [
+            {
+                "name": "redid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID eines Redirect-Eintrags (`Redirect`)"
+                }
+            }
+        ],
+        "inputType": "Redirect",
+        "outputType": "Redirect"
+    },
+    {
+        "name": "getRedirect",
+        "path": "\/redirect\/redirect\/:redid",
+        "method": "get",
+        "description": {
+            "de": "liefert den Eintrag einer Weiterleitungs-ID"
+        },
+        "placeholder": [
+            {
+                "name": "redid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID eines Redirect-Eintrags (`Redirect`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Redirect",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
+    },
+    {
+        "name": "getCourseRedirects",
+        "path": "\/redirect\/course\/:courseid",
+        "method": "get",
+        "description": {
+            "de": "ermittelt alle Weiterleitungen einer Veranstaltung"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Redirect",
+        "callback": "getMatch"
     },
     {
         "name": "deleteCourse",
-        "outputType": "Course",
-        "inputType": "",
+        "path": "\/course\/:courseid",
         "method": "delete",
-        "placeholder": [{
-            "name": "courseid",
-            "regex": "%^([0-9_]+)$%"
-        }],
-        "path": "/course/:courseid"
+        "description": {
+            "de": "entfernt die Komponente aus der Veranstaltung"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Course"
     },
     {
-        "name": "addCourse",
-        "outputType": "Course",
-        "inputType": "Course",
-        "method": "post",
-        "path": "/course"
+        "name": "deleteRedirect",
+        "path": "\/redirect\/redirect\/:redid",
+        "method": "delete",
+        "description": {
+            "de": "entfernt eine Weiterleitung"
+        },
+        "placeholder": [
+            {
+                "name": "redid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID eines Redirect-Eintrags (`Redirect`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Redirect"
     },
     {
         "name": "getApiProfiles",
-        "outputType": "GateProfile",
-        "inputType": "",
+        "path": "\/api\/profiles",
         "method": "GET",
-        "path": "/api/profiles"
+        "description": {
+            "de": "liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren"
+        },
+        "inputType": "",
+        "outputType": "GateProfile"
     }
 ]

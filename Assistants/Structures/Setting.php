@@ -11,12 +11,12 @@
  * @date 2015
  */
 
-include_once ( dirname( __FILE__ ) . '/Object.php' );
+include_once ( dirname( __FILE__ ) . '/StructureObject.php' );
 
 /**
  * the Setting structure
  */
-class Setting extends Object implements JsonSerializable
+class Setting extends StructureObject implements JsonSerializable
 {
 
     /**

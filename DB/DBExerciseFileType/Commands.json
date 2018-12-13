@@ -1,107 +1,202 @@
 [
     {
-        "name": "editExerciseFileType",
-        "outputType": "ExerciseFileType",
-        "inputType": "ExerciseFileType",
-        "method": "PUT",
-        "placeholder":[{"name":"eftid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercisefiletype/exercisefiletype/:eftid"
+        "name": "addPlatform",
+        "path": "\/platform",
+        "method": "POST",
+        "description": {
+            "de": "installiert die zugehörige Tabelle und die Prozeduren für diese Plattform"
+        },
+        "inputType": "Platform",
+        "outputType": "Platform"
     },
     {
         "name": "deleteExerciseFileType",
-        "outputType": "ExerciseFileType",
-        "inputType": "",
+        "path": "\/exercisefiletype\/exercisefiletype\/:eftid",
         "method": "DELETE",
-        "placeholder":[{"name":"eftid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercisefiletype/exercisefiletype/:eftid"
+        "description": {
+            "de": "entfernt den Eintrag mit der genannten ID"
+        },
+        "placeholder": [
+            {
+                "name": "eftid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID eines Dateityps für eine Aufgabe (`ExerciseFileType`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "ExerciseFileType"
     },
     {
-        "name": "deleteExerciseExerciseFileType",
-        "outputType": "ExerciseFileType",
-        "inputType": "",
-        "method": "DELETE",
-        "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercisefiletype/exercise/:eid"
-    },
-    {
-        "name": "deleteExerciseSheetExerciseFileType",
-        "outputType": "ExerciseFileType",
-        "inputType": "",
-        "method": "DELETE",
-        "placeholder":[{"name":"eftid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercisefiletype/exercisesheet/:esid"
-    },
-    {
-        "name": "addExerciseFileType",
-        "outputType": "ExerciseFileType",
+        "name": "editExerciseFileType",
+        "path": "\/exercisefiletype\/exercisefiletype\/:eftid",
+        "method": "PUT",
+        "description": {
+            "de": "editiert einen Eintrag"
+        },
+        "placeholder": [
+            {
+                "name": "eftid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID eines Dateityps für eine Aufgabe (`ExerciseFileType`)"
+                }
+            }
+        ],
         "inputType": "ExerciseFileType",
-        "method": "POST",
-        "path": "/exercisefiletype"
-    },
-    {
-        "name": "getExerciseFileType",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "ExerciseFileType",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"eftid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercisefiletype/exercisefiletype/:eftid"
+        "outputType": "ExerciseFileType"
     },
     {
         "name": "getExerciseExerciseFileTypes",
-        "callback": "getMatch",
-        "outputType": "ExerciseFileType",
-        "inputType": "",
+        "path": "\/exercisefiletype\/exercise\/:eid",
         "method": "GET",
-        "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercisefiletype/exercise/:eid"
-    },
-    {
-        "name": "getSheetExerciseFileTypes",
-        "callback": "getMatch",
+        "description": {
+            "de": "liefert alle Einträge zu einer Aufgabe"
+        },
+        "placeholder": [
+            {
+                "name": "eid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Aufgabe (`Exercise`)"
+                }
+            }
+        ],
+        "inputType": "",
         "outputType": "ExerciseFileType",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercisefiletype/exercisesheet/:esid"
+        "callback": "getMatch"
     },
     {
-        "name": "getAllExerciseFileTypes",
-        "callback": "getMatch",
-        "outputType": "ExerciseFileType",
-        "inputType": "",
-        "method": "GET",
-        "path": "/exercisefiletype"
-    },
-    {
-        "name": "addPlatform",
-        "outputType": "Platform",
-        "inputType": "Platform",
-        "method": "POST",
-        "path": "/platform"
-    },
-    {
-        "name": "deletePlatform",
-        "outputType": "Platform",
-        "inputType": "",
+        "name": "deleteExerciseSheetExerciseFileType",
+        "path": "\/exercisefiletype\/exercisesheet\/:esid",
         "method": "DELETE",
-        "path": "/platform"
+        "description": {
+            "de": "löscht alle Einträge einer Übungsserie"
+        },
+        "placeholder": [
+            {
+                "name": "eftid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID eines Dateityps für eine Aufgabe (`ExerciseFileType`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "ExerciseFileType"
     },
     {
         "name": "getExistsPlatform",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "Platform",
-        "inputType": "",
+        "path": "\/link\/exists\/platform",
         "method": "GET",
-        "path": "/link/exists/platform"
+        "description": {
+            "de": "prüft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollständig installiert ist"
+        },
+        "inputType": "",
+        "outputType": "Platform",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
+    },
+    {
+        "name": "addExerciseFileType",
+        "path": "\/exercisefiletype",
+        "method": "POST",
+        "description": {
+            "de": "fügt einen neuen Eintrag hinzu"
+        },
+        "inputType": "ExerciseFileType",
+        "outputType": "ExerciseFileType"
+    },
+    {
+        "name": "getExerciseFileType",
+        "path": "\/exercisefiletype\/exercisefiletype\/:eftid",
+        "method": "GET",
+        "description": {
+            "de": "ruft einen einzelnen Eintrag ab"
+        },
+        "placeholder": [
+            {
+                "name": "eftid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID eines Dateityps für eine Aufgabe (`ExerciseFileType`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "ExerciseFileType",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
+    },
+    {
+        "name": "getAllExerciseFileTypes",
+        "path": "\/exercisefiletype",
+        "method": "GET",
+        "description": {
+            "de": "liefert alle Einträge"
+        },
+        "inputType": "",
+        "outputType": "ExerciseFileType",
+        "callback": "getMatch"
+    },
+    {
+        "name": "deleteExerciseExerciseFileType",
+        "path": "\/exercisefiletype\/exercise\/:eid",
+        "method": "DELETE",
+        "description": {
+            "de": "löscht alle Einträge zu einer Aufgabe"
+        },
+        "placeholder": [
+            {
+                "name": "eid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Aufgabe (`Exercise`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "ExerciseFileType"
+    },
+    {
+        "name": "deletePlatform",
+        "path": "\/platform",
+        "method": "DELETE",
+        "description": {
+            "de": "entfernt die Komponente und ihre installierten Bestandteile aus der Plattform"
+        },
+        "inputType": "",
+        "outputType": "Platform"
+    },
+    {
+        "name": "getSheetExerciseFileTypes",
+        "path": "\/exercisefiletype\/exercisesheet\/:esid",
+        "method": "GET",
+        "description": {
+            "de": "liefert alle Einträge einer Übungsserie"
+        },
+        "placeholder": [
+            {
+                "name": "esid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Übungsserie (`ExerciseSheet`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "ExerciseFileType",
+        "callback": "getMatch"
     },
     {
         "name": "getApiProfiles",
-        "outputType": "GateProfile",
-        "inputType": "",
+        "path": "\/api\/profiles",
         "method": "GET",
-        "path": "/api/profiles"
+        "description": {
+            "de": "liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren"
+        },
+        "inputType": "",
+        "outputType": "GateProfile"
     }
 ]

@@ -1,0 +1,114 @@
+[
+    {
+        "name": "getButton",
+        "path": "\/view\/button\/entry\/course\/:cid\/sheet\/:sid",
+        "method": "GET",
+        "description": {
+            "de": "gibt den HTML-Code für die Schaltfläche zum Korrekturassistenten aus"
+        },
+        "inputType": "",
+        "outputType": "binary"
+    },
+    {
+        "name": "getMarkingTool2Page",
+        "path": "\/page\/markingtool2\/course\/:cid\/exercisesheet\/:sid",
+        "method": "GET",
+        "description": {
+            "de": "zeichnet die Seite des Korrekturassistenten"
+        },
+        "placeholder": [
+            {
+                "name": "cid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "???"
+                }
+            },
+            {
+                "name": "sid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "???"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "binary"
+    },
+    {
+        "name": "getPing",
+        "path": "\/api\/ping",
+        "method": "GET",
+        "description": {
+            "de": "liefert eine einfache Antwort (mit Loginprüfung)"
+        },
+        "inputType": "",
+        "outputType": "binary"
+    },
+    {
+        "name": "getTest",
+        "path": "\/api\/test",
+        "method": "GET",
+        "description": {
+            "de": "liefert eine einfache Antwort (mit Loginprüfung)"
+        },
+        "inputType": "",
+        "outputType": "binary"
+    },
+    {
+        "name": "postUpload",
+        "path": "\/api\/upload\/course\/:cid\/exercisesheet\/:sid",
+        "method": "POST",
+        "description": {
+            "de": "speichert die Änderungen an den Korrekturen"
+        },
+        "placeholder": [
+            {
+                "name": "cid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "???"
+                }
+            },
+            {
+                "name": "sid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "???"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "binary"
+    },
+    {
+        "name": "getUnknownMode",
+        "path": "\/api\/:mode",
+        "method": "GET",
+        "description": {
+            "de": "ein unbekannter Api-Aufruf wird verwendet"
+        },
+        "inputType": "",
+        "outputType": "binary"
+    },
+    {
+        "name": "language",
+        "path": "\/lang",
+        "method": "GET",
+        "description": {
+            "de": "lädt die Sprachdatei (korrekt???)"
+        },
+        "inputType": "",
+        "outputType": "binary"
+    },
+    {
+        "name": "getUnknownApiCall",
+        "path": "\/:path+",
+        "method": "GET,POST,DELETE,PUT",
+        "description": {
+            "de": "wenn kein anderer Aufruf passt, dann wird dieser Befehl aufgerufen"
+        },
+        "inputType": "",
+        "outputType": "binary"
+    }
+]

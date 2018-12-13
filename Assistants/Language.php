@@ -60,7 +60,42 @@ class Language
     {
         self::$preferedLanguage = $lang;
     }
-        
+      
+	/**
+	 * Lädt für loadLanguage eine Sprachdatei
+	 * 
+	 * @param string $lang           Der Bezeichner der Sprachdatei
+	 * @param string $name           Der normale Name der Sprachdatei
+	 * @param string $nameAdd        Der erweiterte Name der Sprachdatei
+	 * @param string $type           Der Typ der Sprachdatei ("json", "ini")
+	 * @param string $path           Der Pfad der Sprachdatei
+	 * @param string $languageTarget Der Name der Zielvariable wo die Sprachdaten hinsollen 
+	 *                               ("defaultLanguage", "language")
+	 * @param string $selectTarget   Der Name der Zielvariable die den Namen der Sprache haben soll 
+	 *                               ("selectedDefaultLanguage", "defaultLanguage")
+	 */
+	private static function loadSingleLanguageFile($lang, $name, $nameAdd, $type, $path, $languageTarget, $selectTarget) {
+		if (file_exists($path . 'languages/' . $nameAdd . $lang . '.' . $type)){
+			$language = &self::$$languageTarget; //Umgeht den Bug, der ein Array nach self::$$abc nicht zulässt.
+            if (!isset($language[$name]))
+                $language[$name] = array();
+            
+            if ($type == 'ini'){
+                $language[$name] = parse_ini_file( 
+					$path . 'languages/' . $nameAdd . $lang . '.' . $type,
+                    true);
+            } elseif ($type == 'json') {
+                $language[$name] = json_decode( 
+					file_get_contents($path . 'languages/' . $nameAdd . $lang . '.' . $type),
+                    true);
+            }
+			else return false;
+			self::$$selectTarget = $lang;
+            return true;
+        }
+		else return false;
+	}
+	  
     /**
      * Lädt die Sprachdatei von $lang
      *
@@ -87,24 +122,7 @@ class Language
         $nameAdd = ($name == 'default') ? '' : $name.'_';
             
         if (self::$selectedDefaultLanguage==null || self::$selectedDefaultLanguage != self::$default || !isset(self::$defaultLanguage[$name])){
-            if (file_exists($path.'languages/'.$nameAdd.self::$default.'.'.$type)){
-                if (!isset(self::$defaultLanguage[$name]))
-                    self::$defaultLanguage[$name] = array();
-                
-                if ($type == 'ini'){
-                    self::$defaultLanguage[$name] = parse_ini_file( 
-                                              $path.'languages/'.$nameAdd.self::$default.'.'.$type,
-                                              TRUE
-                                              );
-                    self::$selectedDefaultLanguage = self::$default;
-                } elseif ($type == 'json') {
-                    self::$defaultLanguage[$name] = json_decode( 
-                                              file_get_contents($path.'languages/'.$nameAdd.self::$default.'.'.$type),
-                                              TRUE
-                                              );
-                    self::$selectedDefaultLanguage = self::$default;
-                }
-            }
+			self::loadSingleLanguageFile(self::$default, $name, $nameAdd, $type, $path, 'defaultLanguage', 'selectedDefaultLanguage');
         }
     
         if (self::$selectedLanguage === $lang || $lang === null || isset(self::$language[$name])) return;
@@ -112,47 +130,18 @@ class Language
             $lang = self::$preferedLanguage;
         }
         
-        if (file_exists($path.'languages/'.$nameAdd.$lang.'.'.$type)){
-            if (!isset(self::$language[$name]))
-                self::$language[$name] = array();
-            
-            if ($type == 'ini'){
-                self::$language[$name] = parse_ini_file( 
-                                          $path.'languages/'.$nameAdd.$lang.'.'.$type,
-                                          TRUE
-                                          );
-                self::$selectedLanguage = $lang;
-            } elseif ($type == 'json') {
-                self::$language[$name] = json_decode( 
-                                          file_get_contents($path.'languages/'.$nameAdd.$lang.'.'.$type),
-                                          TRUE
-                                          );
-                self::$selectedLanguage = $lang;
-            }
-            
-        }
+		self::loadSingleLanguageFile($lang, $name, $nameAdd, $type, $path, 'language', 'selectedLanguage');
     }
-        
-    /**
-     * Liefert den Text zu dem Platzhalter $cell im Bereich $area
-     *
-     * @param string $area Der Name des Bereichs
-     * @param string $cell Der Name des Platzhalters
-     * @param string $name Ein optionaler Sprachbezeichner (Bsp.: de, en)
-     * @param string[] $params Ersetzungen für Platzhalter. Bsp.: array('abc'=>'test') ersetzt $abc mit 'test'... $ muss maskiert werden
-     * @return string Der Text aus der geladenen Sprache, der Standardsprache oder ??? im Fehlerfall
-     */
-    public static function Get($area, $cell, $name='default', $params=array())
-    {        
-        if (self::$selectedLanguage !== null && isset(self::$language[$name]) && isset(self::$language[$name][$area]) && isset(self::$language[$name][$area][$cell])){
-            $res = self::$language[$name][$area][$cell];
-        } elseif (self::$selectedDefaultLanguage !== null && isset(self::$defaultLanguage[$name]) && isset(self::$defaultLanguage[$name][$area]) && isset(self::$defaultLanguage[$name][$area][$cell])){
-            $res = self::$defaultLanguage[$name][$area][$cell];
-        } else {
-            $res = self::$errorValue;
-        }
-        
-        $matches = array();
+	
+	/**
+	 * Formatiert einen String und ersetzt alle Platzhalter
+	 * 
+	 * @param  string   $res    Der String, welcher formatiert werden soll
+	 * @param  string[] $params Eine Liste aus Platzhalterersetzungen
+	 * @return string           Der verarbeitete Text
+	 */
+	private static function formatString($res, $params) {
+		$matches = array();
         preg_match_all('/[^\\\\]\$\[([\w,]+)\]/', $res, $matches);
         foreach ($matches[1] as $match){
             $splitted = explode(',',$match);
@@ -177,5 +166,90 @@ class Language
         $res = str_replace('\$','$',$res);
         
         return $res;
+	}
+        
+    /**
+     * Liefert den Text zu dem Platzhalter $cell im Bereich $area
+     *
+     * @param string $area Der Name des Bereichs
+     * @param string $cell Der Name des Platzhalters
+     * @param string $name Ein optionaler Sprachbezeichner (Bsp.: de, en)
+     * @param string[] $params Ersetzungen für Platzhalter. Bsp.: array('abc'=>'test') ersetzt $abc mit 'test'... $ muss maskiert werden
+     * @return string Der Text aus der geladenen Sprache, der Standardsprache oder ??? im Fehlerfall
+     */
+    public static function Get($area, $cell, $name='default', $params=array())
+    {        
+        if (self::$selectedLanguage !== null && 
+			isset(self::$language[$name]) && 
+			isset(self::$language[$name][$area]) && 
+			isset(self::$language[$name][$area][$cell]))
+		{
+			$res = self::$language[$name][$area][$cell];
+        } 
+		elseif (self::$selectedDefaultLanguage !== null && 
+			isset(self::$defaultLanguage[$name]) && 
+			isset(self::$defaultLanguage[$name][$area]) && 
+			isset(self::$defaultLanguage[$name][$area][$cell]))
+		{
+            $res = self::$defaultLanguage[$name][$area][$cell];
+        } else {
+            $res = self::$errorValue;
+        }
+		
+		return self::formatString($res, $params);
     }
+	
+	/**
+	 * Verarbeitet alle Strings zu einem Bereich und fügt diesen zur Ergebnismenge hinzu.
+	 * 
+	 * @param string       $selectName Der Name für die Variable für die ausgewählte Sprache
+	 * @param string       $sourceName Der Name für die Variable für die aktuelle Sprachdaten
+	 * @param string       $name       Ein Bezeichner für die Rubrik
+	 * @param string       &$res       Die Ergebnismenge
+	 * @param string[][][] $params     Die mitgelieferten Parameter
+	 */
+	private static function addToResult($selectName, $sourceName, $name, &$res, $params) {
+		$source = &self::$$sourceName;
+		if (self::$$selectName !== null &&
+			isset($source[$name]))
+		{
+			foreach ($source[$name] as $akey => $area) {
+				foreach ($area as $ckey => $cell) {
+					if (!isset($res[$akey])) $res[$akey] = array();
+					if (isset($res[$akey][$ckey])) continue;
+					
+					$p = isset($params[null]) ? $params[null] : array();
+					if (isset($params[$akey]) && isset($params[$akey][null]))
+						$p = array_merge($p, $params[$akey][null]);
+					if (isset($params[$akey]) && isset($params[$akey][$ckey]))
+						$p = array_merge($p, $params[$akey][$ckey]);
+					
+					$res[$akey][$ckey] = self::formatString($cell, $p);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Sucht alle Strings zu einer Rubrik heraus und verarbeitet diesen
+	 * 
+	 * @param string       $name   Der Name der ausgewählten Rubrik
+	 * @param string[][][] $params Eine Auflistung für alle Parameter, die bei jedem der Strings 
+	 *                             zur Formatierung genutzt werden. Hierbei gilt folgende Struktur:
+	 *                             $params[] :
+	 *                                [null] = array() => Defaultwerte für alle Strings
+	 *                                [$area][] : (alle Bereiche innerhalb der Rubrik)
+	 *                                   [null] = array() => Defaultwerte für alle Strings innerhalb eines Bereichs
+	 *                                   [$cell] = array() => Parameterwerte für genau einen String
+	 *                             Die Parameter selbst folgen den Konventionen der Funktion Get()
+	 * @return string[][]          Alle berechneten Strings
+	 */
+	public static function GetAll($name='default', $params=array()) {
+		$res = array();
+		
+		self::addToResult("selectedLanguage", "language", $name, $res, $params);
+		self::addToResult("selectedDefaultLanguage", "defaultLanguage", $name, $res, $params);
+		
+		return $res;
+	}
 }

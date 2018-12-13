@@ -1,22 +1,81 @@
 {
-  "name":"DBNotification",
-  "version":"1.0",
-  "classFile":"DBNotification.php",
-  "className":"DBNotification",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"DBNotification.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"},
-    {"path":"Sql/"}
-  ],
-  "links":[
-    {"name":"out", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
-  ],
-  "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"},
-    {"name":"postCourse", "target":"LCourse", "priority":150},
-    {"name":"deleteCourse", "target":"LCourse", "priority":150},
-    {"name":"postPlatform", "target":"CInstall", "priority":150}
-  ]
+    "name": "DBNotification",
+    "description": {
+        "de": "Die DBNotification ermöglicht den Zugriff auf die `Notification_X` Tabellen der Datenbank. Diese verwalten veranstaltungsbezogene Meldungen. Diese werden durch Dozenten und Admins in der Kursverwaltung erstellt und den Nutzern auf deren Veranstaltungsübersichten angezeigt. Dazu wird bei einem `POST \/course` Aufruf die nachstehende Tabelle erzeugt."
+    },
+    "version": "1.0",
+    "classFile": "DBNotification.php",
+    "className": "DBNotification",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBNotification.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "Sql\/"
+        }
+    ],
+    "links": [
+        {
+            "name": "out",
+            "target": "DBQuery2",
+            "description": {
+                "de": "über diesen Ausgang werden alle Datenbankanfragen ausgeführt"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit DBNotification als lokales Objekt aufgerufen werden kann"
+            }
+        },
+        {
+            "name": "postCourse",
+            "target": "LCourse",
+            "description": {
+                "de": "wenn eine neue Veranstaltung angelegt wird, dann wollen wir auch aufgerufen werden"
+            },
+            "priority": 150
+        },
+        {
+            "name": "deleteCourse",
+            "target": "LCourse",
+            "description": {
+                "de": "wenn eine Veranstaltung gelöscht wird, dann müssen auch unsere Tabellen entfernt werden"
+            },
+            "priority": 150
+        },
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
+            }
+        },
+        {
+            "name": "postPlatform",
+            "target": "CInstall",
+            "description": {
+                "de": "der Installationsassistent soll uns bei der Plattforminstallation aufrufen"
+            },
+            "priority": 150
+        }
+    ]
 }

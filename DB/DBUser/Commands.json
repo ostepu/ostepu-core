@@ -1,141 +1,271 @@
 [
     {
-        "name": "editUser",
-        "outputType": "User",
-        "inputType": "User",
-        "method": "PUT",
-        "placeholder":[{"name":"userid","regex":"%^([a-zA-Z0-9äöüÄÖÜß]+)$%"}],
-        "path": "/user/user/:userid"
+        "name": "postSamples",
+        "path": "\/samples\/course\/:courseAmount\/user\/:userAmount",
+        "method": "POST",
+        "description": {
+            "de": "erzeugt Zufallsdaten (courseAmount = Anzahl der Veranstaltungen, userAmount = Anzahl der Nutzer), anhand der Vorgabe"
+        },
+        "inputType": "",
+        "outputType": "Query"
     },
     {
         "name": "removeUser",
-        "outputType": "User",
-        "inputType": "",
+        "path": "\/user\/user\/:userid",
         "method": "DELETE",
-        "placeholder":[{"name":"userid","regex":"%^([a-zA-Z0-9äöüÄÖÜß]+)$%"}],
-        "path": "/user/user/:userid"
-    },
-    {
-        "name": "removeUserPermanent",
-        "outputType": "User",
+        "description": {
+            "de": "setzt U_flag = 0 und löst damit das Entfernen der persönlichen Nutzerdaten aus (entfernt das Nutzerkonto nicht), zusätzlich wird eine eventuell aktive Session entfernt"
+        },
+        "placeholder": [
+            {
+                "name": "userid",
+                "regex": "%^([a-zA-Z0-9äöüÄÖÜß]+)$%",
+                "description": {
+                    "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
+                }
+            }
+        ],
         "inputType": "",
-        "method": "DELETE",
-        "placeholder":[{"name":"userid","regex":"%^([a-zA-Z0-9äöüÄÖÜß]+)$%"}],
-        "path": "/user/user/:userid/permanent"
-    },
-    {
-        "name": "addUser",
-        "outputType": "User",
-        "inputType": "User",
-        "method": "POST",
-        "path": "/user"
-    },
-    {
-        "name": "getUsers",
-        "callback": "getMatch",
-        "outputType": "User",
-        "inputType": "",
-        "method": "GET",
-        "path": "/user"
-    },
-    {
-        "name": "getIncreaseUserFailedLogin",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "User",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"userid","regex":"%^([a-zA-Z0-9äöüÄÖÜß]+)$%"}],
-        "path": "/user/user/:userid/IncFailedLogin"
-    },
-    {
-        "name": "getUser",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "User",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"userid","regex":"%^([a-zA-Z0-9äöüÄÖÜß]+)$%"}],
-        "path": "/user/user/:userid"
+        "outputType": "User"
     },
     {
         "name": "getCourseUserByStatus",
-        "callback": "getMatch",
-        "outputType": "User",
-        "inputType": "",
+        "path": "\/user\/course\/:courseid\/status\/:statusid",
         "method": "GET",
-        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"},{"name":"statusid","regex":"%^([0-9_]+)$%"}],
-        "path": "/user/course/:courseid/status/:statusid"
-    },
-    {
-        "name": "getCourseMember",
-        "callback": "getMatch",
+        "description": {
+            "de": "liefert Nutzerdaten, mit einem bestimmten Status (siehe CourseStatus::getStatusDefinition()) in dieser Veranstaltung"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                }
+            },
+            {
+                "name": "statusid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID eines Veranstaltungsstatus (siehe `DBCourseStatus::getStatusDefinition()`)"
+                }
+            }
+        ],
+        "inputType": "",
         "outputType": "User",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],
-        "path": "/user/course/:courseid"
-    },
-    {
-        "name": "getGroupMember",
-        "callback": "getMatch",
-        "outputType": "User",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
-        "path": "/user/group/user/:userid/exercisesheet/:esid"
-    },
-    {
-        "name": "getUserByStatus",
-        "callback": "getMatch",
-        "outputType": "User",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"statusid","regex":"%^([0-9_]+)$%"}],
-        "path": "/user/status/:statusid"
-    },
-    {
-        "name": "addPlatform",
-        "outputType": "Platform",
-        "inputType": "Platform",
-        "method": "POST",
-        "path": "/platform"
-    },
-    {
-        "name": "deletePlatform",
-        "outputType": "Platform",
-        "inputType": "",
-        "method": "DELETE",
-        "path": "/platform"
+        "callback": "getMatch"
     },
     {
         "name": "getExistsPlatform",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "Platform",
-        "inputType": "",
+        "path": "\/link\/exists\/platform",
         "method": "GET",
-        "path": "/link/exists/platform"
+        "description": {
+            "de": "prüft, ob die Tabelle und die Prozeduren existieren"
+        },
+        "inputType": "",
+        "outputType": "Platform",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
+    },
+    {
+        "name": "removeUserPermanent",
+        "path": "\/user\/user\/:userid\/permanent",
+        "method": "DELETE",
+        "description": {
+            "de": "entfernt das Nutzerkonto entgültig mit allen Konsequenzen (eventuell sind Einsendungen und damit auch Gruppenmitglieder betroffen)"
+        },
+        "placeholder": [
+            {
+                "name": "userid",
+                "regex": "%^([a-zA-Z0-9äöüÄÖÜß]+)$%",
+                "description": {
+                    "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "User"
+    },
+    {
+        "name": "getUser",
+        "path": "\/user\/user\/:userid",
+        "method": "GET",
+        "description": {
+            "de": "liefert einen einzelnen Nutzer (anhand des Nutzernamens oder der ID)"
+        },
+        "placeholder": [
+            {
+                "name": "userid",
+                "regex": "%^([a-zA-Z0-9äöüÄÖÜß]+)$%",
+                "description": {
+                    "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "User",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
+    },
+    {
+        "name": "getGroupMember",
+        "path": "\/user\/group\/user\/:userid\/exercisesheet\/:esid",
+        "method": "GET",
+        "description": {
+            "de": "liefert alle Gruppenangehörigen eines Nutzers in einer bestimmten Übungsserie (dabei ist es egal, ob dieser Nutzer Gruppenführer oder Mitglied ist)"
+        },
+        "placeholder": [
+            {
+                "name": "esid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Übungsserie (`ExerciseSheet`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "User",
+        "callback": "getMatch"
+    },
+    {
+        "name": "addUser",
+        "path": "\/user",
+        "method": "POST",
+        "description": {
+            "de": "fügt eine neues Nutzerkonto ein"
+        },
+        "inputType": "User",
+        "outputType": "User"
+    },
+    {
+        "name": "editUser",
+        "path": "\/user\/user\/:userid",
+        "method": "PUT",
+        "description": {
+            "de": "editiert ein vorhandenes Nutzerkonto"
+        },
+        "placeholder": [
+            {
+                "name": "userid",
+                "regex": "%^([a-zA-Z0-9äöüÄÖÜß]+)$%",
+                "description": {
+                    "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
+                }
+            }
+        ],
+        "inputType": "User",
+        "outputType": "User"
+    },
+    {
+        "name": "addPlatform",
+        "path": "\/platform",
+        "method": "POST",
+        "description": {
+            "de": "installiert die zugehörige Tabelle und die Prozeduren für diese Plattform"
+        },
+        "inputType": "Platform",
+        "outputType": "Platform"
+    },
+    {
+        "name": "getUserByStatus",
+        "path": "\/user\/status\/:statusid",
+        "method": "GET",
+        "description": {
+            "de": "liefert Nutzerdaten, mit einem bestimmten Status (siehe CourseStatus::getStatusDefinition()), für alle Veranstaltungen"
+        },
+        "placeholder": [
+            {
+                "name": "statusid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID eines Veranstaltungsstatus (siehe `DBCourseStatus::getStatusDefinition()`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "User",
+        "callback": "getMatch"
+    },
+    {
+        "name": "getUsers",
+        "path": "\/user",
+        "method": "GET",
+        "description": {
+            "de": "liefert alle existierenden Nutzerkonten (gesperrte und aktive)"
+        },
+        "inputType": "",
+        "outputType": "User",
+        "callback": "getMatch"
+    },
+    {
+        "name": "deletePlatform",
+        "path": "\/platform",
+        "method": "DELETE",
+        "description": {
+            "de": "entfernt die Tabelle und Prozeduren aus der Plattform"
+        },
+        "inputType": "",
+        "outputType": "Platform"
+    },
+    {
+        "name": "getIncreaseUserFailedLogin",
+        "path": "\/user\/user\/:userid\/IncFailedLogin",
+        "method": "GET",
+        "description": {
+            "de": "setzt `U_failed_logins` auf den aktuellen Zeitstempel (damit klar ist, wann der letzte fehlerhafte Loginversuch war)"
+        },
+        "placeholder": [
+            {
+                "name": "userid",
+                "regex": "%^([a-zA-Z0-9äöüÄÖÜß]+)$%",
+                "description": {
+                    "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "User",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
     },
     {
         "name": "getSamplesInfo",
-        "outputType": "",
-        "inputType": "",
+        "path": "\/samples",
         "method": "GET",
-        "path": "/samples"
+        "description": {
+            "de": "liefert die Bezeichner der betroffenen Tabellen"
+        },
+        "inputType": "",
+        "outputType": ""
     },
     {
-        "name": "postSamples",
-        "outputType": "Query",
+        "name": "getCourseMember",
+        "path": "\/user\/course\/:courseid",
+        "method": "GET",
+        "description": {
+            "de": "liefert alle Nutzer zu einer Veranstaltung"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                }
+            }
+        ],
         "inputType": "",
-        "method": "POST",
-        "path": "/samples/course/:courseAmount/user/:userAmount"
+        "outputType": "User",
+        "callback": "getMatch"
     },
     {
         "name": "getApiProfiles",
-        "outputType": "GateProfile",
-        "inputType": "",
+        "path": "\/api\/profiles",
         "method": "GET",
-        "path": "/api/profiles"
+        "description": {
+            "de": "liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren"
+        },
+        "inputType": "",
+        "outputType": "GateProfile"
     }
 ]

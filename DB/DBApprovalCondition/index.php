@@ -13,4 +13,14 @@
 
 require_once ( dirname( __FILE__ ) . '/DBApprovalCondition.php' );
 
+Logger::Log(
+            'begin DBApprovalCondition',
+            LogLevel::DEBUG
+            );
+
 new DBApprovalCondition();
+
+Logger::Log(
+            'end DBApprovalCondition',
+            LogLevel::DEBUG
+            );

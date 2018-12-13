@@ -1,0 +1,45 @@
+{
+    "name": "UIHeader",
+    "option": "confPath=UI\/include\/Header\/uiheader_cconfig.json",
+    "description": {
+        "de": "Diese Komponente gehört zu einem Template und dient der Definition von Plathaltern. An diese Ausgänge\/Platzhalter können sich Komponenten anhängen und Inhalte direkt dort einfügen. Dazu müssen diese Komponenten einen Connector auf den entsprechenden Platzhalter dieser Komponenten definieren. Die Platzhalter selbst werden in dem zugehörigen Template aufgerufen und der Inhalt an der entsprechenden Stelle eingefügt."
+    },
+    "version": "1.0",
+    "baseURI": "\/uiheader",
+    "base": "CAbstract",
+    "type": "clone",
+    "links": [
+        {
+            "name": "getTitleContent",
+            "target": "",
+            "description": {
+                "de": "für den Platzhalter getTitleContent"
+            },
+            "links": []
+        },
+        {
+            "name": "getFooterContent",
+            "target": "",
+            "description": {
+                "de": "für den Platzhalter getFooterContent"
+            },
+            "links": []
+        },
+        {
+            "name": "getContent",
+            "target": "",
+            "description": {
+                "de": "für den Platzhalter getContent"
+            },
+            "links": []
+        },
+        {
+            "name": "getStudentContent",
+            "target": "",
+            "description": {
+                "de": "für den Platzhalter getStudentContent"
+            },
+            "links": []
+        }
+    ]
+}

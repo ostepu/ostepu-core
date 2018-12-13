@@ -1,6 +1,51 @@
 [
-    {    "method":"POST", "path":"/tutor/auto/exercise/course/:courseid/exercisesheet/:sheetid" },
-    {    "method":"POST", "path":"/tutor/auto/group/course/:courseid/exercisesheet/:sheetid" },
-    {    "method":"GET", "path":"/tutor/user/:userid/exercisesheet/:sheetid" },
-    {    "method":"POST", "path":"/tutor/user/:userid/course/:courseid" }
+    {
+        "path": "\/tutor\/auto\/exercise\/course\/:courseid\/exercisesheet\/:sheetid",
+        "method": "POST",
+        "description": {
+            "de": "dieser Befehl verteilt die Einsendungen der Studenten gleichmäßig auf die übergebenen Tutoren (Aufgabenweise)"
+        }
+    },
+    {
+        "path": "\/tutor\/auto\/group\/course\/:courseid\/exercisesheet\/:sheetid",
+        "method": "POST",
+        "description": {
+            "de": "dieser Befehl verteilt die Einsendungen der Studenten gleichmäßig auf die übergebenen Tutoren (Gruppenweise)"
+        }
+    },
+    {
+        "path": "\/tutor\/user\/:userid\/exercisesheet\/:sheetid(/status/:status)(/)",
+        "method": "GET",
+        "description": {
+            "de": "erzeugt ein Korrekturarchiv mit den zugewiesenen Korrekturaufträgen"
+        }
+    },
+    {
+        "path": "\/tutor\/user\/:userid\/exercisesheet\/:sheetid(/status/:status)(/withnames)(/)",
+        "method": "GET",
+        "description": {
+            "de": "erzeugt ein Korrekturarchiv mit den zugewiesenen Korrekturaufträgen und fügt die Namen der Studenten ein"
+        }
+    },
+    {
+        "path": "\/tutor\/user\/:userid\/course\/:courseid",
+        "method": "POST",
+        "description": {
+            "de": "bearbeitet ein Korrekturarchiv und übernimmt die Änderungen aus diesem ins System"
+        }
+    },
+    {
+        "path": "\/tutor\/archive/user/:userid/exercisesheet/:sheetid(/)",
+        "method": "POST",
+        "description": {
+            "de": "erzeugt ein Korrekturarchiv anhand der übermittelten Marking-Daten"
+        }
+    },
+    {
+        "path": "\/tutor\/archive/user/:userid/exercisesheet/:sheetid/withnames(/)",
+        "method": "POST",
+        "description": {
+            "de": "erzeugt ein Korrekturarchiv anhand der übermittelten Marking-Daten und fügt die Namen der Studenten ein"
+        }
+    }
 ]

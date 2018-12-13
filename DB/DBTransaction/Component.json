@@ -1,140 +1,240 @@
 {
     "name": "DBTransaction",
+    "description": {
+        "de": "Die DBTransaction ermöglicht den Zugriff auf die `Transaction_X` Tabellen der Datenbank, dabei sollen Vorgangsnummern mit zugehörigen Inhalten verwaltet werden (welcher nur temporär zugänglich sind). Sie wird beispielsweise genutzt, wenn man zu einem Vorgang zugehörige Daten kurzfristif hinterlegen möchte (beispielsweise zur Verifizierung). Dazu wird bei einem `POST \/course` Aufruf die nachstehende Tabelle erzeugt."
+    },
     "version": "1.0",
     "classFile": "DBTransaction.php",
     "className": "DBTransaction",
     "files": [
-        {"path": ".htaccess"},
-        {"path": "DBTransaction.php"},
-        {"path": "index.php"},
-        {"path": "Commands.json"},
-        {"path": "TransactionSample.json"},
-        {"path": "Sql/"}
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBTransaction.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "TransactionSample.json"
+        },
+        {
+            "path": "Sql\/"
+        }
     ],
     "links": [
         {
             "name": "deleteTransaction",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "DELETE",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deleteTransaction"
+            },
+            "links": [
+                {
+                    "method": "DELETE",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addTransaction",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl addTransaction"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deleteTransactionShort",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "DELETE",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deleteTransactionShort"
+            },
+            "links": [
+                {
+                    "method": "DELETE",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "cleanTransactions",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "DELETE",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl cleanTransactions"
+            },
+            "links": [
+                {
+                    "method": "DELETE",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addExerciseTransaction",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl addExerciseTransaction"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addSheetTransaction",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl addSheetTransaction"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deleteCourse",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deleteCourse"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addCourse",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl addCourse"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "getTransaction",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBTransactionGetTransaction/:profile/:courseid/:auid/:tid/:random"
-            }]
+            "description": {
+                "de": "für den Befehl getTransaction"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBTransactionGetTransaction\/:profile\/:courseid\/:auid\/:tid\/:random"
+                }
+            ]
         },
         {
             "name": "getTransactionShort",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBTransactionGetTransactionShort/:profile/:courseid/:tid/:random"
-            }]
+            "description": {
+                "de": "für den Befehl getTransactionShort"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBTransactionGetTransactionShort\/:profile\/:courseid\/:tid\/:random"
+                }
+            ]
         },
         {
             "name": "getAmountOfExpiredTransactions",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBTransactionGetAmountOfExpiredTransactions/:profile/:courseid"
-            }]
+            "description": {
+                "de": "für den Befehl getAmountOfExpiredTransactions"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBTransactionGetAmountOfExpiredTransactions\/:profile\/:courseid"
+                }
+            ]
         },
         {
             "name": "getExistsCourseTransactions",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBTransactionGetExistsCourseTransactions/:profile/:courseid"
-            }]
+            "description": {
+                "de": "für den Befehl getExsistsCourseTransactions"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBTransactionGetExistsCourseTransactions\/:profile\/:courseid"
+                }
+            ]
         }
     ],
     "connector": [
         {
             "name": "request",
-            "target": "CLocalObjectRequest"
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit DBTransaction als lokales Objekt aufgerufen werden kann"
+            }
         },
         {
             "name": "postCourse",
             "target": "LCourse",
+            "description": {
+                "de": "wenn eine neue Veranstaltung angelegt wird, dann wollen wir auch aufgerufen werden"
+            },
             "priority": 150
         },
         {
             "name": "deleteCourse",
             "target": "LCourse",
+            "description": {
+                "de": "wenn eine Veranstaltung gelöscht wird, dann müssen auch unsere Tabellen entfernt werden"
+            },
             "priority": 150
         },
         {
             "name": "getCleanAmount",
-            "target": "CInstall"
+            "target": "CInstall",
+            "description": {
+                "de": "ermittelt die Anzahl der zu bereinigenden Tabellenzeilen"
+            }
         },
         {
             "name": "deleteClean",
-            "target": "CInstall"
+            "target": "CInstall",
+            "description": {
+                "de": "bereinigt unsere Tabellen (Transaction_X)"
+            }
+        },
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
+            }
         },
         {
             "name": "getComponentProfiles",
-            "target": "TApiConfiguration"
+            "target": "TApiConfiguration",
+            "description": {
+                "de": "damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden"
+            }
         }
     ]
 }

@@ -1,153 +1,268 @@
 {
     "name": "LOOP",
+    "description": {
+        "de": "Die LOOP Komponente wird beim Erstellen von Übungsserien als Verarbeitung verwendet, dabei bietet sie im wesentlichen die Möglichkeit Java Einsendungen zu compilieren und im Fehlerfall abzulehnen."
+    },
     "version": "1.0",
     "classFile": "LOOP.php",
     "className": "LOOP",
     "files": [
-        {"path": ".htaccess"},
-        {"path": "LOOP.php"},
-        {"path": "index.php"},
-        {"path": "Commands.json"},
-        {"path": "compiler/"},
-        {"path": "info/"},
-        {"path": "help/"},
-        {"path": "start_cx"}
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "LOOP.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "compiler\/"
+        },
+        {
+            "path": "info\/"
+        },
+        {
+            "path": "help\/"
+        },
+        {
+            "path": "start_cx"
+        }
     ],
     "links": [
         {
             "name": "pdf",
             "target": "FSPdf",
-            "links": [{
-                "method": "POST",
-                "path": "/pdf"
-            }]
+            "description": {
+                "de": "zum Erzeugen einer PDF"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/pdf"
+                }
+            ]
         },
         {
             "name": "postProcess",
             "target": "DBProcessList",
-            "links": [{
-                "method": "POST",
-                "path": "/process"
-            }]
+            "description": {
+                "de": "um LOOP als Verarbeitung einzutragen"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/process"
+                }
+            ]
         },
         {
             "name": "deleteProcess",
             "target": "DBProcessList",
-            "links": [{
-                "method": "DELETE",
-                "path": "/process/process/:processid"
-            }]
+            "description": {
+                "de": "um LOOP als Verarbeitung zu entfernen"
+            },
+            "links": [
+                {
+                    "method": "DELETE",
+                    "path": "\/process\/process\/:processid"
+                }
+            ]
         },
         {
             "name": "getProcess",
             "target": "DBProcessList",
-            "links": [{
-                "method": "GET",
-                "path": "/process/course/:courseid/component/:componentid"
-            }]
+            "description": {
+                "de": "um den eigenen Verarbeitungseintrag abzurufen"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/process\/course\/:courseid\/component\/:componentid"
+                }
+            ]
         },
         {
             "name": "postCourse",
             "target": "DBOOP",
-            "links": [{
-                "method": "POST",
-                "path": "/course"
-            }]
+            "description": {
+                "de": "fügt LOOP einer Veranstaltung hinzu"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/course"
+                }
+            ]
         },
         {
             "name": "deleteCourse",
             "target": "DBOOP",
-            "links": [{
-                "method": "DELETE",
-                "path": "/course/:courseid"
-            }]
+            "description": {
+                "de": "entfernt die Komponente aus einer Veranstaltung"
+            },
+            "links": [
+                {
+                    "method": "DELETE",
+                    "path": "\/course\/:courseid"
+                }
+            ]
         },
         {
             "name": "postTestcase",
             "target": "DBOOP",
-            "links": [{
-                "method": "POST",
-                "path": "/insert"
-            }]
+            "description": {
+                "de": "um einen Testfall zu registrieren"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/insert"
+                }
+            ]
         },
         {
             "name": "selfLink",
             "target": "LOOP",
+            "description": {
+                "de": "führt einen Selbstaufruf aus"
+            },
             "links": []
         },
         {
             "name": "popTestcase",
             "target": "DBOOP",
-            "links": [{
-                "method": "GET",
-                "path": "/pop"
-            }]
+            "description": {
+                "de": "ruft den nächsten Testfall ab"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/pop"
+                }
+            ]
         },
         {
             "name": "getSubmission",
             "target": "DBSubmission",
+            "description": {
+                "de": "um eine Einsendung abzurufen"
+            },
             "links": []
         },
         {
             "name": "editTestcase",
             "target": "DBOOP",
-            "links": [{
-                "method": "POST",
-                "path": "/testcase/testcase/:testcaseid"
-            }]
+            "description": {
+                "de": "um einen Testfall zu bearbeiten"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/testcase\/testcase\/:testcaseid"
+                }
+            ]
         },
         {
             "name": "getTestcase",
             "target": "DBOOP",
-            "links": [{
-                "method": "GET",
-                "path": "/testcase/submission/:sid/course/:cid"
-            }]
+            "description": {
+                "de": "ruft alle Testfälle einer Veranstaltung und einer Einsendung ab"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/testcase\/submission\/:sid\/course\/:cid"
+                }
+            ]
         },
         {
             "name": "getExercise",
             "target": "DBExercise",
-            "links": [{
-                "method": "GET",
-                "path": "/exercise/exercise/:eid/nosubmission"
-            }]
+            "description": {
+                "de": "ruft eine Aufgabe ab"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/exercise\/exercise\/:eid\/nosubmission"
+                }
+            ]
         },
         {
             "name": "marking",
             "target": "LMarking",
-            "links": [{
-                "method": "POST",
-                "path": "/marking"
-            }]
+            "description": {
+                "de": "um eine Korrektur zu speichern"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/marking"
+                }
+            ]
         }
     ],
     "connector": [
         {
             "name": "extension",
-            "target": "LExtension"
+            "target": "LExtension",
+            "description": {
+                "de": "diese Komponente soll als Veranstaltungserweiterung wählbar sein"
+            }
         },
         {
             "name": "request",
-            "target": "CLocalObjectRequest"
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit LOOP als lokales Objekt aufgerufen werden kann"
+            }
         },
         {
             "name": "request",
             "target": "CHelp",
+            "description": {
+                "de": "hier werden Hilfedateien beim zentralen Hilfesystem angemeldet, sodass sie über ihre globale Adresse abgerufen werden können"
+            },
             "links": [
-                {"path": "/help/:language/extension/LOOP/LOOP.md"},
-                {"path": "/help/:language/extension/LOOP/LOOPDesc.md"},
-                {"path": "/help/:language/extension/LOOP/LOOPA.png"},
-                {"path": "/help/:language/extension/LOOP/LOOPB.png"},
-                {"path": "/help/:language/extension/LOOP/LOOPC.png"},
-                {"path": "/help/:language/extension/LOOP/LOOPD.png"},
-                {"path": "/help/:language/extension/LOOP/LOOPE.png"},
-                {"path": "/help/:language/extension/LOOP/LOOPF.png"},
-                {"path": "/help/:language/extension/LOOP/LOOPG.png"}
+                {
+                    "path": "\/help\/:language\/extension\/LOOP\/LOOP.md"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LOOP\/LOOPDesc.md"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LOOP\/LOOPA.png"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LOOP\/LOOPB.png"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LOOP\/LOOPC.png"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LOOP\/LOOPD.png"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LOOP\/LOOPE.png"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LOOP\/LOOPF.png"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LOOP\/LOOPG.png"
+                }
             ]
         },
         {
             "name": "postPlatform",
-            "target": "CInstall"
+            "target": "CInstall",
+            "description": {
+                "de": "der Installationsassistent soll uns bei der Plattforminstallation aufrufen"
+            }
         }
     ]
 }

@@ -1,22 +1,88 @@
 {
-  "name":"LFile",
-  "version":"1.0",
-  "classFile":"LFile.php",
-  "className":"LFile",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"LFile.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"},
-    {"path":"info/"},
-    {"path":"messages/"},
-    {"path":"LFileHandler2.php"}
-  ],
-  "links":[
-    {"name":"fileDb", "target":"DBFile", "links":[{"method":"GET", "path":"/file/hash/:hash" },{"method":"DELETE", "path":"/file/:fileid" }] },
-    {"name":"file", "target":"FSFile", "links":[{"method":"POST", "path":"/file" },{"method":"DELETE", "path":"/file/:adress" }] }
-  ],
-  "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"}
-  ]
+    "name": "LFile",
+    "description": {
+        "de": "Die LFile bietet Aufrufe an, welche das Speichern und Löschen von Dateien erlauben"
+    },
+    "version": "1.0",
+    "classFile": "LFile.php",
+    "className": "LFile",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "LFile.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "info\/"
+        },
+        {
+            "path": "messages\/"
+        },
+        {
+            "path": "LFileHandler2.php"
+        }
+    ],
+    "links": [
+        {
+            "name": "fileDb",
+            "target": "DBFile",
+            "description": {
+                "de": "zum Speichern\/Löschen von Dateien in der Datenbank"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/file\/hash\/:hash"
+                },
+                {
+                    "method": "DELETE",
+                    "path": "\/file\/file\/:fileid"
+                },
+                {
+                    "method": "POST",
+                    "path": "\/file"
+                }
+            ]
+        },
+        {
+            "name": "file",
+            "target": "FSFile",
+            "description": {
+                "de": "zum Speichern\/Löschen von Dateien im Dateisystem"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/file"
+                },
+                {
+                    "method": "DELETE",
+                    "path": "\/file\/:adress"
+                }
+            ]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit LFile als lokales Objekt aufgerufen werden kann"
+            }
+        },
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
+            }
+        }
+    ]
 }

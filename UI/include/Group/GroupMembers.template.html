@@ -17,12 +17,14 @@
 ?>
 
 <?php $langTemplate='Group_GroupMembers';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+<?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uigroup_groupmembers_cconfig.json'); ?>
 
 <input type="hidden" name="action" value="RemoveGroupMember">
 <div class="content-element">
     <div class="content-header">
         <?php echo MakeInfoButton('page/student/groups','groupMembers.md'); ?>
         <div class="content-title left"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <?php echo pageLib::getContent('getHeader', $this->content, $pageComponent);?>
         <?php if ($isInGroup): ?>
         <button 
             name="leaveGroup" 
@@ -38,6 +40,7 @@
             <?php if ($isInGroup): ?>
             <div class="content-description">
                 <?php echo Language::Get('main','description', $langTemplate); ?>
+                <?php echo pageLib::getContent('getContentDescription', $this->content, $pageComponent);?>
             </div>
             <?php endif; ?>
             <?php if ($isInGroup): ?>
@@ -124,9 +127,11 @@
                         print "</li>";
                     }
                 ?>
+                <?php echo pageLib::getContent('getContent', $this->content, $pageComponent);?>
             </ol>
             <?php else: ?>
                 <?php echo Language::Get('main','noGroup', $langTemplate); ?>
+                <?php echo pageLib::getContent('getContentWithoutGroups', $this->content, $pageComponent);?>
             <?php endif; ?>
         </div>
     </div> <!-- end: content-body-wrapper -->

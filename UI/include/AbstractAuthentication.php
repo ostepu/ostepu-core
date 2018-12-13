@@ -146,11 +146,12 @@ abstract class AbstractAuthentication
     public static function logoutUser($noback = false)
     {
         global $serverURI;
+        global $externalURI;
 
         // delete session in DB
         if (isset($_SESSION['SESSION'])) {
             $session = $_SESSION['SESSION'];
-            http_delete("{$serverURI}/DB/DBSession/session/{$session}",true,$message,true);
+            http_delete("{$serverURI}/DB/DBSession/session/session/{$session}",true,$message,true);
         }
 
         // delete session in UI
@@ -177,7 +178,7 @@ abstract class AbstractAuthentication
             }
 
             // redirect to Loginpage and save current page in GET param
-            header('Location: Login.php?back=' . $backurl . $urlparameters);
+            header('Location: '.$externalURI.'/UI/Login.php?back=' . $backurl . $urlparameters);
         }
 
         exit();

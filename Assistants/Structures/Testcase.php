@@ -9,14 +9,14 @@
  */
 
 // fügt die Objektklasse hinzu, hier sind noch allgemeine Eigenschaften enthalten (Statuscode, Antworttext etc.)
-include_once ( dirname( __FILE__ ) . '/Object.php' );
+include_once ( dirname( __FILE__ ) . '/StructureObject.php' );
 
 /**
  * @author Till Uhlig
  * @author Ralf Busch
  * @date 2015
  */
-class Testcase extends Object implements JsonSerializable // muss eingebunden werden, damit das Objekt serialisierbar wird
+class Testcase extends StructureObject implements JsonSerializable // muss eingebunden werden, damit das Objekt serialisierbar wird
 {
 
     // Attribute sollten stets über getParam und setParam angesprochen werden
@@ -412,7 +412,7 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
         if ( $this->rejectSubmissionOnError !== null )
             $list['rejectSubmissionOnError'] = $this->rejectSubmissionOnError;
         
-        // ruft auch die Serialisierung des darüber liegenden Objekts auf (Object.php)
+        // ruft auch die Serialisierung des darüber liegenden Objekts auf (StructureObject.php)
         return array_merge($list,parent::jsonSerialize( ));
     }
 

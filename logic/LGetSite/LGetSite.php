@@ -159,6 +159,10 @@ class LGetSite
         $this->app->get('/markingtool/user/:userid/course/:courseid/exercisesheet/:sheetid/tutor/:tutorid/status/:statusid',
                         array($this, 'markingToolTutorStatus'));
 
+		//GET MarkingTool
+		$this->app->get('/markingtool/course/:courseid/sheet/:sheetid(/)',
+						array($this, 'markingToolGetRawData'));
+						
         //GET UploadHistory
         $this->app->get('/uploadhistory/user/:userid/course/:courseid/exercisesheet/:sheetid/uploaduser/:uploaduserid(/)',
                         array($this, 'uploadHistory'));
@@ -1106,6 +1110,103 @@ class LGetSite
                                $selector);
     }
 
+	public function markingToolGetRawData($courseid, $sheetid)
+    {
+        $response = array();
+
+        //Get neccessary data
+        $URL = "{$this->lURL}/exercisesheet/course/{$courseid}/exercise";
+        $handler1 = Request_CreateRequest::createGet($URL, array(), '');
+
+        $URL = "{$this->_getMarking->getAddress()}/marking/exercisesheet/{$sheetid}";
+        $handler2 = Request_CreateRequest::createGet($URL, array(), '');
+
+        $URL = "{$this->_getGroup->getAddress()}/group/exercisesheet/{$sheetid}";
+        $handler3 = Request_CreateRequest::createGet($URL, array(), '');
+
+        $URL = "{$this->_getSubmission->getAddress()}/submission/exercisesheet/{$sheetid}/selected";
+        $handler4 = Request_CreateRequest::createGet($URL, array(), '');
+
+        $multiRequestHandle = new Request_MultiRequest();
+        $multiRequestHandle->addRequest($handler1);
+        $multiRequestHandle->addRequest($handler2);
+        $multiRequestHandle->addRequest($handler3);
+        $multiRequestHandle->addRequest($handler4);
+
+        $answer = $multiRequestHandle->run();
+
+        $sheets = json_decode($answer[0]['content'], true);
+        $markings = json_decode($answer[1]['content'], true);
+        $groups = json_decode($answer[2]['content'], true);
+        $submissions = json_decode($answer[3]['content'], true);
+
+        // find the current sheet and it's exercises
+        foreach ($sheets as &$sheet) {
+            $thisSheetId = $sheet['id'];
+            if ($thisSheetId == $sheetid) {
+                $thisExerciseSheet = $sheet;
+            }
+            unset($sheet['exercises']);
+        }
+        if (isset($thisExerciseSheet) == false) {
+            $this->app->halt(404, '{"code":404,reason":"invalid sheet id"}');
+        }
+
+        // save the index of each exercise and add exercise type name
+        $exercises = array();
+        $exerciseIndices = array();
+        foreach ($thisExerciseSheet['exercises'] as $idx => &$exercise) {
+            $exerciseId = $exercise['id'];
+            $typeId = $exercise['type'];
+			unset($exercise["submissions"]);
+
+            $exerciseIndices[$exerciseId] = $idx;
+            $exercises[] = $exercise;
+        }
+
+        // save a reference to each user's group and add exercises to each group
+        $userGroups = array();
+        foreach ($groups as &$group) {
+            $leaderId = $group['leaderId'] = $group['leader']['id'];
+			unset($group['leader']);
+            $userGroups[$leaderId] = &$group;
+
+            $group['exercises'] = $exercises;
+        }
+
+        // kehrt die Korrekturen um, damit bei der Zuordnung zu den Einsendungen auch wirklich
+        // die letzte Korrektur gewählt wird
+        $markings = LArraySorter::orderby($markings, 'id', SORT_DESC);
+        
+        foreach ($markings as $key => $marking) {
+            $markings[$key]['submissionId'] = $markings[$key]['submission']['id'];
+        }
+
+        foreach ($submissions as $submission) {
+            $marking = LArraySorter::multidimensional_search($markings, array('submissionId'=>$submission['id']));
+            if ($marking!==false){
+                unset($markings[$marking]['submission']);
+                $submission['marking'] = $markings[$marking];
+            }
+
+            $exerciseId = $submission['exerciseId'];
+            $exerciseIndex = $exerciseIndices[$exerciseId];
+            $studentId = $submission['studentId'];
+
+            // assign the submission to its group
+            $group = &$userGroups[$studentId];
+            $groupExercises = &$group['exercises'];
+            $groupExercises[$exerciseIndex]['submission'] = $submission;
+            // $leaderId = &$group['leaderId'];
+        }
+
+        $response['groups'] = $groups;
+		
+        $this->flag = 1;
+
+        $this->app->response->setBody(json_encode($response));
+    }
+	
     public function uploadHistory($userid, $courseid, $sheetid, $uploaduserid)
     {
         // load all exercises of an exercise sheet
@@ -1948,10 +2049,23 @@ class LGetSite
         unset($computedSubmissions);
 
         $allGroups = array();
+        $myLeader = array(); // soll zu einem Nutzer den Gruppenleiter enthalten
         foreach ($groups as $group){
             if (!isset($allGroups[$group['sheetId']]))
                 $allGroups[$group['sheetId']] = array();
+            if (!isset($myLeader[$group['sheetId']]))
+                $myLeader[$group['sheetId']] = array();
+
             $allGroups[$group['sheetId']][$group['leader']['id']] = $group;
+            
+            // ein Gruppenleiter ist sein eigener Leiter
+            $myLeader[$group['sheetId']][$group['leader']['id']] = $group['leader']['id'];
+            
+            // jetzt wird für alle Gruppenmitglieder der Leiter gesetzt
+            if (isset($group['members'])){
+                foreach ($group['members'] as $member){
+                    $myLeader[$group['sheetId']][$member['id']] = $group['leader']['id'];
+            }}
         }
         unset($groups);
 
@@ -1962,7 +2076,8 @@ class LGetSite
         $studentMarkings = array();
         foreach ($allMarkings as $marking) {
             $studentID = $marking['submission']['studentId'];
-            $leaderID = $marking['submission']['leaderId'];
+            $leaderID = $myLeader[$marking['submission']['exerciseSheetId']][$studentID]; //$marking['submission']['leaderId']; // möglicherweise passt diese leaderID nicht zur tatsächlichen Gruppe
+            
             if (!isset($studentMarkings[$studentID]))
                 $studentMarkings[$studentID] = array();
             if (!isset($studentMarkings[$leaderID]))
@@ -1983,6 +2098,7 @@ class LGetSite
             $exercisePoints[$exerciseID]['points'] += isset($marking['points']) ? $marking['points'] : 0;
             $exercisePoints[$exerciseID]['markings'] += isset($marking['points']) ? 1 : 0;
 
+            // wenn zu diesem Gruppenleiter weitere Mitglieder existieren, dann müssen diese die Punkte auch erhalten
             if (isset($allGroups[$sheetID][$leaderID])){
                 $group = $allGroups[$sheetID][$leaderID];
                 if (isset($group['members'])){

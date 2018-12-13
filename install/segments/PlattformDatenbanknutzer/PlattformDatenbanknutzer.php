@@ -135,7 +135,8 @@ class PlattformDatenbanknutzer {
             $sql = "SELECT count(1) as 'exists' FROM mysql.user WHERE user = '{$data['DB']['db_user_operator']}';";
             Installation::log(array('text' => Installation::Get('createDatabasePlatformUser', 'findExistingUserSql', self::$langTemplate, array('sql' => $sql))));
 
-            $result = DBRequest::request($sql, false, $data);
+            $result = DBRequest::request2($sql, false, $data);
+			$result = $result[0];
 
             if ($result['errno'] !== 0 || !isset($result["content"])) {
                 $fail = true;
@@ -143,7 +144,7 @@ class PlattformDatenbanknutzer {
                 $error = isset($result["error"]) ? $result["error"] : '';
                 Installation::log(array('text' => Installation::Get('createDatabasePlatformUser', 'failureFindExistingUser', self::$langTemplate, array('message' => json_encode($result))), 'logLevel' => LogLevel::ERROR));
             } else {
-                $result = DBJson::getRows($result['content']);
+                $result = $result['content'];
                 if (count($result) > 0 && isset($result[0]['exists']) && $result[0]['exists'] > 0) {
                     Installation::log(array('text' => Installation::Get('createDatabasePlatformUser', 'foundUser', self::$langTemplate)));
                     $userExists = true;

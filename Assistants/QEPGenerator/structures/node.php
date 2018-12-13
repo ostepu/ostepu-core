@@ -138,7 +138,7 @@ class node implements JsonSerializable
 
     public function generateUTag()
     {
-        return md5($this->method.'_'.$this->URL);;
+        return md5($this->method.'_'.$this->URL);
     }
 
     public function generateETag()

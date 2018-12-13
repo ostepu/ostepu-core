@@ -107,7 +107,8 @@ class BenutzerErstellen {
             $logSql = "INSERT INTO `User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`, `U_salt`, `U_failed_logins`, `U_externalId`, `U_studentNumber`, `U_isSuperAdmin`, `U_comment`) VALUES (NULL, '{$data['DB']['db_user_insert']}', '{$data['DB']['db_email_insert']}', '{$data['DB']['db_last_name_insert']}', '{$data['DB']['db_first_name_insert']}', NULL, '*****', 1, '*****', 0, NULL, NULL, 1, NULL);";
             Installation::log(array('text' => Installation::Get('createSuperAdmin', 'queryResult', self::$langTemplate, array('sql' => $logSql))));
 
-            $result = DBRequest::request($sql, false, $data);
+            $result = DBRequest::request2($sql, false, $data);
+            $result = $result[0];
             Installation::log(array('text' => Installation::Get('createSuperAdmin', 'queryResult', self::$langTemplate, array('res' => json_encode($result)))));
             if ($result['errno'] !== 0) {
                 $fail = true;

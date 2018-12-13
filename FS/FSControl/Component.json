@@ -1,19 +1,57 @@
 {
-  "name":"FSControl",
-  "version":"1.0",
-  "classFile":"FSControl.php",
-  "className":"FSControl",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"FSControl.php"},
-    {"path":"Commands.json"},
-    {"path":"Controller3.php"},
-    {"path":"index.php"}
-  ],
-  "links":[
-    {"name":"out", "target":["FSFile","FSZip","FSPdf","FSCsv"], "links":[] }
-  ],
-  "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"}
-  ]
+    "name": "FSControl",
+    "description": {
+        "de": "Die FSControl ist ein zentraler Ansprechpartner für alle Komponenten der Dateisystemschicht. (DEPRECATED)"
+    },
+    "version": "1.0",
+    "classFile": "FSControl.php",
+    "className": "FSControl",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "FSControl.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "Controller3.php"
+        },
+        {
+            "path": "index.php"
+        }
+    ],
+    "links": [
+        {
+            "name": "out",
+            "target": [
+                "FSFile",
+                "FSZip",
+                "FSPdf",
+                "FSCsv"
+            ],
+            "description": {
+                "de": "über diesen Ausgang werden alle angehangenen Komponenten angefragt"
+            },
+            "links": []
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit FSControl als lokales Objekt aufgerufen werden kann"
+            }
+        },
+        {
+            "name": "getDescFiles",
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
+            }
+        }
+    ]
 }

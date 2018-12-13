@@ -1,76 +1,133 @@
 {
     "name": "LFormProcessor",
+    "description": {
+        "de": "Diese Komponente gehört zu den Formuareingaben um LForm und DBForm. Mit LFormProcessor werden die Eingaben der Studenten bewertet und eine Korrekturobjekt an den aktuellen Einsendevorgang angehangen."
+    },
     "version": "1.0",
     "classFile": "LFormProcessor.php",
     "className": "LFormProcessor",
     "files": [
-        {"path": ".htaccess"},
-        {"path": "LFormProcessor.php"},
-        {"path": "index.php"},
-        {"path": "Commands.json"},
-        {"path": "info/"},
-        {"path": "help/"}
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "LFormProcessor.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "info\/"
+        },
+        {
+            "path": "help\/"
+        }
     ],
     "links": [
         {
             "name": "formDb",
             "target": "DBForm",
-            "links": [{
-                "method": "GET",
-                "path": "/form/exercise/:exerciseid"
-            }]
+            "description": {
+                "de": "um die Formulare einer Aufgabe abzurufen"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/form\/exercise\/:exerciseid"
+                }
+            ]
         },
         {
             "name": "postProcess",
             "target": "DBProcessList",
-            "links": [{
-                "method": "POST",
-                "path": "/process"
-            }]
+            "description": {
+                "de": "über diesen Ausgang trägt sich LFormPredecessor als Verarbeitung in eine Veranstaltung ein"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/process"
+                }
+            ]
         },
         {
             "name": "deleteProcess",
             "target": "DBProcessList",
-            "links": [{
-                "method": "DELETE",
-                "path": "/process/process/:processid"
-            }]
+            "description": {
+                "de": "entfernt LFormProcessor als Verarbeitung aus einer Veranstaltung"
+            },
+            "links": [
+                {
+                    "method": "DELETE",
+                    "path": "\/process\/process\/:processid"
+                }
+            ]
         },
         {
             "name": "getProcess",
             "target": "DBProcessList",
-            "links": [{
-                "method": "GET",
-                "path": "/process/course/:courseid/component/:componentid"
-            }]
+            "description": {
+                "de": "um den eigenen Verarbeitungseintrag zu ermitteln"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/process\/course\/:courseid\/component\/:componentid"
+                }
+            ]
         },
         {
             "name": "pdf",
             "target": "FSPdf",
-            "links": [{
-                "method": "POST",
-                "path": "/pdf"
-            }]
+            "description": {
+                "de": "zum Speichern einer PDF"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/pdf"
+                }
+            ]
         }
     ],
     "connector": [
         {
             "name": "postCourse",
             "target": "LForm",
+            "description": {
+                "de": "wenn LForm zu einer Veranstaltung hinzugefügt wird, dann wollen auch aufgerufen werden"
+            },
             "priority": 150
         },
         {
             "name": "request",
-            "target": "CLocalObjectRequest"
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit LFormProcessor als lokales Objekt aufgerufen werden kann"
+            }
         },
         {
             "name": "request",
             "target": "CHelp",
+            "description": {
+                "de": "hier werden Hilfedateien beim zentralen Hilfesystem angemeldet, sodass sie über ihre globale Adresse abgerufen werden können"
+            },
             "links": [
-                {"path": "/help/:language/extension/LFormProcessor/LFormProcessor.md"},
-                {"path": "/help/:language/extension/LFormProcessor/LFormProcessorAhnlichkeit.png"},
-                {"path": "/help/:language/extension/LFormProcessor/LFormProcessorNormal.png"},
-                {"path": "/help/:language/extension/LFormProcessor/LFormProcessorRegular.png"}
+                {
+                    "path": "\/help\/:language\/extension\/LFormProcessor\/LFormProcessor.md"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LFormProcessor\/LFormProcessorAhnlichkeit.png"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LFormProcessor\/LFormProcessorNormal.png"
+                },
+                {
+                    "path": "\/help\/:language\/extension\/LFormProcessor\/LFormProcessorRegular.png"
+                }
             ]
         }
     ]

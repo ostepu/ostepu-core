@@ -1,105 +1,184 @@
 [
     {
-        "name": "editExercise",
-        "outputType": "Exercise",
-        "inputType": "Exercise",
-        "method": "PUT",
-        "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercise/exercise/:eid"
+        "name": "getExistsPlatform",
+        "path": "\/link\/exists\/platform",
+        "method": "GET",
+        "description": {
+            "de": "prüft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollständig installiert ist"
+        },
+        "inputType": "",
+        "outputType": "Platform",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
     },
     {
         "name": "deleteExercise",
-        "outputType": "Exercise",
-        "inputType": "",
+        "path": "\/exercise\/exercise\/:eid",
         "method": "DELETE",
-        "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercise/exercise/:eid"
+        "description": {
+            "de": "entfernt eine Aufgabe"
+        },
+        "placeholder": [
+            {
+                "name": "eid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Aufgabe (`Exercise`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Exercise"
     },
     {
-        "name": "addExercise",
-        "outputType": "Exercise",
+        "name": "editExercise",
+        "path": "\/exercise\/exercise\/:eid",
+        "method": "PUT",
+        "description": {
+            "de": "editiert eine Aufgabe"
+        },
+        "placeholder": [
+            {
+                "name": "eid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Aufgabe (`Exercise`)"
+                }
+            }
+        ],
         "inputType": "Exercise",
-        "method": "POST",
-        "path": "/exercise"
-    },
-    {
-        "name": "getAllExercises",
-        "callback": "getMatch",
-        "outputType": "Exercise",
-        "inputType": "",
-        "method": "GET",
-        "path": "/exercise(/:sub)"
-    },
-    {
-        "name": "getSheetExercises",
-        "callback": "getMatch",
-        "outputType": "Exercise",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercise/exercisesheet/:esid(/:sub)"
-    },
-    {
-        "name": "getCourseExercises",
-        "callback": "getMatch",
-        "outputType": "Exercise",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercise/course/:courseid(/:sub)"
+        "outputType": "Exercise"
     },
     {
         "name": "getExercise",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
+        "path": "\/exercise\/exercise\/:eid(\/:sub)",
+        "method": "GET",
+        "description": {
+            "de": "liefert eine einzelne Aufgabe (sub=nosubmission bedeutet ohne Einsendungen)"
+        },
+        "placeholder": [
+            {
+                "name": "eid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Aufgabe (`Exercise`)"
+                }
+            }
+        ],
+        "inputType": "",
         "outputType": "Exercise",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"eid","regex":"%^([0-9_]+)$%"}],
-        "path": "/exercise/exercise/:eid(/:sub)"
-    },
-    {
-        "name": "addPlatform",
-        "outputType": "Platform",
-        "inputType": "Platform",
-        "method": "POST",
-        "path": "/platform"
-    },
-    {
-        "name": "deletePlatform",
-        "outputType": "Platform",
-        "inputType": "",
-        "method": "DELETE",
-        "path": "/platform"
-    },
-    {
-        "name": "getExistsPlatform",
         "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "Platform",
-        "inputType": "",
-        "method": "GET",
-        "path": "/link/exists/platform"
+        "singleOutput": "TRUE"
     },
     {
-        "name": "getSamplesInfo",
-        "outputType": "",
-        "inputType": "",
+        "name": "getAllExercises",
+        "path": "\/exercise(\/:sub)",
         "method": "GET",
-        "path": "/samples"
+        "description": {
+            "de": "liefert alle Aufgaben (sub=nosubmission bedeutet ohne Einsendungen)"
+        },
+        "inputType": "",
+        "outputType": "Exercise",
+        "callback": "getMatch"
     },
     {
         "name": "postSamples",
-        "outputType": "Query",
-        "inputType": "",
+        "path": "\/samples\/course\/:courseAmount\/user\/:userAmount",
         "method": "POST",
-        "path": "/samples/course/:courseAmount/user/:userAmount"
+        "description": {
+            "de": "erzeugt Zufallsdaten (courseAmount = Anzahl der Veranstaltungen, userAmount = Anzahl der Nutzer), anhand der Vorgabe"
+        },
+        "inputType": "",
+        "outputType": "Query"
+    },
+    {
+        "name": "getSheetExercises",
+        "path": "\/exercise\/exercisesheet\/:esid(\/:sub)",
+        "method": "GET",
+        "description": {
+            "de": "liefert die Aufgaben einer Übungsserie (sub=nosubmission bedeutet ohne Einsendungen)"
+        },
+        "placeholder": [
+            {
+                "name": "esid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Übungsserie (`ExerciseSheet`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Exercise",
+        "callback": "getMatch"
+    },
+    {
+        "name": "getCourseExercises",
+        "path": "\/exercise\/course\/:courseid(\/:sub)",
+        "method": "GET",
+        "description": {
+            "de": "liefert die Aufgaben einer Veranstaltung (sub=nosubmission bedeutet ohne Einsendungen)"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Exercise",
+        "callback": "getMatch"
+    },
+    {
+        "name": "deletePlatform",
+        "path": "\/platform",
+        "method": "DELETE",
+        "description": {
+            "de": "entfernt die Komponente und ihre installierten Bestandteile aus der Plattform"
+        },
+        "inputType": "",
+        "outputType": "Platform"
+    },
+    {
+        "name": "addExercise",
+        "path": "\/exercise",
+        "method": "POST",
+        "description": {
+            "de": "fügt eine Aufgabe ein"
+        },
+        "inputType": "Exercise",
+        "outputType": "Exercise"
+    },
+    {
+        "name": "getSamplesInfo",
+        "path": "\/samples",
+        "method": "GET",
+        "description": {
+            "de": "liefert die Bezeichner der betroffenen Tabellen"
+        },
+        "inputType": "",
+        "outputType": ""
+    },
+    {
+        "name": "addPlatform",
+        "path": "\/platform",
+        "method": "POST",
+        "description": {
+            "de": "installiert die zugehörige Tabelle und die Prozeduren für diese Plattform"
+        },
+        "inputType": "Platform",
+        "outputType": "Platform"
     },
     {
         "name": "getApiProfiles",
-        "outputType": "GateProfile",
-        "inputType": "",
+        "path": "\/api\/profiles",
         "method": "GET",
-        "path": "/api/profiles"
+        "description": {
+            "de": "liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren"
+        },
+        "inputType": "",
+        "outputType": "GateProfile"
     }
 ]

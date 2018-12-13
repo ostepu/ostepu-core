@@ -250,7 +250,7 @@ class CControl
             eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/PutLink.sql' ));
             $sql = ob_get_contents();
             ob_end_clean();
-            $result = DBRequest::request(
+            $result = DBRequest::request2(
                                          $sql,
                                          false,
                                            parse_ini_file(
@@ -258,6 +258,7 @@ class CControl
                                      TRUE
                                      )
                                          );
+            $result = $result[0];
 
             // checks the correctness of the query
             if ( (!isset($result['errno']) || !$result['errno']) &&
@@ -293,7 +294,7 @@ class CControl
         eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/DeleteLink.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
-        $result = DBRequest::request(
+        $result = DBRequest::request2(
                                      $sql,
                                      false,
                                            parse_ini_file(
@@ -301,6 +302,7 @@ class CControl
                                      TRUE
                                      )
                                      );
+        $result = $result[0];
 
         // checks the correctness of the query
         if ( (!isset($result['errno']) || !$result['errno']) &&
@@ -337,7 +339,7 @@ class CControl
             eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/PostLink.sql' ));
             $sql = ob_get_contents();
             ob_end_clean();
-            $result = DBRequest::request(
+            $result = DBRequest::request2(
                                          $sql,
                                          false,
                                            parse_ini_file(
@@ -345,6 +347,7 @@ class CControl
                                      TRUE
                                      )
                                          );
+            $result = $result[0];
 
             // checks the correctness of the query
             if ( (!isset($result['errno']) || !$result['errno']) &&
@@ -386,7 +389,7 @@ class CControl
         eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/GetLink.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
-        $result = DBRequest::request(
+        $result = DBRequest::request2(
                                      $sql,
                                      false,
                                            parse_ini_file(
@@ -394,11 +397,12 @@ class CControl
                                      TRUE
                                      )
                                      );
+        $result = $result[0];
 
         // checks the correctness of the query
         if ( (!isset($result['errno']) || !$result['errno']) &&
              $result['content'] ){
-            $data = DBJson::getRows( $result['content'] );
+            $data = $result['content'];
             $links = DBJson::getResultObjectsByAttributes(
                                                           $data,
                                                           Link::getDBPrimaryKey( ),
@@ -443,7 +447,7 @@ class CControl
             eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/PutComponent.sql' ));
             $sql = ob_get_contents();
             ob_end_clean();
-            $result = DBRequest::request(
+            $result = DBRequest::request2(
                                          $sql,
                                          false,
                                            parse_ini_file(
@@ -451,6 +455,7 @@ class CControl
                                      TRUE
                                      )
                                          );
+            $result = $result[0];
 
             // checks the correctness of the query
             if ( (!isset($result['errno']) || !$result['errno']) &&
@@ -486,7 +491,7 @@ class CControl
         eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/DeleteComponent.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
-        $result = DBRequest::request(
+        $result = DBRequest::request2(
                                      $sql,
                                      false,
                                            parse_ini_file(
@@ -494,6 +499,7 @@ class CControl
                                      TRUE
                                      )
                                      );
+        $result = $result[0];
 
         // checks the correctness of the query
         if ( (!isset($result['errno']) || !$result['errno']) &&
@@ -526,7 +532,7 @@ class CControl
             eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/PostComponent.sql' ));
             $sql = ob_get_contents();
             ob_end_clean();
-            $result = DBRequest::request(
+            $result = DBRequest::request2(
                                          $sql,
                                          false,
                                            parse_ini_file(
@@ -534,6 +540,7 @@ class CControl
                                      TRUE
                                      )
                                          );
+            $result = $result[0];
 
             if ( (!isset($result['errno']) || !$result['errno']) &&
                  $result['content'] ){
@@ -573,7 +580,7 @@ class CControl
         eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/GetComponent.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
-        $result = DBRequest::request(
+        $result = DBRequest::request2(
                                      $sql,
                                      false,
                                            parse_ini_file(
@@ -581,11 +588,12 @@ class CControl
                                      TRUE
                                      )
                                      );
+        $result = $result[0];
 
         // checks the correctness of the query
         if ( (!isset($result['errno']) || !$result['errno']) &&
              $result['content'] ){
-            $data = DBJson::getRows( $result['content'] );
+            $data = $result['content'];
             $components = DBJson::getResultObjectsByAttributes(
                                                                $data,
                                                                Component::getDBPrimaryKey( ),
@@ -614,7 +622,7 @@ class CControl
         eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/GetComponentDefinitions.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
-        $result = DBRequest::request(
+        $result = DBRequest::request2(
                                      $sql,
                                      false,
                                            parse_ini_file(
@@ -622,11 +630,12 @@ class CControl
                                      TRUE
                                      )
                                      );
+        $result = $result[0];
 
         // checks the correctness of the query
         if ( (!isset($result['errno']) || !$result['errno']) &&
              $result['content'] ){
-            $data = DBJson::getRows( $result['content'] );
+            $data = $result['content'];
 
             $components = DBJson::getObjectsByAttributes(
                                                          $data,
@@ -672,7 +681,7 @@ class CControl
         eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/GetComponentDefinition.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
-        $result = DBRequest::request(
+        $result = DBRequest::request2(
                                      $sql,
                                      false,
                                            parse_ini_file(
@@ -680,11 +689,12 @@ class CControl
                                      TRUE
                                      )
                                      );
+        $result = $result[0];
 
         // checks the correctness of the query
         if ( (!isset($result['errno']) || !$result['errno']) &&
              $result['content'] ){
-            $data = DBJson::getRows( $result['content'] );
+            $data = $result['content'];
 
             $Components = DBJson::getObjectsByAttributes(
                                                          $data,
@@ -728,7 +738,7 @@ class CControl
         eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/GetComponentDefinitions.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
-        $result = DBRequest::request(
+        $result = DBRequest::request2(
                                      $sql,
                                      false,
                                            parse_ini_file(
@@ -736,11 +746,12 @@ class CControl
                                      TRUE
                                      )
                                      );
+        $result = $result[0];
 
         // checks the correctness of the query
         if ( (!isset($result['errno']) || !$result['errno']) &&
              $result['content'] ){
-            $data = DBJson::getRows( $result['content'] );
+            $data = $result['content'];
 
             $Components = DBJson::getObjectsByAttributes(
                                                          $data,
@@ -866,7 +877,7 @@ class CControl
         eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/GetExistsPlatform.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
-        $result = DBRequest::request(
+        $result = DBRequest::request2(
                                      $sql,
                                      false,
                                            parse_ini_file(
@@ -874,6 +885,7 @@ class CControl
                                      TRUE
                                      )
                                      );
+        $result = $result[0];
 
         // checks the correctness of the query
         if ( (!isset($result['errno']) || !$result['errno']) &&
@@ -911,16 +923,17 @@ class CControl
         eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/GetTableReferences.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
-        $result = DBRequest::request(
+        $result = DBRequest::request2(
                                      $sql,
                                      false,
                                      $conf
                                      );
+        $result = $result[0];
 
         // checks the correctness of the query
         if ( (!isset($result['errno']) || !$result['errno']) &&
              $result['content'] ){
-            $data = DBJson::getRows( $result['content'] );
+            $data = $result['content'];
             $res = array();
             foreach ($data as $dat){
                 if (!isset($res))
@@ -967,6 +980,7 @@ class CControl
                                      TRUE
                                      )
                                      );
+        $result = $result[0];
 
         // checks the correctness of the query
         if ( (!isset($result['errno']) || !$result['errno'])){
@@ -1057,6 +1071,7 @@ class CControl
                                      TRUE
                                      )
                                          );
+            $result = $result[0];
 
             // checks the correctness of the query
             if ( (!isset($result['errno']) || !$result['errno'])){

@@ -17,6 +17,7 @@
 ?>
 
 <?php $langTemplate='TutorAssign_Automatically';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+<?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uitutorassign_assignautomatically_cconfig.json'); ?>
 
 <?php
 if (isset($AssignAutomaticallyNotificationElements)) {
@@ -31,6 +32,7 @@ if (isset($AssignAutomaticallyNotificationElements)) {
     <div class="content-header">
         <?php echo MakeInfoButton('page/admin/tutorAssign','automatically.md'); ?>
         <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <?php echo pageLib::getContent('getHeader', $this->content, $pageComponent);?>
         <button class="text-button right bold info-color"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
     </div>
 
@@ -119,10 +121,12 @@ if (isset($AssignAutomaticallyNotificationElements)) {
                 }
                 ?>
             </div>
+            <?php echo pageLib::getContent('getContent', $this->content, $pageComponent);?>
             <?php } else { ?>
                 <label class="form-field label bold">
                     <?php echo Language::Get('main','noPossibleAssignments', $langTemplate); ?>
                 </label>
+                <?php echo pageLib::getContent('getContentWithoutPossibleAssignments', $this->content, $pageComponent);?>
             <?php } ?>
         </div>
     </div> <!-- end: content-body-wrapper -->

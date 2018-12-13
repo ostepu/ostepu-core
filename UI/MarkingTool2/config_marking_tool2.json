@@ -1,0 +1,23 @@
+{
+    "title" : "Übungsplattform",
+    "content":"text/html",
+    "charset":"utf-8",
+    "stylesheets":[
+        "UI/CContent/content/common/css/CSSReset.css",
+		"UI/CContent/content/markingtool2/css/MarkingTool2.css"
+    ],
+    "javascripts":[
+        "UI/CContent/content/common/js/jquery.js",
+		"UI/CContent/content/common/js/jquery-ui.min.js",
+		"UI/CContent/content/markingtool2/js/helper_events.js",
+		"UI/CContent/content/markingtool2/js/helper_queue.js",
+		"UI/CContent/content/markingtool2/js/helper_html.js",
+		"UI/CContent/content/markingtool2/js/helper_updateindicator.js",
+		"UI/CContent/content/markingtool2/js/helper_updateproperty.js",
+		"UI/CContent/content/markingtool2/js/helper_updateobject.js",
+		"UI/CContent/content/markingtool2/js/helper_updatefactory.js",
+		"UI/CContent/content/markingtool2/js/helper_cookie.js",
+		"UI/MarkingTool2/lang",
+		"UI/CContent/content/markingtool2/js/marking_tool2_editor.js"
+    ]
+}

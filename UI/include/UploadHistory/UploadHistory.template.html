@@ -19,6 +19,7 @@
 ?>
 
 <?php $langTemplate='UploadHistory';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+<?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uiuploadhistory_uploadhistory_cconfig.json'); ?>
 
 <?php
 include_once dirname(__FILE__).'/../../../Assistants/LArraySorter.php';
@@ -97,6 +98,7 @@ if (isset($UploadHistoryNotificationElements)) {
     <div class="content-header">
         <?php echo MakeInfoButton('page/common/uploadHistory','change.md'); ?>
         <div class="content-title left"><?php echo $namesOfExercises[$key];?></div>
+        <?php echo pageLib::getContent('getHeader', $this->content, $pageComponent);?>
     </div>
 
     <div class="content-body-wrapper">
@@ -153,12 +155,12 @@ echo '<span class="content-body-wrapper">';
                                 $fileSize = (isset($submission['file']['fileSize']) ? $submission['file']['fileSize'] : 0);
                                 $fileURL = generateDownloadURL($submission['file']);
                                 print '<a href="'.$fileURL.'" title="'.$displayName.'" class="plain" target="_blank">';
-                                print '        <img src="Images/Download.png" />';
+                                print '        <img src="'.generateCommonFileUrl('img/Download.png').'" />';
                                 print ' (' . formatBytes($fileSize) . ') ';
                                 print '</a>';
                             } elseif(!isset($submission['file'])) {
                                 print '<span class ="">';
-                                print '<img src="Images/Error.png" title="'.Language::Get('main','invalidSubmission', $langTemplate).'"/>';
+                                print '<img src="'.generateCommonFileUrl('img/Error.png').'" title="'.Language::Get('main','invalidSubmission', $langTemplate).'"/>';
                                 print ' (' . formatBytes(0) . ') ';
                                 print '</span>';
                             }
@@ -170,7 +172,7 @@ echo '<span class="content-body-wrapper">';
                                     $fileSize = $submission['marking']['file']['fileSize'];
                                     $fileURL = generateDownloadURL($submission['marking']['file']);
                                     print '<a href="'.$fileURL.'" title="'.$displayName.'" class="plain" target="_blank">';
-                                    print '        <img src="Images/DownloadCorrection.png" />';
+                                    print '        <img src="'.generateCommonFileUrl('img/DownloadCorrection.png').'" />';
                                     print ' (' . formatBytes($fileSize) . ') ';
                                     print '</a>';
                                 }
@@ -231,6 +233,7 @@ echo '</span>';
                     echo Language::Get('main','noSubmissions', $langTemplate);
                 }
             ?>
+            <?php echo pageLib::getContent('getContent', $this->content, $pageComponent);?>
         </div>
     </div>
 </div>

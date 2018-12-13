@@ -10,9 +10,9 @@
  */
 
 // fügt die Objektklasse hinzu, hier sind noch allgemeine Eigenschaften enthalten (Statuscode, Antworttext etc.)
-include_once ( dirname( __FILE__ ) . '/Object.php' );
+include_once ( dirname( __FILE__ ) . '/StructureObject.php' );
 
-class BEISPIEL extends Object implements JsonSerializable // muss eingebunden werden, damit das Objekt serialisierbar wird
+class BEISPIEL extends StructureObject implements JsonSerializable // muss eingebunden werden, damit das Objekt serialisierbar wird
 {
 
     // Attribute sollten stets über getParam und setParam angesprochen werden
@@ -151,7 +151,7 @@ class BEISPIEL extends Object implements JsonSerializable // muss eingebunden we
         if ( $this->param !== null )
             $list['param'] = $this->param;
 
-        // ruft auch die Serialisierung des darüber liegenden Objekts auf (Object.php)
+        // ruft auch die Serialisierung des darüber liegenden Objekts auf (StructureObject.php)
         return array_merge($list,parent::jsonSerialize( ));
     }
 

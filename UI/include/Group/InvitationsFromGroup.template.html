@@ -17,6 +17,7 @@
 ?>
 
 <?php $langTemplate='Group_InvitationsFromGroup';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+<?php $pageComponent = pageLib::loadConf(dirname(__FILE__).'/uigroup_invitationsfromgroup_cconfig.json'); ?>
 
 <input type="hidden" name="action" value="InviteGroup">
 <?php $emptyGroupMembers = $groupSize - (isset($group['members']) ? count($group['members']) : 0) - count($invitationsFromGroup) - 1; ?>
@@ -25,6 +26,7 @@
     <div class="content-header">
         <?php echo MakeInfoButton('page/student/groups','invitationsFromGroup.md'); ?>
         <div class="content-title left"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <?php echo pageLib::getContent('getHeader', $this->content, $pageComponent);?>
         <?php if ($emptyGroupMembers > 0) { ?>
         <button class="right text-button info-color bold"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
         <?php } ?>
@@ -35,6 +37,7 @@
         <div class="content-body left"> 
             <div class="content-description">
                 <?php echo Language::Get('main','applyGroupDescription', $langTemplate); ?>
+                <?php echo pageLib::getContent('getContentDescriptionApplyGroup', $this->content, $pageComponent);?>
                 <ol class="invitation-list">
                     <?php foreach ($lastGroup['members'] as $member) {
                         print "<li>";
@@ -60,6 +63,7 @@
                     </button>
                 </ol>
             </div>
+            <?php echo pageLib::getContent('getContentApplyGroup', $this->content, $pageComponent);?>
         </div><hr>
         <?php } ?>
         
@@ -70,6 +74,7 @@
                 <?php else: ?>
                 <?php echo Language::Get('main','fullGroupDescription', $langTemplate); ?>
                 <?php endif; ?>
+                <?php echo pageLib::getContent('getContentDescriptionInvitation', $this->content, $pageComponent);?>
             </div>
             <?php for ($i = 0; $i < $emptyGroupMembers; $i++): ?>
                 <label class="short left label bold new-line">
@@ -77,6 +82,7 @@
                 </label>
                 <input class="form-field left text-input" type="text" name="userName[]" />
             <?php endfor; ?>
+            <?php echo pageLib::getContent('getContentInvitation', $this->content, $pageComponent);?>
         </div>
     </div> <!-- end: content-body-wrapper -->
 </div> <!-- end: content-element -->

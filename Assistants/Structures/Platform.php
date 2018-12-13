@@ -11,12 +11,12 @@
  * @date 2014-2015
  */
 
-include_once ( dirname( __FILE__ ) . '/Object.php' );
+include_once ( dirname( __FILE__ ) . '/StructureObject.php' );
 
 /**
  * the platform structure
  */
-class Platform extends Object implements JsonSerializable
+class Platform extends StructureObject implements JsonSerializable
 {
 
     private $baseUrl = null;

@@ -1,131 +1,220 @@
 {
     "name": "DBExerciseFileType",
+    "description": {
+        "de": "Die DBExerciseFileType ermöglicht den Zugriff auf die `ExerciseFileType` Tabelle der Datenbank. Hier werden die erlaubten Dateitypen für den Dateiupload der Studenten hinterlegt. Dazu wird bei einem `POST \/course` Aufruf die nachstehende Tabelle erzeugt."
+    },
     "version": "1.0",
     "classFile": "DBExerciseFileType.php",
     "className": "DBExerciseFileType",
     "files": [
-        {"path": ".htaccess"},
-        {"path": "DBExerciseFileType.php"},
-        {"path": "index.php"},
-        {"path": "Commands.json"},
-        {"path": "ExerciseFileTypeSample.json"},
-        {"path": "Sql/"},
-        {"path": "info/"}
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBExerciseFileType.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "ExerciseFileTypeSample.json"
+        },
+        {
+            "path": "Sql\/"
+        },
+        {
+            "path": "info\/"
+        }
     ],
     "links": [
         {
             "name": "editExerciseFileType",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl editExerciseFileType"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deleteExerciseFileType",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deleteExerciseFileType"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deleteExerciseExerciseFileType",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deleteExerciseExerciseFileType"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deleteExerciseSheetExerciseFileType",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deleteExerciseSheetExerciseFileType"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addExerciseFileType",
             "target": "DBQueryWrite",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl addExerciseFileType"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "deletePlatform",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl deletePlatform"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "addPlatform",
             "target": "DBQuerySetup",
-            "links": [{
-                "method": "POST",
-                "path": "/query"
-            }]
+            "description": {
+                "de": "für den Befehl addPlatform"
+            },
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "\/query"
+                }
+            ]
         },
         {
             "name": "getExerciseFileType",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBExerciseFileTypeGetExerciseFileType/:eftid"
-            }]
+            "description": {
+                "de": "für den Befehl getExerciseFileType"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBExerciseFileTypeGetExerciseFileType\/:eftid"
+                }
+            ]
         },
         {
             "name": "getAllExerciseFileTypes",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBExerciseFileTypeGetAllExerciseFileTypes"
-            }]
+            "description": {
+                "de": "für den Befehl getAllExerciseFileTypes"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBExerciseFileTypeGetAllExerciseFileTypes"
+                }
+            ]
         },
         {
             "name": "getExerciseExerciseFileTypes",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBExerciseFileTypeGetExerciseExerciseFileTypes/:eid"
-            }]
+            "description": {
+                "de": "für den Befehl getExerciseExerciseFileTypes"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBExerciseFileTypeGetExerciseExerciseFileTypes\/:eid"
+                }
+            ]
         },
         {
             "name": "getSheetExerciseFileTypes",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBExerciseFileTypeGetSheetExerciseFileTypes/:esid"
-            }]
+            "description": {
+                "de": "für den Befehl getSheetExerciseFileTypes"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBExerciseFileTypeGetSheetExerciseFileTypes\/:esid"
+                }
+            ]
         },
         {
             "name": "getExistsPlatform",
             "target": "DBQueryRead",
-            "links": [{
-                "method": "GET",
-                "path": "/query/procedure/DBExerciseFileTypeGetExistsPlatform"
-            }]
+            "description": {
+                "de": "für den Befehl getExistsPlatform"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/query\/procedure\/DBExerciseFileTypeGetExistsPlatform"
+                }
+            ]
         }
     ],
     "connector": [
         {
             "name": "request",
-            "target": "CLocalObjectRequest"
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit DBExerciseFileType als lokales Objekt aufgerufen werden kann"
+            }
         },
         {
             "name": "postPlatform",
-            "target": "CInstall"
+            "target": "CInstall",
+            "description": {
+                "de": "der Installationsassistent soll uns bei der Plattforminstallation aufrufen"
+            }
         },
         {
             "name": "getDescFiles",
-            "target": "TDocuView"
+            "target": "TDocuView",
+            "description": {
+                "de": "die Entwicklerdokumentation soll unsere Beschreibungsdatei nutzen"
+            }
         },
         {
             "name": "getComponentProfiles",
-            "target": "TApiConfiguration"
+            "target": "TApiConfiguration",
+            "description": {
+                "de": "damit unsere Aufrufe in die Standardprofile der CGate einsortiert werden"
+            }
         }
     ]
 }

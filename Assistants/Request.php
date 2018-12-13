@@ -117,6 +117,15 @@ class Request
         $result = array();
         try{
             $fp = fopen($tempTarget.'_2', 'w+');
+            
+            if ($fp === false){
+                $result = array();
+                $result['status'] = 408;
+                $result['content'] = '';
+                $result['headers'] = array();
+                return;
+            }
+            
             $ch = curl_init($target);
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -145,6 +154,14 @@ class Request
             }
             fseek($fp,$header_size);
             $fp2 = fopen($tempTarget, 'w+');
+            if ($fp2 === false){
+                $result = array();
+                $result['status'] = 408;
+                $result['content'] = '';
+                $result['headers'] = array();
+                return;
+            }
+            
             while (!feof($fp)) fwrite($fp2, fread($fp, 8192));
             fclose($fp2);
             fclose($fp);

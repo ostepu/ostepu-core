@@ -88,6 +88,13 @@ class Anfragegraph {
         file_put_contents($confFile, json_encode($confContent));
     }
 
+    public static function checkExecutability($data) {
+        Installation::log(array('text' => Installation::Get('main', 'functionBegin')));
+        $res = array(['name' => 'dot', 'exec' => 'dot -V', 'desc' => 'dot -V']);
+        Installation::log(array('text' => Installation::Get('main', 'functionEnd')));
+        return $res;
+    }
+
     public static function show($console, $result, $data) {
         // das Segment soll nur gezeichnet werden, wenn der Nutzer eingeloggt ist
         if (!Einstellungen::$accessAllowed) {
@@ -448,7 +455,7 @@ class Anfragegraph {
                     }
                 }
 
-                $jqueryFile = $mainPath . '/UI/javascript/jquery-2.0.3.min.js';
+                $jqueryFile = dirname(__FILE__) . '/files/jquery-2.0.3.min.js';
                 $jqueryFileTarget = $location . '/' . $elem . '/jquery-2.0.3.min.js';
                 if (file_exists($jqueryFile) && !file_exists($jqueryFileTarget)) {
                     file_put_contents($jqueryFileTarget, file_get_contents($jqueryFile));
@@ -478,7 +485,7 @@ class Anfragegraph {
 
                     file_put_contents($location . '/' . $elem . '.html', $body);
 
-                    $cssFile = $mainPath . '/UI/css/github-markdown.css';
+                    $cssFile = dirname(__FILE__) . '/files/github-markdown.css';
                     $cssFileTarget = $location . '/' . $elem . '/github-markdown.css';
                     if (file_exists($cssFile) && !file_exists($cssFileTarget)) {
                         file_put_contents($cssFileTarget, file_get_contents($cssFile));

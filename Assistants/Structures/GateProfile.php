@@ -1,10 +1,10 @@
 <?php
-include_once ( dirname( __FILE__ ) . '/Object.php' );
+include_once ( dirname( __FILE__ ) . '/StructureObject.php' );
 
 /**
  * the gate profile structure
  */
-class GateProfile extends Object implements JsonSerializable
+class GateProfile extends StructureObject implements JsonSerializable
 {
 
     /**

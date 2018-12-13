@@ -1,114 +1,225 @@
 [
     {
         "name": "editGroup",
-        "outputType": "Group",
-        "inputType": "Group",
+        "path": "\/group\/user\/:userid\/exercisesheet\/:esid",
         "method": "PUT",
-        "placeholder":[{"name":"userid","regex":"%^([0-9_]+)$%"},{"name":"esid","regex":"%^([0-9_]+)$%"}],
-        "path": "/group/user/:userid/exercisesheet/:esid"
-    },
-    {
-        "name": "deleteGroup",
-        "outputType": "Group",
-        "inputType": "",
-        "method": "DELETE",
-        "placeholder":[{"name":"userid","regex":"%^([0-9_]+)$%"},{"name":"esid","regex":"%^([0-9_]+)$%"}],
-        "path": "/group/user/:userid/exercisesheet/:esid"
-    },
-    {
-        "name": "addGroup",
-        "outputType": "Group",
+        "description": {
+            "de": "editiert einen Gruppeneintrag"
+        },
+        "placeholder": [
+            {
+                "name": "userid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
+                }
+            },
+            {
+                "name": "esid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Übungsserie (`ExerciseSheet`)"
+                }
+            }
+        ],
         "inputType": "Group",
-        "method": "POST",
-        "path": "/group"
-    },
-    {
-        "name": "getUserGroups",
-        "callback": "getMatch",
-        "outputType": "Group",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"userid","regex":"%^([0-9_]+)$%"}],
-        "path": "/group/user/:userid"
-    },
-    {
-        "name": "getAllGroups",
-        "callback": "getMatch",
-        "outputType": "Group",
-        "inputType": "",
-        "method": "GET",
-        "path": "/group"
-    },
-    {
-        "name": "getUserSheetGroup",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "Group",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"userid","regex":"%^([0-9_]+)$%"},{"name":"esid","regex":"%^([0-9_]+)$%"}],
-        "path": "/group/user/:userid/exercisesheet/:esid"
-    },
-    {
-        "name": "getSheetGroups",
-        "callback": "getMatch",
-        "outputType": "Group",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"esid","regex":"%^([0-9_]+)$%"}],
-        "path": "/group/exercisesheet/:esid"
-    },
-    {
-        "name": "getCourseGroups",
-        "callback": "getMatch",
-        "outputType": "Group",
-        "inputType": "",
-        "method": "GET",
-        "placeholder":[{"name":"courseid","regex":"%^([0-9_]+)$%"}],
-        "path": "/group/course/:courseid"
-    },
-    {
-        "name": "addPlatform",
-        "outputType": "Platform",
-        "inputType": "Platform",
-        "method": "POST",
-        "path": "/platform"
-    },
-    {
-        "name": "deletePlatform",
-        "outputType": "Platform",
-        "inputType": "",
-        "method": "DELETE",
-        "path": "/platform"
-    },
-    {
-        "name": "getExistsPlatform",
-        "callback": "getMatch",
-        "singleOutput": "TRUE",
-        "outputType": "Platform",
-        "inputType": "",
-        "method": "GET",
-        "path": "/link/exists/platform"
-    },
-    {
-        "name": "getSamplesInfo",
-        "outputType": "",
-        "inputType": "",
-        "method": "GET",
-        "path": "/samples"
+        "outputType": "Group"
     },
     {
         "name": "postSamples",
-        "outputType": "Query",
-        "inputType": "",
+        "path": "\/samples\/course\/:courseAmount\/user\/:userAmount",
         "method": "POST",
-        "path": "/samples/course/:courseAmount/user/:userAmount"
+        "description": {
+            "de": "erzeugt Zufallsdaten (courseAmount = Anzahl der Veranstaltungen, userAmount = Anzahl der Nutzer), anhand der Vorgabe"
+        },
+        "inputType": "",
+        "outputType": "Query"
+    },
+    {
+        "name": "getUserSheetGroup",
+        "path": "\/group\/user\/:userid\/exercisesheet\/:esid",
+        "method": "GET",
+        "description": {
+            "de": "ermittelt die Gruppe eines Nutzers für eine Übungsserie"
+        },
+        "placeholder": [
+            {
+                "name": "userid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
+                }
+            },
+            {
+                "name": "esid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Übungsserie (`ExerciseSheet`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Group",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
+    },
+    {
+        "name": "addGroup",
+        "path": "\/group",
+        "method": "POST",
+        "description": {
+            "de": "fügt eine neue Gruppe ein"
+        },
+        "inputType": "Group",
+        "outputType": "Group"
+    },
+    {
+        "name": "getExistsPlatform",
+        "path": "\/link\/exists\/platform",
+        "method": "GET",
+        "description": {
+            "de": "prüft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollständig installiert ist"
+        },
+        "inputType": "",
+        "outputType": "Platform",
+        "callback": "getMatch",
+        "singleOutput": "TRUE"
+    },
+    {
+        "name": "getUserGroups",
+        "path": "\/group\/user\/:userid",
+        "method": "GET",
+        "description": {
+            "de": "ermittelt die Gruppen eines Nutzers"
+        },
+        "placeholder": [
+            {
+                "name": "userid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Group",
+        "callback": "getMatch"
+    },
+    {
+        "name": "getAllGroups",
+        "path": "\/group",
+        "method": "GET",
+        "description": {
+            "de": "ermittelt alle Gruppeneinträge"
+        },
+        "inputType": "",
+        "outputType": "Group",
+        "callback": "getMatch"
+    },
+    {
+        "name": "getCourseGroups",
+        "path": "\/group\/course\/:courseid",
+        "method": "GET",
+        "description": {
+            "de": "ermittelt alle Gruppen einer Veranstaltung"
+        },
+        "placeholder": [
+            {
+                "name": "courseid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "eine Veranstaltungs ID (`Course`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Group",
+        "callback": "getMatch"
+    },
+    {
+        "name": "deleteGroup",
+        "path": "\/group\/user\/:userid\/exercisesheet\/:esid",
+        "method": "DELETE",
+        "description": {
+            "de": "entfernt einen Gruppeneintrag"
+        },
+        "placeholder": [
+            {
+                "name": "userid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID eines Nutzers oder ein Nuzername (`User`)"
+                }
+            },
+            {
+                "name": "esid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Übungsserie (`ExerciseSheet`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Group"
+    },
+    {
+        "name": "deletePlatform",
+        "path": "\/platform",
+        "method": "DELETE",
+        "description": {
+            "de": "entfernt die Komponente und ihre installierten Bestandteile aus der Plattform"
+        },
+        "inputType": "",
+        "outputType": "Platform"
+    },
+    {
+        "name": "getSheetGroups",
+        "path": "\/group\/exercisesheet\/:esid",
+        "method": "GET",
+        "description": {
+            "de": "ermittelt alle Gruppeneinträge einer Übungsserie"
+        },
+        "placeholder": [
+            {
+                "name": "esid",
+                "regex": "%^([0-9_]+)$%",
+                "description": {
+                    "de": "die ID einer Übungsserie (`ExerciseSheet`)"
+                }
+            }
+        ],
+        "inputType": "",
+        "outputType": "Group",
+        "callback": "getMatch"
+    },
+    {
+        "name": "getSamplesInfo",
+        "path": "\/samples",
+        "method": "GET",
+        "description": {
+            "de": "liefert die Bezeichner der betroffenen Tabellen"
+        },
+        "inputType": "",
+        "outputType": ""
+    },
+    {
+        "name": "addPlatform",
+        "path": "\/platform",
+        "method": "POST",
+        "description": {
+            "de": "installiert die zugehörige Tabelle und die Prozeduren für diese Plattform"
+        },
+        "inputType": "Platform",
+        "outputType": "Platform"
     },
     {
         "name": "getApiProfiles",
-        "outputType": "GateProfile",
-        "inputType": "",
+        "path": "\/api\/profiles",
         "method": "GET",
-        "path": "/api/profiles"
+        "description": {
+            "de": "liefert `GateProfile`-Objekte, welche unsere Befehle in die Standardprofile von CGate einsortieren"
+        },
+        "inputType": "",
+        "outputType": "GateProfile"
     }
 ]

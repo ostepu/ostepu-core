@@ -1,0 +1,115 @@
+{
+    "name": "UIMarkingTool2",
+    "description": {
+        "de": "Diese Komponente gehört zum Korrekturassistenten 2.0 und ermöglicht die Bearbeitung von Korrekturen direkt in der Oberfläche der Plattform."
+    },
+    "version": "1.0",
+    "classFile": "MarkingTool2.php",
+    "className": "UIMarkingTool2",
+    "links": [
+        {
+            "name": "getMarkingToolData",
+            "target": "LGetSite",
+            "description": {
+                "de": "zum Abrufen der benötigten Daten"
+            },
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "\/markingtool\/course\/:cid\/sheet\/:sid"
+                }
+            ]
+        },
+		{
+			"name": "setSubmission",
+			"target": "LProcessor",
+			"links": [{
+				"method": "POST",
+				"path": "/submission"
+			}]
+		}
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest",
+            "description": {
+                "de": "damit UIMarkingTool2 als lokales Objekt aufgerufen werden kann"
+            }
+        },
+        {
+            "name": "getSheetNavigation",
+            "target": "UIExerciseSheetLecturer",
+            "description": {
+                "de": "???"
+            },
+            "links": [
+                {
+                    "path": "\/view\/button\/entry\/course\/:cid\/sheet\/:sid",
+                    "priority": "150"
+                }
+            ]
+        },
+        {
+            "name": "getSheetNavigation",
+            "target": "UIExerciseSheetTutor",
+            "description": {
+                "de": "???"
+            },
+            "links": [
+                {
+                    "path": "\/view\/button\/entry\/course\/:cid\/sheet\/:sid",
+                    "priority": "150"
+                }
+            ]
+        },
+        {
+            "name": "getContent",
+            "target": "CContent",
+            "description": {
+                "de": "???"
+            },
+            "links": [
+                {
+                    "path": "\/content\/markingtool2\/css\/MarkingTool2.css"
+                },
+                {
+                    "path": "\/content\/markingtool2\/img\/computer-icon.png"
+                },
+                {
+                    "path": "\/content\/markingtool2\/img\/ok-icon.png"
+                },
+                {
+                    "path": "\/content\/markingtool2\/img\/server-icon.png"
+                },
+                {
+                    "path": "\/content\/markingtool2\/js\/marking_tool2_editor.js"
+                },
+                {
+                    "path": "\/content\/markingtool2\/js\/helper_events.js"
+                },
+                {
+                    "path": "\/content\/markingtool2\/js\/helper_queue.js"
+                },
+                {
+                    "path": "\/content\/markingtool2\/js\/helper_html.js"
+                },
+                {
+                    "path": "\/content\/markingtool2\/js\/helper_updateindicator.js"
+                },
+                {
+                    "path": "\/content\/markingtool2\/js\/helper_updateproperty.js"
+                },
+                {
+                    "path": "\/content\/markingtool2\/js\/helper_updateobject.js"
+                },
+                {
+                    "path": "\/content\/markingtool2\/js\/helper_updatefactory.js"
+                },
+                {
+                    "path": "\/content\/markingtool2\/js\/helper_cookie.js"
+                }
+            ]
+        }
+    ]
+}

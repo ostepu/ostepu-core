@@ -112,10 +112,10 @@ include_once dirname(__FILE__) . '/../Helpers.php';
             <?php } ?>
             <div class="exercise-sheet-images">
                 <a href="<?php echo $fileURL; ?>" title="<?php echo $attachments[0]['displayName']; ?>" class="plain" target="_blank">
-                    <img src="Images/Download.png" />
+                    <img src="<?php echo generateCommonFileUrl('img/Download.png');?>" />
                 </a>
                 <a href="javascript:void(0);" title="<?php echo Language::Get('main','removeAttachment', $langTemplate); ?> ..." name="deleteAttachmentFile" class="plain deleteFile">                                      
-                    <img src="Images/Delete.png">
+                    <img src="<?php echo generateCommonFileUrl('img/Delete.png');?>">
                     <?php if (isset($attachments[0])){ ?><span class="right warning-simple" ></span><?php } ?>
                 </a>
             </div>

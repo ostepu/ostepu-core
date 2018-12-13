@@ -11,12 +11,12 @@
  * @date 2014-2015
  */
 
-include_once ( dirname( __FILE__ ) . '/Object.php' );
+include_once ( dirname( __FILE__ ) . '/StructureObject.php' );
 
 /**
  * the pdf structure
  */
-class Pdf extends Object implements JsonSerializable
+class Pdf extends StructureObject implements JsonSerializable
 {
 
     private $text = null;

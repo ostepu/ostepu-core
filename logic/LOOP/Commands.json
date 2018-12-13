@@ -1,51 +1,81 @@
 [
-    {    
-        "method":"post",
-        "path":"/process"
+    {
+        "path": "\/process",
+        "method": "post",
+        "description": {
+            "de": "behandelt den Verarbeitungsaufruf von LOOP (also einen Einsenevorgang)"
+        }
     },
-    {    
-        "method":"post",
-        "path":"/postprocess"
+    {
+        "path": "\/postprocess",
+        "method": "post",
+        "description": {
+            "de": "erstellt Testcases"
+        }
     },
-    {    
-        "method":"post",
-        "path":"/course"
+    {
+        "path": "\/course",
+        "method": "post",
+        "description": {
+            "de": "fügt LOOP einer Veranstaltung hinzu"
+        }
     },
-    {    
-        "method":"delete",
-        "path":"/course/:courseid" 
+    {
+        "path": "\/course\/:courseid",
+        "method": "delete",
+        "description": {
+            "de": "entfernt LOOP aus einer Veranstaltung"
+        }
     },
-    {    
-        "method":"get",
-        "path":"/link/exists/course/:courseid"
+    {
+        "path": "\/link\/exists\/course\/:courseid",
+        "method": "get",
+        "description": {
+            "de": "prüft, ob LOOP in einer Veranstaltung installiert ist"
+        }
     },
     {
         "name": "addPlatform",
-        "outputType": "Platform",
-        "inputType": "Platform",
+        "path": "\/platform",
         "method": "POST",
-        "path": "/platform"
+        "description": {
+            "de": "installiert die zugehörige Tabelle und die Prozeduren für diese Plattform"
+        },
+        "inputType": "Platform",
+        "outputType": "Platform"
     },
     {
         "name": "deletePlatform",
-        "outputType": "Platform",
-        "inputType": "",
+        "path": "\/platform",
         "method": "DELETE",
-        "path": "/platform"
+        "description": {
+            "de": "entfernt die Komponente und ihre installierten Bestandteile aus der Plattform"
+        },
+        "inputType": "",
+        "outputType": "Platform"
     },
     {
         "name": "getExistsPlatform",
-        "outputType": "Platform",
-        "inputType": "",
+        "path": "\/link\/exists\/platform",
         "method": "GET",
-        "path": "/link/exists/platform"
+        "description": {
+            "de": "prüft, ob die Tabelle und die Prozeduren existieren und die Komponente generell vollständig installiert ist"
+        },
+        "inputType": "",
+        "outputType": "Platform"
     },
-    {    
-        "method":"get",
-        "path":"/start/:count"
+    {
+        "path": "\/start\/:count",
+        "method": "get",
+        "description": {
+            "de": "zum n-maligen Starten der Compute Funktion"
+        }
     },
-    {    
-        "method":"get",
-        "path":"/compute/:count"
+    {
+        "path": "\/compute\/:count",
+        "method": "get",
+        "description": {
+            "de": "zum n-maligen Starten der Compute Funktion"
+        }
     }
 ]

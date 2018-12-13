@@ -1,5 +1,23 @@
 [
-    {    "method":"post", "path":"/submission" },
-    {    "method":"delete", "path":"/submission/submission/:submissionid" },
-    {    "method":"get", "path":"/submission/exercisesheet/:sheetid/user/:userid" }
+    {
+        "path": "\/submission",
+        "method": "post",
+        "description": {
+            "de": "speichert eine Einsendung"
+        }
+    },
+    {
+        "path": "\/submission\/submission\/:submissionid",
+        "method": "delete",
+        "description": {
+            "de": "löscht eine Einsendung"
+        }
+    },
+    {
+        "path": "\/submission\/exercisesheet\/:sheetid\/user\/:userid",
+        "method": "get",
+        "description": {
+            "de": "erzeugt aus den Einsendungen der Nutzergruppe eine ZIP und gibt das Datei-Objekt zurück"
+        }
+    }
 ]
