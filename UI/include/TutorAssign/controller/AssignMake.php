@@ -33,7 +33,7 @@ if ($message === 200) {
             $submissions = http_get($URI, true, $message);
             $submissions = Submission::decodeSubmission($submissions);
             
-            if ($message === 200) {
+            if ($message === 200 || $message == 404) {
                 $leaderGroups = array();
                 foreach ($exercises as $exercise){
                     foreach($groups as $group){
