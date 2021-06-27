@@ -27,3 +27,27 @@ welche die Sachverhalte [Gruppenarbeit](https://github.com/ostepu/ostepu-core-do
 [Eingabemasken](https://github.com/ostepu/ostepu-core-documentation/raw/master/logic/Dokumentation/Benutzerhandbuch.pdf) behandeln.
 
 Zudem können Sie sich die [Videos](https://www.youtube.com/playlist?list=PLfnTtQX6vUn2lHxmo2WqLsPaEZihOEczh), zur Verwendung der Plattform, ansehen.
+
+# Docker
+
+Die Docker-Installtion vereinfacht viele Einrichtungs-Prozesse und ist deshalb nicht für öffentlich zugängliche oder Produktivumgebungen geeignet. Sie eignet sich aber hervorrand, den gesamten Code von einer Entwicklungsmaschine zu isolieren, so dass eine Ausführung ohne vorherigen Code-Review risoärmer ist.
+
+0. `cp .env.example .env`
+1. `docker-compose up -d app`
+2. `firefox http://localhost/install/install.php`
+
+* interne URL: http://localhost
+* lokaler Pfad: /var/www/html
+* externe URL: http://localhost
+* temporäres Verzeichnis: /tmp
+* Dateiverzeichnis: /var/www/files
+
+* Datenbankpfad: db
+* Datenbankname: ostepu
+
+* Datenbankadministrator: root
+* Passwort: change_me_root
+
+* Plattform-Datenbanknutzer: ostepu
+* Passwort: change_me_ostepu
+

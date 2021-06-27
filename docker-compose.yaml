@@ -1,0 +1,41 @@
+version: '3.5'
+
+services:
+  app:
+    image: app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - db
+#    volumes:
+#      - "./:/var/www/html"
+    ports:
+      - "80:80"
+
+  db:
+    image: mariadb:10.4
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_DATABASE
+      - MYSQL_USER
+      - MYSQL_PASSWORD
+    volumes:
+      - mariadbdata:/var/lib/mysql
+      - mariadblog:/var/log/mysql
+
+#  adminer:
+#    image: adminer
+#    restart: always
+#    ports:
+#      - "8080:80"
+
+volumes:
+  mariadbdata:
+  mariadblog:
+
+# vim: tabstop=2 softtabstop=0 expandtab shiftwidth=2 smarttab
+
+
